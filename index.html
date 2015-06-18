@@ -5,7 +5,9 @@
     <title>BuilderUI</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="css/builder.css" rel="stylesheet">
+    <link href="css/jquery-ui/jquery-ui.min.css" rel="stylesheet">
+    <link href="css/builder.less" rel="stylesheet/less">
+    <link href="css/accordian.less" rel="stylesheet/less">
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top header">
@@ -17,7 +19,7 @@
         </li>
     </ul>
 </header>
-<aside class="nav navbar-nav sidebar">
+<aside class="nav side-menu">
     <nav class="menu">
         <ul id="menu-list" class="menu-list">
             <li>
@@ -42,15 +44,60 @@
             </li>
         </ul>
     </nav>
-    <dl class="side-tab">
-    </dl>
 </aside>
+<aside class="side-tab">
+    <div class="">
+        <div class="accordion">
+            <dl>
+                <dt>
+                    <a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
+                       class="accordionTitle js-accordionTrigger">LAYOUT</a>
+                </dt>
+                <dd class="accordionItem is-collapsed" id="accordion1" aria-hidden="true">
+                    <p>Grid 1</p>
+
+                    <p>Grid 2</p>
+                </dd>
+                <dt>
+                    <a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
+                       class="accordionTitle js-accordionTrigger">PLAIN</a>
+                </dt>
+                <dd class="accordionItem is-collapsed" id="accordion2" aria-hidden="true">
+                    <p>Grid 1</p>
+
+                    <p>Grid 2</p>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</aside>
+<footer class="navbar-fixed-bottom footer">
+    <ul class="item-list">
+        <li class="item-right">
+            <a>UTF-8</a>
+        </li>
+        <li class="item-right">
+            <a>JSON</a>
+        </li>
+        <li class="item-left">
+            <a><i class="glyphicon glyphicon-info-sign"></i></a>
+        </li>
+    </ul>
+</footer>
+
+<!-- Jquery core JavaScript-->
+<script src="js/jquery/jquery-1.11.3.min.js"></script>
+<script src="js/jquery-ui/jquery-ui.min.js"></script>
 
 <!-- Bootstrap core JavaScript-->
-<script src="js/jquery/jquery-1.11.3.min.js"></script>
-<!-- Placed at the end of the document so the pages load faster -->
 <script src="js/bootstarp/bootstrap.min.js"></script>
-<!-- Jquery core JavaScript-->
+
+<!-- Less core JavaScript-->
+<script src="js/less/less.min.js"></script>
+
+<!-- Placed at the end of the document so the pages load faster -->
 <script src="js/builder.js"></script>
+<script src="js/accordian.js"></script>
+
 </body>
 </html>
