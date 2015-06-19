@@ -23,22 +23,22 @@
     <nav class="menu">
         <ul id="menu-list" class="menu-list">
             <li>
-                <a>
-                    <i class="glyphicon glyphicon-folder-open"></i>
+                <a id="menu-1">
+                    <i class="glyphicon glyphicon-wrench"></i>
                 </a>
             </li>
             <li>
-                <a>
-                    <i class="glyphicon glyphicon-search"></i>
+                <a id="menu-2">
+                    <i class="glyphicon glyphicon-eye-open"></i>
                 </a>
             </li>
             <li>
-                <a>
+                <a id="menu-3">
                     <i class="glyphicon glyphicon-play-circle"></i>
                 </a>
             </li>
             <li>
-                <a>
+                <a id="menu-4">
                     <i class="glyphicon glyphicon-shopping-cart"></i>
                 </a>
             </li>
@@ -46,31 +46,32 @@
     </nav>
 </aside>
 <aside class="side-tab">
-    <div class="">
+    <div id="side-contents" class="side-contents">
         <div class="accordion">
             <dl>
-                <dt>
-                    <a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
-                       class="accordionTitle js-accordionTrigger">LAYOUT</a>
-                </dt>
+                <dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
+                       class="accordionTitle js-accordionTrigger">LAYOUT</a></dt>
                 <dd class="accordionItem is-collapsed" id="accordion1" aria-hidden="true">
-                    <p>Grid 1</p>
-
+                    <p id="grid">Grid 1</p>
                     <p>Grid 2</p>
                 </dd>
-                <dt>
-                    <a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
-                       class="accordionTitle js-accordionTrigger">PLAIN</a>
-                </dt>
-                <dd class="accordionItem is-collapsed" id="accordion2" aria-hidden="true">
-                    <p>Grid 1</p>
-
-                    <p>Grid 2</p>
+                <dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
+                       class="accordionTitle js-accordionTrigger">PLAIN</a></dt>
+                <dd class="accordionItem is-collapsed" id="accordion2" aria-hidden="true"><p>Title</p>
+                    <p>Address</p>
+                    <p>Form</p>
                 </dd>
             </dl>
         </div>
     </div>
 </aside>
+<div class="center-viewport">
+    <div class="contents-wrapper">
+        <iframe class="contents-frame">
+
+        </iframe>
+    </div>
+</div>
 <footer class="navbar-fixed-bottom footer">
     <ul class="item-list">
         <li class="item-right">
@@ -95,8 +96,13 @@
 <!-- Less core JavaScript-->
 <script src="js/less/less.min.js"></script>
 
+<!-- React core JavaScript-->
+<script src="js/react/react-with-addons.min.js"></script>
+<script src="js/react/JSXTransformer.js"></script>
+
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="js/builder.js"></script>
+<script src="js/dragInterface.js"></script>
 <script src="js/accordian.js"></script>
 
 </body>

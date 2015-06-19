@@ -5,13 +5,6 @@
 @hoverColor : #fff;
 
 /*
- * Base structure
- */
-
-body {
-}
-
-/*
  * header
  */
 .header {
@@ -39,12 +32,11 @@ body {
  * Sidebar
  */
 .side-menu {
-  position: fixed;
+  position: absolute;
   width: 50px;
   top: 30px;
   left: 0;
   bottom: 0px;
-  z-index: 100;
   display: block;
   padding: 2px;
   overflow-x: hidden;
@@ -52,7 +44,7 @@ body {
   background-color: #303030;
   .menu-list {
     padding-left: 0;
-    font-size: 20px;
+    font-size: 22px;
     margin-top: 14px;
     margin-left: 11px;
     li {
@@ -69,35 +61,63 @@ body {
 }
 
 .side-tab {
-  position: fixed;
+  position: absolute;
   width: 180px;
   top: 30px;
   left: 49px;
   bottom: 0px;
-  z-index: 200;
   display: block;
   margin-bottom: 0px;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
   font-size: 12px;
   background-color: #f5f5f5;
+  .side-contents {
+
+    .device-mode {
+      color: #666;
+      dt {
+        background-color: darken(#f5f5f5, 10%);
+        padding: 5px 5px 5px 10px;
+      }
+      dd {
+        padding: 5px 5px 5px 20px;
+        background-color: #eee;
+      }
+    }
+  }
 }
 
 /*
  * Main content
  */
 
-.main {
-  position: fixed;
-  top: 30px;
-  bottom: 0;
-  left: 20%;
-  z-index: 300;
+.center-viewport {
   display: block;
-  padding: 20px;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-  border-right: 1px solid #eee;
+  width: 100%;
+  height: 100%;
+  top: 30px;
+  position: relative;
+  margin-left: 230px;
+  margin-right: auto;
+  overflow: hidden;
+  .contents-wrapper {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    .contents-frame {
+      display: block;
+      width: 100%;
+      margin: 0px auto;
+      border: 1px dashed;
+      overflow-y: scroll;
+      background-color: #777777;
+      border-radius: 0px;
+    }
+  }
 }
 
 /*
@@ -154,8 +174,8 @@ body {
 }
 
 .tri {
-  top: -4px;
-  left: 8px;
+  top: -5px;
+  left: 6px;
   font-size: 11px;
   color: #f5f5f5;
 }
