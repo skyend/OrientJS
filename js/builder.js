@@ -10,10 +10,11 @@ var BuildMode = React.createClass({
                     <dt className="title"><a href="#accordion1" aria-expanded="false"
                                              aria-controls="accordion1">LAYOUT</a></dt>
                     <dd className="item" id="accordion1" aria-hidden="true">
-                        <div className="grid">Grid 1</div>
-                        <div className="grid">Grid 2</div>
+                        <div className="grid" draggable="true">Grid 1</div>
+                        <div className="grid" draggable="true">Grid 2</div>
                     </dd>
-                    <dt className="title"><a href="#accordion2" aria-expanded="false" aria-controls="accordion2">PLAIN</a>
+                    <dt className="title"><a href="#accordion2" aria-expanded="false"
+                                             aria-controls="accordion2">PLAIN</a>
                     </dt>
                     <dd className="item" id="accordion2" aria-hidden="true">
                         <div>Title</div>
@@ -58,6 +59,7 @@ var DeviceViewMode = React.createClass({
 });
 
 $(function () {
+    setDnd();
     console.log("ready!");
     $("#menu-list li a").on("click", function (e) {
         $("#menu-list i").find("span").remove();
