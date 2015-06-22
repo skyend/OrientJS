@@ -62,10 +62,10 @@ $(function () {
     setDnd();
     console.log("ready!");
     $("#menu-list li a").on("click", function (e) {
-        $("#menu-list i").find("span").remove();
-        $("#menu-list i").removeClass("active");
+        $("#menu-list a").find("span.select").remove();
+        $("#menu-list a").removeClass("active");
         $(e.target).addClass("active");
-        $(e.target).append("<span class='glyphicon glyphicon-triangle-left tri'></span>");
+        $(this).append("<span class='glyphicon glyphicon-triangle-left select'></span>");
     });
     $("#menu-1").on("click", function () {
         React.render(
