@@ -3,11 +3,11 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>BuilderUI</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="css/jquery-ui/jquery-ui.min.css" rel="stylesheet">
     <link href="css/builder.less" rel="stylesheet/less">
-    <link href="css/accordian.less" rel="stylesheet/less">
+    <!--<link href="css/accordian.less" rel="stylesheet/less">-->
 </head>
 <body>
 <header class="navbar navbar-inverse navbar-fixed-top header">
@@ -47,27 +47,27 @@
 </aside>
 <aside class="side-tab">
     <div id="side-contents" class="side-contents">
-        <div class="accordion">
-            <dl>
-                <dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
-                       class="accordionTitle js-accordionTrigger">LAYOUT</a></dt>
-                <dd class="accordionItem is-collapsed" id="accordion1" aria-hidden="true">
-                    <p id="grid">Grid 1</p>
-                    <p>Grid 2</p>
-                </dd>
-                <dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
-                       class="accordionTitle js-accordionTrigger">PLAIN</a></dt>
-                <dd class="accordionItem is-collapsed" id="accordion2" aria-hidden="true"><p>Title</p>
-                    <p>Address</p>
-                    <p>Form</p>
-                </dd>
-            </dl>
-        </div>
+        <!--<div class="accordion">-->
+            <!--<dl>-->
+                <!--<dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"-->
+                       <!--class="accordionTitle js-accordionTrigger">LAYOUT</a></dt>-->
+                <!--<dd class="accordionItem is-collapsed" id="accordion1" aria-hidden="true">-->
+                    <!--<p id="grid">Grid 1</p>-->
+                    <!--<p>Grid 2</p>-->
+                <!--</dd>-->
+                <!--<dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"-->
+                       <!--class="accordionTitle js-accordionTrigger">PLAIN</a></dt>-->
+                <!--<dd class="accordionItem is-collapsed" id="accordion2" aria-hidden="true"><p>Title</p>-->
+                    <!--<p>Address</p>-->
+                    <!--<p>Form</p>-->
+                <!--</dd>-->
+            <!--</dl>-->
+        <!--</div>-->
     </div>
 </aside>
 <div class="center-viewport">
     <div class="contents-wrapper">
-        <iframe class="contents-frame">
+        <iframe class="contents-frame" src="main.html">
 
         </iframe>
     </div>
@@ -87,23 +87,24 @@
 </footer>
 
 <!-- Jquery core JavaScript-->
-<script src="js/jquery/jquery-1.11.3.min.js"></script>
-<script src="js/jquery-ui/jquery-ui.min.js"></script>
+<script src="js/lib/jquery/jquery-1.11.3.min.js"></script>
+<script src="js/lib/jquery-ui/jquery-ui.min.js"></script>
 
 <!-- Bootstrap core JavaScript-->
-<script src="js/bootstarp/bootstrap.min.js"></script>
+<script src="js/lib/bootstarp/bootstrap.min.js"></script>
 
 <!-- Less core JavaScript-->
-<script src="js/less/less.min.js"></script>
+<script src="js/lib/less/less.min.js"></script>
 
 <!-- React core JavaScript-->
-<script src="js/react/react-with-addons.min.js"></script>
-<script src="js/react/JSXTransformer.js"></script>
+<script src="js/lib/react/react.js"></script>
+<script src="js/lib/react/JSXTransformer.js"></script>
 
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="js/builder.js"></script>
-<script src="js/dragInterface.js"></script>
-<script src="js/accordian.js"></script>
+<script src="js/builder.js" type="text/jsx"></script>
+<script src="js/zepto-dnd.min.js.js"></script>
+<!--<script src="js/accordian.js"></script>-->
+<!--<script src="js/dragInterface.js"></script>-->
 
 </body>
 </html>
