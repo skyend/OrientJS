@@ -9,10 +9,10 @@ var BuildMode = React.createClass({
                 <dl>
                     <dt className="title"><a href="#accordion1" aria-expanded="false"
                                              aria-controls="accordion1">LAYOUT</a></dt>
-                    <dd className="item" id="accordion1" aria-hidden="true">
-                        <div className="grid" draggable="true">Grid 1</div>
-                        <div className="grid" draggable="true">Grid 2</div>
-                    </dd>
+                    <div className="item" aria-hidden="true">
+                        <div className="grid">Grid 1</div>
+                        <div className="grid">Grid 2</div>
+                    </div>
                     <dt className="title"><a href="#accordion2" aria-expanded="false"
                                              aria-controls="accordion2">PLAIN</a>
                     </dt>
@@ -59,8 +59,9 @@ var DeviceViewMode = React.createClass({
 });
 
 $(function () {
-    setDnd();
     console.log("ready!");
+    var iframe = false;
+
     $("#menu-list li a").on("click", function (e) {
         $("#menu-list a").find("span.select").remove();
         $("#menu-list a").removeClass("active");
@@ -71,6 +72,7 @@ $(function () {
         React.render(
             <BuildMode />, document.getElementById('side-contents')
         );
+        setDraggable();
     });
     $("#menu-2").on("click", function () {
         React.render(
@@ -78,4 +80,12 @@ $(function () {
         );
     });
 
+
+
+    $('#contents-frame').attr('src', 'main.html').load(function () {
+        $(this.contentDocument).find("#sortable").sortable({
+            revert: true
+        });
+        $(this.contentDocument).find("#sortable").disableSelection();
+    });
 });

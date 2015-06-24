@@ -6,19 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title></title>
     <script src="js/lib/jquery/jquery-1.11.3.min.js"></script>
-    <script src="js/zepto-dnd.js"></script>
+    <script src="js/lib/jquery-ui/jquery-ui.min.js"></script>
 </head>
 <body>
-<div class="sortable">
-    <div class="grid" draggable="true">Grid 3</div>
-    <div class="grid" draggable="true">Grid 4</div>
+<div id="sortable" class="sortable">
+    <div class="grid" style="background-color: #1c94c4">Grid 3</div>
+    <div class="grid" style="background-color: #1c94c4">Grid 4</div>
 </div>
-<script type="text/javascript">
-    $(function () {
-        $('.sortable').sortable().on('sortable:receive', function (e, ui) {
-//            ui.item.removeClass('draggable');
-        });
-    });
-</script>
 </body>
 </html>
