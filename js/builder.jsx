@@ -1,7 +1,8 @@
 /**
  * Created by seonwoong on 15. 6. 16..
  */
-
+var React = require('react');
+var $ = require('jquery');
 var BuildMode = React.createClass({
     render: function () {
         return (
