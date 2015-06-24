@@ -64,7 +64,7 @@ $(function () {
 
     $("#menu-list li a").on("click", function (e) {
         $("#menu-list a").find("span.select").remove();
-        $("#menu-list a").removeClass("active");
+        $("#menu-list i").removeClass("active");
         $(e.target).addClass("active");
         $(this).append("<span class='glyphicon glyphicon-triangle-left select'></span>");
     });
