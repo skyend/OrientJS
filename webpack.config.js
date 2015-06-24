@@ -1,17 +1,22 @@
 module.exports = {
-    entry: [
-        'jquery', 'jquery-ui', 'react',
-        "bootstrap-webpack!./bootstrap.config.js",
-        "!style!css!./css/bootstrap/bootstrap.min.css",
-        "bootstrap-webpack!./bootstrap.config.js",
-        "!style!css!less!./css/builder.less",
-        "./js/builder.jsx"
-
-
-    ],
+    entry: {
+        app:['./src/app.js'
+            ,'jquery', 'jquery-ui', 'react'
+            ,"bootstrap-webpack!./config/bootstrap.config.js",
+            "font-awesome-webpack!./config/font-awesome.config.js"]/*,
+        less: [
+            "./src/css/builder.less"
+        ]*//*,
+        venders: ['jquery', 'jquery-ui', 'react']*//*,
+        config: [
+            "bootstrap-webpack!./config/bootstrap.config.js",
+            "font-awesome-webpack!./config/font-awesome.config.js"
+        ]*/
+    }
+    ,
     output: {
-        path: __dirname,
-        filename: "js/app.js"
+        path: './dist',
+        filename: "bundle.js"
     },
     module: {
         loaders: [
@@ -27,11 +32,16 @@ module.exports = {
 
             // Needed for the css-loader when [bootstrap-webpack](https://github.com/bline/bootstrap-webpack)
             // loads bootstrap's css.
-            {test: /\.woff(2)?(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff"},
-            {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream"},
-            {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},
-            {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml"}
+            // the file-loader emits files.
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: "url-loader?limit=10000&minetype=application/font-woff"
+            },
+            {test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader"}
         ]
+    },
+    resolve: {
+        modulesDirectories: ['node_modules']
     }
 
 };

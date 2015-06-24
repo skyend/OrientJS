@@ -60,6 +60,8 @@ var DeviceViewMode = React.createClass({
 });
 
 $(function () {
+    var React = require('react');
+    var setDnd = require('./dragInterface');
     setDnd();
     console.log("ready!");
     $("#menu-list li a").on("click", function (e) {
