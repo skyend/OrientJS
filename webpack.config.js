@@ -1,22 +1,19 @@
+var Clean = require('clean-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
     entry: {
-        app:['./src/app.js'
-            ,'jquery', 'jquery-ui', 'react'
-            ,"bootstrap-webpack!./config/bootstrap.config.js",
-            "font-awesome-webpack!./config/font-awesome.config.js"]/*,
-        less: [
-            "./src/css/builder.less"
-        ]*//*,
-        venders: ['jquery', 'jquery-ui', 'react']*//*,
+        app: ['./src/app.jsx'],
+        venders: ['jquery', 'jquery-ui', 'react'],
         config: [
             "bootstrap-webpack!./config/bootstrap.config.js",
             "font-awesome-webpack!./config/font-awesome.config.js"
-        ]*/
+        ]
     }
     ,
     output: {
         path: './dist',
-        filename: "bundle.js"
+        filename: "[name]_bundle.js"
     },
     module: {
         loaders: [
@@ -42,6 +39,13 @@ module.exports = {
     },
     resolve: {
         modulesDirectories: ['node_modules']
-    }
+    },
+    plugins: [
+        new Clean(['dist', 'build']),
+        new HtmlWebpackPlugin({
+            title: 'Service Builder',
+            inject: 'body'
+        })
+    ]
 
 };
