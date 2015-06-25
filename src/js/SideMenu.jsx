@@ -1,6 +1,6 @@
 module.exports = function () {
-    var reactjs = require('react');
-    return reactjs.createClass({
+    var React = require("react/lib/reactWithAddons");
+    return React.createClass({
         render: function () {
             return (
                 <nav class="menu">
