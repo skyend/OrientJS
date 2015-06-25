@@ -57,6 +57,8 @@ var DeviceViewMode = React.createClass({
 
 $(function () {
     console.log("ready!");
+    var iFrameHTML = '<head lang="en"> <meta charset="UTF-8"> <meta http-equiv="X-UA-Compatible" content="chrome=1"> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <title></title> <script src="js/lib/jquery/jquery-1.11.3.min.js"></script> <script src="js/lib/jquery-ui/jquery-ui.min.js"></script> </head> <body id="body" style="margin-left: 230px;margin-top: 40px"> <div id="sortable" class="sortable"> <div class="grid" style="background-color: #1c94c4">Grid 3</div> <div class="grid" style="background-color: #1c94c4">Grid 4</div> </div> </body>';
+
     $("#menu-list li a").on("click", function (e) {
         $("#menu-list a").find("span.select").remove();
         $("#menu-list i").removeClass("active");
@@ -74,8 +76,7 @@ $(function () {
             <DeviceViewMode />, document.getElementById('side-contents')
         );
     });
-
-    $('#contents-frame').attr('src', 'main.html').load(function () {
+    $('#contents-frame').attr("src", "data:text/html;charset=utf-8,"+ encodeURI(iFrameHTML)).load(function () {
         $(this.contentDocument).find("#sortable").sortable({
             cursorAt: {top: 0, left: 0},
             revert: true
