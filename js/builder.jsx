@@ -5,24 +5,21 @@
 var BuildMode = React.createClass({
     render: function () {
         return (
-            <div className="accordion">
-                <dl>
-                    <dt className="title"><a href="#accordion1" aria-expanded="false"
-                                             aria-controls="accordion1">LAYOUT</a></dt>
-                    <div className="item" aria-hidden="true">
-                        <div className="grid">Grid 1</div>
-                        <div className="grid">Grid 2</div>
-                    </div>
-                    <dt className="title"><a href="#accordion2" aria-expanded="false"
-                                             aria-controls="accordion2">PLAIN</a>
-                    </dt>
-                    <dd className="item" id="accordion2" aria-hidden="true">
-                        <div>Title</div>
-                        <div>Address</div>
-                        <div>Form</div>
-                    </dd>
-                </dl>
-            </div>);
+            <dl>
+                <dt className="title"><a href="">LAYOUT</a></dt>
+                <dd className="item">
+                    <div className="grid">Grid 1</div>
+                    <div className="grid">Grid 2</div>
+                </dd>
+
+                <dt className="title"><a>PLAIN</a></dt>
+                <dd className="item">
+                    <div>Title</div>
+                    <div>Address</div>
+                    <div>Form</div>
+                </dd>
+            </dl>
+        );
         //<div className="accordion">
         //    <dl>
         //        <dt><a href="#accordion1" aria-expanded="false" aria-controls="accordion1"
@@ -60,8 +57,6 @@ var DeviceViewMode = React.createClass({
 
 $(function () {
     console.log("ready!");
-    var iframe = false;
-
     $("#menu-list li a").on("click", function (e) {
         $("#menu-list a").find("span.select").remove();
         $("#menu-list i").removeClass("active");
@@ -80,12 +75,10 @@ $(function () {
         );
     });
 
-
-
     $('#contents-frame').attr('src', 'main.html').load(function () {
         $(this.contentDocument).find("#sortable").sortable({
+            cursorAt: {top: 0, left: 0},
             revert: true
         });
-        $(this.contentDocument).find("#sortable").disableSelection();
     });
 });
