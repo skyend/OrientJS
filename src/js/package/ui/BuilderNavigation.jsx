@@ -22,7 +22,7 @@
         var ReactSekeleton = React.createClass({
             render: function () {
                 return (
-                    <ul className="nav navbar-right">
+                    <ul className="horizontal-navigation pull-right">
                         <li>
                             <a>
                                 <i className="fa fa-columns"></i>

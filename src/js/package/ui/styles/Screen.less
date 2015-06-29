@@ -7,21 +7,32 @@
 /*
  * header
  */
-.header {
+.builder-navigation {
   border: 0;
   min-height: 30px;
-  ul {
-    float: right;
+  background-color:#222;
+
+  ul.horizontal-navigation {
+    display: inline-block;
+    position: relative;
+    right: 0px;
+    height:30px;
+    padding:0px;
+    margin:0px;
+    line-height: 1;
     li {
-      margin-right: 30px;
+      display: block;
+      margin:0px 20px;
+      height:30px;
       a {
-        margin-top: 3px;
+        
         padding: 0;
         font-size: 16px;
         color: #888;
         cursor: pointer;
         &:hover {
           color: @hoverColor;
+          background-color: transparent;
         }
       }
     }
@@ -31,15 +42,23 @@
 /*
  * Sidebar
  */
-#side-menu {
+.side-navigation {
   position: absolute;
-  width: 50px;
   top: 30px;
-  left: 0;
   bottom: 0px;
   display: block;
   padding: 2px;
   background-color: #303030;
+
+  &.side-left {
+    left:0px;
+  }
+
+  &.side-right {
+    right:0px;
+    background-color: #eeeeee;
+  }
+
   > nav {
     border-bottom: solid 1px #888;
     &:last-child {
@@ -51,6 +70,7 @@
       font-size: 22px;
       margin: 0;
       width: 46px;
+      list-style-type: none;
       li {
         width: 46px;
         height: 46px;
@@ -134,6 +154,11 @@
       z-index: -1;
     }
   }
+}
+
+
+.side-left {
+
 }
 
 /*

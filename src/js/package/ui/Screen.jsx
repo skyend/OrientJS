@@ -10,20 +10,25 @@
     require('./styles/Screen.less');
 
     var BuilderNavigation = require('./BuilderNavigation.jsx');
+    var ProjectNavigation = require('./ProjectNavigation.jsx');
 
 
     var React = require("react");
 
     var BuilderScreen = function (){
         this.builderNavigation = new BuilderNavigation();
-        console.log(this.builderNavigation);
+        this.projectNavigation = new ProjectNavigation();
+
+
     };
 
     BuilderScreen.prototype.getSkeleton = function () {
         var skeletonOffer = this; // 책임자 반환되는 ReactClass 에 대해 감독하며 서로 통신함.
 
         var BuilderNavigationRClass = this.builderNavigation.getSkeleton();
-        console.log(BuilderNavigationRClass);
+        var ProjectNavigationRClass = this.projectNavigation.getSkeleton();
+
+
         /*
          var Headers = require("./js/Headers.jsx");
          var SideMenu = require("./js/SideMenu.jsx");
@@ -38,9 +43,15 @@
             render: function () {
                 return (
                     <div>
-                        <header className="navbar navbar-inverse navbar-fixed-top header">
+                        <header className="builder-navigation">
                             <BuilderNavigationRClass />
                         </header>
+                        <aside className="nav side-navigation side-left">
+                            <ProjectNavigationRClass />
+                        </aside>
+                        <aside className="nav side-navigation side-right">
+                            <ProjectNavigationRClass />
+                        </aside>
                     </div>
                 )
             }
