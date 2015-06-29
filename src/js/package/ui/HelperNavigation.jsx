@@ -11,11 +11,11 @@
 
     var React = require("react");
 
-    var ProjectNavigation = function(){
+    var HelperNavigation = function(){
 
     };
 
-    ProjectNavigation.prototype.getSkeleton = function(){
+    HelperNavigation.prototype.getSkeleton = function(){
         var skeletonOffer = this; // 책임자 반환되는 ReactClass 에 대해 감독하며 서로 통신함.
 
 
@@ -28,7 +28,7 @@
 
                             </ul>
                         </div>
-                        <div class='panel-area panel-is-right'>
+                        <div class='panel-area panel-is-left'>
 
                         </div>
                     </div>
@@ -41,7 +41,7 @@
 
 
 
-    module.exports = ProjectNavigation;
+    module.exports = HelperNavigation;
 
 })();
 

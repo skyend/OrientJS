@@ -11,6 +11,7 @@
 
     var BuilderNavigation = require('./BuilderNavigation.jsx');
     var ProjectNavigation = require('./ProjectNavigation.jsx');
+    var HelperNavigation = require('./HelperNavigation.jsx');
 
 
     var React = require("react");
@@ -18,6 +19,7 @@
     var BuilderScreen = function (){
         this.builderNavigation = new BuilderNavigation();
         this.projectNavigation = new ProjectNavigation();
+        this.helperNavigation = new HelperNavigation();
 
 
     };
@@ -27,6 +29,7 @@
 
         var BuilderNavigationRClass = this.builderNavigation.getSkeleton();
         var ProjectNavigationRClass = this.projectNavigation.getSkeleton();
+        var HelperNavigationRClass = this.helperNavigation.getSkeleton();
 
 
         /*
@@ -50,7 +53,7 @@
                             <ProjectNavigationRClass />
                         </aside>
                         <aside className="nav side-navigation side-right">
-                            <ProjectNavigationRClass />
+                            <HelperNavigationRClass />
                         </aside>
                     </div>
                 )
