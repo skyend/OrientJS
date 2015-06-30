@@ -47,7 +47,6 @@
   top: 30px;
   bottom: 0px;
   display: block;
-  padding: 2px;
   background-color: #303030;
 
   &.side-left {
@@ -59,44 +58,102 @@
     background-color: #eeeeee;
   }
 
-  > nav {
-    border-bottom: solid 1px #888;
-    &:last-child {
-      border-bottom: none;
-    }
-    padding: 3px 0;
-    .menu-list {
-      padding-left: 0;
-      font-size: 22px;
-      margin: 0;
-      width: 46px;
-      list-style-type: none;
-      li {
-        width: 46px;
-        height: 46px;
-        text-align: center;
+  .navigation-with-panel {
+    width:100px;
+    &.vertical-navigation {
+      height: 100%;
+
+      .navigation-area {
+        position: absolute;
+        top:0px;
+        bottom:0px;
+        width: 50px;
+        z-index:2;
+
+        background-color: #303030;
+
+        .seperator {
+          height:3px;
+          width:100%;
+          background-color: #222;
+
+        }
+
+        .navigation-bar {
+          width:100%;
+          padding: 0;
+          margin: 0;
+          list-style-type: none;
+
+          li {
+            display: block;
+            width:100%;
+            color:#aaa;
+            line-height: 1;
+            text-align: center;
+            padding: 10px 0px;
+            border-bottom: 1px solid #393939;
+
+            font-size:15px;
+            height:35px;
+
+
+            &:hover {
+              color:#eee;
+              background-color:rgba(255,255,255,0.1);
+            }
+
+            &.selected {
+              color:#fff;
+              text-shadow: 0 0 5px #fff;
+              background-color: #000;
+            }
+
+            &:first-child {
+              /*border:0;*/
+            }
+
+            &:last-child {
+              border:0;
+            }
+          }
+
+        }
 
       }
-      a {
-        position: relative;
-        height: inherit;
-        padding: 9px 0;
-        display: block;
-        cursor: pointer;
-        color: #888;
-        &:hover {
-          color: @hoverColor;
-        }
-        .select{
-          top: 17.5px;
-          right: -4px;
-          font-size: 11px;
-          color: #f5f5f5;
-          position: absolute;
-        }
+
+      .panel-area {
+        position: absolute;
+        top:0px;
+        bottom:0px;
+        width: 100%;
+        z-index:1;
+
+        background-color: #999;
+      }
+    }
+
+    &.panel-is-right {
+      .navigation-area {
+        left: 0px;
+      }
+      .panel-area {
+        left:0px;
+        padding-left:50px;
+      }
+    }
+
+    &.panel-is-left {
+      .navigation-area {
+        right:0px;
+      }
+      .panel-area {
+        right:0px;
+        padding-right:50px;
       }
     }
   }
+
 
 }
 
