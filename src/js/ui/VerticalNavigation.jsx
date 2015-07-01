@@ -8,7 +8,7 @@
  */
 
 (function(){
-    var Utils = require('../builder.Utils.js');
+    var Utils = require('../builder.Utils.js'); // 상속 라이브러리 유틸
     var EventEmitter = require('../lib/EventEmitter.js');
 
     var React = require("react");
@@ -25,7 +25,6 @@
 
     ProjectNavigation.prototype.foldPanel = function() {
         this.realElement.style.width = this.naviWidth + 'px';
-
 
         this.insideReactElementSelf.refs['fold-trigger'].getDOMNode().style.display = 'none';
         this.insideReactElementSelf.refs['unfold-trigger'].getDOMNode().style.display = 'block';
@@ -56,7 +55,7 @@
         var ReactSekeleton = React.createClass({
             clickNaviItem : function(e, _naviItem){
 
-                // 자신의 책임자를 통해 이벤트를 발생시킨다.
+                // 자신의 책임자를 통해 이벤트 Inject 시킨다.
                 skeletonOffer.emit('clickNaviItem', {
                     itemKey : _naviItem.itemKey
                 });

@@ -41,7 +41,6 @@
 
         });
 
-
     };
 
     BuilderScreen.prototype.getSkeleton = function () {
@@ -51,7 +50,6 @@
         var ProjectNavigationRClass = this.projectNavigation.getSkeleton();
         var HelperNavigationRClass = this.helperNavigation.getSkeleton();
 
-
         /*
          var Headers = require("./js/Headers.jsx");
          var SideMenu = require("./js/SideMenu.jsx");
@@ -60,8 +58,6 @@
          var FooterPanel = require("./js/FooterPanel.jsx");*/
 
         var ReactSekeleton = React.createClass({
-
-
 
             render: function () {
 

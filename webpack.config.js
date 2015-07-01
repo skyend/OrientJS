@@ -9,7 +9,7 @@ module.exports = {
             "bootstrap-webpack!./config/bootstrap.config.js",
             "font-awesome-webpack!./config/font-awesome.config.js"
         ],
-        main : [ './src/js/package/main.js']
+        main : [ './src/js/main.js']
     }
     ,
     output: {

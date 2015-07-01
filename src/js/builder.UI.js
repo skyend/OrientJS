@@ -8,26 +8,26 @@
  */
 
 (function(){
-		var Utils = require('./builder.Utils.js');
-		var EventEmitter = require('./lib/EventEmitter.js');
+		//var Utils = require('./builder.Utils.js');
+		//var EventEmitter = require('./lib/EventEmitter.js');
 		var React = require("react");
 		var uiScreen = require('./ui/Screen.jsx');	
-		
-	
+		//
+    //
     var UI = function(_window){
-				Utils.extends(EventEmitter, this);
-			
+		//		Utils.extends(EventEmitter, this);
+		//
 				this.window = _window;
 				this.uiScreen = new uiScreen();
-				
-				
-				this.on('testEvent', function(_data){
-						console.log(_data);
-				});
-			
-				this.emit('testEvent', 'Hello');
+
+		//
+		//		this.on('testEvent', function(_data){
+		//				console.log(_data);
+		//		});
+		//
+		//		this.emit('testEvent', 'Hello');
     };
-	
+    //
 		
 	
 		UI.prototype.render = function(){

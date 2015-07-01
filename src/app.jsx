@@ -4,11 +4,11 @@ var $ = require('jquery');
 $(document).ready(function () {
     console.log("ready!!");
 
-    var Headers = require("./js/Headers.jsx");
-    var SideMenu = require("./js/SideMenu.jsx");
-    var CustomPanel = require("./js/CustomPanel.jsx");
-    var EditorPanel = require("./js/EditorPanel.jsx");
-    var FooterPanel = require("./js/FooterPanel.jsx");
+    var Headers = require("./temp/Headers.jsx");
+    var SideMenu = require("./temp/SideMenu.jsx");
+    var CustomPanel = require("./temp/CustomPanel.jsx");
+    var EditorPanel = require("./temp/EditorPanel.jsx");
+    var FooterPanel = require("./temp/FooterPanel.jsx");
 
     var ServiceBuilder = React.createClass({
         render: function () {
