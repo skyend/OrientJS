@@ -8,66 +8,60 @@
     <script src="node_modules/less/dist/less.js"></script>
 </head>
 <body>
-<div>
-    <header class="builder-navigation">
-        <ul class="horizontal-navigation pull-right">
-            <li><a><i class="fa fa-columns"></i></a></li>
+<header id="ui-header">
+    <ul class="navigation">
+        <li>
+            <a>
+                <i class="fa fa-columns"></i>
+            </a>
+        </li>
+    </ul>
+</header>
+<aside id="ui-leftMenu">
+    <div class="menu">
+        <ul class="project">
+            <li title="Component"><a class="fa fa-th"></a></li>
+            <li title="Project tree"><a class="fa fa-briefcase"></a></li>
+            <li title="Sitemap"><a class="fa fa-cube"></a></li>
+            <li title="Theme"><a class="fa fa-leaf"></a></li>
+            <li title="style"><a class="fa fa-header"></a></li>
+            <li title="String with I18N"><a class="fa fa-globe"></a></li>
+            <li title="Images"><a class="fa fa-cloud"></a></li>
+            <li title="Script"><a class="fa fa-leaf"></a></li>
+            <li title="Event"><a class="fa fa-fire"></a></li>
+            <li title="API"><a class="fa fa-cloud-download"></a></li>
+            <li title="Template"><a class="fa fa-file"></a></li>
         </ul>
-    </header>
-    <aside class="nav side-navigation side-left">
-        <div class="navigation-with-panel vertical-navigation panel-is-right"
-             style="width: 250px;">
-            <div class="navigation-area">
-                <ul class="navigation-bar">
-                    <li title="fold-panel" style="display: block;"><span class="fa fa-chevron-left"></span></li>
-                    <li title="unfold-panel" style="display: none;"><span class="fa fa-chevron-right"></span></li>
-                </ul>
-                <div class="seperator"></div>
-                <ul class="navigation-bar">
-                    <li title="Component"><span class="fa fa-th"></span></li>
-                    <li title="Project tree"><span class="fa fa-briefcase"></span></li>
-                    <li title="Sitemap"><span class="fa fa-cube"></span></li>
-                    <li title="Theme"><span class="fa fa-leaf"></span></li>
-                    <li title="style"><span class="fa fa-header"></span></li>
-                    <li title="String with I18N"><span class="fa fa-globe"></span></li>
-                    <li title="Images"><span class="fa fa-cloud"></span></li>
-                    <li title="Script"><span class="fa fa-leaf"></span></li>
-                    <li title="Event"><span class="fa fa-fire"></span></li>
-                    <li title="API"><span class="fa fa-cloud-download"></span></li>
-                    <li title="Template"><span class="fa fa-file"></span></li>
-                </ul>
-            </div>
-            <div class="panel-area">
-                <ul>
-                    <li title="grid" class="gird"><span>grid</span></li>
-                </ul>
-            </div>
-        </div>
-    </aside>
-    <aside class="nav side-navigation side-right">
-        <div class="navigation-with-panel vertical-navigation panel-is-left" style="width: 50px;">
-            <div class="navigation-area">
-                <ul class="navigation-bar">
-                    <li title="fold-panel" style="display: none;"><span
-                            class="fa fa-chevron-right"></span></li>
-                    <li title="unfold-panel" style="display: block;"><span
-                            class="fa fa-chevron-left"></span></li>
-                </ul>
-                <div class="seperator"></div>
-                <ul class="navigation-bar">
-                    <li title="Theme"><span class="fa fa-leaf"></span></li>
-                    <li title="style"><span class="fa fa-header"></span></li>
-                    <li title="String with I18N"><span class="fa fa-globe"></span></li>
-                    <li title="Images"><span class="fa fa-picture"></span></li>
-                    <li title="Script"><span class="fa fa-leaf"></span></li>
-                    <li title="Event"><span class="fa fa-fire"></span></li>
-                    <li title="API"><span class="fa fa-cloud-download"></span></li>
-                    <li title="Template"><span class="fa fa-file"></span></li>
-                </ul>
-            </div>
-            <div class="panel-area"></div>
-        </div>
-    </aside>
-</div>
+    </div>
+    <div class="panel">
+        <div class="title">GRID</div>
+        <ul class="inventory">
+            <li>
+                <span>Grid 1</span>
+            </li>
+            <li>
+                <span>Grid 1</span>
+            </li>
+            <li>
+                <span>Grid 2</span>
+            </li>
+        </ul>
+        <div class="title">COMPONENT</div>
+        <ul class="inventory">
+            <li>
+                <span>Title</span>
+            </li>
+            <li>
+                <span>List</span>
+            </li>
+            <li>
+                <span>Table</span>
+            </li>
+        </ul>
+    </div>
+</aside>
+<aside>
+
+</aside>
 </body>
 </html>
