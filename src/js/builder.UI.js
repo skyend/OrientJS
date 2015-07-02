@@ -18,7 +18,7 @@
 		//		Utils.extends(EventEmitter, this);
 		//
 				this.window = _window;
-				this.uiScreen = new uiScreen();
+				this.uiScreen = uiScreen;
 
 		//
 		//		this.on('testEvent', function(_data){
@@ -31,7 +31,7 @@
 		
 	
 		UI.prototype.render = function(){
-				React.render( React.createElement( this.uiScreen.getSkeleton()), this.window.document.getElementsByTagName('BODY')[0] );
+				React.render( React.createElement( this.uiScreen ), this.window.document.getElementsByTagName('BODY')[0] );
 		}
 
     module.exports = UI;
