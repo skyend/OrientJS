@@ -30,8 +30,14 @@
             this.props.onDisplayPanel(_naviItem.itemKey);
         },
 
+        resize( _width ){
+            this.getDOMNode().style.width = _width + 'px';
+
+            this.props.onResize(_width);
+        },
+
         foldPanel(){
-            this.getDOMNode().style.width = this.props.naviWidth + 'px';
+            this.resize(this.props.naviWidth);
 
             this.refs['fold-trigger'].getDOMNode().style.display = 'none';
             this.refs['unfold-trigger'].getDOMNode().style.display = 'block';
@@ -40,7 +46,7 @@
         },
 
         unfoldPanel(){
-            this.getDOMNode().style.width = (this.props.naviWidth + this.props.panelWidth) + 'px';
+            this.resize(this.props.naviWidth + this.props.panelWidth);
 
             this.refs['unfold-trigger'].getDOMNode().style.display = 'none';
             this.refs['fold-trigger'].getDOMNode().style.display = 'block';
@@ -70,14 +76,15 @@
                 unfoldIcon = 'left';
             } else {
                 foldIcon = 'left';
+
                 unfoldIcon = 'right';
             }
 
 
             return (
-                <div className={'navigation-with-panel vertical-navigation panel-is-'+this.props.panelPosition}>
+                <div className={'navigation-with-panel vertical-navigation panel-is-'+this.props.panelPosition+' '+this.props.naviType}>
                     <div className='navigation-area'>
-                        <ul className='navigation-bar'>
+                        <ul className='navigation-bar' style={{width:this.props.naviWidth}}>
                             <li title='fold-panel' onClick={this.foldPanel} ref='fold-trigger' >
                                 <span className={"glyphicon glyphicon-chevron-"+foldIcon}></span>
                             </li>

@@ -4,6 +4,11 @@
 
 @hoverColor : #fff;
 
+
+#screen {
+  overflow: hidden;
+}
+
 /*
  * header
  */
@@ -45,9 +50,10 @@
 .side-navigation {
   position: absolute;
   top: 30px;
-  bottom: 0px;
+  bottom: 22px;
   display: block;
   background-color: #303030;
+  overflow:hidden;
 
   &.side-left {
     left:0px;
@@ -127,6 +133,10 @@
         z-index:1;
 
         background-color: #999;
+      }
+
+      &.verticalItemText {
+
       }
     }
 
@@ -221,11 +231,18 @@
 
 .footer {
   color: #fff;
+  position: absolute;
+  bottom:0px;
+  left:0px;
+  right:0px;
   height: 22px;
   background-color: rgb(105, 28, 124);
   .item-list {
     height: 22px;
     list-style-type: none;
+    margin:0px;
+    padding:0px;
+
     .item-right {
       font-size: 12px;
       font-weight: 200;
@@ -287,4 +304,11 @@
 .item {
   padding: 2px;
 
+}
+
+
+#middle {
+  position:absolute;
+  top:30px;
+  bottom:22px;
 }
