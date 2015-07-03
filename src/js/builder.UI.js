@@ -8,31 +8,38 @@
  */
 
 (function(){
-		//var Utils = require('./builder.Utils.js');
-		//var EventEmitter = require('./lib/EventEmitter.js');
-		var React = require("react");
-		var uiScreen = require('./ui/Screen.jsx');	
-		//
-    //
-    var UI = function(_window){
-		//		Utils.extends(EventEmitter, this);
-		//
-				this.window = _window;
-				this.uiScreen = uiScreen;
+	var React = require("react");
+	var uiScreen = require('./ui/Screen.jsx');
 
-		//
-		//		this.on('testEvent', function(_data){
-		//				console.log(_data);
-		//		});
-		//
-		//		this.emit('testEvent', 'Hello');
+	var UI = function(_window){
+		var self = this;
+		this.window = _window;
+		this.uiScreen = uiScreen;
+
+		this.observers = {};
+
+		this.window.onresize = function(e){
+			self.onResize(e);
+		};
     };
-    //
-		
-	
-		UI.prototype.render = function(){
-				React.render( React.createElement( this.uiScreen ), this.window.document.getElementsByTagName('BODY')[0] );
+
+	UI.prototype.onResize = function(e){
+		var width = this.window.innerWidth;
+		var height = this.window.innerHeight;
+
+		if( typeof this.observers['resizeListener'] === 'function' ){
+			this.observers['resizeListener'](width, height);
 		}
+	};
+
+
+
+	UI.prototype.render = function(){
+		var self = this;
+
+		React.render( React.createElement( this.uiScreen, {observers:this.observers}), this.window.document.getElementsByTagName('BODY')[0] );
+		this.onResize();
+	}
 
     module.exports = UI;
 })();
