@@ -1,0 +1,183 @@
+/*
+ * Base variable
+ */
+
+@menuHoverColor: #fff;
+@menuFontHoverColor: #6F6F6F;
+@fontColor: #6F6F6F;
+@titleBgColor: #bbb;
+
+body {
+  margin: 0;
+}
+
+li {
+  list-style-type: none;
+}
+/*
+ * header
+ */
+#ui-header {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: #222;
+  .navigation {
+    margin: 7px 4px 0px 0px;
+    float: right;
+    li {
+      a {
+        font-size: 16px;
+        color: #888;
+        cursor: pointer;
+        &:hover {
+          color: @menuHoverColor;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}
+
+/*
+ * Sidebar
+ */
+#ui-leftMenu {
+  position: absolute;
+  display: block;
+  top: 30px;
+  bottom: 22px;
+  width: 260px;
+  color: @fontColor;
+  .menu {
+    position: absolute;
+    width: 50px;
+    height: 100%;
+    background-color: #2C2C2C;
+    .project {
+      margin: 0;
+      padding: 10px;
+      > li {
+        font-size: 23px;
+        padding: 8px 0px 14px 0px;
+        color: #999999;
+        text-align: center;
+        > a {
+          &:hover {
+            color: @menuHoverColor;
+          }
+        }
+      }
+    }
+  }
+  .panel {
+    position: absolute;
+    left: 50px;
+    width: 210px;
+    height: 100%;
+    background-color: #F3F3F3;
+    .title {
+      padding: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      background-color: @titleBgColor;
+    }
+    .inventory {
+      padding: 0px;
+      margin: 0px;
+      font-size: 13px;
+      > li {
+        padding: 5px;
+        &:hover {
+          background-color: #fff;
+        }
+      }
+    }
+  }
+}
+
+#ui-rightMenu {
+  position: absolute;
+  top: 30px;
+  bottom: 22px;
+  right: 0px;
+  width: 252px;
+  color: #666;
+  .menu {
+    position: absolute;
+    right: 0px;
+    width: 25px;
+    height: 100%;
+    > div {
+      border: outset thin;
+      padding: 15px 3px 16px 2px;
+      -webkit-writing-mode: vertical-rl;
+      -moz-writing-mode: vertical-rl;
+      -ms-writing-mode: tb-rl;
+      -ms-writing-mode: vertical-rl;
+      writing-mode: vertical-rl;
+    }
+  }
+  .panel {
+    position: absolute;
+    right: 25px;
+    width: 230px;
+    height: 100%;
+    background-color: #484C4E;
+    .title {
+      color: #666;
+      -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+      box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+      padding: 6px 10px 4px;
+      font-size: 13px;
+      font-weight: bold;
+      background-color: #bbbbbb;
+    }
+  }
+}
+
+/*
+ * Main content
+ */
+#ui-contents {
+  position: absolute;
+  top: 30px;
+  bottom: 22px;
+  background-color: #575757;
+  left: 260px;
+  right: 255px;
+  .area {
+    border: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/*
+ * footer
+ */
+
+#ui-footer {
+  position: absolute;
+  color: #fff;
+  bottom: 0px;
+  width: 100%;
+  height: 22px;
+  background-color: rgb(105, 28, 124);
+  .inventory {
+    margin: 0;
+    padding: 0;
+    .item-left {
+      padding: 2px 0px 0px 17px;
+      position: absolute;
+    }
+    .item-right {
+      font-size: 14px;
+      font-weight: 100;
+      padding: 4px 42px 0px 0px;
+      float: right;
+    }
+  }
+}
+
+
