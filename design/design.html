@@ -3,9 +3,9 @@
     <meta charset="UTF-8">
     <title>Service Builder</title>
     <!--<link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">-->
-    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet/less" href="./src/js/ui/styles/pure.less">
-    <script src="node_modules/less/dist/less.js"></script>
+    <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet/less" href="pure.less">
+    <script src="../node_modules/less/dist/less.js"></script>
 </head>
 <body>
 <header id="ui-header">
@@ -81,7 +81,17 @@
     </div>
 </aside>
 <section id="ui-contents">
-    <iframe class="area">
+    <div class="contents-tab">
+        <ul class="tab-area">
+            <li>
+                <span>index.html</span>
+            </li>
+            <li>
+                <span>main.html</span>
+            </li>
+        </ul>
+    </div>
+    <iframe class="contents-area" src="//getbootstrap.com/examples/non-responsive/">
     </iframe>
 </section>
 <footer id="ui-footer">

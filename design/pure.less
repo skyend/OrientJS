@@ -1,6 +1,10 @@
 /*
  * Base variable
  */
+@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif:       Georgia, "Times New Roman", Times, serif;
+@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base:        @font-family-sans-serif;
 
 @menuHoverColor: #fff;
 @menuFontHoverColor: #6F6F6F;
@@ -9,11 +13,13 @@
 
 body {
   margin: 0;
+  font-family: @font-family-sans-serif;
 }
 
 li {
   list-style-type: none;
 }
+
 /*
  * header
  */
@@ -101,7 +107,7 @@ li {
   top: 30px;
   bottom: 22px;
   right: 0px;
-  width: 252px;
+  width: 255px;
   color: #666;
   .menu {
     position: absolute;
@@ -110,7 +116,7 @@ li {
     height: 100%;
     > div {
       border: outset thin;
-      padding: 15px 3px 16px 2px;
+      padding: 15px 3px 16px 4px;
       -webkit-writing-mode: vertical-rl;
       -moz-writing-mode: vertical-rl;
       -ms-writing-mode: tb-rl;
@@ -128,7 +134,7 @@ li {
       color: #666;
       -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-      padding: 6px 10px 4px;
+      padding: 4px 0px 4px 11px;
       font-size: 13px;
       font-weight: bold;
       background-color: #bbbbbb;
@@ -143,10 +149,26 @@ li {
   position: absolute;
   top: 30px;
   bottom: 22px;
-  background-color: #575757;
   left: 260px;
   right: 255px;
-  .area {
+  .contents-tab {
+    height: 24px;
+    .tab-area {
+      margin: 0;
+      padding: 0px;
+      color: #aaa;
+      font-size: 13px;
+      font-weight: 200;
+      > li {
+        height: 24px;
+        padding: 3px;
+        float: left;
+        -moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+      }
+    }
+  }
+  .contents-area {
     border: 0;
     width: 100%;
     height: 100%;
