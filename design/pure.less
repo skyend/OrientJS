@@ -29,9 +29,11 @@ li {
   height: 30px;
   background-color: #222;
   .navigation {
-    margin: 7px 4px 0px 0px;
-    float: right;
+    padding: 0;
+    margin: 0;
     li {
+      padding: 6px;
+      float: right;
       a {
         font-size: 16px;
         color: #888;
@@ -40,6 +42,9 @@ li {
           color: @menuHoverColor;
           background-color: transparent;
         }
+      }
+      .user-info {
+       padding-right: 35px;
       }
     }
   }
@@ -88,6 +93,7 @@ li {
     width: 210px;
     height: 100%;
     background-color: #F3F3F3;
+    overflow-x:scroll;
     .title {
       padding: 4px;
       font-size: 13px;
@@ -211,8 +217,8 @@ li {
     }
     .item-right {
       font-size: 14px;
-      font-weight: 100;
-      padding: 4px 42px 0px 0px;
+      font-weight: 200;
+      padding: 3px 42px 0px 0px;
       float: right;
     }
   }
