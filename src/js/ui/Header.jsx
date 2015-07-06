@@ -15,15 +15,15 @@
         render: function () {
             return (
                 <header id="ui-header">
-                    <ul class="navigation">
+                    <ul className="navigation">
                         <li>
                             <a>
-                                <i class="fa fa-columns"></i>
+                                <i className="fa fa-columns"></i>
                             </a>
                         </li>
                         <li>
-                            <a class="user-info">
-                                <i class="fa fa-user"> i-on</i>
+                            <a className="user-info">
+                                <i className="fa fa-user"> i-on</i>
                             </a>
                         </li>
                     </ul>

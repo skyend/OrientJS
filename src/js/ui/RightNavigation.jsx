@@ -85,13 +85,13 @@
 
             return (
                 <aside id="ui-rightMenu">
-                    <div class="menu">
+                    <div className="menu">
                         { this.props.items.map( this.naviItemRender )}
 
                     </div>
-                    <div class="panel">
-                        <div class="title">CSS</div>
-                        <div class="inventory"></div>
+                    <div className="panel">
+                        <div className="title">CSS</div>
+                        <div className="inventory"></div>
                     </div>
                 </aside>
             );

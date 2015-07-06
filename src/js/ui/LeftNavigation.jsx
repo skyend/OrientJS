@@ -83,26 +83,14 @@
 
             return (
                 <aside id="ui-leftMenu">
-                    <div class="menu">
-                        <ul class="project">
+                    <div className="menu">
+                        <ul className="project">
                             { this.props.items.map(this.naviItemRender)}
-                            <li title="Component"><a class="fa fa-th"></a></li>
-                            <li title="Project tree"><i class="fa fa-caret-left"></i><a class="fa fa-briefcase"></a></li>
-                            <li title="Sitemap"><a class="fa fa-cube"></a></li>
-                            <li title="style"><a class="fa fa-header"></a></li>
-                            <li title="String with I18N"><a class="fa fa-globe"></a></li>
-                            <li title="Images"><a class="fa fa-cloud"></a></li>
-                            <li title="Script"><a class="fa fa-leaf"></a></li>
-                            <li title="Event"><a class="fa fa-fire"></a></li>
-                            <li title="API"><a class="fa fa-cloud-download"></a></li>
-                            <li title="Template"><a class="fa fa-file"></a></li>
-                            <li title="Template"><a class="fa fa-file"></a></li>
-                            <li title="Template"><a class="fa fa-file"></a></li>
                         </ul>
                     </div>
-                    <div class="panel">
-                        <div class="title">GRID</div>
-                        <ul class="inventory">
+                    <div className="panel">
+                        <div className="title">GRID</div>
+                        <ul className="inventory">
                             <li>
                                 <span>Grid 1</span>
                             </li>
@@ -113,8 +101,8 @@
                                 <span>Grid 2</span>
                             </li>
                         </ul>
-                        <div class="title">COMPONENT</div>
-                        <ul class="inventory">
+                        <div className="title">COMPONENT</div>
+                        <ul className="inventory">
                             <li>
                                 <span>Title</span>
                             </li>

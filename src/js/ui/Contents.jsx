@@ -15,8 +15,8 @@
         render: function () {
             return (
                 <section id="ui-contents">
-                    <div class="contents-tab">
-                        <ul class="tab-area">
+                    <div className="contents-tab">
+                        <ul className="tab-area">
                             <li>
                                 <span>index.html</span>
                             </li>
@@ -25,7 +25,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="contents-area">
+                    <div className="contents-area">
                         <iframe src="//getbootstrap.com/examples/non-responsive/"></iframe>
                     </div>
                 </section>

@@ -19,17 +19,17 @@
         render: function () {
             return (
                 <footer id="ui-footer">
-                    <ul class="inventory">
-                        <li class="item-left">
-                            <a><i class="fa fa-info-circle"></i></a>
+                    <ul className="inventory">
+                        <li className="item-left">
+                            <a><i className="fa fa-info-circle"></i></a>
                         </li>
-                        <li class="item-right">
+                        <li className="item-right">
                             <a>UTF-8</a>
                         </li>
-                        <li class="item-right">
+                        <li className="item-right">
                             <a>HTML</a>
                         </li>
-                        <li class="item-right">
+                        <li className="item-right">
                             <a>EDIT</a>
                         </li>
                     </ul>
