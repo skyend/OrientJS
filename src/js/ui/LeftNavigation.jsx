@@ -38,19 +38,13 @@
 
         foldPanel(){
             this.resize(this.props.naviWidth);
-
-            this.refs['fold-trigger'].getDOMNode().style.display = 'none';
-            this.refs['unfold-trigger'].getDOMNode().style.display = 'block';
-
+            this.refs['panel'].getDOMNode().style.display = 'none';
             this.fold = true;
         },
 
         unfoldPanel(){
             this.resize(this.props.naviWidth + this.props.panelWidth);
-
-            this.refs['unfold-trigger'].getDOMNode().style.display = 'none';
-            this.refs['fold-trigger'].getDOMNode().style.display = 'block';
-
+            this.refs['panel'].getDOMNode().style.display = 'block';
             this.fold = false;
         },
 
@@ -58,13 +52,13 @@
             var self = this;
             return (
                 <li title={_naviItem.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviItem); }}>
-                    <li title="Component"><i className={"fa fa-"+_naviItem.itemIcon}></i></li>
+                    <a className={"fa fa-"+_naviItem.itemIcon}></a>
                 </li>
             )
         },
 
         componentDidMount(){
-            //this.foldPanel();
+            this.foldPanel();
         },
         render() {
 
@@ -88,7 +82,7 @@
                             { this.props.items.map(this.naviItemRender)}
                         </ul>
                     </div>
-                    <div className="panel">
+                    <div className="panel" ref="panel">
                         <div className="title">GRID</div>
                         <ul className="inventory">
                             <li>

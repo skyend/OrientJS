@@ -31,43 +31,34 @@
 
         resize(_width){
             this.getDOMNode().style.width = _width + 'px';
-
             this.props.onResize(_width);
         },
 
         foldPanel(){
             this.resize(this.props.naviWidth);
-
-            this.refs['fold-trigger'].getDOMNode().style.display = 'none';
-            this.refs['unfold-trigger'].getDOMNode().style.display = 'block';
-
+            this.refs['panel'].getDOMNode().style.display = 'none';
             this.fold = true;
         },
 
         unfoldPanel(){
             this.resize(this.props.naviWidth + this.props.panelWidth);
-
-            this.refs['unfold-trigger'].getDOMNode().style.display = 'none';
-            this.refs['fold-trigger'].getDOMNode().style.display = 'block';
-
+            this.refs['panel'].getDOMNode().style.display = 'block';
             this.fold = false;
         },
 
         naviItemRender(_naviItem){
             var self = this;
             return (
-                <div className="item">
-                    <div onClick={function(e){ self.clickNaviItem(e, _naviItem);} }>
-                        <a>
-                            { _naviItem.itemTitle }
-                        </a>
-                    </div>
+                <div className="item" onClick={function(e){ self.clickNaviItem(e, _naviItem);} }>
+                    <a>
+                        { _naviItem.itemTitle }
+                    </a>
                 </div>
             )
         },
 
         componentDidMount(){
-            //this.foldPanel();
+            this.foldPanel();
         },
         render() {
 
@@ -86,10 +77,9 @@
             return (
                 <aside id="ui-rightMenu">
                     <div className="menu">
-                        { this.props.items.map( this.naviItemRender )}
-
+                        { this.props.items.map(this.naviItemRender)}
                     </div>
-                    <div className="panel">
+                    <div className="panel" ref="panel">
                         <div className="title">CSS</div>
                         <div className="inventory"></div>
                     </div>

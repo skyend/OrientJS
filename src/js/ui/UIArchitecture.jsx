@@ -42,7 +42,6 @@
 
         onResizeRightPanel(_width){
             this.rightAreaWidth = _width;
-
             this.resizeMiddleArea();
         },
 
@@ -102,16 +101,16 @@
             ];
 
             var rightMenuItems = [
-                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'CSS'},
-                {itemKey: 'style', itemIcon: 'header', itemTitle: 'Tree View'},
+                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'css'},
+                {itemKey: 'style', itemIcon: 'header', itemTitle: 'Treeview'},
             ];
 
             return (
                 <div>
                     <Header/>
-                    <LeftNavigation items={leftMenuItems}/>
-                    <RightNavigation items={rightMenuItems}/>
-                    <Contents/>
+                    <LeftNavigation items={leftMenuItems} naviWidth={50} panelWidth={210} onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
+                    <RightNavigation items={rightMenuItems} naviWidth={25} panelWidth={230} onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
+                    <Contents ref='middle-area'/>
                     <Footer/>
                 </div>
             )

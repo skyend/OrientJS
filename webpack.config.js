@@ -6,7 +6,6 @@ module.exports = {
         //app: ['./src/app.jsx'],
         venders: ['jquery', 'jquery-ui', 'react'],
         config: [
-            "bootstrap-webpack!./config/bootstrap.config.js",
             "font-awesome-webpack!./config/font-awesome.config.js"
         ],
         main : [ './src/js/main.js']
