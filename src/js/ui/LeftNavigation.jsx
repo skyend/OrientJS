@@ -58,13 +58,13 @@
             var self = this;
             return (
                 <li title={_naviItem.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviItem); }}>
-                    <span className={"glyphicon glyphicon-"+_naviItem.itemIcon}></span>
+                    <li title="Component"><i className={"fa fa-"+_naviItem.itemIcon}></i></li>
                 </li>
             )
         },
 
         componentDidMount(){
-            this.foldPanel();
+            //this.foldPanel();
         },
         render() {
 
@@ -85,6 +85,7 @@
                 <aside id="ui-leftMenu">
                     <div class="menu">
                         <ul class="project">
+                            { this.props.items.map(this.naviItemRender)}
                             <li title="Component"><a class="fa fa-th"></a></li>
                             <li title="Project tree"><i class="fa fa-caret-left"></i><a class="fa fa-briefcase"></a></li>
                             <li title="Sitemap"><a class="fa fa-cube"></a></li>

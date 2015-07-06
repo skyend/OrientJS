@@ -7,7 +7,7 @@
  */
 
 (function () {
-    require('./styles/Screen.less');
+    require('./styles/UIArchitecture.less');
 
     var Utils = require('../builder.Utils.js');
     var EventEmitter = require('../lib/EventEmitter.js');
@@ -87,36 +87,30 @@
         render() {
             var self = this;
 
-            var builderNaviItems = [
+            var leftMenuItems = [
                 {itemKey: 'component-palette', itemIcon: 'th', itemTitle: 'Component'},
                 {itemKey: 'project-tree', itemIcon: 'briefcase', itemTitle: 'Project tree'},
-                {itemKey: 'sitemap', itemIcon: 'grain', itemTitle: 'Sitemap'},
+                {itemKey: 'sitemap', itemIcon: 'cube', itemTitle: 'Sitemap'},
                 {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'Theme'},
                 {itemKey: 'style', itemIcon: 'header', itemTitle: 'style'},
                 {itemKey: 'string', itemIcon: 'globe', itemTitle: 'String with I18N'},
-                {itemKey: 'image', itemIcon: 'picture', itemTitle: 'Images'},
+                {itemKey: 'image', itemIcon: 'cloud', itemTitle: 'Images'},
                 {itemKey: 'script', itemIcon: 'leaf', itemTitle: 'Script'},
                 {itemKey: 'event', itemIcon: 'fire', itemTitle: 'Event'},
                 {itemKey: 'api', itemIcon: 'cloud-download', itemTitle: 'API'},
                 {itemKey: 'template', itemIcon: 'file', itemTitle: 'Template'}
             ];
 
-            var helperNaviItems = [
-                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'Theme'},
-                {itemKey: 'style', itemIcon: 'header', itemTitle: 'style'},
-                {itemKey: 'string', itemIcon: 'globe', itemTitle: 'String with I18N'},
-                {itemKey: 'image', itemIcon: 'picture', itemTitle: 'Images'},
-                {itemKey: 'script', itemIcon: 'leaf', itemTitle: 'Script'},
-                {itemKey: 'event', itemIcon: 'fire', itemTitle: 'Event'},
-                {itemKey: 'api', itemIcon: 'cloud-download', itemTitle: 'API'},
-                {itemKey: 'template', itemIcon: 'file', itemTitle: 'Template'}
+            var rightMenuItems = [
+                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'CSS'},
+                {itemKey: 'style', itemIcon: 'header', itemTitle: 'Tree View'},
             ];
 
             return (
                 <div>
                     <Header/>
-                    <LeftNavigation/>
-                    <RightNavigation/>
+                    <LeftNavigation items={leftMenuItems}/>
+                    <RightNavigation items={rightMenuItems}/>
                     <Contents/>
                     <Footer/>
                 </div>

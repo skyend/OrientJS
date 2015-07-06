@@ -56,14 +56,18 @@
         naviItemRender(_naviItem){
             var self = this;
             return (
-                <li title={_naviItem.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviItem); }}>
-                    <span className={"glyphicon glyphicon-"+_naviItem.itemIcon}></span>
-                </li>
+                <div className="item">
+                    <div onClick={function(e){ self.clickNaviItem(e, _naviItem);} }>
+                        <a>
+                            { _naviItem.itemTitle }
+                        </a>
+                    </div>
+                </div>
             )
         },
 
         componentDidMount(){
-            this.foldPanel();
+            //this.foldPanel();
         },
         render() {
 
@@ -82,18 +86,8 @@
             return (
                 <aside id="ui-rightMenu">
                     <div class="menu">
-                        <div class="item">
-                            <div>
-                                <a>css
-                                </a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div>
-                                <a>Treeview
-                                </a>
-                            </div>
-                        </div>
+                        { this.props.items.map( this.naviItemRender )}
+
                     </div>
                     <div class="panel">
                         <div class="title">CSS</div>
