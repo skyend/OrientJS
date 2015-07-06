@@ -9,7 +9,7 @@
 
 (function(){
 	var React = require("react");
-	var uiScreen = require('./ui/Screen.jsx');
+	var uiScreen = require('./ui/UIArchitecture.jsx');
 
 	var UI = function(_window){
 		var self = this;

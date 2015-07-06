@@ -11,22 +11,28 @@
 
     var React = require("react");
 
-    var ReactSekeleton = React.createClass({
+    var Header = React.createClass({
         render: function () {
             return (
-                <ul className="horizontal-navigation pull-right">
-                    <li>
-                        <a>
-                            <i className="fa fa-columns"></i>
-                        </a>
-                    </li>
-                </ul>
+                <header id="ui-header">
+                    <ul class="navigation">
+                        <li>
+                            <a>
+                                <i class="fa fa-columns"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="user-info">
+                                <i class="fa fa-user"> i-on</i>
+                            </a>
+                        </li>
+                    </ul>
+                </header>
             )
         }
     });
 
-
-    module.exports = ReactSekeleton;
+    module.exports = Header;
 
 })();
 

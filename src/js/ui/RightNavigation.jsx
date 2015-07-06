@@ -7,17 +7,17 @@
  * Requires(css) :
  */
 
-(function(){
+(function () {
     var Utils = require('../builder.Utils.js'); // 상속 라이브러리 유틸
     var EventEmitter = require('../lib/EventEmitter.js');
 
     var React = require("react");
 
 
-    var ReactSekeleton = React.createClass({
+    var RightNavigation = React.createClass({
         clickNaviItem(e, _naviItem){
 
-            if( this.fold ){
+            if (this.fold) {
                 this.unfoldPanel();
             } else {
                 // 한번더 클릭하면 패널을 닫는다.
@@ -25,12 +25,11 @@
                 this.foldPanel();
                 return;
             }
-
             // panel표시 이벤트 호출
             this.props.onDisplayPanel(_naviItem.itemKey);
         },
 
-        resize( _width ){
+        resize(_width){
             this.getDOMNode().style.width = _width + 'px';
 
             this.props.onResize(_width);
@@ -54,7 +53,7 @@
             this.fold = false;
         },
 
-        naviItemRender( _naviItem ){
+        naviItemRender(_naviItem){
             var self = this;
             return (
                 <li title={_naviItem.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviItem); }}>
@@ -71,7 +70,7 @@
             this.props.naviItems = this.props.naviItems || [];
 
             var foldIcon, unfoldIcon;
-            if( this.props.panelPosition === 'left' ){
+            if (this.props.panelPosition === 'left') {
                 foldIcon = 'right';
                 unfoldIcon = 'left';
             } else {
@@ -80,38 +79,31 @@
                 unfoldIcon = 'right';
             }
 
-
             return (
-                <div className={'navigation-with-panel vertical-navigation panel-is-'+this.props.panelPosition+' '+this.props.naviType}>
-                    <div className='navigation-area'>
-                        <ul className='navigation-bar' style={{width:this.props.naviWidth}}>
-                            <li title='fold-panel' onClick={this.foldPanel} ref='fold-trigger' >
-                                <span className={"glyphicon glyphicon-chevron-"+foldIcon}></span>
-                            </li>
-                            <li title='unfold-panel' onClick={this.unfoldPanel} ref='unfold-trigger'>
-                                <span className={"glyphicon glyphicon-chevron-"+unfoldIcon}></span>
-                            </li>
-                        </ul>
-                        <div className='seperator'></div>
-                        <ul className='navigation-bar'>
-                            { this.props.naviItems.map(this.naviItemRender) }
-
-                        </ul>
+                <aside id="ui-rightMenu">
+                    <div class="menu">
+                        <div class="item">
+                            <div>
+                                <a>css
+                                </a>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div>
+                                <a>Treeview
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <div className='panel-area'>
-
+                    <div class="panel">
+                        <div class="title">CSS</div>
+                        <div class="inventory"></div>
                     </div>
-                </div>
+                </aside>
             );
         }
     });
 
-
-
-
-
-    module.exports = ReactSekeleton;
+    module.exports = RightNavigation;
 
 })();
-
-
