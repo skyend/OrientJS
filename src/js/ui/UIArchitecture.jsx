@@ -8,7 +8,8 @@
 
 (function () {
     require('./styles/UIArchitecture.less');
-
+    var LeftMenuListConfig = require("json!../../config/LeftMenuListConfig.json");
+    var RightMenuListConfig = require("json!../../config/RightMenuListConfig.json");
     var Utils = require('../builder.Utils.js');
     var EventEmitter = require('../lib/EventEmitter.js');
 
@@ -86,30 +87,15 @@
         render() {
             var self = this;
 
-            var leftMenuItems = [
-                {itemKey: 'component-palette', itemIcon: 'th', itemTitle: 'Component'},
-                {itemKey: 'project-tree', itemIcon: 'briefcase', itemTitle: 'Project tree'},
-                {itemKey: 'sitemap', itemIcon: 'cube', itemTitle: 'Sitemap'},
-                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'Theme'},
-                {itemKey: 'style', itemIcon: 'header', itemTitle: 'style'},
-                {itemKey: 'string', itemIcon: 'globe', itemTitle: 'String with I18N'},
-                {itemKey: 'image', itemIcon: 'cloud', itemTitle: 'Images'},
-                {itemKey: 'script', itemIcon: 'leaf', itemTitle: 'Script'},
-                {itemKey: 'event', itemIcon: 'fire', itemTitle: 'Event'},
-                {itemKey: 'api', itemIcon: 'cloud-download', itemTitle: 'API'},
-                {itemKey: 'template', itemIcon: 'file', itemTitle: 'Template'}
-            ];
+            var leftMenuList = LeftMenuListConfig;
 
-            var rightMenuItems = [
-                {itemKey: 'theme', itemIcon: 'leaf', itemTitle: 'css'},
-                {itemKey: 'style', itemIcon: 'header', itemTitle: 'Treeview'},
-            ];
+            var rightMenuList = RightMenuListConfig;
 
             return (
                 <div>
                     <Header/>
-                    <LeftNavigation items={leftMenuItems} naviWidth={50} panelWidth={210} onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
-                    <RightNavigation items={rightMenuItems} naviWidth={25} panelWidth={230} onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
+                    <LeftNavigation items={leftMenuList} naviWidth={50} panelWidth={210} onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
+                    <RightNavigation items={rightMenuList} naviWidth={25} panelWidth={230} onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
                     <Contents ref='middle-area'/>
                     <Footer/>
                 </div>
