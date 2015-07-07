@@ -1,13 +1,16 @@
-[
-  {"itemKey": "component-palette", "itemIcon": "th", "itemTitle": "Component"},
-  {"itemKey": "project-tree", "itemIcon": "briefcase", "itemTitle": "Project tree"},
-  {"itemKey": "sitemap", "itemIcon": "cube", "itemTitle": "Sitemap"},
-  {"itemKey": "theme", "itemIcon": "leaf", "itemTitle": "Theme"},
-  {"itemKey": "style", "itemIcon": "header", "itemTitle": "style"},
-  {"itemKey": "string", "itemIcon": "globe", "itemTitle": "String with I18N"},
-  {"itemKey": "image", "itemIcon": "cloud", "itemTitle": "Images"},
-  {"itemKey": "script", "itemIcon": "leaf", "itemTitle": "Script"},
-  {"itemKey": "event", "itemIcon": "fire", "itemTitle": "Event"},
-  {"itemKey": "api", "itemIcon": "cloud-download", "itemTitle": "API"},
-  {"itemKey": "template", "itemIcon": "file", "itemTitle": "Template"}
-]
+{
+  "Project" :
+  [
+    {"itemKey": "component-palette", "itemIcon": "th", "itemTitle": "Component"},
+    {"itemKey": "project-tree", "itemIcon": "briefcase", "itemTitle": "Project tree"},
+    {"itemKey": "sitemap", "itemIcon": "cube", "itemTitle": "Sitemap"},
+    {"itemKey": "theme", "itemIcon": "leaf", "itemTitle": "Theme"},
+    {"itemKey": "style", "itemIcon": "header", "itemTitle": "style"},
+    {"itemKey": "string", "itemIcon": "globe", "itemTitle": "String with I18N"},
+    {"itemKey": "image", "itemIcon": "cloud", "itemTitle": "Images"},
+    {"itemKey": "script", "itemIcon": "leaf", "itemTitle": "Script"},
+    {"itemKey": "event", "itemIcon": "fire", "itemTitle": "Event"},
+    {"itemKey": "api", "itemIcon": "cloud-download", "itemTitle": "API"},
+    {"itemKey": "template", "itemIcon": "file", "itemTitle": "Template"}
+  ]
+}

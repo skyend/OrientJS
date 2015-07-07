@@ -23,16 +23,14 @@
 		};
     };
 
-	UI.prototype.onResize = function(e){
+	UI.prototype.onResize = function(e){ //UI화면 리사이즈
 		var width = this.window.innerWidth;
 		var height = this.window.innerHeight;
-
+		// resizeListener 이벤트 체크
 		if( typeof this.observers['resizeListener'] === 'function' ){
 			this.observers['resizeListener'](width, height);
 		}
 	};
-
-
 
 	UI.prototype.render = function(){
 		var self = this;

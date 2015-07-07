@@ -46,7 +46,7 @@
             this.fold = false;
         },
 
-        naviItemRender(_naviItem){
+        naviMenuRender(_naviItem){
             var self = this;
             return (
                 <div className="item" onClick={function(e){ self.clickNaviItem(e, _naviItem);} }>
@@ -77,7 +77,7 @@
             return (
                 <aside id="ui-rightMenu">
                     <div className="menu">
-                        { this.props.items.map(this.naviItemRender)}
+                        { this.props.menuList.map(this.naviMenuRender)}
                     </div>
                     <div className="panel" ref="panel">
                         <div className="title">CSS</div>

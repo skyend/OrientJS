@@ -15,7 +15,12 @@
 
 
     var LeftNavigation = React.createClass({
-        clickNaviItem(e, _naviItem){
+        getInitialState(){
+          return {
+              panel : <div/>
+          }
+        },
+        clickNaviItem(e, _naviMenu){
 
             if (this.fold) {
                 this.unfoldPanel();
@@ -27,7 +32,7 @@
             }
 
             // panel표시 이벤트 호출
-            this.props.onDisplayPanel(_naviItem.itemKey);
+            this.props.onDisplayPanel(_naviMenu.itemKey);
         },
 
         resize(_width){
@@ -48,12 +53,30 @@
             this.fold = false;
         },
 
-        naviItemRender(_naviItem){
+        naviMenuRender(_naviMenu){
             var self = this;
             return (
-                <li title={_naviItem.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviItem); }}>
-                    <a className={"fa fa-"+_naviItem.itemIcon}></a>
+                <li title={_naviMenu.itemTitle} onClick={function(e){ self.clickNaviItem(e, _naviMenu); }}>
+                    <a className={"fa fa-"+_naviMenu.itemIcon}></a>
                 </li>
+            )
+        },
+
+        naviPanelRender(_naviPanel){
+            var title = this;
+            return (
+                <div className="item">
+                    <div className="title">{_naviPanel.itemTitle}</div>
+                    <ul className="inventory">
+                        {_naviPanel.items.map(function (item) {
+                            return (
+                                <li>
+                                    <span>{item}</span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
             )
         },
 
@@ -62,7 +85,8 @@
         },
         render() {
 
-            this.props.naviItems = this.props.naviItems || [];
+            this.props.menuList = this.props.menuList || [];
+            var PanelToolsUI = this.state.PanelToolsUI;
 
             var foldIcon, unfoldIcon;
             if (this.props.panelPosition === 'left') {
@@ -70,43 +94,17 @@
                 unfoldIcon = 'left';
             } else {
                 foldIcon = 'left';
-
                 unfoldIcon = 'right';
             }
-
-
             return (
                 <aside id="ui-leftMenu">
                     <div className="menu">
                         <ul className="project">
-                            { this.props.items.map(this.naviItemRender)}
+                            { this.props.menuList.Project.map(this.naviMenuRender)}
                         </ul>
                     </div>
-                    <div className="panel" ref="panel">
-                        <div className="title">GRID</div>
-                        <ul className="inventory">
-                            <li>
-                                <span>Grid 1</span>
-                            </li>
-                            <li>
-                                <span>Grid 1</span>
-                            </li>
-                            <li>
-                                <span>Grid 2</span>
-                            </li>
-                        </ul>
-                        <div className="title">COMPONENT</div>
-                        <ul className="inventory">
-                            <li>
-                                <span>Title</span>
-                            </li>
-                            <li>
-                                <span>List</span>
-                            </li>
-                            <li>
-                                <span>Table</span>
-                            </li>
-                        </ul>
+                    <div className='panel' ref='panel'>
+                        {PanelToolsUI}
                     </div>
                 </aside>
             );
