@@ -35,3 +35,14 @@ $(document).ready(function () {
     });
     React.render(<ServiceBuilder/>, document.getElementsByTagName('body')[0]);
 });
+
+
+(
+    function() {
+        var eles = document.querySelectorAll('*');
+        for (var index = 0; index < eles.length; index++)
+            eles.item(index).addEventListener("DOMContentLoaded", function (event) {
+                console.log("DOM fully loaded and parsed");
+            });
+    }
+)();
