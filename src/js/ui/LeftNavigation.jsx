@@ -17,22 +17,20 @@
     var LeftNavigation = React.createClass({
         getInitialState(){
           return {
-              panel : <div/>
+              PanelUI : <div/>
           }
         },
         clickNaviItem(e, _naviMenu){
 
             if (this.fold) {
                 this.unfoldPanel();
-            } else {
-                // 한번더 클릭하면 패널을 닫는다.
-
-                this.foldPanel();
-                return;
+            //} else {
+            //    // 한번더 클릭하면 패널을 닫는다.
+            //    this.foldPanel();
+            //    return;
             }
-
             // panel표시 이벤트 호출
-            this.props.onDisplayPanel(_naviMenu.itemKey);
+            this.props.onDisplayPanel(_naviMenu);
         },
 
         resize(_width){
@@ -62,32 +60,17 @@
             )
         },
 
-        naviPanelRender(_naviPanel){
-            var title = this;
-            return (
-                <div className="item">
-                    <div className="title">{_naviPanel.itemTitle}</div>
-                    <ul className="inventory">
-                        {_naviPanel.items.map(function (item) {
-                            return (
-                                <li>
-                                    <span>{item}</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
-            )
-        },
-
         componentDidMount(){
             this.foldPanel();
+
         },
+
         render() {
 
             this.props.menuList = this.props.menuList || [];
-            var PanelToolsUI = this.state.PanelToolsUI;
-
+            var PanelUI = this.state.PanelUI;
+            console.log(this.state)
+            console.log(PanelUI);
             var foldIcon, unfoldIcon;
             if (this.props.panelPosition === 'left') {
                 foldIcon = 'right';
@@ -104,7 +87,7 @@
                         </ul>
                     </div>
                     <div className='panel' ref='panel'>
-                        {PanelToolsUI}
+                        {PanelUI}
                     </div>
                 </aside>
             );
