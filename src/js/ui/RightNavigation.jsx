@@ -16,13 +16,11 @@
 
     var RightNavigation = React.createClass({
         clickNaviItem(e, _naviItem){
-
+            // 패널
             if (this.fold) {
-                this.unfoldPanel();
+                this.unfoldPanel(); // 열기
             } else {
-                // 한번더 클릭하면 패널을 닫는다.
-
-                this.foldPanel();
+                this.foldPanel();   // 닫기
                 return;
             }
             // panel표시 이벤트 호출
@@ -70,7 +68,6 @@
                 unfoldIcon = 'left';
             } else {
                 foldIcon = 'left';
-
                 unfoldIcon = 'right';
             }
 

@@ -11,9 +11,7 @@
 
     //메뉴 데이터 파일
     var LeftMenuListConfig = require("json!../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
-    var PanelToolsConfig = require("json!../../config/PanelToolsConfig.json");          //Tools 패널 아이템 목록
     var RightMenuListConfig = require("json!../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
-
     var Utils = require('../builder.Utils.js');
     var EventEmitter = require('../lib/EventEmitter.js');
 
@@ -22,7 +20,6 @@
 
     //좌측 네비게이션 UI
     var LeftNavigationUI = require('./LeftNavigation.jsx');     //메뉴 리스트 UI
-    var PanelToolsUI = require('./PanelTools.jsx');             //Tool 메뉴 패널 UI
 
     //우측 네비게이션 UI
     var RightNavigationUI = require('./RightNavigation.jsx');
@@ -35,29 +32,62 @@
 
     var React = require('react');
 
+    function loadPanel(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!./panel/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
+    function loadJson(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!json!../../config/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
+
+
+
     var UIArchitecture = React.createClass({
         getInitalState(){
-
             return {};
         },
         // 좌측 메뉴별 탭UI 변경
-        onDisplayLeftPanel(_panelKey){
-            console.log(_panelKey);
-            switch (_panelKey) {
-                case "component-palette" :
-                    console.log('a');
-                    this.refs['LeftNavigation'].setState( {'PanelToolsUI' : <PanelToolsUI items={PanelToolsConfig} /> } );
-                        break;
-                case "component-palette" :
-                {
-
-                }
-
-            }
-
+        onDisplayLeftPanel(_panelData){
+            var self = this;
+            console.log(_panelData);
+            var area = _panelData.area;
+            loadPanel(_panelData.UI + ".jsx", function (page, Panel) {
+                loadJson(_panelData.config + ".json", function (page, json) {
+                    var config = json;
+                    var stateObj = {};
+                    stateObj[area] = <Panel items={config} />;
+                    self.refs['LeftNavigation'].setState(stateObj);
+                });
+            });
+            //switch (_panelData.itemKey) {
+            //    case "component-palette" :
+            //        this.refs['LeftNavigation'].setState({'PanelUI': <PanelToolsUI items={PanelToolsConfig}/>});
+            //        console.log(_panelData.itemKey);
+            //        console.log(PanelToolsUI);
+            //        break;
+            //    case "project-tree" :
+            //        this.refs['LeftNavigation'].setState({'PanelUI': <PanelDeviceModeUI items={PanelDeviceModeConfig}/>});
+            //        break;
+            //
+            //}
         },
-        // 우측 메뉴별 탭UI 변경
-        onDisplayRightPanel(_panelKey){
+        /**
+         * 우측 메뉴별 탭UI 변경
+         */
+            onDisplayRightPanel(_panelKey){
             console.log(_panelKey);
         },
         // 좌측 패널에 따른 중앙 리사이즈
@@ -106,19 +136,16 @@
         },
 
         render() {
-            var self = this;
-
             var leftMenuList = LeftMenuListConfig;
             var rightMenuList = RightMenuListConfig;
 
             return (
                 <div>
                     <HeaderUI/>
-                    <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50}
-                                    panelWidth={210} onResize={this.onResizeLeftPanel}
-                                    onDisplayPanel={this.onDisplayLeftPanel}/>
+                    <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50} panelWidth={210}
+                                      onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
                     <RightNavigationUI menuList={rightMenuList} naviWidth={25} panelWidth={230}
-                                     onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
+                                       onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
                     <ContentsUI ref='middle-area'/>
                     <FooterUI/>
                 </div>
