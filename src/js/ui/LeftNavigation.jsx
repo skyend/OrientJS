@@ -6,6 +6,8 @@
  * Requires(js)  :
  * Requires(css) :
  */
+var $ = require('jquery');
+require('jquery-ui');
 
 (function () {
     var React = require("react");
@@ -32,7 +34,7 @@
 
         resize(_width){
             this.getDOMNode().style.width = _width + 'px';
-
+            //$('#ui-leftMenu').animate({width: _width}, 400);
             this.props.onResize(_width);
         },
 
@@ -66,8 +68,6 @@
 
             this.props.menuList = this.props.menuList || [];
             var PanelUI = this.state.PanelUI;
-            console.log(this.state)
-            console.log(PanelUI);
             var foldIcon, unfoldIcon;
             if (this.props.panelPosition === 'left') {
                 foldIcon = 'right';

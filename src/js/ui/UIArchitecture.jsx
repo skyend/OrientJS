@@ -5,6 +5,8 @@
  * Requires(js)  : BuilderNavigation.jsx
  * Requires(css) : Screen.less
  */
+var $ = require('jquery');
+require('jquery-ui');
 
 (function () {
     require('./styles/UIArchitecture.less');
@@ -57,6 +59,7 @@
         },
         // 좌측 메뉴별 탭UI 변경
         onDisplayLeftPanel(_panelData){
+            console.log(_panelData.itemKey);
             var self = this;
             console.log(_panelData);
             var area = _panelData.area;
@@ -99,7 +102,6 @@
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
 
-            console.log(selfDom.offsetHeight);
         },
 
         resizeListener(_w, _h){
@@ -107,7 +109,6 @@
             selfDom.style.width = _w + 'px';
             selfDom.style.height = _h + 'px';
             this.resizeMiddleArea();
-            console.log('resize', _w, _h);
         },
 
         componentDidMount(){

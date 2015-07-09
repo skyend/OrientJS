@@ -67,8 +67,8 @@ li {
     overflow-x:scroll;
     .project {
       margin: 0;
+      padding: 0;
       height: 100%;
-      padding: 0px;
       > li {
         padding: 14px 0px 4px;
         font-size: 23px;
@@ -129,6 +129,7 @@ li {
     font-weight: 200;
     font-size: 14px;
     letter-spacing: 2px;
+    background-color: #bbbbbb;
     > div {
       color: #eeeeee;
       border-bottom: outset thin;
@@ -171,7 +172,11 @@ li {
   //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   .contents-tab {
-    height: 24px;
+    height: 23px;
+    background-color: #000;
+    border-top: 1px #aaa solid;
+    border-bottom: 1px #aaa solid;
+    border-right: 1px #aaa solid;
     .tab-area {
       margin: 0;
       padding: 0;
@@ -182,7 +187,10 @@ li {
         height: 15px;
         padding: 3px 15px 5px 15px;
         float: left;
-        border: outset thin;
+        border-right: 1px #aaa solid;
+        border-left: 1px #aaa solid;
+
+        background-color: #fff;
         //-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
         //box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       }
