@@ -72,17 +72,6 @@
                     self.refs['LeftNavigation'].setState(stateObj);
                 });
             });
-            //switch (_panelData.itemKey) {
-            //    case "component-palette" :
-            //        this.refs['LeftNavigation'].setState({'PanelUI': <PanelToolsUI items={PanelToolsConfig}/>});
-            //        console.log(_panelData.itemKey);
-            //        console.log(PanelToolsUI);
-            //        break;
-            //    case "project-tree" :
-            //        this.refs['LeftNavigation'].setState({'PanelUI': <PanelDeviceModeUI items={PanelDeviceModeConfig}/>});
-            //        break;
-            //
-            //}
         },
         /**
          * 우측 메뉴별 탭UI 변경
