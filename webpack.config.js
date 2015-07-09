@@ -8,8 +8,8 @@ module.exports = {
         config: [
             "font-awesome-webpack!./config/font-awesome.config.js"
         ],
-       // main: ['./src/js/main.js']
-        main: ['./src/js/virtualdom/vdom_test_main.jsx']
+        main: ['./src/js/main.js']
+       // main: ['./src/js/virtualdom/vdom_test_main.jsx']
     }
     ,
     output: {
@@ -37,7 +37,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'Service Builder',
             inject: 'body',
-            chunks: ['venders','main']
+            chunks: ['venders','main','config']
         })
     ]
 

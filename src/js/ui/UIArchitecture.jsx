@@ -12,8 +12,6 @@
     //메뉴 데이터 파일
     var LeftMenuListConfig = require("json!../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
     var RightMenuListConfig = require("json!../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
-    var Utils = require('../builder.Utils.js');
-    var EventEmitter = require('../lib/EventEmitter.js');
 
     //상단 네비게이션 UI
     var HeaderUI = require('./Header.jsx');
@@ -52,8 +50,6 @@
             callback(null, page);
         })
     }
-
-
 
     var UIArchitecture = React.createClass({
         getInitalState(){
