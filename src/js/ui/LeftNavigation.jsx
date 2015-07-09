@@ -8,9 +8,6 @@
  */
 
 (function () {
-    var Utils = require('../builder.Utils.js'); // 상속 라이브러리 유틸
-    var EventEmitter = require('../lib/EventEmitter.js');
-
     var React = require("react");
 
 

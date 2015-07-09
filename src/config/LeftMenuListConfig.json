@@ -1,8 +1,8 @@
 {
   "Project" :
   [
-    {"itemKey": "component-palette", "itemIcon": "th", "itemTitle": "Component", "UI": "PanelTools", "area": "PanelUI", "config": "PanelToolsConfig"},
-    {"itemKey": "project-tree", "itemIcon": "briefcase", "itemTitle": "Project tree", "UI": "PanelDeviceMode", "area": "PanelUI", "config": "PanelDeviceModeConfig"},
+    {"itemKey": "component-palette", "itemIcon": "th", "itemTitle": "Component", "UI": "ToolkitMenu", "area": "PanelUI", "config": "ToolkitMenuConfig"},
+    {"itemKey": "project-tree", "itemIcon": "briefcase", "itemTitle": "Project tree", "UI": "DeviceMenu", "area": "PanelUI", "config": "DeviceMenuConfig"},
     {"itemKey": "sitemap", "itemIcon": "cube", "itemTitle": "Sitemap"},
     {"itemKey": "theme", "itemIcon": "leaf", "itemTitle": "Theme"},
     {"itemKey": "style", "itemIcon": "header", "itemTitle": "style"},
