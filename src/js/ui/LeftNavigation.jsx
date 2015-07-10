@@ -46,7 +46,7 @@ require('jquery-ui');
 
         unfoldPanel(){
             this.resize(this.props.naviWidth + this.props.panelWidth);
-            this.refs['panel'].getDOMNode().style.display = 'block';
+                this.refs['panel'].getDOMNode().style.display = 'block';
             this.fold = false;
         },
 
