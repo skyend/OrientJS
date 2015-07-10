@@ -1,21 +1,20 @@
-var $ =jQuery =  require('jquery');
+var React = require('react');
 document.addEventListener("DOMContentLoaded", function (event) {
 
-    require('../../../node_modules/jquery.json-viewer/json-viewer/jquery.json-viewer');
-    require('../../../node_modules/jquery.json-viewer/json-viewer/jquery.json-viewer.css');
-    var React = require('react');
+    var ElementNavigator = require('../ui/panel/ElementNavigator.jsx');
     var TestVitualdom = React.createClass({
-        vController:null,
+        vController: null,
         componentDidMount: function () {
             document.getElementsByTagName('body').item(0).style.margin = "0px";
             var iframe = document.getElementById('iframe');
+            var test = this;
             iframe.addEventListener("load", function (event) {
                 var contentDocument = this.contentDocument;
                 require("bundle?lazy!./VDomController")(function (Controller) {
-                    this.vController = new Controller();
-                    this.vController.createVRoot(contentDocument.querySelectorAll('body').item(0));
-                    console.log(JSON.stringify(this.vController.vroot.export()));
-                    $('#json-renderer').jsonViewer(this.vController.vroot.export());
+                    test.vController = new Controller();
+                    test.vController.createVRoot(contentDocument.querySelectorAll('body').item(0));
+                    test.refs.navigator.setState(test.vController.vroot.export());
+
                 });
 
             });
@@ -28,7 +27,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     <div id='screen'>
                         <iframe id="iframe" style={{width:800,height:900}} src="/BuilderUI/design/design.html"></iframe>
                     </div>
-                    <pre id="json-renderer" style={{width:400,height:900,overflow:'auto',position:'absolute', top:0,left:800}}></pre>
+                    <div style={{overflow:'auto',position:'absolute', top:0,left:800}}>
+                        <ElementNavigator ref="navigator"/>
+                    </div>
                 </div>
             )
         }
