@@ -53,12 +53,12 @@ require('jquery-ui');
         naviMenuRender(_naviMenu){
             var data = [];
             var keys = Object.keys(_naviMenu);
+            var self = this;
             for (var i = 0; i < keys.length; i++) {
                 var key = keys[i];
                 data.push(
                     <ul className={key}>
                         {_naviMenu[key].map(function (_naviMenuData) {
-                            var self = this;
                             return (
                                 <li title={_naviMenuData.itemTitle}
                                     onClick={function(e){ self.clickNaviItem(e, _naviMenuData); }}>

@@ -1,10 +1,10 @@
 /*
  * Base variable
  */
-@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
-@font-family-serif:       Georgia, "Times New Roman", Times, serif;
-@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
-@font-family-base:        @font-family-sans-serif;
+@font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif: Georgia, "Times New Roman", Times, serif;
+@font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base: @font-family-sans-serif;
 
 @menuHoverColor: #fff;
 @menuFontHoverColor: #6F6F6F;
@@ -68,13 +68,13 @@ a {
     height: 100%;
     width: 50px;
     background-color: #2C2C2C;
-    overflow-x:scroll;
+    overflow-x: scroll;
     > ul {
       margin: 0;
       padding: 0;
       border-bottom: 1px solid #fff;
       > li {
-        padding:10px 0px 10px 0px;
+        padding: 10px 0px 10px 0px;
         font-size: 23px;
         color: #999999;
         text-align: center;
@@ -97,7 +97,7 @@ a {
     width: 210px;
     height: 100%;
     background-color: #F3F3F3;
-    overflow-x:scroll;
+    overflow-x: scroll;
     .title {
       padding: 4px;
       font-size: 13px;
@@ -166,8 +166,12 @@ a {
       background-color: #bbbbbb;
     }
     .inventory {
+      padding: 0;
+      margin : 0;
       color: #fff;
-
+      > li {
+        padding: 11px 14px 0px;
+      }
     }
   }
 }
@@ -188,7 +192,6 @@ a {
     background-color: #fff;
     border-top: 1px #aaa solid;
     border-bottom: 2px #aaa solid;
-    border-right: 1px #aaa solid;
     .tab-area {
       margin: 0;
       padding: 0;
