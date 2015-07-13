@@ -42,6 +42,7 @@ require('jquery-ui');
             callback(null, page);
         })
     }
+
     function loadJson(pageName, callback) {
         try {
             var pageBundle = require("bundle!json!../../config/" + pageName)
@@ -67,16 +68,25 @@ require('jquery-ui');
                 loadJson(_panelData.config + ".json", function (page, json) {
                     var config = json;
                     var stateObj = {};
-                    stateObj[area] = <Panel items={config} />;
+                    stateObj[area] = <Panel items={config}/>;
                     self.refs['LeftNavigation'].setState(stateObj);
                 });
             });
         },
-        /**
-         * 우측 메뉴별 탭UI 변경
-         */
-            onDisplayRightPanel(_panelKey){
-            console.log(_panelKey);
+         // 우측 메뉴별 탭UI 변경
+        onDisplayRightPanel(_panelData){
+            console.log(_panelData.itemKey);
+            var self = this;
+            console.log(_panelData);
+            var area = _panelData.area;
+            loadPanel(_panelData.UI + ".jsx", function (page, Panel) {
+                loadJson(_panelData.config + ".json", function (page, json) {
+                    var config = json;
+                    var stateObj = {};
+                    stateObj[area] = <Panel items={config}/>;
+                    self.refs['RightNavigation'].setState(stateObj);
+                });
+            });
         },
         // 좌측 패널에 따른 중앙 리사이즈
         onResizeLeftPanel(_width){
@@ -130,7 +140,7 @@ require('jquery-ui');
                     <HeaderUI/>
                     <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50} panelWidth={210}
                                       onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
-                    <RightNavigationUI menuList={rightMenuList} naviWidth={25} panelWidth={230}
+                    <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
                     <ContentsUI ref='middle-area'/>
                     <FooterUI/>

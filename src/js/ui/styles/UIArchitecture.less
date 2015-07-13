@@ -20,6 +20,10 @@ li {
   list-style-type: none;
 }
 
+a {
+  cursor: pointer;
+}
+
 /*
  * header
  */
@@ -65,12 +69,12 @@ li {
     width: 50px;
     background-color: #2C2C2C;
     overflow-x:scroll;
-    .project {
+    > ul {
       margin: 0;
       padding: 0;
-      height: 100%;
+      border-bottom: 1px solid #fff;
       > li {
-        padding: 14px 0px 4px;
+        padding:10px 0px 10px 0px;
         font-size: 23px;
         color: #999999;
         text-align: center;
@@ -135,11 +139,15 @@ li {
       border-bottom: outset thin;
       padding: 15px 2px 17px 6px;
       background-color: #656565;
+      cursor: pointer;
       -webkit-writing-mode: vertical-rl;
       -moz-writing-mode: vertical-rl;
       -ms-writing-mode: tb-rl;
       -ms-writing-mode: vertical-rl;
       writing-mode: vertical-rl;
+      &:hover {
+        background-color: #878787;
+      }
     }
   }
   .panel {
@@ -157,6 +165,10 @@ li {
       font-weight: bold;
       background-color: #bbbbbb;
     }
+    .inventory {
+      color: #fff;
+
+    }
   }
 }
 
@@ -173,14 +185,14 @@ li {
   //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   .contents-tab {
     height: 23px;
-    background-color: #000;
+    background-color: #fff;
     border-top: 1px #aaa solid;
-    border-bottom: 1px #aaa solid;
+    border-bottom: 2px #aaa solid;
     border-right: 1px #aaa solid;
     .tab-area {
       margin: 0;
       padding: 0;
-      color: #aaa;
+      color: #fff;
       font-size: 13px;
       font-weight: 200;
       > li {
@@ -189,7 +201,7 @@ li {
         float: left;
         border-right: 1px #aaa solid;
         border-left: 1px #aaa solid;
-        background-color: #fff;
+        background-color: #000;
         //-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
         //box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       }
@@ -198,7 +210,7 @@ li {
   .contents-area {
     position: absolute;
     width: 100%;
-    top: 25px;
+    top: 26px;
     bottom: 0px;
     iframe {
       border: 0;

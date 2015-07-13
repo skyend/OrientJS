@@ -46,7 +46,7 @@ var $ = require('jquery');
                     </div>
                     <div className="contents-area">
                         <iframe id="index-iframe" src="//getbootstrap.com/examples/non-responsive/"></iframe>
-                        <iframe id="main-iframe" src="//getbootstrap.com/examples/carousel/"></iframe>
+                        <iframe id="main-iframe" src="//getbootstrap.com/examples/carousel/" style={{display: "none"}}></iframe>
                     </div>
                 </section>
             )
