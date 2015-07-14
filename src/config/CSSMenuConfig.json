@@ -1,0 +1,19 @@
+[
+  {
+    "title": "CSS",
+    "items": [
+      {
+        "title": "float",
+        "type": "select",
+        "value": [
+          "right",
+          "left"
+        ]
+      },
+      {
+        "title": "font-size",
+        "type": "text"
+      }
+    ]
+  }
+]

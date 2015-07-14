@@ -12,7 +12,12 @@
 
 
     var RightNavigation = React.createClass({
-        clickNaviItem(e, _naviItem){
+        getInitialState(){
+            return {
+                RightPanel : <div/>
+            }
+        },
+        clickNaviItem(e, _naviMenu){
             // 패널
             if (this.fold) {
                 this.unfoldPanel(); // 열기
@@ -21,7 +26,7 @@
                 return;
             }
             // panel표시 이벤트 호출
-            this.props.onDisplayPanel(_naviItem.itemKey);
+            this.props.onDisplayPanel(_naviMenu);
         },
 
         resize(_width){
@@ -41,13 +46,11 @@
             this.fold = false;
         },
 
-        naviMenuRender(_naviItem){
+        naviMenuRender(_naviMenu){
             var self = this;
             return (
-                <div className="item" onClick={function(e){ self.clickNaviItem(e, _naviItem);} }>
-                    <a>
-                        { _naviItem.itemTitle }
-                    </a>
+                <div className="item" onClick={function(e){ self.clickNaviItem(e, _naviMenu);} }>
+                    <a>{ _naviMenu.itemTitle }</a>
                 </div>
             )
         },
@@ -57,8 +60,8 @@
         },
         render() {
 
-            this.props.naviItems = this.props.naviItems || [];
-
+            this.props.menuList = this.props.menuList || [];
+            var RightPanel = this.state.RightPanel;
             var foldIcon, unfoldIcon;
             if (this.props.panelPosition === 'left') {
                 foldIcon = 'right';
@@ -74,8 +77,7 @@
                         { this.props.menuList.map(this.naviMenuRender)}
                     </div>
                     <div className="panel" ref="panel">
-                        <div className="title">CSS</div>
-                        <div className="inventory"></div>
+                        {RightPanel}
                     </div>
                 </aside>
             );

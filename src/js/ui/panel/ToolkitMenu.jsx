@@ -10,7 +10,6 @@
 (function () {
     var React = require("react");
 
-
     var ToolkitMode = React.createClass({
         renderItems( _group ){
             return (

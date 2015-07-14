@@ -1,10 +1,10 @@
 /*
  * Base variable
  */
-@font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif;
-@font-family-serif:       Georgia, "Times New Roman", Times, serif;
-@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
-@font-family-base:        @font-family-sans-serif;
+@font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif: Georgia, "Times New Roman", Times, serif;
+@font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base: @font-family-sans-serif;
 
 @menuHoverColor: #fff;
 @menuFontHoverColor: #6F6F6F;
@@ -18,6 +18,10 @@ body {
 
 li {
   list-style-type: none;
+}
+
+a {
+  cursor: pointer;
 }
 
 /*
@@ -64,13 +68,13 @@ li {
     height: 100%;
     width: 50px;
     background-color: #2C2C2C;
-    overflow-x:scroll;
-    .project {
+    overflow-x: scroll;
+    > ul {
       margin: 0;
-      height: 100%;
-      padding: 0px;
+      padding: 0;
+      border-bottom: 1px solid #fff;
       > li {
-        padding: 14px 0px 4px;
+        padding: 10px 0px 10px 0px;
         font-size: 23px;
         color: #999999;
         text-align: center;
@@ -93,7 +97,7 @@ li {
     width: 210px;
     height: 100%;
     background-color: #F3F3F3;
-    overflow-x:scroll;
+    overflow-x: scroll;
     .title {
       padding: 4px;
       font-size: 13px;
@@ -129,16 +133,21 @@ li {
     font-weight: 200;
     font-size: 14px;
     letter-spacing: 2px;
+    background-color: #bbbbbb;
     > div {
       color: #eeeeee;
       border-bottom: outset thin;
       padding: 15px 2px 17px 6px;
       background-color: #656565;
+      cursor: pointer;
       -webkit-writing-mode: vertical-rl;
       -moz-writing-mode: vertical-rl;
       -ms-writing-mode: tb-rl;
       -ms-writing-mode: vertical-rl;
       writing-mode: vertical-rl;
+      &:hover {
+        background-color: #878787;
+      }
     }
   }
   .panel {
@@ -156,6 +165,14 @@ li {
       font-weight: bold;
       background-color: #bbbbbb;
     }
+    .inventory {
+      padding: 0;
+      margin : 0;
+      color: #fff;
+      > li {
+        padding: 11px 14px 0px;
+      }
+    }
   }
 }
 
@@ -171,18 +188,23 @@ li {
   //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   .contents-tab {
-    height: 24px;
+    height: 23px;
+    background-color: #fff;
+    border-top: 1px #aaa solid;
+    border-bottom: 2px #aaa solid;
     .tab-area {
       margin: 0;
       padding: 0;
-      color: #aaa;
+      color: #fff;
       font-size: 13px;
       font-weight: 200;
       > li {
         height: 15px;
         padding: 3px 15px 5px 15px;
         float: left;
-        border: outset thin;
+        border-right: 1px #aaa solid;
+        border-left: 1px #aaa solid;
+        background-color: #000;
         //-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
         //box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       }
@@ -191,7 +213,7 @@ li {
   .contents-area {
     position: absolute;
     width: 100%;
-    top: 25px;
+    top: 26px;
     bottom: 0px;
     iframe {
       border: 0;
