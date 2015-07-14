@@ -20,6 +20,8 @@
             stageLoadedCallback : function anonymous(){}
         };
 
+        this.stageType = "iframe";
+
         this.iframe;
         this.innerWindow;
         this.innerDocument;

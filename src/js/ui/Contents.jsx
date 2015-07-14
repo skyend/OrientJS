@@ -21,11 +21,24 @@ var $ = require('jquery');
                 ]
             }
         },
+
         clickTabItem( _tabID ){
             console.log(_tabID);
+            var listenerName = "onSwitchTab";
+
+            if( typeof this.props[listenerName] === 'function' ){
+                this.props[listenerName](_tabID);
+            }
         },
+
         clickTabAdd(){
             console.log('tab add');
+
+            var listenerName = "onAddTab";
+
+            if( typeof this.props[listenerName] === 'function' ){
+                this.props[listenerName](_tabID);
+            }
         },
 
         componentDidMount(){
