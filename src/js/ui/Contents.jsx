@@ -10,9 +10,23 @@
 var $ = require('jquery');
 
 (function () {
-
+    require('./Contents.less');
     var React = require("react");
     var Contents = React.createClass({
+        getDefaultProps(){
+            return {
+                tabItemList : [
+                    { id:'a' , name: 'tab test'},
+                    { id:'b' , name: 'tab test2'}
+                ]
+            }
+        },
+        clickTabItem( _tabID ){
+            console.log(_tabID);
+        },
+        clickTabAdd(){
+            console.log('tab add');
+        },
 
         componentDidMount(){
             var before_select_id = '#index-iframe';
@@ -31,23 +45,33 @@ var $ = require('jquery');
             });
         },
 
+        getTabItemElement( _tabItem ){
+            var self = this;
+            var _tabID = _tabItem.id;
+
+            var closure = function(){
+                self.clickTabItem( _tabID);
+            };
+
+            return (
+                <li onClick={closure}>{_tabItem.name}</li>
+            )
+        },
+
         render: function () {
             return (
-                <section id="ui-contents">
-                    <div className="contents-tab">
-                        <ul className="tab-area">
-                            <li id="index">
-                                index
-                            </li>
-                            <li id="main">
-                                main
-                            </li>
+                <section className="Contents Contents-tab-support black" id="ui-contents">
+                    <div className='tab-switch-panel'>
+                        <ul className='tab-list' ref='tab-list'>
+                            { this.props.tabItemList.map( this.getTabItemElement )}
+                            <li onClick={this.clickTabAdd}><i className='fa fa-plus'></i></li>
                         </ul>
                     </div>
-                    <div className="contents-area">
-                        <iframe id="index-iframe" src="//getbootstrap.com/examples/non-responsive/"></iframe>
-                        <iframe id="main-iframe" src="//getbootstrap.com/examples/carousel/" style={{display: "none"}}></iframe>
+
+                    <div className='tab-context'>
+                        <iframe src='//getbootstrap.com/examples/non-responsive/'></iframe>
                     </div>
+
                 </section>
             )
         }

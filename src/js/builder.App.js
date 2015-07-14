@@ -8,7 +8,7 @@
  */
 
 (function(){
-    var StageContext = require('./builder.StageContext.js');
+    var StageContext = require('./builder.EditorStageContext.js');
 		var UI = require('./builder.UI.js');
 
     var App = function(){
