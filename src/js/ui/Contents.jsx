@@ -11,9 +11,13 @@ var $ = require('jquery');
 
 (function () {
     require('./Contents.less');
+    var DOMEditor = require('./panel/DocumentEditor.jsx');
     var React = require("react");
+
     var Contents = React.createClass({
         getDefaultProps(){
+            this.observers = {};
+
             return {
                 tabItemList : [
                     { id:'a' , name: 'tab test'},
@@ -41,21 +45,28 @@ var $ = require('jquery');
             }
         },
 
-        componentDidMount(){
-            var before_select_id = '#index-iframe';
-            var now_select_id;
+        onIframeLoaded( _iframe ){
 
-            $('.tab-area > li').on('click', function (e) {
-                now_select_id = '#' + e.target.id + '-iframe';
-                if (now_select_id != before_select_id) {
-                    $(before_select_id).hide();
-                    $(now_select_id).show();
-                    before_select_id = now_select_id;
-                } else {
-                    $(now_select_id).show();
-                    before_select_id = now_select_id;
-                }
-            });
+            // 임시 차후에 EditorStageContext 에서 처리되어야 함
+            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+            var innerDocument = iwindow.document;
+            this.iframeDocument = innerDocument;
+            var html = innerDocument.querySelector('html').innerHTML;
+            this.refs['document-editor'].setState({documentText:html});
+        },
+
+        componentDidMount(){
+            var self = this;
+            var iframe = this.refs['iframe-stage'].getDOMNode();
+            iframe.onload = function(_e){
+                self.onIframeLoaded(this);
+            }
+        },
+
+        onModifyDocument( _documentHtml ){
+            if( typeof this.iframeDocument === 'object' ) {
+                this.iframeDocument.querySelector('html').innerHTML = _documentHtml;
+            }
         },
 
         getTabItemElement( _tabItem ){
@@ -72,6 +83,7 @@ var $ = require('jquery');
         },
 
         render: function () {
+
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div className='tab-switch-panel'>
@@ -82,9 +94,10 @@ var $ = require('jquery');
                     </div>
 
                     <div className='tab-context'>
-                        <iframe src='//getbootstrap.com/examples/non-responsive/'></iframe>
+                        <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
                     </div>
 
+                    <DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>
                 </section>
             )
         }
