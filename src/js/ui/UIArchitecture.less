@@ -72,7 +72,7 @@ a {
     > ul {
       margin: 0;
       padding: 0;
-      border-bottom: 1px solid #fff;
+      border-bottom: thin solid #fff;
       > li {
         padding: 10px 0px 10px 0px;
         font-size: 23px;
@@ -160,17 +160,26 @@ a {
       color: #666;
       //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
       //box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-      padding: 4px 0px 4px 11px;
+      padding: 4px 0px 5px 11px;
       font-size: 13px;
       font-weight: bold;
       background-color: #bbbbbb;
     }
     .inventory {
       padding: 0;
-      margin : 0;
+      margin: 0;
       color: #fff;
       > li {
-        padding: 11px 14px 0px;
+        padding: 4px 30px 4px;
+        border-bottom: 1px solid #aaaaaa;
+        > div {
+          padding-bottom: 2px;
+        }
+        > input {
+          &[type="text"] {
+            width: 30px;
+          }
+        }
       }
     }
   }
