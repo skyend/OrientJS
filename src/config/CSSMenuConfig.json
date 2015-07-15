@@ -3,7 +3,7 @@
     "title": "CSS",
     "items": [
       {
-        "title": "float",
+        "title": "Float",
         "type": "select",
         "value": [
           "right",
@@ -11,7 +11,7 @@
         ]
       },
       {
-        "title": "font-size",
+        "title": "Font-Size",
         "type": "text"
       }
     ]
