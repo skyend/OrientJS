@@ -11,9 +11,14 @@ var $ = require('jquery');
 
 (function () {
     require('./Contents.less');
+    var DOMEditor = require('./panel/DocumentEditor.jsx');
+    var PanelContainer = require('./PanelContainer.jsx');
     var React = require("react");
+
     var Contents = React.createClass({
         getDefaultProps(){
+            this.observers = {};
+
             return {
                 tabItemList : [
                     { id:'a' , name: 'tab test'},
@@ -41,21 +46,28 @@ var $ = require('jquery');
             }
         },
 
-        componentDidMount(){
-            var before_select_id = '#index-iframe';
-            var now_select_id;
+        onIframeLoaded( _iframe ){
 
-            $('.tab-area > li').on('click', function (e) {
-                now_select_id = '#' + e.target.id + '-iframe';
-                if (now_select_id != before_select_id) {
-                    $(before_select_id).hide();
-                    $(now_select_id).show();
-                    before_select_id = now_select_id;
-                } else {
-                    $(now_select_id).show();
-                    before_select_id = now_select_id;
-                }
-            });
+            // 임시 차후에 EditorStageContext 에서 처리되어야 함
+            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+            var innerDocument = iwindow.document;
+            this.iframeDocument = innerDocument;
+            var html = innerDocument.querySelector('html').innerHTML;
+            this.refs['document-editor'].setState({documentText:html});
+        },
+
+        componentDidMount(){
+            var self = this;
+            var iframe = this.refs['iframe-stage'].getDOMNode();
+            iframe.onload = function(_e){
+                self.onIframeLoaded(this);
+            }
+        },
+
+        onModifyDocument( _documentHtml ){
+            if( typeof this.iframeDocument === 'object' ) {
+                this.iframeDocument.querySelector('html').innerHTML = _documentHtml;
+            }
         },
 
         getTabItemElement( _tabItem ){
@@ -71,7 +83,25 @@ var $ = require('jquery');
             )
         },
 
+        componentDidUpdate( _prevProps, _prevState){
+
+        },
+
+        shouldComponentUpdate( _nextProps, _nextState ){
+            // 다음 state 에 control 필드가 입력되면 컴포넌트를 업데이트 하지않고 변경된 속성만 반영한다.
+            if( typeof _nextState.control === 'object' ){
+
+                switch(_nextState.control.type){
+                    case 'resize' :
+                        this.props.width = _nextState.control.data.width;
+                        this.props.height = _nextState.control.data.height;
+                }
+                return false;
+            }
+        },
+
         render: function () {
+            console.log('called render');
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div className='tab-switch-panel'>
@@ -82,8 +112,10 @@ var $ = require('jquery');
                     </div>
 
                     <div className='tab-context'>
-                        <iframe src='//getbootstrap.com/examples/non-responsive/'></iframe>
+                        <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
                     </div>
+
+                    <PanelContainer ref='footer-panel-part' panelTitle="Document Editor" panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} />
 
                 </section>
             )

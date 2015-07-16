@@ -102,16 +102,35 @@ require('jquery-ui');
         resizeMiddleArea(){
             var selfDom = this.getDOMNode();
             var width = selfDom.offsetWidth;
+            var height = selfDom.offsetHeight;
 
-            var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
+
 
             if (typeof this.refs['middle-area'] === 'undefined') return;
 
-            var middleAreaDom = this.refs['middle-area'].getDOMNode();
+            var headerOffsetHeight = this.refs['header'].getDOMNode().offsetHeight;
+            var footerOffsetHeight = this.refs['footer'].getDOMNode().offsetHeight;
+
+            var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
+            var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
+
+            var middleAreaREle = this.refs['middle-area'];
+            var middleAreaDom = middleAreaREle.getDOMNode();
 
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
 
+
+
+            middleAreaREle.setState({
+                control : {
+                    type: 'resize',
+                    data : {
+                        width: middleAreaWidth,
+                        height: middleAreaHeight
+                    }
+                }
+            });
         },
 
         resizeListener(_w, _h){
@@ -119,6 +138,7 @@ require('jquery-ui');
             selfDom.style.width = _w + 'px';
             selfDom.style.height = _h + 'px';
             this.resizeMiddleArea();
+
         },
 
         componentDidMount(){
@@ -137,13 +157,13 @@ require('jquery-ui');
 
             return (
                 <div>
-                    <HeaderUI/>
+                    <HeaderUI ref='header'/>
                     <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50} panelWidth={210}
                                       onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
                     <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
                     <ContentsUI ref='middle-area'/>
-                    <FooterUI/>
+                    <FooterUI ref='footer'/>
                 </div>
             )
         }
