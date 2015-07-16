@@ -8,8 +8,8 @@
  */
 
 (function () {
+    require('./RightNavigation.less');
     var React = require("react");
-
 
     var RightNavigation = React.createClass({
         getInitialState(){

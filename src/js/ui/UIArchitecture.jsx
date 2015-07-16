@@ -12,8 +12,8 @@ require('jquery-ui');
     require('./UIArchitecture.less');
 
     //메뉴 데이터 파일
-    var LeftMenuListConfig = require("json!../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
-    var RightMenuListConfig = require("json!../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
+    var LeftMenuListConfig = require("../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
+    var RightMenuListConfig = require("../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
 
     //상단 네비게이션 UI
     var HeaderUI = require('./Header.jsx');
@@ -45,7 +45,7 @@ require('jquery-ui');
 
     function loadJson(pageName, callback) {
         try {
-            var pageBundle = require("bundle!json!../../config/" + pageName)
+            var pageBundle = require("bundle!../../config/" + pageName)
         } catch (e) {
             return callback(e);
         }

@@ -1,0 +1,39 @@
+/*
+ * Base variable
+ */
+@font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-serif: Georgia, "Times New Roman", Times, serif;
+@font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base: @font-family-sans-serif;
+
+@menuHoverColor: #fff;
+@menuFontHoverColor: #6F6F6F;
+@fontColor: #6F6F6F;
+@titleBgColor: #bbb;
+
+#ui-header {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  background-color: #222;
+  .navigation {
+    padding: 0;
+    margin: 0;
+    li {
+      padding: 6px;
+      float: right;
+      a {
+        font-size: 16px;
+        color: #888;
+        cursor: pointer;
+        &:hover {
+          color: @menuHoverColor;
+          background-color: transparent;
+        }
+      }
+      .user-info {
+        padding-right: 35px;
+      }
+    }
+  }
+}

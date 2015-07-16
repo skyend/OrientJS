@@ -18,6 +18,7 @@ module.exports = {
     },
     module: {
         loaders: [
+            {test: /\.json$/, loader: "json"},
             {test: /\.css$/, loader: "style-loader!css-loader?root=../../"},
             {test: /\.less$/, loader: "style!css!less"},
             {test: /\.jsx$/, loader: 'jsx-loader?insertPragma=React.DOM&harmony'},

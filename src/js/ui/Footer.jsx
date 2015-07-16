@@ -12,7 +12,7 @@
  */
 
 (function(){
-
+    require('./Footer.less');
     var React = require("react");
 
     var Footer = React.createClass({
