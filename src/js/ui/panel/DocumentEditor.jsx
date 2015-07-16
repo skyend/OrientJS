@@ -23,6 +23,13 @@
             }
         },
 
+        getDefaultProps(){
+            return {
+                width:0,
+                height:0
+            }
+        },
+
         changeDocumentText(_value){
             if( typeof this.props.onChange === 'function'){
                 this.props.onChange(_value);
@@ -31,11 +38,11 @@
 
         render() {
             return (
-                <div className='DocumentEditor'>
+                <div className='DocumentEditor night-dark'>
                     <div className='header'>
                         <div className='block-area'>
                             <ul>
-                                <li>Document Editor</li>
+                                <li></li>
                             </ul>
 
                         </div>

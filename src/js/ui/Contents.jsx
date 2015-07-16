@@ -12,6 +12,7 @@ var $ = require('jquery');
 (function () {
     require('./Contents.less');
     var DOMEditor = require('./panel/DocumentEditor.jsx');
+    var PanelContainer = require('./PanelContainer.jsx');
     var React = require("react");
 
     var Contents = React.createClass({
@@ -82,8 +83,25 @@ var $ = require('jquery');
             )
         },
 
-        render: function () {
+        componentDidUpdate( _prevProps, _prevState){
 
+        },
+
+        shouldComponentUpdate( _nextProps, _nextState ){
+            // 다음 state 에 control 필드가 입력되면 컴포넌트를 업데이트 하지않고 변경된 속성만 반영한다.
+            if( typeof _nextState.control === 'object' ){
+
+                switch(_nextState.control.type){
+                    case 'resize' :
+                        this.props.width = _nextState.control.data.width;
+                        this.props.height = _nextState.control.data.height;
+                }
+                return false;
+            }
+        },
+
+        render: function () {
+            console.log('called render');
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div className='tab-switch-panel'>
@@ -97,7 +115,8 @@ var $ = require('jquery');
                         <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
                     </div>
 
-                    <DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>
+                    <PanelContainer ref='footer-panel-part' panelTitle="Document Editor" panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} />
+
                 </section>
             )
         }
