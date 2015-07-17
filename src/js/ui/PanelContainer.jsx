@@ -4,8 +4,41 @@
     var React = require("react");
 
     var R = React.createClass({
+
         onMouseDownToHeader(){
             console.log('click');
+
+            // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)
+            app.ui.occupyGlobalDrag(this);
+            app.ui.enableGlobalDrag();
+            app.ui.toMouseDawn();
+        },
+
+        onGlobalDragStartFromUI(_e){
+            //console.log('panelContainer drag start');
+        },
+
+        onGlobalDragFromUI(_e){
+            if( typeof this.prevMouseY !== 'undefined' ){
+                var selfDom = this.getDOMNode();
+                var ymoveStep = this.prevMouseY - _e.clientY;
+                selfDom.style.height = ( parseInt( selfDom.offsetHeight ) + ymoveStep ) + 'px';
+
+                this.props.resizeMe();
+
+            } else {
+                this.prevMouseY = _e.clientY;
+            }
+
+            this.prevMouseY = _e.clientY;
+        },
+
+        onGlobalDragStopFromUI(_e){
+            //console.log('panelContainer drag stop');
+
+            /* Global Drag 자원 반환 */
+            app.ui.disableGlobalDrag();
+            app.ui.returnOccupyMouseDown();
         },
 
         render: function () {

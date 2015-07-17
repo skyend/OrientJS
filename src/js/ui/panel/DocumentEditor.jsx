@@ -19,7 +19,7 @@
     var reactClass = React.createClass({
         getInitialState(){
             return {
-                documentText:"<html> Wating for load.. </html>"
+                targetDOM: null
             }
         },
 
@@ -37,6 +37,11 @@
         },
 
         render() {
+            var htmlSource = "<html> Wating for load.. </html>";
+            if( this.state.targetDOM !== null && typeof this.state.targetDOM !== 'undefined'){
+                htmlSource = this.state.targetDOM.innerHTML;
+            }
+
             return (
                 <div className='DocumentEditor night-dark'>
                     <div className='header'>
@@ -57,7 +62,7 @@
                                       theme="monokai"
                                       width='100%'
                                       height='100%'
-                                      value={this.state.documentText}
+                                      value={htmlSource}
                                       onChange={this.changeDocumentText}
                                       ref='ace'/>
                         </div>

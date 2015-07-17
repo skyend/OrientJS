@@ -50,8 +50,12 @@ var $ = require('jquery');
             var iwindow = _iframe.contentWindow || _iframe.contentDocument;
             var innerDocument = iwindow.document;
             this.iframeDocument = innerDocument;
-            var html = innerDocument.querySelector('html').innerHTML;
-            this.refs['document-editor'].setState({documentText:html});
+
+            /* Document Editor 에 targetDOM 객체를 지정한다. */
+            var documentEditor = this.refs['document-editor'];
+            var targetDOM = innerDocument.querySelector('html');
+            this.documentEditingTo = targetDOM;
+            documentEditor.setState({targetDOM:targetDOM});
         },
 
         componentDidMount(){
@@ -63,8 +67,8 @@ var $ = require('jquery');
         },
 
         onModifyDocument( _documentHtml ){
-            if( typeof this.iframeDocument === 'object' ) {
-                this.iframeDocument.querySelector('html').innerHTML = _documentHtml;
+            if( this.documentEditingTo !== null && typeof this.documentEditingTo !== 'undefined' ){
+                this.documentEditingTo.innerHTML = _documentHtml;
             }
         },
 
@@ -148,7 +152,7 @@ var $ = require('jquery');
                     <PanelContainer ref='footer-panel-part'
                                     panelTitle="Document Editor"
                                     panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>}
-                                    onResize={this.onFooterPanelPartResize}/>
+                                    resizeMe={this.onFooterPanelPartResize}/>
 
                 </section>
             )
