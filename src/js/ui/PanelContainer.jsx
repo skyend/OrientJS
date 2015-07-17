@@ -4,10 +4,14 @@
     var React = require("react");
 
     var R = React.createClass({
+        onMouseDownToHeader(){
+            console.log('click');
+        },
+
         render: function () {
             return (
                 <div className='PanelContainer night-dark'>
-                    <div className='part-header'>
+                    <div className='part-header' onMouseDown={this.onMouseDownToHeader}>
                         <div className='block-area'>
                             <ul>
                                 <li>{this.props.panelTitle}</li>

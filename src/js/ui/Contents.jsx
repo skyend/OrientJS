@@ -18,6 +18,7 @@ var $ = require('jquery');
     var Contents = React.createClass({
         getDefaultProps(){
             this.observers = {};
+            this.targetIFrame = null;
 
             return {
                 tabItemList : [
@@ -28,7 +29,6 @@ var $ = require('jquery');
         },
 
         clickTabItem( _tabID ){
-            console.log(_tabID);
             var listenerName = "onSwitchTab";
 
             if( typeof this.props[listenerName] === 'function' ){
@@ -37,8 +37,6 @@ var $ = require('jquery');
         },
 
         clickTabAdd(){
-            console.log('tab add');
-
             var listenerName = "onAddTab";
 
             if( typeof this.props[listenerName] === 'function' ){
@@ -98,7 +96,7 @@ var $ = require('jquery');
         },
 
         onFooterPanelPartResize(){
-
+            this.reSize();
         },
 
         getTabItemElement( _tabItem ){
