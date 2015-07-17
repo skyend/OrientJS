@@ -70,6 +70,37 @@ var $ = require('jquery');
             }
         },
 
+        /**
+         * reSzie()
+         *
+         * 아래의 footerPanelPart 기준으로 리사이즈 한다.
+         */
+        reSize(){
+            var tabContext = this.refs['tab-context'];
+            var footerPanelPart = this.refs['footer-panel-part'];
+            var tabArea = this.refs['tab-area'];
+
+            var tabContextDOM = tabContext.getDOMNode();
+            var footerPanelPartDOM = footerPanelPart.getDOMNode();
+            var tabAreaDOM = tabArea.getDOMNode();
+            var selfDOM = this.getDOMNode();
+
+            var selfDOMHeight = selfDOM.offsetHeight;
+            var tabAreaDOMHeight = tabAreaDOM.offsetHeight;
+            var footerPanelPartDOMHeight = footerPanelPartDOM.offsetHeight;
+
+            var tabContextDOMHeight = selfDOMHeight - tabAreaDOMHeight - footerPanelPartDOMHeight;
+            tabContextDOM.style.height = tabContextDOMHeight + 'px';
+        },
+
+        rePosition(){
+
+        },
+
+        onFooterPanelPartResize(){
+
+        },
+
         getTabItemElement( _tabItem ){
             var self = this;
             var _tabID = _tabItem.id;
@@ -95,6 +126,7 @@ var $ = require('jquery');
                     case 'resize' :
                         this.props.width = _nextState.control.data.width;
                         this.props.height = _nextState.control.data.height;
+                        this.reSize();
                 }
                 return false;
             }
@@ -104,18 +136,21 @@ var $ = require('jquery');
             console.log('called render');
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
-                    <div className='tab-switch-panel'>
+                    <div ref='tab-area'  className='tab-switch-panel'>
                         <ul className='tab-list' ref='tab-list'>
                             { this.props.tabItemList.map( this.getTabItemElement )}
                             <li onClick={this.clickTabAdd}><i className='fa fa-plus'></i></li>
                         </ul>
                     </div>
 
-                    <div className='tab-context'>
+                    <div className='tab-context' ref='tab-context'>
                         <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
                     </div>
 
-                    <PanelContainer ref='footer-panel-part' panelTitle="Document Editor" panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} />
+                    <PanelContainer ref='footer-panel-part'
+                                    panelTitle="Document Editor"
+                                    panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>}
+                                    onResize={this.onFooterPanelPartResize}/>
 
                 </section>
             )
