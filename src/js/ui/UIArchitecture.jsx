@@ -30,6 +30,10 @@ require('jquery-ui');
     //하단 상태 표시줄 UI
     var FooterUI = require('./Footer.jsx');
 
+    // StageContextMenu
+    var FloatingMenuBox = require('./FloatingMenuBox.jsx');
+
+
     var React = require('react');
 
     function loadPanel(pageName, callback) {
@@ -169,6 +173,8 @@ require('jquery-ui');
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
                     <ContentsUI ref='middle-area' onCalledContextMenu={ this.calledContextMenuByStage } />
                     <FooterUI ref='footer'/>
+
+                    <FloatingMenuBox ref='stage-context-menu'/>
                 </div>
             )
         }

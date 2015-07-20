@@ -1,0 +1,60 @@
+.FloatingMenuBox {
+
+  &.black {
+    background-color: #222;
+    color:#fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+
+    > .header {
+      background-color: #555;
+    }
+
+    > .body {
+
+      > ul {
+
+        > li {
+          background-color: #222;
+          &:hover {
+            background-color: #333;
+          }
+        }
+      }
+    }
+  }
+
+
+  position:fixed;
+  z-index: 1000;
+  left:100px;
+  top:100px;
+
+  > .header {
+    width:100%;
+    padding:10px;
+    box-sizing: border-box;
+    font-size:13px;
+  }
+
+  > .body {
+    position: relative;
+    width:100%;
+
+    > ul {
+      position: relative;
+      padding:0px;
+      margin: 0px;
+      width:100%;
+
+      > li {
+        width:100%;
+        padding:10px;
+        box-sizing: border-box;
+
+        font-size:12px;
+
+        cursor:pointer;
+      }
+    }
+  }
+}
