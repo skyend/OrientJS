@@ -4,7 +4,9 @@
     var React = require("react");
 
     var R = React.createClass({
-
+        getInitialState(){
+            return {  }
+        },
         onMouseDownToHeader(){
             console.log('click');
 
@@ -42,6 +44,12 @@
         },
 
         render: function () {
+
+            var panel;
+            if( typeof this.props.panel !== 'undefined' ){
+                panel = this.props.panel;
+            }
+
             return (
                 <div className='PanelContainer night-dark'>
                     <div className='part-header' onMouseDown={this.onMouseDownToHeader}>
@@ -59,7 +67,7 @@
                     </div>
                     <div className='part-body'>
                         <div className='react-container'>
-                            { this.props.panel }
+                            { panel }
                         </div>
                     </div>
                 </div>

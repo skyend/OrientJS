@@ -61,9 +61,10 @@ var $ = require('jquery');
         componentDidMount(){
             var self = this;
             var iframe = this.refs['iframe-stage'].getDOMNode();
+
             iframe.onload = function(_e){
                 self.onIframeLoaded(this);
-            }
+            };
         },
 
         onModifyDocument( _documentHtml ){
@@ -77,7 +78,7 @@ var $ = require('jquery');
          *
          * 아래의 footerPanelPart 기준으로 리사이즈 한다.
          */
-        reSize(){
+        tabContextResize(){
             var tabContext = this.refs['tab-context'];
             var footerPanelPart = this.refs['footer-panel-part'];
             var tabArea = this.refs['tab-area'];
@@ -95,12 +96,18 @@ var $ = require('jquery');
             tabContextDOM.style.height = tabContextDOMHeight + 'px';
         },
 
-        rePosition(){
-
-        },
-
+        /**
+         * onFooterPanelPartResize()
+         *
+         * FooterPanelPart의 사이즈가 조정 되었을 때 PanelContainer 에 의해 호출 된다.
+         */
         onFooterPanelPartResize(){
-            this.reSize();
+
+            /* tab-context 리사이즈 */
+            this.tabContextResize();
+
+            /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
+            this.refs['document-editor'].forceUpdate();
         },
 
         getTabItemElement( _tabItem ){
@@ -133,7 +140,6 @@ var $ = require('jquery');
                 return false;
             }
         },
-
         render: function () {
             console.log('called render');
             return (

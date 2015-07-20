@@ -138,14 +138,18 @@
 		div.style.left ='0';
 		div.style.zIndex = 999999999;
 		div.style.cursor = 'move';
-		div.setAttribute('class', 'Cover-Helper');
+		div.setAttribute('id', '___GlobalDragHelper___');
 
 		this.window.document.body.appendChild(div);
 	};
 
 	UI.prototype.uncoverHelper = function(){
-		var cover = this.window.document.querySelector('.Cover-Helper');
-		this.window.document.body.removeChild(cover);
+		var cover;
+
+		while( cover = this.window.document.querySelector('#___GlobalDragHelper___') ){
+			this.window.document.body.removeChild(cover);
+		}
+
 	};
 
 	UI.prototype.render = function(){
