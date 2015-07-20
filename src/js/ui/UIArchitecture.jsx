@@ -133,6 +133,11 @@ require('jquery-ui');
             });
         },
 
+        calledContextMenuByStage( _e){
+            alert('blocked Default Context Menu');
+            console.log('called Context Menu', _e);
+        },
+
         resizeListener(_w, _h){
             var selfDom = this.getDOMNode();
             selfDom.style.width = _w + 'px';
@@ -162,7 +167,7 @@ require('jquery-ui');
                                       onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
                     <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
-                    <ContentsUI ref='middle-area'/>
+                    <ContentsUI ref='middle-area' onCalledContextMenu={ this.calledContextMenuByStage } />
                     <FooterUI ref='footer'/>
                 </div>
             )

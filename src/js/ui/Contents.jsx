@@ -51,12 +51,43 @@ var $ = require('jquery');
             var innerDocument = iwindow.document;
             this.iframeDocument = innerDocument;
 
+            this.bindContextMenuTrigger(_iframe);
+
             /* Document Editor 에 targetDOM 객체를 지정한다. */
+            /*
             var documentEditor = this.refs['document-editor'];
             var targetDOM = innerDocument.querySelector('html');
             this.documentEditingTo = targetDOM;
             documentEditor.setState({targetDOM:targetDOM});
-            this.documentEditorUpdate();
+            */
+
+            //this.documentEditorUpdate();
+        },
+
+        /**
+         * bindContextMenuTrigger
+         *
+         * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
+         *
+         * @param _iframe
+         */
+        bindContextMenuTrigger( _iframe ){
+            var self = this;
+
+            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+            var innerDocument = iwindow.document;
+
+            innerDocument.addEventListener('contextmenu', function(_ev) {
+                _ev.preventDefault();
+
+                if( typeof  self.props.onCalledContextMenu === 'function' ) {
+                    self.props.onCalledContextMenu(_ev);
+                } else {
+                    throw new Error("You must implements Method[onCalledContextMenu]");
+                }
+
+                return false;
+            }, false);
         },
 
         componentDidMount(){

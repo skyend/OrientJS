@@ -12,6 +12,7 @@
 
     var React = require("react");
     var ReactAce = require('react-ace');
+    var jsdiff = require('diff');
 
     require('brace/mode/html');
     require('brace/theme/monokai');
@@ -34,13 +35,24 @@
             if( typeof this.props.onChange === 'function'){
                 this.props.onChange(_value);
             }
+
+            /*
+            if( typeof this.prevValue !== 'undefined' ){
+                var diff = jsdiff.diffChars( this.prevValue , _value);
+
+                console.log(diff);
+            }
+            this.prevValue = _value;
+*/
+            //console.log( _value);
         },
 
         render() {
-            var htmlSource = "<html> Wating for load.. </html>";
+            var htmlSource = "<Notag> Wating for load.. </Notag>";
             if( this.state.targetDOM !== null && typeof this.state.targetDOM !== 'undefined'){
                 htmlSource = this.state.targetDOM.innerHTML;
             }
+
 
             return (
                 <div className='DocumentEditor night-dark'>
