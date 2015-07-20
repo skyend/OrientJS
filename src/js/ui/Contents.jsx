@@ -51,11 +51,43 @@ var $ = require('jquery');
             var innerDocument = iwindow.document;
             this.iframeDocument = innerDocument;
 
+            this.bindContextMenuTrigger(_iframe);
+
             /* Document Editor 에 targetDOM 객체를 지정한다. */
+            /*
             var documentEditor = this.refs['document-editor'];
             var targetDOM = innerDocument.querySelector('html');
             this.documentEditingTo = targetDOM;
             documentEditor.setState({targetDOM:targetDOM});
+            */
+
+            //this.documentEditorUpdate();
+        },
+
+        /**
+         * bindContextMenuTrigger
+         *
+         * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
+         *
+         * @param _iframe
+         */
+        bindContextMenuTrigger( _iframe ){
+            var self = this;
+
+            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+            var innerDocument = iwindow.document;
+
+            innerDocument.addEventListener('contextmenu', function(_ev) {
+                _ev.preventDefault();
+
+                if( typeof  self.props.onCalledContextMenu === 'function' ) {
+                    self.props.onCalledContextMenu(_ev);
+                } else {
+                    throw new Error("You must implements Method[onCalledContextMenu]");
+                }
+
+                return false;
+            }, false);
         },
 
         componentDidMount(){
@@ -74,7 +106,7 @@ var $ = require('jquery');
         },
 
         /**
-         * reSzie()
+         * tabContextResize()
          *
          * 아래의 footerPanelPart 기준으로 리사이즈 한다.
          */
@@ -106,6 +138,10 @@ var $ = require('jquery');
             /* tab-context 리사이즈 */
             this.tabContextResize();
 
+            this.documentEditorUpdate();
+        },
+
+        documentEditorUpdate(){
             /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
             this.refs['document-editor'].forceUpdate();
         },
@@ -135,13 +171,14 @@ var $ = require('jquery');
                     case 'resize' :
                         this.props.width = _nextState.control.data.width;
                         this.props.height = _nextState.control.data.height;
-                        this.reSize();
+                        this.tabContextResize();
+                        this.documentEditorUpdate();
                 }
                 return false;
             }
         },
         render: function () {
-            console.log('called render');
+
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div ref='tab-area'  className='tab-switch-panel'>
