@@ -18,7 +18,7 @@
                     <ul className="inventory">
                         {_group.items.map(function (item) {
                             return (
-                                <li>
+                                <li draggable="true">
                                     <span>{item}</span>
                                 </li>
                             );
