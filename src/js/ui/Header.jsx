@@ -8,7 +8,7 @@
  */
 
 (function(){
-
+    require('./Header.less');
     var React = require("react");
 
     var Header = React.createClass({

@@ -10,8 +10,8 @@ var $ = require('jquery');
 require('jquery-ui');
 
 (function () {
+    require('./LeftNavigation.less');
     var React = require("react");
-
 
     var LeftNavigation = React.createClass({
         getInitialState(){

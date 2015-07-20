@@ -14,11 +14,13 @@
 
 
 
-    var StageContext = function( _params ){
+    var EditorStageContext = function( _params ){
         this.params = _params || {};
         {
             stageLoadedCallback : function anonymous(){}
         };
+
+        this.stageType = "iframe";
 
         this.iframe;
         this.innerWindow;
@@ -26,7 +28,7 @@
         this.historicalDocument;
     };
 
-    StageContext.prototype.setIFrameStage = function( _iframe ){
+    EditorStageContext.prototype.setIFrameStage = function( _iframe ){
         var self = this;
         this.iframe = _iframe;
 
@@ -34,7 +36,7 @@
         this.iframe.onload = function(){ self.loadedIFrame() };
     };
 
-    StageContext.prototype.loadedIFrame = function(){
+    EditorStageContext.prototype.loadedIFrame = function(){
         this.innerWindow = this.iframe.contentWindow || this.iframe.contentDocument;
         this.innerDocument = this.innerWindow.document;
 
@@ -44,5 +46,5 @@
         if( typeof this.params.stageLoadedCallback === 'function' ) this.params.stageLoadedCallback();
     };
 
-    module.exports = StageContext;
+    module.exports = EditorStageContext;
 })();
