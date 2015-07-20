@@ -8,8 +8,8 @@ module.exports = {
         config: [
             "font-awesome-webpack!./config/font-awesome.config.js"
         ],
-        //main: ['./src/js/main.js']
-        main: ['./src/js/ui/editor/test_main.jsx']
+        main: ['./src/js/main.js']
+        //main: ['./src/js/ui/editor/test_main.jsx']
     }
     ,
     output: {

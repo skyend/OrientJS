@@ -56,6 +56,7 @@ var $ = require('jquery');
             var targetDOM = innerDocument.querySelector('html');
             this.documentEditingTo = targetDOM;
             documentEditor.setState({targetDOM:targetDOM});
+            this.documentEditorUpdate();
         },
 
         componentDidMount(){
@@ -74,7 +75,7 @@ var $ = require('jquery');
         },
 
         /**
-         * reSzie()
+         * tabContextResize()
          *
          * 아래의 footerPanelPart 기준으로 리사이즈 한다.
          */
@@ -106,6 +107,10 @@ var $ = require('jquery');
             /* tab-context 리사이즈 */
             this.tabContextResize();
 
+            this.documentEditorUpdate();
+        },
+
+        documentEditorUpdate(){
             /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
             this.refs['document-editor'].forceUpdate();
         },
@@ -135,13 +140,14 @@ var $ = require('jquery');
                     case 'resize' :
                         this.props.width = _nextState.control.data.width;
                         this.props.height = _nextState.control.data.height;
-                        this.reSize();
+                        this.tabContextResize();
+                        this.documentEditorUpdate();
                 }
                 return false;
             }
         },
         render: function () {
-            console.log('called render');
+
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div ref='tab-area'  className='tab-switch-panel'>
