@@ -19,6 +19,27 @@ var _ = function (_editor) {
             event.preventDefault();
         });
         this.element.addEventListener("mouseover", function (event) {
+            console.log('mouseover');
+            event.preventDefault();
+        });
+        this.element.addEventListener("mouseout", function (event) {
+            console.log('mouseout');
+            event.preventDefault();
+        });
+
+        this.element.addEventListener("drop", function (event) {
+            console.log('drop');
+            event.preventDefault();
+        });
+        this.element.addEventListener("dragover", function (event) {
+            console.log('dragover');
+            event.preventDefault();
+        });
+
+        this.element.addEventListener("mousemove", function (event) {
+            var stack = _editor.vController.click(event.clientX - editorPointX, windowScrollY + event.clientY - editorPointY);
+            responser.showHighLight(stack);
+            console.log('mousemove');
             event.preventDefault();
         });
     };
