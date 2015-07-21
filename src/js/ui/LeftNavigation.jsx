@@ -20,13 +20,18 @@ require('jquery-ui');
             }
         },
         clickNaviItem(e, _naviMenu){
-
-            if (this.fold) {
-                this.unfoldPanel();
-                //} else {
-                //    // 한번더 클릭하면 패널을 닫는다.
-                //    this.foldPanel();
-                //    return;
+            var target = _naviMenu.action.target;
+            switch (target) {
+                case "Modal":
+                    break;
+                case "LeftPanel":
+                    if (this.fold) {
+                        this.unfoldPanel();
+                    } else {
+                        //// 한번더 클릭하면 패널을 닫는다.
+                        //this.foldPanel();
+                        //return;
+                    }
             }
             // panel표시 이벤트 호출
             this.props.onDisplayPanel(_naviMenu);
@@ -59,12 +64,21 @@ require('jquery-ui');
                 data.push(
                     <ul className={key}>
                         {_naviMenu[key].map(function (_naviMenuData) {
-                            return (
-                                <li title={_naviMenuData.itemTitle}
-                                    onClick={function(e){ self.clickNaviItem(e, _naviMenuData); }}>
-                                    <a className={"fa fa-"+_naviMenuData.itemIcon}></a>
-                                </li>
-                            );
+                            if (_naviMenuData.action.target == "Modal") {
+                                return (
+                                    <li title={_naviMenuData.title}
+                                        onClick={function(e){ self.clickNaviItem(e, _naviMenuData); }}>
+                                        <a href="#ui-modal" className={"fa fa-"+_naviMenuData.icon}></a>
+                                    </li>
+                                );
+                            } else {
+                                return (
+                                    <li title={_naviMenuData.title}
+                                        onClick={function(e){ self.clickNaviItem(e, _naviMenuData); }}>
+                                        <a className={"fa fa-"+_naviMenuData.icon}></a>
+                                    </li>
+                                );
+                            }
                         })}
                     </ul>
                 )

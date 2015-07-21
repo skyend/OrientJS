@@ -15,30 +15,30 @@ require('jquery-ui');
     var LeftMenuListConfig = require("../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
     var RightMenuListConfig = require("../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
 
-    //상단 네비게이션 UI
-    var HeaderUI = require('./Header.jsx');
-
-    //좌측 네비게이션 UI
-    var LeftNavigationUI = require('./LeftNavigation.jsx');     //메뉴 리스트 UI
-
-    //우측 네비게이션 UI
-    var RightNavigationUI = require('./RightNavigation.jsx');
-
-    //중앙 컨텐츠 영역 UI
-    var ContentsUI = require('./Contents.jsx');
-
-    //하단 상태 표시줄 UI
-    var FooterUI = require('./Footer.jsx');
-
-    // StageContextMenu
-    var FloatingMenuBox = require('./FloatingMenuBox.jsx');
-
+    var HeaderUI = require('./Header.jsx');                     //상단 네비게이션 UI
+    var LeftNavigationUI = require('./LeftNavigation.jsx');     //좌측 네비게이션 UI
+    var RightNavigationUI = require('./RightNavigation.jsx');   //우측 네비게이션 UI
+    var ContentsUI = require('./Contents.jsx');                 //중앙 컨텐츠 영역 UI
+    var FooterUI = require('./Footer.jsx');                     //하단 상태 표시줄 UI
+    var Modal = require('./Modal.jsx');                         //Modal UI
+    var FloatingMenuBox = require('./FloatingMenuBox.jsx');     // StageContextMenu
 
     var React = require('react');
 
     function loadPanel(pageName, callback) {
         try {
             var pageBundle = require("bundle!./panel/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
+
+    function loadModal(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!./modal/" + pageName)
         } catch (e) {
             return callback(e);
         }
@@ -63,31 +63,48 @@ require('jquery-ui');
             return {};
         },
         // 좌측 메뉴별 탭UI 변경
-        onDisplayLeftPanel(_panelData){
-            console.log(_panelData.itemKey);
+        onLeftDisplay(_leftMenuListConfig){
             var self = this;
-            console.log(_panelData);
-            var area = _panelData.area;
-            loadPanel(_panelData.UI + ".jsx", function (page, Panel) {
-                loadJson(_panelData.config + ".json", function (page, json) {
+            var action = _leftMenuListConfig.action;
+            var target = action.target;
+            switch (target) {
+                case "LeftPanel":
+                    loadPanel(action.parts + ".jsx", function (page, Panel) {
+                        loadJson(action.config + ".json", function (page, json) {
+                            var config = json;
+                            var stateObj = {};
+                            stateObj[target] = <Panel items={config}/>;
+                            self.refs['LeftNavigation'].setState(stateObj);
+                        });
+                    });
+                    break;
+                case "Modal":
+                    this.displayModal(action);
+                    break;
+            }
+        },
+
+        displayModal(action){
+            var target = action.target;
+            var self = this;
+            loadModal(action.parts + ".jsx", function (page, Modal) {
+                loadJson(action.config + ".json", function (page, json) {
                     var config = json;
                     var stateObj = {};
-                    stateObj[area] = <Panel items={config}/>;
-                    self.refs['LeftNavigation'].setState(stateObj);
+                    stateObj[target] = <Modal items={config}/>;
+                    self.refs['Modal'].setState(stateObj);
                 });
             });
         },
-         // 우측 메뉴별 탭UI 변경
-        onDisplayRightPanel(_panelData){
-            console.log(_panelData.itemKey);
+        // 우측 메뉴별 탭UI 변경
+        onRightDisplay(_rightMenuListConfig){
             var self = this;
-            console.log(_panelData);
-            var area = _panelData.area;
-            loadPanel(_panelData.UI + ".jsx", function (page, Panel) {
-                loadJson(_panelData.config + ".json", function (page, json) {
+            var target = _rightMenuListConfig.target;
+            loadPanel(_rightMenuListConfig.UI + ".jsx", function (page, Panel) {
+                loadJson(_rightMenuListConfig.config + ".json", function (page, json) {
                     var config = json;
                     var stateObj = {};
-                    stateObj[area] = <Panel items={config}/>;
+                    stateObj[target] = <Panel items={config}/>;
                     self.refs['RightNavigation'].setState(stateObj);
                 });
             });
@@ -109,39 +126,35 @@ require('jquery-ui');
             var height = selfDom.offsetHeight;
 
 
+            if (typeof this.refs['Contents'] === 'undefined') return;
 
-            if (typeof this.refs['middle-area'] === 'undefined') return;
-
-            var headerOffsetHeight = this.refs['header'].getDOMNode().offsetHeight;
-            var footerOffsetHeight = this.refs['footer'].getDOMNode().offsetHeight;
+            var headerOffsetHeight = this.refs['Header'].getDOMNode().offsetHeight;
+            var footerOffsetHeight = this.refs['Footer'].getDOMNode().offsetHeight;
 
             var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
             var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
 
-            var middleAreaREle = this.refs['middle-area'];
+            var middleAreaREle = this.refs['Contents'];
             var middleAreaDom = middleAreaREle.getDOMNode();
 
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
 
 
-
             middleAreaREle.setState({
-                control : {
+                control: {
                     type: 'resize',
-                    data : {
+                    data: {
                         width: middleAreaWidth,
                         height: middleAreaHeight
                     }
                 }
             });
         },
-
         calledContextMenuByStage( _e){
             alert('blocked Default Context Menu');
             console.log('called Context Menu', _e);
         },
-
         resizeListener(_w, _h){
             var selfDom = this.getDOMNode();
             selfDom.style.width = _w + 'px';
@@ -166,15 +179,15 @@ require('jquery-ui');
 
             return (
                 <div>
-                    <HeaderUI ref='header'/>
+                    <HeaderUI ref='Header'/>
                     <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50} panelWidth={210}
-                                      onResize={this.onResizeLeftPanel} onDisplayPanel={this.onDisplayLeftPanel}/>
+                                      onResize={this.onResizeLeftPanel} onDisplayPanel={this.onLeftDisplay}/>
                     <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
-                                       onResize={this.onResizeRightPanel} onDisplayPanel={this.onDisplayRightPanel}/>
-                    <ContentsUI ref='middle-area' onCalledContextMenu={ this.calledContextMenuByStage } />
+                                       onResize={this.onResizeRightPanel} onDisplayPanel={this.onRightDisplay}/>
+                    <ContentsUI ref='middle-area' onCalledContextMenu={ this.calledContextMenuByStage }/>
                     <FooterUI ref='footer'/>
-
                     <FloatingMenuBox ref='stage-context-menu'/>
+                    <Modal ref="Modal"/>
                 </div>
             )
         }
