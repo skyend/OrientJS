@@ -45,13 +45,17 @@ var $ = require('jquery');
         },
 
         onIframeLoaded( _iframe ){
-
+            var self = this;
             // 임시 차후에 EditorStageContext 에서 처리되어야 함
             var iwindow = _iframe.contentWindow || _iframe.contentDocument;
             var innerDocument = iwindow.document;
-            this.iframeDocument = innerDocument;
+            this.currentIframeDocument = innerDocument;
 
             this.bindContextMenuTrigger(_iframe);
+
+            innerDocument.addEventListener('mouseclick', function(_ev) {
+                self.onMouseClickAtStage(_ev);
+            }, false);
 
             /* Document Editor 에 targetDOM 객체를 지정한다. */
             /*
@@ -62,6 +66,10 @@ var $ = require('jquery');
             */
 
             //this.documentEditorUpdate();
+        },
+
+        onMouseClickAtStage(){
+
         },
 
         /**
