@@ -13,8 +13,7 @@
     var TestModal = React.createClass({
         render() {
             return (
-                <div className="TestModal">
-                    <a href="#close" title="Close" className="close">X</a>
+                <div className="testModal">
                     <div>모다아라라라라라아아알</div>
                 </div>
             );

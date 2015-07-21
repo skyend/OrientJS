@@ -9,7 +9,7 @@ var $ = require('jquery');
 require('jquery-ui');
 
 (function () {
-    require('./UIArchitecture.less');
+    require('./UIService.less');
 
     //메뉴 데이터 파일
     var LeftMenuListConfig = require("../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록

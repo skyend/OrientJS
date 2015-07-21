@@ -22,7 +22,14 @@
 
             return (
                 <div id="ui-modal">
-                    {Modal}
+                    <div className="modal">
+                        <div className="modalHeader">
+                            <a href="#close" title="Close" className="close fa fa-times" ></a>
+                        </div>
+                        <div className="modalBody">
+                            {Modal}
+                        </div>
+                    </div>
                 </div>
             )
         }
