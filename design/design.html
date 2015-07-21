@@ -6,8 +6,10 @@
     <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet/less" href="design.less">
     <script src="../node_modules/less/dist/less.js"></script>
+
+
 </head>
-<body>
+<body style="position:relative; width:1600px; height:660px;">
 <header id="ui-header">
     <ul class="navigation">
         <li>
@@ -86,19 +88,59 @@
         <div class="inventory"></div>
     </div>
 </aside>
-<section id="ui-contents">
-    <div class="contents-tab">
-        <ul class="tab-area">
-            <li>
-                <span>index.html</span>
-            </li>
-            <li>
-                <span>main.html</span>
-            </li>
+<section class="Contents Contents-tab-support black" id="ui-contents" data-reactid=".0.3"
+         style="width: 1315px; left: 260px;">
+    <div class="tab-switch-panel" data-reactid=".0.3.0">
+        <ul class="tab-list" data-reactid=".0.3.0.0">
+            <li data-reactid=".0.3.0.0.0:0">tab test</li>
+            <li data-reactid=".0.3.0.0.0:1">tab test2</li>
+            <li data-reactid=".0.3.0.0.1"><i class="fa fa-plus" data-reactid=".0.3.0.0.1.0"></i></li>
         </ul>
     </div>
-    <div class="contents-area">
-        <iframe src="//getbootstrap.com/examples/non-responsive/"></iframe>
+    <div class="tab-context" data-reactid=".0.3.1" style="height: 370px;">
+        <iframe src="../html5up-directive/index.html" data-reactid=".0.3.1.0"></iframe>
+    </div>
+    <div class="PanelContainer night-dark" data-reactid=".0.3.2" style="height: 208px;">
+        <div class="part-header" data-reactid=".0.3.2.0">
+            <div class="block-area" data-reactid=".0.3.2.0.0">
+                <ul data-reactid=".0.3.2.0.0.0">
+                    <li data-reactid=".0.3.2.0.0.0.0">Document Editor</li>
+                </ul>
+            </div>
+            <div class="block-area right" data-reactid=".0.3.2.0.1">
+                <ul data-reactid=".0.3.2.0.1.0">
+                    <li class="button" data-reactid=".0.3.2.0.1.0.0"><span data-reactid=".0.3.2.0.1.0.0.0"> </span><i
+                            class="fa fa-minus" data-reactid=".0.3.2.0.1.0.0.1"></i><span
+                            data-reactid=".0.3.2.0.1.0.0.2"> </span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="part-body" data-reactid=".0.3.2.1">
+            <div class="react-container" data-reactid=".0.3.2.1.0">
+                <div class="DocumentEditor night-dark" data-reactid=".0.3.2.1.0.0">
+                    <div class="header" data-reactid=".0.3.2.1.0.0.0">
+                        <div class="block-area" data-reactid=".0.3.2.1.0.0.0.0">
+                            <ul data-reactid=".0.3.2.1.0.0.0.0.0">
+                                <li data-reactid=".0.3.2.1.0.0.0.0.0.0"></li>
+                            </ul>
+                        </div>
+                        <div class="block-area" data-reactid=".0.3.2.1.0.0.0.1"></div>
+                    </div>
+                    <div class="body" data-reactid=".0.3.2.1.0.0.1">
+                        <div class="ReactAceContainer" data-reactid=".0.3.2.1.0.0.1.0">
+                            <div id="brace-editor" style="width:100%;height:100%;" data-reactid=".0.3.2.1.0.0.1.0.0"
+                                 class=" ace_editor ace_dark ace-monokai"><textarea class="ace_text-input" wrap="off"
+                                                                                    autocapitalize="off"
+                                                                                    spellcheck="false"
+                                                                                    style="opacity: 0; height: 14px; width: 6.5978125px; left: 268.325625px; top: 0px;"></textarea>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 <footer id="ui-footer">
@@ -117,5 +159,16 @@
         </li>
     </ul>
 </footer>
+
+<div class="FloatingMenuBox black" style='left:300px; top:300px;' data-reactid=".0.5">
+    <div class="header" data-reactid=".0.5.0">Stage Context Menu</div>
+    <div class="body" data-reactid=".0.5.1">
+        <ul data-reactid=".0.5.1.0">
+            <li data-reactid=".0.5.1.0.0">Delete</li>
+            <li data-reactid=".0.5.1.0.1">Select Parent</li>
+            <li data-reactid=".0.5.1.0.2">Inspect and Edit</li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>
