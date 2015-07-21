@@ -184,8 +184,8 @@ require('jquery-ui');
                                       onResize={this.onResizeLeftPanel} onDisplayPanel={this.onLeftDisplay}/>
                     <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onRightDisplay}/>
-                    <ContentsUI ref='middle-area' onCalledContextMenu={ this.calledContextMenuByStage }/>
-                    <FooterUI ref='footer'/>
+                    <ContentsUI ref='Contents' onCalledContextMenu={ this.calledContextMenuByStage }/>
+                    <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
                 </div>
