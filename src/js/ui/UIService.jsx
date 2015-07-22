@@ -59,9 +59,13 @@ require('jquery-ui');
     }
 
     var UIArchitecture = React.createClass({
+        // Mixin EventDistributor
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
+
         getInitalState(){
             return {};
         },
+
         // 좌측 메뉴별 탭UI 변경
         onLeftDisplay(_leftMenuListConfig){
             var self = this;
@@ -120,6 +124,11 @@ require('jquery-ui');
             this.rightAreaWidth = _width;
             this.resizeMiddleArea();
         },
+
+        onThrowCatcherCallContextMenu( _eventData, _pass ){
+            console.log("처리완료", _eventData);
+        },
+
         // 컨텐츠 영역 화면 리사이즈
         resizeMiddleArea(){
             var selfDom = this.getDOMNode();
@@ -185,7 +194,9 @@ require('jquery-ui');
                                       onResize={this.onResizeLeftPanel} onDisplayPanel={this.onLeftDisplay}/>
                     <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
                                        onResize={this.onResizeRightPanel} onDisplayPanel={this.onRightDisplay}/>
-                    <ContentsUI ref='Contents' onCalledContextMenu={ this.calledContextMenuByStage }/>
+                    <ContentsUI ref='Contents'
+                                onThrow={this.eventCatch}
+                                onCalledContextMenu={ this.calledContextMenuByStage }/>
                     <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>

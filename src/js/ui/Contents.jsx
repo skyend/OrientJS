@@ -16,6 +16,10 @@ var $ = require('jquery');
     var React = require("react");
 
     var Contents = React.createClass({
+
+        // Mixin EventDistributor
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
+
         getDefaultProps(){
             this.observers = {};
             this.targetIFrame = null;
@@ -89,7 +93,12 @@ var $ = require('jquery');
                 _ev.preventDefault();
 
                 if( typeof  self.props.onCalledContextMenu === 'function' ) {
-                    self.props.onCalledContextMenu(_ev);
+                    //self.props.onCalledContextMenu(_ev);
+
+                    self.emit("CallContextMenu", {
+                        targetElement:null
+                    }, _ev, "MouseEvent");
+
                 } else {
                     throw new Error("You must implements Method[onCalledContextMenu]");
                 }
