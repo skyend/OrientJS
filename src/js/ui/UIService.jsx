@@ -18,6 +18,11 @@ require('jquery-ui');
     var HeaderUI = require('./Header.jsx');                     //상단 네비게이션 UI
     var LeftNavigationUI = require('./LeftNavigation.jsx');     //좌측 네비게이션 UI
     var RightNavigationUI = require('./RightNavigation.jsx');   //우측 네비게이션 UI
+
+    var LeftNavigation = require('./PanelNavigation.jsx'); // 좌측 네비게이션 UI
+    var RightNavigation = require('./PanelNavigation.jsx'); // 우측 네비게이션 UI
+
+
     var ContentsUI = require('./Contents.jsx');                 //중앙 컨텐츠 영역 UI
     var FooterUI = require('./Footer.jsx');                     //하단 상태 표시줄 UI
     var Modal = require('./Modal.jsx');                         //Modal UI
@@ -68,6 +73,7 @@ require('jquery-ui');
         },
 
         // 좌측 메뉴별 탭UI 변경
+        /*
         onLeftDisplay(_leftMenuListConfig){
             var self = this;
             var action = _leftMenuListConfig.action;
@@ -87,7 +93,7 @@ require('jquery-ui');
                     this.displayModal(action);
                     break;
             }
-        },
+        },*/
 
         displayModal(action){
             var target = action.target;
@@ -128,6 +134,45 @@ require('jquery-ui');
 
         onThrowCatcherCallContextMenu( _eventData, _pass ){
             console.log("처리완료", _eventData);
+            _pass();
+        },
+
+        onThrowCatcherTestEvent( _eventData, _pass ){
+            console.log("처리완료 testEvent", _eventData);
+
+        },
+
+        onThrowCatcherDisplayPanel( _eventData, _pass ){
+            var self = this;
+            var action = _eventData.action;
+            var target = action.target;
+
+            switch (target) {
+                case "LeftPanel":
+                    loadPanel(action.parts + ".jsx", function (page, Panel) {
+                        loadJson(action.config + ".json", function (page, json) {
+                            var config = json;
+                            var stateObj = {};
+                            stateObj[target] = <Panel items={config}/>;
+                            self.refs['LeftNavigation'].setState(stateObj);
+                        });
+                    });
+                    break;
+
+                case "RightPanel":
+                    loadPanel(action.parts + ".jsx", function (page, Panel) {
+                        loadJson(action.config + ".json", function (page, json) {
+                            var config = json;
+                            var stateObj = {};
+                            stateObj[target] = <Panel items={config}/>;
+                            self.refs['RightNavigation'].setState(stateObj);
+                        });
+                    });
+                    break;
+                case "Modal":
+                    this.displayModal(action);
+                    break;
+            }
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -162,10 +207,12 @@ require('jquery-ui');
                 }
             });
         },
+
         calledContextMenuByStage( _e){
             alert('blocked Default Context Menu');
             console.log('called Context Menu', _e);
         },
+
         resizeListener(_w, _h){
             var selfDom = this.getDOMNode();
             selfDom.style.width = _w + 'px';
@@ -191,10 +238,31 @@ require('jquery-ui');
             return (
                 <div>
                     <HeaderUI ref='Header'/>
-                    <LeftNavigationUI ref="LeftNavigation" menuList={leftMenuList} naviWidth={50} panelWidth={210}
-                                      onResize={this.onResizeLeftPanel} onDisplayPanel={this.onLeftDisplay}/>
-                    <RightNavigationUI ref="RightNavigation" menuList={rightMenuList} naviWidth={25} panelWidth={230}
-                                       onResize={this.onResizeRightPanel} onDisplayPanel={this.onRightDisplay}/>
+
+
+
+                    <LeftNavigation ref="LeftNavigation"
+                                    naviItemGroups={leftMenuList}
+                                    naviWidth={50}
+                                    panelWidth={210}
+                                    onResize={function(){ self.onResizeLeftPanel.apply(self, arguments) }}
+                                    onDisplayPanel={function(){ self.onDisplayPanel.apply(self, arguments) }}
+                                    position='left'
+                                    naviItemFontSize={20}/>
+
+                    <RightNavigation ref="RightNavigation"
+                                     naviItemGroups={rightMenuList}
+                                     naviWidth={25}
+                                     panelWidth={230}
+                                     onResize={function(){ self.onResizeRightPanel.apply(self, arguments) }}
+                                     onDisplayPanel={function(){ self.onDisplayPanel.apply(self, arguments) }}
+                                     onPanelThrow={function(){ self.onPanelThrow.apply(self, arguments) }}
+                                     showTitle={true}
+                                     verticalText={true}
+                                     position='right'
+                                     naviItemFontSize={16}/>
+
+
                     <ContentsUI ref='Contents'
                                 onThrow={this.eventCatch}
                                 onCalledContextMenu={ this.calledContextMenuByStage }/>

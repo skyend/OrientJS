@@ -12,12 +12,14 @@
     var React = require("react");
 
     var RightNavigation = React.createClass({
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
+
         getInitialState(){
             return {
                 RightPanel : <div/>
             }
         },
-        clickNaviItem(e, _naviMenu){
+        clickNaviItem(_e, _naviMenu){
             // 패널
             if (this.fold) {
                 this.unfoldPanel(); // 열기
@@ -25,8 +27,9 @@
                 this.foldPanel();   // 닫기
                 return;
             }
+
             // panel표시 이벤트 호출
-            this.props.onDisplayPanel(_naviMenu);
+            this.emit('DisplayPanel', _naviMenu, _e, "MouseClick");
         },
 
         resize(_width){

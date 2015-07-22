@@ -14,12 +14,15 @@ require('jquery-ui');
     var React = require("react");
 
     var LeftNavigation = React.createClass({
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
+
         getInitialState(){
             return {
                 LeftPanel: <div/>
             }
         },
-        clickNaviItem(e, _naviMenu){
+
+        clickNaviItem(_e, _naviMenu){
             var target = _naviMenu.action.target;
             switch (target) {
                 case "Modal":
@@ -33,8 +36,12 @@ require('jquery-ui');
                         //return;
                     }
             }
+
+
             // panel표시 이벤트 호출
-            this.props.onDisplayPanel(_naviMenu);
+            //this.props.onDisplayPanel(_naviMenu);
+
+            this.emit('DisplayPanel', _naviMenu, _e, "MouseClick");
         },
 
         resize(_width){

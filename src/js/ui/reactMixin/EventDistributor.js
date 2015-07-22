@@ -20,7 +20,7 @@
                 this.props.onThrow( eventName, eventData );
 
             } else {
-                console.warn("이벤트를 청취하는 자가 없습니다. 발생된 이벤트 ["+eventName+"]는 소멸될 것입니다.", eventData);
+                console.warn("더 이상 이벤트를 청취하는 자가 없습니다. 발생된 이벤트 ["+eventName+"]는 소멸될 것입니다.", eventData);
             }
         },
 
@@ -28,7 +28,11 @@
             var catcher = this["onThrowCatcher"+ _eventName];
 
             if( typeof catcher === 'function' ){
-                catcher(_eventData)
+                var self = this;
+
+                catcher(_eventData, function(){
+                    self.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType );
+                });
             } else {
                 this.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType );
             }

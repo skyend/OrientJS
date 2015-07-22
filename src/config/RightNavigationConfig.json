@@ -1,4 +1,8 @@
 [
-  {"itemKey": "css", "itemTitle": "css", "UI": "CSSMenu", "area": "RightPanel", "config": "CSSMenuConfig"},
-  {"itemKey": "Treeview", "itemTitle": "Treeview", "UI": "CSSMenu", "area": "RightPanel", "config": "TreeViewConfig"}
+  { "groupName" : "project" ,
+    "items" : [
+      {"id": "css", "icon": "th", "title": "CSS", "action": {"parts": "CSSMenu", "target": "RightPanel", "config": "CSSMenuConfig"}},
+      {"id": "Treeview", "icon": "briefcase", "title": "TreeView", "action": {"parts": "CSSMenu", "target": "RightPanel", "config": "TreeViewConfig"}}
+    ]
+  }
 ]

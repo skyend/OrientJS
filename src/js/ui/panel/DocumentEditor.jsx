@@ -18,6 +18,8 @@
     require('brace/theme/monokai');
 
     var reactClass = React.createClass({
+        mixins:[ require('../reactMixin/EventDistributor.js') ],
+
         getInitialState(){
             return {
                 targetDOM: null
@@ -32,19 +34,18 @@
         },
 
         changeDocumentText(_value){
+
+            this.emit('ChangeElementHTML', {
+                changed:_value
+            });
+
             if( typeof this.props.onChange === 'function'){
-                this.props.onChange(_value);
+                //this.props.onChange(_value);
             }
+        },
 
-            /*
-            if( typeof this.prevValue !== 'undefined' ){
-                var diff = jsdiff.diffChars( this.prevValue , _value);
-
-                console.log(diff);
-            }
-            this.prevValue = _value;
-*/
-            //console.log( _value);
+        onEventTest( _e ){
+            this.emit('TestEvent', {}, _e, "MouseEvent");
         },
 
         render() {
@@ -53,13 +54,12 @@
                 htmlSource = this.state.targetDOM.innerHTML;
             }
 
-
             return (
                 <div className='DocumentEditor night-dark'>
                     <div className='header'>
                         <div className='block-area'>
                             <ul>
-                                <li></li>
+                                <li onClick={this.onEventTest}> test button </li>
                             </ul>
 
                         </div>
