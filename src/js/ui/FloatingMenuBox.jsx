@@ -12,7 +12,10 @@
     require('./FloatingMenuBox.less');
 
     var FloatingMenuBox = React.createClass({
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
+
         getInitialState(){
+
             return {
 
             };
@@ -37,9 +40,9 @@
                             <li>
                                 Select Parent
                             </li>
-                            <li>
+                            {<li>
                                 Inspect and Edit
-                            </li>
+                            </li>}
                         </ul>
                     </div>
                 </div>

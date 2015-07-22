@@ -4,11 +4,12 @@
     var React = require("react");
 
     var R = React.createClass({
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
         getInitialState(){
             return {  }
         },
         onMouseDownToHeader(){
-            console.log('click');
+
 
             // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)
             app.ui.occupyGlobalDrag(this);
@@ -41,6 +42,8 @@
             /* Global Drag 자원 반환 */
             app.ui.disableGlobalDrag();
             app.ui.returnOccupyMouseDown();
+
+            this.emit('StoppedDrag', {}, _e, "MouseEvent");
         },
 
         render: function () {
