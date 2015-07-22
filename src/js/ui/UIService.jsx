@@ -12,8 +12,8 @@ require('jquery-ui');
     require('./UIService.less');
 
     //메뉴 데이터 파일
-    var LeftMenuListConfig = require("../../config/LeftMenuListConfig.json");      //좌측 네비게이션 메뉴목록
-    var RightMenuListConfig = require("../../config/RightMenuListConfig.json");    //우측 네비게이션 메뉴목록
+    var LeftMenuListConfig = require("../../config/LeftNavigationConfig.json");      //좌측 네비게이션 메뉴목록
+    var RightMenuListConfig = require("../../config/RightNavigationConfig.json");    //우측 네비게이션 메뉴목록
 
     var HeaderUI = require('./Header.jsx');                     //상단 네비게이션 UI
     var LeftNavigationUI = require('./LeftNavigation.jsx');     //좌측 네비게이션 UI
@@ -96,6 +96,7 @@ require('jquery-ui');
                 });
             });
         },
+
         // 우측 메뉴별 탭UI 변경
         onRightDisplay(_rightMenuListConfig){
             var self = this;
