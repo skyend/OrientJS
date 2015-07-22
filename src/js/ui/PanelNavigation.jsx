@@ -12,13 +12,14 @@
     require('./PanelNavigation.less');
 
     var PanelNavigation = React.createClass({
+        mixins:[ require('./reactMixin/EventDistributor.js') ],
         getInitialState(){
           return {
               targetPanelItem: null,
               panelElementInstance : null
           }
         },
-        clickNaviItem(e, _naviItem){
+        clickNaviItem(_e, _naviItem){
 
             if (this.fold) {
                 this.unfoldPanel();
@@ -26,14 +27,14 @@
                 // 한번더 클릭하면 패널을 닫는다.
                 // 현재 열려있는 패널과 같은 naviItem을 클릭했을 때 닫는다.
                 // 현재 열려있는 패널과 다른 naviItem을 클릭했을 때는 다른 패널이 열리도록 그대로 둔다.
-                if( _naviItem.itemKey === this.state.targetPanelItem.itemKey ){
+                if( _naviItem.id === this.state.targetPanelItem.id ){
                     this.foldPanel();
                     this.setState({targetPanelItem:null});
                     return;
                 }
             }
-
-            this.props.onDisplayPanel(this, _naviItem);
+            this.emit('DisplayPanel', _naviItem, _e, "MouseClick");
+            //this.props.onDisplayPanel(this, _naviItem);
         },
 
         resize(_width){

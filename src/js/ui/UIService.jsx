@@ -152,9 +152,15 @@ require('jquery-ui');
                     loadPanel(action.parts + ".jsx", function (page, Panel) {
                         loadJson(action.config + ".json", function (page, json) {
                             var config = json;
-                            var stateObj = {};
-                            stateObj[target] = <Panel items={config}/>;
-                            self.refs['LeftNavigation'].setState(stateObj);
+
+                            self.refs['LeftNavigation'].setState( {
+                                targetPanelItem : _eventData,
+                                panelTitle: _eventData.title ,
+                                panelKey : _eventData.id,
+                                panelElementInstance :  <Panel items={config}/>
+                            });
+
+
                         });
                     });
                     break;
@@ -163,9 +169,13 @@ require('jquery-ui');
                     loadPanel(action.parts + ".jsx", function (page, Panel) {
                         loadJson(action.config + ".json", function (page, json) {
                             var config = json;
-                            var stateObj = {};
-                            stateObj[target] = <Panel items={config}/>;
-                            self.refs['RightNavigation'].setState(stateObj);
+
+                            self.refs['RightNavigation'].setState( {
+                                targetPanelItem : _eventData,
+                                panelTitle: _eventData.title ,
+                                panelKey : _eventData.id,
+                                panelElementInstance :  <Panel items={config}/>
+                            });
                         });
                     });
                     break;
@@ -232,6 +242,7 @@ require('jquery-ui');
         },
 
         render() {
+            var self = this;
             var leftMenuList = LeftMenuListConfig;
             var rightMenuList = RightMenuListConfig;
 
@@ -264,7 +275,6 @@ require('jquery-ui');
 
 
                     <ContentsUI ref='Contents'
-                                onThrow={this.eventCatch}
                                 onCalledContextMenu={ this.calledContextMenuByStage }/>
                     <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
