@@ -24,6 +24,7 @@
     "node-libs-browser": "^0.5.2",
     "react": "^0.13.3",
     "react-ace": "^2.0.1",
+    "react-notification-system": "^0.1.14",
     "style-loader": "^0.12.3",
     "url-loader": "^0.5.6"
   },

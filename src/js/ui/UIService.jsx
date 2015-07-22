@@ -6,8 +6,8 @@
  * Requires(css) : Screen.less
  */
 var $ = require('jquery');
-require('jquery-ui');
 
+require('jquery-ui');
 (function () {
     require('./UIService.less');
 
@@ -21,7 +21,8 @@ require('jquery-ui');
     var ContentsUI = require('./Contents.jsx');                 //중앙 컨텐츠 영역 UI
     var FooterUI = require('./Footer.jsx');                     //하단 상태 표시줄 UI
     var Modal = require('./Modal.jsx');                         //Modal UI
-    var FloatingMenuBox = require('./FloatingMenuBox.jsx');     // StageContextMenu
+    var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
+    var PushMessage = require('./PushMessage.jsx');             //PushMessage
 
     var React = require('react');
 
@@ -189,6 +190,7 @@ require('jquery-ui');
                     <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
+                    <PushMessage />
                 </div>
             )
         }
