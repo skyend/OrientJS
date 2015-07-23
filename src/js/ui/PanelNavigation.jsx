@@ -61,7 +61,7 @@
 
         naviItemGroupRender( _group ){
             var items = _group.items;
-            console.log(items);
+
             return (
                 <ul className="group">
                     { items.map(this.naviItemRender ) }
@@ -146,7 +146,7 @@
 
             navigationAreaStyle.fontSize = this.props.naviItemFontSize || 12;
 
-            console.log( this.props.naviItemGroups);
+
             return (
                 <aside className={rootClasses.join(' ')} style={rootStyle}>
 

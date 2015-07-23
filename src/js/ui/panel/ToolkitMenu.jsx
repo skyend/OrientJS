@@ -9,6 +9,7 @@
 
 (function () {
     var React = require("react");
+    require('./ToolkitMenu.less');
 
     var ToolkitMode = React.createClass({
         renderItems( _group ){
@@ -29,7 +30,7 @@
         },
         render() {
             return (
-                <div>
+                <div className='ToolkitMenu white'>
                     { this.props.items.map(this.renderItems)}
                 </div>
             );

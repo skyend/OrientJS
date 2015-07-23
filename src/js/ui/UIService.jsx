@@ -11,6 +11,10 @@ require('jquery-ui');
 (function () {
     require('./UIService.less');
 
+    /* Panel Styles */
+    //require('./panel/CSSMenu.less');
+
+
     //메뉴 데이터 파일
     var LeftMenuListConfig = require("../../config/LeftNavigationConfig.json");      //좌측 네비게이션 메뉴목록
     var RightMenuListConfig = require("../../config/RightNavigationConfig.json");    //우측 네비게이션 메뉴목록

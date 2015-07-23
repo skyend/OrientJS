@@ -9,7 +9,7 @@
 
 (function () {
     var React = require("react");
-
+    require('./DeviceMenu.less');
 
     var DeviceMode = React.createClass({
         renderItems( _group ){
@@ -30,7 +30,7 @@
         },
         render() {
             return (
-                <div>
+                <div className='DeviceMenu white'>
                     { this.props.items.map(this.renderItems)}
                 </div>
             );

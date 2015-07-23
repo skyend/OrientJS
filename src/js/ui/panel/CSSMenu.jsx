@@ -9,6 +9,7 @@
 
 (function () {
     var React = require("react");
+    require('./CSSMenu.less');
 
     var CSSMenu = React.createClass({
         itemValue(_value){
@@ -49,7 +50,7 @@
 
         render() {
             return (
-                <div>
+                <div className='CSSMenu white'>
                     {this.props.items.map(this.renderItems)}
                 </div>
             );
