@@ -183,9 +183,10 @@ require('jquery-ui');
 
                             self.refs['LeftNavigation'].setState( {
                                 targetPanelItem : _eventData,
-                                panelTitle: _eventData.title ,
+                                panelTitle: _eventData.title,
                                 panelKey : _eventData.id,
-                                panelElementInstance :  <Panel items={config}/>
+                                panelReactClass : Panel,
+                                createPropParams: {items:config, ref:action.parts}
                             });
 
 
@@ -200,9 +201,10 @@ require('jquery-ui');
 
                             self.refs['RightNavigation'].setState( {
                                 targetPanelItem : _eventData,
-                                panelTitle: _eventData.title ,
+                                panelTitle: _eventData.title,
                                 panelKey : _eventData.id,
-                                panelElementInstance :  <Panel items={config}/>
+                                panelElementClass : Panel,
+                                createPropParams: {items:config, ref:action.parts}
                             });
                         });
                     });

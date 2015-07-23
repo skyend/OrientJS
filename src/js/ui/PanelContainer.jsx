@@ -37,13 +37,12 @@
         },
 
         onGlobalDragStopFromUI(_e){
-            //console.log('panelContainer drag stop');
 
             /* Global Drag 자원 반환 */
             app.ui.disableGlobalDrag();
             app.ui.returnOccupyMouseDown();
 
-            this.emit('StoppedDrag', {}, _e, "MouseEvent");
+            //this.emit('StoppedDrag', {}, _e, "MouseEvent");
         },
 
         render: function () {

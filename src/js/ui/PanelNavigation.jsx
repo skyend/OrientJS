@@ -94,20 +94,20 @@
             )
         },
 
-        panelAreaRender(_panelItem, _panelElement) {
-            if( _panelItem === null ) return "Not Rendered Panel";
+        panelAreaRender() {
+            if( this.state.targetPanelItem === null ) return "Not Rendered Panel";
 
-            if( typeof _panelElement.type !== 'function' ){
+            if( typeof _panelElement !== 'function' ){
                 return "Not exists Panel Element";
             }
 
             return(
                 <div className='panel-wrapper'>
                     <div className='panel-head'>
-                        <i className={"fa fa-"+_panelItem.icon}> {_panelItem.title}</i>
+                        <i className={"fa fa-"+this.state.targetPanelItem.icon}> {this.state.targetPanelItem.title}</i>
                     </div>
                     <div className='panel-body' ref='panel-mount-area'>
-                        {_panelElement}
+                        {React.createElement(this.state.panelReactClass, this.state.createPropParams)}
                     </div>
                 </div>
             );
@@ -167,7 +167,7 @@
                              style={panelAreaResizeHookStyle}
                              onDragStart={this.startHookDrag}/>
 
-                        { this.panelAreaRender(this.state.targetPanelItem, this.state.panelElementInstance) }
+                        { this.panelAreaRender() }
                     </div>
                 </aside>
             );

@@ -38,10 +38,6 @@
             this.emit('ChangeElementHTML', {
                 changed:_value
             });
-
-            if( typeof this.props.onChange === 'function'){
-                //this.props.onChange(_value);
-            }
         },
 
         onEventTest( _e ){
