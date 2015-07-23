@@ -15,7 +15,7 @@
             var eventData = _eventData;
             eventData.seedEvent = _seedEvent;
             eventData.seedEventType = _seedEventType;
-
+            console.log(this.props);
             if( typeof this.props.onThrow === 'function' ){
                 this.props.onThrow( eventName, eventData );
 
@@ -26,7 +26,7 @@
 
         eventCatch : function( _eventName, _eventData, _seedEvent, _seedEventType, _refKey ){
             var catcher = this["onThrowCatcher"+ _eventName];
-
+            console.log(_eventName, this);
             if( typeof _eventData.refPath !== 'object' ){
                 _eventData.refPath = [];
             }
@@ -56,33 +56,36 @@
          * 자신이 마운트되면 자신에게 참조된 요소들에게 onThrow 를 입력한다.
          * 구성된 요소들 중 ref 가 지정된 요소에 대해 onThrow 를 입력한다.
          */
-        componentDidMount : function(){
+        componentWillMount  : function(){
             var refKeys = Object.keys(this.refs);
             var self = this;
-
+            console.log(this);
             for(var i = 0; i < refKeys.length; i++ ){
                 var refKey = refKeys[i];
 
-                this.refs[refKey].props.onThrow = (function( _refKey){
+                this.refs[refKey].props.onThrow = this.getOnThrow(refKey);
+            }
+        },
 
-                    return function() {
-                        var argArr = [];
-                        /*
-                         for( var argIndex = 0 ; argIndex < arguments.length; argIndex++ ){
-                         argArr.push(arguments[argIndex]);
-                         }
-                         argArr[2] = refKey;
-                         */
+        getOnThrow: function( _refKey){
+            var self = this;
 
-                        argArr[0] = arguments[0]; // EventName
-                        argArr[1] = arguments[1]; // EventData
-                        argArr[2] = arguments[2]; // SeedEvent
-                        argArr[3] = arguments[3]; // SeedEventType
-                        argArr[4] = _refKey;       // EventEmitter refName
+            return function() {
+                var argArr = [];
+                /*
+                 for( var argIndex = 0 ; argIndex < arguments.length; argIndex++ ){
+                 argArr.push(arguments[argIndex]);
+                 }
+                 argArr[2] = refKey;
+                 */
 
-                        self.eventCatch.apply(self, argArr);
-                    }
-                })(refKey);
+                argArr[0] = arguments[0]; // EventName
+                argArr[1] = arguments[1]; // EventData
+                argArr[2] = arguments[2]; // SeedEvent
+                argArr[3] = arguments[3]; // SeedEventType
+                argArr[4] = _refKey;      // EventEmitter refName
+
+                self.eventCatch.apply(self, argArr);
             }
         }
     };

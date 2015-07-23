@@ -34,25 +34,29 @@
                 }
             }
             this.emit('DisplayPanel', _naviItem, _e, "MouseClick");
-            //this.props.onDisplayPanel(this, _naviItem);
         },
 
         resize(_width){
             this.getDOMNode().style.width = _width + 'px';
 
-            this.props.onResize(_width);
+            //this.props.onResize(_width);
         },
 
         foldPanel(){
             this.resize(this.props.naviWidth);
             this.refs['panelArea'].getDOMNode().style.display = 'none';
             this.fold = true;
+
+            this.emit('FoldPanel', {width: this.props.naviWidth});
         },
 
         unfoldPanel(){
-            this.resize(this.props.naviWidth + this.props.panelWidth);
+            var width = this.props.naviWidth + this.props.panelWidth;
+            this.resize(width);
             this.refs['panelArea'].getDOMNode().style.display = 'block';
             this.fold = false;
+
+            this.emit('UnfoldPanel', {width:width});
         },
 
         startHookDrag(e){
@@ -92,6 +96,10 @@
 
         panelAreaRender(_panelItem, _panelElement) {
             if( _panelItem === null ) return "Not Rendered Panel";
+
+            if( typeof _panelElement.type !== 'function' ){
+                return "Not exists Panel Element";
+            }
 
             return(
                 <div className='panel-wrapper'>
@@ -145,7 +153,6 @@
             }
 
             navigationAreaStyle.fontSize = this.props.naviItemFontSize || 12;
-
 
             return (
                 <aside className={rootClasses.join(' ')} style={rootStyle}>

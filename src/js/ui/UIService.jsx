@@ -137,13 +137,37 @@ require('jquery-ui');
         },
 
         onThrowCatcherCallContextMenu( _eventData, _pass ){
-            console.log("처리완료", _eventData);
+            console.log("처리완료 임시", _eventData);
             _pass();
         },
 
         onThrowCatcherTestEvent( _eventData, _pass ){
             console.log("처리완료 testEvent", _eventData);
 
+        },
+
+        onThrowCatcherFoldPanel( _eventData, _pass ){
+            console.log("처리완료 FoldPanel", _eventData);
+
+            if( _eventData.refPath[0] === 'RightNavigation' ){
+                this.rightAreaWidth = _eventData.width;
+            } else if ( _eventData.refPath[0] === 'LeftNavigation' ){
+                this.leftAreaWidth = _eventData.width;
+            }
+
+            this.resizeMiddleArea();
+        },
+
+        onThrowCatcherUnfoldPanel( _eventData, _pass ){
+            console.log("처리완료 UnfoldPanel", _eventData);
+
+            if( _eventData.refPath[0] === 'RightNavigation' ){
+                this.rightAreaWidth = _eventData.width;
+            } else if ( _eventData.refPath[0] === 'LeftNavigation' ){
+                this.leftAreaWidth = _eventData.width;
+            }
+
+            this.resizeMiddleArea();
         },
 
         onThrowCatcherDisplayPanel( _eventData, _pass ){
@@ -206,7 +230,7 @@ require('jquery-ui');
 
             var middleAreaREle = this.refs['Contents'];
             var middleAreaDom = middleAreaREle.getDOMNode();
-
+            console.log(this.leftAreaWidth);
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
 
@@ -249,31 +273,29 @@ require('jquery-ui');
             var self = this;
             var leftMenuList = LeftMenuListConfig;
             var rightMenuList = RightMenuListConfig;
-
+            var leftNaviRefKey = "LeftNavigation";
+            var rightNaviRefKey = "RightNavigation";
             return (
                 <div>
                     <HeaderUI ref='Header'/>
 
 
 
-                    <LeftNavigation ref="LeftNavigation"
+                    <LeftNavigation ref={leftNaviRefKey}
                                     naviItemGroups={leftMenuList}
                                     naviWidth={50}
                                     panelWidth={210}
-                                    onResize={function(){ self.onResizeLeftPanel.apply(self, arguments) }}
-                                    onDisplayPanel={function(){ self.onDisplayPanel.apply(self, arguments) }}
                                     position='left'
+                                    onThrow={this.getOnThrow(leftNaviRefKey)}
                                     naviItemFontSize={20}/>
 
-                    <RightNavigation ref="RightNavigation"
+                    <RightNavigation ref={rightNaviRefKey}
                                      naviItemGroups={rightMenuList}
                                      naviWidth={25}
                                      panelWidth={230}
-                                     onResize={function(){ self.onResizeRightPanel.apply(self, arguments) }}
-                                     onDisplayPanel={function(){ self.onDisplayPanel.apply(self, arguments) }}
-                                     onPanelThrow={function(){ self.onPanelThrow.apply(self, arguments) }}
                                      showTitle={true}
                                      verticalText={true}
+                                     onThrow={this.getOnThrow(rightNaviRefKey)}
                                      position='right'
                                      naviItemFontSize={16}/>
 
