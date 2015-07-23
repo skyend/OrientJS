@@ -24,17 +24,31 @@
             }
         },
 
-        eventCatch : function( _eventName, _eventData, _seedEvent, _seedEventType ){
+        eventCatch : function( _eventName, _eventData, _seedEvent, _seedEventType, _refKey ){
             var catcher = this["onThrowCatcher"+ _eventName];
 
+            if( typeof _eventData.refPath !== 'object' ){
+                _eventData.refPath = [];
+            }
+
+            _eventData.refPath.push(_refKey);
+
             if( typeof catcher === 'function' ){
+                // 처리할 수 있는 핸들러가 존재 하는 경우 지정된 핸들러를 호출하여 처리하도록 한다.
+                // 처리 후 더 상위객체에도 처리를 전달 할 수 있도록 pass function 을 제공한다.
                 var self = this;
 
+
+                // Parameters
+                // 1: EventData
+                // 2: Pass callback function
                 catcher(_eventData, function(){
-                    self.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType );
+                    self.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType, _refKey );
                 });
             } else {
-                this.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType );
+                // 처리할 수 있는 핸들러가 존재 하지 않는 경우 더 상위로 올려 보내기위해 다시 emit 한다.
+
+                this.emit( _eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType, _refKey );
             }
         },
 
@@ -49,9 +63,26 @@
             for(var i = 0; i < refKeys.length; i++ ){
                 var refKey = refKeys[i];
 
-                this.refs[refKey].props.onThrow = function(){
-                    self.eventCatch.apply(self, arguments);
-                };
+                this.refs[refKey].props.onThrow = (function( _refKey){
+
+                    return function() {
+                        var argArr = [];
+                        /*
+                         for( var argIndex = 0 ; argIndex < arguments.length; argIndex++ ){
+                         argArr.push(arguments[argIndex]);
+                         }
+                         argArr[2] = refKey;
+                         */
+
+                        argArr[0] = arguments[0]; // EventName
+                        argArr[1] = arguments[1]; // EventData
+                        argArr[2] = arguments[2]; // SeedEvent
+                        argArr[3] = arguments[3]; // SeedEventType
+                        argArr[4] = _refKey;       // EventEmitter refName
+
+                        self.eventCatch.apply(self, argArr);
+                    }
+                })(refKey);
             }
         }
     };
