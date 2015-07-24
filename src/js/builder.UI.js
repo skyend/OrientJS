@@ -37,9 +37,12 @@
 	UI.prototype.onResize = function(e){ //UI화면 리사이즈
 		var width = this.window.innerWidth;
 		var height = this.window.innerHeight;
+		var screenWidth = this.window.outerWidth;
+		var screenHeigt = this.window.outerHeight;
+		console.log(screenHeigt);
 		// resizeListener 이벤트 체크
 		if( typeof this.observers['resizeListener'] === 'function' ){
-			this.observers['resizeListener'](width, height);
+			this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
 		}
 	};
 

@@ -56,7 +56,7 @@
          * 자신이 마운트되면 자신에게 참조된 요소들에게 onThrow 를 입력한다.
          * 구성된 요소들 중 ref 가 지정된 요소에 대해 onThrow 를 입력한다.
          */
-        componentWillMount  : function(){
+        componentDidMount  : function(){
             var refKeys = Object.keys(this.refs);
 
             for(var i = 0; i < refKeys.length; i++ ){

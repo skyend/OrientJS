@@ -20,8 +20,6 @@ require('jquery-ui');
     var RightMenuListConfig = require("../../config/RightNavigationConfig.json");    //우측 네비게이션 메뉴목록
 
     var HeaderUI = require('./Header.jsx');                     //상단 네비게이션 UI
-    var LeftNavigationUI = require('./LeftNavigation.jsx');     //좌측 네비게이션 UI
-    var RightNavigationUI = require('./RightNavigation.jsx');   //우측 네비게이션 UI
 
     var LeftNavigation = require('./PanelNavigation.jsx'); // 좌측 네비게이션 UI
     var RightNavigation = require('./PanelNavigation.jsx'); // 우측 네비게이션 UI
@@ -138,7 +136,17 @@ require('jquery-ui');
 
         onThrowCatcherCallContextMenu( _eventData, _pass ){
             console.log("처리완료 임시", _eventData);
-            _pass();
+
+
+            this.refs['stage-context-menu'].setState({display:'on', x:_eventData.mouseX, y:_eventData.mouseY});
+            //_pass();
+        },
+
+        onThrowCatcherClickElementInStage( _eventData, _pass ){
+            console.log("처리완료 임시", _eventData);
+            this.refs['stage-context-menu'].setState({display:'off'});
+
+            //_pass();
         },
 
         onThrowCatcherTestEvent( _eventData, _pass ){
@@ -232,10 +240,10 @@ require('jquery-ui');
 
             var middleAreaREle = this.refs['Contents'];
             var middleAreaDom = middleAreaREle.getDOMNode();
-            console.log(this.leftAreaWidth);
+
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
-
+            middleAreaDom.style.top = headerOffsetHeight + "px";
 
             middleAreaREle.setState({
                 control: {
@@ -248,17 +256,17 @@ require('jquery-ui');
             });
         },
 
-        calledContextMenuByStage( _e){
-            alert('blocked Default Context Menu');
-            console.log('called Context Menu', _e);
-        },
-
-        resizeListener(_w, _h){
+        resizeListener(_w, _h, _screenW, _screenH){
             var selfDom = this.getDOMNode();
             selfDom.style.width = _w + 'px';
             selfDom.style.height = _h + 'px';
-            this.resizeMiddleArea();
 
+            this.width = _w;
+            this.height = _h;
+            this.screenWidth = _screenW;
+            this.screenHeight = _screenH;
+
+            this.resizeMiddleArea();
         },
 
         componentDidMount(){
@@ -266,8 +274,8 @@ require('jquery-ui');
             this.leftAreaWidth = this.leftAreaWidth || 0;
             this.rightAreaWidth = this.rightAreaWidth || 0;
 
-            this.props.observers.resizeListener = function (_w, _h) {
-                self.resizeListener(_w, _h);
+            this.props.observers.resizeListener = function (_w, _h, _screenW, _screenH) {
+                self.resizeListener(_w, _h, _screenW, _screenH);
             };
         },
 
@@ -302,8 +310,7 @@ require('jquery-ui');
                                      naviItemFontSize={16}/>
 
 
-                    <ContentsUI ref='Contents'
-                                onCalledContextMenu={ this.calledContextMenuByStage }/>
+                    <ContentsUI ref='Contents' />
                     <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>

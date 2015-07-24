@@ -17,8 +17,22 @@
         getInitialState(){
 
             return {
-
+               display:"off",
+               x:0,
+               y:0,
+               memuItems : [
+                  { title : "Delete", type:"button", action:{ name:"", type:"" } },
+                  { title : "Clone", type:"button", action:{ name:"", type:"" } },
+                  { title : "Edit", type:"button", action:{ name:"", type:"" } },
+                  "spliter",
+                  { title : "Select Parent", type:"button", action:{ name:"", type:"" } }
+               ]
             };
+        },
+
+
+        menuItemRender( _item ){
+           return <li> _item </li>
         },
 
         componentDidMount(){
@@ -26,23 +40,28 @@
         },
 
         render() {
+            var styles = {
+               display:"none"
+            };
+
+            if( this.state.display === 'off' ){
+               styles.display = "none";
+            } else if ( this.state.display === "on" ){
+               styles.display = "block";
+            }
+
+            styles.left = this.state.x + "px";
+            styles.top = this.state.y + "px";
+
 
             return (
-                <div className='FloatingMenuBox black'>
+                <div className='FloatingMenuBox black' style={styles}>
                     <div className='header'>
                         Stage Context Menu
                     </div>
                     <div className='body'>
                         <ul>
-                            <li>
-                                Delete
-                            </li>
-                            <li>
-                                Select Parent
-                            </li>
-                            {<li>
-                                Inspect and Edit
-                            </li>}
+                           { this.state.memuItems.map(this.menuItemRender) }
                         </ul>
                     </div>
                 </div>
