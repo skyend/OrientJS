@@ -25,7 +25,7 @@ require('jquery-ui');
     var RightNavigation = require('./PanelNavigation.jsx'); // 우측 네비게이션 UI
 
 
-    var ContentsUI = require('./Contents.jsx');                 //중앙 컨텐츠 영역 UI
+    var DocumentStage = require('./DocumentStage.jsx');                 //중앙 컨텐츠 영역 UI
     var FooterUI = require('./Footer.jsx');                     //하단 상태 표시줄 UI
     var Modal = require('./Modal.jsx');                         //Modal UI
     var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
@@ -123,11 +123,13 @@ require('jquery-ui');
                 });
             });
         },
+
         // 좌측 패널에 따른 중앙 리사이즈
         onResizeLeftPanel(_width){
             this.leftAreaWidth = _width;
             this.resizeMiddleArea();
         },
+
         // 우측 패널 리사이즈
         onResizeRightPanel(_width){
             this.rightAreaWidth = _width;
@@ -135,10 +137,36 @@ require('jquery-ui');
         },
 
         onThrowCatcherCallContextMenu( _eventData, _pass ){
-            console.log("처리완료 임시", _eventData);
-
-
-            this.refs['stage-context-menu'].setState({display:'on', x:_eventData.mouseX, y:_eventData.mouseY});
+            this.refs['stage-context-menu'].setState({
+               display:'on',
+               x:_eventData.mouseX,
+               y:_eventData.mouseY,
+               memuItems: [
+               {
+                  title: "Delete",
+                  type: "button",
+                  key: "elementDelete",
+                  eventName:"StageElementDelete"
+               }, {
+                  title: "Clone",
+                  type: "button",
+                  key: "elementClone",
+                  eventName:"StageElementClone"
+               }, {
+                  title: "Edit",
+                  type: "button",
+                  key: "elementEdit",
+                  eventName:"StageElementEdit"
+               },
+               "spliter",
+               {
+                  title: "Select Parent",
+                  type: "button",
+                  key: "element-select-parent",
+                  eventName:"SelectParentElementByStageElement"
+               }
+            ]
+         });
             //_pass();
         },
 
@@ -149,8 +177,23 @@ require('jquery-ui');
             //_pass();
         },
 
-        onThrowCatcherTestEvent( _eventData, _pass ){
-            console.log("처리완료 testEvent", _eventData);
+        onThrowCatcherStageElementDelete( _eventData, _pass ){
+            console.log("처리완료 StageElementDelete", _eventData);
+
+        },
+
+        onThrowCatcherStageElementClone( _eventData, _pass ){
+            console.log("처리완료 StageElementClone", _eventData);
+
+        },
+
+        onThrowCatcherStageElementEdit( _eventData, _pass ){
+            console.log("처리완료 StageElementEdit", _eventData);
+
+        },
+
+        onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
+            console.log("처리완료 SelectParentElementByStageElement", _eventData);
 
         },
 
@@ -230,7 +273,7 @@ require('jquery-ui');
             var height = selfDom.offsetHeight;
 
 
-            if (typeof this.refs['Contents'] === 'undefined') return;
+            if (typeof this.refs['document-stage'] === 'undefined') return;
 
             var headerOffsetHeight = this.refs['Header'].getDOMNode().offsetHeight;
             var footerOffsetHeight = this.refs['Footer'].getDOMNode().offsetHeight;
@@ -238,7 +281,7 @@ require('jquery-ui');
             var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
             var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
 
-            var middleAreaREle = this.refs['Contents'];
+            var middleAreaREle = this.refs['document-stage'];
             var middleAreaDom = middleAreaREle.getDOMNode();
 
             middleAreaDom.style.width = middleAreaWidth + 'px';
@@ -290,7 +333,6 @@ require('jquery-ui');
                     <HeaderUI ref='Header'/>
 
 
-
                     <LeftNavigation ref={leftNaviRefKey}
                                     naviItemGroups={leftMenuList}
                                     naviWidth={50}
@@ -310,7 +352,7 @@ require('jquery-ui');
                                      naviItemFontSize={16}/>
 
 
-                    <ContentsUI ref='Contents' />
+                    <DocumentStage ref='document-stage' />
                     <FooterUI ref='Footer'/>
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>

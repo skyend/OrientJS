@@ -10,7 +10,7 @@
 var $ = require('jquery');
 
 (function() {
-   require('./Contents.less');
+   require('./DocumentStage.less');
    var DOMEditor = require('./panel/DocumentEditor.jsx');
    var PanelContainer = require('./PanelContainer.jsx');
    var React = require("react");
@@ -112,7 +112,7 @@ var $ = require('jquery');
 
          var x,
             y;
-            
+
          var editorStageWrapperX = parseInt(selfDom.style.left);
          var editorStageWrapperY = parseInt(selfDom.style.top);
 

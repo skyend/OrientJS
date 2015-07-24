@@ -9,14 +9,18 @@
  */
 
 (function() {
+   var types = ["EventEmit"];
+
    var Action = function() {
 
    };
 
    Action.prototype = {
-      name: undefined,
-      type: undefined,
-      data: undefined,
+      name: undefined, // 
+      type: undefined, // EventEmit
+      desc: undefined, // EventEmit{EventName, EventData}
+
+
 
       setName: function(_name) {
          this.name = _name;

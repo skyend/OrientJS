@@ -7,68 +7,87 @@
  * Requires(css) :
  */
 
-(function () {
-    var React = require("react");
-    require('./FloatingMenuBox.less');
+var MenuItem = {
+   title: "",
+   type: "button | input | select | ...",
+   action: {}
+};
 
-    var FloatingMenuBox = React.createClass({
-        mixins:[ require('./reactMixin/EventDistributor.js') ],
+(function() {
+   var React = require("react");
+   require('./FloatingMenuBox.less');
 
-        getInitialState(){
+   var MenuItem = React.createClass({
+      mixins: [require('./reactMixin/EventDistributor.js')],
 
-            return {
-               display:"off",
-               x:0,
-               y:0,
-               memuItems : [
-                  { title : "Delete", type:"button", action:{ name:"", type:"" } },
-                  { title : "Clone", type:"button", action:{ name:"", type:"" } },
-                  { title : "Edit", type:"button", action:{ name:"", type:"" } },
-                  "spliter",
-                  { title : "Select Parent", type:"button", action:{ name:"", type:"" } }
-               ]
-            };
-        },
+      onClick(_e){
+         this.emit(this.props.eventName, {}, _e, "ReactMouseClick");
+      },
 
+      render(){
 
-        menuItemRender( _item ){
-           return <li> _item </li>
-        },
+         return (
+            <li className={this.props.type} onClick={this.onClick}>  {this.props.title} </li>
+         );
+      }
+   });
 
-        componentDidMount(){
+   var FloatingMenuBox = React.createClass({
+      mixins: [require('./reactMixin/EventDistributor.js')],
 
-        },
+      getInitialState() {
 
-        render() {
-            var styles = {
-               display:"none"
-            };
-
-            if( this.state.display === 'off' ){
-               styles.display = "none";
-            } else if ( this.state.display === "on" ){
-               styles.display = "block";
-            }
-
-            styles.left = this.state.x + "px";
-            styles.top = this.state.y + "px";
+         return {
+            display: "off",
+            x: 0,
+            y: 0,
+            memuItems: [
+            
+            ]
+         };
+      },
 
 
-            return (
-                <div className='FloatingMenuBox black' style={styles}>
-                    <div className='header'>
-                        Stage Context Menu
-                    </div>
-                    <div className='body'>
-                        <ul>
-                           { this.state.memuItems.map(this.menuItemRender) }
-                        </ul>
-                    </div>
-                </div>
-            );
-        }
-    });
 
-    module.exports = FloatingMenuBox;
+      menuItemRender(_item) {
+         if( typeof _item === "object" ){
+            return <MenuItem ref={ _item.key } title={_item.title} type={_item.type} eventName={_item.eventName} />;
+         } else if( _item === 'spliter' ) {
+            return <hr/>
+         }
+      },
+
+      componentDidMount() {},
+
+      render() {
+         var styles = {
+            display: "none"
+         };
+
+         if (this.state.display === 'off') {
+            styles.display = "none";
+         } else if (this.state.display === "on") {
+            styles.display = "block";
+         }
+
+         styles.left = this.state.x + "px";
+         styles.top = this.state.y + "px";
+
+         return (
+            <div className='FloatingMenuBox black' style={styles}>
+               <div className='header'>
+                  Stage Context Menu
+               </div>
+               <div className='body'>
+                  <ul>
+                     {this.state.memuItems.map(this.menuItemRender)}
+                  </ul>
+               </div>
+            </div>
+         );
+      }
+   });
+
+   module.exports = FloatingMenuBox;
 
 })();
