@@ -109,7 +109,7 @@ var $ = require('jquery');
       onCallContextMenu(_e) {
          _e.preventDefault();
          var selfDom = this.getDOMNode();
-
+         console.log("call contextmenu",_e);
          var x,
             y;
 
@@ -119,10 +119,19 @@ var $ = require('jquery');
          x = _e.clientX + editorStageWrapperX;
          y = _e.clientY + editorStageWrapperY + this.refs['tab-context'].getDOMNode().offsetTop;
 
+         var targetElement = _e.toElement;
+
          this.emit("CallContextMenu", {
-            targetElement: null,
             mouseX: x,
-            mouseY: y
+            mouseY: y,
+
+            // for 필드는 이 컨텍스트 메뉴가 무엇을 위한 컨텍스트 메뉴인지 의미한다.
+            for:"StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
+            target : {
+               stageContextId:"", // 현재 편집중인 ContextID
+               elementId:"", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
+               element: targetElement
+            }
          }, _e, "MouseEvent");
 
          return false;

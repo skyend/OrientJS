@@ -19,14 +19,14 @@ require('jquery-ui');
     var LeftMenuListConfig = require("../../config/LeftNavigationConfig.json");      //좌측 네비게이션 메뉴목록
     var RightMenuListConfig = require("../../config/RightNavigationConfig.json");    //우측 네비게이션 메뉴목록
 
-    var HeaderUI = require('./Header.jsx');                     //상단 네비게이션 UI
+    var HeadToolBar = require('./HeadToolBar.jsx');                     //상단 네비게이션 UI
 
     var LeftNavigation = require('./PanelNavigation.jsx'); // 좌측 네비게이션 UI
     var RightNavigation = require('./PanelNavigation.jsx'); // 우측 네비게이션 UI
 
 
     var DocumentStage = require('./DocumentStage.jsx');                 //중앙 컨텐츠 영역 UI
-    var FooterUI = require('./Footer.jsx');                     //하단 상태 표시줄 UI
+    var FootStatusBar = require('./FootStatusBar.jsx');                     //하단 상태 표시줄 UI
     var Modal = require('./Modal.jsx');                         //Modal UI
     var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
     var PushMessage = require('./PushMessage.jsx');             //PushMessage
@@ -137,64 +137,73 @@ require('jquery-ui');
         },
 
         onThrowCatcherCallContextMenu( _eventData, _pass ){
+
+           if( _eventData.for === "StageElement" ){
+             console.log(_eventData);
+
             this.refs['stage-context-menu'].setState({
                display:'on',
                x:_eventData.mouseX,
                y:_eventData.mouseY,
+               for:_eventData.for,
+               target:_eventData.target,
+
                memuItems: [
-               {
-                  title: "Delete",
-                  type: "button",
-                  key: "elementDelete",
-                  eventName:"StageElementDelete"
-               }, {
-                  title: "Clone",
-                  type: "button",
-                  key: "elementClone",
-                  eventName:"StageElementClone"
-               }, {
-                  title: "Edit",
-                  type: "button",
-                  key: "elementEdit",
-                  eventName:"StageElementEdit"
-               },
-               "spliter",
-               {
-                  title: "Select Parent",
-                  type: "button",
-                  key: "element-select-parent",
-                  eventName:"SelectParentElementByStageElement"
-               }
-            ]
-         });
+                  {
+                     title: "Delete",
+                     type: "button",
+                     key: "elementDelete",
+                     eventName:"StageElementDelete"
+                  }, {
+                     title: "Clone",
+                     type: "button",
+                     key: "elementClone",
+                     eventName:"StageElementClone"
+                  }, {
+                     title: "Edit",
+                     type: "button",
+                     key: "elementEdit",
+                     eventName:"StageElementEdit"
+                  },
+                  "spliter",
+                  {
+                     title: "Select Parent",
+                     type: "button",
+                     key: "element-select-parent",
+                     eventName:"SelectParentElementByStageElement"
+                  }
+               ]
+            });
+         }
             //_pass();
         },
 
         onThrowCatcherClickElementInStage( _eventData, _pass ){
             console.log("처리완료 임시", _eventData);
-            this.refs['stage-context-menu'].setState({display:'off'});
+            this.offContextMenu();
 
             //_pass();
         },
 
         onThrowCatcherStageElementDelete( _eventData, _pass ){
             console.log("처리완료 StageElementDelete", _eventData);
-
+            _eventData.target.element.remove();
+            this.offContextMenu();
         },
 
         onThrowCatcherStageElementClone( _eventData, _pass ){
             console.log("처리완료 StageElementClone", _eventData);
-
+            this.offContextMenu();
         },
 
         onThrowCatcherStageElementEdit( _eventData, _pass ){
             console.log("처리완료 StageElementEdit", _eventData);
-
+            this.offContextMenu();
         },
 
         onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
             console.log("처리완료 SelectParentElementByStageElement", _eventData);
-
+            this.offContextMenu();
         },
 
         onThrowCatcherFoldPanel( _eventData, _pass ){
@@ -266,6 +275,10 @@ require('jquery-ui');
             }
         },
 
+        offContextMenu(){
+           this.refs['stage-context-menu'].setState({display:'off'});
+        },
+
         // 컨텐츠 영역 화면 리사이즈
         resizeMiddleArea(){
             var selfDom = this.getDOMNode();
@@ -273,15 +286,15 @@ require('jquery-ui');
             var height = selfDom.offsetHeight;
 
 
-            if (typeof this.refs['document-stage'] === 'undefined') return;
+            if (typeof this.refs['DocumentStage'] === 'undefined') return;//throw new Error("Not found DocumentStage");
 
-            var headerOffsetHeight = this.refs['Header'].getDOMNode().offsetHeight;
-            var footerOffsetHeight = this.refs['Footer'].getDOMNode().offsetHeight;
+            var headerOffsetHeight = this.refs['HeadToolBar'].getDOMNode().offsetHeight;
+            var footerOffsetHeight = this.refs['FootStatusBar'].getDOMNode().offsetHeight;
 
             var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
             var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
 
-            var middleAreaREle = this.refs['document-stage'];
+            var middleAreaREle = this.refs['DocumentStage'];
             var middleAreaDom = middleAreaREle.getDOMNode();
 
             middleAreaDom.style.width = middleAreaWidth + 'px';
@@ -330,7 +343,7 @@ require('jquery-ui');
             var rightNaviRefKey = "RightNavigation";
             return (
                 <div>
-                    <HeaderUI ref='Header'/>
+                    <HeadToolBar ref='HeadToolBar'/>
 
 
                     <LeftNavigation ref={leftNaviRefKey}
@@ -352,8 +365,9 @@ require('jquery-ui');
                                      naviItemFontSize={16}/>
 
 
-                    <DocumentStage ref='document-stage' />
-                    <FooterUI ref='Footer'/>
+                   <DocumentStage ref='DocumentStage' />
+                    <FootStatusBar ref='FootStatusBar'/>
+
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
                     <PushMessage />

@@ -8,10 +8,10 @@
  */
 
 (function(){
-    require('./Header.less');
+    require('./HeadToolBar.less');
     var React = require("react");
 
-    var Header = React.createClass({
+    var HeadToolBar = React.createClass({
         render: function () {
             return (
                 <header id="ui-header">
@@ -32,8 +32,6 @@
         }
     });
 
-    module.exports = Header;
+    module.exports = HeadToolBar;
 
 })();
-
-

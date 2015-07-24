@@ -21,7 +21,10 @@ var MenuItem = {
       mixins: [require('./reactMixin/EventDistributor.js')],
 
       onClick(_e){
-         this.emit(this.props.eventName, { target: this.state.menuTarget}, _e, "ReactMouseClick");
+         // 기본 이벤트 데이터 필드를 베이스로 eventData 객체를 구축한다.
+         var eventData = this.props.addEventDataFields;
+
+         this.emit(this.props.eventName, eventData, _e, "ReactMouseClick");
       },
 
       render(){
@@ -38,25 +41,28 @@ var MenuItem = {
       getInitialState() {
 
          return {
-            display: "off",
+            display: "off", // on , off
             x: 0,
             y: 0,
-            memuItems: [
+            memuItems: [],
 
-            ],
-
-            // ContextMenu 로 활용 될 때 이 State 를 이용하여 문맥 타겟을 잡아주자.
-            menuTarget:{
-               //??
-            }
+            // Floating Menu 의 존재의 이유
+            for: "",
+            target:{}
          };
       },
 
 
 
       menuItemRender(_item) {
+
          if( typeof _item === "object" ){
-            return <MenuItem ref={ _item.key } title={_item.title} type={_item.type} eventName={_item.eventName} />;
+            return (<MenuItem ref={ _item.key }
+                              title={_item.title}
+                              type={_item.type}
+                              eventName={_item.eventName}
+                              addEventDataFields={ { for: this.state.for, target: this.state.target } }/>);
+
          } else if( _item === 'spliter' ) {
             return <hr/>
          }

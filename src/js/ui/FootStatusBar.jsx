@@ -12,10 +12,10 @@
  */
 
 (function(){
-    require('./Footer.less');
+    require('./FootStatusBar.less');
     var React = require("react");
 
-    var Footer = React.createClass({
+    var FootStatusBar = React.createClass({
         render: function () {
             return (
                 <footer id="ui-footer">
@@ -39,6 +39,6 @@
     });
 
 
-    module.exports = Footer;
+    module.exports = FootStatusBar;
 
 })();
