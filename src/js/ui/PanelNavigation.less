@@ -90,8 +90,16 @@
     z-index: 1;
     .group {
       margin: 0;
-      height: 100%;
+
       padding: 0px;
+
+      border-bottom:3px solid #222;
+      &:last-child {
+        border: 0;
+      }
+
+
+
       > li {
         width:100%;
         padding:10px 0px;
