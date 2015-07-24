@@ -94,10 +94,10 @@
             )
         },
 
-        panelAreaRender() {
+        panelAreaRenderByUpdatedStates() {
             if( this.state.targetPanelItem === null ) return "Not Rendered Panel";
 
-            if( typeof _panelElement !== 'function' ){
+            if( typeof this.state.panelReactClass !== 'function' ){
                 return "Not exists Panel Element";
             }
 
@@ -167,7 +167,7 @@
                              style={panelAreaResizeHookStyle}
                              onDragStart={this.startHookDrag}/>
 
-                        { this.panelAreaRender() }
+                        { this.panelAreaRenderByUpdatedStates() }
                     </div>
                 </aside>
             );

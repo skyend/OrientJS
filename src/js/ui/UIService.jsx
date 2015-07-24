@@ -203,7 +203,7 @@ require('jquery-ui');
                                 targetPanelItem : _eventData,
                                 panelTitle: _eventData.title,
                                 panelKey : _eventData.id,
-                                panelElementClass : Panel,
+                                panelReactClass : Panel,
                                 createPropParams: {items:config, ref:action.parts}
                             });
                         });
