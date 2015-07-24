@@ -21,7 +21,7 @@ var MenuItem = {
       mixins: [require('./reactMixin/EventDistributor.js')],
 
       onClick(_e){
-         this.emit(this.props.eventName, {}, _e, "ReactMouseClick");
+         this.emit(this.props.eventName, { target: this.state.menuTarget}, _e, "ReactMouseClick");
       },
 
       render(){
@@ -42,8 +42,13 @@ var MenuItem = {
             x: 0,
             y: 0,
             memuItems: [
-            
-            ]
+
+            ],
+
+            // ContextMenu 로 활용 될 때 이 State 를 이용하여 문맥 타겟을 잡아주자.
+            menuTarget:{
+               //??
+            }
          };
       },
 
