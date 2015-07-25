@@ -187,13 +187,24 @@ require('jquery-ui');
 
         onThrowCatcherStageElementDelete( _eventData, _pass ){
             console.log("처리완료 StageElementDelete", _eventData);
-            _eventData.target.element.remove();
+            //_eventData.target.element.remove();
+
+            this.refs['DocumentStage'].deleteElement({
+               contextId:_eventData.target.contextId,
+               elementId:_eventData.target.elementId
+            });
+
+
+
             this.offContextMenu();
         },
 
         onThrowCatcherStageElementClone( _eventData, _pass ){
             console.log("처리완료 StageElementClone", _eventData);
             this.offContextMenu();
+
+            this.refs['DocumentStage'].setState({a:1});
+            console.log(this.refs['DocumentStage'].test());
         },
 
         onThrowCatcherStageElementEdit( _eventData, _pass ){
@@ -275,9 +286,19 @@ require('jquery-ui');
             }
         },
 
-        offContextMenu(){
+         onThrowCatcherNoticeMessage( _eventData, _pass){
+
+            this.refs['NotificationCenter'].notify({
+               type:'simple-message',
+               title: _eventData.title ,
+               message: _eventData.message,
+               level: 'success'
+            });
+         },
+
+         offContextMenu(){
            this.refs['stage-context-menu'].setState({display:'off'});
-        },
+         },
 
         // 컨텐츠 영역 화면 리사이즈
         resizeMiddleArea(){
@@ -370,7 +391,7 @@ require('jquery-ui');
 
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
-                    <PushMessage />
+                    <PushMessage ref='NotificationCenter'/>
                 </div>
             )
         }

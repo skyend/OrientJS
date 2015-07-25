@@ -7,20 +7,35 @@
  * Requires(css) :
  */
 
-var NotificationSystem = require('react-notification-system');
-require("./PushMessage.less");
-
 (function () {
-    var React = require("react");
-    var PushMessage = React.createClass({
+
+   var NotificationSystem = require('react-notification-system');
+   require("./PushMessage.less");
+
+   var React = require("react");
+
+   var PushMessage = React.createClass({
         _notificationSystem: null,
 
-        _addNotification: function(event) {
-            event.preventDefault();
-            this._notificationSystem.addNotification({
-                message: '푸시메시지 테스트 중',
-                level: 'success'
-            });
+        /*
+         {
+            type: "simple-message" | 
+            title:
+            message:
+            level:
+         }
+        */
+        notify: function( _notifyObject ) {
+
+            if( _notifyObject.type === 'simple-message' ){
+               this._notificationSystem.addNotification({
+                  title: _notifyObject.title,
+                  message: _notifyObject.message,
+                  level: _notifyObject.level,
+                  autoDismiss : 10,
+               });
+            }
+
         },
 
         componentDidMount: function() {
@@ -29,8 +44,7 @@ require("./PushMessage.less");
 
         render: function() {
             return (
-                <div id="push-message">
-                    <button onClick={this._addNotification}>PushMessageTest</button>
+                <div id="push-message" className="NotificationWrapper steel-gray">
                     <NotificationSystem ref="notificationSystem" />
                 </div>
             );
@@ -40,5 +54,3 @@ require("./PushMessage.less");
     module.exports = PushMessage;
 
 })();
-
-

@@ -206,9 +206,21 @@ var $ = require('jquery');
          )
       },
 
+      deleteElement( _targetObject ){
+         console.log('called element delete ', _targetObject);
+
+
+         // 임시로 요소 제거 공지
+         this.emit('NoticeMessage', {
+            title : "From DocumentStage",
+            message : "element deleted"
+         });
+      },
+
       componentDidUpdate(_prevProps, _prevState) {},
 
       shouldComponentUpdate(_nextProps, _nextState) {
+
 // 다음 state 에 control 필드가 입력되면 컴포넌트를 업데이트 하지않고 변경된 속성만 반영한다.
          if (typeof _nextState.control === 'object') {
 
