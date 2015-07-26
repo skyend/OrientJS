@@ -12,7 +12,8 @@
       {"id": "image", "icon": "cloud", "title": "Images", "action": {"parts": "", "target": "", "config": ""}},
       {"id": "script", "icon": "leaf", "title": "Script", "action": {"parts": "", "target": "", "config": ""}},
       {"id": "api", "icon": "cloud-download", "title": "API", "action": {"parts": "", "target": "", "config": ""}},
-      {"id": "template", "icon": "file", "title": "Template", "action": {"parts": "", "target": "", "config": ""}}
+      {"id": "template", "icon": "file", "title": "Template", "action": {"parts": "", "target": "", "config": ""}},
+      {"id": "settings", "icon":"cog", "title": "Settings", "action": {"parts": "Settings", "target": "LeftPanel", "config":"Settings" }}
     ]
   }
 ]

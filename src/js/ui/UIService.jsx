@@ -13,7 +13,8 @@ require('jquery-ui');
 
     /* Panel Styles */
     //require('./panel/CSSMenu.less');
-
+    var Loader = require('../lib/WebpackAsyncPartsLoader.js');
+    var Async = require('../lib/Async.js');
 
     //메뉴 데이터 파일
     var LeftMenuListConfig = require("../../config/LeftNavigationConfig.json");      //좌측 네비게이션 메뉴목록
@@ -33,69 +34,18 @@ require('jquery-ui');
 
     var React = require('react');
 
-    function loadPanel(pageName, callback) {
-        try {
-            var pageBundle = require("bundle!./panel/" + pageName)
-        } catch (e) {
-            return callback(e);
-        }
-        pageBundle(function (page) {
-            callback(null, page);
-        })
-    }
 
-    function loadModal(pageName, callback) {
-        try {
-            var pageBundle = require("bundle!./modal/" + pageName)
-        } catch (e) {
-            return callback(e);
-        }
-        pageBundle(function (page) {
-            callback(null, page);
-        })
-    }
-
-    function loadJson(pageName, callback) {
-        try {
-            var pageBundle = require("bundle!../../config/" + pageName)
-        } catch (e) {
-            return callback(e);
-        }
-        pageBundle(function (page) {
-            callback(null, page);
-        })
-    }
-
-    var UIArchitecture = React.createClass({
+    /**
+     * UIService
+     *
+     */
+    var UIService = React.createClass({
         // Mixin EventDistributor
         mixins:[ require('./reactMixin/EventDistributor.js') ],
 
         getInitalState(){
             return {};
         },
-
-        // 좌측 메뉴별 탭UI 변경
-        /*
-        onLeftDisplay(_leftMenuListConfig){
-            var self = this;
-            var action = _leftMenuListConfig.action;
-            var target = action.target;
-            switch (target) {
-                case "LeftPanel":
-                    loadPanel(action.parts + ".jsx", function (page, Panel) {
-                        loadJson(action.config + ".json", function (page, json) {
-                            var config = json;
-                            var stateObj = {};
-                            stateObj[target] = <Panel items={config}/>;
-                            self.refs['LeftNavigation'].setState(stateObj);
-                        });
-                    });
-                    break;
-                case "Modal":
-                    this.displayModal(action);
-                    break;
-            }
-        },*/
 
         displayModal(action){
             var target = action.target;
@@ -106,20 +56,6 @@ require('jquery-ui');
                     var stateObj = {};
                     stateObj[target] = <Modal items={config}/>;
                     self.refs['Modal'].setState(stateObj);
-                });
-            });
-        },
-
-        // 우측 메뉴별 탭UI 변경
-        onRightDisplay(_rightMenuListConfig){
-            var self = this;
-            var target = _rightMenuListConfig.target;
-            loadPanel(_rightMenuListConfig.UI + ".jsx", function (page, Panel) {
-                loadJson(_rightMenuListConfig.config + ".json", function (page, json) {
-                    var config = json;
-                    var stateObj = {};
-                    stateObj[target] = <Panel items={config}/>;
-                    self.refs['RightNavigation'].setState(stateObj);
                 });
             });
         },
@@ -246,44 +182,44 @@ require('jquery-ui');
             var action = _eventData.action;
             var target = action.target;
 
-            switch (target) {
-                case "LeftPanel":
-                    loadPanel(action.parts + ".jsx", function (page, Panel) {
-                        loadJson(action.config + ".json", function (page, json) {
-                            var config = json;
+            /**
+             * WaterFall 을 이용하여 비동기로드를 동기화한다.
+             */
+            Async.waterFall([function(_cb){
+               loadPanel(action.parts + ".jsx", function (_err, _parts) {
+                  if( _err !== null ){
+                     throw new Error('Fail to parts loading');
+                  } else {
+                     _cb(_parts);
+                  }
+               });
+            },function( _parts, _cb){
+               loadJson(action.config + ".json", function (_err, _partsConfig) {
+                  if( _err !== null ){
+                     throw new Error('Fail to partsConfig loading');
+                  } else {
+                     _cb( _parts, _partsConfig);
+                  }
+               });
+            },function( _parts, _partsConfig){
 
-                            self.refs['LeftNavigation'].setState( {
-                                targetPanelItem : _eventData,
-                                panelTitle: _eventData.title,
-                                panelKey : _eventData.id,
-                                panelReactClass : Panel,
-                                createPropParams: {items:config, ref:action.parts}
-                            });
+               var stateObject = {
+                   targetPanelItem : _eventData,
+                   panelTitle: _eventData.title,
+                   panelKey : _eventData.id,
+                   panelReactClass : _parts,
+                   createPropParams: {items:_partsConfig, ref:action.parts}
+               };
 
-
-                        });
-                    });
-                    break;
-
-                case "RightPanel":
-                    loadPanel(action.parts + ".jsx", function (page, Panel) {
-                        loadJson(action.config + ".json", function (page, json) {
-                            var config = json;
-
-                            self.refs['RightNavigation'].setState( {
-                                targetPanelItem : _eventData,
-                                panelTitle: _eventData.title,
-                                panelKey : _eventData.id,
-                                panelReactClass : Panel,
-                                createPropParams: {items:config, ref:action.parts}
-                            });
-                        });
-                    });
-                    break;
-                case "Modal":
-                    this.displayModal(action);
-                    break;
-            }
+               switch( target ){
+                  case "LeftPanel":
+                     self.refs['LeftNavigation'].setState(stateObject); break;
+                  case "RightPanel":
+                     self.refs['RightNavigation'].setState(stateObject); break
+                  default:
+                     break;
+               }
+            }]);
         },
 
          onThrowCatcherNoticeMessage( _eventData, _pass){
@@ -397,6 +333,41 @@ require('jquery-ui');
         }
     });
 
-    module.exports = UIArchitecture;
+    module.exports = UIService;
 
+
+
+
+    function loadPanel(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!./panel/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
+
+    function loadModal(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!./modal/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
+
+    function loadJson(pageName, callback) {
+        try {
+            var pageBundle = require("bundle!../../config/" + pageName)
+        } catch (e) {
+            return callback(e);
+        }
+        pageBundle(function (page) {
+            callback(null, page);
+        })
+    }
 })();
