@@ -6,7 +6,6 @@
  * Requires(css) : Screen.less
  */
 var $ = require('jquery');
-
 require('jquery-ui');
 (function () {
     require('./UIService.less');
@@ -293,7 +292,6 @@ require('jquery-ui');
         },
 
         render() {
-            var self = this;
             var leftMenuList = LeftMenuListConfig;
             var rightMenuList = RightMenuListConfig;
             var leftNaviRefKey = "LeftNavigation";
@@ -334,9 +332,6 @@ require('jquery-ui');
     });
 
     module.exports = UIService;
-
-
-
 
     function loadPanel(pageName, callback) {
         try {
