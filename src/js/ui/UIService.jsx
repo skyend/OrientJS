@@ -322,7 +322,6 @@ require('jquery-ui');
                                     naviWidth={50}
                                     panelWidth={210}
                                     position='left'
-                                    onThrow={this.getOnThrow(leftNaviRefKey)}
                                     naviItemFontSize={20}/>
 
                     <RightNavigation ref={rightNaviRefKey}
@@ -331,7 +330,6 @@ require('jquery-ui');
                                      panelWidth={230}
                                      showTitle={true}
                                      verticalText={true}
-                                     onThrow={this.getOnThrow(rightNaviRefKey)}
                                      position='right'
                                      naviItemFontSize={16}/>
 

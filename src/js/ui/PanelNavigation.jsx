@@ -38,8 +38,6 @@
 
         resize(_width){
             this.getDOMNode().style.width = _width + 'px';
-
-            //this.props.onResize(_width);
         },
 
         foldPanel(){
@@ -157,6 +155,7 @@
             }
 
             navigationAreaStyle.fontSize = this.props.naviItemFontSize || 12;
+
 
             return (
                 <aside className={rootClasses.join(' ')} style={rootStyle}>

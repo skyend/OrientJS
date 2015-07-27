@@ -5,19 +5,28 @@
 
    var SubWindow = require('./SubWindow.jsx');
 
+   var windowRefPrefix = "subWindow";
+
    var SubWindowSystem = React.createClass({
       mixins: [require('../reactMixin/EventDistributor.js')],
 
       getInitialState(){
          return {
-            subWindowItems : [1,2,3]
+            subWindowItems : [1,2,3],
+            startZIndex: 10
          }
       },
 
+      onThrowCatcherFocusedMe(_eventData, _pass){
+         console.log(arguments);
+         //var focusedWindowRef = _eventData.refPath[0];
 
-      mapWindowItem( _windowItem ){
 
-         return <SubWindow onThrow={this.getOnThrow()} width={300} height={100} positionX={10} positionY={20} text={_windowItem}/>
+      },
+
+      mapWindowItem( _windowItem, _i ){
+         console.log(_i);
+         return <SubWindow ref={windowRefPrefix+_i} width={300} height={100} positionX={10} positionY={20} text={_windowItem}/>
       },
 
 

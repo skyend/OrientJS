@@ -3,10 +3,6 @@
 
    var React = require('react');
 
-   var Position = function(){
-      this.x = 0;
-      this.y = 0;
-   }
 
    var SubWindowSystem = React.createClass({
       mixins: [require('../reactMixin/EventDistributor.js')],
@@ -109,6 +105,12 @@
 
           this.prevMouseY = undefined;
           this.prevMouseX = undefined;
+
+          this.focus();
+      },
+
+      focus(){
+         this.emit("FocusedMe", {});
       },
 
 
@@ -122,7 +124,7 @@
 
 
          return (
-            <div className={classes.join(' ')} style={styles}>
+            <div className={classes.join(' ')} style={styles} onClick={this.focus}>
                <div className='head-title-bar' onMouseDown={this.onMouseDownToHeader}>
                   <div className='title'>
                      { this.state.title }

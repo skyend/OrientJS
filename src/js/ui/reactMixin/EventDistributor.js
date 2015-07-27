@@ -3,33 +3,99 @@
  *
  * ReactElement간 이벤트 유통을 구현하여 주는 객체
  *
- * Requires(js)  :
- * Requires(css) :
+ * Author: Jinwoong Han<theskyend0@gmail.com>
+ * Version: 1.0
  */
 
 (function() {
 
+   var _CATCHERPREFIX_ = "onThrowCatcher";
+
    var EventDistributor = {
+
+      /**
+       * Emitter
+       *
+       * @Param _eventName
+       * @Param _eventData
+       * @Param _seedEvent
+       * @Param _seedEventType
+       *
+       * 이벤트를 상위컴포넌트로 던지는 메소드
+       *
+       */
       emit: function(_eventName, _eventData, _seedEvent, _seedEventType) {
          var eventName = _eventName;
          var eventData = _eventData;
 
+         // EventData가 입력되지 않았다면 빈 Object를 생성해 입력해둔다.
          if (typeof eventData === 'undefined' || eventData === null) {
             eventData = {};
          }
 
+         // SeedEvent정보를 eventData 에 입력한다.
          eventData.seedEvent = _seedEvent;
          eventData.seedEventType = _seedEventType;
 
-         if (typeof this.props.onThrow === 'function') {
-            this.props.onThrow(eventName, eventData);
 
+         // 자신에 구현된 eventTernelToParent 를 이용하여 상위로 던지기 위한 시도를 한다.
+         this.__eventTernelToParent(eventName, eventData, this.__myRefByParent);
+      },
+
+      /**
+       * eventTernelToParent
+       *
+       * @Param _eventName
+       * @Param _eventData
+       * @Param _seedEvent
+       * @Param _seedEventType
+       *
+       * 상위(Owner)에 구현된 __eventTernelFromChildren메소드에 접근하여
+       * 이벤트를 전송한다.
+       */
+      __eventTernelToParent: function(_eventName, _eventData, _seedEvent, _seedEventType) {
+         if (typeof this.__ownerInstance !== 'undefined') {
+            if (typeof this.__ownerInstance.__eventTernelFromChildren === 'function') {
+
+               if (typeof _eventData.refPath !== 'object') {
+                  _eventData.refPath = [];
+               }
+
+               _eventData.refPath.push(this.__myRefByParent);
+
+               this.__ownerInstance.__eventTernelFromChildren(_eventName, _eventData);
+            } else {
+               console.warn("ThrowEvent 를 허락하지 않는 Component입니다. ThrowEvent를 허락하기 위해서 EventDistributor를 Mixin 하여 주세요.\n발생된 이벤트 [" + _eventName + "]는 소멸될 것입니다.");
+            }
          } else {
-            console.warn("더 이상 이벤트를 청취하는 자가 없습니다. 발생된 이벤트 [" + eventName + "]는 소멸될 것입니다.", eventData);
+            console.warn("ThrowEvent가 최상위로 도달 하였습니다. \n발생된 이벤트 [" + _eventName + "]를 Catch하지 않음으로 소멸될 것입니다. \n이벤트를 Catch하려면 [" + _CATCHERPREFIX_ + _eventName + "]메서드를 구현 해 주세요.", _eventData);
          }
       },
 
-      eventCatch: function(_eventName, _eventData, _seedEvent, _seedEventType, _refKey) {
+      /**
+       * eventTernelFromChildren
+       * @Param _eventName
+       * @Param _eventData
+       *
+       * 하위 컴포넌트의 __eventTernelToParent메소드를 이용해 자신에게 던지는 이벤트를 받아들인다.
+       * 받아 들인후 자신에 구현된 __eventCatch 로 전달해 이벤트를 라우팅 하도록 한다.
+       */
+      __eventTernelFromChildren: function(_eventName, _eventData) {
+
+
+         this.__eventCatch(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType);
+      },
+
+      /**
+       * eventCatch
+       * @Param _eventName
+       * @Param _eventData
+       * @Param _seedEvent
+       * @Param _seedEventType
+       *
+       * eventTernelFromChildren 를 통해 전달받는 이벤트를 자신에게 구현된 Catcher 들로 라우팅 한다.
+       */
+      __eventCatch: function(_eventName, _eventData, _seedEvent, _seedEventType) {
          var catcher = this["onThrowCatcher" + _eventName];
 
 
@@ -43,59 +109,37 @@
             // 1: EventData
             // 2: Pass callback function
             catcher(_eventData, function() {
-               self.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType, _refKey);
+               self.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType);
             });
          } else {
             // 처리할 수 있는 핸들러가 존재 하지 않는 경우 더 상위로 올려 보내기위해 다시 emit 한다.
 
-            this.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType, _refKey);
+            this.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType);
          }
       },
 
       /**
-       * 자신이 마운트되면 자신에게 참조된 요소들에게 onThrow 를 입력한다.
-       * 구성된 요소들 중 ref 가 지정된 요소에 대해 onThrow 를 입력한다.
+       * Mount 예정인 컴포넌트에 상위컴포넌트에 대한 정보를 자신에게 입력해둔다.
        */
-      componentDidMount: function() {
-         this.autoBindOnThrow();
-      },
+      componentWillMount: function() {
+         // 자신의 상위컴포넌트(Owner)를 얻는다.
+         var ownerComponent = this._reactInternalInstance._currentElement._owner;
 
-      componentDidUpdate: function() {
-         this.autoBindOnThrow();
-      },
+         // 자신의 상위 컴포넌트가 존재한다면(not null) 상위컴포넌트 객체의 _instance 를 얻어 저장한다.
+         if (ownerComponent !== null) {
+            var ownerInstance = ownerComponent._instance;
 
-      autoBindOnThrow: function() {
-         var refKeys = Object.keys(this.refs);
+            this.__ownerInstance = ownerInstance;
 
-         for (var i = 0; i < refKeys.length; i++) {
-            var refKey = refKeys[i];
+            // 상위 컴포넌트로부터 부여받은 자신의 ref키를 얻는다.
+            this.__myRefByParent = this._reactInternalInstance._currentElement.ref;
 
-            this.refs[refKey].props.onThrow = this.getOnThrow(refKey);
-         }
-      },
-
-      getOnThrow: function(_refKey) {
-         var self = this;
-
-         return function() {
-            var argArr = [];
-
-            argArr[0] = arguments[0]; // EventName
-            argArr[1] = arguments[1]; // EventData
-            argArr[2] = arguments[2]; // SeedEvent
-            argArr[3] = arguments[3]; // SeedEventType
-            argArr[4] = _refKey; // EventEmitter refName
-
-            if (typeof argArr[1].refPath !== 'object') {
-               argArr[1].refPath = [];
+            // ref를 부여받지 않았다면 refKey에 따른 처리를 달리 하기 위해 ref입력을 장려한다.
+            if (typeof this.__myRefByParent === 'undefined') {
+               console.warn("ref 가 지정되지 않은 컴포넌트 입니다. 상위 컴포넌트로부터 합리적인 ref를 지정되도록 하여주세요.");
             }
-
-            argArr[1].refPath.push(_refKey);
-
-
-            self.eventCatch.apply(self, argArr);
          }
-      }
+      },
    };
 
    module.exports = EventDistributor;
