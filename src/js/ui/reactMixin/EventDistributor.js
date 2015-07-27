@@ -165,7 +165,7 @@
        * 하위컴포넌트에 fireChildrenRootMounted 메소드가 존재 하는경우 하위컴포넌트에게도 자신의 하위컴포넌트에 componentDidMountByRoot이벤트를 발생시키도록 한다.
        */
       __fireChildrenRootMounted: function() {
-         var children = this.getComponentChildren();
+         var children = this.__getComponentChildren();
          var childKeys = Object.keys(children);
          for (var i = 0; i < childKeys.length; i++) {
             var childKey = childKeys[i];
