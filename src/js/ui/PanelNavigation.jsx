@@ -48,6 +48,8 @@
             this.fold = true;
 
             this.emit('FoldPanel', {width: this.props.naviWidth});
+
+
         },
 
         unfoldPanel(){
@@ -115,6 +117,8 @@
 
         componentDidMount(){
             this.foldPanel();
+
+
         },
 
         componentWillUpdate( _nextProps, _nextState ){
