@@ -47,7 +47,11 @@
 
             this.emit('FoldPanel', {width: this.props.naviWidth});
 
-
+            // 임시로 요소 제거 공지
+            this.emit('NoticeMessage', {
+               title : "From PanelNavigation",
+               message : "Folded Panel"
+            });
         },
 
         unfoldPanel(){
@@ -57,6 +61,11 @@
             this.fold = false;
 
             this.emit('UnfoldPanel', {width:width});
+
+            this.emit('NoticeMessage', {
+               title : "From PanelNavigation",
+               message : "Unfolded Panel"
+            });
         },
 
         startHookDrag(e){
@@ -113,7 +122,7 @@
             );
         },
 
-        componentDidMount(){
+        componentDidMountByRoot(){
             this.foldPanel();
 
 

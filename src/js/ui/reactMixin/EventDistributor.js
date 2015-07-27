@@ -9,7 +9,7 @@
 
 (function() {
 
-   var _CATCHERPREFIX_ = "onThrowCatcher";
+   var _CATCHERPREFIX_ = "onThrowCatcher"; // 변경금지
 
    var EventDistributor = {
 
@@ -43,7 +43,7 @@
       },
 
       /**
-       * eventTernelToParent
+       * __eventTernelToParent
        *
        * @Param _eventName
        * @Param _eventData
@@ -73,7 +73,7 @@
       },
 
       /**
-       * eventTernelFromChildren
+       * __eventTernelFromChildren
        * @Param _eventName
        * @Param _eventData
        *
@@ -87,7 +87,7 @@
       },
 
       /**
-       * eventCatch
+       * __eventCatch
        * @Param _eventName
        * @Param _eventData
        * @Param _seedEvent
@@ -138,8 +138,72 @@
             if (typeof this.__myRefByParent === 'undefined') {
                console.warn("ref 가 지정되지 않은 컴포넌트 입니다. 상위 컴포넌트로부터 합리적인 ref를 지정되도록 하여주세요.");
             }
+
+            console.log(this);
+
          }
       },
+
+      /**
+       * Component의 최상위 Root가 마운트 되는 시점에 상위에서 하위로 내려가면서 모든 componentDidMountByRoot 이벤트를 발생시킨다.
+       * componentDidMountByRoot 메소드가 구현된 컴포넌트에 한해서 발생시킨다.
+       */
+      componentDidMount: function() {
+         // 자신의 상위컴포넌트(Owner)를 얻는다.
+         var ownerComponent = this._reactInternalInstance._currentElement._owner;
+
+         // 자신의 상위 Component 가 존재하지 않는경우
+         // 자신이 최상위 RootComponent 로써 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키는 메소드를 호출한다.
+         if (ownerComponent === null) {
+            this.__fireChildrenRootMounted();
+         }
+      },
+
+      /**
+       * __fireChildrenRootMounted
+       * 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키며
+       * 하위컴포넌트에 fireChildrenRootMounted 메소드가 존재 하는경우 하위컴포넌트에게도 자신의 하위컴포넌트에 componentDidMountByRoot이벤트를 발생시키도록 한다.
+       */
+      __fireChildrenRootMounted: function() {
+         var children = this.getComponentChildren();
+         var childKeys = Object.keys(children);
+         for (var i = 0; i < childKeys.length; i++) {
+            var childKey = childKeys[i];
+
+            var childComponent = children[childKey];
+
+
+            if (typeof childComponent._instance.__fireChildrenRootMounted === 'function') {
+               childComponent._instance.__fireChildrenRootMounted();
+            }
+
+            if (typeof this.componentDidMountByRoot === 'function') {
+               this.componentDidMountByRoot();
+            }
+         }
+      },
+
+      /**
+       * __getComponentChildren
+       * 자신의 하위컴포넌트들을 가져오는 메소드
+       */
+      __getComponentChildren: function() {
+
+         return this._reactInternalInstance._renderedComponent._renderedComponent._renderedChildren;
+      }
+
+
+      /**
+       * Interface componentDidMountByRoot
+       *
+       * 최상위 Root컴포넌트가 마운트 되는 시점에 어떤 처리를 하고싶다면 아래의 메소드를 구현한다.
+       *
+       *
+      componentDidMountByRoot: function(){
+         // processing something...
+      }
+      */
+
    };
 
    module.exports = EventDistributor;
