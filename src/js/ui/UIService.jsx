@@ -31,6 +31,7 @@ require('jquery-ui');
     var Modal = require('./Modal.jsx');                         //Modal UI
     var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
     var PushMessage = require('./PushMessage.jsx');             //PushMessage
+    var SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
 
     var React = require('react');
 
@@ -146,6 +147,10 @@ require('jquery-ui');
         onThrowCatcherStageElementEdit( _eventData, _pass ){
             console.log("처리완료 StageElementEdit", _eventData);
             this.offContextMenu();
+
+            this.newSubWindow();
+
+
         },
 
         onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
@@ -234,6 +239,17 @@ require('jquery-ui');
 
          offContextMenu(){
            this.refs['stage-context-menu'].setState({display:'off'});
+         },
+
+         newSubWindow(){
+            var subWindowSystem = this.refs['SubWindowSystem'];
+            var currentState = subWindowSystem.state.subWindowItems;
+
+            currentState.push({
+               title:"edit Window"
+            });
+
+            subWindowSystem.setState({subWindowItems:currentState})
          },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -328,6 +344,7 @@ require('jquery-ui');
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
                     <PushMessage ref='NotificationCenter'/>
+                    <SubWindowSystem ref='SubWindowSystem'/>
                 </div>
             )
         }

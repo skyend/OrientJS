@@ -41,7 +41,7 @@
             /* Global Drag 자원 반환 */
             app.ui.disableGlobalDrag();
             app.ui.returnOccupyMouseDown();
-
+            app.ui.returnOccupiedGlobalDrag();
             //this.emit('StoppedDrag', {}, _e, "MouseEvent");
         },
 
