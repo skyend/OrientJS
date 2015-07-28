@@ -14,32 +14,39 @@
 
       getInitialState(){
          return {
-            subWindowItems : [{
+            subWindowItems : [
+            {
+               title:"Test A",
                empty:false,
                key:"A",
                desc: "A",
                zOrder:1
             },{
+               title:"Test B",
                empty:false,
                key:"B",
                desc: "B",
                zOrder:2
             },{
+               title:"Test C",
                empty:false,
                key:"C",
                desc: "C",
                zOrder:3
             },{
+               title:"Test D",
                empty:false,
                key:"D",
                desc: "D",
                zOrder:4
             },{
+               title:"Test E",
                empty:false,
                key:"E",
                desc: "E",
                zOrder:5
-            }],
+            }
+            ],
 
             startZIndex: 10
          }
@@ -126,7 +133,7 @@
             _subWindowItem.zOrder = items.length + 1;
             items.push(_subWindowItem);
          }
-         console.log('spawn',_subWindowItem);
+
          this.setState({subWindowItems:items});
       },
 
@@ -136,8 +143,9 @@
          if( _windowItem.empty ){
             return <div style={{display:'none'}}/>
          } else {
-            //console.log( _windowItem);
+
             return ( <SubWindow ref={ _windowItem.key }
+                                title={_windowItem.title}
                                 text={_windowItem.desc}
                                 x={50}
                                 y={50}
