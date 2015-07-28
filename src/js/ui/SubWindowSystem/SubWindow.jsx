@@ -8,11 +8,16 @@
       mixins: [require('../reactMixin/EventDistributor.js')],
 
       getDefaultProps(){
+         /**
+         최초 초기화 State를 위함
+         */
          return {
-            positionX : 0,
-            positionY : 0,
+            x : 0,
+            y : 0,
             width:300,
-            height:200
+            height:200,
+            zOrder:0,
+            baseZOrder:10
          };
       },
 
@@ -20,14 +25,26 @@
          return {
             theme: 'black',
             title : 'temp',
+
             fullScreen:false,
+            minimalized: false,
+
+            tabOrder: 0,
+            zOrder:0,
+            baseZOrder:10,
+
             x: 0,
-            y: 0
+            y: 0,
+
+            width:200,
+            height:150
          };
       },
 
       closeMe(){
-
+         this.emit("CloseMe", {
+            myRef: this._reactInternalInstance._currentElement.ref
+         });
       },
 
       minimalize(){
@@ -57,8 +74,8 @@
             _style.bottom = "0px";
          } else {
 
-            _style.width = this.props.width + 'px';
-            _style.height = this.props.height + 'px';
+            _style.width = this.state.width + 'px';
+            _style.height = this.state.height + 'px';
             _style.left = this.state.x + 'px';
             _style.top = this.state.y + 'px';
          }
@@ -110,9 +127,23 @@
       },
 
       focus(){
-         this.emit("FocusedMe", {});
+         this.emit("FocusedMe", {
+            myRef: this._reactInternalInstance._currentElement.ref
+         });
       },
 
+      componentDidMount(){
+
+         // 최초 마운트 후 입력된 Properties를 state로 반영한다.
+         this.setState({
+            x : this.props.x,
+            y : this.props.y,
+            width : this.props.width,
+            height : this.props.height,
+            zOrder : this.props.zOrder,
+            baseZOrder : this.props.baseZOrder
+         });
+      },
 
       render(){
 
@@ -121,10 +152,11 @@
          var styles = {};
 
          styles = this.styleProcFullScreen(styles);
+         styles.zIndex = this.state.zOrder + this.state.baseZOrder;
 
 
          return (
-            <div className={classes.join(' ')} style={styles} onClick={this.focus}>
+            <div className={classes.join(' ')} style={styles} onMouseDown={this.focus}>
                <div className='head-title-bar' onMouseDown={this.onMouseDownToHeader}>
                   <div className='title'>
                      { this.state.title }
@@ -147,7 +179,7 @@
                   </div>
                </div>
                <div className='window-description'>
-                  {this.props.text}
+                  {this.props.text} <input />
                </div>
             </div>
          );
