@@ -12,21 +12,55 @@
 
       getInitialState(){
          return {
-            subWindowItems : [1,2,3],
+            subWindowItems : [{
+               empty:false,
+               key:"A",
+               desc: "A"
+            },{
+               empty:false,
+               key:"B",
+               desc: "B"
+            },{
+               empty:false,
+               key:"C",
+               desc: "C"
+            }],
             startZIndex: 10
          }
       },
 
       onThrowCatcherFocusedMe(_eventData, _pass){
          console.log(arguments);
-         //var focusedWindowRef = _eventData.refPath[0];
+         var focusedWindowRef = _eventData.refPath[0];
 
 
       },
 
+      onThrowCatcherCloseMe( _eventData, _pass ){
+         var windowRef = _eventData.myRef;
+
+         var filteredSubWindowItems = this.state.subWindowItems;
+
+         for(var i = 0; i < filteredSubWindowItems.length; i++ ){
+            var item = this.state.subWindowItems[i];
+
+            if( windowRef === item.key ){
+               filteredSubWindowItems[i] = { empty:true };
+            }
+         }
+
+         this.setState({subWindowItems: filteredSubWindowItems});
+      },
+
+
+
+
       mapWindowItem( _windowItem, _i ){
-         console.log(_i);
-         return <SubWindow ref={windowRefPrefix+_i} width={300} height={100} positionX={10} positionY={20} text={_windowItem}/>
+         if( _windowItem.empty ){
+            return <div style={{display:'none'}}/>
+         } else {
+            return <SubWindow ref={ _windowItem.key } width={300} height={100} positionX={10} positionY={20} text={_windowItem.desc}/>
+         }
       },
 
 
