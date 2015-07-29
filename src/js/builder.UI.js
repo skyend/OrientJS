@@ -85,6 +85,7 @@
    };
 
    UI.prototype.progressGlobalDrag = function(_e) {
+      console.log(this.globalDragOccupyObject);
       if (this.globalDragOccupyObject !== null) {
 
          this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);

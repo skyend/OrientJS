@@ -69,10 +69,12 @@
          for(var i = 0; i < filteredSubWindowItems.length; i++ ){
             var item = this.state.subWindowItems[i];
 
-            if( windowRef === item.key ){
+            if( windowRef === item.ref ){
                filteredSubWindowItems[i] = { empty:true };
             }
          }
+
+         console.log(filteredSubWindowItems);
 
          this.setState({subWindowItems: filteredSubWindowItems});
       },

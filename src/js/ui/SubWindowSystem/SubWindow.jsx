@@ -41,6 +41,7 @@
       },
 
       closeMe(){
+         window.app.ui.stopGlobalDrag();
          this.emit("CloseMe", {
             myRef: this._reactInternalInstance._currentElement.ref
          });
@@ -50,11 +51,13 @@
 
          if( this.refs['window-body'].getDOMNode().style.display === 'block' ){
             this.setState({minimalized:true});
+
             this.emit("MinimalizedMe", {
                myRef: this._reactInternalInstance._currentElement.ref
             });
          } else {
             this.setState({minimalized:false});
+
             this.emit("NormalizedMe", {
                myRef: this._reactInternalInstance._currentElement.ref
             });
@@ -109,9 +112,10 @@
       /////////////////////////////////////
       // Drag Routines
       ///
-      onMouseDownToHeader(){
-
+      onMouseDownToHeader(_e){
+         console.log(_e.nativeEvent.target);
          if( !this.state.fullScreen ){
+
             // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)
             app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
