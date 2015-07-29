@@ -14,39 +14,7 @@
 
       getInitialState(){
          return {
-            subWindowItems : [
-            {
-               title:"Test A",
-               empty:false,
-               key:"A",
-               desc: "A",
-               zOrder:1
-            },{
-               title:"Test B",
-               empty:false,
-               key:"B",
-               desc: "B",
-               zOrder:2
-            },{
-               title:"Test C",
-               empty:false,
-               key:"C",
-               desc: "C",
-               zOrder:3
-            },{
-               title:"Test D",
-               empty:false,
-               key:"D",
-               desc: "D",
-               zOrder:4
-            },{
-               title:"Test E",
-               empty:false,
-               key:"E",
-               desc: "E",
-               zOrder:5
-            }
-            ],
+            subWindowItems : [],
 
             startZIndex: 10
          }
@@ -65,7 +33,7 @@
             var item = items[i];
 
             if( item.empty ) continue;
-            if( item.key === focusedWindowRef ){
+            if( item.ref === focusedWindowRef ){
                focusedWindowIndex = i;
                focusedWindowZOrder = item.zOrder;
             }
@@ -89,7 +57,7 @@
             }
 
             // 변경된 zOrder값을 반영한다.
-            this.refs[item.key].setState({zOrder:item.zOrder});
+            this.refs[item.ref].setState({zOrder:item.zOrder});
          }
       },
 
@@ -111,29 +79,65 @@
 
 
 
-      spawnSubWindow( _subWindowItem ){
+      spawnSubWindow( _newSubWindowItem ){
          var emptyIndex = -1;
 
          var items = this.state.subWindowItems;
 
+         // subWindowArray 에서 window비어있는 방을 검색한다.
+         // 비어있는 방을 검색과 동시에 비어있지 않은 방의 window Key와 현재 새 subWindow 의 Key가 같은지 확인한다.
+         var duplicated = false;
+         var duplicatedCount = 0;
+         var lastDuplicatedCount = 0;
          for( var i = 0; i < items.length; i++ ){
             var item = items[i];
 
             if( item.empty ){
                emptyIndex = i;
-               break;
+            } else {
+
+               // 같은 키를 가진 window를 발견하면 duplicated를 true로 변경한다.
+               if( _newSubWindowItem.key === item.key){
+                  duplicated = true;
+                  duplicatedCount++;
+
+                  if( typeof item.lastDuplicatedCount === 'number' ){
+                     lastDuplicatedCount = item.lastDuplicatedCount;
+                  }
+               }
             }
          }
 
-         if( emptyIndex > 0 ){
-            _subWindowItem.empty = false;
-            _subWindowItem.zOrder = items.length;
-            items[emptyIndex] = _subWindowItem;
-         } else {
-            _subWindowItem.zOrder = items.length + 1;
-            items.push(_subWindowItem);
+         _newSubWindowItem.ref = _newSubWindowItem.key;
+
+         // 이미 생성되어 사용중인 window Key로 새 윈도우를 생성하려 한다면.
+         if( duplicated ){
+
+            // 해당 windowKey가 중복생성을 허용하지 않는다면
+            // 이미 생성된 동일한 키의 윈도우로 focus한다.
+            if( ! _newSubWindowItem.duplication ) return this.refs[_newSubWindowItem.ref].focus();
+
+            // 중복생성을 허용한다면
+            // ref를 중복된 key에서 중복생성으로 인해 만들어진 누적중복값에 +1을 한 후 새 ref를 만든다.
+            _newSubWindowItem.lastDuplicatedCount = lastDuplicatedCount + 1;
+            _newSubWindowItem.ref = _newSubWindowItem.key + "_" + _newSubWindowItem.lastDuplicatedCount;
          }
 
+
+         // 중간에 비어있는 방을 찾았다면 그 방의 index에 새 윈도우를 삽입한다.
+         if( emptyIndex > 0 ){
+
+            _newSubWindowItem.empty = false;
+            _newSubWindowItem.zOrder = items.length;
+            items[emptyIndex] = _newSubWindowItem;
+         } else {
+            // 비어있는 방을 찾지 못했다면 push하여 윈도우를 삽입한다.
+            _newSubWindowItem.zOrder = items.length + 1;
+
+            items.push(_newSubWindowItem);
+         }
+
+         // component 업데이트
          this.setState({subWindowItems:items});
       },
 
@@ -144,7 +148,7 @@
             return <div style={{display:'none'}}/>
          } else {
 
-            return ( <SubWindow ref={ _windowItem.key }
+            return ( <SubWindow ref={ _windowItem.ref }
                                 title={_windowItem.title}
                                 text={_windowItem.desc}
                                 x={50}
@@ -156,6 +160,49 @@
          }
       },
 
+      componentDidMount(){
+         var testWindowList = [{
+            title:"Test A",
+            empty:false,
+            key:"A",
+            desc: "A",
+            duplication:false,
+            zOrder:1
+         },{
+            title:"Test B",
+            empty:false,
+            key:"B",
+            desc: "B",
+            duplication:false,
+            zOrder:2
+         },{
+            title:"Test C",
+            empty:false,
+            key:"C",
+            desc: "C",
+            duplication:false,
+            zOrder:3
+         },{
+            title:"Test D",
+            empty:false,
+            key:"D",
+            desc: "D",
+            duplication:false,
+            zOrder:4
+         },{
+            title:"Test E",
+            empty:false,
+            key:"E",
+            desc: "E",
+            duplication:false,
+            zOrder:5
+         }];
+
+         for( var i = 0; i < testWindowList.length; i++ ){
+            this.spawnSubWindow(testWindowList[i]);
+         }
+
+      },
 
       render(){
          return (

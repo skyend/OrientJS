@@ -245,7 +245,8 @@ require('jquery-ui');
 
             subWindowSystem.spawnSubWindow({
                key:"New",
-               desc: "New"
+               desc: "New",
+               duplication:true
             });
          },
 
