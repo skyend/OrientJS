@@ -12,7 +12,7 @@ var $ = require('jquery');
 (function() {
    require('./DocumentStage.less');
    var DOMEditor = require('./tools/DocumentEditor.jsx');
-   var PanelContainer = require('./PanelContainer.jsx');
+   var ToolContainer = require('./ToolContainer.jsx');
    var React = require("react");
 
    var Contents = React.createClass({
@@ -251,7 +251,7 @@ var $ = require('jquery');
                   <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
                </div>
 
-               <PanelContainer panel={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} panelTitle="Document Editor" ref='footer-panel-part' resizeMe={this.onFooterPanelPartResize}/>
+               <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} panelTitle="Document Editor" ref='footer-panel-part' resizeMe={this.onFooterPanelPartResize}/>
 
             </section>
          )

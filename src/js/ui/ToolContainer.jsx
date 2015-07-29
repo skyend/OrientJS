@@ -1,9 +1,9 @@
 
 (function(){
-    require('./PanelContainer.less');
+    require('./ToolContainer.less');
     var React = require("react");
 
-    var R = React.createClass({
+    var ToolContainer = React.createClass({
         mixins:[ require('./reactMixin/EventDistributor.js') ],
         getInitialState(){
             return {  }
@@ -46,14 +46,14 @@
 
         render: function () {
 
-            var panel;
-            if( typeof this.props.panel !== 'undefined' ){
-                panel = this.props.panel;
+            var tool;
+            if( typeof this.props.tool !== 'undefined' ){
+                tool = this.props.tool;
             }
 
             return (
-                <div className='PanelContainer night-dark'>
-                    <div className='part-header' onMouseDown={this.onMouseDownToHeader}>
+                <div className='ToolContainer night-dark'>
+                    <div className='tool-header' onMouseDown={this.onMouseDownToHeader}>
                         <div className='block-area'>
                             <ul>
                                 <li>{this.props.panelTitle}</li>
@@ -66,9 +66,9 @@
                             </ul>
                         </div>
                     </div>
-                    <div className='part-body'>
+                    <div className='tool-body'>
                         <div className='react-container'>
-                            { panel }
+                            { tool }
                         </div>
                     </div>
                 </div>
@@ -76,6 +76,6 @@
         }
     });
 
-    module.exports = R;
+    module.exports = ToolContainer;
 
 })();

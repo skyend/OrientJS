@@ -107,7 +107,8 @@
 
               this.emit("NoticeMessage",{
                  title : "From PanelNavigation",
-                 message : "Equiped tool["+_toolKey+"]"
+                 message : "Equiped tool["+_toolKey+"]",
+                 level : "success"
               });
 
            } else {
@@ -117,7 +118,8 @@
 
               this.emit("NoticeMessage",{
                  title : "From PanelNavigation",
-                 message : "Could't equip tool"
+                 message : "Could't equip tool",
+                 level : "error"
               });
            }
 

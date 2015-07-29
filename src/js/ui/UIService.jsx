@@ -231,7 +231,7 @@
                type:'simple-message',
                title: _eventData.title ,
                message: _eventData.message,
-               level: 'success'
+               level:(typeof _eventData.level !== 'undefined')? _eventData.level:'success'
             });
          },
 
