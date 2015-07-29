@@ -11,7 +11,7 @@ var $ = require('jquery');
 
 (function() {
    require('./DocumentStage.less');
-   var DOMEditor = require('./panel/DocumentEditor.jsx');
+   var DOMEditor = require('./tools/DocumentEditor.jsx');
    var PanelContainer = require('./PanelContainer.jsx');
    var React = require("react");
 

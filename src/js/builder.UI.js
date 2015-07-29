@@ -10,6 +10,7 @@
 (function() {
    var React = require("react");
    var uiScreen = require('./ui/UIService.jsx');
+   var DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
 
    var UI = function(_window) {
       var self = this;
@@ -51,7 +52,7 @@
       var height = this.window.innerHeight;
       var screenWidth = this.window.outerWidth;
       var screenHeigt = this.window.outerHeight;
-      console.log(screenHeigt);
+
       // resizeListener 이벤트 체크
       if (typeof this.observers['resizeListener'] === 'function') {
          this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
@@ -85,7 +86,7 @@
    };
 
    UI.prototype.progressGlobalDrag = function(_e) {
-      console.log(this.globalDragOccupyObject);
+
       if (this.globalDragOccupyObject !== null) {
 
          this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
@@ -204,7 +205,10 @@
       var self = this;
 
       React.render(React.createElement(this.uiScreen, {
-         observers: this.observers
+         observers: this.observers,
+         LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
+         RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
+         Tools: DefaultBuilderConfig.tools
       }), this.window.document.getElementsByTagName('BODY')[0]);
       this.onResize();
    }

@@ -5,8 +5,7 @@
  * Requires(js)  : BuilderNavigation.jsx
  * Requires(css) : Screen.less
  */
-var $ = require('jquery');
-require('jquery-ui');
+
 (function () {
     require('./UIService.less');
 
@@ -15,14 +14,10 @@ require('jquery-ui');
     var Loader = require('../lib/WebpackAsyncPartsLoader.js');
     var Async = require('../lib/Async.js');
 
-    //메뉴 데이터 파일
-    var LeftMenuListConfig = require("../../config/LeftNavigationConfig.json");      //좌측 네비게이션 메뉴목록
-    var RightMenuListConfig = require("../../config/RightNavigationConfig.json");    //우측 네비게이션 메뉴목록
-
     var HeadToolBar = require('./HeadToolBar.jsx');                     //상단 네비게이션 UI
 
-    var LeftNavigation = require('./PanelNavigation.jsx'); // 좌측 네비게이션 UI
-    var RightNavigation = require('./PanelNavigation.jsx'); // 우측 네비게이션 UI
+    var LeftNavigation = require('./ToolNavigation.jsx'); // 좌측 네비게이션 UI
+    var RightNavigation = require('./ToolNavigation.jsx'); // 우측 네비게이션 UI
 
 
     var DocumentStage = require('./DocumentStage.jsx');                 //중앙 컨텐츠 영역 UI
@@ -115,14 +110,12 @@ require('jquery-ui');
         },
 
         onThrowCatcherClickElementInStage( _eventData, _pass ){
-            console.log("처리완료 임시", _eventData);
             this.offContextMenu();
 
             //_pass();
         },
 
         onThrowCatcherStageElementDelete( _eventData, _pass ){
-            console.log("처리완료 StageElementDelete", _eventData);
             //_eventData.target.element.remove();
 
             this.refs['DocumentStage'].deleteElement({
@@ -136,15 +129,12 @@ require('jquery-ui');
         },
 
         onThrowCatcherStageElementClone( _eventData, _pass ){
-            console.log("처리완료 StageElementClone", _eventData);
             this.offContextMenu();
 
             this.refs['DocumentStage'].setState({a:1});
-            console.log(this.refs['DocumentStage'].test());
         },
 
         onThrowCatcherStageElementEdit( _eventData, _pass ){
-            console.log("처리완료 StageElementEdit", _eventData);
             this.offContextMenu();
 
 
@@ -153,12 +143,11 @@ require('jquery-ui');
         },
 
         onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
-            console.log("처리완료 SelectParentElementByStageElement", _eventData);
+
             this.offContextMenu();
         },
 
         onThrowCatcherFoldPanel( _eventData, _pass ){
-            console.log("처리완료 FoldPanel", _eventData);
 
             if( _eventData.refPath[0] === 'RightNavigation' ){
                 this.rightAreaWidth = _eventData.width;
@@ -170,7 +159,6 @@ require('jquery-ui');
         },
 
         onThrowCatcherUnfoldPanel( _eventData, _pass ){
-            console.log("처리완료 UnfoldPanel", _eventData);
 
             if( _eventData.refPath[0] === 'RightNavigation' ){
                 this.rightAreaWidth = _eventData.width;
@@ -181,50 +169,61 @@ require('jquery-ui');
             this.resizeMiddleArea();
         },
 
-        onThrowCatcherDisplayPanel( _eventData, _pass ){
-            var self = this;
-            var action = _eventData.action;
-            var target = action.target;
+        onThrowCatcherNeedEquipTool( _eventData, _pass ){
+           var self = this;
 
-            /**
-             * WaterFall 을 이용하여 비동기로드를 동기화한다.
-             */
-            Async.waterFall([function(_cb){
-               loadPanel(action.parts + ".jsx", function (_err, _parts) {
-                  if( _err !== null ){
-                     throw new Error('Fail to parts loading');
-                  } else {
-                     _cb(_parts);
-                  }
-               });
-            },function( _parts, _cb){
-               loadJson(action.config + ".json", function (_err, _partsConfig) {
-                  if( _err !== null ){
-                     throw new Error('Fail to partsConfig loading');
-                  } else {
-                     _cb( _parts, _partsConfig);
-                  }
-               });
-            },function( _parts, _partsConfig){
+           var toolKey = _eventData.toolKey;
+           var toolSpec = this.props.Tools[toolKey];
+           var toEquipRef = _eventData.refPath[0];
 
-               var stateObject = {
-                   targetPanelItem : _eventData,
-                   panelTitle: _eventData.title,
-                   panelKey : _eventData.id,
-                   panelReactClass : _parts,
-                   createPropParams: {items:_partsConfig, ref:action.parts}
-               };
+           /**
+           * WaterFall 을 이용하여 비동기로드를 동기화한다.
+           */
+           Async.waterFall(toolSpec, [function(__toolSpec, __cb){
 
-               switch( target ){
-                  case "LeftPanel":
-                     self.refs['LeftNavigation'].setState(stateObject); break;
-                  case "RightPanel":
-                     self.refs['RightNavigation'].setState(stateObject); break
-                  default:
-                     break;
-               }
-            }]);
+             if( typeof __toolSpec !== 'object'){
+                self.refs[toEquipRef].equipTool();
+                throw new Error("Tool["+toolKey+"] Spec Object is not exists.");
+             }
+
+             if( typeof __toolSpec.jsxPath !== 'string'){
+                self.refs[toEquipRef].equipTool();
+                throw new Error("Tool["+toolKey+"] JSXPath is not exists.");
+             }
+
+
+             loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
+                 if( ___err !== null ){
+
+                    self.refs[toEquipRef].equipTool();
+                    throw new Error("Fail to load tool["+toolKey+"].");
+                 } else {
+                    __cb(__toolSpec, ___tool);
+                 }
+             });
+          },function( __toolSpec, __tool, __cb){
+
+             // config 파일이 없다면 지나간다.
+             if( typeof __toolSpec.configPath === 'undefined'){
+                 return __cb( __tool, null);
+             }
+
+
+             loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
+                 if( ___err !== null ){
+                    throw new Error("Fail to load tool["+toolKey+"]Config.");
+                 } else {
+
+                    __cb( __tool, ___toolConfig);
+                 }
+             });
+          },function( __tool, __toolConfig){
+
+
+              self.refs[toEquipRef].equipTool( __tool, __toolConfig, toolKey);
+           }]);
         },
+
 
          onThrowCatcherNoticeMessage( _eventData, _pass){
 
@@ -307,24 +306,21 @@ require('jquery-ui');
         },
 
         render() {
-            var leftMenuList = LeftMenuListConfig;
-            var rightMenuList = RightMenuListConfig;
-            var leftNaviRefKey = "LeftNavigation";
-            var rightNaviRefKey = "RightNavigation";
+
             return (
                 <div>
                     <HeadToolBar ref='HeadToolBar'/>
 
 
-                    <LeftNavigation ref={leftNaviRefKey}
-                                    naviItemGroups={leftMenuList}
+                    <LeftNavigation ref="LeftNavigation"
+                                    config={this.props.LeftNavigationConfig}
                                     naviWidth={50}
                                     panelWidth={210}
                                     position='left'
                                     naviItemFontSize={20}/>
 
-                    <RightNavigation ref={rightNaviRefKey}
-                                     naviItemGroups={rightMenuList}
+                    <RightNavigation ref="RightNavigation"
+                                     config={this.props.RightNavigationConfig}
                                      naviWidth={25}
                                      panelWidth={230}
                                      showTitle={true}
@@ -347,13 +343,13 @@ require('jquery-ui');
 
     module.exports = UIService;
 
-    function loadPanel(pageName, callback) {
+    function loadTool(toolPath, callback) {
         try {
-            var pageBundle = require("bundle!./panel/" + pageName)
+            var toolBundle = require("bundle!./tools/" + toolPath)
         } catch (e) {
             return callback(e);
         }
-        pageBundle(function (page) {
+        toolBundle(function (page) {
             callback(null, page);
         })
     }

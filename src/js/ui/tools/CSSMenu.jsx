@@ -51,7 +51,7 @@
         render() {
             return (
                 <div className='CSSMenu white'>
-                    {this.props.items.map(this.renderItems)}
+                    {this.props.config.items.map(this.renderItems)}
                 </div>
             );
         }

@@ -199,10 +199,10 @@
             duplication:false,
             zOrder:5
          }];
-
+         /*// Test
          for( var i = 0; i < testWindowList.length; i++ ){
             this.spawnSubWindow(testWindowList[i]);
-         }
+         }*/
 
       },
 

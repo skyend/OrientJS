@@ -1,8 +1,0 @@
-[
-  { "groupName" : "project" ,
-    "items" : [
-      {"id": "css", "icon": "th", "title": "CSS", "action": {"parts": "CSSMenu", "target": "RightPanel", "config": "CSSMenuConfig"}},
-      {"id": "Treeview", "icon": "briefcase", "title": "TreeView", "action": {"parts": "TreeView", "target": "RightPanel", "config": "TreeViewConfig"}}
-    ]
-  }
-]
