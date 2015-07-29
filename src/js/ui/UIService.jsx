@@ -147,9 +147,9 @@ require('jquery-ui');
             console.log("처리완료 StageElementEdit", _eventData);
             this.offContextMenu();
 
+
+
             this.newSubWindow();
-
-
         },
 
         onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
@@ -242,13 +242,11 @@ require('jquery-ui');
 
          newSubWindow(){
             var subWindowSystem = this.refs['SubWindowSystem'];
-            var currentState = subWindowSystem.state.subWindowItems;
 
-            currentState.push({
-               title:"edit Window"
+            subWindowSystem.spawnSubWindow({
+               key:"New",
+               desc: "New"
             });
-
-            subWindowSystem.setState({subWindowItems:currentState})
          },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -258,7 +256,7 @@ require('jquery-ui');
             var height = selfDom.offsetHeight;
 
 
-            if (typeof this.refs['DocumentStage'] === 'undefined') return;//throw new Error("Not found DocumentStage");
+            if (typeof this.refs['DocumentStage'] === 'undefined') return; // throw new Error("Not found DocumentStage");
 
             var headerOffsetHeight = this.refs['HeadToolBar'].getDOMNode().offsetHeight;
             var footerOffsetHeight = this.refs['FootStatusBar'].getDOMNode().offsetHeight;
