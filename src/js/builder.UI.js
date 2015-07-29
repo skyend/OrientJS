@@ -32,6 +32,10 @@
       this.window.document.onmouseup = function(_e) {
          self.onGlobalMouseUp(_e);
       };
+      this.window.document.oncontextmenu = function(_e) {
+         self.onCallContextMenu();
+      };
+
       this.mouseDawn = false;
       this.mouseDragging = false;
       this.enabledGlobalDrag = false;
@@ -59,24 +63,31 @@
       if (this.enabledGlobalDrag) {
          if (this.mouseDawn) {
             if (this.mouseDragging) {
-               console.log('global drag..');
-
-               if (this.globalDragOccupyObject !== null) {
-
-                  this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
-               }
+               //console.log('global drag..');
+               this.progressGlobalDrag(_e);
             } else {
-               console.log('global drag start');
-               this.coverHelper();
-               this.mouseDragging = true;
-
-
-               if (this.globalDragOccupyObject !== null) {
-
-                  this.globalDragOccupyObject.onGlobalDragStartFromUI.apply(this.globalDragOccupyObject, [_e]);
-               }
+               //console.log('global drag start');
+               this.startGlobalDrag(_e);
             }
          }
+      }
+   };
+
+   UI.prototype.startGlobalDrag = function(_e) {
+      this.coverHelper();
+      this.mouseDragging = true;
+
+
+      if (this.globalDragOccupyObject !== null) {
+
+         this.globalDragOccupyObject.onGlobalDragStartFromUI.apply(this.globalDragOccupyObject, [_e]);
+      }
+   };
+
+   UI.prototype.progressGlobalDrag = function(_e) {
+      if (this.globalDragOccupyObject !== null) {
+
+         this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
       }
    };
 
@@ -93,14 +104,36 @@
          this.mouseDawn = false;
 
          if (this.mouseDragging) {
-            console.log('global drag end');
-            this.mouseDragging = false;
-            this.uncoverHelper();
-
-            if (this.globalDragOccupyObject !== null) {
-               this.globalDragOccupyObject.onGlobalDragStopFromUI.apply(this.globalDragOccupyObject, [_e]);
-            }
+            //console.log('global drag end');
+            this.stopGlobalDrag(_e);
          }
+      }
+   };
+
+   UI.prototype.stopGlobalDrag = function(_e) {
+      this.mouseDragging = false;
+      this.uncoverHelper();
+
+      if (this.globalDragOccupyObject !== null) {
+         this.globalDragOccupyObject.onGlobalDragStopFromUI.apply(this.globalDragOccupyObject, [_e]);
+      }
+
+      // 드래그가 끝날 때 자동 드래그 자원 반환
+      if (this.autoGlobalDragReturn) {
+         this.autoGlobalDragReturn = false;
+
+         app.ui.disableGlobalDrag();
+         app.ui.returnOccupyMouseDown();
+         app.ui.returnOccupiedGlobalDrag();
+
+      }
+   };
+
+   UI.prototype.onCallContextMenu = function(_e) {
+
+      // MouseDawn 상태에서 ContextMenu를 호출하면 MouseDawn을 해제한다.
+      if (this.mouseDawn) {
+         this.returnOccupyMouseDown();
       }
    };
 
@@ -127,10 +160,11 @@
    };
 
    /* 객체가 GlobalDrag 자원을 점유하고자 할 때 이 메소드를 호출한다. */
-   UI.prototype.occupyGlobalDrag = function(_object) {
+   UI.prototype.occupyGlobalDrag = function(_object, _autoReturn) {
 
       if (this.globalDragOccupyObject === null) {
          this.globalDragOccupyObject = _object;
+         this.autoGlobalDragReturn = _autoReturn;
       } else {
          console.warn('Already occupy global drag');
       }
@@ -139,7 +173,6 @@
    /* Global Drag 자원을 반환한다. */
    UI.prototype.returnOccupiedGlobalDrag = function() {
       this.globalDragOccupyObject = null;
-      console.log(this);
    };
 
    UI.prototype.coverHelper = function() {

@@ -8,11 +8,13 @@
         getInitialState(){
             return {  }
         },
+
         onMouseDownToHeader(){
 
 
-            // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)
-            app.ui.occupyGlobalDrag(this);
+            // GlobalDrag 자원 획득
+            // 글로벌 드래그 자동 반환 활성화
+            app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
             app.ui.toMouseDawn();
         },
@@ -38,10 +40,7 @@
 
         onGlobalDragStopFromUI(_e){
 
-            /* Global Drag 자원 반환 */
-            app.ui.disableGlobalDrag();
-            app.ui.returnOccupyMouseDown();
-            app.ui.returnOccupiedGlobalDrag();
+            /* Global Drag 자원 자동 반환 */
             //this.emit('StoppedDrag', {}, _e, "MouseEvent");
         },
 

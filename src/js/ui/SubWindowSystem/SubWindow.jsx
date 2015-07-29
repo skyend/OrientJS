@@ -106,12 +106,14 @@
          }
       },
 
-
+      /////////////////////////////////////
+      // Drag Routines
+      ///
       onMouseDownToHeader(){
 
          if( !this.state.fullScreen ){
             // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)
-            app.ui.occupyGlobalDrag(this);
+            app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
             app.ui.toMouseDawn();
          }
@@ -136,17 +138,16 @@
 
       onGlobalDragStopFromUI(_e){
 
-          /* Global Drag 자원 반환 */
-          app.ui.disableGlobalDrag();
-          app.ui.returnOccupyMouseDown();
-          app.ui.returnOccupiedGlobalDrag();
-          //this.emit('StoppedDrag', {}, _e, "MouseEvent");
+          /* Global Drag 자원을 자동으로 반환한다 */
 
           this.prevMouseY = undefined;
           this.prevMouseX = undefined;
 
           this.focus();
       },
+      ///
+      // Drag Routines End
+      /////////////////////////////////////
 
       focus(){
          this.emit("FocusedMe", {
