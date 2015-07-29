@@ -10,11 +10,11 @@
 (function () {
 
    var NotificationSystem = require('react-notification-system');
-   require("./PushMessage.less");
+   require("./NotificationSystem.less");
 
    var React = require("react");
 
-   var PushMessage = React.createClass({
+   var NotificationMessage = React.createClass({
         _notificationSystem: null,
 
         /*
@@ -44,13 +44,13 @@
 
         render: function() {
             return (
-                <div id="push-message" className="NotificationWrapper steel-gray">
+                <div id="noti-message" className="NotificationWrapper steel-gray">
                     <NotificationSystem ref="notificationSystem" />
                 </div>
             );
         }
     });
 
-    module.exports = PushMessage;
+    module.exports = NotificationMessage;
 
 })();
