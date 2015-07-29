@@ -1,43 +1,42 @@
 .DocumentEditor {
 
   &.night-dark {
-    >.header {
-      background-color:#131515;
-
+    > .header {
+      background-color: #131515;
 
       .block-area {
         ul {
           li {
-            color:#aaaaaa;
+            color: #aaaaaa;
           }
         }
       }
     }
 
-    >.body {
-      >.ReactAceContainer {
+    > .body {
+      > .ReactAceContainer {
       }
     }
   }
 
-  position:absolute;
-  bottom:0px;
-  left:0px;
-  right:0px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   height: 100%;
 
-  >.header {
+  > .header {
     position: relative;
-    z-index:1001;
-    height:20px;
+    z-index: 1001;
+    height: 20px;
     box-sizing: border-box;
 
     .block-area {
       z-index: 1002;
-      display:inline-block;
+      display: inline-block;
 
       ul {
-        display:inline-block;
+        display: inline-block;
         height: 100%;
         list-style-type: none;
         margin: 0;
@@ -49,25 +48,25 @@
           height: 100%;
           padding: 4px;
 
-          cursor:default;
+          cursor: default;
         }
       }
     }
   }
 
-  >.body {
-    z-index:1000;
+  > .body {
+    z-index: 1000;
     position: absolute;
-    top:0px;
-    width:100%;
-    height:100%;
-    padding-top:20px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    padding-top: 20px;
     box-sizing: border-box;
 
-    >.ReactAceContainer {
+    > .ReactAceContainer {
       position: relative;
-      width:100%;
-      height:100%;
+      width: 100%;
+      height: 100%;
     }
   }
 }

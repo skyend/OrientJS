@@ -17,35 +17,35 @@
  */
 
 
-(function(){
+(function () {
     require('./InputBoxWithSelector.less');
     var React = require("react");
 
     var ReactClass = React.createClass({
-        getInitialState(){
+        getInitialState() {
             return {
-                valueControl : undefined,
-                spreadDisplay : 'none',
+                valueControl: undefined,
+                spreadDisplay: 'none',
                 itemCursor: -1
             }
         },
 
-        getItemElement(_item, _index){
+        getItemElement(_item, _index) {
             var classes = [];
 
-            if( this.state.itemCursor === _index){
+            if (this.state.itemCursor === _index) {
                 classes.push('cursor-here');
             }
 
             return (<li className={classes.join(' ')} value={_item} onClick={this.selectItem} data-index={_index} >{ _item }</li>)
         },
 
-        onKeyUp( _e){
-            switch(_e.nativeEvent.keyCode ){
+        onKeyUp(_e) {
+            switch (_e.nativeEvent.keyCode) {
 
                 /* Arrow Down */
                 case 40 :
-                    if( this.state.spreadDisplay === 'block' ){
+                    if (this.state.spreadDisplay === 'block') {
                         this.cycleItemCursor('down');
                     } else {
                         this.toggleSpread();
@@ -54,9 +54,9 @@
 
                 /* Arrow Up */
                 case 38 :
-                    if( this.state.spreadDisplay === 'block' ){
+                    if (this.state.spreadDisplay === 'block') {
                         var cursorResult = this.cycleItemCursor('up');
-                        if( cursorResult == -1 ){
+                        if (cursorResult == -1) {
                             this.toggleSpread();
                         }
                     }
@@ -64,24 +64,24 @@
 
                 /* Enter */
                 case 13 :
-                    if( this.state.spreadDisplay === 'block' ) {
+                    if (this.state.spreadDisplay === 'block') {
                         this.setValue(this.props.selectorItems[this.state.itemCursor]);
                         this.toggleSpread();
                     }
             }
         },
 
-        cycleItemCursor( _direct ){
+        cycleItemCursor(_direct) {
             var currentCursor = this.state.itemCursor;
             var nextCursor;
-            if( _direct === 'down' ){
+            if (_direct === 'down') {
                 nextCursor = currentCursor + 1;
 
-                if( nextCursor >= this.props.itemCount ) return -1;
+                if (nextCursor >= this.props.itemCount) return -1;
             } else {
                 nextCursor = currentCursor - 1;
 
-                if( nextCursor < 0 ) return -1;
+                if (nextCursor < 0) return -1;
             }
 
             this.setState({itemCursor: nextCursor});
@@ -89,53 +89,53 @@
         },
 
 
-        toggleSpread(){
-            if( this.state.spreadDisplay === 'block' ){
-                this.setState({spreadDisplay:'none'});
+        toggleSpread() {
+            if (this.state.spreadDisplay === 'block') {
+                this.setState({spreadDisplay: 'none'});
             } else {
-                this.setState({spreadDisplay:'block'});
+                this.setState({spreadDisplay: 'block'});
             }
         },
 
-        selectItem( _e ){
+        selectItem(_e) {
             this.toggleSpread();
 
-            this.setValue( _e.target.getAttribute('value'));
-            this.setState({itemCursor:parseInt(_e.target.getAttribute('data-index'))});
+            this.setValue(_e.target.getAttribute('value'));
+            this.setState({itemCursor: parseInt(_e.target.getAttribute('data-index'))});
         },
 
-        setValue( _value ){
-            this.refs['input'].getDOMNode().value =_value;
+        setValue(_value) {
+            this.refs['input'].getDOMNode().value = _value;
             this.changedValue();
         },
 
-        changedValue(){
+        changedValue() {
             var value = this.refs['input'].getDOMNode().value;
 
             this.props.value = value;
 
-            if( typeof this.props.onChanged === 'function' ){
-                this.props.onChanged(  this.props.fieldName, value );
+            if (typeof this.props.onChanged === 'function') {
+                this.props.onChanged(this.props.fieldName, value);
             }
         },
 
-        componentDidMount(){
+        componentDidMount() {
 
-            if( typeof  this.props.selectorItems === 'object' ){
+            if (typeof  this.props.selectorItems === 'object') {
                 this.setValue(this.props.selectorItems[0]);
             }
         },
 
-        componentDidUpdate( prevProps, prevState ){
-            if( typeof prevState.valueControl !== 'undefined' ){
-                console.log( prevState.valueControl );
+        componentDidUpdate(prevProps, prevState) {
+            if (typeof prevState.valueControl !== 'undefined') {
+                console.log(prevState.valueControl);
             }
         },
 
         render() {
             //var self = this;
 
-            if( typeof this.props.selectorItems === 'object' ) {
+            if (typeof this.props.selectorItems === 'object') {
                 this.props.itemCount = this.props.selectorItems.length;
             } else {
                 this.props.itemCount = 0;
@@ -145,9 +145,11 @@
                 <div className="InputBoxWithSelector gray">
                     <div className="input-wrapper">
                         <input autoComplete="off" onKeyUp={this.onKeyUp} onChange={this.changedValue} ref='input'/>
-                        <div className='spread-out' onClick={this.toggleSpread} ><i className='fa fa-sort-down'></i></div>
+                        <div className='spread-out' onClick={this.toggleSpread} >
+                            <i className='fa fa-sort-down'></i>
+                        </div>
 
-                        <div className="selector-wrapper" style={{'display':this.state.spreadDisplay}} ref='spread'>
+                        <div className="selector-wrapper" style={{'display': this.state.spreadDisplay}} ref='spread'>
                             <ul className='selector'>
                                 { this.props.selectorItems.map(this.getItemElement)}
                             </ul>

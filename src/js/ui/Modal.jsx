@@ -12,7 +12,7 @@
 
     var React = require("react");
     var Modal = React.createClass({
-        getInitialState(){
+        getInitialState() {
             return {
                 Modal: <div/>
             }

@@ -7,23 +7,23 @@
  * Requires(JS) : builder.VirtualDom.js
  */
 
-(function(){
+(function () {
     var VirtualDom = require('./builder.VirtualDom.js');
 
 
-    var HistoricalDocument = function( _window){
+    var HistoricalDocument = function (_window) {
         this.window = _window;
         this.document = this.window.document;
         this.htmlElement = this.document.getElementsByTagName('html').pop()
 
-        if( typeof this.htmlElement !== 'object' || this.htmlElement === null ) throw new Error('not found HTML Element in HistoricalDocument');
+        if (typeof this.htmlElement !== 'object' || this.htmlElement === null) throw new Error('not found HTML Element in HistoricalDocument');
 
     };
 
     /**
      * 지정된 DomElement 를 읽고 VirtualDom을 추출한다.
      */
-    HistoricalDocument.prototype.readAndExportVirtualDom = function( _vdomID ){
+    HistoricalDocument.prototype.readAndExportVirtualDom = function (_vdomID) {
 
     };
 

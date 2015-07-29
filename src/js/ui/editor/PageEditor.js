@@ -10,7 +10,7 @@ var _ = function (mountElement, resourceUrl, navigator) {
 
 
     this.mount = function () {
-        var EventResponser  = require('./EventResponser');
+        var EventResponser = require('./EventResponser');
         this.eventResponser = new EventResponser(this);
 
         this.viewer.element = document.createElement("iframe");

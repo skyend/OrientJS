@@ -1,7 +1,7 @@
 var _ = function (_editor) {
 
     var editorPointX = 0, editorPointY = 0, hightLightBorderSize = 3;
-    var windowScrollY = 0, viewerScrollY=0;
+    var windowScrollY = 0, viewerScrollY = 0;
 
     require('./EventResponser.less');
     this.element = null;

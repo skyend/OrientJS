@@ -7,33 +7,32 @@
  *
  */
 
-(function() {
-   var types = ["EventEmit"];
+(function () {
+    var types = ["EventEmit"];
 
-   var UIBehavior = function() {
+    var UIBehavior = function () {
 
-   };
+    };
 
-   UIBehavior.prototype = {
-      name: undefined, //
-      type: undefined, // EventEmit
-      desc: undefined, // EventEmit{EventName, EventData}
-
-
-
-      setName: function(_name) {
-         this.name = _name;
-      },
-
-      setType: function(_type) {
-         this.type = _type;
-      },
-
-      setData: function(_data) {
-         this.data = _data;
-      }
-   }
+    UIBehavior.prototype = {
+        name: undefined, //
+        type: undefined, // EventEmit
+        desc: undefined, // EventEmit{EventName, EventData}
 
 
-   module.exports = UIBehavior;
+        setName: function (_name) {
+            this.name = _name;
+        },
+
+        setType: function (_type) {
+            this.type = _type;
+        },
+
+        setData: function (_data) {
+            this.data = _data;
+        }
+    }
+
+
+    module.exports = UIBehavior;
 })();

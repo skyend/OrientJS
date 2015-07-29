@@ -8,8 +8,8 @@
  * Requires(JS) : builder.VirtualDom.js
  */
 
-(function(){
-    var VirtualDom = function( _targetElement ){
+(function () {
+    var VirtualDom = function (_targetElement) {
         console.log(_targetElement);
     };
 

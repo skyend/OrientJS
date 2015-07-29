@@ -8,33 +8,32 @@
  * Requires(JS) : builder.StageContext.js, builder.UI.js
  */
 
-(function() {
-   var types = ["EventEmit"];
+(function () {
+    var types = ["EventEmit"];
 
-   var Action = function() {
+    var Action = function () {
 
-   };
+    };
 
-   Action.prototype = {
-      name: undefined, // 
-      type: undefined, // EventEmit
-      desc: undefined, // EventEmit{EventName, EventData}
-
-
-
-      setName: function(_name) {
-         this.name = _name;
-      },
-
-      setType: function(_type) {
-         this.type = _type;
-      },
-
-      setData: function(_data) {
-         this.data = _data;
-      }
-   }
+    Action.prototype = {
+        name: undefined, //
+        type: undefined, // EventEmit
+        desc: undefined, // EventEmit{EventName, EventData}
 
 
-   module.exports = Action;
+        setName: function (_name) {
+            this.name = _name;
+        },
+
+        setType: function (_type) {
+            this.type = _type;
+        },
+
+        setData: function (_data) {
+            this.data = _data;
+        }
+    }
+
+
+    module.exports = Action;
 })();

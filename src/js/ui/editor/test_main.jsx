@@ -8,13 +8,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
         vController: null,
         componentDidMount: function () {
             var PageEditor = require("./PageEditor");
-            var editor = new PageEditor(document.getElementById('screen'), "/BuilderUI/design/design.html",this.refs.navigator);
+            var editor = new PageEditor(document.getElementById('screen'), "/BuilderUI/design/design.html", this.refs.navigator);
         },
         render: function () {
             console.log(ToolkitMenuConfig);
             return (
                 <div>
-                    <div id="ToolkitMenu"><ToolkitMenu items={ToolkitMenuConfig}/></div>
+                    <div id="ToolkitMenu">
+                        <ToolkitMenu items={ToolkitMenuConfig}/>
+                    </div>
                     <div id='screen'></div>
                     <div id="navigator">
                         <ElementNavigator ref="navigator"/>

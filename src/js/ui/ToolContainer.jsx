@@ -1,15 +1,14 @@
-
-(function(){
+(function () {
     require('./ToolContainer.less');
     var React = require("react");
 
     var ToolContainer = React.createClass({
-        mixins:[ require('./reactMixin/EventDistributor.js') ],
-        getInitialState(){
-            return {  }
+        mixins: [require('./reactMixin/EventDistributor.js')],
+        getInitialState() {
+            return {}
         },
 
-        onMouseDownToHeader(){
+        onMouseDownToHeader() {
 
 
             // GlobalDrag 자원 획득
@@ -19,15 +18,15 @@
             app.ui.toMouseDawn();
         },
 
-        onGlobalDragStartFromUI(_e){
+        onGlobalDragStartFromUI(_e) {
             //console.log('panelContainer drag start');
         },
 
-        onGlobalDragFromUI(_e){
-            if( typeof this.prevMouseY !== 'undefined' ){
+        onGlobalDragFromUI(_e) {
+            if (typeof this.prevMouseY !== 'undefined') {
                 var selfDom = this.getDOMNode();
                 var ymoveStep = this.prevMouseY - _e.clientY;
-                selfDom.style.height = ( parseInt( selfDom.offsetHeight ) + ymoveStep ) + 'px';
+                selfDom.style.height = ( parseInt(selfDom.offsetHeight) + ymoveStep ) + 'px';
 
                 this.props.resizeMe();
 
@@ -38,7 +37,7 @@
             this.prevMouseY = _e.clientY;
         },
 
-        onGlobalDragStopFromUI(_e){
+        onGlobalDragStopFromUI(_e) {
 
             /* Global Drag 자원 자동 반환 */
             //this.emit('StoppedDrag', {}, _e, "MouseEvent");
@@ -47,7 +46,7 @@
         render: function () {
 
             var tool;
-            if( typeof this.props.tool !== 'undefined' ){
+            if (typeof this.props.tool !== 'undefined') {
                 tool = this.props.tool;
             }
 
@@ -62,7 +61,9 @@
                         </div>
                         <div className='block-area right'>
                             <ul>
-                                <li className='button'> <i className='fa fa-minus'></i> </li>
+                                <li className='button'>
+                                    <i className='fa fa-minus'></i>
+                                </li>
                             </ul>
                         </div>
                     </div>

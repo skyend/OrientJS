@@ -1,4 +1,3 @@
-
 module.exports = function () {
     var $ = require('jquery');
     $('.contents-frame').attr('src', 'main.html').load(function () {

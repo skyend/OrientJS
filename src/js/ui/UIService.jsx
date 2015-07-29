@@ -36,13 +36,13 @@
      */
     var UIService = React.createClass({
         // Mixin EventDistributor
-        mixins:[ require('./reactMixin/EventDistributor.js') ],
+        mixins: [require('./reactMixin/EventDistributor.js')],
 
-        getInitalState(){
+        getInitalState() {
             return {};
         },
 
-        displayModal(action){
+        displayModal(action) {
             var target = action.target;
             var self = this;
             loadModal(action.parts + ".jsx", function (page, Modal) {
@@ -56,201 +56,199 @@
         },
 
         // 좌측 패널에 따른 중앙 리사이즈
-        onResizeLeftPanel(_width){
+        onResizeLeftPanel(_width) {
             this.leftAreaWidth = _width;
             this.resizeMiddleArea();
         },
 
         // 우측 패널 리사이즈
-        onResizeRightPanel(_width){
+        onResizeRightPanel(_width) {
             this.rightAreaWidth = _width;
             this.resizeMiddleArea();
         },
 
-        onThrowCatcherCallContextMenu( _eventData, _pass ){
+        onThrowCatcherCallContextMenu(_eventData, _pass) {
 
-           if( _eventData.for === "StageElement" ){
-             console.log(_eventData);
+            if (_eventData.for === "StageElement") {
+                console.log(_eventData);
 
-            this.refs['stage-context-menu'].setState({
-               display:'on',
-               x:_eventData.mouseX,
-               y:_eventData.mouseY,
-               for:_eventData.for,
-               target:_eventData.target,
+                this.refs['stage-context-menu'].setState({
+                    display: 'on',
+                    x: _eventData.mouseX,
+                    y: _eventData.mouseY,
+                    for: _eventData.for,
+                    target: _eventData.target,
 
-               memuItems: [
-                  {
-                     title: "Delete",
-                     type: "button",
-                     key: "elementDelete",
-                     eventName:"StageElementDelete"
-                  }, {
-                     title: "Clone",
-                     type: "button",
-                     key: "elementClone",
-                     eventName:"StageElementClone"
-                  }, {
-                     title: "Edit",
-                     type: "button",
-                     key: "elementEdit",
-                     eventName:"StageElementEdit"
-                  },
-                  "spliter",
-                  {
-                     title: "Select Parent",
-                     type: "button",
-                     key: "element-select-parent",
-                     eventName:"SelectParentElementByStageElement"
-                  }
-               ]
-            });
-         }
+                    memuItems: [
+                        {
+                            title: "Delete",
+                            type: "button",
+                            key: "elementDelete",
+                            eventName: "StageElementDelete"
+                        }, {
+                            title: "Clone",
+                            type: "button",
+                            key: "elementClone",
+                            eventName: "StageElementClone"
+                        }, {
+                            title: "Edit",
+                            type: "button",
+                            key: "elementEdit",
+                            eventName: "StageElementEdit"
+                        },
+                        "spliter",
+                        {
+                            title: "Select Parent",
+                            type: "button",
+                            key: "element-select-parent",
+                            eventName: "SelectParentElementByStageElement"
+                        }
+                    ]
+                });
+            }
             //_pass();
         },
 
-        onThrowCatcherClickElementInStage( _eventData, _pass ){
+        onThrowCatcherClickElementInStage(_eventData, _pass) {
             this.offContextMenu();
 
             //_pass();
         },
 
-        onThrowCatcherStageElementDelete( _eventData, _pass ){
+        onThrowCatcherStageElementDelete(_eventData, _pass) {
             //_eventData.target.element.remove();
 
             this.refs['DocumentStage'].deleteElement({
-               contextId:_eventData.target.contextId,
-               elementId:_eventData.target.elementId
+                contextId: _eventData.target.contextId,
+                elementId: _eventData.target.elementId
             });
 
 
-
             this.offContextMenu();
         },
 
-        onThrowCatcherStageElementClone( _eventData, _pass ){
+        onThrowCatcherStageElementClone(_eventData, _pass) {
             this.offContextMenu();
 
-            this.refs['DocumentStage'].setState({a:1});
+            this.refs['DocumentStage'].setState({a: 1});
         },
 
-        onThrowCatcherStageElementEdit( _eventData, _pass ){
+        onThrowCatcherStageElementEdit(_eventData, _pass) {
             this.offContextMenu();
-
 
 
             this.newSubWindow();
         },
 
-        onThrowCatcherSelectParentElementByStageElement( _eventData, _pass ){
+        onThrowCatcherSelectParentElementByStageElement(_eventData, _pass) {
 
             this.offContextMenu();
         },
 
-        onThrowCatcherFoldPanel( _eventData, _pass ){
+        onThrowCatcherFoldPanel(_eventData, _pass) {
 
-            if( _eventData.refPath[0] === 'RightNavigation' ){
+            if (_eventData.refPath[0] === 'RightNavigation') {
                 this.rightAreaWidth = _eventData.width;
-            } else if ( _eventData.refPath[0] === 'LeftNavigation' ){
+            } else if (_eventData.refPath[0] === 'LeftNavigation') {
                 this.leftAreaWidth = _eventData.width;
             }
 
             this.resizeMiddleArea();
         },
 
-        onThrowCatcherUnfoldPanel( _eventData, _pass ){
+        onThrowCatcherUnfoldPanel(_eventData, _pass) {
 
-            if( _eventData.refPath[0] === 'RightNavigation' ){
+            if (_eventData.refPath[0] === 'RightNavigation') {
                 this.rightAreaWidth = _eventData.width;
-            } else if ( _eventData.refPath[0] === 'LeftNavigation' ){
+            } else if (_eventData.refPath[0] === 'LeftNavigation') {
                 this.leftAreaWidth = _eventData.width;
             }
 
             this.resizeMiddleArea();
         },
 
-        onThrowCatcherNeedEquipTool( _eventData, _pass ){
-           var self = this;
+        onThrowCatcherNeedEquipTool(_eventData, _pass) {
+            var self = this;
 
-           var toolKey = _eventData.toolKey;
-           var toolSpec = this.props.Tools[toolKey];
-           var toEquipRef = _eventData.refPath[0];
+            var toolKey = _eventData.toolKey;
+            var toolSpec = this.props.Tools[toolKey];
+            var toEquipRef = _eventData.refPath[0];
 
-           /**
-           * WaterFall 을 이용하여 비동기로드를 동기화한다.
-           */
-           Async.waterFall(toolSpec, [function(__toolSpec, __cb){
+            /**
+             * WaterFall 을 이용하여 비동기로드를 동기화한다.
+             */
+            Async.waterFall(toolSpec, [function (__toolSpec, __cb) {
 
-             if( typeof __toolSpec !== 'object'){
-                self.refs[toEquipRef].equipTool();
-                throw new Error("Tool["+toolKey+"] Spec Object is not exists.");
-             }
-
-             if( typeof __toolSpec.jsxPath !== 'string'){
-                self.refs[toEquipRef].equipTool();
-                throw new Error("Tool["+toolKey+"] JSXPath is not exists.");
-             }
-
-
-             loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
-                 if( ___err !== null ){
-
+                if (typeof __toolSpec !== 'object') {
                     self.refs[toEquipRef].equipTool();
-                    throw new Error("Fail to load tool["+toolKey+"].");
-                 } else {
-                    __cb(__toolSpec, ___tool);
-                 }
-             });
-          },function( __toolSpec, __tool, __cb){
+                    throw new Error("Tool[" + toolKey + "] Spec Object is not exists.");
+                }
 
-             // config 파일이 없다면 지나간다.
-             if( typeof __toolSpec.configPath === 'undefined'){
-                 return __cb( __tool, null);
-             }
+                if (typeof __toolSpec.jsxPath !== 'string') {
+                    self.refs[toEquipRef].equipTool();
+                    throw new Error("Tool[" + toolKey + "] JSXPath is not exists.");
+                }
 
 
-             loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
-                 if( ___err !== null ){
-                    throw new Error("Fail to load tool["+toolKey+"]Config.");
-                 } else {
+                loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
+                    if (___err !== null) {
 
-                    __cb( __tool, ___toolConfig);
-                 }
-             });
-          },function( __tool, __toolConfig){
+                        self.refs[toEquipRef].equipTool();
+                        throw new Error("Fail to load tool[" + toolKey + "].");
+                    } else {
+                        __cb(__toolSpec, ___tool);
+                    }
+                });
+            }, function (__toolSpec, __tool, __cb) {
+
+                // config 파일이 없다면 지나간다.
+                if (typeof __toolSpec.configPath === 'undefined') {
+                    return __cb(__tool, null);
+                }
 
 
-              self.refs[toEquipRef].equipTool( __tool, __toolConfig, toolKey);
-           }]);
+                loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
+                    if (___err !== null) {
+                        throw new Error("Fail to load tool[" + toolKey + "]Config.");
+                    } else {
+
+                        __cb(__tool, ___toolConfig);
+                    }
+                });
+            }, function (__tool, __toolConfig) {
+
+
+                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey);
+            }]);
         },
 
 
-         onThrowCatcherNoticeMessage( _eventData, _pass){
+        onThrowCatcherNoticeMessage(_eventData, _pass) {
 
             this.refs['NotificationSystem'].notify({
-               type:'simple-message',
-               title: _eventData.title ,
-               message: _eventData.message,
-               level:(typeof _eventData.level !== 'undefined')? _eventData.level:'success'
+                type: 'simple-message',
+                title: _eventData.title,
+                message: _eventData.message,
+                level: (typeof _eventData.level !== 'undefined') ? _eventData.level : 'success'
             });
-         },
+        },
 
-         offContextMenu(){
-           this.refs['stage-context-menu'].setState({display:'off'});
-         },
+        offContextMenu() {
+            this.refs['stage-context-menu'].setState({display: 'off'});
+        },
 
-         newSubWindow(){
+        newSubWindow() {
             var subWindowSystem = this.refs['SubWindowSystem'];
 
             subWindowSystem.spawnSubWindow({
-               key:"New",
-               desc: "New",
-               duplication:true
+                key: "New",
+                desc: "New",
+                duplication: true
             });
-         },
+        },
 
         // 컨텐츠 영역 화면 리사이즈
-        resizeMiddleArea(){
+        resizeMiddleArea() {
             var selfDom = this.getDOMNode();
             var width = selfDom.offsetWidth;
             var height = selfDom.offsetHeight;
@@ -282,7 +280,7 @@
             });
         },
 
-        resizeListener(_w, _h, _screenW, _screenH){
+        resizeListener(_w, _h, _screenW, _screenH) {
             var selfDom = this.getDOMNode();
             selfDom.style.width = _w + 'px';
             selfDom.style.height = _h + 'px';
@@ -295,7 +293,7 @@
             this.resizeMiddleArea();
         },
 
-        componentDidMount(){
+        componentDidMount() {
             var self = this;
             this.leftAreaWidth = this.leftAreaWidth || 0;
             this.rightAreaWidth = this.rightAreaWidth || 0;
@@ -313,23 +311,23 @@
 
 
                     <LeftNavigation ref="LeftNavigation"
-                                    config={this.props.LeftNavigationConfig}
-                                    naviWidth={50}
-                                    panelWidth={210}
-                                    position='left'
-                                    naviItemFontSize={20}/>
+                        config={this.props.LeftNavigationConfig}
+                        naviWidth={50}
+                        panelWidth={210}
+                        position='left'
+                        naviItemFontSize={20}/>
 
                     <RightNavigation ref="RightNavigation"
-                                     config={this.props.RightNavigationConfig}
-                                     naviWidth={25}
-                                     panelWidth={230}
-                                     showTitle={true}
-                                     verticalText={true}
-                                     position='right'
-                                     naviItemFontSize={16}/>
+                        config={this.props.RightNavigationConfig}
+                        naviWidth={25}
+                        panelWidth={230}
+                        showTitle={true}
+                        verticalText={true}
+                        position='right'
+                        naviItemFontSize={16}/>
 
 
-                   <DocumentStage ref='DocumentStage' />
+                    <DocumentStage ref='DocumentStage' />
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>

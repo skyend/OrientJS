@@ -12,7 +12,7 @@
     require('./CSSMenu.less');
 
     var CSSMenu = React.createClass({
-        itemValue(_value){
+        itemValue(_value) {
             return (
                 <option value={_value}>{_value}</option>
             )
@@ -37,7 +37,7 @@
             }
         },
 
-        renderItems(_group){
+        renderItems(_group) {
             return (
                 <div className="item">
                     <div className="title">{_group.title}</div>

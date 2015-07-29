@@ -9,16 +9,17 @@
  * Events: onload
  */
 
-(function(){
+(function () {
     var HistoricalDocument = require('./builder.HistoricalDocument.js');
 
 
-
-    var EditorStageContext = function( _params ){
+    var EditorStageContext = function (_params) {
         this.params = _params || {};
         {
-            stageLoadedCallback : function anonymous(){}
-        };
+            stageLoadedCallback : function anonymous() {
+            }
+        }
+        ;
 
         this.stageType = "iframe";
 
@@ -28,22 +29,24 @@
         this.historicalDocument;
     };
 
-    EditorStageContext.prototype.setIFrameStage = function( _iframe ){
+    EditorStageContext.prototype.setIFrameStage = function (_iframe) {
         var self = this;
         this.iframe = _iframe;
 
         // iframe 로드 이벤트 등록
-        this.iframe.onload = function(){ self.loadedIFrame() };
+        this.iframe.onload = function () {
+            self.loadedIFrame()
+        };
     };
 
-    EditorStageContext.prototype.loadedIFrame = function(){
+    EditorStageContext.prototype.loadedIFrame = function () {
         this.innerWindow = this.iframe.contentWindow || this.iframe.contentDocument;
         this.innerDocument = this.innerWindow.document;
 
         this.historicalDocument = new HistoricalDocument(this.innerWindow);
 
 
-        if( typeof this.params.stageLoadedCallback === 'function' ) this.params.stageLoadedCallback();
+        if (typeof this.params.stageLoadedCallback === 'function') this.params.stageLoadedCallback();
     };
 
     module.exports = EditorStageContext;

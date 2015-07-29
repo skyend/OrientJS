@@ -11,7 +11,7 @@
  * Requires(css) :
  */
 
-(function(){
+(function () {
     require('./FootStatusBar.less');
     var React = require("react");
 
@@ -21,7 +21,9 @@
                 <footer id="ui-footer">
                     <ul className="inventory">
                         <li className="item-left">
-                            <a><i className="fa fa-info-circle"></i></a>
+                            <a>
+                                <i className="fa fa-info-circle"></i>
+                            </a>
                         </li>
                         <li className="item-right">
                             <a>UTF-8</a>

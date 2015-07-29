@@ -7,7 +7,7 @@
  * Requires(css) :
  */
 
-(function(){
+(function () {
     require('./HeadToolBar.less');
     var React = require("react");
 

@@ -9,40 +9,40 @@
 
 (function () {
 
-   var NotificationSystem = require('react-notification-system');
-   require("./NotificationSystem.less");
+    var NotificationSystem = require('react-notification-system');
+    require("./NotificationSystem.less");
 
-   var React = require("react");
+    var React = require("react");
 
-   var NotificationMessage = React.createClass({
+    var NotificationMessage = React.createClass({
         _notificationSystem: null,
 
         /*
          {
-            type: "simple-message" | 
-            title:
-            message:
-            level:
+         type: "simple-message" |
+         title:
+         message:
+         level:
          }
-        */
-        notify: function( _notifyObject ) {
+         */
+        notify: function (_notifyObject) {
 
-            if( _notifyObject.type === 'simple-message' ){
-               this._notificationSystem.addNotification({
-                  title: _notifyObject.title,
-                  message: _notifyObject.message,
-                  level: _notifyObject.level,
-                  autoDismiss : 10,
-               });
+            if (_notifyObject.type === 'simple-message') {
+                this._notificationSystem.addNotification({
+                    title: _notifyObject.title,
+                    message: _notifyObject.message,
+                    level: _notifyObject.level,
+                    autoDismiss: 10,
+                });
             }
 
         },
 
-        componentDidMount: function() {
+        componentDidMount: function () {
             this._notificationSystem = this.refs.notificationSystem;
         },
 
-        render: function() {
+        render: function () {
             return (
                 <div id="noti-message" className="NotificationWrapper steel-gray">
                     <NotificationSystem ref="notificationSystem" />

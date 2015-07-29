@@ -9,14 +9,14 @@ var ElementNavigatorIconCss = {
 }
 
 var ENNode = React.createClass({
-    getInitialState : function(){
-        return {isCollapse : false}
+    getInitialState: function () {
+        return {isCollapse: false}
     },
     toggleFolding: function (e) {
-        this.state.isCollapse=!this.state.isCollapse;
+        this.state.isCollapse = !this.state.isCollapse;
         this.setState(this.state);
     },
-    componentWillMount: function(){
+    componentWillMount: function () {
         var childs = this.props.childs;
         var isFolding = childs !== null && childs.length > 0;
     },
@@ -30,7 +30,7 @@ var ENNode = React.createClass({
             });
         }
         return (
-            <li className={this.state.isCollapse?'collapse':''}>
+            <li className={this.state.isCollapse ? 'collapse' : ''}>
                 {isFolding !== null ? <i className="folding fa fa-play" onClick={this.toggleFolding}></i> : null}
                 <i className="element fa fa-code">{this.props.name}</i>
                 {!this.state.isCollapse ? <ul>{childsNodes}</ul> : null}

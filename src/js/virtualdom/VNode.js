@@ -15,7 +15,7 @@ const domTypes = ["html", "component"];
  * @param targetElement dom 영역으로 사용할 htmlElement
  * @private
  */
-var _=function (domType, name, targetElement) {
+var _ = function (domType, name, targetElement) {
     if (domType === undefined) {
         (function () {
             var isValid = false;

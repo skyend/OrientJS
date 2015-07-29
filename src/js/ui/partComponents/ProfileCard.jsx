@@ -1,4 +1,4 @@
-(function(){
+(function () {
     require('./ProfileCard.less');
     var React = require("react");
 
@@ -7,9 +7,9 @@
         render() {
 
             return (
-               <div className="ProfileCard">
-                  a
-               </div>
+                <div className="ProfileCard">
+                    a
+                </div>
             );
         }
     });

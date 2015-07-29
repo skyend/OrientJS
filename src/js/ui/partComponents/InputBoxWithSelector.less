@@ -8,9 +8,9 @@
 }
 
 .InputBoxWithSelector {
-  width:100%;
+  width: 100%;
   box-sizing: border-box;
-  line-height:1;
+  line-height: 1;
   position: relative;
 
   &.red {
@@ -20,19 +20,17 @@
         border: solid 1px #d9534f;
 
         + .spread-out {
-          color:#c12e2a;
+          color: #c12e2a;
         }
       }
-
-
 
       .selector-wrapper {
 
         ul.selector {
-          box-shadow: 0 5px 5px rgba(0,0,0,0.4);
+          box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
 
           li {
-            color:#fff;
+            color: #fff;
             background-color: #d9534f;
 
             &:hover {
@@ -41,7 +39,7 @@
 
             &.cursor-here {
               background-color: #fff;
-              color:#333;
+              color: #333;
               border: solid 1px #d9534f;
             }
           }
@@ -53,24 +51,23 @@
 
   &.white-gray {
 
-
     .input-wrapper {
       input {
         border: solid 1px #545454;
         border-radius: 3px;
 
         + .spread-out {
-          color:#2A2A2A;
+          color: #2A2A2A;
         }
       }
 
       .selector-wrapper {
 
         ul.selector {
-          box-shadow: 0 5px 5px rgba(0,0,0,0.4);
+          box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
 
           li {
-            color:#fff;
+            color: #fff;
             background-color: #545454;
 
             &:hover {
@@ -79,7 +76,7 @@
 
             &.cursor-here {
               background-color: #fff;
-              color:#333;
+              color: #333;
               border: solid 1px #545454;
             }
           }
@@ -91,26 +88,25 @@
 
   &.gray {
 
-
     .input-wrapper {
       input {
         border: solid 1px #545454;
         border-radius: 3px;
         background-color: #565656;
-        color:#eee;
+        color: #eee;
 
         + .spread-out {
-          color:#222;
+          color: #222;
         }
       }
 
       .selector-wrapper {
 
         ul.selector {
-          box-shadow: 0 5px 5px rgba(0,0,0,0.9);
+          box-shadow: 0 5px 5px rgba(0, 0, 0, 0.9);
 
           li {
-            color:#fff;
+            color: #fff;
             background-color: #333;
 
             &:hover {
@@ -119,7 +115,7 @@
 
             &.cursor-here {
               background-color: #454545;
-              color:#eee;
+              color: #eee;
               border: solid 1px #545454;
             }
           }
@@ -129,56 +125,53 @@
 
   }
 
-
-
   .input-wrapper {
-    width:100%;
-    padding:10px;
+    width: 100%;
+    padding: 10px;
     box-sizing: border-box;
     position: relative;
 
     input {
-      width:100%;
+      width: 100%;
       box-sizing: border-box;
-      font-size:14px;
-      padding:3px 10px;
+      font-size: 14px;
+      padding: 3px 10px;
       height: 24px;
       outline: none;
 
       + .spread-out {
         position: absolute;
         box-sizing: border-box;
-        right:10px;
-        top:10px;
-        font-size:14px;
-        padding:3px 10px;
+        right: 10px;
+        top: 10px;
+        font-size: 14px;
+        padding: 3px 10px;
         height: 24px;
 
-        cursor:pointer;
+        cursor: pointer;
       }
     }
 
     .selector-wrapper {
       position: relative;
-      width:100%;
+      width: 100%;
 
       ul.selector {
-        position:absolute;
+        position: absolute;
         z-index: 1000;
-        width:100%;
+        width: 100%;
         margin: 0;
         padding: 0;
 
         li {
           margin: 0;
           padding: 5px 10px;
-          font-size:12px;
+          font-size: 12px;
           box-sizing: border-box;
           cursor: pointer;
         }
       }
     }
   }
-
 
 }

@@ -1,35 +1,56 @@
 {
-   "LeftNavigation":{
-      "menuGroups":[
-         {
-            "groupName":"System",
-            "menuItems": [
-               {"key":"user-account", "title": "User Account", "icon": "user", "equipToolKey":"UserAccount"},
-               {"key":"project-setting", "title": "Project Settings", "icon": "cog", "equipToolKey":"ProjectSetting"}
-            ]
-         },
-         {
-            "groupName":"Editting",
-            "menuItems": [
-               {"key":"component-palette", "title": "Component Palette", "icon": "th", "equipToolKey":"ComponentPalette"},
-               {"key":"document-navigation", "title": "Document Navigation", "icon": "briefcase", "equipToolKey":"DocumentsNavigation"}
-            ]
-         }
-      ]
-   },
-
-   "RightNavigation":{
-      "menuGroups":[
-
-      ]
-   },
-
-   "tools":{
-      "UserAccount": {"jsxPath":"UserAccount"},
-      "ProjectSetting": {"jsxPath":"ProjectSetting"},
-
-      "ToolkitMenu": {"jsxPath":"ToolkitMenu" , "configPath":"ToolkitMenuConfig"},
-      "DeviceMenu": {"jsxPath":"DeviceMenu" , "configPath":"DeviceMenuConfig"}
-   }
-
+  "LeftNavigation": {
+    "menuGroups": [
+      {
+        "groupName": "System",
+        "menuItems": [
+          {
+            "key": "user-account",
+            "title": "User Account",
+            "icon": "user",
+            "equipToolKey": "UserAccount"
+          },
+          {
+            "key": "project-setting",
+            "title": "Project Settings",
+            "icon": "cog",
+            "equipToolKey": "ProjectSetting"
+          }
+        ]
+      },
+      {
+        "groupName": "Editting",
+        "menuItems": [
+          {
+            "key": "component-palette",
+            "title": "Component Palette",
+            "icon": "th",
+            "equipToolKey": "ComponentPalette"
+          },
+          {
+            "key": "document-navigation",
+            "title": "Document Navigation",
+            "icon": "briefcase",
+            "equipToolKey": "DocumentsNavigation"
+          }
+        ]
+      }
+    ]
+  },
+  "RightNavigation": {
+    "menuGroups": [
+    ]
+  },
+  "tools": {
+    "UserAccount": {"jsxPath": "UserAccount"},
+    "ProjectSetting": {"jsxPath": "ProjectSetting"},
+    "ToolkitMenu": {
+      "jsxPath": "ToolkitMenu",
+      "configPath": "ToolkitMenuConfig"
+    },
+    "DeviceMenu": {
+      "jsxPath": "DeviceMenu",
+      "configPath": "DeviceMenuConfig"
+    }
+  }
 }

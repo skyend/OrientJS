@@ -1,24 +1,24 @@
 (function () {
-   var React = require("react");
-   require('./UserAccount.less');
+    var React = require("react");
+    require('./UserAccount.less');
 
-   var ProfileCard = require('../partComponents/ProfileCard.jsx');
+    var ProfileCard = require('../partComponents/ProfileCard.jsx');
 
-   var User = React.createClass({
+    var User = React.createClass({
 
-      render() {
-         return (
-            <div className='UserAccount'>
-               <div className='wrapper'>
-                  <div className='user-profile'>
-                     <ProfileCard />
-                  </div>
+        render() {
+            return (
+                <div className='UserAccount'>
+                    <div className='wrapper'>
+                        <div className='user-profile'>
+                            <ProfileCard />
+                        </div>
 
-               </div>
-            </div>
-         );
-      }
-   });
+                    </div>
+                </div>
+            );
+        }
+    });
 
-   module.exports = User;
+    module.exports = User;
 })();

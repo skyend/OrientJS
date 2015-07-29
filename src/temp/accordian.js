@@ -4,7 +4,7 @@
 
 //uses classList, setAttribute, and querySelectorAll
 //if you want this to work in IE8/9 youll need to polyfill these
-var accFuncLoad = function(){
+var accFuncLoad = function () {
     var d = document,
         accordionToggles = d.querySelectorAll('.js-accordionTrigger'),
         setAria,
@@ -13,16 +13,16 @@ var accFuncLoad = function(){
         touchSupported = ('ontouchstart' in window),
         pointerSupported = ('pointerdown' in window);
 
-    skipClickDelay = function(e){
+    skipClickDelay = function (e) {
         e.preventDefault();
         e.target.click();
     }
 
-    setAriaAttr = function(el, ariaType, newProperty){
+    setAriaAttr = function (el, ariaType, newProperty) {
         el.setAttribute(ariaType, newProperty);
     };
-    setAccordionAria = function(el1, el2, expanded){
-        switch(expanded) {
+    setAccordionAria = function (el1, el2, expanded) {
+        switch (expanded) {
             case "true":
                 setAriaAttr(el1, 'aria-expanded', 'true');
                 setAriaAttr(el2, 'aria-hidden', 'false');
@@ -36,11 +36,11 @@ var accFuncLoad = function(){
         }
     };
 //function
-    switchAccordion = function(e) {
+    switchAccordion = function (e) {
         e.preventDefault();
         var thisAnswer = e.target.parentNode.nextElementSibling;
         var thisQuestion = e.target;
-        if(thisAnswer.classList.contains('is-collapsed')) {
+        if (thisAnswer.classList.contains('is-collapsed')) {
             setAccordionAria(thisQuestion, thisAnswer, 'true');
         } else {
             setAccordionAria(thisQuestion, thisAnswer, 'false');
@@ -52,11 +52,11 @@ var accFuncLoad = function(){
 
         thisAnswer.classList.toggle('animateIn');
     };
-    for (var i=0,len=accordionToggles.length; i<len; i++) {
-        if(touchSupported) {
+    for (var i = 0, len = accordionToggles.length; i < len; i++) {
+        if (touchSupported) {
             accordionToggles[i].addEventListener('touchstart', skipClickDelay, false);
         }
-        if(pointerSupported){
+        if (pointerSupported) {
             accordionToggles[i].addEventListener('pointerdown', skipClickDelay, false);
         }
         accordionToggles[i].addEventListener('click', switchAccordion, false);

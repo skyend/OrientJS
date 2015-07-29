@@ -10,7 +10,9 @@ module.exports = React.createClass({
                     <a>JSON</a>
                 </li>
                 <li className="item-left">
-                    <a><i className="glyphicon glyphicon-info-sign"></i></a>
+                    <a>
+                        <i className="glyphicon glyphicon-info-sign"></i>
+                    </a>
                 </li>
             </ul>
         )

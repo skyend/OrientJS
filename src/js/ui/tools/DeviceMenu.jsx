@@ -12,7 +12,7 @@
     require('./DeviceMenu.less');
 
     var DeviceMode = React.createClass({
-        renderItems( _group ){
+        renderItems(_group) {
             return (
                 <div className="item">
                     <div className="title">{_group.itemTitle}</div>
