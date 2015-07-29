@@ -29,7 +29,7 @@ require('jquery-ui');
     var FootStatusBar = require('./FootStatusBar.jsx');                     //하단 상태 표시줄 UI
     var Modal = require('./Modal.jsx');                         //Modal UI
     var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
-    var PushMessage = require('./PushMessage.jsx');             //PushMessage
+    var NotificationSystem = require('./NotificationSystem.jsx');             //PushMessage
     var SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
 
     var React = require('react');
@@ -228,7 +228,7 @@ require('jquery-ui');
 
          onThrowCatcherNoticeMessage( _eventData, _pass){
 
-            this.refs['NotificationCenter'].notify({
+            this.refs['NotificationSystem'].notify({
                type:'simple-message',
                title: _eventData.title ,
                message: _eventData.message,
@@ -337,7 +337,7 @@ require('jquery-ui');
 
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
-                    <PushMessage ref='NotificationCenter'/>
+                    <NotificationSystem ref='NotificationSystem'/>
                     <SubWindowSystem ref='SubWindowSystem'/>
                 </div>
             )
