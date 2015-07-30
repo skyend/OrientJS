@@ -55,18 +55,6 @@
             });
         },
 
-        // 좌측 패널에 따른 중앙 리사이즈
-        onResizeLeftPanel(_width) {
-            this.leftAreaWidth = _width;
-            this.resizeMiddleArea();
-        },
-
-        // 우측 패널 리사이즈
-        onResizeRightPanel(_width) {
-            this.rightAreaWidth = _width;
-            this.resizeMiddleArea();
-        },
-
         onThrowCatcherCallContextMenu(_eventData, _pass) {
 
             if (_eventData.for === "StageElement") {
@@ -95,6 +83,21 @@
                             type: "button",
                             key: "elementEdit",
                             eventName: "StageElementEdit"
+                        }, {
+                            title: "New SubWindow(Test)",
+                            type: "button",
+                            key: "newSubwindowTest",
+                            eventName: "NewSubWindow_Test"
+                        }, {
+                            title: "Popup Modal(Test)",
+                            type: "button",
+                            key: "popupModalTest",
+                            eventName: "PopupModal_Test"
+                        }, {
+                            title: "Push Message(Test)",
+                            type: "button",
+                            key: "pushMessageTest",
+                            eventName: "PushMessage_Test"
                         },
                         "spliter",
                         {
@@ -129,15 +132,26 @@
 
         onThrowCatcherStageElementClone(_eventData, _pass) {
             this.offContextMenu();
-
             this.refs['DocumentStage'].setState({a: 1});
         },
 
         onThrowCatcherStageElementEdit(_eventData, _pass) {
             this.offContextMenu();
+        },
 
-
+        onThrowCatcherNewSubWindow_Test(_eventData, _pass) {
+            this.offContextMenu();
             this.newSubWindow();
+        },
+
+        onThrowCatcherPopupModal_Test( _eventData, _pass){
+            this.offContextMenu();
+            this.popupModal();
+        },
+
+        onThrowCatcherPushMessage_Test( _eventData, _pass){
+            this.offContextMenu();
+            this.popupModal();
         },
 
         onThrowCatcherSelectParentElementByStageElement(_eventData, _pass) {
@@ -149,11 +163,12 @@
 
             if (_eventData.refPath[0] === 'RightNavigation') {
                 this.rightAreaWidth = _eventData.width;
+
             } else if (_eventData.refPath[0] === 'LeftNavigation') {
                 this.leftAreaWidth = _eventData.width;
             }
 
-            this.resizeMiddleArea();
+            this.resizeSelf();
         },
 
         onThrowCatcherUnfoldPanel(_eventData, _pass) {
@@ -164,7 +179,7 @@
                 this.leftAreaWidth = _eventData.width;
             }
 
-            this.resizeMiddleArea();
+            this.resizeSelf();
         },
 
         onThrowCatcherNeedEquipTool(_eventData, _pass) {
@@ -189,7 +204,6 @@
                     throw new Error("Tool[" + toolKey + "] JSXPath is not exists.");
                 }
 
-
                 loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
                     if (___err !== null) {
 
@@ -206,7 +220,6 @@
                     return __cb(__tool, null);
                 }
 
-
                 loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
                     if (___err !== null) {
                         throw new Error("Fail to load tool[" + toolKey + "]Config.");
@@ -217,19 +230,21 @@
                 });
             }, function (__tool, __toolConfig) {
 
-
                 self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey);
             }]);
         },
 
 
         onThrowCatcherNoticeMessage(_eventData, _pass) {
+            this.notifyMessage( _eventData.title, _eventData.message, _eventData.level );
+        },
 
+        notifyMessage( _title, _message, _level ){
             this.refs['NotificationSystem'].notify({
                 type: 'simple-message',
-                title: _eventData.title,
-                message: _eventData.message,
-                level: (typeof _eventData.level !== 'undefined') ? _eventData.level : 'success'
+                title: _title,
+                message: _message,
+                level: (typeof _level !== 'undefined') ? _level : 'success'
             });
         },
 
@@ -248,7 +263,7 @@
         },
 
         // 컨텐츠 영역 화면 리사이즈
-        resizeMiddleArea() {
+        resizeSelf() {
             var selfDom = this.getDOMNode();
             var width = selfDom.offsetWidth;
             var height = selfDom.offsetHeight;
@@ -259,25 +274,29 @@
             var headerOffsetHeight = this.refs['HeadToolBar'].getDOMNode().offsetHeight;
             var footerOffsetHeight = this.refs['FootStatusBar'].getDOMNode().offsetHeight;
 
+
+            // middleArea 의 넓이와 높이
             var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
             var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
 
+            // DocumentStage ReactClass
             var middleAreaREle = this.refs['DocumentStage'];
+
+            // DocumentStage Element
             var middleAreaDom = middleAreaREle.getDOMNode();
 
+            // DocumentStage positioning & resizing
             middleAreaDom.style.width = middleAreaWidth + 'px';
             middleAreaDom.style.left = this.leftAreaWidth + 'px';
             middleAreaDom.style.top = headerOffsetHeight + "px";
 
-            middleAreaREle.setState({
-                control: {
-                    type: 'resize',
-                    data: {
-                        width: middleAreaWidth,
-                        height: middleAreaHeight
-                    }
-                }
-            });
+            // documentStage에 resize 알림
+            middleAreaREle.resize( middleAreaWidth, middleAreaHeight);
+
+
+            // ToolNavigation에 최대로 펼칠 수 있는 넓이를 알려줌
+            this.refs['LeftNavigation'].setState({maxWidth: this.leftAreaWidth + middleAreaWidth});
+            this.refs['RightNavigation'].setState({maxWidth: this.rightAreaWidth + middleAreaWidth});
         },
 
         resizeListener(_w, _h, _screenW, _screenH) {
@@ -290,7 +309,7 @@
             this.screenWidth = _screenW;
             this.screenHeight = _screenH;
 
-            this.resizeMiddleArea();
+            this.resizeSelf();
         },
 
         componentDidMount() {
@@ -313,21 +332,21 @@
                     <LeftNavigation ref="LeftNavigation"
                         config={this.props.LeftNavigationConfig}
                         naviWidth={50}
-                        panelWidth={210}
+                        toolWidth={210}
                         position='left'
                         naviItemFontSize={20}/>
 
                     <RightNavigation ref="RightNavigation"
                         config={this.props.RightNavigationConfig}
                         naviWidth={25}
-                        panelWidth={230}
+                        toolWidth={230}
                         showTitle={true}
                         verticalText={true}
                         position='right'
                         naviItemFontSize={16}/>
 
 
-                    <DocumentStage ref='DocumentStage' />
+                    <DocumentStage ref='DocumentStage'/>
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>

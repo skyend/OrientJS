@@ -39,17 +39,28 @@
   },
   "RightNavigation": {
     "menuGroups": [
+      {
+        "groupName": "System",
+        "menuItems": [
+          {
+            "key": "user-account",
+            "title": "User Account",
+            "icon": "user",
+            "equipToolKey": "UserAccount"
+          }
+        ]
+      }
     ]
   },
   "tools": {
     "UserAccount": {"jsxPath": "UserAccount"},
     "ProjectSetting": {"jsxPath": "ProjectSetting"},
-    "ToolkitMenu": {
-      "jsxPath": "ToolkitMenu",
+    "ComponentPalette": {
+      "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"
     },
-    "DeviceMenu": {
-      "jsxPath": "DeviceMenu",
+    "DocumentsNavigation": {
+      "jsxPath": "DocumentsNavigation",
       "configPath": "DeviceMenuConfig"
     }
   }

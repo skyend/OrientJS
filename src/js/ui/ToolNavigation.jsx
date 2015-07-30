@@ -16,8 +16,29 @@
         getInitialState() {
 
             return {
-                targetPanelItem: null,
-                panelElementInstance: null
+
+                // toolWidthMode
+                //   auto :
+                //     property 로 정해진 width에 따라 지정
+                //   manual :
+                //     state 에 지정된 width에 따라 지정
+                //   fitToMax :
+                //     state 의 maxWidth 로 지정
+                //     fitToMax 로 변경될 때는 resize이벤트가 발생하지 않는다.
+                //
+                toolWidthMode: "auto",
+
+                // maxWidth
+                //   UIService가 지정하는 최대로 넓혀질 수 있는 값
+                maxWidth:0,
+
+                // width
+                //   사용자가 manual로 변경한 넓이 값
+                width:0,
+
+                // equipTool
+                //   장비할 툴 오브젝트 UIService로 부터 equipTool 메소드를 호출당하여 변경된다.
+                //equipTool : undefined
             }
         },
 
@@ -35,7 +56,7 @@
         },
 
         unfoldPanel() {
-            var width = this.props.naviWidth + this.props.panelWidth;
+            var width = this.props.naviWidth + this.props.toolWidth;
             this.resize(width);
             this.refs['toolArea'].getDOMNode().style.display = 'block';
             this.fold = false;
@@ -150,7 +171,7 @@
             var toolElement;
             var headElement;
 
-            if (_tool !== null && typeof _tool === 'object') {
+            if (typeof _tool === 'object' && _tool !== null ) {
                 toolElement = React.createElement(_tool.class, {config: _tool.config});
 
                 var menuInfo = this.getMenuItemByToolKey(_tool.toolKey);
@@ -158,15 +179,41 @@
                 headElement = <i className={"fa fa-" + menuInfo.icon}> {menuInfo.title}</i>;
             } else {
                 toolElement = <div className='error'>
-                    <span className='message'>Not Tool rendered</span>
+                    <span className='message'>Not rendered a Tool</span>
                 </div>;
                 headElement = "unknown";
             }
 
+            var fitToMaxToggleElementIconClass;
+
+            if( this.props.position === 'left' ){
+                if( this.state.toolWidthMode === 'fitToMax' ){
+                    fitToMaxToggleElementIconClass = "left";
+                } else {
+                    fitToMaxToggleElementIconClass = "right";
+                }
+            } else if( this.props.position === 'right' ){
+                if( this.state.toolWidthMode === 'fitToMax' ){
+                    fitToMaxToggleElementIconClass = "right";
+                } else {
+                    fitToMaxToggleElementIconClass = "left"
+                }
+            }
+
+            var headMenuElement = (
+                <div className={"menu-bar "+this.props.position}>
+                    <ul>
+                        <li onClick={this.toggleFitToMax}>
+                             <i className={"fa fa-chevron-" + fitToMaxToggleElementIconClass}></i>
+                        </li>
+                    </ul>
+                </div>);
+
             return (
                 <div className='tool-wrapper'>
                     <div className='tool-head'>
-                       { headElement }
+                       <div className="title">{ headElement }</div>
+                       { headMenuElement }
                     </div>
                     <div className='tool-body'>
                         {toolElement}
@@ -175,17 +222,30 @@
             );
         },
 
+        toggleFitToMax(){
+
+            if( this.state.toolWidthMode === 'fitToMax' ){
+
+                this.changeToolWidthMode( this.state.prevToolWidthMode );
+            } else {
+                            console.log('a');
+                this.changeToolWidthMode( "fitToMax" );
+            }
+        },
+
+        changeToolWidthMode( _mode ){
+
+            this.state.prevToolWidthMode = this.state.toolWidthMode;
+            this.setState( { toolWidthMode : _mode } );
+            console.log(this.state);
+        },
+
         componentDidMountByRoot() {
             this.foldPanel();
 
 
         },
 
-        componentWillUpdate(_nextProps, _nextState) {
-            if (_nextState.targetPanelItem !== null) {
-                this.selectedNaviItemKey = _nextState.targetPanelItem.itemKey;
-            }
-        },
 
         render() {
             var rootClasses = [];
@@ -197,23 +257,42 @@
             var rootStyle = {};
 
             var navigationAreaStyle = {};
-            navigationAreaStyle.width = this.props.naviWidth;
+            var toolAreaStyle = {};
 
-            var panelAreaStyle = {};
-            panelAreaStyle.width = this.props.panelWidth;
 
-            var panelAreaResizeHookStyle = {};
+            var naviWidth;
+            var toolWidth;
+
+            switch( this.state.toolWidthMode ){
+              case "auto" :
+                naviWidth = this.props.naviWidth;
+                toolWidth = this.props.toolWidth;
+                break;
+              case "manual" :
+                naviWidth = this.props.naviWidth;
+                toolWidth = this.state.width - naviWidth;
+                break;
+              case "fitToMax" :
+                naviWidth = this.props.naviWidth;
+                toolWidth = this.state.maxWidth - naviWidth;
+                break;
+            }
+
+            navigationAreaStyle.width = naviWidth;
+            toolAreaStyle.width = toolWidth;
+
+            var toolAreaResizeHookStyle = {};
 
             if (this.props.position === 'left') {
-                panelAreaStyle.left = this.props.naviWidth;
+                toolAreaStyle.left = this.props.naviWidth;
                 navigationAreaStyle.left = 0;
                 rootStyle.left = 0;
-                panelAreaResizeHookStyle.right = 2;
+                toolAreaResizeHookStyle.right = 2;
             } else if (this.props.position === 'right') {
-                panelAreaStyle.right = this.props.naviWidth;
+                toolAreaStyle.right = this.props.naviWidth;
                 navigationAreaStyle.right = 0;
                 rootStyle.right = 0;
-                panelAreaResizeHookStyle.left = 2;
+                toolAreaResizeHookStyle.left = 2;
             }
 
             navigationAreaStyle.fontSize = this.props.naviItemFontSize || 12;
@@ -226,10 +305,10 @@
                         { this.props.config.menuGroups.map(this.naviItemGroupRender)}
 
                     </div>
-                    <div className='tool-area' ref='toolArea' style={panelAreaStyle}>
+                    <div className='tool-area' ref='toolArea' style={toolAreaStyle}>
                         <div className="resize-hook"
                             ref='resizeHook'
-                            style={panelAreaResizeHookStyle}
+                            style={toolAreaResizeHookStyle}
                             onDragStart={this.startHookDrag}/>
 
                           { this.toolRender(this.state.equipTool) }

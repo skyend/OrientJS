@@ -219,21 +219,14 @@
         componentDidUpdate(_prevProps, _prevState) {
         },
 
-        shouldComponentUpdate(_nextProps, _nextState) {
 
-// 다음 state 에 control 필드가 입력되면 컴포넌트를 업데이트 하지않고 변경된 속성만 반영한다.
-            if (typeof _nextState.control === 'object') {
-
-                switch (_nextState.control.type) {
-                    case 'resize' :
-                        this.props.width = _nextState.control.data.width;
-                        this.props.height = _nextState.control.data.height;
-                        this.tabContextResize();
-                        this.documentEditorUpdate();
-                }
-                return false;
-            }
+        resize( _width, _height){
+            this.props.width = _width;
+            this.props.height = _height;
+            this.tabContextResize();
+            this.documentEditorUpdate();
         },
+
         render: function () {
 
             return (
