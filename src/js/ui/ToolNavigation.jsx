@@ -47,21 +47,21 @@
             this.getDOMNode().style.width = _width + 'px';
         },
 
-        foldPanel() {
+        foldTool() {
             this.resize(this.props.naviWidth);
             this.refs['toolArea'].getDOMNode().style.display = 'none';
             this.fold = true;
 
-            this.emit('FoldPanel', {width: this.props.naviWidth});
+            this.emit('FoldTool', {width: this.props.naviWidth});
         },
 
-        unfoldPanel() {
+        unfoldTool() {
             var width = this.props.naviWidth + this.props.toolWidth;
             this.resize(width);
             this.refs['toolArea'].getDOMNode().style.display = 'block';
             this.fold = false;
 
-            this.emit('UnfoldPanel', {width: width});
+            this.emit('UnfoldTool', {width: width});
         },
 
         startHookDrag(e) {
@@ -73,13 +73,13 @@
         clickNaviItem(_e, _naviItem) {
 
             if (this.fold) {
-                this.unfoldPanel();
+                this.unfoldTool();
             } else {
                 // 한번더 클릭하면 패널을 닫는다.
                 // 현재 열려있는 패널과 같은 naviItem을 클릭했을 때 닫는다.
                 // 현재 열려있는 패널과 다른 naviItem을 클릭했을 때는 다른 패널이 열리도록 그대로 둔다.
                 if (_naviItem.key === this.state.openedMenuKey) {
-                    this.foldPanel();
+                    this.foldTool();
                     this.setState({openedMenuKey: undefined});
                     return;
                 }
@@ -138,21 +138,26 @@
         },
 
         toggleFitToMax(){
-
             if( this.state.toolWidthMode === 'fitToMax' ){
-
                 this.changeToolWidthMode( this.state.prevToolWidthMode );
             } else {
-                            console.log('a');
                 this.changeToolWidthMode( "fitToMax" );
             }
         },
 
         changeToolWidthMode( _mode ){
-
             this.state.prevToolWidthMode = this.state.toolWidthMode;
+
+
             this.setState( { toolWidthMode : _mode } );
-            console.log(this.state);
+
+            if( _mode === 'fitToMax'){
+                this.emit('SetToolFitToMax', {
+                    myRef: this._reactInternalInstance._currentElement.ref
+                });
+            } else if( this.state.prevToolWidthMode === 'fitToMax' ){
+
+            }
         },
 
 
@@ -187,22 +192,26 @@
             )
         },
 
-        toolRender(_tool) {
+        toolRender(_tool, _toolWidth ) {
 
             var toolElement;
             var headElement;
 
             if (typeof _tool === 'object' && _tool !== null ) {
-                toolElement = React.createElement(_tool.class, {config: _tool.config});
+                toolElement = React.createElement(_tool.class, {config: _tool.config, ref:_tool.toolKey, width:_toolWidth});
 
                 var menuInfo = this.getMenuItemByToolKey(_tool.toolKey);
 
                 headElement = <i className={"fa fa-" + menuInfo.icon}> {menuInfo.title}</i>;
+
+                this.equipedToolRef = _tool.toolKey;
             } else {
                 toolElement = <div className='error'>
                     <span className='message'>Not rendered a Tool</span>
                 </div>;
                 headElement = "unknown";
+
+                this.equipedToolRef = undefined;
             }
 
             var fitToMaxToggleElementIconClass;
@@ -243,10 +252,12 @@
             );
         },
 
-
+        // 최종 root 가 마운트 되었을 때 tool을 접는다.
         componentDidMountByRoot() {
-            this.foldPanel();
+            this.foldTool();
+        },
 
+        componentDidUpdate(){
 
         },
 
@@ -315,7 +326,7 @@
                             style={toolAreaResizeHookStyle}
                             onDragStart={this.startHookDrag}/>
 
-                          { this.toolRender(this.state.equipTool) }
+                          { this.toolRender(this.state.equipTool, toolWidth) }
                     </div>
                 </div>
             );

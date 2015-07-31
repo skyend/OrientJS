@@ -8,7 +8,9 @@
 
             return (
                 <div className="ProfileCard">
-                    a
+                    <div className='picture'>
+                      
+                    </div>
                 </div>
             );
         }

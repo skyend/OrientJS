@@ -1,0 +1,65 @@
+@HeadHeight:25px;
+@FootHeight:35px;
+
+.BuilderSetting {
+
+  &.white {
+    background-color: rgba(255,255,255,1);
+
+    >.wrapper {
+      > .head {
+        background-color: #eee;
+      }
+
+      >.body {
+        border-top:1px solid #ccc;
+        border-bottom:1px solid #ccc;
+      }
+
+      > .foot {
+        background-color: #eee;
+      }
+    }
+  }
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin:0;
+
+ >.wrapper {
+   position: relative;
+   height: 100%;
+
+   >.head {
+     position: relative;
+     width:100%;
+     top:0px;
+     height:@HeadHeight;
+     font-size: 12px;
+     padding:5px;
+     box-sizing: border-box;
+   }
+
+
+   >.body {
+     position: absolute;
+     width:100%;
+     box-sizing: border-box;
+
+     top:@HeadHeight;
+     bottom:@FootHeight;
+
+     overflow: auto;
+   }
+
+   > .foot {
+     position: absolute;
+     width:100%;
+     bottom:0px;
+     height:@FootHeight;
+
+     text-align: right;
+   }
+ }
+}

@@ -159,7 +159,7 @@
             this.offContextMenu();
         },
 
-        onThrowCatcherFoldPanel(_eventData, _pass) {
+        onThrowCatcherFoldTool(_eventData, _pass) {
 
             if (_eventData.refPath[0] === 'RightNavigation') {
                 this.rightAreaWidth = _eventData.width;
@@ -171,7 +171,7 @@
             this.resizeSelf();
         },
 
-        onThrowCatcherUnfoldPanel(_eventData, _pass) {
+        onThrowCatcherUnfoldTool(_eventData, _pass) {
 
             if (_eventData.refPath[0] === 'RightNavigation') {
                 this.rightAreaWidth = _eventData.width;
@@ -180,6 +180,17 @@
             }
 
             this.resizeSelf();
+        },
+
+        onThrowCatcherSetToolFitToMax( _eventData, _pass ){
+            var ref = _eventData.myRef;
+
+            if( ref === 'LeftNavigation' ){
+                this.refs["RightNavigation"].setState({toolWidthMode:'auto'});
+            } else if ( ref === 'RightNavigation' ){
+                this.refs['LeftNavigation'].setState({toolWidthMode:'auto'});
+            }
+
         },
 
         onThrowCatcherNeedEquipTool(_eventData, _pass) {

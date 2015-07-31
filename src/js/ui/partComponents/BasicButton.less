@@ -1,0 +1,96 @@
+@import "../CommonSnippet";
+
+.BasicButton {
+    padding: 7px 15px;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 12px;
+    border-radius: 2px;
+    margin:5px;
+
+    cursor:pointer;
+
+    font-family: 'Open Sans','Segoe UI';
+
+    transition: all .15s ease;
+
+    /*
+      Color Themes
+      */
+    &.primary {
+        border-color: @PrimaryBorderColor;
+        background-color: @PrimaryBGColor;
+        color:#fff;
+
+        &:hover {
+          background-color: @PrimaryBGHoverColor;
+        }
+    }
+
+    &.success {
+        border-color: @SuccessBorderColor;
+        background-color: @SuccessBGColor;
+        color:#fff;
+
+        &:hover {
+          background-color: @SuccessBGHoverColor;
+        }
+    }
+
+    &.warnings {
+        border-color: @WarningsBorderColor;
+        background-color: @WarningsBGColor;
+        color:#fff;
+
+        &:hover {
+          background-color: @WarningsBGHoverColor;
+        }
+    }
+
+    &.error {
+        border-color: @ErrorBorderColor;
+        background-color: @ErrorBGColor;
+        color:#fff;
+
+        &:hover {
+          background-color: @ErrorBGHoverColor;
+        }
+    }
+
+    &.default {
+        border-color: @DefaultBorderColor;
+        background-color: @DefaultBGColor;
+        color:#333;
+
+        &:hover {
+          background-color: @DefaultBGHoverColor;
+        }
+    }
+
+    &:active {
+      box-shadow:0 0 10px #fff, inset 0 3px 5px rgba(0,0,0,.125);
+    }
+
+    box-shadow: 0 0 10px #fff;
+
+
+    /*
+      Size
+      */
+    &.small {
+        padding: 3px 7px;
+        font-size: 12px;
+    }
+
+    &.normal {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+
+    &.large {
+        padding: 7px 20px;
+        font-size: 16px;
+    }
+
+
+}

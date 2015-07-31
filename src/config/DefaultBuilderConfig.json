@@ -15,7 +15,14 @@
             "title": "Project Settings",
             "icon": "cog",
             "equipToolKey": "ProjectSetting"
+          },
+          {
+            "key": "builder-setting",
+            "title": "Builder Settings",
+            "icon": "cog",
+            "equipToolKey": "BuilderSetting"
           }
+
         ]
       },
       {
@@ -55,6 +62,8 @@
   "tools": {
     "UserAccount": {"jsxPath": "UserAccount"},
     "ProjectSetting": {"jsxPath": "ProjectSetting"},
+    "BuilderSetting": {"jsxPath": "BuilderSetting"},
+        
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"
