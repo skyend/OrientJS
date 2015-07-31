@@ -142,9 +142,9 @@
             }
 
             return (
-                <div className="InputBoxWithSelector gray">
+                <div className="InputBoxWithSelector red">
                     <div className="input-wrapper">
-                        <input autoComplete="off" onKeyUp={this.onKeyUp} onChange={this.changedValue} ref='input'/>
+                        <input autoComplete="off" onKeyUp={this.onKeyUp} onChange={this.changedValue} ref='input' disabled={this.props.dontEnter}/>
                         <div className='spread-out' onClick={this.toggleSpread} >
                             <i className='fa fa-sort-down'></i>
                         </div>

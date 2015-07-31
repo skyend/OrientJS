@@ -9,7 +9,6 @@
             classes.push('BasicButton');
             classes.push( this.props.color );
             classes.push( this.props.size );
-            
             return (
                 <button className={classes.join(' ')}>
                     { this.props.desc }
