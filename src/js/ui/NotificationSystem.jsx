@@ -32,7 +32,7 @@
                     title: _notifyObject.title,
                     message: _notifyObject.message,
                     level: _notifyObject.level,
-                    autoDismiss: 10,
+                    autoDismiss: 3,
                 });
             }
 

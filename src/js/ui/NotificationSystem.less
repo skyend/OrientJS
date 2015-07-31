@@ -47,6 +47,11 @@
       background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* IE10+ */
       background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* W3C */
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0) !important;
+      opacity: 0.6!important;
+
+      &:hover {
+          opacity: 1!important;
+      }
 
       > .notification-title {
 
@@ -68,9 +73,16 @@
   }
 
   .notifications-wrapper {
+    >.notifications-tr {
+      padding: 0!important;
+      margin:20px!important;
+    }
+
     .notification {
 
       border-radius: 10px;
+
+
 
       > .notification-title {
 

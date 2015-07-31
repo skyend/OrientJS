@@ -68,36 +68,7 @@
             console.log('start drag');
         },
 
-        naviItemGroupRender(_group) {
-            var items = _group.menuItems;
 
-            return (
-                <ul className="group">
-                    { items.map(this.naviItemRender) }
-                </ul>);
-        },
-
-        naviItemRender(_menuItem) {
-            var self = this;
-            var classes = [];
-
-            if (this.props.verticalText) {
-                classes.push('vertical-text-display');
-            }
-
-            if (this.state.openedMenuKey === _menuItem.key) {
-                classes.push('opened');
-            }
-
-
-            return (
-                <li title={_menuItem.title} className={classes.join(' ')} onClick={function (e) {
-                    self.clickNaviItem(e, _menuItem);
-                }}>
-                    <a className={"fa fa-" + _menuItem.icon}> {this.props.showTitle ? _menuItem.title : ''}</a>
-                </li>
-            )
-        },
 
         clickNaviItem(_e, _naviItem) {
 
@@ -166,6 +137,56 @@
             return undefined;
         },
 
+        toggleFitToMax(){
+
+            if( this.state.toolWidthMode === 'fitToMax' ){
+
+                this.changeToolWidthMode( this.state.prevToolWidthMode );
+            } else {
+                            console.log('a');
+                this.changeToolWidthMode( "fitToMax" );
+            }
+        },
+
+        changeToolWidthMode( _mode ){
+
+            this.state.prevToolWidthMode = this.state.toolWidthMode;
+            this.setState( { toolWidthMode : _mode } );
+            console.log(this.state);
+        },
+
+
+        naviItemGroupRender(_group) {
+            var items = _group.menuItems;
+
+            return (
+                <ul className="group">
+                    { items.map(this.naviItemRender) }
+                </ul>);
+        },
+
+        naviItemRender(_menuItem) {
+            var self = this;
+            var classes = [];
+
+            if (this.props.verticalText) {
+                classes.push('vertical-text-display');
+            }
+
+            if (this.state.openedMenuKey === _menuItem.key) {
+                classes.push('opened');
+            }
+
+
+            return (
+                <li title={_menuItem.title} className={classes.join(' ')} onClick={function (e) {
+                    self.clickNaviItem(e, _menuItem);
+                }}>
+                    <a className={"fa fa-" + _menuItem.icon}> {this.props.showTitle ? _menuItem.title : ''}</a>
+                </li>
+            )
+        },
+
         toolRender(_tool) {
 
             var toolElement;
@@ -222,23 +243,6 @@
             );
         },
 
-        toggleFitToMax(){
-
-            if( this.state.toolWidthMode === 'fitToMax' ){
-
-                this.changeToolWidthMode( this.state.prevToolWidthMode );
-            } else {
-                            console.log('a');
-                this.changeToolWidthMode( "fitToMax" );
-            }
-        },
-
-        changeToolWidthMode( _mode ){
-
-            this.state.prevToolWidthMode = this.state.toolWidthMode;
-            this.setState( { toolWidthMode : _mode } );
-            console.log(this.state);
-        },
 
         componentDidMountByRoot() {
             this.foldPanel();
