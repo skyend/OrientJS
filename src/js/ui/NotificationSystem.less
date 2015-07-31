@@ -1,19 +1,4 @@
 /*
-<div class="notifications-wrapper">
-  <div class="notifications-{position}"> <!-- '{position}' can be one of the positions available: ex: notifications-tr -->
-    <div class="notification notification-{level} notification-{state} {notification-not-dismissible}"> <!-- '{level}' can be: success | error | warning | info. '{state}' can be: visible | hidden. {notification-not-dismissible} is present if notification is not dismissible by user -->
-      <h4 class="notification-title">Default title</h4>
-      <div class="notification-message">Default message</div>
-      <span class="notification-dismiss">×</span>
-      <div class="notification-action-wrapper">
-        <button class="notification-action-button">Action button</button>
-      </div>
-    </div>
-  </div>
-</div>
-*/
-
-/*
  * Base variable
  */
 @font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -26,6 +11,21 @@
 @fontColor: #6F6F6F;
 @titleBgColor: #bbb;
 
+.setNotification() {
+  background-color: #333;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  background: #ffffff; /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(50%, #f3f3f3), color-stop(100%, #ededed)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ededed 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0);
+
+}
+
 #push-message {
   position: absolute;
   top: 4px;
@@ -36,18 +36,7 @@
 .NotificationWrapper {
   &.steel-gray {
     .notification {
-      background-color: #333 !important;
-      border: 1px solid #fff !important;
-      border-radius: 10px !important;
-      background: #ffffff !important; /* Old browsers */
-      background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* FF3.6+ */
-      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(50%, #f3f3f3), color-stop(100%, #ededed)) !important; /* Chrome,Safari4+ */
-      background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* Chrome10+,Safari5.1+ */
-      background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* Opera 11.10+ */
-      background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* IE10+ */
-      background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 50%, #ededed 100%) !important; /* W3C */
-      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0) !important;
-      opacity: 0.6!important;
+      .setNotification() !important;
 
       &:hover {
           opacity: 1!important;
