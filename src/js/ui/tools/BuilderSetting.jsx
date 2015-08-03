@@ -6,18 +6,14 @@
     var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
 
     var BuilderSetting = React.createClass({
-        mixins: [require('../reactMixin/EventDistributor.js')],
+        mixins: [
+            require('../reactMixin/EventDistributor.js'),
+            require('./mixins/WidthRuler.js')],
 
 
         render() {
             var wide = false;
-            var rootClasses = ['BuilderSetting', 'white'];
-
-            if( this.props.width <= 210 ){
-                rootClasses.push('narrow-width');
-            } else {
-                rootClasses.push('wide-width');
-            }
+            var rootClasses = ['BuilderSetting', 'white', this.getMySizeClass()];
 
             return (
                 <div className={rootClasses.join(' ')}>
@@ -32,7 +28,7 @@
                                         Builder Mode
                                     </div>
                                     <div className='input'>
-                                        <InputBoxWithSelector selectorItems={['Develop', 'Product']} dontEnter={true}/>
+                                        <InputBoxWithSelector selectorItems={['Develop', 'Product']} dontEnter={true} color={'red'}/>
                                     </div>
                                 </div>
                             </div>
@@ -43,7 +39,7 @@
                                         Accept Log level
                                     </div>
                                     <div className='input'>
-                                        <InputBoxWithSelector selectorItems={['All', 'Fatal', 'Error', 'Warnings', 'Info', 'No Log']} dontEnter={true}/>
+                                        <InputBoxWithSelector selectorItems={['All', 'Fatal', 'Error', 'Warnings', 'Info', 'No Log']} dontEnter={true} color={'red'}/>
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +50,7 @@
                                         Server
                                     </div>
                                     <div className='input'>
-                                        <InputBoxWithSelector selectorItems={['Develop', 'Product']} dontEnter={false}/>
+                                        <InputBoxWithSelector selectorItems={['Develop', 'Product']} dontEnter={false} color={'red'}/>
                                     </div>
                                 </div>
                             </div>
