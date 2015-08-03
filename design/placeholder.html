@@ -1,96 +1,49 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <link rel="stylesheet/less" type="text/css" href="../src/js/ui/editor/EventResponser.less"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js"></script>
+
+</head>
 <body>
 
-<canvas id="placeholder" width="10" height="400" style="border: 1px solid #ff0011">
-    Your browser does not support the HTML5 canvas tag.
-</canvas>
-
-<svg id="svg" width="100" height="100">
-    <polygon id="triangle1" points="0,0 6,0 3,6" fill="blue" stroke="blue" stroke-width="1"/>
-    <line id="line" x1="3" y1="6" x2="3" y2="90" stroke="blue" stroke-width="2"/>
-    <polygon id="triangle2" points="3,90 6,96 0,96" fill="blue" stroke="blue" stroke-width="1"/>
+<svg width="100" height="100">
+    <line x1="3" y1="6" x2="3" y2="90" stroke="blue" stroke-width="2"/>
 </svg>
+<div id="placeholder">
+    <svg id="placeholderSvg" width="100" height="100" viewport-fill="red" version="1.2" xmlns="http://www.w3.org/2000/svg">
+        <g  transform="translate(-8,2.5) rotate(270 8 0)">
+            <polygon id="triangle1" points="0,0 6,0 3,6"/>
+            <line id="line" x1="3" y1="6" x2="3" y2="90"/>
+            <polygon id="triangle2" points="3,90 6,96 0,96"/>
+        </g>
+    </svg>
+</div>
 <script>
 
     var svg = document.getElementById("svg");
-    function svgPlaceholder(_lineLength){
+    function svgPlaceholder(_lineLength) {
 
-        var startPontX = 1, triangleLength = 10, lineWidth = 2;
-        var linePointX = triangleLength / 2;
-        if (_lineLength < 0) {
-            _lineLength = 0;
-        }
-        var svg = document.getElementById('svg');
-        svg.setAttribute("width",triangleLength+(startPontX*2));
-        svg.setAttribute("height",_lineLength+(triangleLength*2));
-        document.getElementById('triangle1').setAttribute("points",startPontX+",0 "+(startPontX+triangleLength)+",0 "+(startPontX+linePointX)+","+(startPontX+triangleLength));
+        var startPontX = 0, triangleLength = 8, triangleHeight = Math.sqrt((Math.pow(triangleLength, 2) - Math.pow(triangleLength / 2, 2)));
+        var linePointX = triangleLength / 2, lineLength = _lineLength < 0 ? 0 : _lineLength;
+        var width = triangleLength + (startPontX * 2), height = lineLength + (triangleHeight * 2);
+        var placeholder = document.getElementById('placeholderSvg');
+        /*placeholder.setAttribute("width", width);
+        placeholder.setAttribute("height", height);*/
+        document.getElementById('triangle1').setAttribute("points", startPontX + ",0 " + (startPontX + triangleLength) + ",0 " + (startPontX + linePointX) + "," + (triangleHeight));
         var line = document.getElementById('line')
-        line.setAttribute("x1",startPontX+linePointX);
-        line.setAttribute("y1",triangleLength);
-        line.setAttribute("x2",startPontX+linePointX);
-        line.setAttribute("y2",triangleLength+_lineLength);
-        document.getElementById('triangle2').setAttribute("points",(startPontX+linePointX)+","+(triangleLength+_lineLength-1)+" "+(startPontX+triangleLength)+","+(triangleLength+triangleLength+_lineLength-1)+" "+(startPontX)+","+(triangleLength+triangleLength+_lineLength-1));
+        line.setAttribute("x1", startPontX + linePointX);
+        line.setAttribute("y1", triangleHeight);
+        line.setAttribute("x2", startPontX + linePointX);
+        line.setAttribute("y2", triangleHeight + lineLength);
+        document.getElementById('triangle2').setAttribute("points", (startPontX + linePointX) + "," + (triangleHeight + lineLength) + " " + (startPontX + triangleLength) + "," + (triangleHeight * 2 + lineLength) + " " + (startPontX) + "," + (triangleHeight * 2 + lineLength));
 
     }
     svgPlaceholder(20);
-
-    var triangleLength = 7, color = "rgb(200,0,0)", lineWidth = 2;
-    var c = document.getElementById("placeholder");
-    var ctx = c.getContext("2d");
-    console.log(c.height);
-    verticalPlaceholder(10);
-
-    c.addEventListener('resize', function () {
-        placeholder();
-        console.log('resize');
-
-    });
-
-    function verticalPlaceholder(_lineLength) {
-        var linePointX = triangleLength / 2;
-        if (_lineLength < 0) {
-            _lineLength = 0;
-        }
-        ctx.clearRect(0, 0, c.width, c.height);
-        ctx.beginPath();
-        ctx.moveTo(linePointX, triangleLength);
-        ctx.lineTo(0, 0);
-        ctx.lineTo(triangleLength, 0);
-        ctx.lineTo(linePointX, triangleLength);
-        ctx.closePath();
-        ctx.lineWidth = 1;
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = color;
-        ctx.stroke();
-
-
-        ctx.beginPath();
-        ctx.moveTo(linePointX, triangleLength-2);
-        ctx.lineTo(linePointX, _lineLength+4);
-        ctx.closePath();
-        ctx.lineWidth = 1;
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = color;
-        ctx.stroke();
-
-
-        ctx.beginPath();
-        ctx.moveTo(linePointX, _lineLength);
-        ctx.lineTo(triangleLength, _lineLength + triangleLength);
-        ctx.lineTo(0, _lineLength + triangleLength);
-        ctx.lineTo(linePointX, _lineLength);
-        ctx.closePath();
-        ctx.lineWidth = 1;
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = color;
-        ctx.stroke();
-
-    }
 </script>
 
 </body>
 </html>
+<form enctype="multipart/form-data">
+
+</form>
