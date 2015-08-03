@@ -89,6 +89,13 @@
         },
 
 
+        inputClick(){
+            // 인풋박스에 직접 입력할 수 없도록 설정된 경우 toggleSpread를 호출하여 셀렉트 리스트를 토글한다.
+            if( this.props.dontEnter == true ){
+                this.toggleSpread();
+            }
+        },
+
         toggleSpread() {
             if (this.state.spreadDisplay === 'block') {
                 this.setState({spreadDisplay: 'none'});
@@ -133,7 +140,7 @@
         },
 
         render() {
-            //var self = this;
+            var classes = ['InputBoxWithSelector', 'red']
 
             if (typeof this.props.selectorItems === 'object') {
                 this.props.itemCount = this.props.selectorItems.length;
@@ -141,10 +148,12 @@
                 this.props.itemCount = 0;
             }
 
+
+
             return (
-                <div className="InputBoxWithSelector red">
+                <div className={classes.join(' ')}>
                     <div className="input-wrapper">
-                        <input autoComplete="off" onKeyUp={this.onKeyUp} onChange={this.changedValue} ref='input' disabled={this.props.dontEnter}/>
+                        <input autoComplete="off" className={this.props.dontEnter? 'clickable':''} onClick={this.inputClick} onKeyUp={this.onKeyUp} onChange={this.changedValue} ref='input' disabled={this.props.dontEnter}/>
                         <div className='spread-out' onClick={this.toggleSpread} >
                             <i className='fa fa-sort-down'></i>
                         </div>
