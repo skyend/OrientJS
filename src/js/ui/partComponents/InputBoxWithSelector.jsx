@@ -7,6 +7,7 @@
  *
  * Event:
  *   onChanged( my field name, changed value)
+ *   onKeyUp( _e )
  *
  * Props:
  *   fieldName : "emul-ip-address"
@@ -14,6 +15,9 @@
  *
  *   selectorItems : ['value1', 'value2', ... ]
  *     필드의 선택가능한 입력 문자열의 배열
+ *
+ *   autoLoad : "http://.."
+ *   moreLoadCursor :
  */
 
 
@@ -68,6 +72,10 @@
                         this.setValue(this.props.selectorItems[this.state.itemCursor]);
                         this.toggleSpread();
                     }
+            }
+
+            if( typeof this.props.onKeyUp === 'function' ){
+                this.props.onKeyUp( _e );
             }
         },
 
@@ -140,7 +148,7 @@
         },
 
         render() {
-            var classes = ['InputBoxWithSelector', 'red']
+            var classes = ['InputBoxWithSelector', this.props.color]
 
             if (typeof this.props.selectorItems === 'object') {
                 this.props.itemCount = this.props.selectorItems.length;
