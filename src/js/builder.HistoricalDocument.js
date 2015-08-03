@@ -4,13 +4,9 @@
  *
  * Document의 변화및 구성을 기록하여 관리한다.
  *
- * Requires(JS) : builder.VirtualDom.js
  */
 
 (function () {
-    var VirtualDom = require('./builder.VirtualDom.js');
-
-
     var HistoricalDocument = function (_window) {
         this.window = _window;
         this.document = this.window.document;
@@ -27,6 +23,6 @@
 
     };
 
-
     module.exports = HistoricalDocument;
+
 })();

@@ -4,7 +4,6 @@
  *
  * Document의 변화및 구성을 기록하여 관리한다.
  *
- * Requires(JS) : builder.VirtualDom.js
  */
 
 (function() {
