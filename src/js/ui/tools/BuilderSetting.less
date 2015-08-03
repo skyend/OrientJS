@@ -55,7 +55,7 @@
    }
  }
 
-
+  /* Color Theme */
   &.white {
     background-color: rgba(255,255,255,1);
 
@@ -65,12 +65,11 @@
       }
 
       >.body {
-        border-top:1px solid #ccc;
-        border-bottom:1px solid #ccc;
+        border-top-color: #ccc;
+        border-bottom-color: #ccc;
 
         >.row {
-          border-bottom: 1px solid #eee;
-
+          border-bottom-color:#eee;
         }
       }
 
@@ -83,7 +82,7 @@
 
 
 
-
+ /* Width Type */
  &.narrow-width {
    .body {
      > .row {
@@ -96,11 +95,11 @@
          }
 
          > .input {
-
+           padding:10px;
+           padding-bottom: 0;
+           font-size: 12px;
          }
        }
-
-
      }
    }
  }
@@ -113,6 +112,11 @@
        margin:auto;
        width:768px;
 
+       padding-top:10px;
+       padding-bottom:10px;
+       border-bottom-width: 1px;
+       border-bottom-style: solid;
+       
        > .setting {
          > .title {
            width:200px;
@@ -120,11 +124,27 @@
 
            font-size: 14px;
 
+           padding:5px;
+
+           box-sizing: border-box;
          }
 
          > .input {
            width:568px;
            float:left;
+           box-sizing: border-box;
+
+           &::after {
+             display: block;
+             content: " ";
+             clear:both;
+           }
+         }
+
+         &::after {
+           display: block;
+           content: " ";
+           clear:both;
          }
        }
      }
