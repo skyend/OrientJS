@@ -8,12 +8,14 @@
  */
 
 (function () {
+    require('../lib/iPassword');
     require('./HeadToolBar.less');
     var React = require("react");
     var $ = require("jquery");
     var HeadToolBar = React.createClass({
         componentDidMount(){
             var status = true;
+            $("#password").iPassword();
             $(".login-form").hide();
             $('.user-info').on("click", function () {
                 if (status) {
@@ -24,6 +26,10 @@
                     status = true;
                 }
             });
+            $("#password").on('keyup', function(){
+                console.log($("#password").attr('real'));
+            });
+
         },
         render: function () {
             return (
@@ -41,7 +47,7 @@
 
                             <form action="#" className="login-form" method="post">
                                 <input type="text" placeholder="ID" className="login-input"/>
-                                <input type="password" placeholder="PASSWORD" className="login-input"/>
+                                <input id="password" type="text" placeholder="PASSWORD" className="login-input"/>
                                 <input type="submit" className="login-button" value="Login" tabindex="3"/>
                                 <span className="remember">&nbsp;&nbsp;&nbsp;Remember?<input type="checkbox" className="checkbox"/></span>
                                 <div className="lost-password">
