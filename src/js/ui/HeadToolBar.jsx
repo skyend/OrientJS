@@ -43,8 +43,8 @@
                                 <input type="text" placeholder="ID" className="login-input"/>
                                 <input type="password" placeholder="PASSWORD" className="login-input"/>
                                 <input type="submit" className="login-button" value="Login" tabindex="3"/>
-
-                                <div className="remember">Remember?<input type="checkbox" className="checkbox"/></div>
+                                <span className="remember">&nbsp;&nbsp;&nbsp;Remember?<input type="checkbox" className="checkbox"/></span>
+                                <div className="lost-password">비밀번호가 기억나지 않으세요?</div>
                             </form>
                         </li>
                     </ul>
