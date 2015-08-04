@@ -8,6 +8,8 @@
 
 (function() {
   var React = require("react");
+  var EventDistributor = require('./ui/reactMixin/EventDistributor.js');
+
   var uiScreen = require('./ui/UIService.jsx');
   var DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
 
@@ -200,16 +202,26 @@
 
   };
 
+  UI.prototype.onThrowCatcherRootTest = function(_eventData) {
+    console.log('Approached', _eventData);
+  }
+
   UI.prototype.render = function() {
     var self = this;
 
-    React.render(React.createElement(this.uiScreen, {
+    var rootUI = React.render(React.createElement(this.uiScreen, {
       observers: this.observers,
       LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
       RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
-      Tools: DefaultBuilderConfig.tools
+      Tools: DefaultBuilderConfig.tools,
+      __keyName: 'uiServicer'
     }), this.window.document.getElementsByTagName('BODY')[0]);
     this.onResize();
+
+    this.uiServicer = rootUI;
+    console.log(this.uiServicer);
+
+    EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
   }
 
   module.exports = UI;

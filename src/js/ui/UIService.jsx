@@ -56,7 +56,7 @@
         },
 
         onThrowCatcherCallContextMenu(_eventData, _pass) {
-
+            this.emit("RootTest", _eventData);
             if (_eventData.for === "StageElement") {
                 console.log(_eventData);
 
