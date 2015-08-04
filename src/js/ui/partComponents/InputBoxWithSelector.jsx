@@ -26,6 +26,11 @@
     var React = require("react");
 
     var ReactClass = React.createClass({
+        getDefaultProps(){
+            return {
+              selectorItems:[]
+            }
+        },
         getInitialState() {
             return {
                 valueControl: undefined,
