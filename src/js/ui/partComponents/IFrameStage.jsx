@@ -6,7 +6,6 @@
  */
 
 var React = require("react");
-console.log('less--',require('./IFrameStage.less'));
 
 var IFrameStage = React.createClass({
     getInitialState(){
