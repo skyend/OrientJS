@@ -19,6 +19,8 @@
     this.session.ready();
     this.ui = new UI(window);
 
+
+
     /*
      console.log('ready');
      var contextOne = new StageContext({
@@ -33,6 +35,16 @@
 
   App.prototype.initBuilder = function() {
     this.ui.builderRender();
+
+    var B = this.session.componentPool.getComponentFromRemote('B');
+
+    var React = require('react');
+
+    React.render(React.createElement(B.class), document.body);
+    var style = document.createElement('style');
+    style.innerHTML = B.CSS;
+
+    document.head.appendChild(style);
   }
   App.prototype.initLogin = function() {
     this.ui.loginRender();

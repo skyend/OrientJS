@@ -1,5 +1,4 @@
-var CompA = session.getComponent('A').class;
-console.log(CompA);
+using('less');
 module.exports =  {
     class : React.createClass({ // 고정
 
@@ -8,9 +7,8 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <div>
-            <span> TestComponentB </span>
-            <CompA />
+          <div className='A'>
+            <span> TestComponentA </span>
           </div>
         )
       }

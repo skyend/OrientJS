@@ -2,7 +2,7 @@
   "host" : "http://localhost:8000",
   "temporaryNamespaceDir" : "/BuildingResourceStore/Components/",
   "availableComponentsLocation" : {
-    "A": "A.jsx",
-    "B": "B.jsx"
+    "A": "TestPackage/A.jsx",
+    "B": "TestPackage/B.jsx"
   }
 }

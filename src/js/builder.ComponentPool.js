@@ -2,6 +2,7 @@
   var React = require('react');
   var ReactTools = require('react-tools');
   var RequestToServer = require('./util/RequestToServer.js');
+  var less = require('less');
 
   /**
    * ComponentPool
@@ -14,6 +15,7 @@
 
     this.poolStateObject;
     this.cachedComponent = {}; // 한번로드된 컴포넌트를 캐싱
+    this.styleCache = {};
   }
 
   ComponentPool.prototype.updatePoolState = function(_url) {
@@ -30,6 +32,8 @@
   };
 
   ComponentPool.prototype.getComponentFromRemote = function(_componentClassName) {
+    var self = this;
+
     // 임시 버전지정 commonjs 방식
     var version = 2;
 
@@ -70,7 +74,7 @@
       // 스크립트 실행함수 생성
       // session 과 React 파라메터를 가진다.
       // 모듈내에서 글로벌 하게 사용됨
-      var scriptExecutor = new Function("session", "React", executorBody);
+      var scriptExecutor = new Function("session", "React", "using", executorBody);
 
       // 스크립트를 실행하여 Component ReactClass 를 얻는다.
       if (version == 1) {
@@ -80,7 +84,40 @@
       } else if (version == 2) {
         // Common JS 모듈 전송 방식
 
-        var moduleObject = scriptExecutor(this.session.getSessionFunctionsForUser(), React);
+
+        var moduleObject = scriptExecutor({
+            getComponent: function(_componentName) {
+              var recursionLoadedComponent = self.session.componentPool.getComponentFromRemote(_componentName);
+
+              self.addCSS(_componentClassName, recursionLoadedComponent.CSS);
+
+              return recursionLoadedComponent;
+            }
+          }, React,
+          function(_usingType) {
+            // type 이 확장자가 되어 추가데이터를 로딩한다.
+
+            // using 데이터 위치를 구한다.
+            var usingDataLocation = fullLocation.replace(/\.[^\.]*?$/, '.' + _usingType);
+
+            // using 데이터 로드
+            var usingData = RequestToServer.sync(usingDataLocation, 'get');
+
+            if (_usingType === 'less') {
+
+              less.render(usingData, function(_e, _output) {
+                //if (_e !== null && typeof _e !== 'undefined') {
+
+                self.addCSS(_componentClassName, _output.css);
+                //}
+              });
+            } else {
+
+            }
+
+          });
+
+
         /*
         if (typeof moduleObject.exports === 'function') {
           this.cachedComponent[_componentClassName] = moduleObject.exports;
@@ -89,11 +126,26 @@
         }*/
 
         this.cachedComponent[_componentClassName] = moduleObject.exports;
+
       }
 
     }
 
+    // CSS 삽입
+    this.cachedComponent[_componentClassName].CSS = this.getCSS(_componentClassName);
     return this.cachedComponent[_componentClassName];
+  };
+
+  ComponentPool.prototype.addCSS = function(_componentName, _css) {
+    if (typeof this.styleCache[_componentName] === 'undefined') {
+      this.styleCache[_componentName] = '';
+    }
+
+    this.styleCache[_componentName] += _css;
+  };
+
+  ComponentPool.prototype.getCSS = function(_componentName) {
+    return this.styleCache[_componentName];
   };
 
   module.exports = ComponentPool;
