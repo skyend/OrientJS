@@ -80,9 +80,9 @@ require('./LoginService.less');
                                     </button>
                                 </div>
                                 <div className="etc-login-form">
-                                    <p>forgot your password? <a href="#">click here</a></p>
+                                    <p>패스워드가 생각나지 않으세요? <a href="#">클릭!(안됨)</a></p>
 
-                                    <p>new user? <a href="#">create new account</a></p>
+                                    <p>신규유저이신가요?<a href="#">계정생성 클릭!(안됨)</a></p>
                                 </div>
                             </form>
                         </div>
