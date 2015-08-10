@@ -10,12 +10,14 @@
 (function() {
   var StageContext = require('./builder.EditorStageContext.js');
   var UI = require('./builder.UI.js');
-  var Session = require('./builder.session.js');
+  var Session = require('./builder.Session.js');
 
   var App = function() {
     window.app = this;
-    this.ui = new UI(window);
     this.session = new Session();
+    this.session.ready();
+    this.ui = new UI(window);
+
 
     /*
      console.log('ready');
@@ -31,6 +33,7 @@
 
   App.prototype.initUI = function() {
     this.ui.render();
+
   }
 
   module.exports = App;
