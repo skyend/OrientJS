@@ -16,12 +16,7 @@
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updatePoolState('/BuilderUI/BuildingResourceStore/Meta/AvailableComponents.json');
-
-    var component = this.componentPool.getComponentFromRemote('B');
-    var React = require('react');
-    React.render(React.createElement(component.class), document.body);
-
+    this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
   // 빌더를 사용하는 유저가 사용할 수 있는 Session 오브젝트의 메소드
