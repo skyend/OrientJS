@@ -17,11 +17,12 @@ var ComponentPreviewer = React.createClass({
     },
 
     displayComponent( _componentSource, _componentSourceType, _CSS ){
+
         this.setState({componentSource: _componentSource, componentSourceType: _componentSourceType, componentCSS: _CSS});
     },
 
     renderComponent(){
-      console.log(this.state);
+
         if( typeof this.state.componentSource === 'object'){
             if( typeof this.state.componentSourceType === 'undefined' ) throw new Error("Need a componentSourceType.");
         }
@@ -30,7 +31,7 @@ var ComponentPreviewer = React.createClass({
 
         switch( this.state.componentSourceType ){
           case "reactClass":
-            return <ComponentSource ref='rendered-component'/>
+            return React.createElement(ComponentSource);
         }
 
     },

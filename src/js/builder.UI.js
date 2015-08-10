@@ -211,7 +211,7 @@
   UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
 
       if (_eventData.refPath[0] === 'ComponentPalette') {
-        console.log('display', this.session.componentPool.getComponentFromRemote(_eventData.componentKey), _eventData.componentKey);
+
         _eventData.path[0].setState({
           previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey)
         });

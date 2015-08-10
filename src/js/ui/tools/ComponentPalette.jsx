@@ -10,6 +10,7 @@
         mixins: [
             require('../reactMixin/EventDistributor.js'),
             require('./mixins/WidthRuler.js')],
+            
         getInitialState(){
           return {
             availabelComponentList : []
@@ -39,8 +40,10 @@
         },
 
         componentDidUpdate( _prevProps, _prevState){
+
             if( typeof this.state.previewComponent === 'object' ){
-                this.refs['ComponentPreviewer'].displayComponent( this.state.previewComponent.class , 'reactClass', this.state.previewComponent.CSS);
+
+                this.refs['ComponentPreviewer'].displayComponent( this.state.previewComponent.class , 'reactClass', this.state.previewComponent.CSS );
             }
         },
 
