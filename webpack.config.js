@@ -1,10 +1,9 @@
 var Clean = require('clean-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
   entry: {
     //app: ['./src/app.jsx'],
-    venders: ['jquery', 'jquery-ui', 'react'],
+    venders: ['react'],
     config: [
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
@@ -30,18 +29,21 @@ module.exports = {
         test: /\.jsx$/,
         loader: 'jsx-loader?insertPragma=React.DOM&harmony'
       },
-
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "url-loader?limit=10000&minetype=application/font-woff"
-      }, {
+      },
+      {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "file-loader"
-      }
+      },
+      {
+        test: /\.png$/,
+        loader: "url-loader?mimetype=image/png" }
     ]
   },
   resolve: {
-    modulesDirectories: ['node_modules']
+    modulesDirectories: ['node_modules'],
   },
   plugins: [
     new Clean(['dist', 'build']),
@@ -51,5 +53,4 @@ module.exports = {
       chunks: ['config', 'venders', 'main']
     })
   ]
-
 };

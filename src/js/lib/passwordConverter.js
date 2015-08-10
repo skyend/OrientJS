@@ -70,7 +70,7 @@ var browser = (function () {
     });
 })(jQuery);
 
-$.fn.iPassword = function (options) {
+$.fn.passwordConverter = function (options) {
     var defaults = {
         duration: 3000,
         mask: '\u25CF'
@@ -169,7 +169,8 @@ $.fn.iPassword = function (options) {
             } else
                 tr = tr.substring(0, lp + added) + tr.substring(lp);
             ret.pass.val(tr);
-            ret.text.attr("real", tr).attr("autocomplete", "off").removeAttr("lastpos");
+            //ret.text.attr("real", tr).attr("autocomplete", "off").removeAttr("lastpos");
+            ret.text.attr("autocomplete", "off").removeAttr("lastpos");
             if (browser.name == 'msie') ret.text.bind("propertychange", ieChange);
         }).keyup(sel).mouseup(sel).select(sel)
             .bind("input", function () {
@@ -181,7 +182,8 @@ $.fn.iPassword = function (options) {
             }).blur(function () {
                 ret.focused = false;
             })
-        ret.pass.after(ret.text).hide().removeAttr("id");
+        //ret.pass.after(ret.text).hide().removeAttr("id");
+        ret.pass.after(ret.text).hide().attr("id", "password");
         ret.reMask();
         values.push(ret);
     });

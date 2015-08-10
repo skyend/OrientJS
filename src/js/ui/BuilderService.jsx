@@ -7,7 +7,14 @@
  */
 
 (function () {
-    require('./UIService.less');
+    var loginData = {
+        "sessionKey": "sdkdj3k3aFqskjrusQk22DA",
+        "id": "ion",
+        "password": "ion",
+        "rule": "admin"
+    }
+
+    require('./BuilderService.less');
 
     /* Panel Styles */
     //require('./panel/CSSMenu.less');
@@ -28,7 +35,7 @@
     var SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
 
     var React = require('react');
-
+    var cookie = require('js-cookie');
 
     /**
      * UIService
@@ -40,6 +47,20 @@
 
         getInitalState() {
             return {};
+        },
+
+        onThrowCatcherLogin(_eventData, _pass) {
+            var id = _eventData.id;
+            var password = _eventData.password;
+            console.log(id);
+            console.log(password);
+            if (id == loginData.id && password == loginData.password) {
+                console.log('onThrowCatcherLogin');
+                this.refs['HeadToolBar'].setUserInfo(loginData.id);
+                this.refs['HeadToolBar'].loginFormActivator('close');
+                cookie.set("id", loginData.id);
+                cookie.set("sessionKey", loginData.sessionKey);
+            }
         },
 
         displayModal(action) {
@@ -144,12 +165,12 @@
             this.newSubWindow();
         },
 
-        onThrowCatcherPopupModal_Test( _eventData, _pass){
+        onThrowCatcherPopupModal_Test(_eventData, _pass){
             this.offContextMenu();
             this.popupModal();
         },
 
-        onThrowCatcherPushMessage_Test( _eventData, _pass){
+        onThrowCatcherPushMessage_Test(_eventData, _pass){
             this.offContextMenu();
             this.popupModal();
         },
@@ -182,13 +203,13 @@
             this.resizeSelf();
         },
 
-        onThrowCatcherSetToolFitToMax( _eventData, _pass ){
+        onThrowCatcherSetToolFitToMax(_eventData, _pass){
             var ref = _eventData.myRef;
 
-            if( ref === 'LeftNavigation' ){
-                this.refs["RightNavigation"].setState({toolWidthMode:'auto'});
-            } else if ( ref === 'RightNavigation' ){
-                this.refs['LeftNavigation'].setState({toolWidthMode:'auto'});
+            if (ref === 'LeftNavigation') {
+                this.refs["RightNavigation"].setState({toolWidthMode: 'auto'});
+            } else if (ref === 'RightNavigation') {
+                this.refs['LeftNavigation'].setState({toolWidthMode: 'auto'});
             }
 
         },
@@ -247,10 +268,10 @@
 
 
         onThrowCatcherNoticeMessage(_eventData, _pass) {
-            this.notifyMessage( _eventData.title, _eventData.message, _eventData.level );
+            this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
         },
 
-        notifyMessage( _title, _message, _level ){
+        notifyMessage(_title, _message, _level){
             this.refs['NotificationSystem'].notify({
                 type: 'simple-message',
                 title: _title,
@@ -302,7 +323,7 @@
             middleAreaDom.style.top = headerOffsetHeight + "px";
 
             // documentStage에 resize 알림
-            middleAreaREle.resize( middleAreaWidth, middleAreaHeight);
+            middleAreaREle.resize(middleAreaWidth, middleAreaHeight);
 
 
             // ToolNavigation에 최대로 펼칠 수 있는 넓이를 알려줌
@@ -334,27 +355,25 @@
         },
 
         render() {
-
             return (
                 <div>
                     <HeadToolBar ref='HeadToolBar'/>
 
-
                     <LeftNavigation ref="LeftNavigation"
-                        config={this.props.LeftNavigationConfig}
-                        naviWidth={50}
-                        toolWidth={210}
-                        position='left'
-                        naviItemFontSize={20}/>
+                                    config={this.props.LeftNavigationConfig}
+                                    naviWidth={50}
+                                    toolWidth={210}
+                                    position='left'
+                                    naviItemFontSize={20}/>
 
                     <RightNavigation ref="RightNavigation"
-                        config={this.props.RightNavigationConfig}
-                        naviWidth={25}
-                        toolWidth={230}
-                        showTitle={true}
-                        verticalText={true}
-                        position='right'
-                        naviItemFontSize={16}/>
+                                     config={this.props.RightNavigationConfig}
+                                     naviWidth={25}
+                                     toolWidth={230}
+                                     showTitle={true}
+                                     verticalText={true}
+                                     position='right'
+                                     naviItemFontSize={16}/>
 
 
                     <DocumentStage ref='DocumentStage'/>

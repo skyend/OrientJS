@@ -16,7 +16,7 @@
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
+    this.componentPool.updatePoolState('/BuilderUI/BuildingResourceStore/Meta/AvailableComponents.json');
 
     var component = this.componentPool.getComponentFromRemote('B');
     var React = require('react');

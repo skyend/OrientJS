@@ -1,6 +1,6 @@
 {
-  "host" : "http://localhost:8000",
-  "temporaryNamespaceDir" : "/BuildingResourceStore/Components/",
+  "host" : "http://localhost:63342",
+  "temporaryNamespaceDir" : "/BuilderUI/BuildingResourceStore/Components/",
   "availableComponentsLocation" : {
     "A": "A.jsx",
     "B": "B.jsx"

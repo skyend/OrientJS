@@ -7,27 +7,57 @@
  * Requires(css) :
  */
 
+require('../lib/PasswordConverter');
+require('./HeadToolBar.less');
+
 (function () {
-    require('../lib/iPassword');
-    require('./HeadToolBar.less');
     var React = require("react");
     var $ = require("jquery");
     var HeadToolBar = React.createClass({
-        componentDidMount(){
-            var status = true;
-            $("#password").iPassword();
+        mixins: [require('./reactMixin/EventDistributor.js')],
+
+        setUserInfo: function (id) {
+            $('.user-info').html('<i class="fa fa-user"> ' + id + '</i>');
+            $('.user-info').off("click");
+            console.log('setUserInfo');
+        },
+
+        loginFormActivator: function(val){
+            if(val === 'open') {
+                $(".login-form").slideUp().slideToggle("fast");
+            }else if(val === 'close'){
+                $(".login-form").slideDown().slideToggle("fast");
+            }
+        },
+        loginProcess: function () {
+            var id = $('#id').val();
+            var password = $('#password').val();
+            this.emit("Login", {
+                id: id,
+                password: password
+            });
+        },
+        componentDidMount: function () {
+            var self = this;
+            $("#passwordConverter").passwordConverter();
             $(".login-form").hide();
-            $('.user-info').on("click", function () {
-                if (status) {
-                    $(".login-form").slideUp().slideToggle("fast");
-                    status = false;
-                } else {
-                    $(".login-form").slideDown().slideToggle("fast");
-                    status = true;
+            $('.user-info').on('click', function () {
+                $(".login-form").slideToggle('fast', function () {
+                    $('#id').focus();
+                });
+            });
+            $("#login").on('click', function () {
+                self.loginProcess();
+            });
+            $("#id").on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    $('#passwordConverter').focus();
                 }
             });
-            $("#password").on('keyup', function(){
-                console.log($("#password").attr('real'));
+            $("#passwordConverter").on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    self.loginProcess();
+                }
             });
 
         },
@@ -45,11 +75,12 @@
                                 <i className="fa fa-sign-in"> Login</i>
                             </a>
 
-                            <form action="#" className="login-form" method="post">
-                                <input type="text" placeholder="ID" className="login-input"/>
-                                <input id="password" type="text" placeholder="PASSWORD" className="login-input"/>
-                                <input type="submit" className="login-button" value="Login" tabindex="3"/>
+                            <form id="loginForm" className="login-form">
+                                <input id="id" type="text" placeholder="ID" className="login-input"/>
+                                <input id="passwordConverter" type="text" placeholder="PASSWORD" className="login-input"/>
+                                <input id="login" type="button" className="login-button" value="Login" tabindex="3"/>
                                 <span className="remember">&nbsp;&nbsp;&nbsp;Remember?<input type="checkbox" className="checkbox"/></span>
+
                                 <div className="lost-password">
                                     <a>비밀번호가 기억나지 않으세요?</a>
                                 </div>
