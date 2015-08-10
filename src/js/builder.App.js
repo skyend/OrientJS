@@ -17,7 +17,7 @@
     this.ui = new UI(window);
     this.session = new Session();
     this.session.ready();
-    this.ui = new UI(window);
+    this.ui = new UI(window, this.session);
 
 
 

@@ -67,7 +67,50 @@
         border-bottom-color: #ccc;
 
         >.previewer-area {
-          
+
+        }
+
+        >.list-area {
+
+          > ul {
+              list-style-type:none;
+              padding:0px;
+              margin:0px;
+              text-align:justify;
+
+                > li {
+
+                  display:inline-block;
+                  height:30px;
+
+                  color:#fff;
+                  padding:5px;
+                  word-break: break-word;
+                  box-sizing:border-box;
+
+                  cursor:pointer;
+
+                  &:nth-child(even) {
+                      background-color:#454545;
+                      color:#eee;
+                  }
+
+                  &:nth-child(odd) {
+                      background-color:#555;
+                      color:#fff;
+                  }
+
+                  &:first-letter {
+                     text-transform: uppercase;
+                  }
+
+                  &:hover {
+                      background-color:#333;
+                  }
+
+              }
+          }
+
         }
       }
 

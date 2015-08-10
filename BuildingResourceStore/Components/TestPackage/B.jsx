@@ -1,4 +1,4 @@
-var CompA = session.getComponent('A').class;
+var CompA = session.getComponent('TestPackage/A').class;
 using('less');
 
 module.exports =  {

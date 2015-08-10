@@ -19,18 +19,5 @@
     this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
-  // 빌더를 사용하는 유저가 사용할 수 있는 Session 오브젝트의 메소드
-  Session.prototype.getSessionFunctionsForUser = function() {
-    var self = this;
-
-    return {
-      getComponent: function() {
-
-        return self.componentPool.getComponentFromRemote.apply(self.componentPool, arguments)
-      }
-    }
-  };
-
-
   module.exports = Session;
 })();

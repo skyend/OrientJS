@@ -10,9 +10,38 @@
         mixins: [
             require('../reactMixin/EventDistributor.js'),
             require('./mixins/WidthRuler.js')],
+        getInitialState(){
+          return {
+            availabelComponentList : []
+          }
+        },
+
+        mouseOverListItem( _key){
+
+          this.emit('IMustPreviewComponent', {
+            componentKey:_key
+          });
+        },
+
+        listItemRender( _componentKey){
+          var self = this;
+          return (
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} }>
+              { _componentKey}
+            </li>
+          )
+        },
 
         componentDidMount(){
             this.refs['ComponentPreviewer'].displayComponent( InputBoxWithSelector, "reactClass");
+
+            this.emit('UpdateComponentListToMe');
+        },
+
+        componentDidUpdate( _prevProps, _prevState){
+            if( typeof this.state.previewComponent === 'object' ){
+                this.refs['ComponentPreviewer'].displayComponent( this.state.previewComponent.class , 'reactClass', this.state.previewComponent.CSS);
+            }
         },
 
         render() {
@@ -28,6 +57,11 @@
                         <div className='body'>
                             <div className='previewer-area'>
                                 <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
+                            </div>
+                            <div className='list-area'>
+                                <ul>
+                                  {this.state.availabelComponentList.map(this.listItemRender)}
+                                </ul>
                             </div>
                         </div>
                         <div className='foot'>

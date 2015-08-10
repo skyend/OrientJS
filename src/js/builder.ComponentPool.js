@@ -31,6 +31,10 @@
     }
   };
 
+  ComponentPool.prototype.getAvailableComponents = function() {
+    return this.poolStateObject['availableComponents'];
+  };
+
   ComponentPool.prototype.getComponentFromRemote = function(_componentClassName) {
     var self = this;
 
@@ -38,15 +42,23 @@
     var version = 2;
 
 
+    // Component Pool 메타데이터가 있는지 확인한다.
     if (typeof this.poolStateObject === 'undefined') {
       throw new Error('does not update the componentPoolState');
     }
 
+    // 제공중인 컴포넌트인지 확인한다.
+    if (typeof this.poolStateObject.availableComponents[_componentClassName] === 'undefined') {
+      throw new Error('Component[' + _componentClassName + '] is not provide');
+    }
+
+    // 캐시중인 컴포넌트가 있는지 확인한다.
     if (typeof this.cachedComponent[_componentClassName] === 'undefined') {
       console.log('load Component', _componentClassName);
 
+
       // 해당 컴포넌트의 위치데이터를 가져온다
-      var componentLocation = this.poolStateObject.availableComponentsLocation[_componentClassName];
+      var componentLocation = this.poolStateObject.availableComponents[_componentClassName].path;
 
       // 컴포넌트가 등록되어 있지 않았을 경우.
       if (typeof componentLocation === 'undefined' || componentLocation === '') {
