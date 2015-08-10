@@ -103,27 +103,24 @@
             // using 데이터 로드
             var usingData = RequestToServer.sync(usingDataLocation, 'get');
 
-            if (_usingType === 'less') {
-
-              less.render(usingData, function(_e, _output) {
-                //if (_e !== null && typeof _e !== 'undefined') {
-
-                self.addCSS(_componentClassName, _output.css);
-                //}
-              });
-            } else {
-
+            switch (_usingType) {
+              case "less":
+                less.render(usingData, function(_e, _output) {
+                  if (_e === null) {
+                    self.addCSS(_componentClassName, _output.css);
+                  } else {
+                    throw new Error("Could not compile to less");
+                  }
+                });
+                break;
+              case "css":
+                self.addCSS(_componentClassName, usingData);
+                break;
             }
 
           });
 
 
-        /*
-        if (typeof moduleObject.exports === 'function') {
-          this.cachedComponent[_componentClassName] = moduleObject.exports;
-        } else {
-          this.cachedComponent[_componentClassName] = moduleObject.exports;
-        }*/
 
         this.cachedComponent[_componentClassName] = moduleObject.exports;
 
