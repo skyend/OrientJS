@@ -58,7 +58,6 @@ require('./LoginService.less');
                 <div id="login-page">
                     <div className="screen">
                         <div className="popup-logos">UI builder</div>
-                        <div className="circle"></div>
                         <div className="text-center">
                             <div className="login-logo">Login</div>
                             <form id="login-form" className="login-form">
