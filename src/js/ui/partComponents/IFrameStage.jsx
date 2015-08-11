@@ -9,6 +9,7 @@ var React = require("react");
 require('./IFrameStage.less');
 
 var IFrameStage = React.createClass({
+    mixins:[require('../reactMixin/EventDistributor.js')],
     getInitialState(){
         return {
           src:"about:blank"
@@ -33,13 +34,95 @@ var IFrameStage = React.createClass({
         return this.getIFrameInnerDoc().querySelector('head');
     },
 
+    getScrollY(){
+        return this.getIFrameInnerDoc().body.scrollTop;
+    },
+
     writeContentsToBody( _html, _styles ){
         this.getInnerBody().innerHTML = _html;
         this.getInnerHead().innerHTML = '<style>'+ _styles +'</style>';
     },
 
-    componentDidMount(){
+    onIframeLoaded(_iframe) {
+        var self = this;
+// 임시 차후에 EditorStageContext 에서 처리되어야 함
+        var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+        var innerDocument = iwindow.document;
+        this.currentIframeDocument = innerDocument;
 
+        this.bindContextMenuTrigger(_iframe);
+
+        innerDocument.addEventListener('click', function (_ev) {
+            self.onMouseClickAtStage(_ev);
+        }, false);
+    },
+
+    /**
+     * onMouseClickAtStage
+     *
+     */
+    onMouseClickAtStage(_e) {
+        this.emit("ClickElementInStage", {
+            clickedTarget: null
+        }, _e, "MouseClick");
+    },
+
+    /**
+     * bindContextMenuTrigger
+     *
+     * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
+     *
+     * @param _iframe
+     */
+    bindContextMenuTrigger(_iframe) {
+        var self = this;
+
+        var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+        var innerDocument = iwindow.document;
+
+        innerDocument.addEventListener('contextmenu', function (_e) {
+            return self.onCallContextMenu(_e);
+        }, false);
+    },
+
+    onCallContextMenu(_e) {
+        _e.preventDefault();
+        var selfDom = this.getDOMNode();
+        console.log("call contextmenu", _e);
+        var x,
+            y;
+
+        // client Rect of iframe
+        var clientRect = selfDom.getBoundingClientRect();
+
+        x = _e.clientX + clientRect.left;
+        y = _e.clientY + clientRect.top;
+        //console.log(_e.clientX, _e.clientY, editorStageWrapperY, editorStageWrapperX);
+        var targetElement = _e.toElement;
+
+        this.emit("CallContextMenu", {
+            mouseX: x,
+            mouseY: y,
+
+            // for 필드는 이 컨텍스트 메뉴가 무엇을 위한 컨텍스트 메뉴인지 의미한다.
+            for: "StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
+            target: {
+                stageContextId: "", // 현재 편집중인 ContextID
+                elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
+                element: targetElement
+            }
+        }, _e, "MouseEvent");
+
+        return false;
+    },
+
+    componentDidUpdate(){
+      var self = this;
+      var iframe = this.refs['iframe'].getDOMNode();
+
+      iframe.onload = function (_e) {
+          self.onIframeLoaded(this);
+      };
     },
 
     render() {

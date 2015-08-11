@@ -31,6 +31,8 @@
 
             var holderHTML = "<div class='componentDragHolder'></div>";
             app.ui.holdingElementWhileDrag(holderHTML);
+
+            this.willDeployComponentKey = _key;
         },
 
         listItemRender( _componentKey){
@@ -43,15 +45,29 @@
         },
 
         onGlobalDragStartFromUI(_e){
-
+            this.emit("BeginDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
         },
 
         onGlobalDragFromUI(_e){
-
+            this.emit("DragDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
         },
 
         onGlobalDragStopFromUI(_e){
+            this.emit("DropDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
 
+            this.willDeployComponentKey = undefined;
         },
 
         componentDidMount(){

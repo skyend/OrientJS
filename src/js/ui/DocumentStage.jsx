@@ -13,12 +13,13 @@
     var DOMEditor = require('./tools/DocumentEditor.jsx');
     var ToolContainer = require('./ToolContainer.jsx');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
+    var VDomController = require('../virtualdom/VDomController.js');
 
     var React = require("react");
 
     var DocumentStage = React.createClass({
 
-// Mixin EventDistributor
+        // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
 
         getDefaultProps() {
@@ -54,97 +55,10 @@
             }
         },
 
-        onIframeLoaded(_iframe) {
-            var self = this;
-// 임시 차후에 EditorStageContext 에서 처리되어야 함
-            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
-            var innerDocument = iwindow.document;
-            this.currentIframeDocument = innerDocument;
 
-            this.bindContextMenuTrigger(_iframe);
-
-            innerDocument.addEventListener('click', function (_ev) {
-                self.onMouseClickAtStage(_ev);
-            }, false);
-
-            /* Document Editor 에 targetDOM 객체를 지정한다. */
-            /*
-             var documentEditor = this.refs['document-editor'];
-             var targetDOM = innerDocument.querySelector('html');
-             this.documentEditingTo = targetDOM;
-             documentEditor.setState({targetDOM:targetDOM});
-             */
-
-//this.documentEditorUpdate();
-        },
-
-        /**
-         * onMouseClickAtStage
-         *
-         */
-        onMouseClickAtStage(_e) {
-
-            this.emit("ClickElementInStage", {
-                clickedTarget: null
-            }, _e, "MouseClick");
-        },
-
-        /**
-         * bindContextMenuTrigger
-         *
-         * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
-         *
-         * @param _iframe
-         */
-        bindContextMenuTrigger(_iframe) {
-            var self = this;
-
-            var iwindow = _iframe.contentWindow || _iframe.contentDocument;
-            var innerDocument = iwindow.document;
-
-            innerDocument.addEventListener('contextmenu', function (_e) {
-                return self.onCallContextMenu(_e);
-            }, false);
-        },
-
-        onCallContextMenu(_e) {
-            _e.preventDefault();
-            var selfDom = this.getDOMNode();
-            console.log("call contextmenu", _e);
-            var x,
-                y;
-
-            var editorStageWrapperX = parseInt(selfDom.style.left);
-            var editorStageWrapperY = parseInt(selfDom.style.top);
-
-            x = _e.clientX + editorStageWrapperX;
-            y = _e.clientY + editorStageWrapperY + this.refs['tab-context'].getDOMNode().offsetTop;
-
-            var targetElement = _e.toElement;
-
-            this.emit("CallContextMenu", {
-                mouseX: x,
-                mouseY: y,
-
-                // for 필드는 이 컨텍스트 메뉴가 무엇을 위한 컨텍스트 메뉴인지 의미한다.
-                for: "StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
-                target: {
-                    stageContextId: "", // 현재 편집중인 ContextID
-                    elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
-                    element: targetElement
-                }
-            }, _e, "MouseEvent");
-
-            return false;
-        },
 
         componentDidMount() {
-            var self = this;
-            var iframe = this.refs['iframe-stage'].getDOMNode();
-
-            iframe.onload = function (_e) {
-                self.onIframeLoaded(this);
-            };
+            this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
         },
 
         onModifyDocument(_documentHtml) {
@@ -210,12 +124,43 @@
         deleteElement(_targetObject) {
             console.log('called element delete ', _targetObject);
 
-
             // 임시로 요소 제거 공지
             this.emit('NoticeMessage', {
                 title: "From DocumentStage",
                 message: "element deleted"
             });
+        },
+
+        startDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+          console.log(arguments);
+          var iframeStage = this.refs['iframe-stage'];
+
+          this.liveVDomController = new VDomController();
+          this.liveVDomController.createVRoot(iframeStage.getIFrameInnerDoc().querySelectorAll('body').item(0));
+
+        },
+
+        dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+          var iframeStage = this.refs['iframe-stage'];
+          var selfClientRect = iframeStage.getDOMNode().getBoundingClientRect();
+
+          if(!(( _absoluteX > selfClientRect.left && _absoluteX < selfClientRect.left + selfClientRect.width ) &&
+              ( _absoluteY > selfClientRect.top  && _absoluteY < selfClientRect.top  + selfClientRect.height))) return;
+
+
+          var checkX =  _absoluteX - selfClientRect.left;
+          var checkY =  _absoluteY - selfClientRect.top + iframeStage.getScrollY();
+          console.log(checkY);
+          var collisionStack = this.liveVDomController.click(checkX,checkY);
+
+          var finalCollision = collisionStack.pop();
+
+          console.log(finalCollision.element.object, iframeStage.getScrollY());
+        },
+
+        stopDeployComponentByPalette( _absoluteX, _absoluteY, _key){
+          console.log(arguments);
+          this.liveVDomController = null;
         },
 
         componentDidUpdate(_prevProps, _prevState) {

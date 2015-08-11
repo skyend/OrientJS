@@ -305,6 +305,21 @@
             });
         },
 
+        onThrowCatcherBeginDeployComponent(_eventData, _pass){
+            var documentStage = this.refs['DocumentStage'];
+            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
+        onThrowCatcherDragDeployComponent(_eventData, _pass){
+          var documentStage = this.refs['DocumentStage'];
+            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
+        onThrowCatcherDropDeployComponent(_eventData, _pass){
+          var documentStage = this.refs['DocumentStage'];
+            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
         // 컨텐츠 영역 화면 리사이즈
         resizeSelf() {
             var selfDom = this.getDOMNode();

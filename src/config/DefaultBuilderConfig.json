@@ -11,12 +11,6 @@
             "equipToolKey": "UserAccount"
           },
           {
-            "key": "project-navigator",
-            "title": "Project navigator",
-            "icon": "code-fork",
-            "equipToolKey": "ProjectNavigator"
-          },
-          {
             "key": "project-setting",
             "title": "Project Settings",
             "icon": "cog",
@@ -34,6 +28,12 @@
       {
         "groupName": "Editting",
         "menuItems": [
+          {
+            "key": "project-navigator",
+            "title": "Project navigator",
+            "icon": "code-fork",
+            "equipToolKey": "ProjectNavigator"
+          },
           {
             "key": "component-palette",
             "title": "Component Palette",
