@@ -12,9 +12,11 @@
     require('./DocumentStage.less');
     var DOMEditor = require('./tools/DocumentEditor.jsx');
     var ToolContainer = require('./ToolContainer.jsx');
+    var IFrameStage = require('./partComponents/IFrameStage.jsx');
+
     var React = require("react");
 
-    var Contents = React.createClass({
+    var DocumentStage = React.createClass({
 
 // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
@@ -241,7 +243,7 @@
                     </div>
 
                     <div className='tab-context' ref='tab-context'>
-                        <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
+                        <IFrameStage ref='iframe-stage' src='../html5up-directive/index.html' width="100%" height="100%"/>
                     </div>
 
                     <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} toolTitle="Document Editor" ref='footer-tool-part' resizeMe={this.onFooterToolPartResize}/>
@@ -251,6 +253,6 @@
         }
     });
 
-    module.exports = Contents;
+    module.exports = DocumentStage;
 
 })();

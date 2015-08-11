@@ -10,7 +10,7 @@
         mixins: [
             require('../reactMixin/EventDistributor.js'),
             require('./mixins/WidthRuler.js')],
-            
+
         getInitialState(){
           return {
             availabelComponentList : []
@@ -24,13 +24,31 @@
           });
         },
 
+        mouseDownTo(_key){
+            app.ui.occupyGlobalDrag(this, true);
+            app.ui.enableGlobalDrag();
+            app.ui.toMouseDawn();
+        },
+
         listItemRender( _componentKey){
           var self = this;
           return (
-            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} }>
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentKey) }}>
               { _componentKey}
             </li>
           )
+        },
+
+        onGlobalDragStartFromUI(_e){
+
+        },
+
+        onGlobalDragFromUI(_e){
+
+        },
+
+        onGlobalDragStopFromUI(_e){
+
         },
 
         componentDidMount(){

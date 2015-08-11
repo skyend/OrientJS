@@ -83,8 +83,11 @@
 
 
     if (this.globalDragOccupyObject !== null) {
-
-      this.globalDragOccupyObject.onGlobalDragStartFromUI.apply(this.globalDragOccupyObject, [_e]);
+      if (typeof this.globalDragOccupyObject.onGlobalDragStartFromUI === 'function') {
+        this.globalDragOccupyObject.onGlobalDragStartFromUI.apply(this.globalDragOccupyObject, [_e]);
+      } else {
+        throw new Error("You must implement to onGlobalDragStartFromUI(MouseEvent) Method in current Object");
+      }
     }
   };
 
@@ -92,7 +95,11 @@
 
     if (this.globalDragOccupyObject !== null) {
 
-      this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
+      if (typeof this.globalDragOccupyObject.onGlobalDragFromUI === 'function') {
+        this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
+      } else {
+        throw new Error("You must implement to onGlobalDragFromUI(MouseEvent) Method in current Object");
+      }
     }
   };
 
@@ -120,7 +127,11 @@
     this.uncoverHelper();
 
     if (this.globalDragOccupyObject !== null) {
-      this.globalDragOccupyObject.onGlobalDragStopFromUI.apply(this.globalDragOccupyObject, [_e]);
+      if (typeof this.globalDragOccupyObject.onGlobalDragStopFromUI === 'function') {
+        this.globalDragOccupyObject.onGlobalDragStopFromUI.apply(this.globalDragOccupyObject, [_e]);
+      } else {
+        throw new Error("You must implement to onGlobalDragStopFromUI(MouseEvent) Method in current Object");
+      }
     }
 
     // 드래그가 끝날 때 자동 드래그 자원 반환

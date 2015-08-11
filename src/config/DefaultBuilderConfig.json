@@ -11,6 +11,12 @@
             "equipToolKey": "UserAccount"
           },
           {
+            "key": "project-navigator",
+            "title": "Project navigator",
+            "icon": "code-fork",
+            "equipToolKey": "ProjectNavigator"
+          },
+          {
             "key": "project-setting",
             "title": "Project Settings",
             "icon": "cog",
@@ -53,7 +59,7 @@
             "key": "user-account",
             "title": "User Account",
             "icon": "user",
-            "equipToolKey": "UserAccount"
+            "equipToolKey": "ComponentPalette"
           }
         ]
       }
@@ -63,7 +69,7 @@
     "UserAccount": {"jsxPath": "UserAccount"},
     "ProjectSetting": {"jsxPath": "ProjectSetting"},
     "BuilderSetting": {"jsxPath": "BuilderSetting"},
-        
+
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"
