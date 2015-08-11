@@ -28,6 +28,9 @@
             app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
             app.ui.toMouseDawn();
+
+            var holderHTML = "<div class='componentDragHolder'></div>";
+            app.ui.holdingElementWhileDrag(holderHTML);
         },
 
         listItemRender( _componentKey){

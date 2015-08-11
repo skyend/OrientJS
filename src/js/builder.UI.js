@@ -21,6 +21,8 @@
     this.builderScreen = builderScreen;
     this.loginScreen = loginScreen;
     this.observers = {};
+    this.dragHoldingElement = null;
+    this.isDoingElementHold = false;
 
     this.window.onresize = function(_e) {
       self.onResize(_e);
@@ -62,6 +64,52 @@
     }
   };
 
+  /**
+   * holdingElementWhileDrag( _target )
+   * @Param _target HTML코드 또는 DOMElement
+   *
+   *
+   */
+  UI.prototype.holdingElementWhileDrag = function(_target) {
+    if (typeof _target === 'object') {
+      this.dragHoldingElement = _target;
+    } else {
+      var element = this.window.document.createElement('div');
+      element.innerHTML = _target;
+      element.style.display = 'inline-block';
+      element.style.position = 'fixed';
+      element.style.zIndex = 9999999;
+
+      this.dragHoldingElement = element;
+    }
+
+    if (this.enabledGlobalDrag && this.mouseDragging) {
+      this.startElementHold();
+    }
+  };
+
+  UI.prototype.startElementHold = function() {
+    if (this.dragHoldingElement !== null) {
+      this.isDoingElementHold = true;
+      this.window.document.body.appendChild(this.dragHoldingElement);
+    }
+  };
+
+  UI.prototype.holingElementTraceToMouse = function(_mouseEvent) {
+    if (this.dragHoldingElement !== null) {
+      this.dragHoldingElement.style.left = _mouseEvent.clientX + 'px';
+      this.dragHoldingElement.style.top = _mouseEvent.clientY + 'px';
+    }
+  };
+
+  UI.prototype.stopElementHolding = function() {
+    if (this.dragHoldingElement !== null) {
+      this.isDoingElementHold = false;
+      this.dragHoldingElement.remove();
+      this.dragHoldingElement = null;
+    }
+  };
+
   /* MouseMove 상태를 캐치하여 드래그를 지속하며 드래그를 점유하는 객체에게 전달한다. */
   UI.prototype.onGlobalMouseMove = function(_e) {
     if (this.enabledGlobalDrag) {
@@ -88,6 +136,8 @@
       } else {
         throw new Error("You must implement to onGlobalDragStartFromUI(MouseEvent) Method in current Object");
       }
+
+      this.startElementHold();
     }
   };
 
@@ -97,9 +147,12 @@
 
       if (typeof this.globalDragOccupyObject.onGlobalDragFromUI === 'function') {
         this.globalDragOccupyObject.onGlobalDragFromUI.apply(this.globalDragOccupyObject, [_e]);
+
       } else {
         throw new Error("You must implement to onGlobalDragFromUI(MouseEvent) Method in current Object");
       }
+
+      this.holingElementTraceToMouse(_e);
     }
   };
 
@@ -132,15 +185,17 @@
       } else {
         throw new Error("You must implement to onGlobalDragStopFromUI(MouseEvent) Method in current Object");
       }
+
+      this.stopElementHolding();
     }
 
     // 드래그가 끝날 때 자동 드래그 자원 반환
     if (this.autoGlobalDragReturn) {
       this.autoGlobalDragReturn = false;
 
-      app.ui.disableGlobalDrag();
-      app.ui.returnOccupyMouseDown();
-      app.ui.returnOccupiedGlobalDrag();
+      this.disableGlobalDrag();
+      this.returnOccupyMouseDown();
+      this.returnOccupiedGlobalDrag();
 
     }
   };
@@ -221,30 +276,30 @@
 
   UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
 
-      if (_eventData.refPath[0] === 'ComponentPalette') {
+    if (_eventData.refPath[0] === 'ComponentPalette') {
 
-        _eventData.path[0].setState({
-          previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey)
-        });
-      }
-    },
-
-    UI.prototype.builderRender = function() {
-      var rootUI = React.render(React.createElement(this.builderScreen, {
-        observers: this.observers,
-        LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
-        RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
-        Tools: DefaultBuilderConfig.tools,
-        AvailableComponents: this.session.componentPool.getAvailableComponents(),
-        __keyName: 'uiServicer'
-      }), this.window.document.getElementsByTagName('BODY')[0]);
-
-      this.onResize();
-
-      this.uiServicer = rootUI;
-
-      EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
+      _eventData.path[0].setState({
+        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey)
+      });
     }
+  };
+
+  UI.prototype.builderRender = function() {
+    var rootUI = React.render(React.createElement(this.builderScreen, {
+      observers: this.observers,
+      LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
+      RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
+      Tools: DefaultBuilderConfig.tools,
+      AvailableComponents: this.session.componentPool.getAvailableComponents(),
+      __keyName: 'uiServicer'
+    }), this.window.document.getElementsByTagName('BODY')[0]);
+
+    this.onResize();
+
+    this.uiServicer = rootUI;
+
+    EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
+  };
 
   UI.prototype.loginRender = function() {
     var rootUI = React.render(React.createElement(this.loginScreen),
@@ -254,7 +309,7 @@
     console.log(this.uiServicer);
 
     EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
-  }
+  };
 
   module.exports = UI;
 })();
