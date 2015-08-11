@@ -2,6 +2,7 @@ var _ = function (_editor) {
 
     var editorPointX = 0, editorPointY = 0, hightLightBorderSize = 3;
     var windowScrollY = 0, viewerScrollY = 0;
+
     var svgNS = "http://www.w3.org/2000/svg";
 
     require('./EventResponser.less');

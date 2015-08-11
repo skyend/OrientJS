@@ -5,7 +5,7 @@
 
   #nav_root {
     margin: 0;
-    padding: 4px 0 0 10px;
+    padding: 1px 0 1px 10px;
     list-style: none;
     font-size: 13px;
     ul {
@@ -17,7 +17,7 @@
     }
     li {
       position: relative;
-      padding: 2px 0;
+      padding: 1px 0;
 
       > i.folding {
         position: absolute;
@@ -26,6 +26,7 @@
         font-size: 9px;
         text-align: center;
         vertical-align: middle;
+        cursor: pointer;
         -moz-transform: rotate(90deg);
         -webkit-transform: rotate(90deg);
         transform: rotate(90deg);
@@ -41,6 +42,7 @@
 
       }
       i.element {
+        cursor: pointer;
         font-size: inherit;
         color: #6f6f6f;
         padding: 0 0 0 10px;
@@ -48,7 +50,6 @@
           color: #00b3ee;
           padding-right: 5px;
         }
-
       }
 
       &.collapse {
