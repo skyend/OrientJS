@@ -20,6 +20,7 @@ var _ = function(domRootType, resolutionX, resolutionY) {
 
     })();
   }
+
   this.prop = {
     "resolution": {
       "x": resolutionX === undefined ? defaultResolution.x : resolutionX,
@@ -27,6 +28,7 @@ var _ = function(domRootType, resolutionX, resolutionY) {
     },
     "type": domRootType
   };
+
   this.resource = null;
   this.dom = null;
   this.export = function() {
@@ -39,13 +41,13 @@ var _ = function(domRootType, resolutionX, resolutionY) {
 };
 
 
-_.importHtmlElement = function(htmlElement) {
+_.importHtmlElement = function(htmlElement, _depthArchive) {
   if (typeof htmlElement !== "object") {
     throw new Error("Object 객채가 아닙니다.");
   }
 
   var root = new _('page', htmlElement.offsetWidth, htmlElement.offsetHeight);
-  root.dom = new VNode('html', htmlElement.nodeName.toLowerCase(), htmlElement);
+  root.dom = new VNode('html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0);
   return root;
 }
 module.exports = _;

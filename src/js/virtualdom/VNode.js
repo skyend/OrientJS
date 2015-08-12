@@ -15,9 +15,10 @@ const domTypes = ["html", "component"];
  * @param targetElement dom 영역으로 사용할 htmlElement
  * @private
  */
-var _ = function(domType, name, targetElement) {
+var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _depth) {
 
   this.name = name;
+  this.parent = _parentNode;
   this.element = {
     "object": targetElement,
     "offset": null
@@ -45,11 +46,19 @@ var _ = function(domType, name, targetElement) {
 
     this.element.offset = {
       "x": offset.left,
-      "y": offset.top,
+      "y": offset.top + this.element.object.ownerDocument.body.scrollTop,
+      /*      "left": offset.left,
+            "right": offset.right,
+            "top": offset.top,
+            "bottom": offset.bottom,*/
       "z": null,
       "width": offset.width,
       "height": offset.height
     }
+
+    //console.log(offset);
+    //console.log("top:" + offset.top, "bottom:" + offset.bottom, "y:" + this.element.offset.y + "/");
+    //console.log(this.element.object);
   };
 
   /**
@@ -85,6 +94,13 @@ var _ = function(domType, name, targetElement) {
       throw new Error("잘못된 Dom Type 입니다.");
     }
 
+    // Depth Archive 등록
+    if (typeof _depthArchive[_depth] !== 'object') {
+      _depthArchive[_depth] = [];
+    }
+    _depthArchive[_depth].push(_node);
+
+
     //html 타입일 경우만 실행.
     if (domType === domTypes[0]) {
       //html주요 속성 등록.
@@ -101,7 +117,8 @@ var _ = function(domType, name, targetElement) {
         var node = null;
         for (var i = 0; i < targetElement.children.length; i++) {
           ele = targetElement.children.item(i);
-          node = new _(domTypes[0], ele.nodeName.toLowerCase(), ele);
+
+          node = new _(domTypes[0], ele.nodeName.toLowerCase(), ele, _node, _depthArchive, _depth + 1);
           _node.childs.push(node);
         }
       }

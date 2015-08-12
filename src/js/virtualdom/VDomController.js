@@ -1,6 +1,7 @@
 var _ = function() {
 
   this.vroot = null;
+  this.depthArchive = null;
 
   this.setVRoot = function(vroot) {
     this.vroot = vroot;
@@ -8,7 +9,11 @@ var _ = function() {
   };
 
   this.createVRoot = function(htmlElement) {
-    this.setVRoot(require('./VRoot').importHtmlElement(htmlElement));
+    this.depthArchive = [];
+
+    this.setVRoot(require('./VRoot').importHtmlElement(htmlElement, this.depthArchive));
+
+    console.log(this.depthArchive);
   };
 
   this.click = function(pointX, pointY) {
@@ -21,6 +26,43 @@ var _ = function() {
     return stack;
 
   };
+
+
+  this.rayTracer = function( _screenPointX, _screenPointY ){
+    var tracedDepth;
+    var tracedNodes = [];
+
+      for( var top = this.depthArchive.length -1 ; top >= 0 ; top-- ){
+        var depthLives = this.depthArchive[top];
+        var found = false;
+
+        for( var i = 0; i < depthLives.length; i++ ){
+            var node = depthLives[i];
+
+            if( this.checkItIsBoundary( node, _screenPointX, _screenPointY) ){
+              found = true;
+              tracedNodes.push(node);
+            }
+        }
+
+        if( found ) break;
+      }
+
+      return tracedNodes;
+  };
+
+  this.checkItIsBoundary = function( _vnode, _screenPointX, _screenPointY ){
+    var rect = _vnode.element.offset;
+
+    if( ( rect.x <= _screenPointX && rect.x + rect.width >= _screenPointX ) &&
+        ( rect.y <= _screenPointY && rect.y + rect.height >= _screenPointY )){
+
+      return true;
+    }
+
+    return false;
+  };
+
   this.mouseover = function(event) {
     console.log(event);
   };

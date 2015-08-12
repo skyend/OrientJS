@@ -1,13 +1,26 @@
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
 /*
  * Main content
  */
 #ui-contents {
+    .noselect;
   position: absolute;
   top: 30px;
   bottom: 22px;
   left: 260px;
   right: 255px;
   z-index: 1;
+  overflow: hidden;
+
   //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
   .contents-tab {
@@ -120,4 +133,59 @@
       }
     }
   }
+}
+
+
+.drop-guide-box {
+  position: fixed;
+  z-index: 3;
+
+  width:105px;
+  height:105px;
+
+  .noselect;
+
+  > div {
+    float:left;
+    width:35px;
+    height:35px;
+    box-sizing: border-box;
+    font-size: 7px;
+    padding-top:13px;
+    text-align: center;
+
+    color:white;
+
+    transition: all .15s ease;
+    cursor: crosshair;
+  }
+
+  >.direction {
+    background-color: rgba(5, 207, 255, 0.6);
+    border:1px solid rgba(37, 196, 255, 0.16);
+
+    &.in {
+      border:0;
+      background-color: rgba(55, 257, 255, 0.3);
+    }
+
+    &[see='yes']{
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+  }
+}
+
+
+.element-highlighter {
+  position: absolute;
+  z-index: 2;
+  border:3px solid #fff;
+  background-color: rgba(0,0,0,0.2);
+  box-sizing: border-box;
+  mix-blend-mode:difference;
+
+  .noselect;
+
+
+
 }
