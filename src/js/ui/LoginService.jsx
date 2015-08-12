@@ -17,74 +17,159 @@ require('./LoginService.less');
 
     var LoginService = React.createClass({
 
-        getInitalState() {
+        getInitialState() {
             return {};
         },
         loginProcess: function () {
-            var id = $('#id').val();
-            var password = $('#password').val();
-            cookie.set('id', id);
-            cookie.set('password', password);
-            cookie.set('sessionKey', 'asDkdjfk12de4Qiekjfi');
+            var id = $('#log-id').val();
             $("#login-form").submit();
         },
-        inputEventDeclaration: function (e) {
-            var self = this;
-            $("#username").on('keyup', function (e) {
-                e.preventDefault();
-                if (e.keyCode === 13) {
-                    $('#passwordConverter').focus();
-                }
-            });
-            $("#passwordConverter").on('keyup', function (e) {
-                if (e.keyCode === 13) {
-                    self.loginProcess();
-                }
-            });
-            $(".login-button").on('click', function (e) {
-                self.loginProcess();
-            });
+        registerProcess: function () {
+            var reg_id = $('#reg_id').val();
+            var reg_email = $('#reg_email').val();
+            var reg_fullName = $('#reg_fullName').val();
+            var gender = $(':radio[name="gender"]:checked').val();
         },
-        initLogin: function (e) {
-            $("#username").focus();
-            $("#passwordConverter").passwordConverter();
-            this.inputEventDeclaration(e);
+        forGotPassProcess: function () {
+            var forgot_email = $('#forgot-email').val();
+        },
+        viewLogin: function () {
+            $('#reg-page').hide();
+            $('#forgot-pass-page').hide();
+            $('#log-page').show();
+            $('#log-id').focus();
+        },
+        viewRegister: function () {
+            $('#log-page').hide();
+            $('#forgot-pass-page').hide();
+            $('#reg-page').show();
+            $('#reg-id').focus();
+        },
+        viewForgotPass: function () {
+            $('#log-page').hide();
+            $('#reg-page').hide();
+            $('#forgot-pass-page').show();
+            $('#forgot-email').focus();
         },
         componentDidMount: function (e) {
-            this.initLogin();
+            this.viewLogin();
+            $("input:password").passwordConverter();
         },
         render: function () {
             return (
-                <div id="login-page">
-                    <div className="screen">
-                        <div className="popup-logos">UI builder</div>
-                        <div className="text-center">
-                            <div className="login-logo">Login</div>
-                            <form id="login-form" className="login-form">
-                                <div className="login-form-message"></div>
-                                <div className="main-login-form">
-                                    <div className="login-group">
-                                        <div className="form-group">
-                                            <input type="id" className="form-control" id="username" placeholder="username"/>
+                <div id="index">
+                    <div className="popup-logos">UI builder</div>
+                    <div id="log-page">
+                        <div className="screen">
+                            <div className="text-center">
+                                <div className="login-logo">Login</div>
+                                <form id="login-form" className="login-form">
+                                    <div className="login-form-message"></div>
+                                    <div className="main-login-form">
+                                        <div className="login-group">
+                                            <div className="form-group">
+                                                <input id="log-id" type="text" className="form-control" placeholder="id"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input id="log-password" type="password" className="form-control" placeholder="password"/>
+                                            </div>
+                                            <div className="form-group form-group-checkbox">
+                                                <input type="checkbox" id="remember"/>
+                                                <label htmlFor="remember">remember</label>
+                                            </div>
                                         </div>
-                                        <div className="form-group">
-                                            <input id="passwordConverter" type="text" className="form-control" placeholder="password"/>
-                                        </div>
-                                        <div className="form-group form-group-checkbox">
-                                            <input type="checkbox" id="remember"/>
-                                            <label htmlFor="remember">remember</label>
-                                        </div>
+                                        <button id="login-button" type="button" className="login-button" onClick={this.loginProcess}>
+                                            <i className="fa fa-chevron-right"></i>
+                                        </button>
                                     </div>
-                                    <button className="login-button">
-                                        <i className="fa fa-chevron-right"></i>
-                                    </button>
-                                </div>
-                                <div className="etc-login-form">
-                                    <p>패스워드가 생각나지 않으세요? <a href="#">클릭!(안됨)</a></p>
+                                    <div className="etc-login-form">
+                                        <p>패스워드를 잊어버렸어요.
+                                            <input type="button" onClick={this.viewForgotPass} id="forget-pass" value="클릭!"/>
+                                        </p>
 
-                                    <p>신규유저이신가요?<a href="#">계정생성 클릭!(안됨)</a></p>
-                                </div>
-                            </form>
+                                        <p>새로운 계정 생성이 필요합니다.
+                                            <input type="button" onClick={this.viewRegister} id="go-register" value="클릭!"/>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="reg-page">
+                        <div className="screen">
+                            <div className="text-center">
+                                <div className="login-logo">Register</div>
+                                <form id="login-form" className="login-form">
+                                    <div className="login-form-message"></div>
+                                    <div className="main-login-form">
+                                        <div className="login-group">
+                                            <div className="form-group">
+                                                <input type="text" className="form-control" id="reg-id" placeholder="id"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input type="password" className="form-control" id="reg-password" placeholder="password"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input type="password" className="form-control" id="reg_password_confirm" placeholder="confirm password"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input type="text" className="form-control" id="reg_email" placeholder="email"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <input type="text" className="form-control" id="reg_fullName" placeholder="full name"/>
+                                            </div>
+                                            <div className="form-group form-group-checkbox">
+                                                <input type="radio" name="gender" value="male"/>
+                                                <label htmlFor="male">Male </label>
+
+                                                <input type="radio" name="gender" value="female"/>
+                                                <label htmlFor="female">Female</label>
+                                            </div>
+                                            <div className="form-group form-group-checkbox">
+                                                <input type="checkbox" id="remember"/>
+                                                <label htmlFor="remember"><a href="#">약관</a>에 동의 합니다.</label>
+                                            </div>
+                                        </div>
+                                        <button id="register-button" type="button" className="login-button" onClick={this.registerProcess}>
+                                            <i className="fa fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                    <div className="etc-login-form">
+                                        <p>이미 계정이 있으세요?
+                                            <input type="button" onClick={this.viewLogin} id="go-login" value="네, 있습니다."/>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="forgot-pass-page">
+                        <div className="screen">
+                            <div className="text-center">
+                                <div className="login-logo">forgot password</div>
+                                <form id="login-form" className="login-form">
+                                    <div className="login-form-message"></div>
+                                    <div className="main-login-form">
+                                        <div className="login-group">
+                                            <div className="form-group">
+                                                <input id="forgot-email" type="text" className="form-control" placeholder="email address"/>
+                                            </div>
+                                        </div>
+                                        <button id="forgot-pass-button" type="button" className="login-button" onClick={this.forGotPassProcess}>
+                                            <i className="fa fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                    <div className="etc-login-form">
+                                        <p>로그인 하겠습니다.
+                                            <input type="button" onClick={this.viewLogin} id="go-login" value="클릭!"/>
+                                        </p>
+
+                                        <p>새로운 계정 생성이 필요합니다.
+                                            <input type="button" onClick={this.viewRegister} id="go-register" value="클릭!"/>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
