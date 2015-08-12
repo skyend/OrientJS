@@ -97,6 +97,17 @@
           opacity: 0;
           transition: all ease-in-out 200ms;
         }
+        .login-form-message.show {
+          height: auto;
+          opacity: 1;
+          padding: 10px 20px 10px 17px;
+        }
+        .login-form-message.success {
+          border-left-color: #2ecc71;
+        }
+        .login-form-message.error {
+          border-left-color: #e74c3c;
+        }
         .main-login-form {
           position: relative;
           .login-group {
@@ -149,6 +160,10 @@
             &:hover {
               color: #555555;
               transform: rotate(450deg);
+            }
+            i {
+              width: 14px;
+              height: 10px;
             }
           }
         }

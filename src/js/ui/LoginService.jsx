@@ -9,7 +9,6 @@
 
 require('../lib/PasswordConverter');
 require('./LoginService.less');
-
 (function () {
     var React = require("react");
     var $ = require("jquery");
@@ -22,7 +21,13 @@ require('./LoginService.less');
         },
         loginProcess: function () {
             var id = $('#log-id').val();
-            $("#login-form").submit();
+            var pass = $('#log-password').val();
+            $("#login-button").html('<i class="fa fa-spinner fa-pulse"></i>');
+            if(id.length < 5){
+                $(".login-form-message").addClass('show error').text('아이디는 4글자 이상입니다.');
+            }else{
+                $(".login-form-message").addClass('show success').text('Connecting...');
+            }
         },
         registerProcess: function () {
             var reg_id = $('#reg_id').val();
@@ -119,15 +124,15 @@ require('./LoginService.less');
                                                 <input type="text" className="form-control" id="reg_fullName" placeholder="full name"/>
                                             </div>
                                             <div className="form-group form-group-checkbox">
-                                                <input type="radio" name="gender" value="male"/>
+                                                <input type="radio" name="gender" id="male" value="male"/>
                                                 <label htmlFor="male">Male </label>
 
-                                                <input type="radio" name="gender" value="female"/>
+                                                <input type="radio" name="gender" id="female" value="female"/>
                                                 <label htmlFor="female">Female</label>
                                             </div>
                                             <div className="form-group form-group-checkbox">
-                                                <input type="checkbox" id="remember"/>
-                                                <label htmlFor="remember"><a href="#">약관</a>에 동의 합니다.</label>
+                                                <input type="checkbox" id="agree"/>
+                                                <label htmlFor="agree"><a href="#">약관</a>에 동의 합니다.</label>
                                             </div>
                                         </div>
                                         <button id="register-button" type="button" className="login-button" onClick={this.registerProcess}>
