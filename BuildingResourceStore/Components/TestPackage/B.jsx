@@ -17,7 +17,7 @@ module.exports =  {
       }
 
     }),
-
+    renderType:'static',
     struct : {
 
     },

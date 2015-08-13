@@ -5,6 +5,8 @@
     "TestPackage/A": {"path":"TestPackage/A.jsx"},
     "TestPackage/B": {"path":"TestPackage/B.jsx"},
     "TestPackage/TestInputBox": {"path":"TestPackage/TestInputBox.jsx"},
-    "TestPackage/BasicButton": {"path":"TestPackage/BasicButton.jsx"}
+    "TestPackage/BasicButton": {"path":"TestPackage/BasicButton.jsx"},
+    "TestPackage/BoxA": {"path":"TestPackage/BoxA.jsx"},
+    "TestPackage/BoxB": {"path":"TestPackage/BoxB.jsx"}
   }
 }

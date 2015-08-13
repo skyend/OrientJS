@@ -15,7 +15,7 @@ const domTypes = ["html", "component"];
  * @param targetElement dom 영역으로 사용할 htmlElement
  * @private
  */
-var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _depth) {
+var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _depth, _vnodeId) {
 
   this.name = name;
   this.parent = _parentNode;
@@ -63,11 +63,16 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
 
   this.updateStyles = function() {
     var computedStyle = (this.element.object.ownerDocument.defaultView).getComputedStyle(this.element.object, null);
-    console.log(computedStyle);
+    //console.log(computedStyle);
 
     this.computedStyle = {};
     this.computedStyle.float = computedStyle.float;
     this.computedStyle.display = computedStyle.display;
+  };
+
+  this.mappingVID = function(_vnodeId) {
+    this.vid = _vnodeId;
+    this.element.object.setAttribute('__vid__', _vnodeId);
   };
 
   /**
@@ -127,7 +132,7 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
         for (var i = 0; i < targetElement.children.length; i++) {
           ele = targetElement.children.item(i);
 
-          node = new _(domTypes[0], ele.nodeName.toLowerCase(), ele, _node, _depthArchive, _depth + 1);
+          node = new _(domTypes[0], ele.nodeName.toLowerCase(), ele, _node, _depthArchive, _depth + 1, _vnodeId + "/" + i);
           _node.childs.push(node);
         }
       }
@@ -135,6 +140,7 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
 
     _node.updateOffset();
     _node.updateStyles();
+    _node.mappingVID(_vnodeId);
   })(this);
 
 };

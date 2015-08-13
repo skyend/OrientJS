@@ -1,4 +1,5 @@
 using('less');
+
 module.exports =  {
     class : React.createClass({ // 고정
 
@@ -7,16 +8,14 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <div className='A'>
-            <span> TestComponentA </span>
+          <div className='BoxB'>
+
           </div>
         )
       }
 
     }),
-
     renderType:'static',
-    
     struct : {
 
     },
@@ -25,6 +24,6 @@ module.exports =  {
       width:100,
       height:100,
       display:'block',
-      float:'left'
+      float:"left"
     }
   };

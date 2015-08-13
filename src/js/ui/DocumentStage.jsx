@@ -150,7 +150,7 @@
 
           // VDomController Construct
           this.liveVDomController = new VDomController();
-          this.liveVDomController.createVRoot(iframeStage.getIFrameInnerDoc().querySelectorAll('body').item(0));
+          this.liveVDomController.createVRoot(iframeStage.getIFrameInnerDoc().querySelectorAll('html').item(0));
 
         },
 
@@ -187,10 +187,8 @@
               this.emit("GetComponent",{
                 "componentKey" : _key,
                 "return" : function( _err, _component ){
+                  if( _err !== null ) throw new Error("component load error");
 
-
-                  if( _err !== null ) throw new Error();
-                  console.log(_component);
                   var direction = self.findGuideDirectBound(_absoluteX, _absoluteY);
                   self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
                 }
@@ -225,6 +223,7 @@
          * @Param _key
          */
         stopDeployComponentByPalette( _absoluteX, _absoluteY, _key){
+          var self = this;
           console.log(arguments);
           console.log('stop');
 
@@ -239,6 +238,49 @@
 
 
             console.log('dropDirection',dropDirection);
+
+            var unboxingZone = this.refs['unboxing-zone'];
+            var uZDom = unboxingZone.getDOMNode();
+
+            this.emit("GetComponent",{
+              "componentKey" : _key,
+              "return" : function( _err, _component ){
+                if( _err !== null ) throw new Error("component load error");
+
+                // 컴포넌트의 랜더링 타입이 static 일 경우
+                if( _component.renderType === 'static'){
+
+                  // ReactComponent 의 static HTML을 추출한다.
+                  var componentHtml = React.renderToStaticMarkup(React.createElement(_component.class));
+
+                  // 보이지 않는 영역에 랜더링하여 컴포넌트 앨리먼트를 얻어낸다.
+                  uZDom.innerHTML = componentHtml;
+
+                  var componentStaticElement;
+                  if( uZDom.childNodes.length === 1 ){
+                    componentStaticElement = uZDom.childNodes[0];
+                  } else if ( uZDom.childNodes.length > 1 ){
+                    throw new Error("Component be must has 1 root.");
+                  } else {
+                    throw new Error("Component couldn't unboxing.");
+                  }
+                  console.log(_component);
+                  self.refs['iframe-stage'].addStyle(_key, _component.CSS);
+
+                  if( dropDirection === 'in' ){
+                    self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
+                  } else if( dropDirection === 'left' || dropDirection === 'top' ){
+                    self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
+                  } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
+                    self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
+                  }
+
+                }
+
+              }
+            });
+
+
 
             this.clearAim();
           }
@@ -540,7 +582,8 @@
         componentDidMount() {
 
           this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
-          this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
+          //this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
+          this.refs['iframe-stage'].setState({src:'about:blank'});
           this.clearAim()
         },
 
@@ -579,11 +622,14 @@
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        <IFrameStage ref='iframe-stage' src='../html5up-directive/index.html' width="100%" height="100%"/>
+                        <IFrameStage ref='iframe-stage' width="100%" height="100%"/>
                     </div>
 
                     <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} toolTitle="Document Editor" ref='footer-tool-part' style={{height:0}} resizeMe={this.onFooterToolPartResize}/>
 
+                    <div className='unboxing-zone' ref='unboxing-zone'>
+
+                    </div>
                 </section>
             )
         }

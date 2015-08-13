@@ -10,11 +10,13 @@ require('./IFrameStage.less');
 
 var IFrameStage = React.createClass({
     mixins:[require('../reactMixin/EventDistributor.js')],
+
     getInitialState(){
         return {
           src:"about:blank"
         };
     },
+
     getIframeInnerWindow(){
         var iframeDom = this.refs['iframe'].getDOMNode();
 
@@ -45,6 +47,76 @@ var IFrameStage = React.createClass({
     writeContentsToBody( _html, _styles ){
         this.getInnerBody().innerHTML = _html;
         this.getInnerHead().innerHTML = '<style>'+ _styles +'</style>';
+    },
+
+    addStyle( _key, _style ){
+      if( typeof this.styles === 'undefined' ) this.styles = {};
+
+      this.styles[_key] = _style;
+      var styleLines = '';
+      var styleKeys = Object.keys(this.styles);
+
+      for(var i = 0; i < styleKeys.length; i++ ){
+        styleLines += this.styles[ styleKeys[i] ];
+      }
+
+
+      this.getInnerHead().innerHTML = '<style>'+ styleLines +'</style>';
+    },
+
+    removeStyle(_key){
+      if( typeof this.styles !== 'object') throw new Error("Styles collection is not declared.");
+      if( typeof this.styles[_key] !== 'string' ) throw new Error("Style["+_key+"] is not exists.");
+
+      delete this.styles[_key];
+    },
+
+    insertElementToInLast( _baseTargetVid, _element ){
+      var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="'+_baseTargetVid+'"]');
+
+      baseTarget.appendChild( _element);
+    },
+
+
+    insertElementToBefore( _baseTargetVid, _element ){
+      var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="'+_baseTargetVid+'"]');
+
+      var parentElement = baseTarget.parentElement;
+
+      if( parentElement === null ){
+        this.emit('NoticeMessage', {
+          title:"컴포넌트 삽입 실패",
+          message:"해당영역에 삽입할 수 없습니다.",
+          level:"error"
+
+        })
+        return;
+      }
+
+      parentElement.insertBefore(_element, baseTarget);
+    },
+
+    insertElementToAfter( _baseTargetVid, _element ){
+      var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="'+_baseTargetVid+'"]');
+      var parentElement = baseTarget.parentElement;
+      
+      if( parentElement === null ){
+        this.emit('NoticeMessage', {
+          title:"컴포넌트 삽입 실패",
+          message:"해당영역에 삽입할 수 없습니다.",
+          level:"error"
+
+        })
+        return;
+      }
+
+      // 기준이 되는 요소의 다음요소가 없을 경우 appendChild로 삽입한다.
+      if( baseTarget.nextElementSibling === null ){
+        parentElement.appendChild( _element );
+      } else {
+        // 다음요소가 있으면 다음요소의 이전에 요소를 삽입한다.
+        parentElement.insertBefore( _element, baseTarget.nextElementSibling);
+      }
     },
 
     onIframeLoaded(_iframe) {
@@ -125,8 +197,14 @@ var IFrameStage = React.createClass({
       var iframe = this.refs['iframe'].getDOMNode();
 
       iframe.onload = function (_e) {
-          self.onIframeLoaded(this);
+          self.onIframeLoaded(iframe);
       };
+
+    },
+
+    componentDidMount(){
+      var iframe = this.refs['iframe'].getDOMNode();
+      this.onIframeLoaded(iframe);
     },
 
     render() {

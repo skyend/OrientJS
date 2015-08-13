@@ -23,4 +23,13 @@ var BasicButton = React.createClass({
 });
 
 
-module.exports = {class:BasicButton};
+module.exports = {
+  class :BasicButton,
+  renderType:'static',
+  struct: {},
+  positionHints : {
+    width:100,
+    height:100,
+    display:'inline-block'
+  }
+};

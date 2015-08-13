@@ -47,7 +47,7 @@ _.importHtmlElement = function(htmlElement, _depthArchive) {
   }
 
   var root = new _('page', htmlElement.offsetWidth, htmlElement.offsetHeight);
-  root.dom = new VNode('html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0);
+  root.dom = new VNode('html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0, "0");
   return root;
 }
 module.exports = _;
