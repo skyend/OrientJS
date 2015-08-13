@@ -9,7 +9,6 @@
 
 require('../lib/passwordConverter');
 require('./LoginService.less');
-require('js-cookie');
 
 (function () {
     var React = require("react");
@@ -42,9 +41,10 @@ require('js-cookie');
                 $(".login-form-message").addClass('show success').text('Connecting...');
                 if (sampleData.id == id && sampleData.password == pass) {
                     cookie.set('sessionKey', sampleData.sessionKey);
+                    cookie.set('id', sampleData.id);
                     setTimeout(function () {
                         $("#login-form").submit();
-                    }, 1000)
+                    }, 1000);
                 } else {
                     $(".login-form-message").addClass('show error').text('아이디나 패스워드가 잘못되었습니다.');
                     $(".main-login-form").addClass('swing');

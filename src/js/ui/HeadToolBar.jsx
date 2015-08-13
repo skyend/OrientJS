@@ -9,15 +9,17 @@
 
 require('../lib/passwordConverter');
 require('./HeadToolBar.less');
+require('js-cookie');
 
 (function () {
     var React = require("react");
     var $ = require("jquery");
+    var cookie = require('js-cookie');
     var HeadToolBar = React.createClass({
         mixins: [require('./reactMixin/EventDistributor.js')],
 
-        setUserInfo: function (id) {
-            console.log('setUserInfo');
+        setUserInfo: function () {
+            $(".user-info > i").html(" "+cookie.get('id'));
         },
 
         loginFormActivator: function(val){
@@ -28,8 +30,7 @@ require('./HeadToolBar.less');
             }
         },
         componentDidMount: function () {
-            var self = this;
-
+            this.setUserInfo();
         },
         render: function () {
             return (
@@ -42,11 +43,8 @@ require('./HeadToolBar.less');
                         </li>
                         <li>
                             <a className="user-info">
-                                <i className="fa fa-user"> ion</i>
+                                <i className="fa fa-user"></i>
                             </a>
-                            <div id="loginForm" className="login-form">
-                                userinfo
-                            </div>
                         </li>
                     </ul>
                 </header>

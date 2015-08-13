@@ -201,7 +201,7 @@
             };
 
             return (
-                <li onClick={closure}>{_tabItem.name}</li>
+                <li onClick={closure}>{_tabItem.name} <i className="fa fa-times"></i></li>
             )
         },
 

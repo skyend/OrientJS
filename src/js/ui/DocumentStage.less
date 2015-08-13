@@ -49,60 +49,33 @@
 }
 
 .Contents {
-  &.black {
-    &.Contents-tab-support {
-      background-color: #222;
-
-      > .tab-switch-panel {
-
-        > .tab-list {
-
-          background-color: #111;
-
-          > li {
-            background-color: #BBBBBD;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            border: 1px solid #333;
-            border-bottom: 0px;
-            color: #5F5F5F;
-            box-shadow: 0 0 5px #000;
-
-            &:hover {
-              background-color: #333;
-              color: #fff;
-            }
-          }
-        }
-      }
-
-      > .tab-context {
-        background-color: #333;
-      }
-    }
-  }
-
   &.Contents-tab-support {
-
     > .tab-switch-panel {
-
+      background: darkgray;
+      height: 30px;
       > .tab-list {
         box-sizing: border-box;
-        margin: 0px;
-        padding: 5px;
-        padding-bottom: 0px;
-        padding-left: 13px;
-        list-style-type: none;
         height: 30px;
-
+        margin: 0px;
+        padding: 0px;
+        list-style-type: none;
+        border-bottom: 5px solid #333;
         > li {
+          border-right: 1px solid #333;
+          color: #5F5F5F;
           display: inline-block;
           box-sizing: border-box;
           font-size: 12px;
           padding: 6px 12px;
-          margin-left: -5px;
-          height: 25px;
           cursor: pointer;
+          &:first-child {
+            background-color: #333;
+            color: #fff;
+          }
+          &:focus {
+            background-color: #333;
+            color: #fff;
+          }
         }
       }
     }

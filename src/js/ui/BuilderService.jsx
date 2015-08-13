@@ -49,20 +49,6 @@
             return {};
         },
 
-        onThrowCatcherLogin(_eventData, _pass) {
-            var id = _eventData.id;
-            var password = _eventData.password;
-            console.log(id);
-            console.log(password);
-            if (id == loginData.id && password == loginData.password) {
-                console.log('onThrowCatcherLogin');
-                this.refs['HeadToolBar'].setUserInfo(loginData.id);
-                this.refs['HeadToolBar'].loginFormActivator('close');
-                cookie.set("id", loginData.id);
-                cookie.set("sessionKey", loginData.sessionKey);
-            }
-        },
-
         displayModal(action) {
             var target = action.target;
             var self = this;
