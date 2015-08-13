@@ -163,6 +163,7 @@
          * @Param _key
          */
         dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+          var self = this;
           var iframeStage = this.refs['iframe-stage'];
           var selfClientRect = this.iframeStageBoundingRect;
           console.log('drag');
@@ -179,8 +180,21 @@
               // 움직임이 비교정 미세하다면
               // 사용자는 컴포넌트를 드랍하기 위해 움직이고 있는것으로 간주 드랍위치를 파악한다.
 
-              var direction = this.findGuideDirectBound(_absoluteX, _absoluteY);
-              this.showPreviewComponentDeployPosition(this.aimedTarget, direction);
+
+              // 컴포넌트를 얻고자 하는 이벤트를 발생하여 컴포넌트를 얻는다
+              // 컴포넌트를 반환받고 컴포넌트 배치 위치를 찾고
+              // 컴포넌트가 배치될 위치를 표시한다.
+              this.emit("GetComponent",{
+                "componentKey" : _key,
+                "return" : function( _err, _component ){
+
+
+                  if( _err !== null ) throw new Error();
+                  console.log(_component);
+                  var direction = self.findGuideDirectBound(_absoluteX, _absoluteY);
+                  self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
+                }
+              });
 
             }
           }
@@ -280,25 +294,69 @@
          * @Param _target : 컴포넌트 배치 기준요소
          * @Param _direction : 컴포넌트 배치 방향
          */
-        showPreviewComponentDeployPosition( _target, _direction ){
+        showPreviewComponentDeployPosition( _target, _direction, _positionHints ){
           // ToDO
           var placeHolderDOM = this.refs['drop-position-placeholder'].getDOMNode();
           var transformedCoordinate = this.transformIFrameDocCoordinateIntoStageScreen({x:_target.element.offset.x, y:_target.element.offset.y});
+          var targetParent = _target.parent;
 
           var x, y, w, h;
 
-          if( _direction === 'left' || _direction === 'right' ){
+          var direction = _direction;
+
+          // 부모의 넓이와 positionHint에 따라 상하좌우를 변경한다.
+          /*
+          if( typeof _positionHints.float !== 'undefined' ){
+            if( direction === 'right'){
+              if( _target.computedStyle.float === 'left' ){
+                if( _positionHints.float === 'left' ){
+                  direction = 'right';
+                } else {
+                  direction = 'left';
+                }
+              } else if ( _target.computedStyle.float === 'right' ){
+                if( _positionHints.float === 'right' ){
+                  direction = 'left';
+                } else {
+                  direction = 'right';
+                }
+              }
+            }
+          }*/
+
+
+          // 컴포넌트가 배치되었을 때 어느 방향에 위치해 있는지 미리 예측한다.
+          // 컴포넌트와 기준요소의 넓이를 더하여 부모의 넓이보다 크다면
+          // 컴포넌트가 배치될 위치는 상단 또는 하단이 될것이다.
+          if( targetParent !== null ){
+            var targetPWidth = targetParent.element.offset.width;
+            var targetWidth = _target.element.offset.width;
+            var componentWidth = _positionHints.width;
+
+            var targetAndComponentWidth = targetWidth + componentWidth;
+
+            if( targetAndComponentWidth > targetPWidth ){
+              if( direction === 'left' ){
+                direction = 'top';
+              } else if (direction === 'right' ){
+                direction = 'bottom';
+              }
+            }
+          }
+
+
+          if( direction === 'left' || direction === 'right' ){
             w = 3;
             h = _target.element.offset.height;
-            x = _direction === 'left'? transformedCoordinate.x -3 : transformedCoordinate.x + _target.element.offset.width;
+            x = direction === 'left'? transformedCoordinate.x -3 : transformedCoordinate.x + _target.element.offset.width;
             y = transformedCoordinate.y;
 
 
-          } else if( _direction === 'top' || _direction === 'bottom' ){
+          } else if( direction === 'top' || direction === 'bottom' ){
             w = _target.element.offset.width;
             h = 3;
             x = transformedCoordinate.x;
-            y = _direction === 'top'? transformedCoordinate.y -3 : transformedCoordinate.y + _target.element.offset.height;
+            y = direction === 'top'? transformedCoordinate.y -3 : transformedCoordinate.y + _target.element.offset.height;
 
           } else {
             // in

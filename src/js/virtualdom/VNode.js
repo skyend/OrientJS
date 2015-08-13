@@ -61,6 +61,15 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
     //console.log(this.element.object);
   };
 
+  this.updateStyles = function() {
+    var computedStyle = (this.element.object.ownerDocument.defaultView).getComputedStyle(this.element.object, null);
+    console.log(computedStyle);
+
+    this.computedStyle = {};
+    this.computedStyle.float = computedStyle.float;
+    this.computedStyle.display = computedStyle.display;
+  };
+
   /**
    * Dom 데이터 익스포트
    * @returns {{name: *, element: *, childs: Array}}
@@ -123,7 +132,9 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
         }
       }
     }
+
     _node.updateOffset();
+    _node.updateStyles();
   })(this);
 
 };
