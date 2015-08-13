@@ -7,7 +7,7 @@
  * Requires(css) :
  */
 
-require('../lib/PasswordConverter');
+require('../lib/passwordConverter');
 require('./HeadToolBar.less');
 
 (function () {
@@ -17,8 +17,6 @@ require('./HeadToolBar.less');
         mixins: [require('./reactMixin/EventDistributor.js')],
 
         setUserInfo: function (id) {
-            $('.user-info').html('<i class="fa fa-user"> ' + id + '</i>');
-            $('.user-info').off("click");
             console.log('setUserInfo');
         },
 
@@ -29,36 +27,8 @@ require('./HeadToolBar.less');
                 $(".login-form").slideDown().slideToggle("fast");
             }
         },
-        loginProcess: function () {
-            var id = $('#id').val();
-            var password = $('#password').val();
-            this.emit("Login", {
-                id: id,
-                password: password
-            });
-        },
         componentDidMount: function () {
             var self = this;
-            $("#passwordConverter").passwordConverter();
-            $(".login-form").hide();
-            $('.user-info').on('click', function () {
-                $(".login-form").slideToggle('fast', function () {
-                    $('#id').focus();
-                });
-            });
-            $("#login").on('click', function () {
-                self.loginProcess();
-            });
-            $("#id").on('keyup', function (e) {
-                if (e.keyCode === 13) {
-                    $('#passwordConverter').focus();
-                }
-            });
-            $("#passwordConverter").on('keyup', function (e) {
-                if (e.keyCode === 13) {
-                    self.loginProcess();
-                }
-            });
 
         },
         render: function () {
@@ -72,19 +42,11 @@ require('./HeadToolBar.less');
                         </li>
                         <li>
                             <a className="user-info">
-                                <i className="fa fa-sign-in"> Login</i>
+                                <i className="fa fa-user"> ion</i>
                             </a>
-
-                            <form id="loginForm" className="login-form">
-                                <input id="id" type="text" placeholder="ID" className="login-input"/>
-                                <input id="passwordConverter" type="text" placeholder="PASSWORD" className="login-input"/>
-                                <input id="login" type="button" className="login-button" value="Login" tabindex="3"/>
-                                <span className="remember">&nbsp;&nbsp;&nbsp;Remember?<input type="checkbox" className="checkbox"/></span>
-
-                                <div className="lost-password">
-                                    <a>비밀번호가 기억나지 않으세요?</a>
-                                </div>
-                            </form>
+                            <div id="loginForm" className="login-form">
+                                userinfo
+                            </div>
                         </li>
                     </ul>
                 </header>

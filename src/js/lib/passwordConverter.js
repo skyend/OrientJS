@@ -149,6 +149,7 @@ $.fn.passwordConverter = function (options) {
                 ret.text.attr("disabled", "disabled");
             });
         } else ret.text = ret.pass.clone().removeAttr('data-reactid').attr("type", "text");
+        //} else ret.text = ret.pass.clone().attr("type", "text");
         var last = null;
         ret.text.attr("autocomplete", "off").removeAttr("name").change(function (evt) {
             if (last == ret.text.val()) return;
@@ -182,8 +183,7 @@ $.fn.passwordConverter = function (options) {
             }).blur(function () {
                 ret.focused = false;
             })
-        //ret.pass.after(ret.text).hide().removeAttr("id");
-        ret.pass.after(ret.text).hide().attr("id", "password");
+        ret.pass.after(ret.text).hide().removeAttr("id");
         ret.reMask();
         values.push(ret);
     });

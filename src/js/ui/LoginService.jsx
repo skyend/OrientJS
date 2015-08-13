@@ -7,13 +7,19 @@
  * Requires(css) :
  */
 
-require('../lib/PasswordConverter');
+require('../lib/passwordConverter');
 require('./LoginService.less');
+require('js-cookie');
+
 (function () {
     var React = require("react");
     var $ = require("jquery");
     var cookie = require('js-cookie');
-
+    var sampleData = {
+        "id": "ion",
+        "password": "ion",
+        "sessionKey": "dkjS12KI9xz2Srkzeo74ewqa"
+    }
     var LoginService = React.createClass({
 
         getInitialState() {
@@ -21,19 +27,53 @@ require('./LoginService.less');
         },
         loginProcess: function () {
             var id = $('#log-id').val();
-            var pass = $('#log-password').val();
-            $("#login-button").html('<i class="fa fa-spinner fa-pulse"></i>');
-            if(id.length < 5){
+            var pass = $("input:password").passwordConverter()[0].pass[0].value;
+            $("#login-button").html('<i className="fa fa-spinner fa-pulse"></i>');
+            if (id.length < 3) {
                 $(".login-form-message").addClass('show error').text('아이디는 4글자 이상입니다.');
-            }else{
+                $(".main-login-form").addClass('swing');
+                setTimeout(function () {
+                    $(".main-login-form").removeClass("swing");
+                }, 1000);
+                setTimeout(function () {
+                    $("#login-button").html('<i className="fa fa-chevron-right"></i>');
+                }, 1000);
+            } else {
                 $(".login-form-message").addClass('show success').text('Connecting...');
+                if (sampleData.id == id && sampleData.password == pass) {
+                    cookie.set('sessionKey', sampleData.sessionKey);
+                    setTimeout(function () {
+                        $("#login-form").submit();
+                    }, 1000)
+                } else {
+                    $(".login-form-message").addClass('show error').text('아이디나 패스워드가 잘못되었습니다.');
+                    $(".main-login-form").addClass('swing');
+                    setTimeout(function () {
+                        $(".main-login-form").removeClass("swing");
+                    }, 1000);
+                    setTimeout(function () {
+                        $("#login-button").html('<i className="fa fa-chevron-right"></i>');
+                    }, 1000);
+                }
             }
         },
         registerProcess: function () {
             var reg_id = $('#reg_id').val();
+            var reg_pass = $("input:password").passwordConverter()[1].pass[0].value;
+            var reg_pass_conf = $("input:password").passwordConverter()[2].pass[0].value;
             var reg_email = $('#reg_email').val();
             var reg_fullName = $('#reg_fullName').val();
             var gender = $(':radio[name="gender"]:checked').val();
+            var regex = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+            if (!regex.test(reg_email)) {
+                $(".login-form-message").addClass('show error').text('잘못된 메일 주소 입니다.');
+                $(".main-login-form").addClass('swing');
+                setTimeout(function () {
+                    $(".main-login-form").removeClass("swing");
+                }, 1000);
+            } else {
+                $("#login-form").submit();
+            }
         },
         forGotPassProcess: function () {
             var forgot_email = $('#forgot-email').val();
@@ -63,118 +103,182 @@ require('./LoginService.less');
         render: function () {
             return (
                 <div id="index">
+                    <div className="bokeh">
+                        <div className="pos-detect-top-1"></div>
+                        <div className="pos-detect-top-2"></div>
+                        <div className="pos-detect-top-3"></div>
+                        <div className="pos-detect-top-4"></div>
+                        <div className="pos-detect-top-5"></div>
+                        <div className="pos-detect-top-6"></div>
+                        <div className="pos-detect-top-7"></div>
+                        <div className="pos-detect-top-8"></div>
+                        <div className="pos-detect-top-9"></div>
+
+
+                        <div className="pos-detect-center-1"></div>
+                        <div className="pos-detect-center-2"></div>
+                        <div className="pos-detect-center-3"></div>
+                        <div className="pos-detect-center-4"></div>
+                        <div className="pos-detect-center-5"></div>
+                        <div className="pos-detect-center-6"></div>
+                        <div className="pos-detect-center-7"></div>
+                        <div className="pos-detect-center-8"></div>
+                        <div className="pos-detect-center-9"></div>
+
+
+                        <div className="pos-detect-bottom-1"></div>
+                        <div className="pos-detect-bottom-2"></div>
+                        <div className="pos-detect-bottom-3"></div>
+                        <div className="pos-detect-bottom-4"></div>
+                        <div className="pos-detect-bottom-5"></div>
+                        <div className="pos-detect-bottom-6"></div>
+                        <div className="pos-detect-bottom-7"></div>
+                        <div className="pos-detect-bottom-8"></div>
+                        <div className="pos-detect-bottom-9"></div>
+
+                        <div className="background-layer">
+                            <div className="bubble-1"></div>
+                            <div className="bubble-2"></div>
+                            <div className="bubble-3"></div>
+                            <div className="bubble-4"></div>
+                            <div className="bubble-5"></div>
+                            <div className="bubble-6"></div>
+                            <div className="bubble-7"></div>
+                            <div className="bubble-8"></div>
+                            <div className="bubble-9"></div>
+                        </div>
+
+                        <div className="middleground-layer">
+                            <div className="bubble-1"></div>
+                            <div className="bubble-2"></div>
+                            <div className="bubble-3"></div>
+                            <div className="bubble-4"></div>
+                            <div className="bubble-5"></div>
+                            <div className="bubble-6"></div>
+                            <div className="bubble-7"></div>
+                            <div className="bubble-8"></div>
+                            <div className="bubble-9"></div>
+
+                        </div>
+
+                        <div className="foreground-layer">
+                            <div className="bubble-1"></div>
+                            <div className="bubble-2"></div>
+                            <div className="bubble-3"></div>
+                            <div className="bubble-4"></div>
+                            <div className="bubble-5"></div>
+                            <div className="bubble-6"></div>
+                            <div className="bubble-7"></div>
+                            <div className="bubble-8"></div>
+                            <div className="bubble-9"></div>
+                        </div>
+                    </div>
                     <div className="popup-logos">UI builder</div>
                     <div id="log-page">
-                        <div className="screen">
-                            <div className="text-center">
-                                <div className="login-logo">Login</div>
-                                <form id="login-form" className="login-form">
-                                    <div className="login-form-message"></div>
-                                    <div className="main-login-form">
-                                        <div className="login-group">
-                                            <div className="form-group">
-                                                <input id="log-id" type="text" className="form-control" placeholder="id"/>
-                                            </div>
-                                            <div className="form-group">
-                                                <input id="log-password" type="password" className="form-control" placeholder="password"/>
-                                            </div>
-                                            <div className="form-group form-group-checkbox">
-                                                <input type="checkbox" id="remember"/>
-                                                <label htmlFor="remember">remember</label>
-                                            </div>
+                        <div className="text-center">
+                            <div className="login-logo">Login</div>
+                            <form id="login-form" className="login-form">
+                                <div className="login-form-message"></div>
+                                <div className="main-login-form">
+                                    <div className="login-group">
+                                        <div className="form-group">
+                                            <input id="log-id" type="text" className="form-control" placeholder="id"/>
                                         </div>
-                                        <button id="login-button" type="button" className="login-button" onClick={this.loginProcess}>
-                                            <i className="fa fa-chevron-right"></i>
-                                        </button>
+                                        <div className="form-group">
+                                            <input id="log-password" type="password" className="form-control" placeholder="password"/>
+                                        </div>
+                                        <div className="form-group form-group-checkbox">
+                                            <input type="checkbox" id="remember"/>
+                                            <label htmlFor="remember">remember</label>
+                                        </div>
                                     </div>
-                                    <div className="etc-login-form">
-                                        <p>패스워드를 잊어버렸어요.
-                                            <input type="button" onClick={this.viewForgotPass} id="forget-pass" value="클릭!"/>
-                                        </p>
+                                    <button id="login-button" type="button" className="login-button" onClick={this.loginProcess}>
+                                        <i className="fa fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div className="etc-login-form">
+                                    <p>패스워드를 잊어버렸어요.
+                                        <input type="button" onClick={this.viewForgotPass} id="forget-pass" value="클릭"/>
+                                    </p>
 
-                                        <p>새로운 계정 생성이 필요합니다.
-                                            <input type="button" onClick={this.viewRegister} id="go-register" value="클릭!"/>
-                                        </p>
-                                    </div>
-                                </form>
-                            </div>
+                                    <p>새로운 계정 생성이 필요합니다.
+                                        <input type="button" onClick={this.viewRegister} id="go-register" value="클릭"/>
+                                    </p>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div id="reg-page">
-                        <div className="screen">
-                            <div className="text-center">
-                                <div className="login-logo">Register</div>
-                                <form id="login-form" className="login-form">
-                                    <div className="login-form-message"></div>
-                                    <div className="main-login-form">
-                                        <div className="login-group">
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" id="reg-id" placeholder="id"/>
-                                            </div>
-                                            <div className="form-group">
-                                                <input type="password" className="form-control" id="reg-password" placeholder="password"/>
-                                            </div>
-                                            <div className="form-group">
-                                                <input type="password" className="form-control" id="reg_password_confirm" placeholder="confirm password"/>
-                                            </div>
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" id="reg_email" placeholder="email"/>
-                                            </div>
-                                            <div className="form-group">
-                                                <input type="text" className="form-control" id="reg_fullName" placeholder="full name"/>
-                                            </div>
-                                            <div className="form-group form-group-checkbox">
-                                                <input type="radio" name="gender" id="male" value="male"/>
-                                                <label htmlFor="male">Male </label>
-
-                                                <input type="radio" name="gender" id="female" value="female"/>
-                                                <label htmlFor="female">Female</label>
-                                            </div>
-                                            <div className="form-group form-group-checkbox">
-                                                <input type="checkbox" id="agree"/>
-                                                <label htmlFor="agree"><a href="#">약관</a>에 동의 합니다.</label>
-                                            </div>
+                        <div className="text-center">
+                            <div className="login-logo">Register</div>
+                            <form id="login-form" className="login-form">
+                                <div className="login-form-message"></div>
+                                <div className="main-login-form">
+                                    <div className="login-group">
+                                        <div className="form-group">
+                                            <input type="text" className="form-control" id="reg-id" placeholder="id"/>
                                         </div>
-                                        <button id="register-button" type="button" className="login-button" onClick={this.registerProcess}>
-                                            <i className="fa fa-chevron-right"></i>
-                                        </button>
+                                        <div className="form-group">
+                                            <input type="password" className="form-control" id="reg-password" placeholder="password"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <input type="password" className="form-control" id="reg-password-confirm" placeholder="confirm password"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <input type="text" className="form-control" id="reg-email" placeholder="email"/>
+                                        </div>
+                                        <div className="form-group">
+                                            <input type="text" className="form-control" id="reg-fullName" placeholder="full name"/>
+                                        </div>
+                                        <div className="form-group form-group-checkbox">
+                                            <input type="radio" name="gender" id="male" value="male"/>
+                                            <label htmlFor="male">Male </label>
+
+                                            <input type="radio" name="gender" id="female" value="female"/>
+                                            <label htmlFor="female">Female</label>
+                                        </div>
+                                        <div className="form-group form-group-checkbox">
+                                            <input type="checkbox" id="agree"/>
+                                            <label htmlFor="agree"><a href="#">약관</a>에 동의 합니다.</label>
+                                        </div>
                                     </div>
-                                    <div className="etc-login-form">
-                                        <p>이미 계정이 있으세요?
-                                            <input type="button" onClick={this.viewLogin} id="go-login" value="네, 있습니다."/>
-                                        </p>
-                                    </div>
-                                </form>
-                            </div>
+                                    <button id="register-button" type="button" className="login-button" onClick={this.registerProcess}>
+                                        <i className="fa fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div className="etc-login-form">
+                                    <p>이미 계정이 있으세요?
+                                        <input type="button" onClick={this.viewLogin} id="go-login" value="네, 있습니다."/>
+                                    </p>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div id="forgot-pass-page">
-                        <div className="screen">
-                            <div className="text-center">
-                                <div className="login-logo">forgot password</div>
-                                <form id="login-form" className="login-form">
-                                    <div className="login-form-message"></div>
-                                    <div className="main-login-form">
-                                        <div className="login-group">
-                                            <div className="form-group">
-                                                <input id="forgot-email" type="text" className="form-control" placeholder="email address"/>
-                                            </div>
+                        <div className="text-center">
+                            <div className="login-logo">forgot password</div>
+                            <form id="login-form" className="login-form">
+                                <div className="login-form-message"></div>
+                                <div className="main-login-form">
+                                    <div className="login-group">
+                                        <div className="form-group">
+                                            <input id="forgot-email" type="text" className="form-control" placeholder="email address"/>
                                         </div>
-                                        <button id="forgot-pass-button" type="button" className="login-button" onClick={this.forGotPassProcess}>
-                                            <i className="fa fa-chevron-right"></i>
-                                        </button>
                                     </div>
-                                    <div className="etc-login-form">
-                                        <p>로그인 하겠습니다.
-                                            <input type="button" onClick={this.viewLogin} id="go-login" value="클릭!"/>
-                                        </p>
+                                    <button id="forgot-pass-button" type="button" className="login-button" onClick={this.forGotPassProcess}>
+                                        <i className="fa fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div className="etc-login-form">
+                                    <p>로그인 하겠습니다.
+                                        <input type="button" onClick={this.viewLogin} id="go-login" value="클릭!"/>
+                                    </p>
 
-                                        <p>새로운 계정 생성이 필요합니다.
-                                            <input type="button" onClick={this.viewRegister} id="go-register" value="클릭!"/>
-                                        </p>
-                                    </div>
-                                </form>
-                            </div>
+                                    <p>새로운 계정 생성이 필요합니다.
+                                        <input type="button" onClick={this.viewRegister} id="go-register" value="클릭!"/>
+                                    </p>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
