@@ -75,6 +75,10 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
     this.element.object.setAttribute('__vid__', _vnodeId);
   };
 
+  this.updateAttributes = function(){
+    this.classes = this.element.object.getAttribute('class');
+  };
+
   /**
    * Dom 데이터 익스포트
    * @returns {{name: *, element: *, childs: Array}}
@@ -141,6 +145,7 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
     _node.updateOffset();
     _node.updateStyles();
     _node.mappingVID(_vnodeId);
+    _node.updateAttributes();
   })(this);
 
 };

@@ -61,7 +61,16 @@ var IFrameStage = React.createClass({
       }
 
 
-      this.getInnerHead().innerHTML = '<style>'+ styleLines +'</style>';
+
+      if( typeof this.componentStyleElement === 'undefined' ){
+        var styleTag = this.getIFrameInnerDoc().createElement('style');
+        styleTag.type = 'text/css';
+        this.getInnerHead().appendChild(styleTag);
+
+        this.componentStyleElement = styleTag;
+      }
+
+      this.componentStyleElement.innerHTML = styleLines;
     },
 
     removeStyle(_key){
@@ -88,8 +97,7 @@ var IFrameStage = React.createClass({
           title:"컴포넌트 삽입 실패",
           message:"해당영역에 삽입할 수 없습니다.",
           level:"error"
-
-        })
+        });
         return;
       }
 
@@ -99,14 +107,13 @@ var IFrameStage = React.createClass({
     insertElementToAfter( _baseTargetVid, _element ){
       var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="'+_baseTargetVid+'"]');
       var parentElement = baseTarget.parentElement;
-      
+
       if( parentElement === null ){
         this.emit('NoticeMessage', {
           title:"컴포넌트 삽입 실패",
           message:"해당영역에 삽입할 수 없습니다.",
           level:"error"
-
-        })
+        });
         return;
       }
 
@@ -162,6 +169,7 @@ var IFrameStage = React.createClass({
     },
 
     onCallContextMenu(_e) {
+
         _e.preventDefault();
         var selfDom = this.getDOMNode();
         console.log("call contextmenu", _e);

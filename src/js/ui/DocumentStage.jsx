@@ -139,7 +139,7 @@
 
         /*******************
          * startDeployComponentByPalette
-         * 컴포넌트 배치 드래그 시작 리스너
+         * 컴포넌트 배치 드래그 시작 리스너 (Begin Drag)
          * @Param _absoluteX
          * @Param _absoluteY
          * @Param _key
@@ -157,7 +157,7 @@
 
         /*******************
          * dragDeployComponentByPalette
-         * 컴포넌트 배치 드래그 리스너
+         * 컴포넌트 배치 드래그 리스너 (Drag Move)
          * @Param _absoluteX
          * @Param _absoluteY
          * @Param _key
@@ -166,7 +166,7 @@
           var self = this;
           var iframeStage = this.refs['iframe-stage'];
           var selfClientRect = this.iframeStageBoundingRect;
-          console.log('drag');
+          //console.log('drag');
 
           //****************************************/
           // 마우스 움직임의 강도에 따라 표적 해제 또는 드랍 위치 지정
@@ -190,9 +190,12 @@
                   if( _err !== null ) throw new Error("component load error");
 
                   var direction = self.findGuideDirectBound(_absoluteX, _absoluteY);
+
                   self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
                 }
               });
+
+
 
             }
           }
@@ -203,21 +206,32 @@
 
           //****************************************/
           // 드래그위치에 따라 표적을 지정
-          // 현재 드래그중인 영역이 스테이지 바운더리 내에 있는지 확인후 밖에 있다면 함수 탈출
+          // 현재 드래그중인 영역이 스테이지 바운더리 내에 있는지 확인후 밖에 있다면 표적을 해제하고 함수 탈출
           if(!(( _absoluteX > selfClientRect.left && _absoluteX < selfClientRect.left + selfClientRect.width ) &&
-              ( _absoluteY > selfClientRect.top  && _absoluteY < selfClientRect.top  + selfClientRect.height))) return;
+              ( _absoluteY > selfClientRect.top  && _absoluteY < selfClientRect.top  + selfClientRect.height))) {
+
+            this.clearAim();
+            return;
+          }
 
           // 대상리스트 뽑기
           var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
 
           // 표적지정
           this.aimingTarget( targetedList, _absoluteX, _absoluteY );
+
+
+          this.emit("ExpectedDropVNodePath",{
+            nodeTreePath: this.getTargetPath(targetedList[0])
+          });
+
+
           /*****************************************--끝--*/
         },
 
         /*******************
          * stopDeployComponentByPalette
-         * 컴포넌트 배치 드래그 종료 및 드랍 리스너
+         * 컴포넌트 배치 드래그 종료 및 드랍 리스너 (Drop)
          * @Param _absoluteX
          * @Param _absoluteY
          * @Param _key
@@ -234,7 +248,7 @@
 
             // guide를 이용하여 컴포넌트 삽입 방향을 찾는다.
             var dropDirection = this.findGuideDirectBound(_absoluteX, _absoluteY);
-
+            console.log(this.aimedTarget);
 
 
             console.log('dropDirection',dropDirection);
@@ -264,15 +278,33 @@
                   } else {
                     throw new Error("Component couldn't unboxing.");
                   }
-                  console.log(_component);
-                  self.refs['iframe-stage'].addStyle(_key, _component.CSS);
 
+                  if( typeof _component.CSS === 'string'){
+                    self.refs['iframe-stage'].addStyle(_key, _component.CSS);
+                  }
+
+                  componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
-                    self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
+                    if( self.aimedTarget.name !== 'html' ){
+                      self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
+                    } else {
+                      self.errorNoticeDontInsertTo("HTML");
+                      return;
+                    }
+
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
-                    self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
+                    if( self.aimedTarget.name !== 'body' ){
+                      self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
+                    } else {
+                      self.errorNoticeDontInsertTo("HTML");
+                    }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
-                    self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
+                    if( self.aimedTarget.name !== 'body' ){
+                      self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
+                    } else {
+                      self.errorNoticeDontInsertTo("HTML");
+                    }
+
                   }
 
                 }
@@ -288,6 +320,37 @@
           this.clearAim();
           // VDomController Destroy
           this.liveVDomController = null;
+        },
+
+        /***************
+         * getTargetPath
+         * 대상요소의 Node를 분석하여 Path를 추출한다.
+         * @Param _target Target이 되는 VNode
+         */
+        getTargetPath( _target ){
+          var pathArray = [];
+
+          // 드랍이 예상되는 요소의 Path를 반환
+          getTargetPath(_target, pathArray);
+
+          return pathArray;
+
+          // 대상의 계층 Path를 추출하는 재귀 함수
+          function getTargetPath( __target, __pathArray ){
+            if( __target.parent !== null ){
+              getTargetPath(__target.parent, __pathArray);
+
+              __pathArray.push( __target );
+            }
+          }
+        },
+
+        errorNoticeDontInsertTo(_name){
+          this.emit('NoticeMessage', {
+            title:"컴포넌트 삽입 실패",
+            message:_name+" 태그내에 직접 삽입할 수 없습니다.",
+            level:"error"
+          });
         },
 
         /*********

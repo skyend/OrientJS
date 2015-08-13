@@ -16,6 +16,11 @@
     var React = require("react");
 
     var FootStatusBar = React.createClass({
+        getInitialState(){
+            return {
+              vnodePath:"HTML >"
+            }
+        },
         render: function () {
             return (
                 <footer id="ui-footer">
@@ -33,6 +38,9 @@
                         </li>
                         <li className="item-right">
                             <a>EDIT</a>
+                        </li>
+                        <li className="item-right">
+                            {this.state.vnodePath}
                         </li>
                     </ul>
                 </footer>

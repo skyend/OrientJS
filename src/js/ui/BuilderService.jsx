@@ -277,6 +277,26 @@
             }]);
         },
 
+        onThrowCatcherExpectedDropVNodePath(_eventData, _pass) {
+          console.log('recieve', _eventData);
+
+          var footStatusBar = this.refs['FootStatusBar'];
+
+          var pathStringified = _eventData.nodeTreePath.map(function( _vnode ){
+              if( typeof _vnode.classes === 'string' ){
+                return _vnode.name +'.'+ _vnode.classes;
+              }
+              return _vnode.name ;
+          });
+
+          console.log(pathStringified);
+
+          footStatusBar.setState({
+            vnodePath:pathStringified.join(" > ")
+          })
+
+        },
+
 
         onThrowCatcherNoticeMessage(_eventData, _pass) {
             this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
