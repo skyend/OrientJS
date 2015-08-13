@@ -7,7 +7,6 @@
   user-select: none;
 }
 
-
 /*
  * Main content
  */
@@ -138,7 +137,7 @@
 
 .drop-guide-box {
   position: fixed;
-  z-index: 3;
+  z-index: 5;
 
   width:105px;
   height:105px;
@@ -150,9 +149,10 @@
     width:35px;
     height:35px;
     box-sizing: border-box;
-    font-size: 7px;
+    font-size: 7px!important;
     padding-top:13px;
     text-align: center;
+    -webkit-text-size-adjust: none;
 
     color:white;
 
@@ -178,7 +178,7 @@
 
 .element-highlighter {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   border:3px solid #fff;
   background-color: rgba(0,0,0,0.2);
   box-sizing: border-box;
@@ -188,4 +188,25 @@
 
 
 
+}
+
+.drop-position-placeholder {
+  position: absolute;
+  z-index: 4;
+
+  background-color: #fff;
+  mix-blend-mode:difference;
+
+
+  &.vertical {
+    width:3px;
+  }
+
+  &.horizontal {
+    height: 3px;
+  }
+
+  &.box {
+
+  }
 }

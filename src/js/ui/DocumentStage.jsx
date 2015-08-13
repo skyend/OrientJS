@@ -86,6 +86,10 @@
             tabContextDOM.style.height = tabContextDOMHeight + 'px';
         },
 
+        getTabContextOffsetLeftByDS(){
+          return this.refs['tab-context'].getDOMNode().offsetLeft;
+        },
+
         getTabContextOffsetTopByDS(){
           return this.refs['tab-context'].getDOMNode().offsetTop;
         },
@@ -161,6 +165,7 @@
         dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
           var iframeStage = this.refs['iframe-stage'];
           var selfClientRect = this.iframeStageBoundingRect;
+          console.log('drag');
 
           //****************************************/
           // 마우스 움직임의 강도에 따라 표적 해제 또는 드랍 위치 지정
@@ -174,7 +179,9 @@
               // 움직임이 비교정 미세하다면
               // 사용자는 컴포넌트를 드랍하기 위해 움직이고 있는것으로 간주 드랍위치를 파악한다.
 
-              this.findGuideDirectBound(_absoluteX, _absoluteY);
+              var direction = this.findGuideDirectBound(_absoluteX, _absoluteY);
+              this.showPreviewComponentDeployPosition(this.aimedTarget, direction);
+
             }
           }
           this.prevMouseX = _absoluteX;
@@ -205,7 +212,7 @@
          */
         stopDeployComponentByPalette( _absoluteX, _absoluteY, _key){
           console.log(arguments);
-
+          console.log('stop');
 
           //var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
 
@@ -222,6 +229,7 @@
             this.clearAim();
           }
 
+          this.clearAim();
           // VDomController Destroy
           this.liveVDomController = null;
         },
@@ -274,9 +282,57 @@
          */
         showPreviewComponentDeployPosition( _target, _direction ){
           // ToDO
+          var placeHolderDOM = this.refs['drop-position-placeholder'].getDOMNode();
+          var transformedCoordinate = this.transformIFrameDocCoordinateIntoStageScreen({x:_target.element.offset.x, y:_target.element.offset.y});
+
+          var x, y, w, h;
+
+          if( _direction === 'left' || _direction === 'right' ){
+            w = 3;
+            h = _target.element.offset.height;
+            x = _direction === 'left'? transformedCoordinate.x -3 : transformedCoordinate.x + _target.element.offset.width;
+            y = transformedCoordinate.y;
 
 
-          
+          } else if( _direction === 'top' || _direction === 'bottom' ){
+            w = _target.element.offset.width;
+            h = 3;
+            x = transformedCoordinate.x;
+            y = _direction === 'top'? transformedCoordinate.y -3 : transformedCoordinate.y + _target.element.offset.height;
+
+          } else {
+            // in
+            w = _target.element.offset.width - 6;
+            h = _target.element.offset.height - 6;
+            x = transformedCoordinate.x+3;
+            y = transformedCoordinate.y+3;
+
+
+          }
+
+
+
+          placeHolderDOM.style.left = x + 'px';
+          placeHolderDOM.style.top = y + 'px';
+          placeHolderDOM.style.width = w +'px';
+          placeHolderDOM.style.height = h +'px';
+          placeHolderDOM.style.display = 'block';
+
+
+
+        },
+
+        hidePreviewComponentDeployPosition(){
+          var placeHolderDOM = this.refs['drop-position-placeholder'].getDOMNode();
+          placeHolderDOM.style.display = 'none';
+        },
+
+        transformIFrameDocCoordinateIntoStageScreen( _coordinate ){
+
+          return {
+            x : _coordinate.x - this.refs['iframe-stage'].getScrollX() + this.getTabContextOffsetLeftByDS(),
+            y : _coordinate.y - this.refs['iframe-stage'].getScrollY() + this.getTabContextOffsetTopByDS()
+          };
         },
 
 
@@ -340,7 +396,7 @@
               var self = this;
               if( this.aimingTimeoutId !== 'undefined' ){
                 // timeout제거
-                clearTimeout(this.aimingTimeoutId);
+                this.clearAimCounter();
               }
 
               // 0.3초간 머무르면 그 대상이 표적으로 지정된다.
@@ -351,7 +407,7 @@
                 self.aimedTarget = target;
 
                 // timeout 제거
-                clearTimeout(self.aimingTimeoutId);
+                self.clearAimCounter();
               }, 300);
             }
 
@@ -363,6 +419,12 @@
           this.aimedTarget = null;
           this.hideGuideBox();
           this.hideElementHighlight();
+          this.clearAimCounter();
+          this.hidePreviewComponentDeployPosition();
+        },
+
+        clearAimCounter(){
+          clearTimeout(this.aimingTimeoutId);
         },
 
 
@@ -420,8 +482,8 @@
         componentDidMount() {
 
           this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
-            this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
-
+          this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
+          this.clearAim()
         },
 
         resize( _width, _height){
@@ -445,7 +507,7 @@
                     </div>
                     <div className='drop-guide-box' ref='drop-guide-box'>
                       <div className=''></div>
-                      <div className='direction' data-direction='top' ref='drop-guide-box-top'>TOP</div>
+                      <div className='direction' data-direction='top' ref='drop-guide-box-top'> TOP </div>
                       <div className=''></div>
                       <div className='direction' data-direction='left'  ref='drop-guide-box-left'>LEFT</div>
                       <div className='direction in' data-direction='in'  ref='drop-guide-box-in'>IN</div>
@@ -455,9 +517,8 @@
                       <div className=''></div>
                     </div>
 
-                    <div className='element-highlighter' ref='element-highlighter'>
-
-                    </div>
+                    <div className='element-highlighter' ref='element-highlighter'/>
+                    <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
                         <IFrameStage ref='iframe-stage' src='../html5up-directive/index.html' width="100%" height="100%"/>

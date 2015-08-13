@@ -34,6 +34,10 @@ var IFrameStage = React.createClass({
         return this.getIFrameInnerDoc().querySelector('head');
     },
 
+    getScrollX(){
+        return this.getIFrameInnerDoc().body.scrollLeft;
+    },
+
     getScrollY(){
         return this.getIFrameInnerDoc().body.scrollTop;
     },
