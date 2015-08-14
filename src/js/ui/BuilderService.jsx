@@ -277,23 +277,15 @@
             }]);
         },
 
-        onThrowCatcherExpectedDropVNodePath(_eventData, _pass) {
+        onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
           console.log('recieve', _eventData);
 
           var footStatusBar = this.refs['FootStatusBar'];
 
-          var pathStringified = _eventData.nodeTreePath.map(function( _vnode ){
-              if( typeof _vnode.classes === 'string' ){
-                return _vnode.name +'.'+ _vnode.classes;
-              }
-              return _vnode.name ;
-          });
-
-          console.log(pathStringified);
 
           footStatusBar.setState({
-            vnodePath:pathStringified.join(" > ")
-          })
+            vnodePathArray:_eventData.nodeArrayPath
+          });
 
         },
 
@@ -422,7 +414,10 @@
                                      naviItemFontSize={16}/>
 
 
-                    <DocumentStage ref='DocumentStage'/>
+                    <DocumentStage ref='DocumentStage'
+                                    aimingCount={100}
+                                    aimingEscapeStepSize={10}
+                                    boundaryBorderSize={5}  />
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>

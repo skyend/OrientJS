@@ -289,7 +289,7 @@
 
     var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey);
 
-    _eventData.return(null, loadedComponent);
+    _eventData.return(null, loadedComponent)
   };
 
   UI.prototype.builderRender = function() {

@@ -138,6 +138,10 @@ var IFrameStage = React.createClass({
         innerDocument.addEventListener('click', function (_ev) {
             self.onMouseClickAtStage(_ev);
         }, false);
+
+        innerDocument.addEventListener('mousedown', function (_ev) {
+            self.onMouseDownAtStage(_ev);
+        }, false);
     },
 
     /**
@@ -149,6 +153,15 @@ var IFrameStage = React.createClass({
             clickedTarget: null
         }, _e, "MouseClick");
     },
+
+    /**
+     * onMouseClickAtStage
+     *
+     */
+    onMouseDownAtStage(_e) {
+      
+    },
+
 
     /**
      * bindContextMenuTrigger

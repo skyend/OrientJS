@@ -27,6 +27,10 @@
             this.targetIFrame = null;
 
             return {
+                aimingCount : 100,
+                aimingEscapeStepSize : 10,
+                boundaryBorderSize:3,
+
                 tabItemList: [
                     {
                         id: 'a',
@@ -170,10 +174,11 @@
 
           //****************************************/
           // 마우스 움직임의 강도에 따라 표적 해제 또는 드랍 위치 지정
-          if( this.guideBoxLive){
+          if( this.guideBoxLive ){
 
-            // 가로 또는 세로가 20px 이상 한번에 움직이면 표적을 해제한다.
-            if( Math.abs(_absoluteX - this.prevMouseX) > 20 || Math.abs(_absoluteY - this.prevMouseY) > 20 ){
+            // 가로 또는 세로가 aimingEscapeStepSize property 값 이상을 한번에 움직이면 표적을 해제한다.
+            if( Math.abs(_absoluteX - this.prevMouseX) > this.props.aimingEscapeStepSize ||
+                Math.abs(_absoluteY - this.prevMouseY) > this.props.aimingEscapeStepSize ){
               // 표적해제
               this.clearAim();
             } else {
@@ -219,13 +224,6 @@
 
           // 표적지정
           this.aimingTarget( targetedList, _absoluteX, _absoluteY );
-
-
-          this.emit("ExpectedDropVNodePath",{
-            nodeTreePath: this.getTargetPath(targetedList[0])
-          });
-
-
           /*****************************************--끝--*/
         },
 
@@ -248,11 +246,8 @@
 
             // guide를 이용하여 컴포넌트 삽입 방향을 찾는다.
             var dropDirection = this.findGuideDirectBound(_absoluteX, _absoluteY);
-            console.log(this.aimedTarget);
 
-
-            console.log('dropDirection',dropDirection);
-
+            // React Component에서 Static HTML요소를 추출하기 위한 영역 요소
             var unboxingZone = this.refs['unboxing-zone'];
             var uZDom = unboxingZone.getDOMNode();
 
@@ -283,7 +278,7 @@
                     self.refs['iframe-stage'].addStyle(_key, _component.CSS);
                   }
 
-                  componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
+                  //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
                       self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
@@ -409,6 +404,7 @@
 
           var direction = _direction;
 
+          var boundaryBorderSize = this.props.boundaryBorderSize;
           // 부모의 넓이와 positionHint에 따라 상하좌우를 변경한다.
           /*
           if( typeof _positionHints.float !== 'undefined' ){
@@ -451,24 +447,24 @@
 
 
           if( direction === 'left' || direction === 'right' ){
-            w = 3;
+            w = boundaryBorderSize;
             h = _target.element.offset.height;
-            x = direction === 'left'? transformedCoordinate.x -3 : transformedCoordinate.x + _target.element.offset.width;
+            x = direction === 'left'? transformedCoordinate.x - boundaryBorderSize : transformedCoordinate.x + _target.element.offset.width;
             y = transformedCoordinate.y;
 
 
           } else if( direction === 'top' || direction === 'bottom' ){
             w = _target.element.offset.width;
-            h = 3;
+            h = boundaryBorderSize;
             x = transformedCoordinate.x;
-            y = direction === 'top'? transformedCoordinate.y -3 : transformedCoordinate.y + _target.element.offset.height;
+            y = direction === 'top'? transformedCoordinate.y - boundaryBorderSize : transformedCoordinate.y + _target.element.offset.height;
 
           } else {
             // in
-            w = _target.element.offset.width - 6;
-            h = _target.element.offset.height - 6;
-            x = transformedCoordinate.x+3;
-            y = transformedCoordinate.y+3;
+            w = _target.element.offset.width - boundaryBorderSize * 2;
+            h = _target.element.offset.height - boundaryBorderSize * 2;
+            x = transformedCoordinate.x + boundaryBorderSize;
+            y = transformedCoordinate.y + boundaryBorderSize;
 
 
           }
@@ -524,7 +520,7 @@
          * @Param _absoluteY
          */
         aimingTarget( _targetedList, _absoluteX, _absoluteY ){
-
+          var self = this;
           // Single Targeted
           if(_targetedList.length == 1){
             var target = _targetedList[0];
@@ -562,19 +558,33 @@
                 this.clearAimCounter();
               }
 
-              // 0.3초간 머무르면 그 대상이 표적으로 지정된다.
-              // 0.3초간 움직임이 없으면 현재타겟을 드랍대상으로 지정하여 가이드박스를 표시한다.
+              // 0.1초간 머무르면 그 대상이 표적으로 지정된다.
+              // 0.1초간 움직임이 없으면 현재타겟을 드랍대상으로 지정하여 가이드박스를 표시한다.
               this.aimingTimeoutId = setTimeout(function(){
-                self.showGuideBox(target, _absoluteX, _absoluteY);
-
-                self.aimedTarget = target;
-
+                self.aimTarget(target, _absoluteX, _absoluteY);
                 // timeout 제거
                 self.clearAimCounter();
-              }, 300);
+              }, this.props.aimingCount);
+
+              this.expectDropToVNode(target);
             }
 
+          } else {
+            console.log('multi selected', _targetedList);
           }
+        },
+
+        aimTarget(target, _absoluteX, _absoluteY){
+          this.showGuideBox(target, _absoluteX, _absoluteY);
+          this.expectDropToVNode(target);
+          this.aimedTarget = target;
+        },
+
+        expectDropToVNode( _target ){
+          // 현재 커서가 가리키는 대상 Path
+          this.emit("ExpectedDropToVNodePath",{
+            nodeArrayPath: this.getTargetPath(_target)
+          });
         },
 
         // 표적 해제
@@ -645,8 +655,8 @@
         componentDidMount() {
 
           this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
-          //this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
-          this.refs['iframe-stage'].setState({src:'about:blank'});
+          this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
+          //this.refs['iframe-stage'].setState({src:'about:blank'});
           this.clearAim()
         },
 
@@ -669,6 +679,7 @@
                             </li>
                         </ul>
                     </div>
+
                     <div className='drop-guide-box' ref='drop-guide-box'>
                       <div className=''></div>
                       <div className='direction' data-direction='top' ref='drop-guide-box-top'> TOP </div>
@@ -681,7 +692,7 @@
                       <div className=''></div>
                     </div>
 
-                    <div className='element-highlighter' ref='element-highlighter'/>
+                    <div className='element-highlighter' ref='element-highlighter' style={{"border-width":this.props.boundaryBorderSize}}/>
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
