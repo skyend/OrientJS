@@ -60,8 +60,12 @@
           if (typeof _eventData.refPath !== 'object') {
             _eventData.refPath = [];
           }
-
           _eventData.refPath.push(this.__myRefByParent || this.props.__keyName);
+
+          if (typeof _eventData.path !== 'object') {
+            _eventData.path = [];
+          }
+          _eventData.path.push(this);
 
           this.__ownerInstance.__eventTernelFromChildren(_eventName, _eventData);
         } else {
@@ -108,9 +112,13 @@
         // Catcher Parameters
         // 1: EventData
         // 2: Pass callback function
-        catcher(_eventData, function() {
+        /*catcher(_eventData, function() {
           self.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType);
-        });
+        });*/
+
+        catcher.apply(this, [_eventData, function() {
+          self.emit(_eventName, _eventData, _eventData.seedEvent, _eventData.seedEventType);
+        }]);
       } else {
         // 처리할 수 있는 핸들러가 존재 하지 않는 경우 더 상위로 올려 보내기위해 다시 emit 한다.
 

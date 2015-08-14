@@ -15,7 +15,14 @@
     require('./FootStatusBar.less');
     var React = require("react");
 
+    var VNodePathNavigator = require('./partComponents/VNodePathNavigator.jsx');
+
     var FootStatusBar = React.createClass({
+        getInitialState(){
+            return {
+              vnodePathArray:[]
+            }
+        },
         render: function () {
             return (
                 <footer id="ui-footer">
@@ -33,6 +40,9 @@
                         </li>
                         <li className="item-right">
                             <a>EDIT</a>
+                        </li>
+                        <li className="item-right">
+                            <VNodePathNavigator vnodePathArray={this.state.vnodePathArray} height="100%" />
                         </li>
                     </ul>
                 </footer>

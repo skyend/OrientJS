@@ -166,6 +166,17 @@
             this.offContextMenu();
         },
 
+        onThrowCatcherUpdateComponentListToMe( _eventData, _pass ) {
+
+            if( _eventData.refPath[0] === 'ComponentPalette'){
+
+              _eventData.path[0].setState({
+                availabelComponentList : Object.keys(this.props.AvailableComponents)
+              });
+            }
+
+        },
+
         onThrowCatcherFoldTool(_eventData, _pass) {
 
             if (_eventData.refPath[0] === 'RightNavigation') {
@@ -252,6 +263,18 @@
             }]);
         },
 
+        onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
+          console.log('recieve', _eventData);
+
+          var footStatusBar = this.refs['FootStatusBar'];
+
+
+          footStatusBar.setState({
+            vnodePathArray:_eventData.nodeArrayPath
+          });
+
+        },
+
 
         onThrowCatcherNoticeMessage(_eventData, _pass) {
             this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
@@ -278,6 +301,21 @@
                 desc: "New",
                 duplication: true
             });
+        },
+
+        onThrowCatcherBeginDeployComponent(_eventData, _pass){
+            var documentStage = this.refs['DocumentStage'];
+            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
+        onThrowCatcherDragDeployComponent(_eventData, _pass){
+          var documentStage = this.refs['DocumentStage'];
+            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
+        onThrowCatcherDropDeployComponent(_eventData, _pass){
+          var documentStage = this.refs['DocumentStage'];
+            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -362,7 +400,10 @@
                                      naviItemFontSize={16}/>
 
 
-                    <DocumentStage ref='DocumentStage'/>
+                    <DocumentStage ref='DocumentStage'
+                                    aimingCount={100}
+                                    aimingEscapeStepSize={10}
+                                    boundaryBorderSize={5}  />
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>

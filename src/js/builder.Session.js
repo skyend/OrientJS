@@ -8,34 +8,44 @@
  */
 
 (function() {
+  var RequestToServer = require('./util/RequestToServer.js');
   var ComponentPool = require('./builder.ComponentPool.js');
   //var ComponentSupporter = require('./builder.ComponentSupporter.js');
 
   var Session = function() {
     this.componentPool = new ComponentPool(this);
+
+
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updatePoolState('/BuilderUI/BuildingResourceStore/Meta/AvailableComponents.json');
-
-    var component = this.componentPool.getComponentFromRemote('B');
-    var React = require('react');
-    React.render(React.createElement(component.class), document.body);
-
+    this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
-  // 빌더를 사용하는 유저가 사용할 수 있는 Session 오브젝트의 메소드
-  Session.prototype.getSessionFunctionsForUser = function() {
-    var self = this;
+  Session.prototype.signIn = function() {
+    this.username = "ion-sdp";
+    this.signedIn = true;
+    this.sessionKey = "a2sA6ASad1a23A2";
 
-    return {
-      getComponent: function() {
-
-        return self.componentPool.getComponentFromRemote.apply(self.componentPool, arguments)
-      }
-    }
+    return this.signedIn;
   };
 
+  Session.prototype.getUsername = function() {
+    return this.username; // 임시
+  };
+
+  Session.prototype.isSign = function() {
+    return this.signedIn; // 임시
+  };
+
+  /**
+   * Certified Request
+   * 인증된 유저 세션을 이용하여 서버에 데이터를 요청한다.
+   *
+   */
+  Session.prototype.certifiedRequest = function(_method, _url, _data) {
+    return RequestToServer.sync(_method, _url, _data);
+  };
 
   module.exports = Session;
 })();

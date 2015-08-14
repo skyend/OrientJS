@@ -29,6 +29,12 @@
         "groupName": "Editting",
         "menuItems": [
           {
+            "key": "project-navigator",
+            "title": "Project navigator",
+            "icon": "code-fork",
+            "equipToolKey": "ProjectNavigator"
+          },
+          {
             "key": "component-palette",
             "title": "Component Palette",
             "icon": "th",
@@ -53,7 +59,7 @@
             "key": "user-account",
             "title": "User Account",
             "icon": "user",
-            "equipToolKey": "UserAccount"
+            "equipToolKey": "ComponentPalette"
           }
         ]
       }
@@ -63,7 +69,7 @@
     "UserAccount": {"jsxPath": "UserAccount"},
     "ProjectSetting": {"jsxPath": "ProjectSetting"},
     "BuilderSetting": {"jsxPath": "BuilderSetting"},
-        
+
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"

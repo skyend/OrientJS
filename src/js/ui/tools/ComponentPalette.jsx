@@ -11,8 +11,77 @@
             require('../reactMixin/EventDistributor.js'),
             require('./mixins/WidthRuler.js')],
 
+        getInitialState(){
+          return {
+            availabelComponentList : []
+          }
+        },
+
+        mouseOverListItem( _key){
+
+          this.emit('IMustPreviewComponent', {
+            componentKey:_key
+          });
+        },
+
+        mouseDownTo(_key){
+            app.ui.occupyGlobalDrag(this, true);
+            app.ui.enableGlobalDrag();
+            app.ui.toMouseDawn();
+
+            var holderHTML = "<div class='componentDragHolder'></div>";
+            app.ui.holdingElementWhileDrag(holderHTML);
+
+            this.willDeployComponentKey = _key;
+        },
+
+        listItemRender( _componentKey){
+          var self = this;
+          return (
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentKey) }}>
+              { _componentKey}
+            </li>
+          )
+        },
+
+        onGlobalDragStartFromUI(_e){
+            this.emit("BeginDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
+        },
+
+        onGlobalDragFromUI(_e){
+            this.emit("DragDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
+        },
+
+        onGlobalDragStopFromUI(_e){
+            this.emit("DropDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey : this.willDeployComponentKey
+            });
+
+            this.willDeployComponentKey = undefined;
+        },
+
         componentDidMount(){
             this.refs['ComponentPreviewer'].displayComponent( InputBoxWithSelector, "reactClass");
+
+            this.emit('UpdateComponentListToMe');
+        },
+
+        componentDidUpdate( _prevProps, _prevState){
+
+            if( typeof this.state.previewComponent === 'object' ){
+
+                this.refs['ComponentPreviewer'].displayComponent( this.state.previewComponent.class , 'reactClass', this.state.previewComponent.CSS );
+            }
         },
 
         render() {
@@ -28,6 +97,11 @@
                         <div className='body'>
                             <div className='previewer-area'>
                                 <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
+                            </div>
+                            <div className='list-area'>
+                                <ul>
+                                  {this.state.availabelComponentList.map(this.listItemRender)}
+                                </ul>
                             </div>
                         </div>
                         <div className='foot'>
