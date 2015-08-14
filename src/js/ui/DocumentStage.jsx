@@ -14,14 +14,20 @@
     var ToolContainer = require('./ToolContainer.jsx');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
-
+    var tab1src = "../html5up-directive1/index.html";
+    var tab2src = "../html5up-directive2/index.html";
     var React = require("react");
-
+    var tabIdCount = 0;
     var DocumentStage = React.createClass({
+
 
         // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
-
+        getInitialState(){
+            return {
+                tabItemList: []
+            }
+        },
         getDefaultProps() {
             this.observers = {};
             this.targetIFrame = null;
@@ -30,34 +36,74 @@
                 aimingCount: 100,
                 aimingEscapeStepSize: 10,
                 boundaryBorderSize: 3,
-
-                tabItemList: [
-                    {
-                        id: 'a',
-                        name: 'tab test'
-                    },
-                    {
-                        id: 'b',
-                        name: 'tab test2'
-                    }
-                ]
             }
         },
-
-        clickTabItem(_tabID) {
-            var listenerName = "onSwitchTab";
-
-            if (typeof this.props[listenerName] === 'function') {
-                this.props[listenerName](_tabID);
-            }
+        /**
+         * 추가되는 탭에 따른 refs 값을 생성한다.
+         */
+        generateRef() {
+            var ref = "iframe-stage" + tabIdCount;
+            tabIdCount++;
+            return ref
         },
-
-        clickTabAdd() {
-            var listenerName = "onAddTab";
-
-            if (typeof this.props[listenerName] === 'function') {
-                this.props[listenerName](_tabID);
+        /**
+         * 탭추가 버튼을 누르면 ref 값과 src 값이 설정된 tabItemList 를 만들어낸다.
+         * 기존의 tabItemList 를 만들어낸 tabItemList 로 변경한다.
+         */
+        clickAddTab() {
+            var src = "../html5up-directive"+tabIdCount+"/index.html";
+            var ref = this.generateRef();
+            var tabItemList = this.state.tabItemList;
+            if(tabItemList.length == 0) {
+                tabItemList.push({ref: ref, src: src, show: true});
+            }else{
+                tabItemList.push({ref: ref, src: src, show: false});
             }
+            this.setState({tabItemList: tabItemList});
+        },
+        /**
+         * tabItemList 값이 변경되면 React 에서 감지하고 addiFrameStage 함수를 호출하고 iFrame 을 추가한다.
+         */
+        addiFrameStage(tabItemList){
+            var ref = tabItemList.ref;
+            var src = tabItemList.src;
+            var display;
+            if (tabItemList.show) {
+                display = "block";
+            } else {
+                display = "none";
+            }
+            return <IFrameStage ref={ref} width="100%" height="100%" src={src} display={display}/>;
+        },
+        /**
+         * tabItemList 값이 변경되면 React 에서 감지하고 addTabElement 함수를 호출하고 탭을 추가한다.
+         */
+        addTabElement(_tabItem) {
+            var self = this;
+            var ref = _tabItem.ref;
+
+            var closure = function () {
+                self.clickTabItem(ref);
+            };
+
+            return (
+                <li onClick={closure}>{ref}</li>
+            )
+        },
+        /**
+         * 클릭한 탭의 refs 값을 받아 tabItemList 에서 show 값을 찾아내 true 로 변경하면 클릭한 탭에 해당되는 iFrame 을 보여진다.
+         */
+        clickTabItem(ref) {
+            console.log(ref);
+            var viewTabNow = this.state.tabItemList.map(function (_tabItem) {
+                if (_tabItem.ref === ref) {
+                    _tabItem.show = true;
+                } else {
+                    _tabItem.show = false;
+                }
+                return _tabItem
+            });
+            this.setState({tabItemList: viewTabNow});
         },
 
 
@@ -114,19 +160,6 @@
         documentEditorUpdate() {
             /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
             this.refs['document-editor'].forceUpdate();
-        },
-
-        getTabItemElement(_tabItem) {
-            var self = this;
-            var _tabID = _tabItem.id;
-
-            var closure = function () {
-                self.clickTabItem(_tabID);
-            };
-
-            return (
-                <li onClick={closure}>{_tabItem.name}</li>
-            )
         },
 
 
@@ -643,15 +676,15 @@
         },
 
         componentDidUpdate(_prevProps, _prevState) {
-            this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+            //this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
 
         },
-
         componentDidMount() {
 
-            this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
-            this.refs['iframe-stage'].setState({src: '../html5up-directive/index.html'});
-            //this.refs['iframe-stage'].setState({src:'about:blank'});
+            //this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+
+            //this.refs['iframe-stage1'].setState({src: '../html5up-directive/index.html'});
+            //this.refs['iframe-stage1'].setState({src:'about:blank'});
             this.clearAim()
         },
 
@@ -668,8 +701,8 @@
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div className='tab-switch-panel' ref='tab-area'>
                         <ul className='tab-list' ref='tab-list'>
-                            {this.props.tabItemList.map(this.getTabItemElement)}
-                            <li onClick={this.clickTabAdd}>
+                            {this.state.tabItemList.map(this.addTabElement)}
+                            <li onClick={this.clickAddTab}>
                                 <i className='fa fa-plus'></i>
                             </li>
                         </ul>
@@ -691,7 +724,7 @@
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        <IFrameStage ref='iframe-stage1' width="100%" height="100%"/>
+                        {this.state.tabItemList.map(this.addiFrameStage)}
                     </div>
 
                     <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} toolTitle="Document Editor" ref='footer-tool-part' style={{height:0}} resizeMe={this.onFooterToolPartResize}/>

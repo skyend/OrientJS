@@ -19,7 +19,7 @@
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
+    this.componentPool.updatePoolState('/BuilderUI/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
   Session.prototype.signIn = function() {

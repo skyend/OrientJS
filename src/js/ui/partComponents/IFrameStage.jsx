@@ -236,8 +236,8 @@ var IFrameStage = React.createClass({
         classes.push( this.props.size );
 
         return (
-            <div className={ classes.join(' ') } style={ { width: this.props.width, height: this.props.height } } >
-                <iframe ref='iframe' src={this.state.src} />
+            <div className={ classes.join(' ') } style={ { width: this.props.width, height: this.props.height, display: this.props.display} } >
+                <iframe ref='iframe' src={this.props.src} />
             </div>
         );
     }
