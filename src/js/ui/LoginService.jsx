@@ -177,6 +177,7 @@ require('./LoginService.less');
                     <div id="log-page">
                         <div className="text-center">
                             <div className="login-logo">Login</div>
+                            <p>Test ID, Pass = ion</p>
                             <form id="login-form" className="login-form">
                                 <div className="login-form-message"></div>
                                 <div className="main-login-form">

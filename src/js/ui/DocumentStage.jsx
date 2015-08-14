@@ -48,13 +48,13 @@
             var listenerName = "onAddTab";
 
             if (typeof this.props[listenerName] === 'function') {
-                this.props[listenerName](_tabID);
+                this.props[listenerName]();
             }
         },
 
         onIframeLoaded(_iframe) {
             var self = this;
-// 임시 차후에 EditorStageContext 에서 처리되어야 함
+            // 임시 차후에 EditorStageContext 에서 처리되어야 함
             var iwindow = _iframe.contentWindow || _iframe.contentDocument;
             var innerDocument = iwindow.document;
             this.currentIframeDocument = innerDocument;
@@ -191,7 +191,9 @@
             /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
             this.refs['document-editor'].forceUpdate();
         },
+        closeTab(){
 
+        },
         getTabItemElement(_tabItem) {
             var self = this;
             var _tabID = _tabItem.id;
@@ -201,7 +203,7 @@
             };
 
             return (
-                <li onClick={closure}>{_tabItem.name} <i className="fa fa-times"></i></li>
+                <li onClick={closure}>{_tabItem.name} <i className="fa fa-times" onClick={closeTab}></i></li>
             )
         },
 
@@ -241,7 +243,7 @@
                     </div>
 
                     <div className='tab-context' ref='tab-context'>
-                        <iframe ref='iframe-stage' src='../html5up-directive/index.html'></iframe>
+                        <iframe ref='iframe-stage' src='../html5up-directive1/index.html'></iframe>
                     </div>
 
                     <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} toolTitle="Document Editor" ref='footer-tool-part' resizeMe={this.onFooterToolPartResize}/>
