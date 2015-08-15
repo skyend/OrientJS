@@ -15,8 +15,8 @@ const domTypes = ["html", "component"];
  * @param targetElement dom 영역으로 사용할 htmlElement
  * @private
  */
-var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _depth, _vnodeId) {
-
+var _ = function(_controller, domType, name, targetElement, _parentNode, _depthArchive, _depth, _vnodeId) {
+  this.controller = _controller;
   this.name = name;
   this.parent = _parentNode;
   this.element = {
@@ -75,7 +75,7 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
     this.element.object.setAttribute('__vid__', _vnodeId);
   };
 
-  this.updateAttributes = function(){
+  this.updateAttributes = function() {
     this.classes = this.element.object.getAttribute('class');
   };
 
@@ -136,7 +136,7 @@ var _ = function(domType, name, targetElement, _parentNode, _depthArchive, _dept
         for (var i = 0; i < targetElement.children.length; i++) {
           ele = targetElement.children.item(i);
 
-          node = new _(domTypes[0], ele.nodeName.toLowerCase(), ele, _node, _depthArchive, _depth + 1, _vnodeId + "/" + i);
+          node = new _(_controller, domTypes[0], ele.nodeName.toLowerCase(), ele, _node, _depthArchive, _depth + 1, _vnodeId + "/" + i);
           _node.childs.push(node);
         }
       }

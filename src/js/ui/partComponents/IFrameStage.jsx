@@ -159,7 +159,7 @@ var IFrameStage = React.createClass({
      *
      */
     onMouseDownAtStage(_e) {
-      
+
     },
 
 
@@ -226,6 +226,10 @@ var IFrameStage = React.createClass({
     componentDidMount(){
       var iframe = this.refs['iframe'].getDOMNode();
       this.onIframeLoaded(iframe);
+
+      if(this.state.src === 'undefined'){
+        this.setState({src: this.props.src});
+      }
     },
 
     render() {

@@ -74,19 +74,19 @@
          */
         tabContextResize() {
             var tabContext = this.refs['tab-context'];
-            var footerToolPart = this.refs['footer-tool-part'];
+            //var footerToolPart = this.refs['footer-tool-part'];
             var tabArea = this.refs['tab-area'];
 
             var tabContextDOM = tabContext.getDOMNode();
-            var footerToolPartDOM = footerToolPart.getDOMNode();
+            //var footerToolPartDOM = footerToolPart.getDOMNode();
             var tabAreaDOM = tabArea.getDOMNode();
             var selfDOM = this.getDOMNode();
 
             var selfDOMHeight = selfDOM.offsetHeight;
             var tabAreaDOMHeight = tabAreaDOM.offsetHeight;
-            var footerToolPartDOMHeight = footerToolPartDOM.offsetHeight;
+            //var footerToolPartDOMHeight = footerToolPartDOM.offsetHeight;
 
-            var tabContextDOMHeight = selfDOMHeight - tabAreaDOMHeight - footerToolPartDOMHeight;
+            var tabContextDOMHeight = selfDOMHeight - tabAreaDOMHeight;// - footerToolPartDOMHeight;
             tabContextDOM.style.height = tabContextDOMHeight + 'px';
         },
 
@@ -113,7 +113,7 @@
 
         documentEditorUpdate() {
             /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
-            this.refs['document-editor'].forceUpdate();
+            //this.refs['document-editor'].forceUpdate();
         },
 
         getTabItemElement(_tabItem) {
@@ -655,7 +655,7 @@
         componentDidMount() {
 
           this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
-          this.refs['iframe-stage'].setState({src:'../html5up-directive/index.html'});
+          //this.refs['iframe-stage'].setState({src:'../html5up-directive1/index.html'});
           //this.refs['iframe-stage'].setState({src:'about:blank'});
           this.clearAim()
         },
@@ -696,10 +696,9 @@
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        <IFrameStage ref='iframe-stage' width="100%" height="100%"/>
+                        <IFrameStage ref='iframe-stage' width="100%" height="100%" src='../html5up-directive1/index.html'/>
                     </div>
 
-                    <ToolContainer tool={<DOMEditor ref='document-editor' onChange={this.onModifyDocument}/>} toolTitle="Document Editor" ref='footer-tool-part' style={{height:0}} resizeMe={this.onFooterToolPartResize}/>
 
                     <div className='unboxing-zone' ref='unboxing-zone'>
 
