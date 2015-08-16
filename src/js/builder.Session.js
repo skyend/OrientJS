@@ -47,5 +47,9 @@
     return RequestToServer.sync(_method, _url, _data);
   };
 
+  Session.prototype.getProject() = function(_projectId) {
+    RequestToServer.sync("get", "/");
+  };
+
   module.exports = Session;
 })();

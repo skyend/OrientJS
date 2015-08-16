@@ -1,0 +1,25 @@
+{
+  "documentName": "DefaultLayout",
+
+  "documentCreate": "2015-08-01T12:00:00+08",
+
+  "documentUpdate": "2015-08-02T12:00:00+08",
+
+  // 0번 인덱스의 ElementNode가 Root ElementNode로 인식된다.
+  "elementNodes": [{
+    "name": "Root Node",
+    "id": "root"
+  }, {
+    "name": "temp",
+    "id": "test"
+  }],
+
+  "usingResources": {
+    "style": [],
+    "js": [],
+    "font": [],
+    "image": [],
+    "string": []
+  }
+
+}

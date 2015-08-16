@@ -45,7 +45,7 @@ var DirectContext = React.createClass({
 
     return (
       <div style={style}>
-        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height} src='../html5up-directive1/index.html'/>
+        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height}/>
       </div>
     );
   }
