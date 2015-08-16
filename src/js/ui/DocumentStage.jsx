@@ -13,6 +13,7 @@
     var DOMEditor = require('./tools/DocumentEditor.jsx');
     var ToolContainer = require('./ToolContainer.jsx');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
+    var DirectContext = require('./DirectContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
 
     var React = require("react");
@@ -21,6 +22,14 @@
 
         // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
+        getInitialState(){
+
+            return {
+              directContexts : [
+                { contextID : "TEST#1", targetContext: "" }
+              ]
+            }
+        },
 
         getDefaultProps() {
             this.observers = {};
@@ -278,10 +287,13 @@
                     self.refs['iframe-stage'].addStyle(_key, _component.CSS);
                   }
 
+
+                  var deployResult = null;
+
                   //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
-                      self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                       return;
@@ -289,17 +301,23 @@
 
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
 
+                  }
+
+                  // null 이 아니면 성공적으로 배치된 HTML Element 를 가진다.
+                  if( deployResult !== null ){
+
+                    self.deployedComponent( deployResult );
                   }
 
                 }
@@ -315,6 +333,15 @@
           this.clearAim();
           // VDomController Destroy
           this.liveVDomController = null;
+        },
+
+        /**
+         * deployedComponent
+         * 배치완료된 요소 처리
+         * @Param _attachedElement : DOMElement
+         */
+        deployedComponent( _attachedElement ){
+
         },
 
         /***************
@@ -647,6 +674,13 @@
           highligher.style.display = 'none';
         },
 
+        attachDirectContext( _directContext ){
+
+          return (
+            <DirectContext ref='direct-context' width="100%" height="100%"/>
+          )
+        },
+
         componentDidUpdate(_prevProps, _prevState) {
           this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
 
@@ -696,7 +730,7 @@
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        <IFrameStage ref='iframe-stage' width="100%" height="100%" src='../html5up-directive1/index.html'/>
+                        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height} src='../html5up-directive1/index.html'/>
                     </div>
 
 

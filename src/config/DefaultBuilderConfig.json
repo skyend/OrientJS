@@ -11,40 +11,50 @@
             "equipToolKey": "UserAccount"
           },
           {
-            "key": "project-setting",
-            "title": "Project Settings",
-            "icon": "cog",
-            "equipToolKey": "ProjectSetting"
-          },
-          {
             "key": "builder-setting",
             "title": "Builder Settings",
             "icon": "cog",
             "equipToolKey": "BuilderSetting"
           }
-
         ]
       },
       {
-        "groupName": "Editting",
+        "groupName": "Service Object Configure",
         "menuItems": [
           {
-            "key": "project-navigator",
-            "title": "Project navigator",
-            "icon": "code-fork",
-            "equipToolKey": "ProjectNavigator"
+            "key": "project-setting",
+            "title": "Project Settings",
+            "icon": "book",
+            "equipToolKey": "ProjectSetting"
           },
+          {
+            "key": "page-configure",
+            "title": "Page Configure",
+            "icon": "file-text-o",
+            "equipToolKey": "PageConfigure"
+          },
+          {
+            "key": "document-configure",
+            "title": "Document Configure",
+            "icon": "file-text",
+            "equipToolKey": "DocumentConfigure"
+          }
+        ]
+      },
+      {
+        "groupName": "Service Resources",
+        "menuItems": [
           {
             "key": "component-palette",
             "title": "Component Palette",
-            "icon": "th",
+            "icon": "cubes",
             "equipToolKey": "ComponentPalette"
           },
           {
-            "key": "document-navigation",
-            "title": "Document Navigation",
-            "icon": "briefcase",
-            "equipToolKey": "DocumentsNavigation"
+            "key": "document-store",
+            "title": "Document Configure",
+            "icon": "file-text",
+            "equipToolKey": "DocumentConfigure"
           }
         ]
       }
@@ -56,9 +66,15 @@
         "groupName": "System",
         "menuItems": [
           {
-            "key": "user-account",
-            "title": "User Account",
-            "icon": "user",
+            "key": "element-node-store",
+            "title": "Element Nodes",
+            "icon": "cube",
+            "equipToolKey": "ComponentPalette"
+          },
+          {
+            "key": "element-tree",
+            "title": "Element Tree",
+            "icon": "tree",
             "equipToolKey": "ComponentPalette"
           }
         ]
