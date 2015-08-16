@@ -25,8 +25,9 @@
         getInitialState(){
 
             return {
+              runningContextID: "TEST#1",
               directContexts : [
-                { contextID : "TEST#1", targetContext: "" }
+                { contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
               ]
             }
         },
@@ -104,6 +105,7 @@
         },
 
         getTabContextOffsetTopByDS(){
+
           return this.refs['tab-context'].getDOMNode().offsetTop;
         },
 
@@ -159,11 +161,11 @@
          */
         startDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
           console.log(arguments);
-          var iframeStage = this.refs['iframe-stage'];
+          var iframeStageInnerDoc = this.getCurrentRunningContext().getIFrameStageInnerDoc();
 
           // VDomController Construct
           this.liveVDomController = new VDomController();
-          this.liveVDomController.createVRoot(iframeStage.getIFrameInnerDoc().querySelectorAll('html').item(0));
+          this.liveVDomController.createVRoot(iframeStageInnerDoc.querySelectorAll('html').item(0));
 
         },
 
@@ -177,7 +179,6 @@
          */
         dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
           var self = this;
-          var iframeStage = this.refs['iframe-stage'];
           var selfClientRect = this.iframeStageBoundingRect;
           //console.log('drag');
 
@@ -284,7 +285,7 @@
                   }
 
                   if( typeof _component.CSS === 'string'){
-                    self.refs['iframe-stage'].addStyle(_key, _component.CSS);
+                    self.getCurrentRunningContext().addStyle(_key, _component.CSS);
                   }
 
 
@@ -293,7 +294,7 @@
                   //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
-                      deployResult = self.refs['iframe-stage'].insertElementToInLast(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                       return;
@@ -301,13 +302,13 @@
 
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.refs['iframe-stage'].insertElementToBefore(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.refs['iframe-stage'].insertElementToAfter(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, componentStaticElement);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
@@ -516,8 +517,8 @@
         transformIFrameDocCoordinateIntoStageScreen( _coordinate ){
 
           return {
-            x : _coordinate.x - this.refs['iframe-stage'].getScrollX() + this.getTabContextOffsetLeftByDS(),
-            y : _coordinate.y - this.refs['iframe-stage'].getScrollY() + this.getTabContextOffsetTopByDS()
+            x : _coordinate.x - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetLeftByDS(),
+            y : _coordinate.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS()
           };
         },
 
@@ -528,10 +529,10 @@
             throw new Error("LiveVDomController Is destroyed");
           }
 
-          var selfClientRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+          var selfClientRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
 
           var checkX =  _absoluteX - this.iframeStageBoundingRect.left;
-          var checkY =  _absoluteY - this.iframeStageBoundingRect.top + this.refs['iframe-stage'].getScrollY();
+          var checkY =  _absoluteY - this.iframeStageBoundingRect.top + this.getCurrentRunningContext().getIFrameStageScrollY();
 
           var collisions = this.liveVDomController.rayTracer(checkX,checkY);
 
@@ -659,10 +660,11 @@
         },
 
         showElementHighlight( _target ){
+
           var highligher = this.refs['element-highlighter'].getDOMNode();
           highligher.style.left = _target.element.offset.x +'px';
-          console.log( this.getTabContextOffsetTopByDS() ,'top');
-          highligher.style.top = _target.element.offset.y - this.refs['iframe-stage'].getScrollY() + this.getTabContextOffsetTopByDS() + 'px';
+          //console.log( this.getTabContextOffsetTopByDS() ,'top');
+          highligher.style.top = _target.element.offset.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
           highligher.style.width = _target.element.offset.width +'px';
           highligher.style.height = _target.element.offset.height +'px';
           highligher.style.display = 'block';
@@ -674,21 +676,30 @@
           highligher.style.display = 'none';
         },
 
+        getCurrentRunningContext(){
+          return this.refs[ this.state.runningContextID ];
+        },
+
         attachDirectContext( _directContext ){
 
-          return (
-            <DirectContext ref='direct-context' width="100%" height="100%"/>
-          )
+          var running = false;
+          if( this.state.runningContextID === _directContext.contextID ){
+            running = true;
+          }
+
+          var directContext = <DirectContext ref={_directContext.contextID} width="100%" height="100%" runningState={running} />;
+
+          return directContext;
         },
 
         componentDidUpdate(_prevProps, _prevState) {
-          this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+          this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
 
         },
 
         componentDidMount() {
 
-          this.iframeStageBoundingRect = this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+          this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
           //this.refs['iframe-stage'].setState({src:'../html5up-directive1/index.html'});
           //this.refs['iframe-stage'].setState({src:'about:blank'});
           this.clearAim()
@@ -730,7 +741,7 @@
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height} src='../html5up-directive1/index.html'/>
+                        {this.state.directContexts.map( this.attachDirectContext )}
                     </div>
 
 
