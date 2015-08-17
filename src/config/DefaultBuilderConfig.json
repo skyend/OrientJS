@@ -15,6 +15,12 @@
             "title": "Builder Settings",
             "icon": "cog",
             "equipToolKey": "BuilderSetting"
+          },
+          {
+            "key": "project-setting",
+            "title": "Project Settings",
+            "icon": "dashboard",
+            "equipToolKey": "ProjectSetting"
           }
         ]
       },
@@ -22,10 +28,10 @@
         "groupName": "Service Object Configure",
         "menuItems": [
           {
-            "key": "project-setting",
-            "title": "Project Settings",
+            "key": "service-resources",
+            "title": "Service Resources",
             "icon": "book",
-            "equipToolKey": "ProjectSetting"
+            "equipToolKey": "ServiceResources"
           },
           {
             "key": "page-configure",
@@ -90,9 +96,15 @@
       "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"
     },
+
     "DocumentsNavigation": {
       "jsxPath": "DocumentsNavigation",
       "configPath": "DeviceMenuConfig"
+    },
+
+    "ServiceResources": {
+      "jsxPath": "ServiceResources",
+      "configPath": "ServiceResources"
     }
   }
 }

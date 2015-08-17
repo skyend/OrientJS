@@ -32,6 +32,30 @@ var DirectContext = React.createClass({
     return this.refs['iframe-stage'].getScrollY();
   },
 
+  goingToContextStop(){
+    console.log('changed context state to stop!');
+  },
+
+  goingToContextRunning(){
+    console.log('changed context state to running!');
+  },
+
+  componentDidUpdate(){
+    if( this.props.runningState ){
+      this.goingToContextRunning();
+    } else {
+      this.goingToContextStop();
+    }
+  },
+
+  componentDidMount(){
+    if( this.props.runningState ){
+      this.goingToContextRunning();
+    } else {
+      this.goingToContextStop();
+    }
+  },
+
   render(){
     var style = {
       display:'none',

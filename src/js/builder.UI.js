@@ -292,6 +292,48 @@
     _eventData.return(null, loadedComponent)
   };
 
+  /**************
+   * Service Handling
+   *
+   *
+   *
+   */
+  UI.prototype.setProjectManager = function(_projectManager) {
+    this.projectManager = _projectManager;
+
+    this.uiServicer.setState({
+      'projectMeta': _projectManager.meta
+    });
+  };
+
+  UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
+    var who = _eventData.path[0];
+
+    who.setState({
+      pageMetaList: this.projectManager.serviceManager.getPageMetaList(),
+      documentMetaList: this.projectManager.serviceManager.getDocumentMetaList(),
+    });
+  };
+
+  UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
+    console.log('BringDocumentContext', _eventData.document);
+    var documentMeta = _eventData.documentMeta;
+
+    // Document Meta 정보로 DocumentContextController를 얻는다
+    var documentContext = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
+
+    this.uiServicer.openDirectContext({
+      contextID: 'document#' + documentMeta.id,
+      contextName: documentMeta.name,
+      contextType: 'document',
+      contextController: documentContext,
+      iconClass: _eventData.iconClass
+    });
+  };
+
+
+
+
   UI.prototype.builderRender = function() {
     var rootUI = React.render(React.createElement(this.builderScreen, {
       observers: this.observers,

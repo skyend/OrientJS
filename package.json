@@ -29,6 +29,7 @@
     "react-notification-system": "^0.1.14",
     "react-tools": "^0.13.3",
     "style-loader": "^0.12.3",
+    "underscore": "^1.8.3",
     "url-loader": "^0.5.6"
   },
   "devDependencies": {

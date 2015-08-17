@@ -6,7 +6,7 @@
  * Requires(js)  :
  * Requires(css) :
  */
-
+var _ = require('underscore');
 
 (function () {
     require('./DocumentStage.less');
@@ -27,7 +27,7 @@
             return {
               runningContextID: "TEST#1",
               directContexts : [
-                { contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
+                //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
               ]
             }
         },
@@ -53,22 +53,20 @@
             }
         },
 
-        clickTabItem(_tabID) {
-            var listenerName = "onSwitchTab";
+        openContext( _contextItem ){
+          var alreadyContextIndex = _.findIndex( this.state.directContexts, { contextID: _contextItem.contextID } );
 
-            if (typeof this.props[listenerName] === 'function') {
-                this.props[listenerName](_tabID);
-            }
+          if( alreadyContextIndex != -1 ){
+            this.setState({runningContextID: _contextItem.contextID});
+          } else {
+            this.state.directContexts.push( _contextItem );
+            this.setState({directContexts:this.state.directContexts, runningContextID: _contextItem.contextID});
+          }
         },
 
-        clickTabAdd() {
-            var listenerName = "onAddTab";
-
-            if (typeof this.props[listenerName] === 'function') {
-                this.props[listenerName](_tabID);
-            }
+        clickTabItem(_contextItem) {
+          this.setState({runningContextID: _contextItem.contextID});
         },
-
 
 
         onModifyDocument(_documentHtml) {
@@ -127,16 +125,24 @@
             //this.refs['document-editor'].forceUpdate();
         },
 
-        getTabItemElement(_tabItem) {
+        renderContextTabItem(_contextItem) {
             var self = this;
-            var _tabID = _tabItem.id;
+
+            var running = false;
+            if( this.state.runningContextID === _contextItem.contextID ){
+              running = true;
+            }
 
             var closure = function () {
-                self.clickTabItem(_tabID);
+                self.clickTabItem(_contextItem);
             };
 
+            var iconClass = _contextItem.iconClass;
+
             return (
-                <li onClick={closure}>{_tabItem.name}</li>
+                <li className={ running? 'forwarded':''} onClick={closure}>
+                  <i className={'fa '+ iconClass}/> {_contextItem.contextName}
+                </li>
             )
         },
 
@@ -218,7 +224,7 @@
           this.prevMouseY = _absoluteY;
           /*****************************************--끝--*/
 
-
+          console.log('drag');
           //****************************************/
           // 드래그위치에 따라 표적을 지정
           // 현재 드래그중인 영역이 스테이지 바운더리 내에 있는지 확인후 밖에 있다면 표적을 해제하고 함수 탈출
@@ -228,6 +234,8 @@
             this.clearAim();
             return;
           }
+
+          console.log('come inside / drag raytrace');
 
           // 대상리스트 뽑기
           var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
@@ -693,15 +701,17 @@
         },
 
         componentDidUpdate(_prevProps, _prevState) {
-          this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
 
+          if( this.getCurrentRunningContext() ){
+            this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
+          }
         },
 
         componentDidMount() {
+          if( this.getCurrentRunningContext() ){
+            this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
+          }
 
-          this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
-          //this.refs['iframe-stage'].setState({src:'../html5up-directive1/index.html'});
-          //this.refs['iframe-stage'].setState({src:'about:blank'});
           this.clearAim()
         },
 
@@ -713,15 +723,13 @@
         },
 
         render: function () {
+          console.log( this.state.directContexts );
 
             return (
                 <section className="Contents Contents-tab-support black" id="ui-contents">
                     <div className='tab-switch-panel' ref='tab-area'>
                         <ul className='tab-list' ref='tab-list'>
-                     {this.props.tabItemList.map(this.getTabItemElement)}
-                            <li onClick={this.clickTabAdd}>
-                                <i className='fa fa-plus'></i>
-                            </li>
+                            {this.state.directContexts.map(this.renderContextTabItem)}
                         </ul>
                     </div>
 

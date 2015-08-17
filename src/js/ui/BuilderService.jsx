@@ -267,12 +267,17 @@
           console.log('recieve', _eventData);
 
           var footStatusBar = this.refs['FootStatusBar'];
-
+          console.log( this.state );
 
           footStatusBar.setState({
             vnodePathArray:_eventData.nodeArrayPath
           });
 
+        },
+
+        onThrowCatcherNeedProjectMeta(_eventData, _pass){
+          console.log('NeedProjectMeta',this.state.projectMeta);
+          _eventData.path[0].setState( { 'meta': this.state.projectMeta });
         },
 
 
@@ -316,6 +321,12 @@
         onThrowCatcherDropDeployComponent(_eventData, _pass){
           var documentStage = this.refs['DocumentStage'];
             documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+        },
+
+        openDirectContext( _directContextItem ){
+          var documentStage = this.refs['DocumentStage'];
+
+          documentStage.openContext( _directContextItem );
         },
 
         // 컨텐츠 영역 화면 리사이즈

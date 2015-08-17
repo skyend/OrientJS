@@ -57,11 +57,12 @@
 
   /* Color Theme */
   &.white {
-    background-color: rgba(255,255,255,1);
+    background-color: #FFF6EE;
 
     >.wrapper {
       > .head {
-        background-color: #eee;
+        background-color: #19BDC4;
+        color:#FFF6EE;
       }
 
       >.body {
@@ -70,6 +71,15 @@
 
         >.row {
           border-bottom-color:#eee;
+          > .column {
+            > .title {
+              color:#0C274C;
+            }
+
+            > .field {
+              color:#EF4089;
+            }
+          }
         }
       }
 
@@ -86,18 +96,25 @@
  &.narrow-width {
    .body {
      > .row {
-       > .setting {
+       > .column {
          > .title {
            padding:10px;
            padding-bottom: 0;
 
-           font-size: 12px;
+           font-size: 13px;
          }
 
          > .input {
            padding:10px;
            padding-bottom: 0;
            font-size: 12px;
+         }
+
+         > .field {
+           padding:10px;
+           padding-bottom: 0;
+           font-size: 12px;
+
          }
        }
      }
@@ -117,7 +134,7 @@
        border-bottom-width: 1px;
        border-bottom-style: solid;
 
-       > .setting {
+       > .column {
          > .title {
            width:200px;
            float:left;
@@ -139,6 +156,19 @@
              content: " ";
              clear:both;
            }
+         }
+
+         > .field {
+            width:568px;
+            float:left;
+            box-sizing: border-box;
+            padding-top:5px;
+
+            &::after {
+               display: block;
+               content: " ";
+               clear:both;
+            }
          }
 
          &::after {

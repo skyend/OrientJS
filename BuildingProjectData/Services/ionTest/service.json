@@ -8,15 +8,15 @@
     "purpose": "layout"
   }, {
     "id": 2,
-    "name": "MainContents",
-    "key": "main-contents",
+    "name": "IndexContents",
+    "key": "index-contents",
     "purpose": "contents"
   }],
 
   "pages": [{
     "id": 1,
     "name": "Index",
-    "key": "index",
+    "key": "index"
   }],
 
   "registeredResources": {

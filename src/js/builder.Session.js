@@ -14,8 +14,6 @@
 
   var Session = function() {
     this.componentPool = new ComponentPool(this);
-
-
   };
 
   Session.prototype.ready = function() {
@@ -43,12 +41,25 @@
    * 인증된 유저 세션을 이용하여 서버에 데이터를 요청한다.
    *
    */
-  Session.prototype.certifiedRequest = function(_method, _url, _data) {
-    return RequestToServer.sync(_method, _url, _data);
+  Session.prototype.certifiedRequest = function(_url, _method, _data) {
+    var json = RequestToServer.sync(_url, _method || 'get', _data);
+
+    return json;
   };
 
-  Session.prototype.getProject() = function(_projectId) {
-    RequestToServer.sync("get", "/");
+  Session.prototype.certifiedRequestJSON = function(_url, _method, _data) {
+    var jsonFormatText = RequestToServer.sync(_url, _method || 'get', _data);
+    var jsonObj;
+
+    try {
+
+      jsonObj = JSON.parse(jsonFormatText);
+
+    } catch (e) {
+      throw new Error(e);
+    }
+
+    return jsonObj;
   };
 
   module.exports = Session;
