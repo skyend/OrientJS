@@ -92,11 +92,12 @@
             }, _e, "MouseClick");
         },
 
-        equipTool(_toolClass, _toolConfig, _toolKey) {
+        equipTool(_toolClass, _toolConfig, _toolKey, _storedToolState) {
 
             if (typeof _toolClass === 'function') {
+
                 this.setState({
-                    equipTool: {class: _toolClass, config: _toolConfig, toolKey: _toolKey}
+                    equipTool: {class: _toolClass, config: _toolConfig, toolKey: _toolKey, storedState: _storedToolState}
                 });
 
                 this.emit("NoticeMessage", {
@@ -197,8 +198,36 @@
             var toolElement;
             var headElement;
 
+            // _tool이 object이면서 null이 아닌경우
+            // 랜더링 해야할 툴이 있다는것
             if (typeof _tool === 'object' && _tool !== null ) {
                 toolElement = React.createElement(_tool.class, {config: _tool.config, ref:_tool.toolKey, width:_toolWidth});
+
+                // 이전에 장착된 tool의 Ref(key)가 undefined가 아니라면 이전에 장착된 Tool이 있다는것이다.
+                // 이전에 장착된 tool Ref(key) 와 현재 장착해야할 _tool.key 가 다르다면 다른 툴이 장착되는것이고
+                // 같다면 툴은 새로 장착되지 않고 상태만 전환또는 변화하지 않을것이다.
+                /*
+                if( this.equipedToolRef !== _tool.key ){
+                  if( typeof this.equipedToolRef === 'undefined' ){
+                    // ToolElement 가 생성된것을 알림
+                    this.emit("ConstructedToolAndRunning", {
+                      key: _tool.toolKey,
+                      element: toolElement
+                    });
+                  }
+                } else {
+                  // ToolElement 가 생성된것을 알림
+                  this.emit("ConstructedToolAndRunning", {
+                    key: _tool.toolKey,
+                    element: toolElement
+                  });
+
+                  this.emit("DestroyTool", {
+                    key: _tool.toolKey
+                  });
+                }*/
+
+
 
                 var menuInfo = this.getMenuItemByToolKey(_tool.toolKey);
 
@@ -252,6 +281,13 @@
             );
         },
 
+        // 현재 장착된 Tool의 State를 변경한다.
+        applyToolState( _state ){
+          var toolElement = this.refs[this.equipedToolRef];
+
+          toolElement.setState( _state );
+        },
+
         // 최종 root 가 마운트 되었을 때 tool을 접는다.
         componentDidMountByRoot() {
             this.foldTool();
@@ -259,6 +295,17 @@
 
         componentDidUpdate(){
 
+          // 보관된 state적용
+          if( typeof this.equipedToolRef !== 'undefined' ){
+            var toolElement = this.refs[this.equipedToolRef];
+
+            // 보관된 State를 확인하고 보관된게 있으면 바로 반영한다.
+            var storedState = this.state.storedState;
+
+            if( typeof storedState !== 'undefined' ){
+              this.applyToolState( storedState );
+            }
+          }
         },
 
 

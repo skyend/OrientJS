@@ -51,8 +51,18 @@
             });
           };
 
+          var contextIsRunning = false;
+
+          if( typeof this.state.runningContext === 'object' ){
+            if( this.state.runningContext.contextType === 'document' ){
+              if( this.state.runningContext.documentID ==  _documentMeta.id ){
+                contextIsRunning = true;
+              }
+            }
+          }
+
           return (
-            <li onClick={ click }>
+            <li onClick={ click } className={contextIsRunning? 'running':''}>
               <i className={'fa ' + iconClass}></i> <span> { _documentMeta.name } </span>
             </li>
           )
@@ -94,6 +104,8 @@
             var wide = false;
             var rootClasses = ['ServiceResources', this.props.config.theme,  this.getMySizeClass()];
 
+
+            console.log('STAET CHECK', this.state);
             return (
                 <div className={rootClasses.join(' ')}>
                     <div className='wrapper'>

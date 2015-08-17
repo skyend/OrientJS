@@ -57,15 +57,30 @@ var _ = require('underscore');
           var alreadyContextIndex = _.findIndex( this.state.directContexts, { contextID: _contextItem.contextID } );
 
           if( alreadyContextIndex != -1 ){
+
+            // 컨텍스트를 앞으로 가져온다.
             this.setState({runningContextID: _contextItem.contextID});
           } else {
+
+            // 새 컨텍스트를 추가한다.
             this.state.directContexts.push( _contextItem );
             this.setState({directContexts:this.state.directContexts, runningContextID: _contextItem.contextID});
           }
+
+
+          this.emitOpenedDirectContextTab( _contextItem );
         },
 
         clickTabItem(_contextItem) {
           this.setState({runningContextID: _contextItem.contextID});
+
+          this.emitOpenedDirectContextTab( _contextItem );
+        },
+
+        emitOpenedDirectContextTab( _contextItem ){
+          this.emit('OpenedDirectContextTab', {
+            contextItem:_contextItem
+          });
         },
 
 

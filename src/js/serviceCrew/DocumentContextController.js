@@ -10,7 +10,7 @@ var DocumentContextController = function(_document) {
     this.document = new Document();
   }
 
-
+  console.log('document', this.document);
 
 };
 

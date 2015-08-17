@@ -6,6 +6,8 @@
  * Requires(css) : Screen.less
  */
 
+var _ = require('underscore');
+
 (function () {
     var loginData = {
         "sessionKey": "sdkdj3k3aFqskjrusQk22DA",
@@ -45,8 +47,8 @@
         // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
 
-        getInitalState() {
-            return {};
+        getInitialState() {
+            return { toolStatesStore : {} };
         },
 
         displayModal(action) {
@@ -259,7 +261,10 @@
                 });
             }, function (__tool, __toolConfig) {
 
-                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey);
+                // Builder에 저장된 각 Tool State를 가져온다.
+                var toolState = self.state.toolStatesStore[ toolKey ];
+
+                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey, toolState);
             }]);
         },
 
@@ -277,12 +282,56 @@
 
         onThrowCatcherNeedProjectMeta(_eventData, _pass){
           console.log('NeedProjectMeta',this.state.projectMeta);
+
           _eventData.path[0].setState( { 'meta': this.state.projectMeta });
         },
 
 
         onThrowCatcherNoticeMessage(_eventData, _pass) {
             this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
+        },
+
+        // 열린 컨텍스트 탭
+        onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
+
+          console.log('컨텍스트가 열렸습니다.');
+          this.applyToolStates("ServiceResources",{
+            runningContext: _eventData.contextItem
+          });
+        },
+
+
+        applyToolStates( _toolKey, _state ){
+          var prevToolStatesStore = this.state.toolStatesStore;
+          var toolStateObject = prevToolStatesStore[_toolKey];
+
+          if( typeof toolStateObject === 'undefined' ){
+            toolStateObject = {};
+            prevToolStatesStore[_toolKey] = toolStateObject;
+          }
+
+          // merge state
+          _.extend(toolStateObject, _state);
+
+          this.setState({toolStatesStore:prevToolStatesStore});
+
+
+          var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
+          var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
+
+          if( typeof leftEquipTool === 'object' ){
+            if( leftEquipTool.toolKey === _toolKey ){
+              this.refs['LeftNavigation'].applyToolState( toolStateObject );
+            }
+          }
+
+          if( typeof rightEquipTool === 'object' ){
+            if( rightEquipTool.toolKey === _toolKey ){
+
+            }
+          }
+
+
         },
 
         notifyMessage(_title, _message, _level){
