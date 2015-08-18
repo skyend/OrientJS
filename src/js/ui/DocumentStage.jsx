@@ -299,8 +299,8 @@ var _ = require('underscore');
               "return" : function( _err, _component ){
                 if( _err !== null ) throw new Error("component load error");
 
-                // 컴포넌트의 랜더링 타입이 static 일 경우
-                if( _component.renderType === 'static'){
+                // 컴포넌트의 랜더링 타입이 staticFromReact 일 경우
+                if( _component.renderType === 'staticFromReact'){
 
                   // ReactComponent 의 static HTML을 추출한다.
                   var componentHtml = React.renderToStaticMarkup(React.createElement(_component.class));
@@ -327,7 +327,7 @@ var _ = require('underscore');
                   //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, componentStaticElement, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                       return;
@@ -335,13 +335,13 @@ var _ = require('underscore');
 
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, componentStaticElement, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, componentStaticElement);
+                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, componentStaticElement, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
@@ -724,7 +724,11 @@ var _ = require('underscore');
             running = true;
           }
 
-          var directContext = <DirectContext ref={_directContext.contextID} width="100%" height="100%" runningState={running} />;
+          var directContext = <DirectContext ref={_directContext.contextID}
+                                              width="100%"
+                                              height="100%"
+                                              runningState={running}
+                                              contextController={ _directContext.contextController } />;
 
           return directContext;
         },

@@ -5,13 +5,22 @@
 
   "documentUpdate": "2015-08-02T12:00:00+08",
 
-  "elementNodes": [{
-    "name": "Root Node",
-    "id": "root"
-  }, {
-    "name": "temp",
-    "id": "test"
-  }],
+  "rootElementNode": {
+    "type": "html",
+    "element": {
+      "tagName": "div",
+      "class": "test-class div"
+    },
+    "children": [{
+      "type": "string",
+      "element": {
+        "tagName": "text",
+        "text": "Hello"
+      }
+    }]
+  },
+
+  "elementNodes": [],
 
   "usingResources": {
     "style": [],

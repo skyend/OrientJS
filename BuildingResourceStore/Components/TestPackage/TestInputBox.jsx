@@ -186,7 +186,8 @@ var ReactClass = React.createClass({
 module.exports = {
   class :ReactClass,
   struct: {},
-  renderType:'static',
+  renderType:'staticFromReact',
+  elementType:'react',
   positionHints : {
     width:100,
     height:100,

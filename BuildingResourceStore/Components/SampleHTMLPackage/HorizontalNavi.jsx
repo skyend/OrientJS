@@ -16,7 +16,7 @@ module.exports =  {
 
     }),
 
-    renderType:'static',
+    renderType:'staticFromReact',
 
     elementType:'html',
 

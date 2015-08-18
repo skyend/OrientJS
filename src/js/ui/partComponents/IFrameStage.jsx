@@ -81,14 +81,18 @@ var IFrameStage = React.createClass({
     delete this.styles[_key];
   },
 
-  insertElementToInLast(_baseTargetVid, _element) {
-    var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="' + _baseTargetVid + '"]');
+  insertElementToInLastBySelector(_selector, _element){
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
 
     return baseTarget.appendChild(_element);
   },
 
-  insertElementToBefore(_baseTargetVid, _element) {
-    var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="' + _baseTargetVid + '"]');
+  insertElementToInLastByVid(_baseTargetVid, _element) {
+    return this.insertElementToInLastBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
+  },
+
+  insertElementToBeforeBySelector(_selector, _element) {
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
 
     var parentElement = baseTarget.parentElement;
 
@@ -104,8 +108,12 @@ var IFrameStage = React.createClass({
     return parentElement.insertBefore(_element, baseTarget);
   },
 
-  insertElementToAfter(_baseTargetVid, _element) {
-    var baseTarget = this.getIFrameInnerDoc().querySelector('[__vid__="' + _baseTargetVid + '"]');
+  insertElementToBeforeByVid(_baseTargetVid, _element) {
+    return this.insertElementToBeforeBySelector('[__vid__="' + _baseTargetVid + '"]', _element );
+  },
+
+  insertElementToAfterBySelector(_selector, _element) {
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
     var parentElement = baseTarget.parentElement;
 
     if (parentElement === null) {
@@ -117,13 +125,17 @@ var IFrameStage = React.createClass({
       return;
     }
 
-// 기준이 되는 요소의 다음요소가 없을 경우 appendChild로 삽입한다.
+  // 기준이 되는 요소의 다음요소가 없을 경우 appendChild로 삽입한다.
     if (baseTarget.nextElementSibling === null) {
       return parentElement.appendChild(_element);
     } else {
-// 다음요소가 있으면 다음요소의 이전에 요소를 삽입한다.
+  // 다음요소가 있으면 다음요소의 이전에 요소를 삽입한다.
       return parentElement.insertBefore(_element, baseTarget.nextElementSibling);
     }
+  },
+
+  insertElementToAfterByVid(_baseTargetVid, _element) {
+    return this.insertElementToAfterBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
   },
 
   onIframeLoaded(_iframe) {
@@ -155,7 +167,7 @@ var IFrameStage = React.createClass({
   },
 
 /**
-     * onMouseClickAtStage
+     * onMouseDownAtStage
      *
      */
   onMouseDownAtStage(_e) {},

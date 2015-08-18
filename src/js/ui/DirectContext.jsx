@@ -4,16 +4,19 @@ var React = require('react');
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
 
-  deployComponentToInLast( _vid, _staticElement ){
-    return this.refs['iframe-stage'].insertElementToInLast(_vid, _staticElement);
+  deployComponentToInLast( _vid, _staticElement, _component ){
+    console.log("deployed component", _component);
+    return this.refs['iframe-stage'].insertElementToInLastByVid(_vid, _staticElement);
   },
 
-  deployComponentToBefore( _vid, _staticElement ){
-    return this.refs['iframe-stage'].insertElementToBefore(_vid, _staticElement);
+  deployComponentToBefore( _vid, _staticElement, _component ){
+    console.log("deployed component", _component);
+    return this.refs['iframe-stage'].insertElementToBeforeByVid(_vid, _staticElement);
   },
 
-  deployComponentToAfter( _vid, _staticElement ){
-    return this.refs['iframe-stage'].insertElementToAfter(_vid, _staticElement);
+  deployComponentToAfter( _vid, _staticElement, _component ){
+    console.log("deployed component", _component);    
+    return this.refs['iframe-stage'].insertElementToAfterByVid(_vid, _staticElement);
   },
 
   addStyle( _key, _css ){
@@ -33,10 +36,12 @@ var DirectContext = React.createClass({
   },
 
   goingToContextStop(){
+    this.contextController.pause();
     console.log('changed context state to stop!');
   },
 
   goingToContextRunning(){
+    this.contextController.resume();
     console.log('changed context state to running!');
   },
 
@@ -49,6 +54,10 @@ var DirectContext = React.createClass({
   },
 
   componentDidMount(){
+    // contextController 연결
+    this.contextController = this.props.contextController;
+    this.contextController.attach(this);
+
     if( this.props.runningState ){
       this.goingToContextRunning();
     } else {

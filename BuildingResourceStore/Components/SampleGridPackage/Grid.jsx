@@ -16,9 +16,9 @@ module.exports =  {
 
     }),
 
-    renderType:'grid',
+    renderType:'staticFromReact',
     elementType:'grid',
-    
+
     struct : {
 
     },

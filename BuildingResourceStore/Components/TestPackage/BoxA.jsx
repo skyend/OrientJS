@@ -15,7 +15,8 @@ module.exports =  {
       }
 
     }),
-    renderType:'static',
+    renderType:'staticFromReact',
+    elementType:'react',
     struct : {
 
     },
