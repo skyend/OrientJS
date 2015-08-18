@@ -1,96 +1,77 @@
 {
   "LeftNavigation": {
-    "menuGroups": [
-      {
-        "groupName": "System",
-        "menuItems": [
-          {
-            "key": "user-account",
-            "title": "User Account",
-            "icon": "user",
-            "equipToolKey": "UserAccount"
-          },
-          {
-            "key": "builder-setting",
-            "title": "Builder Settings",
-            "icon": "cog",
-            "equipToolKey": "BuilderSetting"
-          },
-          {
-            "key": "project-setting",
-            "title": "Project Settings",
-            "icon": "dashboard",
-            "equipToolKey": "ProjectSetting"
-          }
-        ]
-      },
-      {
-        "groupName": "Service Object Configure",
-        "menuItems": [
-          {
-            "key": "service-resources",
-            "title": "Service Resources",
-            "icon": "book",
-            "equipToolKey": "ServiceResources"
-          },
-          {
-            "key": "page-configure",
-            "title": "Page Configure",
-            "icon": "file-text-o",
-            "equipToolKey": "PageConfigure"
-          },
-          {
-            "key": "document-configure",
-            "title": "Document Configure",
-            "icon": "file-text",
-            "equipToolKey": "DocumentConfigure"
-          }
-        ]
-      },
-      {
-        "groupName": "Service Resources",
-        "menuItems": [
-          {
-            "key": "component-palette",
-            "title": "Component Palette",
-            "icon": "cubes",
-            "equipToolKey": "ComponentPalette"
-          },
-          {
-            "key": "document-store",
-            "title": "Document Configure",
-            "icon": "file-text",
-            "equipToolKey": "DocumentConfigure"
-          }
-        ]
-      }
-    ]
+    "menuGroups": [{
+      "groupName": "System",
+      "menuItems": [{
+        "key": "user-account",
+        "title": "User Account",
+        "icon": "user",
+        "equipToolKey": "UserAccount"
+      }, {
+        "key": "builder-setting",
+        "title": "Builder Settings",
+        "icon": "cog",
+        "equipToolKey": "BuilderSetting"
+      }, {
+        "key": "project-setting",
+        "title": "Project Settings",
+        "icon": "dashboard",
+        "equipToolKey": "ProjectSetting"
+      }]
+    }, {
+      "groupName": "Service Object Configure",
+      "menuItems": [{
+        "key": "service-resources",
+        "title": "Service Resources",
+        "icon": "book",
+        "equipToolKey": "ServiceResources"
+      }, {
+        "key": "page-configure",
+        "title": "Page Configure",
+        "icon": "file-o",
+        "equipToolKey": "PageConfigure"
+      }, {
+        "key": "document-configure",
+        "title": "Document Configure",
+        "icon": "file-text-o",
+        "equipToolKey": "DocumentConfigure"
+      }]
+    }, {
+      "groupName": "Service Resources",
+      "menuItems": [{
+        "key": "component-palette",
+        "title": "Component Palette",
+        "icon": "cubes",
+        "equipToolKey": "ComponentPalette"
+      }]
+    }]
   },
   "RightNavigation": {
-    "menuGroups": [
-      {
-        "groupName": "System",
-        "menuItems": [
-          {
-            "key": "element-node-store",
-            "title": "Element Nodes",
-            "icon": "cube",
-            "equipToolKey": "ComponentPalette"
-          },
-          {
-            "key": "element-tree",
-            "title": "Element Tree",
-            "icon": "tree",
-            "equipToolKey": "ComponentPalette"
-          }
-        ]
-      }
-    ]
+    "menuGroups": [{
+      "groupName": "System",
+      "menuItems": [{
+        "key": "element-node-store",
+        "title": "Element Nodes",
+        "icon": "cube",
+        "equipToolKey": "ComponentPalette"
+      }, {
+        "key": "element-tree",
+        "title": "Element Tree",
+        "icon": "tree",
+        "equipToolKey": "ComponentPalette"
+      }]
+    }]
   },
   "tools": {
-    "UserAccount": {"jsxPath": "UserAccount"},
-    "ProjectSetting": {"jsxPath": "ProjectSetting"},
-    "BuilderSetting": {"jsxPath": "BuilderSetting"},
+    "UserAccount": {
+      "jsxPath": "UserAccount"
+    },
+    "ProjectSetting": {
+      "jsxPath": "ProjectSetting"
+    },
+    "BuilderSetting": {
+      "jsxPath": "BuilderSetting"
+    },
 
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
