@@ -8,8 +8,8 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <div className='A'>
-            <span> TestComponentA </span>
+          <div className='Grid'>
+            <span> Grid </span>
           </div>
         )
       }
@@ -17,7 +17,8 @@ module.exports =  {
     }),
 
     renderType:'grid',
-
+    elementType:'grid',
+    
     struct : {
 
     },

@@ -286,8 +286,8 @@
 
   UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
     var key = _eventData.componentKey;
-
-    var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey);
+    console.log(_eventData, 'get');
+    var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
 
     _eventData.return(null, loadedComponent)
   };

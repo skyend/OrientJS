@@ -109,7 +109,7 @@
         render() {
             var wide = false;
             var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
-            console.log( this.state );
+
             return (
                 <div className={rootClasses.join(' ')}>
                     <div className='wrapper'>

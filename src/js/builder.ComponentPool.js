@@ -32,7 +32,6 @@
   };
 
   ComponentPool.prototype.getAvailablePackageMeta = function() {
-    console.log(this.metaData);
     return this.metaData['availablePackages'];
   };
 

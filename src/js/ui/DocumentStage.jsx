@@ -180,7 +180,7 @@ var _ = require('underscore');
          * @Param _absoluteY
          * @Param _key
          */
-        startDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+        startDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey ){
           if( ! this.hasCurrentRunningContext() ) return;
 
 
@@ -201,7 +201,7 @@ var _ = require('underscore');
          * @Param _absoluteY
          * @Param _key
          */
-        dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+        dragDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey ){
           if( ! this.hasCurrentRunningContext() ) return;
 
           var self = this;
@@ -226,7 +226,8 @@ var _ = require('underscore');
               // 컴포넌트를 반환받고 컴포넌트 배치 위치를 찾고
               // 컴포넌트가 배치될 위치를 표시한다.
               this.emit("GetComponent",{
-                "componentKey" : _key,
+                "componentKey" : _componentKey,
+                "packageKey" : _packageKey,
                 "return" : function( _err, _component ){
                   if( _err !== null ) throw new Error("component load error");
 
@@ -270,13 +271,14 @@ var _ = require('underscore');
          * 컴포넌트 배치 드래그 종료 및 드랍 리스너 (Drop)
          * @Param _absoluteX
          * @Param _absoluteY
-         * @Param _key
+         * @Param _componentKey
+         * @Param _packageKey
          */
-        stopDeployComponentByPalette( _absoluteX, _absoluteY, _key){
+        stopDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey){
           if( ! this.hasCurrentRunningContext() ) return;
 
           var self = this;
-          console.log(arguments);
+
           console.log('stop');
 
           //var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
@@ -292,7 +294,8 @@ var _ = require('underscore');
             var uZDom = unboxingZone.getDOMNode();
 
             this.emit("GetComponent",{
-              "componentKey" : _key,
+              "componentKey" : _componentKey,
+              "packageKey" : _packageKey,
               "return" : function( _err, _component ){
                 if( _err !== null ) throw new Error("component load error");
 
@@ -315,7 +318,7 @@ var _ = require('underscore');
                   }
 
                   if( typeof _component.CSS === 'string'){
-                    self.getCurrentRunningContext().addStyle(_key, _component.CSS);
+                    self.getCurrentRunningContext().addStyle(_packageKey+'/'+_componentKey, _component.CSS);
                   }
 
 

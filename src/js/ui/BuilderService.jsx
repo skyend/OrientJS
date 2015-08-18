@@ -349,17 +349,21 @@ var _ = require('underscore');
 
         onThrowCatcherBeginDeployComponent(_eventData, _pass){
             var documentStage = this.refs['DocumentStage'];
-            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+            //_componentName
+            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDragDeployComponent(_eventData, _pass){
           var documentStage = this.refs['DocumentStage'];
-            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDropDeployComponent(_eventData, _pass){
           var documentStage = this.refs['DocumentStage'];
-            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+          documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         openDirectContext( _directContextItem ){

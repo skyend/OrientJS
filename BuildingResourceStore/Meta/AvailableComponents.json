@@ -34,8 +34,24 @@
     "name": "SampleGridPackage",
     "components": [{
       "key": "grid",
-      "name": "grid",
+      "name": "DefaultGrid",
       "path": "SampleGridPackage/Grid.jsx"
+    }]
+  }, {
+    "key": "SampleHTMLPackage",
+    "name": "SampleHTMLPackage",
+    "components": [{
+      "key": "horizontal-navi",
+      "name": "HorizontalNavi",
+      "path": "SampleHTMLPackage/HorizontalNavi.jsx"
+    }]
+  }, {
+    "key": "SampleReactPackage",
+    "name": "SampleReactPackage",
+    "components": [{
+      "key": "sample-react",
+      "name": "SampleReact",
+      "path": "SampleReactPackage/SampleReact.jsx"
     }]
   }]
 }
