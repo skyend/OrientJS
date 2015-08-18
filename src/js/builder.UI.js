@@ -333,6 +333,17 @@
   };
 
 
+  UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData, _pass) {
+    var who = _eventData.path[0];
+    console.log('meta', this.session.getComponentPool().getAvailablePackageMeta());
+
+    who.setState({
+      availableComponentPackageMeta: this.session.getComponentPool().getAvailablePackageMeta()
+    });
+  };
+
+
+
 
 
   UI.prototype.builderRender = function() {
@@ -341,7 +352,6 @@
       LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
       RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
       Tools: DefaultBuilderConfig.tools,
-      AvailableComponents: this.session.componentPool.getAvailableComponents(),
       __keyName: 'uiServicer'
     }), this.window.document.getElementsByTagName('BODY')[0]);
 

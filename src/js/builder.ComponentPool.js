@@ -13,26 +13,27 @@
 
     this.session = Session;
 
-    this.poolStateObject;
+    this.metaData;
     this.cachedComponent = {}; // 한번로드된 컴포넌트를 캐싱
     this.styleCache = {};
   }
 
-  ComponentPool.prototype.updatePoolState = function(_url) {
-    var poolStateData = RequestToServer.sync(_url, 'get', {
+  ComponentPool.prototype.updateMeta = function(_url) {
+    var metaData = this.session.certifiedRequestJSON(_url, 'get', {
       t: 'api'
     });
 
-
-    try {
-      this.poolStateObject = JSON.parse(poolStateData);
-    } catch (e) {
-      throw new Error("ComponentPoolStateSheet parsing error : invalid json syntax");
-    }
+    this.metaData = metaData;
   };
 
+  // deprecated
   ComponentPool.prototype.getAvailableComponents = function() {
-    return this.poolStateObject['availableComponents'];
+    return this.metaData['availableComponents'];
+  };
+
+  ComponentPool.prototype.getAvailablePackageMeta = function() {
+    console.log(this.metaData);
+    return this.metaData['availablePackages'];
   };
 
   ComponentPool.prototype.getComponentFromRemote = function(_componentClassName) {
@@ -43,12 +44,12 @@
 
 
     // Component Pool 메타데이터가 있는지 확인한다.
-    if (typeof this.poolStateObject === 'undefined') {
+    if (typeof this.metaData === 'undefined') {
       throw new Error('does not update the componentPoolState');
     }
 
     // 제공중인 컴포넌트인지 확인한다.
-    if (typeof this.poolStateObject.availableComponents[_componentClassName] === 'undefined') {
+    if (typeof this.metaData.availableComponents[_componentClassName] === 'undefined') {
       throw new Error('Component[' + _componentClassName + '] is not provide');
     }
 
@@ -58,7 +59,7 @@
 
 
       // 해당 컴포넌트의 위치데이터를 가져온다
-      var componentLocation = this.poolStateObject.availableComponents[_componentClassName].path;
+      var componentLocation = this.metaData.availableComponents[_componentClassName].path;
 
       // 컴포넌트가 등록되어 있지 않았을 경우.
       if (typeof componentLocation === 'undefined' || componentLocation === '') {
@@ -66,7 +67,7 @@
       }
 
       // 완전한 위치를 구한다.
-      var fullLocation = this.poolStateObject.host + this.poolStateObject.temporaryNamespaceDir + componentLocation;
+      var fullLocation = this.metaData.host + this.metaData.temporaryNamespaceDir + componentLocation;
 
       // 컴포넌트 스크립트 로드
       var componentScript = RequestToServer.sync(fullLocation, 'get');

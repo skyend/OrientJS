@@ -156,7 +156,7 @@ var _ = require('underscore');
 
             return (
                 <li className={ running? 'forwarded':''} onClick={closure}>
-                  <i className={'fa '+ iconClass}/> {_contextItem.contextName}
+                  <i className={'fa '+ iconClass}/> {_contextItem.contextName} <span className='close'><i className='fa fa-times'/></span>
                 </li>
             )
         },
@@ -181,6 +181,9 @@ var _ = require('underscore');
          * @Param _key
          */
         startDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+          if( ! this.hasCurrentRunningContext() ) return;
+
+
           console.log(arguments);
           var iframeStageInnerDoc = this.getCurrentRunningContext().getIFrameStageInnerDoc();
 
@@ -199,6 +202,8 @@ var _ = require('underscore');
          * @Param _key
          */
         dragDeployComponentByPalette( _absoluteX, _absoluteY, _key ){
+          if( ! this.hasCurrentRunningContext() ) return;
+
           var self = this;
           var selfClientRect = this.iframeStageBoundingRect;
           //console.log('drag');
@@ -268,6 +273,8 @@ var _ = require('underscore');
          * @Param _key
          */
         stopDeployComponentByPalette( _absoluteX, _absoluteY, _key){
+          if( ! this.hasCurrentRunningContext() ) return;
+
           var self = this;
           console.log(arguments);
           console.log('stop');
@@ -703,6 +710,10 @@ var _ = require('underscore');
           return this.refs[ this.state.runningContextID ];
         },
 
+        hasCurrentRunningContext(){
+          return typeof this.refs[ this.state.runningContextID ] === 'object' && this.refs[ this.state.runningContextID ] !== null;
+        },
+
         attachDirectContext( _directContext ){
 
           var running = false;
@@ -738,10 +749,10 @@ var _ = require('underscore');
         },
 
         render: function () {
-          console.log( this.state.directContexts );
+
 
             return (
-                <section className="Contents Contents-tab-support black" id="ui-contents">
+                <section className="DocumentStage tab-support black">
                     <div className='tab-switch-panel' ref='tab-area'>
                         <ul className='tab-list' ref='tab-list'>
                             {this.state.directContexts.map(this.renderContextTabItem)}
@@ -764,8 +775,16 @@ var _ = require('underscore');
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        {this.state.directContexts.map( this.attachDirectContext )}
+                        {this.state.directContexts.length > 0 ?
+                          this.state.directContexts.map( this.attachDirectContext ): (
+                            <div className='empty-holder'>
+                              {"Open a tab context and Start your amazing Service!"}
+                            </div>
+                          )
+                        }
                     </div>
+
+
 
 
                     <div className='unboxing-zone' ref='unboxing-zone'>

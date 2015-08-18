@@ -13,18 +13,18 @@
 
         getInitialState(){
           return {
-            availabelComponentList : []
+            availableComponentPackageMeta : {}
           }
         },
 
-        mouseOverListItem( _key){
+        mouseOverListItem( _componentKey, _packageKey){
 
           this.emit('IMustPreviewComponent', {
-            componentKey:_key
+            componentKey:_componentKey
           });
         },
 
-        mouseDownTo(_key){
+        mouseDownTo(_componentKey, _packageKey){
             app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
             app.ui.toMouseDawn();
@@ -32,16 +32,33 @@
             var holderHTML = "<div class='componentDragHolder'></div>";
             app.ui.holdingElementWhileDrag(holderHTML);
 
-            this.willDeployComponentKey = _key;
+            this.willDeployComponentKey = _componentKey;
         },
 
-        listItemRender( _componentKey){
+        renderComponentMeta( _componentMeta, _packageKey ){
           var self = this;
+
           return (
-            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentKey) }}>
-              { _componentKey}
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
+              <i className='fa fa-cube'></i> { _componentMeta.name }
             </li>
           )
+        },
+
+        renderPackageMeta( _packageKey ){
+          var self = this;
+          var packageMeta = this.state.availableComponentPackageMeta[_packageKey];
+
+          return (
+            <div className='package'>
+              <label> <i className='fa fa-gift'></i> {packageMeta.name} </label>
+              <ul>
+                {packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageKey)} ) }
+              </ul>
+            </div>
+          );
+
+
         },
 
         onGlobalDragStartFromUI(_e){
@@ -73,7 +90,7 @@
         componentDidMount(){
             this.refs['ComponentPreviewer'].displayComponent( InputBoxWithSelector, "reactClass");
 
-            this.emit('UpdateComponentListToMe');
+            this.emit('NeedStateComponentPackageMeta');
         },
 
         componentDidUpdate( _prevProps, _prevState){
@@ -87,7 +104,7 @@
         render() {
             var wide = false;
             var rootClasses = ['ComponentPalette', 'black', this.getMySizeClass()];
-
+            console.log( this.state );
             return (
                 <div className={rootClasses.join(' ')}>
                     <div className='wrapper'>
@@ -100,7 +117,7 @@
                             </div>
                             <div className='list-area'>
                                 <ul>
-                                  {this.state.availabelComponentList.map(this.listItemRender)}
+                                  {Object.keys(this.state.availableComponentPackageMeta).map(this.renderPackageMeta)}
                                 </ul>
                             </div>
                         </div>

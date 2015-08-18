@@ -168,16 +168,6 @@ var _ = require('underscore');
             this.offContextMenu();
         },
 
-        onThrowCatcherUpdateComponentListToMe( _eventData, _pass ) {
-
-            if( _eventData.refPath[0] === 'ComponentPalette'){
-
-              _eventData.path[0].setState({
-                availabelComponentList : Object.keys(this.props.AvailableComponents)
-              });
-            }
-
-        },
 
         onThrowCatcherFoldTool(_eventData, _pass) {
 

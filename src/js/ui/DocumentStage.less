@@ -6,12 +6,8 @@
   -ms-user-select: none;
   user-select: none;
 }
-
-/*
- * Main content
- */
-#ui-contents {
-    .noselect;
+.DocumentStage {
+  .noselect;
   position: absolute;
   top: 30px;
   bottom: 22px;
@@ -19,62 +15,20 @@
   right: 255px;
   z-index: 1;
   overflow: hidden;
-
-  //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-  .contents-tab {
-    height: 23px;
-    background-color: #fff;
-    border-top: 1px #aaa solid;
-    border-bottom: 2px #aaa solid;
-    .tab-area {
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 200;
-      > li {
-        height: 15px;
-        padding: 3px 15px 5px 15px;
-        float: left;
-        border-right: 1px #aaa solid;
-        border-left: 1px #aaa solid;
-        background-color: #000;
-        //-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-        //box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-      }
-    }
-  }
-  .contents-area {
-    position: absolute;
-    width: 100%;
-    top: 26px;
-    bottom: 0px;
-    iframe {
-      border: 0;
-      width: 100%;
-      height: 100%;
-      //-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-      //box-shadow: 1px 1px 2px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-    }
-  }
-}
-
-.Contents {
-  &.Contents-tab-support {
+  &.tab-support {
     > .tab-switch-panel {
       background: darkgray;
       height: 30px;
       > .tab-list {
         box-sizing: border-box;
         height: 30px;
-        margin: 0px;
-        padding: 0px;
+        margin: 0;
+        padding: 0;
         list-style-type: none;
         border-bottom: 5px solid #333;
         > li {
           border-right: 1px solid #333;
-          color: #5F5F5F;
+          color: #5f5f5f;
           display: inline-block;
           box-sizing: border-box;
           font-size: 12px;
@@ -88,102 +42,87 @@
             background-color: #333;
             color: #fff;
           }
+          >.close {
+            color: #5f5f5f;
+          }
         }
       }
     }
-
     > .tab-context {
       position: absolute;
-      bottom: 0px;
+      bottom: 0;
       top: 30px;
       width: 100%;
-
-      > iframe {
+      background-color: rgb(30,33,39);
+      >.empty-holder {
+        position: absolute;
         width: 100%;
-        height: 100%;
-        border: 0px;
+        top: 50%;
+        margin-top: -32px;
+        text-align: center;
+        font-family: 'Open Sans';
+        font-size: 32px;
+        color: rgb(70,73,79);
+        cursor: default;
       }
     }
   }
-
   .unboxing-zone {
-    display:none;
+    display: none;
   }
 }
-
-
 .drop-guide-box {
   position: fixed;
   z-index: 5;
-
-  width:105px;
-  height:105px;
-
+  width: 105px;
+  height: 105px;
   .noselect;
-
   > div {
-    float:left;
-    width:35px;
-    height:35px;
+    float: left;
+    width: 35px;
+    height: 35px;
     box-sizing: border-box;
     font-size: 7px!important;
-    padding-top:13px;
+    padding-top: 13px;
     text-align: center;
     -webkit-text-size-adjust: none;
-
-    color:white;
-
-    transition: all .15s ease;
+    color: white;
+    transition: all 0.15s ease;
     cursor: crosshair;
   }
-
   >.direction {
     background-color: rgba(5, 207, 255, 0.6);
-    border:1px solid rgba(37, 196, 255, 0.16);
-
+    border: 1px solid rgba(37, 196, 255, 0.16);
     &.in {
-      border:0;
+      border: 0;
       background-color: rgba(55, 257, 255, 0.3);
     }
-
-    &[see='yes']{
+    &[see='yes'] {
       background-color: rgba(0, 0, 0, 0.8);
     }
   }
 }
-
-
 .element-highlighter {
   position: absolute;
   z-index: 3;
-  border:3px solid #fff;
+  border: 3px solid #fff;
   background-color: rgba(0,0,0,0.2);
   box-sizing: border-box;
-  mix-blend-mode:difference;
-
+  mix-blend-mode: difference;
   .noselect;
-
-
-
 }
-
 .drop-position-placeholder {
   position: absolute;
   z-index: 4;
-
   background-color: #fff;
-  mix-blend-mode:difference;
-
-
+  mix-blend-mode: difference;
   &.vertical {
-    width:3px;
+    width: 3px;
   }
-
   &.horizontal {
     height: 3px;
   }
-
   &.box {
-
+    
   }
 }

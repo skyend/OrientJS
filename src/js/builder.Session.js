@@ -17,7 +17,7 @@
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updatePoolState('/BuildingResourceStore/Meta/AvailableComponents.json');
+    this.componentPool.updateMeta('/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
   Session.prototype.signIn = function() {
@@ -34,6 +34,10 @@
 
   Session.prototype.isSign = function() {
     return this.signedIn; // 임시
+  };
+
+  Session.prototype.getComponentPool = function() {
+    return this.componentPool;
   };
 
   /**
