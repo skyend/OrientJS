@@ -1,598 +1,772 @@
-.bokeh {
-  animation: bokeh 3s linear;
-  position: relative;
-  div[class^='pos-detect'] {
-    width: calc(100vw / 6);
-    height: calc(101vh / 6);
-    float: left;
-  }
-  .pos-detect-top-1:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-top-2:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-top-3:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12 * 7);
-  }
-  .pos-detect-top-4:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12 * 5);
-  }
-  .pos-detect-top-5:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12 * 3);
-  }
-  .pos-detect-top-6:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 11);
-    left: calc(100vw / 12);
-  }
-  .pos-detect-top-7:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 9);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-top-8:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 9);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-top-9:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 9);
-    left: calc(100vw / 12 * 7);
-  }
-  .pos-detect-center-1:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-center-2:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-center-3:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12 * 7);
-  }
-  .pos-detect-center-4:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12 * 5);
-  }
-  .pos-detect-center-5:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12 * 3);
-  }
-  .pos-detect-center-6:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 7);
-    left: calc(100vw / 12);
-  }
-  .pos-detect-center-7:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 5);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-center-8:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 5);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-center-9:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 5);
-    left: calc(100vw / 12 * 7);
-  }
-  .pos-detect-bottom-1:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-bottom-2:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-bottom-3:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12 * 7);
-  }
-  .pos-detect-bottom-4:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12 * 5);
-  }
-  .pos-detect-bottom-5:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12 * 3);
-  }
-  .pos-detect-bottom-6:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12 * 3);
-    left: calc(100vw / 12);
-  }
-  .pos-detect-bottom-7:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12);
-    left: calc(100vw / 12 * 11);
-  }
-  .pos-detect-bottom-8:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12);
-    left: calc(100vw / 12 * 9);
-  }
-  .pos-detect-bottom-9:hover ~ div[class $='ground-layer'] {
-    top: calc(100vh / 12);
-    left: calc(100vw / 12 * 7);
-  }
-  div[class $='ground-layer'] {
-    position: absolute;
+.bokeh
+{
+    position: relative;
+
+    animation: bokeh 3s linear;
+    div[class^='pos-detect']
+    {
+        float: left;
+
+        width: calc(100vw / 6);
+        height: calc(101vh / 6);
+    }
+    .pos-detect-top-1:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-top-2:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-top-3:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12 * 7);
+    }
+    .pos-detect-top-4:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12 * 5);
+    }
+    .pos-detect-top-5:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12 * 3);
+    }
+    .pos-detect-top-6:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 11);
+        left: calc(100vw / 12);
+    }
+    .pos-detect-top-7:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 9);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-top-8:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 9);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-top-9:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 9);
+        left: calc(100vw / 12 * 7);
+    }
+    .pos-detect-center-1:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-center-2:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-center-3:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12 * 7);
+    }
+    .pos-detect-center-4:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12 * 5);
+    }
+    .pos-detect-center-5:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12 * 3);
+    }
+    .pos-detect-center-6:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 7);
+        left: calc(100vw / 12);
+    }
+    .pos-detect-center-7:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 5);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-center-8:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 5);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-center-9:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 5);
+        left: calc(100vw / 12 * 7);
+    }
+    .pos-detect-bottom-1:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-bottom-2:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-bottom-3:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12 * 7);
+    }
+    .pos-detect-bottom-4:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12 * 5);
+    }
+    .pos-detect-bottom-5:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12 * 3);
+    }
+    .pos-detect-bottom-6:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12 * 3);
+        left: calc(100vw / 12);
+    }
+    .pos-detect-bottom-7:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12);
+        left: calc(100vw / 12 * 11);
+    }
+    .pos-detect-bottom-8:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12);
+        left: calc(100vw / 12 * 9);
+    }
+    .pos-detect-bottom-9:hover ~ div[class $='ground-layer']
+    {
+        top: calc(100vh / 12);
+        left: calc(100vw / 12 * 7);
+    }
+    div[class $='ground-layer']
+    {
+        position: absolute;
+        top: 50vh;
+        left: 50vw;
+
+        width: 100vw;
+        height: 100vh;
+        margin-top: -50vh;
+        margin-left: -50vw;
+
+        transition-timing-function: cubic-bezier(.23, 1, .32, 1);
+        transition-property: all;
+        pointer-events: none;
+    }
+
+    div[class ^='bubble-']
+    {
+        position: absolute;
+
+        width: 15vw;
+        height: 15vw;
+
+        border-radius: 100%;
+        background: #fff;
+    }
+
+    div[class ^='bubble-']:nth-child(even)
+    {
+        width: 10vw;
+        height: 10vw;
+    }
+
+    .background-layer
+    {
+        z-index: 1;
+
+        transition-duration: 30s;
+
+        opacity: .1;
+        .bubble-1
+        {
+            margin-top: 16vh;
+            margin-left: 6vw;
+        }
+        .bubble-2
+        {
+            margin-top: 8vh;
+            margin-left: 35vw;
+        }
+        .bubble-3
+        {
+            margin-top: 31vh;
+            margin-left: 73vw;
+        }
+        .bubble-4
+        {
+            margin-top: 57vh;
+            margin-left: 20vw;
+        }
+        .bubble-5
+        {
+            margin-top: 69vh;
+            margin-left: 62vw;
+        }
+        .bubble-6
+        {
+            margin-top: 9vh;
+            margin-left: 78vw;
+        }
+        .bubble-7
+        {
+            margin-top: 23vh;
+            margin-left: 44vw;
+        }
+        .bubble-8
+        {
+            margin-top: 55vh;
+            margin-left: 47vw;
+        }
+        .bubble-9
+        {
+            margin-top: 75vh;
+            margin-left: 8vw;
+        }
+    }
+
+    .middleground-layer
+    {
+        z-index: 2;
+
+        transition-duration: 20s;
+
+        opacity: .3;
+        .bubble-1
+        {
+            margin-top: -2vh;
+            margin-left: 10vw;
+        }
+        .bubble-2
+        {
+            margin-top: 27vh;
+            margin-left: 24vw;
+        }
+        .bubble-3
+        {
+            margin-top: 9vh;
+            margin-left: 60vw;
+        }
+        .bubble-4
+        {
+            margin-top: 45vh;
+            margin-left: 38vw;
+        }
+        .bubble-5
+        {
+            margin-top: 54vh;
+            margin-left: 78vw;
+        }
+        .bubble-6
+        {
+            margin-top: 79vh;
+            margin-left: 72vw;
+        }
+        .bubble-7
+        {
+            margin-top: 19vh;
+            margin-left: 78vw;
+        }
+        .bubble-8
+        {
+            margin-top: 45vh;
+            margin-left: 68vw;
+        }
+        .bubble-9
+        {
+            margin-top: 68vh;
+            margin-left: 43vw;
+        }
+    }
+
+    .foreground-layer
+    {
+        z-index: 3;
+
+        transition-duration: 13s;
+
+        opacity: .5;
+        .bubble-1
+        {
+            margin-top: 69vh;
+            margin-left: -5vw;
+        }
+        .bubble-2
+        {
+            margin-top: 26vh;
+            margin-left: 30vw;
+        }
+        .bubble-3
+        {
+            margin-top: 14vh;
+            margin-left: 77vw;
+        }
+        .bubble-4
+        {
+            margin-top: 85vh;
+            margin-left: 39vw;
+        }
+        .bubble-5
+        {
+            margin-top: 67vh;
+            margin-left: 73vw;
+        }
+        .bubble-6
+        {
+            margin-top: 4vh;
+            margin-left: 94vw;
+        }
+        .bubble-7
+        {
+            margin-top: 5vh;
+            margin-left: 48vw;
+        }
+        .bubble-8
+        {
+            margin-top: 35vh;
+            margin-left: 58vw;
+        }
+        .bubble-9
+        {
+            margin-top: 25vh;
+            margin-left: 8vw;
+        }
+    }
+}
+
+@keyframes bokeh
+{
+    from
+    {
+        opacity: 0;
+    }
+    to
+    {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes swing
+{
+    15%
+    {
+        -webkit-transform: translateX(5px);
+                transform: translateX(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateX(-5px);
+                transform: translateX(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateX(3px);
+                transform: translateX(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateX(-3px);
+                transform: translateX(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateX(2px);
+                transform: translateX(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateX(0);
+                transform: translateX(0);
+    }
+}
+
+@keyframes swing
+{
+    15%
+    {
+        -webkit-transform: translateX(5px);
+                transform: translateX(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateX(-5px);
+                transform: translateX(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateX(3px);
+                transform: translateX(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateX(-3px);
+                transform: translateX(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateX(2px);
+                transform: translateX(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateX(0);
+                transform: translateX(0);
+    }
+}
+
+@keyframes fadeAndScale
+{
+    from
+    {
+        transform: scale(.1, .1);
+
+        opacity: 0;
+    }
+    to
+    {
+        transform: scale(1, 1);
+
+        opacity: 1;
+    }
+}
+
+body
+{
+    z-index: 0;
+
+    overflow: hidden;
+
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
-    top: 50vh;
-    left: 50vw;
-    margin-top: -50vh;
-    margin-left: -50vw;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-  }
+    margin: 0;
+    padding: 0;
 
-  div[class ^='bubble-'] {
-    position: absolute;
-    width: 15vw;
-    height: 15vw;
-    border-radius: 100%;
-    background: #fff;
-  }
-
-  div[class ^='bubble-']:nth-child(even) {
-    width: 10vw;
-    height: 10vw;
-  }
-
-  .background-layer {
-    z-index: 1;
-    transition-duration: 30s;
-    opacity: 0.1;
-    .bubble-1 {
-      margin-top: 16vh;
-      margin-left: 6vw;
-    }
-    .bubble-2 {
-      margin-top: 8vh;
-      margin-left: 35vw;
-    }
-    .bubble-3 {
-      margin-top: 31vh;
-      margin-left: 73vw;
-    }
-    .bubble-4 {
-      margin-top: 57vh;
-      margin-left: 20vw;
-    }
-    .bubble-5 {
-      margin-top: 69vh;
-      margin-left: 62vw;
-    }
-    .bubble-6 {
-      margin-top: 9vh;
-      margin-left: 78vw;
-    }
-    .bubble-7 {
-      margin-top: 23vh;
-      margin-left: 44vw;
-    }
-    .bubble-8 {
-      margin-top: 55vh;
-      margin-left: 47vw;
-    }
-    .bubble-9 {
-      margin-top: 75vh;
-      margin-left: 8vw;
-    }
-  }
-
-  .middleground-layer {
-    z-index: 2;
-    transition-duration: 20s;
-    opacity: 0.3;
-    .bubble-1 {
-      margin-top: -2vh;
-      margin-left: 10vw;
-    }
-    .bubble-2 {
-      margin-top: 27vh;
-      margin-left: 24vw;
-    }
-    .bubble-3 {
-      margin-top: 9vh;
-      margin-left: 60vw;
-    }
-    .bubble-4 {
-      margin-top: 45vh;
-      margin-left: 38vw;
-    }
-    .bubble-5 {
-      margin-top: 54vh;
-      margin-left: 78vw;
-    }
-    .bubble-6 {
-      margin-top: 79vh;
-      margin-left: 72vw;
-    }
-    .bubble-7 {
-      margin-top: 19vh;
-      margin-left: 78vw;
-    }
-    .bubble-8 {
-      margin-top: 45vh;
-      margin-left: 68vw;
-    }
-    .bubble-9 {
-      margin-top: 68vh;
-      margin-left: 43vw;
-    }
-  }
-
-  .foreground-layer {
-    z-index: 3;
-    transition-duration: 13s;
-    opacity: 0.5;
-    .bubble-1 {
-      margin-top: 69vh;
-      margin-left: -5vw;
-    }
-    .bubble-2 {
-      margin-top: 26vh;
-      margin-left: 30vw;
-    }
-    .bubble-3 {
-      margin-top: 14vh;
-      margin-left: 77vw;
-    }
-    .bubble-4 {
-      margin-top: 85vh;
-      margin-left: 39vw;
-    }
-    .bubble-5 {
-      margin-top: 67vh;
-      margin-left: 73vw;
-    }
-    .bubble-6 {
-      margin-top: 4vh;
-      margin-left: 94vw;
-    }
-    .bubble-7 {
-      margin-top: 5vh;
-      margin-left: 48vw;
-    }
-    .bubble-8 {
-      margin-top: 35vh;
-      margin-left: 58vw;
-    }
-    .bubble-9 {
-      margin-top: 25vh;
-      margin-left: 8vw;
-    }
-  }
-
+    background: rgba(0, 0, 0, .2);
 }
 
-@keyframes bokeh {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@-webkit-keyframes swing {
-  15% {
-    -webkit-transform: translateX(5px);
-    transform: translateX(5px);
-  }
-  30% {
-    -webkit-transform: translateX(-5px);
-    transform: translateX(-5px);
-  }
-  50% {
-    -webkit-transform: translateX(3px);
-    transform: translateX(3px);
-  }
-  65% {
-    -webkit-transform: translateX(-3px);
-    transform: translateX(-3px);
-  }
-  80% {
-    -webkit-transform: translateX(2px);
-    transform: translateX(2px);
-  }
-  100% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-}
-
-@keyframes swing {
-  15% {
-    -webkit-transform: translateX(5px);
-    transform: translateX(5px);
-  }
-  30% {
-    -webkit-transform: translateX(-5px);
-    transform: translateX(-5px);
-  }
-  50% {
-    -webkit-transform: translateX(3px);
-    transform: translateX(3px);
-  }
-  65% {
-    -webkit-transform: translateX(-3px);
-    transform: translateX(-3px);
-  }
-  80% {
-    -webkit-transform: translateX(2px);
-    transform: translateX(2px);
-  }
-  100% {
-    -webkit-transform: translateX(0);
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeAndScale {
-  from {
-    opacity: 0;
-    transform: scale(.1, .1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1, 1);
-  }
-}
-
-body {
-  z-index: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.2);
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-#index {
-  font-size: 14px;
-  //background: rgba(0, 0, 0, .1);
-  //position: fixed;
-  //width: 100%;
-  //height: 100%;
-  .popup-logos {
-    position: fixed;
-    width: 100%;
-    color: #fff;
-    font-weight: bold;
-    font-size: 25px;
-    animation-duration: 1s;
-    animation-name: fadeAndScale;
-    font-family: Consolas, monospace;
-    padding: 14px;
-    z-index: 2;
-  }
-  .text-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-    .login-logo {
-      text-align: center;
-      padding: 15px 0;
-      font-size: 25px;
-      color: #000;
-      font-family: Consolas, monospace;
-      font-weight: bold;
-    }
-    .swing {
-      -webkit-animation: swing .5s ease;
-      animation: swing .5s ease;
-      -webkit-animation-iteration-count: 1;
-      animation-iteration-count: 1;
-    }
-    .login-form {
-      position: relative;
-      display: inline-block;
-      border: 0;
-      box-shadow: 0 0 0;
-      border-radius: 0;
-      background: transparent;
-      color: #555555;
-      font-weight: bold;
-      height: auto;
-      .login-form-message {
-        background: #ffffff;
-        color: #999999;
-        border-left: 3px solid transparent;
-        border-radius: 3px;
-        margin-bottom: 8px;
+#index
+{
+    font-size: 14px;
+    //background: rgba(0, 0, 0, .1);
+    //position: fixed;
+    //width: 100%;
+    //height: 100%;
+    .popup-logos
+    {
+        font-family: Consolas, monospace;
+        font-size: 25px;
         font-weight: bold;
-        height: 0;
-        padding: 10px 20px 10px 17px;
-        opacity: 0;
-        transition: all ease-in-out 200ms;
-      }
-      .login-form-message.show {
-        height: auto;
-        opacity: 1;
-        padding: 10px 20px 10px 17px;
-      }
-      .login-form-message.success {
-        border-left-color: #2ecc71;
-      }
-      .login-form-message.error {
-        border-left-color: #e74c3c;
-      }
-      .main-login-form {
-        position: relative;
-        .login-group {
-          background: #ffffff;
-          color: #999999;
-          border-radius: 8px;
-          padding: 8px 17px 5px 15px;
-          .form-group {
-            margin-bottom: 0;
-            border-bottom: 2px solid #efefef;
-            padding-right: 20px;
+
+        position: fixed;
+        z-index: 2;
+
+        width: 100%;
+        padding: 14px;
+
+        animation-name: fadeAndScale;
+        animation-duration: 1s;
+
+        color: #fff;
+    }
+    .text-center
+    {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        -webkit-user-select: none;
+           -moz-user-select: none;
+                user-select: none;
+        transform: translate(-50%, -50%);
+
+         -khtml-user-select: none;
+             -o-user-select: none;
+        .login-logo
+        {
+            font-family: Consolas, monospace;
+            font-size: 25px;
+            font-weight: bold;
+
+            padding: 15px 0;
+
+            text-align: center;
+
+            color: #000;
+        }
+        .swing
+        {
+            -webkit-animation: swing .5s ease;
+                    animation: swing .5s ease;
+            -webkit-animation-iteration-count: 1;
+                    animation-iteration-count: 1;
+        }
+        .login-form
+        {
+            font-weight: bold;
+
             position: relative;
-            &:last-child {
-              border-bottom: 0;
+
+            display: inline-block;
+
+            height: auto;
+
+            color: #555;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: 0 0 0;
+            .login-form-message
+            {
+                font-weight: bold;
+
+                height: 0;
+                margin-bottom: 8px;
+                padding: 10px 20px 10px 17px;
+
+                transition: all ease-in-out 200ms;
+
+                opacity: 0;
+                color: #999;
+                border-left: 3px solid transparent;
+                border-radius: 3px;
+                background: #fff;
             }
-            .form-control {
-              outline: none;
-              border: 0;
-              box-shadow: 0 0 0;
-              border-radius: 0;
-              background: transparent;
-              color: #555555;
-              padding: 7px 0;
-              font-weight: bold;
-              height: auto;
-              font-size: 14px;
-              &:-moz-placeholder ::-webkit-input-placeholder :-ms-input-placeholder {
-                color: #999999;
-              }
+            .login-form-message.show
+            {
+                height: auto;
+                padding: 10px 20px 10px 17px;
+
+                opacity: 1;
             }
-          }
+            .login-form-message.success
+            {
+                border-left-color: #2ecc71;
+            }
+            .login-form-message.error
+            {
+                border-left-color: #e74c3c;
+            }
+            .main-login-form
+            {
+                position: relative;
+                .login-group
+                {
+                    padding: 8px 17px 5px 15px;
+
+                    color: #999;
+                    border-radius: 8px;
+                    background: #fff;
+                    .form-group
+                    {
+                        position: relative;
+
+                        margin-bottom: 0;
+                        padding-right: 20px;
+
+                        border-bottom: 2px solid #efefef;
+                        &:last-child
+                        {
+                            border-bottom: 0;
+                        }
+                        .form-control
+                        {
+                            font-size: 14px;
+                            font-weight: bold;
+
+                            height: auto;
+                            padding: 7px 0;
+
+                            color: #555;
+                            border: 0;
+                            border-radius: 0;
+                            outline: none;
+                            background: transparent;
+                            box-shadow: 0 0 0;
+                            &:-moz-placeholder ::-webkit-input-placeholder :-ms-input-placeholder
+                            {
+                                color: #999;
+                            }
+                        }
+                    }
+                }
+                .form-group-checkbox
+                {
+                    padding: 5px 0;
+                }
+                .login-button
+                {
+                    position: absolute;
+                    top: 50%;
+                    right: -25px;
+
+                    width: 50px;
+                    height: 50px;
+                    margin-top: -25px;
+                    padding: 11px 0;
+
+                    cursor: pointer;
+                    transition: all ease-in-out 500ms;
+
+                    color: #999;
+                    border: 5px solid rgba(0, 0, 0, .2);
+                    border-radius: 50%;
+                    outline: none;
+                    background: #fff;
+                    &:hover
+                    {
+                        transform: rotate(450deg);
+
+                        color: #555;
+                    }
+                    i
+                    {
+                        width: 14px;
+                        height: 10px;
+                    }
+                }
+            }
+            .etc-login-form
+            {
+                [type='button']
+                {
+                    font-size: 14px;
+
+                    cursor: pointer;
+
+                    color: #a2f;
+                    border: 0;
+                    background: transparent;
+                }
+            }
         }
-        .form-group-checkbox {
-          padding: 5px 0;
+        [type='checkbox']:not(:checked),
+        [type='checkbox']:checked,
+        [type='radio']:not(:checked),
+        [type='radio']:checked
+        {
+            position: absolute;
+            left: -9999px;
         }
-        .login-button {
-          position: absolute;
-          right: -25px;
-          top: 50%;
-          background: #ffffff;
-          color: #999999;
-          padding: 11px 0;
-          width: 50px;
-          height: 50px;
-          margin-top: -25px;
-          border: 5px solid rgba(0, 0, 0, 0.2);
-          border-radius: 50%;
-          transition: all ease-in-out 500ms;
-          outline: none;
-          cursor: pointer;
-          &:hover {
-            color: #555555;
-            transform: rotate(450deg);
-          }
-          i {
-            width: 14px;
-            height: 10px;
-          }
+
+        [type='checkbox']:not(:checked) + label,
+        [type='checkbox']:checked + label,
+        [type='radio']:not(:checked) + label,
+        [type='radio']:checked + label
+        {
+            position: relative;
+
+            padding-top: 1px;
+            padding-left: 25px;
+
+            cursor: pointer;
         }
-      }
-      .etc-login-form {
-        [type="button"] {
-          font-size: 14px;
-          border: 0;
-          background: transparent;
-          cursor: pointer;
-          color: #AA22FF;
+        /* checkbox aspect */
+
+        [type='checkbox']:not(:checked) + label:before,
+        [type='checkbox']:checked + label:before,
+        [type='radio']:not(:checked) + label:before,
+        [type='radio']:checked + label:before
+        {
+            position: absolute;
+            top: 2px;
+            left: 0;
+
+            width: 17px;
+            height: 17px;
+
+            content: '';
+
+            border: 1px solid #aaa;
+            background: #f8f8f8;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3);
         }
-      }
-    }
-    [type="checkbox"]:not(:checked),
-    [type="checkbox"]:checked,
-    [type="radio"]:not(:checked),
-    [type="radio"]:checked {
-      position: absolute;
-      left: -9999px;
-    }
+        [type='checkbox']:not(:checked) + label:before,
+        [type='checkbox']:checked + label:before
+        {
+            border-radius: 3px;
+        }
+        [type='radio']:not(:checked) + label:before,
+        [type='radio']:checked + label:before
+        {
+            border-radius: 35px;
+        }
+        /* checked mark aspect */
 
-    [type="checkbox"]:not(:checked) + label,
-    [type="checkbox"]:checked + label,
-    [type="radio"]:not(:checked) + label,
-    [type="radio"]:checked + label {
-      position: relative;
-      padding-left: 25px;
-      cursor: pointer;
-      padding-top: 1px;
-    }
-    /* checkbox aspect */
+        [type='checkbox']:not(:checked) + label:after,
+        [type='checkbox']:checked + label:after
+        {
+            font-size: 14px;
 
-    [type="checkbox"]:not(:checked) + label:before,
-    [type="checkbox"]:checked + label:before,
-    [type="radio"]:not(:checked) + label:before,
-    [type="radio"]:checked + label:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 2px;
-      width: 17px;
-      height: 17px;
-      border: 1px solid #aaa;
-      background: #f8f8f8;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3)
-    }
-    [type="checkbox"]:not(:checked) + label:before,
-    [type="checkbox"]:checked + label:before {
-      border-radius: 3px;
-    }
-    [type="radio"]:not(:checked) + label:before,
-    [type="radio"]:checked + label:before {
-      border-radius: 35px;
-    }
-    /* checked mark aspect */
+            position: absolute;
+            top: 2px;
+            left: 4px;
 
-    [type="checkbox"]:not(:checked) + label:after,
-    [type="checkbox"]:checked + label:after {
-      content: '\2714';
-      position: absolute;
-      top: 2px;
-      left: 4px;
-      font-size: 14px;
-      color: #09ad7e;
-      transition: all .2s;
-    }
-    [type="radio"]:not(:checked) + label:after,
-    [type="radio"]:checked + label:after {
-      content: '\2022';
-      position: absolute;
-      top: -1px;
-      left: 1.4px;
-      font-size: 45px;
-      color: #09ad7e;
-      line-height: 25px;
-      transition: all .2s;
-    }
-    /* checked mark aspect changes */
+            content: '\2714';
+            transition: all .2s;
 
-    [type="checkbox"]:not(:checked) + label:after,
-    [type="radio"]:not(:checked) + label:after {
-      opacity: 0;
-      transform: scale(0);
-    }
+            color: #09ad7e;
+        }
+        [type='radio']:not(:checked) + label:after,
+        [type='radio']:checked + label:after
+        {
+            font-size: 45px;
+            line-height: 25px;
 
-    [type="checkbox"]:checked + label:after,
-    [type="radio"]:checked + label:after {
-      opacity: 1;
-      transform: scale(1);
-    }
-    /* disabled checkbox */
+            position: absolute;
+            top: -1px;
+            left: 1.4px;
 
-    [type="checkbox"]:disabled:not(:checked) + label:before,
-    [type="checkbox"]:disabled:checked + label:before,
-    [type="radio"]:disabled:not(:checked) + label:before,
-    [type="radio"]:disabled:checked + label:before {
-      box-shadow: none;
-      border-color: #bbb;
-      background-color: #ddd;
-    }
+            content: '\2022';
+            transition: all .2s;
 
-    [type="checkbox"]:disabled:checked + label:after,
-    [type="radio"]:disabled:checked + label:after {
-      color: #999;
-    }
+            color: #09ad7e;
+        }
+        /* checked mark aspect changes */
 
-    [type="checkbox"]:disabled + label,
-    [type="radio"]:disabled + label {
-      color: #aaa;
+        [type='checkbox']:not(:checked) + label:after,
+        [type='radio']:not(:checked) + label:after
+        {
+            transform: scale(0);
+
+            opacity: 0;
+        }
+
+        [type='checkbox']:checked + label:after,
+        [type='radio']:checked + label:after
+        {
+            transform: scale(1);
+
+            opacity: 1;
+        }
+        /* disabled checkbox */
+
+        [type='checkbox']:disabled:not(:checked) + label:before,
+        [type='checkbox']:disabled:checked + label:before,
+        [type='radio']:disabled:not(:checked) + label:before,
+        [type='radio']:disabled:checked + label:before
+        {
+            border-color: #bbb;
+            background-color: #ddd;
+            box-shadow: none;
+        }
+
+        [type='checkbox']:disabled:checked + label:after,
+        [type='radio']:disabled:checked + label:after
+        {
+            color: #999;
+        }
+
+        [type='checkbox']:disabled + label,
+        [type='radio']:disabled + label
+        {
+            color: #aaa;
+        }
     }
-  }
 }

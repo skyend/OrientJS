@@ -1,89 +1,104 @@
-.noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+.noselect
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+     -khtml-user-select: none;
 }
 
-.FloatingMenuBox {
+.FloatingMenuBox
+{
+    position: fixed;
+    z-index: 9;
+    top: 100px;
+    left: 400px;
+    &.black
+    {
+        color: #fff;
+        background-color: #222;
+        box-shadow: 0 0 5px rgba(0, 0, 0, .3);
 
-  &.black {
-    background-color: #222;
-    color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-
-    > .header {
-      background-color: #555;
-    }
-
-    > .body {
-
-      > ul {
-
-        > li {
-          background-color: #222;
-
-          transition: background-color 0.5s ease;
-
-          &:hover {
-            background-color: #333;
-          }
-
-          &:active {
-            background-color: #111;
-          }
-
-          &.button {
-            cursor: pointer;
-          }
+        > .header
+        {
+            background-color: #555;
         }
 
-        > hr {
-          border-color: #333;
+        > .body
+        {
+            > ul
+            {
+                > li
+                {
+                    transition: background-color .5s ease;
+
+                    background-color: #222;
+
+                    &:hover
+                    {
+                        background-color: #333;
+                    }
+
+                    &:active
+                    {
+                        background-color: #111;
+                    }
+
+                    &.button
+                    {
+                        cursor: pointer;
+                    }
+                }
+
+                > hr
+                {
+                    border-color: #333;
+                }
+            }
         }
-      }
     }
-  }
 
-  position: fixed;
-  z-index: 9;
-  left: 400px;
-  top: 100px;
+    > .header
+    {
+        font-size: 13px;
 
-  > .header {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    font-size: 13px;
-
-    cursor: default;
-
-    .noselect;
-  }
-
-  > .body {
-    position: relative;
-    width: 100%;
-
-    > ul {
-      position: relative;
-      padding: 0px;
-      margin: 0px;
-      width: 100%;
-
-      > li {
+        box-sizing: border-box;
         width: 100%;
         padding: 10px;
-        box-sizing: border-box;
 
-        font-size: 12px;
-
-        cursor: pointer;
+        cursor: default;
 
         .noselect;
-      }
     }
-  }
+
+    > .body
+    {
+        position: relative;
+
+        width: 100%;
+
+        > ul
+        {
+            position: relative;
+
+            width: 100%;
+            margin: 0;
+            padding: 0;
+
+            > li
+            {
+                font-size: 12px;
+
+                box-sizing: border-box;
+                width: 100%;
+                padding: 10px;
+
+                cursor: pointer;
+
+                .noselect;
+            }
+        }
+    }
 }

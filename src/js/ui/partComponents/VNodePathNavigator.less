@@ -1,61 +1,74 @@
-.VNodePathNavigator {
+.VNodePathNavigator
+{
+    &.theme-default
+    {
+        ul
+        {
+            li
+            {
+                > span.tag
+                {
+                    text-transform: uppercase;
 
-  &.theme-default {
-    ul {
+                    color: #fff;
+                }
 
-      li {
+                > span.class
+                {
+                    color: #ef4089;
 
-        > span.tag {
-          color:#fff;
+                    &::before
+                    {
+                        color: #aaa;
+                    }
+                }
 
-          text-transform: uppercase;
 
+                &::before
+                {
+                    color: #aaa;
+                }
+
+
+                &:hover
+                {
+                    background-color: #333;
+                }
+            }
         }
-
-        > span.class {
-          color:#EF4089;
-
-          &::before {
-            color:#aaa;
-          }
-        }
-
-
-        &::before {
-          color:#aaa;
-        }
-
-
-        &:hover {
-          background-color: #333;
-        }
-      }
     }
-  }
 
-  >ul {
+    > ul
+    {
+        margin: 0;
+        padding: 0;
 
-    padding:0;
-    margin:0;
-    list-style-type: none;
-    >li {
-      font-size: 11px;
-      display:inline-block;
+        list-style-type: none;
+        > li
+        {
+            font-size: 11px;
 
-      > span {
-        &.class {
-          &::before {
-            content:'.';
-          }
+            display: inline-block;
+
+            > span
+            {
+                &.class
+                {
+                    &::before
+                    {
+                        content: '.';
+                    }
+                }
+            }
+
+            &::before
+            {
+                content: ' > ';
+            }
+            &:first-child::before
+            {
+                content: '';
+            }
         }
-      }
-
-      &::before {
-        content:" > ";
-      }
-      &:first-child::before {
-        content:"";
-      }
     }
-  }
 }

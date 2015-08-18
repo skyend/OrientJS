@@ -1,183 +1,216 @@
 @HeadHeight:25px;
 @FootHeight:35px;
 
-.ProjectSetting {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin:0;
+.ProjectSetting
+{
+    position: relative;
 
- >.wrapper {
-   position: relative;
-   height: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 
-   >.head {
-     position: relative;
-     width:100%;
-     top:0px;
-     height:@HeadHeight;
-     font-size: 12px;
-     padding:5px;
-     box-sizing: border-box;
-   }
+    > .wrapper
+    {
+        position: relative;
 
+        height: 100%;
 
-   >.body {
-     position: absolute;
-     width:100%;
-     box-sizing: border-box;
+        > .head
+        {
+            font-size: 12px;
 
-     top:@HeadHeight;
-     bottom:@FootHeight;
+            position: relative;
+            top: 0;
 
-     overflow: auto;
-
-
-     >.row {
-      box-sizing: border-box;
-      > .setting {
-
-      }
-
-      >.input {
-
-      }
-     }
-   }
-
-   > .foot {
-     position: absolute;
-     width:100%;
-     bottom:0px;
-     height:@FootHeight;
-
-     text-align: right;
-   }
- }
-
-  /* Color Theme */
-  &.white {
-    background-color: #FFF6EE;
-
-    >.wrapper {
-      > .head {
-        background-color: #19BDC4;
-        color:#FFF6EE;
-      }
-
-      >.body {
-        border-top-color: #ccc;
-        border-bottom-color: #ccc;
-
-        >.row {
-          border-bottom-color:#eee;
-          > .column {
-            > .title {
-              color:#0C274C;
-            }
-
-            > .field {
-              color:#EF4089;
-            }
-          }
-        }
-      }
-
-      > .foot {
-        background-color: #eee;
-      }
-    }
-  }
-
-
-
-
- /* Width Type */
- &.narrow-width {
-   .body {
-     > .row {
-       > .column {
-         > .title {
-           padding:10px;
-           padding-bottom: 0;
-
-           font-size: 13px;
-         }
-
-         > .input {
-           padding:10px;
-           padding-bottom: 0;
-           font-size: 12px;
-         }
-
-         > .field {
-           padding:10px;
-           padding-bottom: 0;
-           font-size: 12px;
-
-         }
-       }
-     }
-   }
- }
-
- &.wide-width {
-   .body {
-
-
-     > .row {
-       margin:auto;
-       width:768px;
-
-       padding-top:10px;
-       padding-bottom:10px;
-       border-bottom-width: 1px;
-       border-bottom-style: solid;
-
-       > .column {
-         > .title {
-           width:200px;
-           float:left;
-
-           font-size: 14px;
-
-           padding:5px;
-
-           box-sizing: border-box;
-         }
-
-         > .input {
-           width:568px;
-           float:left;
-           box-sizing: border-box;
-
-           &::after {
-             display: block;
-             content: " ";
-             clear:both;
-           }
-         }
-
-         > .field {
-            width:568px;
-            float:left;
             box-sizing: border-box;
-            padding-top:5px;
+            width: 100%;
+            height: @HeadHeight;
+            padding: 5px;
+        }
 
-            &::after {
-               display: block;
-               content: " ";
-               clear:both;
+
+        > .body
+        {
+            position: absolute;
+            top: @HeadHeight;
+            bottom: @FootHeight;
+
+            overflow: auto;
+
+            box-sizing: border-box;
+            width: 100%;
+
+
+            > .row
+            {
+                box-sizing: border-box;
             }
-         }
+        }
 
-         &::after {
-           display: block;
-           content: " ";
-           clear:both;
-         }
-       }
-     }
-   }
- }
+        > .foot
+        {
+            position: absolute;
+            bottom: 0;
+
+            width: 100%;
+            height: @FootHeight;
+
+            text-align: right;
+        }
+    }
+
+    /* Color Theme */
+    &.white
+    {
+        background-color: #fff6ee;
+
+        > .wrapper
+        {
+            > .head
+            {
+                color: #fff6ee;
+                background-color: #19bdc4;
+            }
+
+            > .body
+            {
+                border-top-color: #ccc;
+                border-bottom-color: #ccc;
+
+                > .row
+                {
+                    border-bottom-color: #eee;
+                    > .column
+                    {
+                        > .title
+                        {
+                            color: #0c274c;
+                        }
+
+                        > .field
+                        {
+                            color: #ef4089;
+                        }
+                    }
+                }
+            }
+
+            > .foot
+            {
+                background-color: #eee;
+            }
+        }
+    }
+
+
+
+
+    /* Width Type */
+    &.narrow-width
+    {
+        .body
+        {
+            > .row
+            {
+                > .column
+                {
+                    > .title
+                    {
+                        font-size: 13px;
+
+                        padding: 10px;
+                        padding-bottom: 0;
+                    }
+
+                    > .input
+                    {
+                        font-size: 12px;
+
+                        padding: 10px;
+                        padding-bottom: 0;
+                    }
+
+                    > .field
+                    {
+                        font-size: 12px;
+
+                        padding: 10px;
+                        padding-bottom: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    &.wide-width
+    {
+        .body
+        {
+            > .row
+            {
+                width: 768px;
+                margin: auto;
+                padding-top: 10px;
+                padding-bottom: 10px;
+
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
+
+                > .column
+                {
+                    > .title
+                    {
+                        font-size: 14px;
+
+                        float: left;
+
+                        box-sizing: border-box;
+                        width: 200px;
+                        padding: 5px;
+                    }
+
+                    > .input
+                    {
+                        float: left;
+
+                        box-sizing: border-box;
+                        width: 568px;
+
+                        &::after
+                        {
+                            display: block;
+                            clear: both;
+
+                            content: ' ';
+                        }
+                    }
+
+                    > .field
+                    {
+                        float: left;
+
+                        box-sizing: border-box;
+                        width: 568px;
+                        padding-top: 5px;
+
+                        &::after
+                        {
+                            display: block;
+                            clear: both;
+
+                            content: ' ';
+                        }
+                    }
+
+                    &::after
+                    {
+                        display: block;
+                        clear: both;
+
+                        content: ' ';
+                    }
+                }
+            }
+        }
+    }
 }

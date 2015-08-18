@@ -1,128 +1,174 @@
-.noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+.noselect
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+     -khtml-user-select: none;
 }
-.DocumentStage {
-  .noselect;
-  position: absolute;
-  top: 30px;
-  bottom: 22px;
-  left: 260px;
-  right: 255px;
-  z-index: 1;
-  overflow: hidden;
-  &.tab-support {
-    > .tab-switch-panel {
-      background: darkgray;
-      height: 30px;
-      > .tab-list {
-        box-sizing: border-box;
-        height: 30px;
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-        border-bottom: 5px solid #333;
-        > li {
-          border-right: 1px solid #333;
-          color: #5f5f5f;
-          display: inline-block;
-          box-sizing: border-box;
-          font-size: 12px;
-          padding: 6px 12px;
-          cursor: pointer;
-          &.forwarded {
-            background-color: #333;
-            color: #fff;
-          }
-          &:focus {
-            background-color: #333;
-            color: #fff;
-          }
-          >.close {
-            color: #5f5f5f;
-          }
+.DocumentStage
+{
+    position: absolute;
+    z-index: 1;
+    top: 30px;
+    right: 255px;
+    bottom: 22px;
+    left: 260px;
+
+    overflow: hidden;
+
+    .noselect;
+    &.tab-support
+    {
+        > .tab-switch-panel
+        {
+            height: 30px;
+
+            background: darkgray;
+            > .tab-list
+            {
+                box-sizing: border-box;
+                height: 30px;
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+
+                border-bottom: 5px solid #333;
+                > li
+                {
+                    font-size: 12px;
+
+                    display: inline-block;
+
+                    box-sizing: border-box;
+                    padding: 6px 12px;
+
+                    cursor: pointer;
+
+                    color: #5f5f5f;
+                    border-right: 1px solid #333;
+                    &.forwarded
+                    {
+                        color: #fff;
+                        background-color: #333;
+                    }
+                    &:focus
+                    {
+                        color: #fff;
+                        background-color: #333;
+                    }
+                    > .close
+                    {
+                        color: #5f5f5f;
+                    }
+                }
+            }
         }
-      }
+        > .tab-context
+        {
+            position: absolute;
+            top: 30px;
+            bottom: 0;
+
+            width: 100%;
+
+            background-color: rgb(30,33,39);
+            > .empty-holder
+            {
+                font-family: 'Open Sans';
+                font-size: 32px;
+
+                position: absolute;
+                top: 50%;
+
+                width: 100%;
+                margin-top: -32px;
+
+                cursor: default;
+                text-align: center;
+
+                color: rgb(70,73,79);
+            }
+        }
     }
-    > .tab-context {
-      position: absolute;
-      bottom: 0;
-      top: 30px;
-      width: 100%;
-      background-color: rgb(30,33,39);
-      >.empty-holder {
-        position: absolute;
-        width: 100%;
-        top: 50%;
-        margin-top: -32px;
+    .unboxing-zone
+    {
+        display: none;
+    }
+}
+.drop-guide-box
+{
+    position: fixed;
+    z-index: 5;
+
+    width: 105px;
+    height: 105px;
+
+    .noselect;
+    > div
+    {
+        font-size: 7px!important;
+
+        float: left;
+
+        box-sizing: border-box;
+        width: 35px;
+        height: 35px;
+        padding-top: 13px;
+
+        cursor: crosshair;
+        transition: all .15s ease;
         text-align: center;
-        font-family: 'Open Sans';
-        font-size: 32px;
-        color: rgb(70,73,79);
-        cursor: default;
-      }
+
+        color: white;
+
+        -webkit-text-size-adjust: none;
     }
-  }
-  .unboxing-zone {
-    display: none;
-  }
+    > .direction
+    {
+        border: 1px solid rgba(37, 196, 255, .16);
+        background-color: rgba(5, 207, 255, .6);
+        &.in
+        {
+            border: 0;
+            background-color: rgba(55, 257, 255, .3);
+        }
+        &[see='yes']
+        {
+            background-color: rgba(0, 0, 0, .8);
+        }
+    }
 }
-.drop-guide-box {
-  position: fixed;
-  z-index: 5;
-  width: 105px;
-  height: 105px;
-  .noselect;
-  > div {
-    float: left;
-    width: 35px;
-    height: 35px;
+.element-highlighter
+{
+    position: absolute;
+    z-index: 3;
+
     box-sizing: border-box;
-    font-size: 7px!important;
-    padding-top: 13px;
-    text-align: center;
-    -webkit-text-size-adjust: none;
-    color: white;
-    transition: all 0.15s ease;
-    cursor: crosshair;
-  }
-  >.direction {
-    background-color: rgba(5, 207, 255, 0.6);
-    border: 1px solid rgba(37, 196, 255, 0.16);
-    &.in {
-      border: 0;
-      background-color: rgba(55, 257, 255, 0.3);
-    }
-    &[see='yes'] {
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-  }
+
+    border: 3px solid #fff;
+    background-color: rgba(0,0,0,.2);
+
+    mix-blend-mode: difference;
+    .noselect;
 }
-.element-highlighter {
-  position: absolute;
-  z-index: 3;
-  border: 3px solid #fff;
-  background-color: rgba(0,0,0,0.2);
-  box-sizing: border-box;
-  mix-blend-mode: difference;
-  .noselect;
-}
-.drop-position-placeholder {
-  position: absolute;
-  z-index: 4;
-  background-color: #fff;
-  mix-blend-mode: difference;
-  &.vertical {
-    width: 3px;
-  }
-  &.horizontal {
-    height: 3px;
-  }
-  &.box {
-    
-  }
+.drop-position-placeholder
+{
+    position: absolute;
+    z-index: 4;
+
+    background-color: #fff;
+
+    mix-blend-mode: difference;
+    &.vertical
+    {
+        width: 3px;
+    }
+    &.horizontal
+    {
+        height: 3px;
+    }
 }

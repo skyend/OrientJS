@@ -1,96 +1,111 @@
-@import "../CommonSnippet";
+@import '../CommonSnippet';
 
-.BasicButton {
+.BasicButton
+{
+    font-family: 'Open Sans','Segoe UI';
+    font-size: 12px;
+
+    margin: 5px;
     padding: 7px 15px;
+
+    cursor: pointer;
+    transition: all .15s ease;
+
     border-width: 1px;
     border-style: solid;
-    font-size: 12px;
     border-radius: 2px;
-    margin:5px;
-
-    cursor:pointer;
-
-    font-family: 'Open Sans','Segoe UI';
-
-    transition: all .15s ease;
+    box-shadow: 0 0 10px #fff;
 
     /*
       Color Themes
       */
-    &.primary {
+    &.primary
+    {
+        color: #fff;
         border-color: @PrimaryBorderColor;
         background-color: @PrimaryBGColor;
-        color:#fff;
 
-        &:hover {
-          background-color: @PrimaryBGHoverColor;
+        &:hover
+        {
+            background-color: @PrimaryBGHoverColor;
         }
     }
 
-    &.success {
+    &.success
+    {
+        color: #fff;
         border-color: @SuccessBorderColor;
         background-color: @SuccessBGColor;
-        color:#fff;
 
-        &:hover {
-          background-color: @SuccessBGHoverColor;
+        &:hover
+        {
+            background-color: @SuccessBGHoverColor;
         }
     }
 
-    &.warnings {
+    &.warnings
+    {
+        color: #fff;
         border-color: @WarningsBorderColor;
         background-color: @WarningsBGColor;
-        color:#fff;
 
-        &:hover {
-          background-color: @WarningsBGHoverColor;
+        &:hover
+        {
+            background-color: @WarningsBGHoverColor;
         }
     }
 
-    &.error {
+    &.error
+    {
+        color: #fff;
         border-color: @ErrorBorderColor;
         background-color: @ErrorBGColor;
-        color:#fff;
 
-        &:hover {
-          background-color: @ErrorBGHoverColor;
+        &:hover
+        {
+            background-color: @ErrorBGHoverColor;
         }
     }
 
-    &.default {
+    &.default
+    {
+        color: #333;
         border-color: @DefaultBorderColor;
         background-color: @DefaultBGColor;
-        color:#333;
 
-        &:hover {
-          background-color: @DefaultBGHoverColor;
+        &:hover
+        {
+            background-color: @DefaultBGHoverColor;
         }
     }
 
-    &:active {
-      box-shadow:0 0 10px #fff, inset 0 3px 5px rgba(0,0,0,.125);
+    &:active
+    {
+        box-shadow: 0 0 10px #fff, inset 0 3px 5px rgba(0,0,0,.125);
     }
-
-    box-shadow: 0 0 10px #fff;
 
 
     /*
       Size
       */
-    &.small {
-        padding: 3px 7px;
+    &.small
+    {
         font-size: 12px;
+
+        padding: 3px 7px;
     }
 
-    &.normal {
-        padding: 5px 15px;
+    &.normal
+    {
         font-size: 14px;
+
+        padding: 5px 15px;
     }
 
-    &.large {
-        padding: 7px 20px;
+    &.large
+    {
         font-size: 16px;
+
+        padding: 7px 20px;
     }
-
-
 }
