@@ -97,8 +97,10 @@
             if (typeof _toolClass === 'function') {
 
                 this.setState({
-                    equipTool: {class: _toolClass, config: _toolConfig, toolKey: _toolKey, storedState: _storedToolState}
+                    equipTool: {class: _toolClass, config: _toolConfig, toolKey: _toolKey, storedToolState: _storedToolState}
                 });
+
+
 
                 this.emit("NoticeMessage", {
                     title: "From PanelNavigation",
@@ -295,15 +297,16 @@
 
         componentDidUpdate(){
 
+
           // 보관된 state적용
           if( typeof this.equipedToolRef !== 'undefined' ){
             var toolElement = this.refs[this.equipedToolRef];
 
             // 보관된 State를 확인하고 보관된게 있으면 바로 반영한다.
-            var storedState = this.state.storedState;
+            var storedToolState = this.state.equipTool.storedToolState;
 
-            if( typeof storedState !== 'undefined' ){
-              this.applyToolState( storedState );
+            if( typeof storedToolState !== 'undefined' ){
+              this.applyToolState( storedToolState );
             }
           }
         },

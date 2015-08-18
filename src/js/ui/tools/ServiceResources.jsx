@@ -52,7 +52,7 @@
           };
 
           var contextIsRunning = false;
-
+          
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === 'document' ){
               if( this.state.runningContext.documentID ==  _documentMeta.id ){
