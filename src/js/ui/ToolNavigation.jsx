@@ -285,6 +285,7 @@
 
         // 현재 장착된 Tool의 State를 변경한다.
         applyToolState( _state ){
+
           var toolElement = this.refs[this.equipedToolRef];
 
           toolElement.setState( _state );
