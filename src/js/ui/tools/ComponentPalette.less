@@ -51,6 +51,53 @@
                 width: 100%;
                 height: 100px;
             }
+
+            > .package-list-area
+            {
+                > ul.package-list
+                {
+                    margin: 0;
+                    padding: 0;
+
+                    list-style-type: none;
+
+                    text-align: justify;
+
+                    > li.package
+                    {
+                        > label
+                        {
+                            font-size: 13px;
+
+                            display: block;
+
+                            box-sizing: border-box;
+                            width: 100%;
+                            padding: 5px;
+                        }
+
+                        > ul
+                        {
+                            margin: 0;
+                            padding: 0;
+
+                            > li
+                            {
+                                font-size: 12px;
+
+                                display: inline-block;
+
+                                box-sizing: border-box;
+                                padding: 5px;
+
+                                cursor: pointer;
+                                text-align: justify;
+                                letter-spacing: 1px;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         > .foot
@@ -83,55 +130,77 @@
             {
                 border-top-color: #ccc;
                 border-bottom-color: #ccc;
+            }
+
+            > .foot
+            {
+                background-color: #0d0d0d;
+            }
+        }
+    }
 
 
+    &.theme-scott-mc-carthy
+    {
+        background-color: rgb(242,242,242);
 
-                > .list-area
+        > .wrapper
+        {
+            > .head
+            {
+                //
+            }
+
+            > .body
+            {
+                border-top-color: #ccc;
+                border-bottom-color: #ccc;
+
+                > .previewer-area
                 {
-                    > ul
+                    //
+                }
+
+                > .package-list-area
+                {
+                    > ul.package-list
                     {
-                        margin: 0;
-                        padding: 0;
-
-                        list-style-type: none;
-
-                        text-align: justify;
-
-                        > li
+                        > li.package
                         {
-                            display: inline-block;
-
-                            box-sizing: border-box;
-                            height: 30px;
-                            padding: 5px;
-
-                            cursor: pointer;
-                            word-break: break-word;
-
-                            color: #fff;
-
-                            .noselect;
-
-                            &:nth-child(even)
+                            > label
                             {
-                                color: #eee;
-                                background-color: #454545;
+                                color: rgb(242,242,242);
+                                background-color: rgb(206, 70, 36);
                             }
 
-                            &:nth-child(odd)
+                            > ul
                             {
-                                color: #fff;
-                                background-color: #555;
-                            }
+                                > li
+                                {
+                                    &:nth-child(even)
+                                    {
+                                        color: #fff;
+                                        border-color: rgb(182, 206, 216);
+                                        background-color: rgb(86, 126, 157);
 
-                            &:first-letter
-                            {
-                                text-transform: uppercase;
-                            }
+                                        &:hover
+                                        {
+                                            background-color: rgb(106, 146, 177);
+                                        }
+                                    }
 
-                            &:hover
-                            {
-                                background-color: #333;
+                                    &:nth-child(odd)
+                                    {
+                                        color: #333;
+                                        border-color: rgb(86, 126, 157);
+                                        background-color: rgb(182, 206, 216);
+
+                                        &:hover
+                                        {
+                                            background-color: rgb(162, 186, 196);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -140,7 +209,7 @@
 
             > .foot
             {
-                background-color: #0d0d0d;
+                //
             }
         }
     }

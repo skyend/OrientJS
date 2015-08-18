@@ -1,44 +1,41 @@
 {
   "host": "http://localhost:8000",
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
-  "availablePackages": {
-
-    "TestPackage": {
-      "name": "Test",
-      "components": [{
-        "key": "a",
-        "name": "A",
-        "path": "TestPackage/A.jsx"
-      }, {
-        "key": "b",
-        "name": "B",
-        "path": "TestPackage/B.jsx"
-      }, {
-        "key": "testinputbox",
-        "name": "TestInputBox",
-        "path": "TestPackage/TestInputBox.jsx"
-      }, {
-        "key": "basicbutton",
-        "name": "BasicButton",
-        "path": "TestPackage/BasicButton.jsx"
-      }, {
-        "key": "boxa",
-        "name": "BoxA",
-        "path": "TestPackage/BoxA.jsx"
-      }, {
-        "key": "boxb",
-        "name": "BoxB",
-        "path": "TestPackage/BoxB.jsx"
-      }]
-    },
-
-    "SampleGridPackage": {
-      "name": "SampleGrid",
-      "components": [{
-        "key": "grid",
-        "name": "grid",
-        "path": "SampleGridPackage/Grid.jsx"
-      }]
-    }
-  }
+  "availablePackages": [{
+    "key": "TestPackage",
+    "name": "TestPackage",
+    "components": [{
+      "key": "a",
+      "name": "A",
+      "path": "TestPackage/A.jsx"
+    }, {
+      "key": "b",
+      "name": "B",
+      "path": "TestPackage/B.jsx"
+    }, {
+      "key": "testinputbox",
+      "name": "TestInputBox",
+      "path": "TestPackage/TestInputBox.jsx"
+    }, {
+      "key": "basicbutton",
+      "name": "BasicButton",
+      "path": "TestPackage/BasicButton.jsx"
+    }, {
+      "key": "boxa",
+      "name": "BoxA",
+      "path": "TestPackage/BoxA.jsx"
+    }, {
+      "key": "boxb",
+      "name": "BoxB",
+      "path": "TestPackage/BoxB.jsx"
+    }]
+  }, {
+    "key": "SampleGridPackage",
+    "name": "SampleGridPackage",
+    "components": [{
+      "key": "grid",
+      "name": "grid",
+      "path": "SampleGridPackage/Grid.jsx"
+    }]
+  }]
 }

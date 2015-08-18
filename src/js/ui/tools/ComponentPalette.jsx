@@ -13,14 +13,15 @@
 
         getInitialState(){
           return {
-            availableComponentPackageMeta : {}
+            availableComponentPackageMeta : []
           }
         },
 
         mouseOverListItem( _componentKey, _packageKey){
 
           this.emit('IMustPreviewComponent', {
-            componentKey:_componentKey
+            componentKey:_componentKey,
+            packageKey: _packageKey
           });
         },
 
@@ -33,6 +34,7 @@
             app.ui.holdingElementWhileDrag(holderHTML);
 
             this.willDeployComponentKey = _componentKey;
+            this.willDeployPackageKey = _packageKey;
         },
 
         renderComponentMeta( _componentMeta, _packageKey ){
@@ -45,17 +47,16 @@
           )
         },
 
-        renderPackageMeta( _packageKey ){
+        renderPackageMeta( _packageMeta ){
           var self = this;
-          var packageMeta = this.state.availableComponentPackageMeta[_packageKey];
 
           return (
-            <div className='package'>
-              <label> <i className='fa fa-gift'></i> {packageMeta.name} </label>
+            <li className='package'>
+              <label> <i className='fa fa-gift'></i> {_packageMeta.name} </label>
               <ul>
-                {packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageKey)} ) }
+                { _packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageMeta.key)} ) }
               </ul>
-            </div>
+            </li>
           );
 
 
@@ -65,7 +66,8 @@
             this.emit("BeginDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
         },
 
@@ -73,7 +75,8 @@
             this.emit("DragDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
         },
 
@@ -81,10 +84,12 @@
             this.emit("DropDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
 
             this.willDeployComponentKey = undefined;
+            this.willDeployPackageKey = undefined;
         },
 
         componentDidMount(){
@@ -103,7 +108,7 @@
 
         render() {
             var wide = false;
-            var rootClasses = ['ComponentPalette', 'black', this.getMySizeClass()];
+            var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
             console.log( this.state );
             return (
                 <div className={rootClasses.join(' ')}>
@@ -115,9 +120,9 @@
                             <div className='previewer-area'>
                                 <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
                             </div>
-                            <div className='list-area'>
-                                <ul>
-                                  {Object.keys(this.state.availableComponentPackageMeta).map(this.renderPackageMeta)}
+                            <div className='package-list-area'>
+                                <ul className='package-list'>
+                                  {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
                                 </ul>
                             </div>
                         </div>

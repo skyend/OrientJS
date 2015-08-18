@@ -279,7 +279,7 @@
     if (_eventData.refPath[0] === 'ComponentPalette') {
 
       _eventData.path[0].setState({
-        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey)
+        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey)
       });
     }
   };
