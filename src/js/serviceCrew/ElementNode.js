@@ -1,4 +1,6 @@
-var ElementNode = function(_elementNodeDataObject) {
+var React = require('react');
+
+var ElementNode = function(_document, _elementNodeDataObject) {
   //////////////
   // 필드 정의
   ////////////////////////
@@ -11,12 +13,15 @@ var ElementNode = function(_elementNodeDataObject) {
   // date fields
   this.createDate;
   this.updateDate;
+  this.css;
 
   // children
   this.children;
 
   // parent refference
   this.parent;
+
+  this.document = _document;
 
   //////////////////////////
   // 처리로직
@@ -56,6 +61,10 @@ ElementNode.prototype.setParent = function(_parentENode) {
 ElementNode.prototype.setElement = function(_element) {
   this.element = _element;
 };
+// css
+ElementNode.prototype.setCSS = function(_css) {
+  this.css = _css;
+};
 
 // real element
 ElementNode.prototype.setRealElement = function(_realElement) {
@@ -87,7 +96,12 @@ ElementNode.prototype.getRealElement = function() {
 // parent
 ElementNode.prototype.getParent = function() {
   return this.parent;
-}
+};
+// css
+ElementNode.prototype.getCSS = function() {
+  return this.css;
+};
+
 
 ////////////////////
 // Exists
@@ -118,25 +132,96 @@ ElementNode.prototype.buildByComponent = function(_component) {
   console.log('빌드해라', _component);
   console.log(_component);
   if (_component.elementType === 'html') {
-    this.setType(_component.elementType);
+
+
+    var parsingDom = document.createElement('div');
+    parsingDom.innerHTML = React.renderToStaticMarkup(React.createElement(_component.class));
+
+    this.buildByDomElement(parsingDom.childNodes[0]);
+
+    if (typeof _component.CSS !== 'undefined') {
+      this.setCSS(_component.CSS);
+      this.document.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
+    }
+
+  } else if (_component.elementType === 'react') {
+    // ToDo
+  } else if (_component.elementType === 'grid') {
+    // Todo
+  }
+
+};
+
+/******************
+ * buildByDomElement
+ * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
+ * child는 재귀로 호출한다.
+ */
+ElementNode.prototype.buildByDomElement = function(_domElement) {
+
+  // TextNode 의 경우 단순한 빌딩
+  if (_domElement.nodeName === '#text') {
+    this.setType('string');
     this.setElement({
-      'tagName': "div",
-      'class': "testIn"
+      'tagName': 'text',
+      'text': _domElement.nodeValue
     });
+
+    return;
+  }
+
+  // TextNode가 아닌경우
+  this.setType('html');
+
+  // element 업데이트
+  this.updateElement(_domElement);
+
+  //////////////////
+  // 자식노드 재귀처리 //
+  var children = [];
+  var childNodes = _domElement.childNodes;
+
+  // 자식노드도 생성
+  var child_ = null;
+  for (var i = 0; i < childNodes.length; i++) {
+    child_ = childNodes[i];
+
+    // comment node 는 무시
+    if (child_.nodeName === '#comment') continue;
+
+    // 새 자식용 ElementNode 생성
+    var newChildElementNode = this.document.newElementNode();
+    newChildElementNode.buildByDomElement(child_);
+
+    children.push(newChildElementNode);
+  }
+  // 재귀끝  //
+  ////////////
+
+
+  this.children = children;
+};
+
+ElementNode.prototype.updateElement = function(_domElement) {
+  var elementSpec = {
+    'tagName': _domElement.nodeName.toLowerCase(),
+  };
+
+  // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
+  var attributes = _domElement.attributes;
+  for (var i = 0; i < attributes.length; i++) {
+    if (attributes[i].name === '__vid__') continue;
+    elementSpec[attributes[i].name] = attributes[i].nodeValue;
   }
 
 
-
-  /// 컴포넌트를 어떻게 ElementNode로 변환할까
-  // HTML같은경우와 React일경우 Grid일 경우
-  // 정의 필요
+  this.setElement(elementSpec);
 };
 
 ElementNode.prototype.appendChild = function(_elementNode) {
   _elementNode.setParent(this);
 
   this.children.push(_elementNode);
-
 };
 
 //////////////////////////
@@ -152,7 +237,7 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
   var list = [];
 
   for (var i = 0; i < _childrenDataList.length; i++) {
-    var child = new ElementNode(_childrenDataList[i]);
+    var child = this.document.newElementNode(_childrenDataList[i]);
     child.setParent(this);
     list.push(child);
   }

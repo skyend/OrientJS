@@ -21,7 +21,8 @@ var Document = function(_documentDataObject) {
   // document require resources
   this.usingResources;
 
-
+  // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
+  this.runtimeHTMLCSSRepo = {};
 
   //////////////////////////
   // 처리로직
@@ -72,6 +73,32 @@ Document.prototype.documentUpdated = function() {
 };
 
 
+///////////
+/******************
+ * appendElementNodeCSS
+ *
+ */
+Document.prototype.appendHTMLElementNodeCSS = function(_key, _css) {
+  this.runtimeHTMLCSSRepo[_key] = _css;
+};
+
+/*******
+ * getHTMLElementNodeCSSLines
+ * 모든 저장된 HTML타입의 요소를의 CSS를 모아서 문자열로 반환한다.
+ *
+ */
+Document.prototype.getHTMLElementNodeCSSLines = function() {
+  var keys = Object.keys(this.runtimeHTMLCSSRepo);
+  var lines = "/* Element Type Component CSS */\n";
+
+  for (var i = 0; i < keys.length; i++) {
+    lines += "/* :" + keys[i] + " */\n";
+    lines += this.runtimeHTMLCSSRepo[keys[i]] + "\n";
+  }
+
+  return lines;
+}
+
 
 ///////////////
 /************
@@ -82,9 +109,9 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
   var elementNode;
 
   if (typeof _elementNodeDataObject !== 'undefined') {
-    elementNode = new ElementNode(_elementNodeDataObject);
+    elementNode = new ElementNode(this, _elementNodeDataObject);
   } else {
-    elementNode = new ElementNode();
+    elementNode = new ElementNode(this);
     elementNode.setId(++(this.lastElementId));
   }
 

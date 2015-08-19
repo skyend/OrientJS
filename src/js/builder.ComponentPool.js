@@ -190,6 +190,9 @@
 
     // CSS 삽입
     this.cachedComponent[componentName].CSS = this.getCSS(componentName);
+
+    // 컴포넌트 모듈에 componentName을 지정해둔다.
+    this.cachedComponent[componentName].componentName = componentName;
     return this.cachedComponent[componentName];
   };
 

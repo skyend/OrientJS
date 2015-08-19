@@ -23,7 +23,6 @@ var DocumentContextController = function(_document) {
  * Attach / Pause / Resume
  *
  */
-
 DocumentContextController.prototype.attach = function(_directContext) {
   this.attached = true;
   this.directContext = _directContext;
@@ -192,10 +191,43 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
       return scriptE;
     }
   });
-}
+};
 
+/********
+ * updateHTMLTypeElementNodeCSS
+ * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
+ *
+ */
+DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css) {
+
+  // 현재 생성되어 있는 스타일블럭이 없다면 생성
+  if (typeof this.htmlTypeElementNodeStyleBlock === 'undefined') {
+    var baseWindow = this.directContext.getIFrameStageInnerWindow();
+    var styleBlock = baseWindow.document.createElement('style');
+    this.directContext.applyStyleElement(styleBlock);
+
+    this.htmlTypeElementNodeStyleBlock = styleBlock;
+  }
+
+  // 변경된 css반영
+  this.htmlTypeElementNodeStyleBlock.innerHTML = _css;
+};
+
+
+/****
+ * insertNewElementNodeFromComponent
+ * Component를 ElementNode로 변환하여 ElementNode에 추가하고
+ * 변경된 ElementNode를 다시 빌드하여 화면에 표시한다.
+ * @Param _insertType : "appendChild" | 'insertBefore' | 'insertAfter'
+ * @Param _component : ComponentModule // ComponentPool로 부터 공급받은 컴포넌트 모듈
+ * @Param _toElement : DOMElement // 기준이 되는 DomElement
+ */
 DocumentContextController.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
   var changedElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
+
+  // document에서 HTMLType ElementNode의 종합 css를 얻어온다.
+  this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines());
+
   var parent = changedElementNode.getParent();
 
   this.constructToRealElement(changedElementNode);
