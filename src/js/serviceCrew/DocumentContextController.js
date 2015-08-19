@@ -1,9 +1,11 @@
 var Document = require('./Document.js');
 
-var DocumentContextController = function(_document) {
+var DocumentContextController = function(_document, _session) {
   this.attached = false;
   this.directContext = null;
   this.running = false;
+
+  this.session = _session;
 
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {

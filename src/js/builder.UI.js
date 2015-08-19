@@ -320,7 +320,7 @@
     var documentMeta = _eventData.documentMeta;
 
     // Document Meta 정보로 DocumentContextController를 얻는다
-    var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
+    var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id, this.session);
 
     this.uiServicer.openDirectContext({
       documentID: documentMeta.id,
