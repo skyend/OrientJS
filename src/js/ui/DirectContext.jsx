@@ -4,35 +4,59 @@ var React = require('react');
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
 
+  appendElementToBody( _element ){
+    return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
+  },
+
   deployComponentToInLast( _vid, _staticElement, _component ){
     console.log("deployed component", _component);
-    return this.refs['iframe-stage'].insertElementToInLastByVid(_vid, _staticElement);
+
+    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
+
+    this.contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
+    //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
   },
 
   deployComponentToBefore( _vid, _staticElement, _component ){
     console.log("deployed component", _component);
-    return this.refs['iframe-stage'].insertElementToBeforeByVid(_vid, _staticElement);
+    return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
   },
 
   deployComponentToAfter( _vid, _staticElement, _component ){
-    console.log("deployed component", _component);    
-    return this.refs['iframe-stage'].insertElementToAfterByVid(_vid, _staticElement);
+    console.log("deployed component", _component);
+    return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
   },
 
   addStyle( _key, _css ){
-    this.refs['iframe-stage'].addStyle( _key, _css );
+    this.getIFrameStage().addStyle( _key, _css );
+  },
+
+  applyStyleElement( _element ){
+    this.getIFrameStage().appendStyleElement( _element );
+  },
+
+  applyScriptElement( _element ){
+    this.getIFrameStage().appendScriptElementToHead( _element );
+  },
+
+  getIFrameStageInnerWindow(){
+    return this.getIFrameStage().getIframeInnerWindow();
   },
 
   getIFrameStageInnerDoc(){
-    return this.refs['iframe-stage'].getIFrameInnerDoc();
+    return this.getIFrameStage().getIFrameInnerDoc();
   },
 
   getIFrameStageBoundingRect(){
-    return this.refs['iframe-stage'].getDOMNode().getBoundingClientRect();
+    return this.getIFrameStage().getDOMNode().getBoundingClientRect();
   },
 
   getIFrameStageScrollY(){
-    return this.refs['iframe-stage'].getScrollY();
+    return this.getIFrameStage().getScrollY();
+  },
+
+  getIFrameStage(){
+    return this.refs['iframe-stage'];
   },
 
   goingToContextStop(){

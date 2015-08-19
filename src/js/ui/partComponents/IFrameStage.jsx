@@ -81,6 +81,22 @@ var IFrameStage = React.createClass({
     delete this.styles[_key];
   },
 
+  getElementByVid( _vid ){
+    return this.getIFrameInnerDoc().querySelector('[__vid__="' + _vid + '"]');
+  },
+
+  appendStyleElement( _element ){
+    this.getIFrameInnerDoc().head.appendChild(_element);
+  },
+
+  appendScriptElementToHead( _element ){
+    this.getIFrameInnerDoc().head.appendChild(_element);
+  },
+
+  appendScriptElementToHTML( _element ){
+    this.getIFrameInnerDoc().head.parentElement.appendChild(_element);
+  },
+
   insertElementToInLastBySelector(_selector, _element){
     var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
 
@@ -88,6 +104,7 @@ var IFrameStage = React.createClass({
   },
 
   insertElementToInLastByVid(_baseTargetVid, _element) {
+
     return this.insertElementToInLastBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
   },
 
@@ -191,7 +208,7 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-
+    return; // 임시로 무효화
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     console.log("call contextmenu", _e);

@@ -4,27 +4,79 @@
   "documentCreate": "2015-08-01T12:00:00+08",
 
   "documentUpdate": "2015-08-02T12:00:00+08",
+  "lastElementId": 6,
 
   "rootElementNode": {
+    "id": 1,
     "type": "html",
+
     "element": {
       "tagName": "div",
-      "class": "test-class div"
+      "class": "wrapper"
     },
     "children": [{
-      "type": "string",
+      "id": 2,
+      "type": "html",
       "element": {
-        "tagName": "text",
-        "text": "Hello"
+        "tagName": "div",
+        "class": "head"
+      },
+      "children": [{
+        "id": 3,
+        "type": "string",
+        "element": {
+          "tagName": "text",
+          "text": "Test Service"
+        }
+      }]
+    }, {
+      "id": 4,
+      "type": "html",
+      "element": {
+        "tagName": "div",
+        "class": "body"
       }
+    }, {
+      "id": 5,
+      "type": "html",
+      "element": {
+        "tagName": "div",
+        "class": "footer"
+      },
+      "children": [{
+        "id": 6,
+        "type": "string",
+        "element": {
+          "tagName": "text",
+          "text": "Copyright(c) 2015 I-ON SDP Present All right reserved."
+        }
+      }]
     }]
   },
 
   "elementNodes": [],
 
   "usingResources": {
-    "style": [],
-    "js": [],
+    "style": [{
+      "ext": "css",
+      "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+    }, {
+      "ext": "css",
+      "url": "/BuildingProjectData/Services/ionTest/Resource/css/index.css"
+    }],
+    "js": [{
+      "ext": "js",
+      "url": "https://code.jquery.com/jquery-2.1.4.min.js"
+    }, {
+      "ext": "js",
+      "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+    }, {
+      "ext": "js",
+      "url": "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"
+    }, {
+      "ext": "js",
+      "url": "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"
+    }],
     "font": [],
     "image": [],
     "string": []

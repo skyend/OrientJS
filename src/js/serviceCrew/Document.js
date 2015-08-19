@@ -34,11 +34,10 @@ var Document = function(_documentDataObject) {
     this.lastElementId = _documentDataObject.lastElementId || 0;
 
     this.rootElementNode = typeof _documentDataObject.rootElementNode === 'object' ?
-      new ElementNode(_documentDataObject.rootElementNode) :
-      this.newElementNode();
+      this.newElementNode(_documentDataObject.rootElementNode) : this.newElementNode();
 
-    this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes);
-    this.usingResources = _documentDataObject.usingResources;
+    this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
+    this.usingResources = _documentDataObject.usingResources || {};
 
 
   } else {
@@ -57,6 +56,15 @@ Document.prototype.setDocumentName = function(_documentName) {
   this.documentName = _documentName;
 };
 
+
+Document.prototype.getScriptResources = function() {
+  return this.usingResources.js;
+};
+
+Document.prototype.getStyleResources = function() {
+  return this.usingResources.style;
+};
+
 ///////////////////////
 // documentUpdate
 Document.prototype.documentUpdated = function() {
@@ -68,16 +76,46 @@ Document.prototype.documentUpdated = function() {
 ///////////////
 /************
  * newElementNode
- *
+ * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
  */
-Document.prototype.newElementNode = function() {
-  var elementNode = new ElementNode();
-  elementNode.setId(++(this.lastElementId));
-  console.log('new element', elementNode);
+Document.prototype.newElementNode = function(_elementNodeDataObject) {
+  var elementNode;
+
+  if (typeof _elementNodeDataObject !== 'undefined') {
+    elementNode = new ElementNode(_elementNodeDataObject);
+  } else {
+    elementNode = new ElementNode();
+    elementNode.setId(++(this.lastElementId));
+  }
+
   return elementNode;
 };
 
+/////////////////
+/***************
+ * insertNewElementNodeFromComponent
+ * @Param _insertType : 'appendChild' | 'insertBefore' | 'insertAfter'
+ * @Param _component
+ * @Param _toElement
+ * @Return ElementNode{} : 생성된 ElementNode
+ */
+Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
+  console.log(_toElement.___en, '내가누구게');
 
+  var targetElementNode = _toElement.___en;
+
+  var newElementNode = this.newElementNode();
+  newElementNode.buildByComponent(_component);
+
+  if (_insertType === 'appendChild') {
+    targetElementNode.appendChild(newElementNode);
+
+
+
+  }
+
+  return newElementNode;
+};
 
 
 //////////////////////////
@@ -93,7 +131,7 @@ Document.prototype.inspireElementNodes = function(_elementNodeDataList) {
   var list = [];
 
   for (var i = 0; i < _elementNodeDataList.length; i++) {
-    list.push(new ElementNode(_elementNodeDataList[i]));
+    list.push(this.newElementNode(_elementNodeDataList[i]));
   }
 
   return list;

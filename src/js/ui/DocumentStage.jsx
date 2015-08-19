@@ -727,6 +727,7 @@ var _ = require('underscore');
           var directContext = <DirectContext ref={_directContext.contextID}
                                               width="100%"
                                               height="100%"
+                                              contextId={_directContext.contextId}
                                               runningState={running}
                                               contextController={ _directContext.contextController } />;
 
