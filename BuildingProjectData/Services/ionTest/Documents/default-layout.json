@@ -72,7 +72,7 @@
       "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
     }, {
       "ext": "js",
-      "url": "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"
+      "url": "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"
     }, {
       "ext": "js",
       "url": "https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"

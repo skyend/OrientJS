@@ -8,11 +8,11 @@ var DocumentContextController = function(_document) {
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-    this.document = new Document(_document);
+    this.document = new Document(this, _document);
   } else {
 
     // 없다면 새로운 Document를 생성한다.
-    this.document = new Document();
+    this.document = new Document(this);
   }
 
   console.log('document created', this.document);
@@ -61,7 +61,18 @@ DocumentContextController.prototype.beginRender = function() {
 
   // script element block 을 적용한다.
   jsElements.map(function(_jsElement) {
+
+    /*
+    if (_jsElement.getAttribute('src') !== undefined) {
+      _jsElement.onload = function() {
+        console.log('loaded', _jsElement);
+
+        console.log(self.directContext.getWindow());
+      }
+    }*/
+
     self.directContext.applyScriptElement(_jsElement);
+
   });
 
   // style element block을 적용한다.
@@ -118,7 +129,7 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
 DocumentContextController.prototype.instillRealHTMLElement = function(_nodeElement) {
   var element;
 
-  element = this.directContext.getIFrameStageInnerDoc().createElement(_nodeElement.getTagName());
+  element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
   var elementAttributes = _nodeElement.element;
   var keys = Object.keys(elementAttributes);
   for (var i = 0; i < keys.length; i++) {
@@ -137,7 +148,7 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
  */
 DocumentContextController.prototype.instillRealTextElement = function(_nodeElement) {
 
-  var textNode = this.directContext.getIFrameStageInnerDoc().createTextNode(_nodeElement.getText());
+  var textNode = this.directContext.getDocument().createTextNode(_nodeElement.getText());
   _nodeElement.setRealElement(textNode);
 };
 
@@ -159,7 +170,7 @@ DocumentContextController.prototype.instillRealReactElement = function(_nodeElem
  *
  */
 DocumentContextController.prototype.convertToStyleElements = function(_styleObjects) {
-  var baseWindow = this.directContext.getIFrameStageInnerWindow();
+  var baseWindow = this.directContext.getWindow();
 
   return _styleObjects.map(function(_styleObject) {
     if (_styleObject.ext === 'css') {
@@ -187,7 +198,7 @@ DocumentContextController.prototype.convertToStyleElements = function(_styleObje
  *
  */
 DocumentContextController.prototype.convertToScriptElement = function(_scriptObjects) {
-  var baseWindow = this.directContext.getIFrameStageInnerWindow();
+  var baseWindow = this.directContext.getWindow();
 
   return _scriptObjects.map(function(__scriptObject) {
     if (__scriptObject.ext === 'js') {
@@ -215,15 +226,15 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
   // 현재 생성되어 있는 스타일블럭이 없다면 생성
   if (typeof this.htmlTypeElementNodeStyleBlock === 'undefined') {
-    var baseWindow = this.directContext.getIFrameStageInnerWindow();
+    var baseWindow = this.directContext.getWindow();
     var styleBlock = baseWindow.document.createElement('style');
     this.directContext.applyStyleElement(styleBlock);
 
     this.htmlTypeElementNodeStyleBlock = styleBlock;
   }
-
   // 변경된 css반영
   this.htmlTypeElementNodeStyleBlock.innerHTML = _css;
+
 };
 
 
@@ -237,6 +248,7 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
  */
 DocumentContextController.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
   var newElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
+
 
   // null 이라면 삽입실패로 false를 반환한다.
   if (newElementNode === null) return false;
@@ -257,9 +269,9 @@ DocumentContextController.prototype.insertNewElementNodeFromComponent = function
     parent.growupRealElementTree();
   }
 
-  // document에서 HTMLType ElementNode의 종합 css를 얻어온다.
-  this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines());
-
+  // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
+  this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+  console.log(JSON.stringify(this.document.export()));
   return true;
 };
 

@@ -9,6 +9,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.id;
   this.type; // html / string / react / grid
   this.element;
+  this.componentName;
 
   // date fields
   this.createDate;
@@ -31,6 +32,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.id = _elementNodeDataObject.id;
     this.type = _elementNodeDataObject.type;
     this.element = _elementNodeDataObject.element;
+    this.componentName = _elementNodeDataObject.componentName;
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
@@ -53,6 +55,10 @@ ElementNode.prototype.setId = function(_id) {
 ElementNode.prototype.setType = function(_type) {
   this.type = _type;
 };
+// componentName
+ElementNode.prototype.setComponentName = function(_componentName) {
+  this.componentName = _componentName;
+};
 // parent
 ElementNode.prototype.setParent = function(_parentENode) {
   this.parent = _parentENode;
@@ -65,6 +71,10 @@ ElementNode.prototype.setElement = function(_element) {
 ElementNode.prototype.setCSS = function(_css) {
   this.css = _css;
 };
+// ReactTypeComponent
+ElementNode.prototype.setReactTypeComponent = function(_component) {
+  this.reactTypeComponent = _component;
+}
 
 // real element
 ElementNode.prototype.setRealElement = function(_realElement) {
@@ -89,6 +99,18 @@ ElementNode.prototype.getTagName = function() {
 ElementNode.prototype.getText = function() {
   return this.element.text;
 };
+// type
+ElementNode.prototype.getType = function() {
+  return this.type;
+};
+// Element Spec
+ElementNode.prototype.getElement = function() {
+  return this.element;
+};
+// componentName
+ElementNode.prototype.getComponentName = function(_componentName) {
+  return this.componentName;
+};
 // realElement
 ElementNode.prototype.getRealElement = function() {
   return this.realElement;
@@ -101,6 +123,10 @@ ElementNode.prototype.getParent = function() {
 ElementNode.prototype.getCSS = function() {
   return this.css;
 };
+// ReactTypeComponent
+ElementNode.prototype.getReactTypeComponent = function() {
+  return this.reactTypeComponent;
+}
 
 
 ////////////////////
@@ -131,7 +157,10 @@ ElementNode.prototype.updated = function() {
 ElementNode.prototype.buildByComponent = function(_component) {
   console.log('빌드해라', _component);
   console.log(_component);
-  if (_component.elementType === 'html') {
+  var elementNodeType = _component.elementType;
+  this.setType(elementNodeType);
+
+  if (elementNodeType === 'html') {
 
 
     var parsingDom = document.createElement('div');
@@ -144,9 +173,15 @@ ElementNode.prototype.buildByComponent = function(_component) {
       this.document.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
     }
 
-  } else if (_component.elementType === 'react') {
-    // ToDo
-  } else if (_component.elementType === 'grid') {
+  } else if (elementNodeType === 'react') {
+    this.setReactTypeComponent(_component); // 세터에 component입력
+
+    if (typeof _component.CSS !== 'undefined') {
+      this.setCSS(_component.CSS);
+      this.document.appendReactElementNodeCSS(_component.componentName, _component.CSS);
+    }
+
+  } else if (elementNodeType === 'grid') {
     // Todo
   }
 
@@ -218,6 +253,11 @@ ElementNode.prototype.updateElement = function(_domElement) {
   this.setElement(elementSpec);
 };
 
+ElementNode.prototype.applyDOMElement = function(_domElement) {
+
+
+};
+
 ElementNode.prototype.appendChild = function(_elementNode) {
   _elementNode.setParent(this);
 
@@ -257,6 +297,7 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
  * 그리고 자식의 growupRealElementTree 메소드를 호출하여 재귀로 동작한다.
  */
 ElementNode.prototype.growupRealElementTree = function() {
+  var self = this;
 
   // Real Element 를 가지고 있으면 growupRealElementTree 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
   if (this.hasRealElement()) {
@@ -265,15 +306,25 @@ ElementNode.prototype.growupRealElementTree = function() {
 
     this.children.map(function(_child) {
 
-      if (_child.hasRealElement()) {
-        rE.appendChild(_child.growupRealElementTree());
+      if (_child.getType() !== 'react') {
+        if (_child.hasRealElement()) {
+          rE.appendChild(_child.growupRealElementTree());
+        }
+      } else {
+        // 리액트 컴포넌트 로드시 같은 window문맥 필요
+        // 빌더모드와 서비스 모드 분리하여 Pool에서 같은 리액트요소를 사용하도록 변경해야함
+        var React = require('react');
+
+
+
+        var targetWindow = self.document.contextController.directContext.getWindow();
+        var reactElement = React.createElement(_child.getReactTypeComponent().class);
+        React.render(reactElement, rE);
       }
+
     });
 
     return rE;
-  } else {
-    // 없다면 React 컴포넌트를..
-    throw new Error("not found realElement");
   }
 };
 
@@ -283,6 +334,8 @@ ElementNode.prototype.export = function() {
   return {
     id: this.id,
     type: this.getType(),
+    element: this.getElement(),
+    componentName: this.getComponentName(),
     createDate: this.createDate,
     updateDate: this.updateDate,
     children: this.children.map(function(_child) {

@@ -1,6 +1,6 @@
 var ElementNode = require('./ElementNode.js');
 
-var Document = function(_documentDataObject) {
+var Document = function(_contextController, _documentDataObject) {
   //////////////
   // 필드 정의
   ////////////////////////
@@ -21,8 +21,11 @@ var Document = function(_documentDataObject) {
   // document require resources
   this.usingResources;
 
+  // for runtime
   // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
   this.runtimeHTMLCSSRepo = {};
+  this.runtimReactCSSRepo = {};
+  this.contextController = _contextController;
 
   //////////////////////////
   // 처리로직
@@ -57,8 +60,6 @@ var Document = function(_documentDataObject) {
 Document.prototype.setDocumentName = function(_documentName) {
   this.documentName = _documentName;
 };
-
-
 Document.prototype.getScriptResources = function() {
   return this.usingResources.js;
 };
@@ -77,14 +78,35 @@ Document.prototype.documentUpdated = function() {
   this.documentUpdate = new Date();
 };
 
+////////////////////
+// Getters
+// lastElementId
+Document.prototype.getLastElementId = function() {
+  return this.lastElementId;
+};
+// usingResources
+Document.prototype.getUsingResources = function() {
+  return this.usingResources;
+};
+
+
 
 ///////////
 /******************
- * appendElementNodeCSS
+ * appendHTMLElementNodeCSS
  *
  */
 Document.prototype.appendHTMLElementNodeCSS = function(_key, _css) {
   this.runtimeHTMLCSSRepo[_key] = _css;
+};
+
+///////////
+/******************
+ * appendReactElementNodeCSS
+ *
+ */
+Document.prototype.appendReactElementNodeCSS = function(_key, _css) {
+  this.runtimReactCSSRepo[_key] = _css;
 };
 
 /*******
@@ -94,11 +116,28 @@ Document.prototype.appendHTMLElementNodeCSS = function(_key, _css) {
  */
 Document.prototype.getHTMLElementNodeCSSLines = function() {
   var keys = Object.keys(this.runtimeHTMLCSSRepo);
-  var lines = "/* Element Type Component CSS */\n";
+  var lines = "/* HTML Element Type Component CSS */\n";
 
   for (var i = 0; i < keys.length; i++) {
     lines += "/* :" + keys[i] + " */\n";
     lines += this.runtimeHTMLCSSRepo[keys[i]] + "\n";
+  }
+
+  return lines;
+}
+
+/*******
+ * getReactElementNodeCSSLines
+ * 모든 저장된 React타입의 요소를의 CSS를 모아서 문자열로 반환한다.
+ *
+ */
+Document.prototype.getReactElementNodeCSSLines = function() {
+  var keys = Object.keys(this.runtimReactCSSRepo);
+  var lines = "/* React Element Type Component CSS */\n";
+
+  for (var i = 0; i < keys.length; i++) {
+    lines += "/* :" + keys[i] + " */\n";
+    lines += this.runtimReactCSSRepo[keys[i]] + "\n";
   }
 
   return lines;
@@ -159,10 +198,6 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
 
     return newElementNode;
   }
-
-
-
-
 };
 
 
@@ -192,11 +227,12 @@ Document.prototype.export = function() {
     documentName: this.documentName,
     documentCreate: this.documentCreate,
     documentUpdate: this.documentUpdate,
+    lastElementId: this.getLastElementId(),
     rootElementNode: this.rootElementNode.export(),
     elementNodes: this.elementNodes.map(function(_elementNode) {
       return _elementNode.export();
     }),
-    usingResources: this.usingResources
+    usingResources: this.getUsingResources()
   };
 };
 

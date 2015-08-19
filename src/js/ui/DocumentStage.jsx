@@ -185,7 +185,7 @@ var _ = require('underscore');
 
 
           console.log(arguments);
-          var iframeStageInnerDoc = this.getCurrentRunningContext().getIFrameStageInnerDoc();
+          var iframeStageInnerDoc = this.getCurrentRunningContext().getDocument();
 
           // VDomController Construct
           this.liveVDomController = new VDomController();

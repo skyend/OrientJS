@@ -21,8 +21,9 @@ var DirectContext = React.createClass({
         message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
         level : "error"
 
-      })
+      });
     }
+
     //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
   },
 
@@ -48,11 +49,11 @@ var DirectContext = React.createClass({
     this.getIFrameStage().appendScriptElementToHead( _element );
   },
 
-  getIFrameStageInnerWindow(){
+  getWindow(){
     return this.getIFrameStage().getIframeInnerWindow();
   },
 
-  getIFrameStageInnerDoc(){
+  getDocument(){
     return this.getIFrameStage().getIFrameInnerDoc();
   },
 
