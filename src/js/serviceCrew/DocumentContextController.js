@@ -6,7 +6,7 @@ var DocumentContextController = function(_document) {
   this.running = false;
 
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
-  if (typeof _document !== 'undefined') {
+  if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
     this.document = new Document(_document);
   } else {
@@ -53,12 +53,11 @@ DocumentContextController.prototype.resume = function() {
  *
  */
 DocumentContextController.prototype.beginRender = function() {
-  console.log(this.document.rootElementNode, 'render');
   var self = this;
 
   // resource convert
-  var jsElements = this.convertToScriptElement(this.document.getScriptResources());
-  var styleElements = this.convertToStyleElements(this.document.getStyleResources());
+  var jsElements = this.convertToScriptElement(this.document.getScriptResources() || []);
+  var styleElements = this.convertToStyleElements(this.document.getStyleResources() || []);
 
   // script element block 을 적용한다.
   jsElements.map(function(_jsElement) {
@@ -70,6 +69,14 @@ DocumentContextController.prototype.beginRender = function() {
     self.directContext.applyStyleElement(_styleElement);
   });
 
+  // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
+  if (this.document.rootElementNode !== null) {
+    this.rootRender();
+  }
+
+};
+
+DocumentContextController.prototype.rootRender = function() {
   // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
   this.constructToRealElement(this.document.rootElementNode);
 
@@ -78,7 +85,7 @@ DocumentContextController.prototype.beginRender = function() {
 
   // rootRealElement 를 directContext에 랜더링한다.
   this.directContext.appendElementToBody(rootRealElement);
-};
+}
 
 /**
  * constructToRealElement
@@ -112,7 +119,13 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
   var element;
 
   element = this.directContext.getIFrameStageInnerDoc().createElement(_nodeElement.getTagName());
-  element.setAttribute('class', _nodeElement.element.class);
+  var elementAttributes = _nodeElement.element;
+  var keys = Object.keys(elementAttributes);
+  for (var i = 0; i < keys.length; i++) {
+    element.setAttribute(keys[i], elementAttributes[keys[i]]);
+  }
+
+  //element.setAttribute('__enid', _nodeElement.id);
 
   _nodeElement.setRealElement(element);
 };
@@ -223,16 +236,31 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
  * @Param _toElement : DOMElement // 기준이 되는 DomElement
  */
 DocumentContextController.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
-  var changedElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
+  var newElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
+
+  // null 이라면 삽입실패로 false를 반환한다.
+  if (newElementNode === null) return false;
+
+  // 부모가 null이면
+  if (newElementNode.getParent() === null) {
+
+    // 부모가 null이고 elementNodes pool의 길이가 0이라면 root로 삽입된것으로 루트를 랜더링한다.
+    if (this.document.getElementNodes().length == 0) {
+      this.rootRender();
+    }
+
+  } else {
+    var parent = newElementNode.getParent();
+
+    this.constructToRealElement(newElementNode);
+
+    parent.growupRealElementTree();
+  }
 
   // document에서 HTMLType ElementNode의 종합 css를 얻어온다.
   this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines());
 
-  var parent = changedElementNode.getParent();
-
-  this.constructToRealElement(changedElementNode);
-
-  parent.growupRealElementTree();
+  return true;
 };
 
 

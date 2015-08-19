@@ -19,7 +19,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.children;
 
   // parent refference
-  this.parent;
+  this.parent = null;
 
   this.document = _document;
 

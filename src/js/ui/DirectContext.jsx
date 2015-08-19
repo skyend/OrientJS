@@ -13,7 +13,16 @@ var DirectContext = React.createClass({
 
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
-    this.contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
+    var result = this.contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
+
+    if( ! result ) {
+      this.emit('NoticeMessage',{
+        title:"component 삽입실패",
+        message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
+        level : "error"
+
+      })
+    }
     //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
   },
 
@@ -28,7 +37,7 @@ var DirectContext = React.createClass({
   },
 
   addStyle( _key, _css ){
-    this.getIFrameStage().addStyle( _key, _css );
+    //this.getIFrameStage().addStyle( _key, _css );
   },
 
   applyStyleElement( _element ){

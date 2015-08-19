@@ -28,14 +28,14 @@ var Document = function(_documentDataObject) {
   // 처리로직
   //////////////////////////
   // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
-  if (typeof _documentDataObject === 'object') {
+  if (typeof _documentDataObject !== 'undefined') {
     this.documentName = _documentDataObject.documentName;
     this.documentCreate = _documentDataObject.documentCreate;
     this.documentUpdate = _documentDataObject.documentUpdate;
     this.lastElementId = _documentDataObject.lastElementId || 0;
 
     this.rootElementNode = typeof _documentDataObject.rootElementNode === 'object' ?
-      this.newElementNode(_documentDataObject.rootElementNode) : this.newElementNode();
+      this.newElementNode(_documentDataObject.rootElementNode) : null;
 
     this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
     this.usingResources = _documentDataObject.usingResources || {};
@@ -46,7 +46,8 @@ var Document = function(_documentDataObject) {
     this.documentCreate = new Date();
     this.lastElementId = 0;
     this.elementNodes = [];
-    this.rootElementNode = this.newElementNode();
+    this.rootElementNode = null;
+    this.usingResources = {};
   }
 };
 
@@ -64,6 +65,10 @@ Document.prototype.getScriptResources = function() {
 
 Document.prototype.getStyleResources = function() {
   return this.usingResources.style;
+};
+// elementNodes
+Document.prototype.getElementNodes = function() {
+  return this.elementNodes;
 };
 
 ///////////////////////
@@ -127,21 +132,37 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
  * @Return ElementNode{} : 생성된 ElementNode
  */
 Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
-  console.log(_toElement.___en, '내가누구게');
 
   var targetElementNode = _toElement.___en;
 
-  var newElementNode = this.newElementNode();
-  newElementNode.buildByComponent(_component);
+  if (typeof targetElementNode === 'undefined') {
 
-  if (_insertType === 'appendChild') {
-    targetElementNode.appendChild(newElementNode);
+    if (this.rootElementNode === null) {
+      var newElementNode = this.newElementNode();
+      newElementNode.buildByComponent(_component);
+
+      // 방금 생성된 elementNode를 root로 정의한다.
+      this.rootElementNode = newElementNode;
+      return newElementNode;
+    } else {
+
+      return null;
+    }
+  } else {
+    var newElementNode = this.newElementNode();
+    newElementNode.buildByComponent(_component);
+
+    if (_insertType === 'appendChild') {
+      targetElementNode.appendChild(newElementNode);
+    }
 
 
-
+    return newElementNode;
   }
 
-  return newElementNode;
+
+
+
 };
 
 
