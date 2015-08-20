@@ -6,7 +6,7 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <article style={{padding:'10px', outline:'1px solid #fff'}}>
+          <article style={{padding:'10px', outline:'1px solid #333'}}>
             article
           </article>
         )

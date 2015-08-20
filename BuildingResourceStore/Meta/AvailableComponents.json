@@ -49,6 +49,14 @@
       "name": "Form <Form>",
       "path": "HTMLTags/Form.jsx"
     }, {
+      "key": "Fieldset",
+      "name": "Fieldset <Fieldset>",
+      "path": "HTMLTags/Fieldset.jsx"
+    }, {
+      "key": "Legend",
+      "name": "Legend <Legend>",
+      "path": "HTMLTags/Legend.jsx"
+    }, {
       "key": "Header",
       "name": "Header <Header>",
       "path": "HTMLTags/Header.jsx"

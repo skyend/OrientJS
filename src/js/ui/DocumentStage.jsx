@@ -255,8 +255,8 @@ var _ = require('underscore');
 
                   if( checkResult === true ){
 
-                    self.changeElementHighlighterMode();
-                    self.changeDropPositionPlaceholderMode();
+                    self.changeElementHighlighterMode('canDrop');
+                    self.changeDropPositionPlaceholderMode('canInsert');
                   } else {
                     // 불가능 영역 표시 -> 붉은 사각형
                     self.changeElementHighlighterMode('cantDrop');
@@ -626,6 +626,7 @@ var _ = require('underscore');
 
           if( _mode !== undefined ){
             switch( _mode ){
+              case "canInsert":
               case "cantInsert":
               this.getDropPositionPlaceholderDOMNode().setAttribute('mode', _mode);
               break;
@@ -816,6 +817,7 @@ var _ = require('underscore');
 
           if( _mode !== undefined ){
             switch( _mode ){
+              case "canDrop":
               case "cantDrop":
               this.getElementHighligherDOMElement().setAttribute('mode', _mode);
               break;
@@ -905,7 +907,8 @@ var _ = require('underscore');
                         {this.state.directContexts.length > 0 ?
                           this.state.directContexts.map( this.attachDirectContext ): (
                             <div className='empty-holder'>
-                              {"Open a tab context and Start your amazing Service!"}
+                              {"Open a tab context and Start your amazing Service!"}<br/><h1>{"For ICE CMS"}</h1>
+                              <div className='ball'/>
                             </div>
                           )
                         }

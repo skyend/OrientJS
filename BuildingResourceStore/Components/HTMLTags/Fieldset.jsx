@@ -6,9 +6,9 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <nav style={{padding:'10px', outline:'1px solid #333'}}>
-            nav
-          </nav>
+          <fieldset style={{padding:'10px', outline:'1px solid #333'}}>
+            fieldset
+          </fieldset>
         )
       }
 

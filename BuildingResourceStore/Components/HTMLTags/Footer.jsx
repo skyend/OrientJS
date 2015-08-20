@@ -6,7 +6,7 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <footer style={{padding:'10px', outline:'1px solid #fff'}}>
+          <footer style={{padding:'10px', outline:'1px solid #333'}}>
             footer
           </footer>
         )
