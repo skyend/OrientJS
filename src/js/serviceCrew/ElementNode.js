@@ -121,6 +121,11 @@ ElementNode.prototype.setRealElement = function(_realElement) {
   if (this.type !== 'string') {
     this.realElement.setAttribute('_enid_', this.id);
     this.realElement.___en = this;
+
+    // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
+    this.realElement.getElementNode = function() {
+      return this.___en;
+    };
   }
 };
 
@@ -189,6 +194,14 @@ ElementNode.prototype.hasRealDOMElement = function() {
   return typeof this.realElement !== 'undefined';
 };
 
+////////////////////
+/***************
+ * getMyContextControllerOfDocument
+ * 자신이 소속된 Document의 ContextController를 반환
+ */
+ElementNode.prototype.getMyContextControllerOfDocument = function() {
+  return this.document.getMyDirector();
+};
 
 /////////////////
 /***********

@@ -97,6 +97,17 @@ Document.prototype.getUsingResources = function() {
 Document.prototype.getReactTypeComponent = function(_packageKey, _componentKey) {
   return this.contextController.getReactComponentFromSession(_packageKey, _componentKey);
 };
+
+////////////////////
+/****************
+ * getMyDirector ( getContextController )
+ * 자신(Document)의 ContextController를 반환한다.
+ */
+Document.prototype.getMyDirector = Document.prototype.getContextController = function() {
+  return this.contextController;
+};
+
+
 ///////////
 /******************
  * appendHTMLElementNodeCSS

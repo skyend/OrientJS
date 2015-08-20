@@ -239,7 +239,7 @@ var _ = require('underscore');
                   // 드롭기준 DOMElement에 ElementNode가 매핑되어 있는지 체크 후 매핑되어 있지 않다면 root로 들어가야 하므로
                   // root에 드랍이 가능한 상태인지 확인한다.
                   if( realDOMElement.___en === undefined ){
-                    if( self.getCurrentRunningContext().isDropableToRoot() ){
+                    if( self.getCurrentRunningContext().isDropableToRoot(realDOMElement) ){
                       self.changeElementHighlighterMode();
                     } else {
                       self.changeElementHighlighterMode('cantDrop');
@@ -389,7 +389,7 @@ var _ = require('underscore');
                   // root에 드랍이 가능한 상태인지 확인한다.
                   var realDOMElement = self.aimedTarget.element.object;
                   if( realDOMElement.___en === undefined ){
-                    if( !self.getCurrentRunningContext().isDropableToRoot() ){
+                    if( !self.getCurrentRunningContext().isDropableToRoot(realDOMElement) ){
                       return;//throw new Error("error: ElementNode wasn't mapping.");
                     }
                   }
