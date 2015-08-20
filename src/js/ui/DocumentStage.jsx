@@ -238,7 +238,13 @@ var _ = require('underscore');
                   var realDOMElement = self.aimedTarget.element.object;
 
                   if( realDOMElement.___en === undefined ){
-                    throw new Error("ElementNode wasn't mapping.");
+                    if( self.getCurrentRunningContext().isDropableToRoot() ){
+                      self.changeElementHighlighterMode();
+                    } else {
+                      self.changeElementHighlighterMode('cantDrop');
+                    }
+
+                    return;//throw new Error("error: ElementNode wasn't mapping.");
                   }
 
                   var ElementNode = realDOMElement.___en;
@@ -254,9 +260,10 @@ var _ = require('underscore');
                     // 불가능 영역 표시 -> 붉은 사각형
                     self.changeElementHighlighterMode('cantDrop');
                     self.changeDropPositionPlaceholderMode('cantInsert');
-
                   }
                   //////// 확인 끝
+
+                  // 드랍포지션 표시
                   self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
 
                 }
@@ -288,6 +295,8 @@ var _ = require('underscore');
 
           if( targetedList.length > 0 ){
             var target = this.popHighestTarget( targetedList );
+
+
             // 표적지정
             this.aimingTarget( target, _absoluteX, _absoluteY );
           }
@@ -375,13 +384,20 @@ var _ = require('underscore');
                     self.getCurrentRunningContext().addStyle(_packageKey+'/'+_componentKey, _component.CSS);
                   }
 
+                  //
+                  var realDOMElement = self.aimedTarget.element.object;
+                  if( realDOMElement.___en === undefined ){
+                    if( !self.getCurrentRunningContext().isDropableToRoot() ){
+                      return;//throw new Error("error: ElementNode wasn't mapping.");
+                    }
+                  }
 
                   var deployResult = null;
 
                   //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, componentStaticElement, _component);
+                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                       return;
@@ -389,13 +405,13 @@ var _ = require('underscore');
 
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, componentStaticElement, _component);
+                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, componentStaticElement, _component);
+                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
@@ -681,12 +697,17 @@ var _ = require('underscore');
           // if 표적이 지정된 상태라면 then 해당 표적을 하이라이팅한다.
           if( this.aimedTarget !== null && typeof this.aimedTarget !== 'undefined'){
             this.showElementHighlight( this.aimedTarget );
+
+
+
+
           } else {
             // else 표적이 지정되지 않은 상태라면 새로운 표적을 지정하기 위해 카운트를 들어간다.
             // 카운드가 되는 도중 aimingTarget 메소드가 호출되면 재 카운팅에 들어간다.
 
             // 현재 대상 하이라이팅
             this.showElementHighlight( target );
+
 
             //////////////////////////////
             // Drop GuideBox

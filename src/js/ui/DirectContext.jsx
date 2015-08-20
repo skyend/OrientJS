@@ -8,7 +8,11 @@ var DirectContext = React.createClass({
     return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
   },
 
-  deployComponentToInLast( _vid, _staticElement, _component ){
+  isDropableToRoot(){
+    return this.contextController.isDropableToRoot();
+  },
+
+  deployComponentToInLast( _vid, _component ){
     console.log("deployed component", _component);
 
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
@@ -19,39 +23,47 @@ var DirectContext = React.createClass({
 
 
     if( ! result ) {
-      this.emit("NoticeMessage",{
-        "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
-        "message" : "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.",
-        "level" : 'error'
-      });
-
-      this.emit('NoticeMessage',{
-        title:"component 삽입실패",
-        message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
-        level : "error"
-
-      });
+      this.failToDrop();
     }
 
     //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
   },
 
-  deployComponentToBefore( _vid, _staticElement, _component ){
+  deployComponentToBefore( _vid, _component ){
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
     var result = this.contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
-
+    if( ! result ) {
+      this.failToDrop();
+    }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
   },
 
-  deployComponentToAfter( _vid, _staticElement, _component ){
+  deployComponentToAfter( _vid, _component ){
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
     var result = this.contextController.insertNewElementNodeFromComponent('insertAfter',_component, dropTarget);
-
+    if( ! result ) {
+      this.failToDrop();
+    }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
+  },
+
+  failToDrop(){
+    this.emit("NoticeMessage",{
+      "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
+      "message" : "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.",
+      "level" : 'error'
+    });
+
+    this.emit('NoticeMessage',{
+      title:"component 삽입실패",
+      message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
+      level : "error"
+
+    });
   },
 
   addStyle( _key, _css ){

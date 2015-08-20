@@ -15,7 +15,7 @@ var Document = function(_contextController, _documentDataObject) {
   this.lastElementId;
 
   // document elements
-  this.rootElementNode;
+  this.rootElementNode = null;
   this.elementNodes;
 
   // document require resources
@@ -206,8 +206,12 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
       if (_insertType === 'appendChild') {
         targetElementNode.appendChild(newElementNode);
       } else if (_insertType === 'insertBefore') {
+        if (targetElementNode.getParent() === null) return null;
+
         targetElementNode.insertBefore(newElementNode);
       } else if (_insertType === 'insertAfter') {
+        if (targetElementNode.getParent() === null) return null;
+
         targetElementNode.insertAfter(newElementNode);
       }
 

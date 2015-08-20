@@ -246,6 +246,10 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
 };
 
+DocumentContextController.prototype.isDropableToRoot = function() {
+  return this.document.rootElementNode === null;
+};
+
 
 /****
  * insertNewElementNodeFromComponent
