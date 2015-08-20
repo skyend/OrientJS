@@ -15,7 +15,16 @@ var DirectContext = React.createClass({
 
     var result = this.contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
 
+
+
+
     if( ! result ) {
+      this.emit("NoticeMessage",{
+        "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
+        "message" : "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.",
+        "level" : 'error'
+      });
+
       this.emit('NoticeMessage',{
         title:"component 삽입실패",
         message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
@@ -28,13 +37,21 @@ var DirectContext = React.createClass({
   },
 
   deployComponentToBefore( _vid, _staticElement, _component ){
-    console.log("deployed component", _component);
-    return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
+    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
+
+    var result = this.contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
+
+    // console.log("deployed component", _component);
+    // return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
   },
 
   deployComponentToAfter( _vid, _staticElement, _component ){
-    console.log("deployed component", _component);
-    return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
+    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
+
+    var result = this.contextController.insertNewElementNodeFromComponent('insertAfter',_component, dropTarget);
+
+    // console.log("deployed component", _component);
+    // return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
   },
 
   addStyle( _key, _css ){

@@ -68,6 +68,7 @@ var _ = function(_controller, domType, name, targetElement, _parentNode, _depthA
     this.computedStyle = {};
     this.computedStyle.float = computedStyle.float;
     this.computedStyle.display = computedStyle.display;
+    this.computedStyle.zIndex = computedStyle.zIndex;
   };
 
   this.mappingVID = function(_vnodeId) {

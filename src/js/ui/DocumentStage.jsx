@@ -229,11 +229,36 @@ var _ = require('underscore');
                 "componentKey" : _componentKey,
                 "packageKey" : _packageKey,
                 "return" : function( _err, _component ){
-                  if( _err !== null ) throw new Error("component load error");
+                  if( _err !== null ) throw new Error("fail to component get");
 
                   var direction = self.findGuideDirectBound(_absoluteX, _absoluteY);
 
+                  /////////////////
+                  // ElementNode 와 통신하여 Drop이 가능한지 확인
+                  var realDOMElement = self.aimedTarget.element.object;
+
+                  if( realDOMElement.___en === undefined ){
+                    throw new Error("ElementNode wasn't mapping.");
+                  }
+
+                  var ElementNode = realDOMElement.___en;
+                  var checkResult = ElementNode.checkDropableComponentWithDirection( _component, direction );
+
+
+
+                  if( checkResult === true ){
+
+                    self.changeElementHighlighterMode();
+                    self.changeDropPositionPlaceholderMode();
+                  } else {
+                    // 불가능 영역 표시 -> 붉은 사각형
+                    self.changeElementHighlighterMode('cantDrop');
+                    self.changeDropPositionPlaceholderMode('cantInsert');
+
+                  }
+                  //////// 확인 끝
                   self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
+
                 }
               });
 
@@ -261,9 +286,38 @@ var _ = require('underscore');
           // 대상리스트 뽑기
           var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
 
-          // 표적지정
-          this.aimingTarget( targetedList, _absoluteX, _absoluteY );
+          if( targetedList.length > 0 ){
+            var target = this.popHighestTarget( targetedList );
+            // 표적지정
+            this.aimingTarget( target, _absoluteX, _absoluteY );
+          }
+
+
           /*****************************************--끝--*/
+        },
+
+        /*******
+         * popHighestTarget
+         * VNode 리스트에서 zIndex가 제일 높은 VNode를 찾는다.
+         */
+        popHighestTarget( _elementList ){
+          var max = -100;
+          var highestElement = null;
+          _elementList.map( function( _element ){
+            //var zIndex = _element.style.zIndex;
+            if( max == -100 ){
+              highestElement = _element;
+            }
+
+            if( _.isNumber(_element.computedStyle.zIndex) ){
+              if( max < _element.computedStyle.zIndex ){
+                max = _element.computedStyle.zIndex;
+                highestElement = _element;
+              }
+            }
+          });
+
+          return highestElement;
         },
 
         /*******************
@@ -456,8 +510,9 @@ var _ = require('underscore');
          * @Param _direction : 컴포넌트 배치 방향
          */
         showPreviewComponentDeployPosition( _target, _direction, _positionHints ){
-          // ToDO
-          var placeHolderDOM = this.refs['drop-position-placeholder'].getDOMNode();
+          var boxWidth = 100;
+
+          var placeHolderDOM = this.getDropPositionPlaceholderDOMNode();
           var transformedCoordinate = this.transformIFrameDocCoordinateIntoStageScreen({x:_target.element.offset.x, y:_target.element.offset.y});
           var targetParent = _target.parent;
 
@@ -486,39 +541,41 @@ var _ = require('underscore');
             }
           }*/
 
+          if( _positionHints !== undefined ){
+            // 컴포넌트가 배치되었을 때 어느 방향에 위치해 있는지 미리 예측한다.
+            // 컴포넌트와 기준요소의 넓이를 더하여 부모의 넓이보다 크다면
+            // 컴포넌트가 배치될 위치는 상단 또는 하단이 될것이다.
+            if( targetParent !== null ){
+              var targetPWidth = targetParent.element.offset.width;
+              var targetWidth = _target.element.offset.width;
+              var componentWidth = _positionHints.width;
 
-          // 컴포넌트가 배치되었을 때 어느 방향에 위치해 있는지 미리 예측한다.
-          // 컴포넌트와 기준요소의 넓이를 더하여 부모의 넓이보다 크다면
-          // 컴포넌트가 배치될 위치는 상단 또는 하단이 될것이다.
-          if( targetParent !== null ){
-            var targetPWidth = targetParent.element.offset.width;
-            var targetWidth = _target.element.offset.width;
-            var componentWidth = _positionHints.width;
+              var targetAndComponentWidth = targetWidth + componentWidth;
 
-            var targetAndComponentWidth = targetWidth + componentWidth;
-
-            if( targetAndComponentWidth > targetPWidth ){
-              if( direction === 'left' ){
-                direction = 'top';
-              } else if (direction === 'right' ){
-                direction = 'bottom';
+              if( targetAndComponentWidth > targetPWidth ){
+                if( direction === 'left' ){
+                  direction = 'top';
+                } else if (direction === 'right' ){
+                  direction = 'bottom';
+                }
               }
             }
           }
 
 
+
           if( direction === 'left' || direction === 'right' ){
-            w = boundaryBorderSize;
+            w = boxWidth;//boundaryBorderSize;
             h = _target.element.offset.height;
-            x = direction === 'left'? transformedCoordinate.x - boundaryBorderSize : transformedCoordinate.x + _target.element.offset.width;
+            x = direction === 'left'? transformedCoordinate.x - boxWidth : transformedCoordinate.x + _target.element.offset.width;
             y = transformedCoordinate.y;
 
 
           } else if( direction === 'top' || direction === 'bottom' ){
             w = _target.element.offset.width;
-            h = boundaryBorderSize;
+            h = boxWidth;//boundaryBorderSize;
             x = transformedCoordinate.x;
-            y = direction === 'top'? transformedCoordinate.y - boundaryBorderSize : transformedCoordinate.y + _target.element.offset.height;
+            y = direction === 'top'? transformedCoordinate.y - boxWidth : transformedCoordinate.y + _target.element.offset.height;
 
           } else {
             // in
@@ -543,8 +600,28 @@ var _ = require('underscore');
         },
 
         hidePreviewComponentDeployPosition(){
-          var placeHolderDOM = this.refs['drop-position-placeholder'].getDOMNode();
+          var placeHolderDOM = this.getDropPositionPlaceholderDOMNode();
           placeHolderDOM.style.display = 'none';
+        },
+
+        changeDropPositionPlaceholderMode( _mode ){
+
+          if( _mode !== undefined ){
+            switch( _mode ){
+              case "cantInsert":
+              this.getDropPositionPlaceholderDOMNode().setAttribute('mode', _mode);
+              break;
+              default:
+              throw new Error("invailid mode "+ _mode);
+            }
+
+          } else {
+            this.getDropPositionPlaceholderDOMNode().setAttribute('mode', 'normal');
+          }
+        },
+
+        getDropPositionPlaceholderDOMNode(){
+          return this.refs['drop-position-placeholder'].getDOMNode();
         },
 
         transformIFrameDocCoordinateIntoStageScreen( _coordinate ){
@@ -580,59 +657,57 @@ var _ = require('underscore');
          * @Param _absoluteX
          * @Param _absoluteY
          */
-        aimingTarget( _targetedList, _absoluteX, _absoluteY ){
+        aimingTarget( _target, _absoluteX, _absoluteY ){
           var self = this;
           // Single Targeted
-          if(_targetedList.length == 1){
-            var target = _targetedList[0];
 
-            /*
-            var dot = document.createElement("div");
-            dot.style.position = 'absolute';
-            dot.style.zIndex = 9999;
-            dot.style.width = dot.style.height = '10px';
-            dot.style.backgroundColor = '#000';
-            dot.style.left = targetCenterX +'px';
-            dot.style.top = targetCenterY+ 'px';
+          var target = _target;
 
-            document.body.appendChild(dot);
-            */
+          /*
+          var dot = document.createElement("div");
+          dot.style.position = 'absolute';
+          dot.style.zIndex = 9999;
+          dot.style.width = dot.style.height = '10px';
+          dot.style.backgroundColor = '#000';
+          dot.style.left = targetCenterX +'px';
+          dot.style.top = targetCenterY+ 'px';
 
-            ///////////////
-            // Element HighLighter
-            // 엘리먼트의 영역을 표시하는 박스를 표시한다.
-            // if 표적이 지정된 상태라면 then 해당 표적을 하이라이팅한다.
-            if( this.aimedTarget !== null && typeof this.aimedTarget !== 'undefined'){
-              this.showElementHighlight( this.aimedTarget );
-            } else {
-              // else 표적이 지정되지 않은 상태라면 새로운 표적을 지정하기 위해 카운트를 들어간다.
-              // 카운드가 되는 도중 aimingTarget 메소드가 호출되면 재 카운팅에 들어간다.
+          document.body.appendChild(dot);
+          */
 
-              // 현재 대상 하이라이팅
-              this.showElementHighlight( target );
+          ///////////////
+          // Element HighLighter
+          // 엘리먼트의 영역을 표시하는 박스를 표시한다.
+          // if 표적이 지정된 상태라면 then 해당 표적을 하이라이팅한다.
+          if( this.aimedTarget !== null && typeof this.aimedTarget !== 'undefined'){
+            this.showElementHighlight( this.aimedTarget );
+          } else {
+            // else 표적이 지정되지 않은 상태라면 새로운 표적을 지정하기 위해 카운트를 들어간다.
+            // 카운드가 되는 도중 aimingTarget 메소드가 호출되면 재 카운팅에 들어간다.
 
-              //////////////////////////////
-              // Drop GuideBox
-              var self = this;
-              if( this.aimingTimeoutId !== 'undefined' ){
-                // timeout제거
-                this.clearAimCounter();
-              }
+            // 현재 대상 하이라이팅
+            this.showElementHighlight( target );
 
-              // 0.1초간 머무르면 그 대상이 표적으로 지정된다.
-              // 0.1초간 움직임이 없으면 현재타겟을 드랍대상으로 지정하여 가이드박스를 표시한다.
-              this.aimingTimeoutId = setTimeout(function(){
-                self.aimTarget(target, _absoluteX, _absoluteY);
-                // timeout 제거
-                self.clearAimCounter();
-              }, this.props.aimingCount);
-
-              this.expectDropToVNode(target);
+            //////////////////////////////
+            // Drop GuideBox
+            var self = this;
+            if( this.aimingTimeoutId !== 'undefined' ){
+              // timeout제거
+              this.clearAimCounter();
             }
 
-          } else {
-            console.log('multi selected', _targetedList);
+            // 0.1초간 머무르면 그 대상이 표적으로 지정된다.
+            // 0.1초간 움직임이 없으면 현재타겟을 드랍대상으로 지정하여 가이드박스를 표시한다.
+            this.aimingTimeoutId = setTimeout(function(){
+              self.aimTarget(target, _absoluteX, _absoluteY);
+              // timeout 제거
+              self.clearAimCounter();
+            }, this.props.aimingCount);
+
+            this.expectDropToVNode(target);
           }
+
+
         },
 
         aimTarget(target, _absoluteX, _absoluteY){
@@ -694,7 +769,7 @@ var _ = require('underscore');
 
         showElementHighlight( _target ){
 
-          var highligher = this.refs['element-highlighter'].getDOMNode();
+          var highligher = this.getElementHighligherDOMElement();
           highligher.style.left = _target.element.offset.x +'px';
           //console.log( this.getTabContextOffsetTopByDS() ,'top');
           highligher.style.top = _target.element.offset.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
@@ -704,9 +779,30 @@ var _ = require('underscore');
         },
 
 
+        getElementHighligherDOMElement(){
+          return this.refs['element-highlighter'].getDOMNode();
+        },
+
+
         hideElementHighlight(){
-          var highligher = this.refs['element-highlighter'].getDOMNode();
+          var highligher = this.getElementHighligherDOMElement();
           highligher.style.display = 'none';
+        },
+
+        changeElementHighlighterMode( _mode ){
+
+          if( _mode !== undefined ){
+            switch( _mode ){
+              case "cantDrop":
+              this.getElementHighligherDOMElement().setAttribute('mode', _mode);
+              break;
+              default:
+              throw new Error("invailid mode "+ _mode);
+            }
+
+          } else {
+            this.getElementHighligherDOMElement().setAttribute('mode', 'normal');
+          }
         },
 
         getCurrentRunningContext(){

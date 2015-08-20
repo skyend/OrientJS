@@ -193,6 +193,9 @@
 
     // 컴포넌트 모듈에 componentName을 지정해둔다.
     this.cachedComponent[componentName].componentName = componentName;
+    this.cachedComponent[componentName].componentKey = componentKey;
+    this.cachedComponent[componentName].packageKey = packageKey;
+
     return this.cachedComponent[componentName];
   };
 

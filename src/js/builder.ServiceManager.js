@@ -50,7 +50,7 @@ ServiceManager.prototype.getDocumentContextController = function(_documentId) {
   var docMeta = this.getDocumentMetaById(_documentId);
   var doc = this.loadDocumentByMeta(docMeta);
 
-  var documentContextController = new DocumentContextController(doc);
+  var documentContextController = new DocumentContextController(doc, this.session);
 
   return documentContextController
 };

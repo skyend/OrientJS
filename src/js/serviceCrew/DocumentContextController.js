@@ -89,12 +89,17 @@ DocumentContextController.prototype.beginRender = function() {
 
 };
 
+DocumentContextController.prototype.getReactComponentFromSession = function(_packageKey, _componentKey) {
+
+  return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey);
+};
+
 DocumentContextController.prototype.rootRender = function() {
   // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
   this.constructToRealElement(this.document.rootElementNode);
 
   // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-  var rootRealElement = this.document.rootElementNode.growupRealElementTree();
+  var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
 
   // rootRealElement 를 directContext에 랜더링한다.
   this.directContext.appendElementToBody(rootRealElement);
@@ -118,6 +123,8 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
     }
   } else if (_nodeElement.type === 'string') {
     this.instillRealTextElement(_nodeElement);
+  } else if (_nodeElement.type === 'empty') {
+    this.instillRealHTMLElement(_nodeElement);
   } else if (_nodeElement.type === 'react') {
     this.instillRealReactElement(_nodeElement);
   }
@@ -132,14 +139,14 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
   var element;
 
   element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
-  var elementAttributes = _nodeElement.element;
+  var elementAttributes = _nodeElement.getAttributes();
   var keys = Object.keys(elementAttributes);
   for (var i = 0; i < keys.length; i++) {
     element.setAttribute(keys[i], elementAttributes[keys[i]]);
   }
 
   //element.setAttribute('__enid', _nodeElement.id);
-
+  console.log(_nodeElement, 'instillRealHTMLElement');
   _nodeElement.setRealElement(element);
 };
 
@@ -162,7 +169,7 @@ DocumentContextController.prototype.instillRealTextElement = function(_nodeEleme
 DocumentContextController.prototype.instillRealReactElement = function(_nodeElement) {
 
   ////// TOTOTOTOTO DODODODODO
-  console.warn("React RealElement 주입방식 정의 안됨.");
+  console.warn("React RealElement 주입방식 정의 안됨. 안만들어도 될듯");
 
 };
 
@@ -268,7 +275,7 @@ DocumentContextController.prototype.insertNewElementNodeFromComponent = function
 
     this.constructToRealElement(newElementNode);
 
-    parent.growupRealElementTree();
+    parent.growupRealDOMElementTree();
   }
 
   // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.

@@ -89,8 +89,14 @@ Document.prototype.getUsingResources = function() {
   return this.usingResources;
 };
 
-
-
+////////////////////
+/****************
+ * getReactTypeComponent
+ *
+ */
+Document.prototype.getReactTypeComponent = function(_packageKey, _componentKey) {
+  return this.contextController.getReactComponentFromSession(_packageKey, _componentKey);
+};
 ///////////
 /******************
  * appendHTMLElementNodeCSS
@@ -124,7 +130,7 @@ Document.prototype.getHTMLElementNodeCSSLines = function() {
   }
 
   return lines;
-}
+};
 
 /*******
  * getReactElementNodeCSSLines
@@ -170,10 +176,12 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
  * @Param _toElement
  * @Return ElementNode{} : 생성된 ElementNode
  */
-Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
+Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toRealDOMElement) {
+  console.log(_toRealDOMElement);
 
-  var targetElementNode = _toElement.___en;
+  var targetElementNode = _toRealDOMElement.___en;
 
+  // 대상 Element가 존재하지 않으면 rootNode로 편입또는 삽입실패로 지정한다.
   if (typeof targetElementNode === 'undefined') {
 
     if (this.rootElementNode === null) {
@@ -188,16 +196,43 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
       return null;
     }
   } else {
-    var newElementNode = this.newElementNode();
-    newElementNode.buildByComponent(_component);
 
-    if (_insertType === 'appendChild') {
-      targetElementNode.appendChild(newElementNode);
+    // react ElementType 의 컴포넌트가 아닐 경우 자식으로 등록
+    if (_component.elementType !== 'react') {
+      // 대상노드가 존재하면 대상노드기준으로 삽입
+      var newElementNode = this.newElementNode();
+      newElementNode.buildByComponent(_component);
+
+      if (_insertType === 'appendChild') {
+        targetElementNode.appendChild(newElementNode);
+      } else if (_insertType === 'insertBefore') {
+        targetElementNode.insertBefore(newElementNode);
+      } else if (_insertType === 'insertAfter') {
+        targetElementNode.insertAfter(newElementNode);
+      }
+
+
+      return newElementNode;
+    } else {
+
+      // 드랍된 컴포넌트가 React 타입일 경우
+      // 대상요소에 드롭밖에 할 수 없다. 그리고 그 대상노드는 Empty Type의 ElementNode여야 한다.
+      // 일단 inertType이 어떻든 드롭으로 가정
+      if (targetElementNode.getType() === 'empty') {
+        targetElementNode.setRefferenceType("react");
+
+        targetElementNode.setRefferenceTarget({
+          "componentKey": _component.componentKey,
+          "packageKey": _component.packageKey
+        });
+
+        return targetElementNode;
+      }
+      return null;
     }
-
-
-    return newElementNode;
+    return null;
   }
+  return null
 };
 
 
