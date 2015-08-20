@@ -1,7 +1,7 @@
 @import '../CommonSnippet';
 
 @HeadHeight:0px;
-@FootHeight:35px;
+@FootHeight:0px;
 
 .ComponentPalette
 {
@@ -65,6 +65,14 @@
 
                     > li.package
                     {
+                        overflow: hidden;
+
+                        height: 25px;
+
+                        &:hover
+                        {
+                            height: auto;
+                        }
                         > label
                         {
                             font-size: 13px;
@@ -74,6 +82,8 @@
                             box-sizing: border-box;
                             width: 100%;
                             padding: 5px;
+
+                            transition: all .7;
                         }
 
                         > ul
@@ -85,12 +95,13 @@
                             {
                                 font-size: 12px;
 
-                                display: inline-block;
-
                                 box-sizing: border-box;
+                                //display: inline-block;
+                                width: 100%;
                                 padding: 5px;
 
                                 cursor: pointer;
+                                transition: all .7;
                                 text-align: justify;
                                 letter-spacing: 1px;
                             }
@@ -170,7 +181,12 @@
                             > label
                             {
                                 color: rgb(242,242,242);
-                                background-color: rgb(206, 70, 36);
+                                background-color: rgb(226, 60, 56);
+
+                                &:hover
+                                {
+                                    background-color: rgb(236, 60, 56);
+                                }
                             }
 
                             > ul

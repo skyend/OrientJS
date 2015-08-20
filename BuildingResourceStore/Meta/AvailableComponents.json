@@ -2,6 +2,82 @@
   "host": "http://localhost:8000",
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
+    "key": "BasicFramePackage",
+    "name": "BasicFramePackage",
+    "components": [{
+      "key": "root-wrapper",
+      "name": "RootWrapper",
+      "path": "BasicFramePackage/RootWrapper.jsx"
+    }, {
+      "key": "empty-type-element",
+      "name": "Empty Type Element",
+      "path": "BasicFramePackage/EmptyTypeElement.jsx"
+    }, {
+      "key": "grid-type-element",
+      "name": "GridTypeElement",
+      "path": "BasicFramePackage/GridTypeElement.jsx"
+    }]
+  }, {
+    "key": "HTMLTags",
+    "name": "HTMLTags",
+    "components": [{
+      "key": "a",
+      "name": "Anchor <A>",
+      "path": "HTMLTags/A.jsx"
+    }, {
+      "key": "article",
+      "name": "Article <Article>",
+      "path": "HTMLTags/Article.jsx"
+    }, {
+      "key": "Aside",
+      "name": "Aside <Aside>",
+      "path": "HTMLTags/Aside.jsx"
+    }, {
+      "key": "Button",
+      "name": "Button <Button>",
+      "path": "HTMLTags/Button.jsx"
+    }, {
+      "key": "Div",
+      "name": "Division <Div>",
+      "path": "HTMLTags/Div.jsx"
+    }, {
+      "key": "Footer",
+      "name": "Footer <Footer>",
+      "path": "HTMLTags/Footer.jsx"
+    }, {
+      "key": "Form",
+      "name": "Form <Form>",
+      "path": "HTMLTags/Form.jsx"
+    }, {
+      "key": "Header",
+      "name": "Header <Header>",
+      "path": "HTMLTags/Header.jsx"
+    }, {
+      "key": "Input",
+      "name": "Input <Input>",
+      "path": "HTMLTags/Input.jsx"
+    }, {
+      "key": "Label",
+      "name": "Label <Label>",
+      "path": "HTMLTags/Label.jsx"
+    }, {
+      "key": "Nav",
+      "name": "Navigation <Nav>",
+      "path": "HTMLTags/Nav.jsx"
+    }, {
+      "key": "Progress",
+      "name": "Progress <Progress>",
+      "path": "HTMLTags/Progress.jsx"
+    }, {
+      "key": "Section",
+      "name": "Section <Section>",
+      "path": "HTMLTags/Section.jsx"
+    }, {
+      "key": "Span",
+      "name": "Span <Span>",
+      "path": "HTMLTags/Span.jsx"
+    }]
+  }, {
     "key": "TestPackage",
     "name": "TestPackage",
     "components": [{
@@ -28,26 +104,6 @@
       "key": "boxb",
       "name": "BoxB",
       "path": "TestPackage/BoxB.jsx"
-    }]
-  }, {
-    "key": "SampleGridPackage",
-    "name": "SampleGridPackage",
-    "components": [{
-      "key": "grid",
-      "name": "DefaultGrid",
-      "path": "SampleGridPackage/Grid.jsx"
-    }]
-  }, {
-    "key": "SampleHTMLPackage",
-    "name": "SampleHTMLPackage",
-    "components": [{
-      "key": "root-wrapper",
-      "name": "RootWrapper",
-      "path": "SampleHTMLPackage/RootWrapper.jsx"
-    }, {
-      "key": "horizontal-navi",
-      "name": "HorizontalNavi",
-      "path": "SampleHTMLPackage/HorizontalNavi.jsx"
     }]
   }, {
     "key": "SampleReactPackage",

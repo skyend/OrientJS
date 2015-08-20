@@ -306,11 +306,11 @@ ElementNode.prototype.growupRealElementTree = function() {
 
     this.children.map(function(_child) {
 
-      if (_child.getType() !== 'react') {
+      if (_child.getType() === 'html' || _child.getType() === 'string') {
         if (_child.hasRealElement()) {
           rE.appendChild(_child.growupRealElementTree());
         }
-      } else {
+      } else if (_child.getType() === 'react') {
         // 리액트 컴포넌트 로드시 같은 window문맥 필요
         // 빌더모드와 서비스 모드 분리하여 Pool에서 같은 리액트요소를 사용하도록 변경해야함
         var React = require('react');

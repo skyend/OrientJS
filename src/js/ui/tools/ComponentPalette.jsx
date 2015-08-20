@@ -127,7 +127,7 @@
                             </div>
                         </div>
                         <div className='foot'>
-
+                            
                         </div>
                     </div>
                 </div>
