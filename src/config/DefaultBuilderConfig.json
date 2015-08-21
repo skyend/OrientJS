@@ -50,10 +50,10 @@
     "menuGroups": [{
       "groupName": "System",
       "menuItems": [{
-        "key": "element-node-store",
-        "title": "Element Nodes",
+        "key": "element-node-editor",
+        "title": "Element Node",
         "icon": "cube",
-        "equipToolKey": "ComponentPalette"
+        "equipToolKey": "ElementNodeEditor"
       }, {
         "key": "element-tree",
         "title": "Element Tree",
@@ -86,6 +86,11 @@
     "ServiceResources": {
       "jsxPath": "ServiceResources",
       "configPath": "ServiceResources"
+    },
+
+    "ElementNodeEditor": {
+      "jsxPath": "ElementNodeEditor",
+      "configPath": "ElementNodeEditor"
     }
   }
 }

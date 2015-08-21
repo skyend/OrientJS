@@ -1,8 +1,17 @@
 var IFrameStage = require('./partComponents/IFrameStage.jsx');
+var _ = require('underscore');
 var React = require('react');
+require('./DirectContext.less');
 
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
+  getInitialState(){
+    return {
+      elementNavigatorX: 0,
+      elementNavigatorY: 0,
+      showElementNavigator: false
+    };
+  },
 
   appendElementToBody( _element ){
     return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
@@ -10,9 +19,30 @@ var DirectContext = React.createClass({
 
   isDropableToRoot( _domElement ){
     var dropTarget = _domElement;
+    var funcFind = false;
 
-    var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    // function을 찾으면 루프탈출
+    while( dropTarget !== null ){
+      if( typeof dropTarget.getElementNode === 'function' ){
+        funcFind = true;
+        break;
+      }
 
+      dropTarget = dropTarget.parentNode;
+    }
+
+
+    var contextController;
+    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
+    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
+    if( funcFind ){
+      contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    } else {
+      contextController = this.contextController;
+    }
+
+
+    // 해당 ContextController에 메소드로 확인.
     return contextController.isDropableToRoot();
   },
 
@@ -128,6 +158,96 @@ var DirectContext = React.createClass({
     console.log('changed context state to running!');
   },
 
+  removeElement(){
+
+  },
+
+  editElement(){
+
+  },
+
+  jumpToParentElement(){
+    var nextParent = this.state.selectedElementPath[1];
+    if( nextParent === undefined ){
+      return;
+    }
+
+    if( typeof nextParent.getElementNode !== 'function' ){
+      return;
+    }
+
+    this.state.selectedElementPath.shift();
+
+    this.selectElement( this.state.selectedElementPath[0], this.state.selectedElementPath );
+  },
+
+  closeElementNavigator(){
+
+    this.setState({
+      showElementNavigator:false,
+      elementNavigatorX:0,
+      elementNavigatorY:0,
+      elementNavigatorWidth:0,
+      elementNavigatorHeight:0,
+      selectedElement:null,
+      selectedElementPath:null});
+  },
+
+  selectElement( _target, _path){
+
+    // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
+    // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
+    if( typeof _target.getElementNode !== 'function' ){
+      for( var i = 0; i < _path.length; i++ ){
+        if( typeof _path[i].getElementNode === 'function' ){
+          this.selectElement( _path[i], _path.slice(i, _path.length -1) );
+          return;
+        }
+      }
+    }
+
+
+    var targetRect = _target.getBoundingClientRect();
+
+    this.setState({
+      showElementNavigator:true,
+      elementNavigatorX:targetRect.left,
+      elementNavigatorY:targetRect.top,
+      elementNavigatorWidth:targetRect.width,
+      elementNavigatorHeight:targetRect.height,
+      selectedElement:_target,
+      selectedElementPath:_path});
+
+
+    // DisplayElementPath 이벤트를 발생시키기 위해 path의 순서를 뒤집는다.
+    var reversePath = [];
+    for(var i =0; i < _path.length; i++ ){
+      reversePath.push( _path[i] );
+    }
+
+
+    this.emit("DisplayElementPath",{
+      elementPathArray: reversePath
+    });
+
+    this.emit("SelectedElementNodeByDirectContext",{
+      elementNode: _target.getElementNode()
+    });
+  },
+
+  onThrowCatcherScrollAtStage(_eventData, _pass){
+    this.closeElementNavigator();
+  },
+
+  onThrowCatcherClickElementInStage(_eventData, _pass) {
+    this.selectElement( _eventData.targetDOMElement, _eventData.elementPath);
+
+    // BuilderSService가 contextMenu를 닫을 수 있도록 pass 한다.
+    _pass();
+  },
+
+
+
   componentDidUpdate(){
     if( this.props.runningState ){
       this.goingToContextRunning();
@@ -159,10 +279,89 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
+    var elNavY = this.state.elementNavigatorY - 35;
+    if( elNavY < 0 ){
+      elNavY = 0;
+    }
+
+    var elementNavigatorStyle = {
+      left:this.state.elementNavigatorX,
+      top: elNavY,
+      display: this.state.showElementNavigator? 'inherit':'none'
+    };
+
+    var selectedOutlineStyleTop = {
+      left:this.state.elementNavigatorX,
+      top: this.state.elementNavigatorY - 3,
+      width:this.state.elementNavigatorWidth,
+      height:3,
+      display: this.state.showElementNavigator? 'inherit':'none'
+    }
+
+    var selectedOutlineStyleBottom = {
+      left:this.state.elementNavigatorX,
+      top: this.state.elementNavigatorY + this.state.elementNavigatorHeight,
+      width:this.state.elementNavigatorWidth,
+      height:3,
+      display: this.state.showElementNavigator? 'inherit':'none'
+    }
+
+    var selectedOutlineStyleLeft = {
+      left:this.state.elementNavigatorX-3,
+      top: this.state.elementNavigatorY-3,
+      width:3,
+      height:this.state.elementNavigatorHeight + 6,
+      display: this.state.showElementNavigator? 'inherit':'none'
+    }
+
+    var selectedOutlineStyleRight = {
+      left:this.state.elementNavigatorX + this.state.elementNavigatorWidth,
+      top: this.state.elementNavigatorY-3,
+      width:3,
+      height:this.state.elementNavigatorHeight+6,
+      display: this.state.showElementNavigator? 'inherit':'none'
+    }
+
+    /******
+     * DirectContext와 Iframe-stage의 ContentBox 는 일치하여야 한다.
+     *
+     *
+     */
     return (
-      <div style={style}>
+      <div className='DirectContext theme-black' style={style}>
         <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height}/>
+         <div className='element-navigator' ref='element-navigator' style={elementNavigatorStyle}>
+           <div className='box'>
+             <ul>
+              <li>
+                <button onClick={this.jumpToParentElement}>
+                  <i className='fa fa-bolt'/> Parent
+                </button>
+              </li>
+              <li>
+                <button onClick={this.editElement}>
+                  <i className='fa fa-pencil-square-o'/> Edit
+                </button>
+              </li>
+              <li>
+                <button onClick={this.removeElement}>
+                  <i className='fa fa-trash'/> Remove
+                </button>
+              </li>
+              <li>
+                <button onClick={this.closeElementNavigator}>
+                  <i className='fa fa-times'/>
+                </button>
+              </li>
+             </ul>
+           </div>
+         </div>
+         <div className='selected-element-outline' style={selectedOutlineStyleTop}/>
+         <div className='selected-element-outline' style={selectedOutlineStyleBottom}/>
+         <div className='selected-element-outline' style={selectedOutlineStyleLeft}/>
+         <div className='selected-element-outline' style={selectedOutlineStyleRight}/>
       </div>
+
     );
   }
 });

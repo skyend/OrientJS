@@ -17,6 +17,7 @@ var Document = function(_contextController, _documentDataObject) {
   // document elements
   this.rootElementNode = null;
   this.elementNodes;
+  this.pageCSS;
 
   // document require resources
   this.usingResources;
@@ -41,6 +42,7 @@ var Document = function(_contextController, _documentDataObject) {
       this.newElementNode(_documentDataObject.rootElementNode) : null;
 
     this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
+    this.pageCSS = _documentDataObject.pageCSS;
     this.usingResources = _documentDataObject.usingResources || {};
 
 
@@ -51,6 +53,7 @@ var Document = function(_contextController, _documentDataObject) {
     this.elementNodes = [];
     this.rootElementNode = null;
     this.usingResources = {};
+    this.pageCSS = '';
   }
 };
 
@@ -60,22 +63,9 @@ var Document = function(_contextController, _documentDataObject) {
 Document.prototype.setDocumentName = function(_documentName) {
   this.documentName = _documentName;
 };
-Document.prototype.getScriptResources = function() {
-  return this.usingResources.js;
-};
-
-Document.prototype.getStyleResources = function() {
-  return this.usingResources.style;
-};
-// elementNodes
-Document.prototype.getElementNodes = function() {
-  return this.elementNodes;
-};
-
-///////////////////////
-// documentUpdate
-Document.prototype.documentUpdated = function() {
-  this.documentUpdate = new Date();
+// pageCSS
+Document.prototype.setPageCSS = function(_pageCSS) {
+  this.pageCSS = _pageCSS;
 };
 
 ////////////////////
@@ -87,6 +77,26 @@ Document.prototype.getLastElementId = function() {
 // usingResources
 Document.prototype.getUsingResources = function() {
   return this.usingResources;
+};
+Document.prototype.getScriptResources = function() {
+  return this.usingResources.js;
+};
+Document.prototype.getStyleResources = function() {
+  return this.usingResources.style;
+};
+// elementNodes
+Document.prototype.getElementNodes = function() {
+  return this.elementNodes;
+};
+// pageCSS
+Document.prototype.getPageCSS = function() {
+  return this.pageCSS;
+};
+
+///////////////////////
+// documentUpdate
+Document.prototype.documentUpdated = function() {
+  this.documentUpdate = new Date();
 };
 
 ////////////////////
@@ -282,6 +292,7 @@ Document.prototype.export = function() {
     elementNodes: this.elementNodes.map(function(_elementNode) {
       return _elementNode.export();
     }),
+    pageCSS: this.getPageCSS(),
     usingResources: this.getUsingResources()
   };
 };

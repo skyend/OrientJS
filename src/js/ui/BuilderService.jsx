@@ -123,8 +123,6 @@ var _ = require('underscore');
 
         onThrowCatcherClickElementInStage(_eventData, _pass) {
             this.offContextMenu();
-
-            //_pass();
         },
 
         onThrowCatcherStageElementDelete(_eventData, _pass) {
@@ -258,17 +256,29 @@ var _ = require('underscore');
             }]);
         },
 
+        onThrowCatcherDisplayElementPath(_eventData, _pass) {
+          console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
+
+          var footStatusBar = this.refs['FootStatusBar'];
+
+
+          footStatusBar.setState({
+            domElementPathArray:_eventData.pathArray
+          });
+
+        },
+
         onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
           console.log('recieve', _eventData);
 
           var footStatusBar = this.refs['FootStatusBar'];
-          console.log( this.state );
 
           footStatusBar.setState({
             vnodePathArray:_eventData.nodeArrayPath
           });
 
         },
+
 
         onThrowCatcherNeedProjectMeta(_eventData, _pass){
           console.log('NeedProjectMeta',this.state.projectMeta);
@@ -291,13 +301,13 @@ var _ = require('underscore');
         },
 
 
-        applyToolStates( _toolKey, _state ){
+        applyToolStates( _toolEquipmentKey, _state ){
           var prevToolStatesStore = this.state.toolStatesStore;
-          var toolStateObject = prevToolStatesStore[_toolKey];
+          var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
 
           if( typeof toolStateObject === 'undefined' ){
             toolStateObject = {};
-            prevToolStatesStore[_toolKey] = toolStateObject;
+            prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
           }
 
           // merge state
@@ -309,15 +319,16 @@ var _ = require('underscore');
           var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
           var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
 
+
           if( typeof leftEquipTool === 'object' ){
-            if( leftEquipTool.toolKey === _toolKey ){
+            if( leftEquipTool.toolKey === _toolEquipmentKey ){
               this.refs['LeftNavigation'].applyToolState( toolStateObject );
             }
           }
 
           if( typeof rightEquipTool === 'object' ){
-            if( rightEquipTool.toolKey === _toolKey ){
-
+            if( rightEquipTool.toolKey === _toolEquipmentKey ){
+              this.refs['RightNavigation'].applyToolState( toolStateObject );
             }
           }
 
@@ -370,6 +381,12 @@ var _ = require('underscore');
           var documentStage = this.refs['DocumentStage'];
 
           documentStage.openContext( _directContextItem );
+        },
+
+        onThrowCatcherSelectedElementNodeByDirectContext(_eventData, _pass){
+          this.applyToolStates("ElementNodeEditor", {
+            elementNode: _eventData.elementNode
+          });
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -447,7 +464,7 @@ var _ = require('underscore');
                     <RightNavigation ref="RightNavigation"
                                      config={this.props.RightNavigationConfig}
                                      naviWidth={25}
-                                     toolWidth={230}
+                                     toolWidth={320}
                                      showTitle={true}
                                      verticalText={true}
                                      position='right'

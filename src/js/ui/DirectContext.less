@@ -1,0 +1,99 @@
+.DirectContext
+{
+    &.theme-black
+    {
+        > .element-navigator
+        {
+            > .box
+            {
+                color: #fff;
+                background-color: rgba(30,30,30,.8);
+                box-shadow: 0 0 10px rgba(255,255,255,.2);
+                > ul
+                {
+                    > li
+                    {
+                        > button
+                        {
+                            transition: all .5s;
+
+                            color: #fff;
+                            border-bottom-color: #fff;
+                            background-color: transparent;
+                            &:hover
+                            {
+                                color: #333;
+                                border-bottom-color: #333;
+                                background-color: rgba(255,255,255,.9);
+                            }
+
+                            &:active
+                            {
+                                color: #000;
+                                border-bottom-color: #faa;
+                                box-shadow: inset 0 5px 4px rgba(0,0,0,.3);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    > .element-navigator
+    {
+        position: absolute;
+        z-index: 5;
+        top: 110px;
+        left: 0;
+
+        display: inline-block;
+
+        > .box
+        {
+            display: inline-block;
+            > ul
+            {
+                display: inline-block;
+
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+                > li
+                {
+                    display: inline-block;
+                    > button
+                    {
+                        font-family: 'Open Sans';
+                        font-size: 12px;
+                        line-height: 0;
+
+                        box-sizing: border-box;
+                        height: 35px;
+                        margin: 0;
+                        padding: 10px;
+
+                        cursor: pointer;
+
+                        border: 0;
+                        border-bottom-width: 3px;
+                        border-bottom-style: solid;
+                        outline: none;
+                    }
+                }
+            }
+        }
+    }
+
+    > .selected-element-outline
+    {
+        position: absolute;
+        z-index: 4;
+
+        display: block;
+
+        background-color: #fff;
+
+        mix-blend-mode: exclusion;
+    }
+}

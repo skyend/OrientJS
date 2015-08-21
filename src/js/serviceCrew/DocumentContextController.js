@@ -103,6 +103,9 @@ DocumentContextController.prototype.rootRender = function() {
 
   // rootRealElement 를 directContext에 랜더링한다.
   this.directContext.appendElementToBody(rootRealElement);
+
+
+  this.updateRenderCSS();
 }
 
 /**
@@ -246,6 +249,12 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
 };
 
+
+DocumentContextController.prototype.updateRenderCSS = function() {
+  // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
+  this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+};
+
 DocumentContextController.prototype.isDropableToRoot = function() {
   return this.document.rootElementNode === null;
 };
@@ -280,10 +289,11 @@ DocumentContextController.prototype.insertNewElementNodeFromComponent = function
     this.constructToRealElement(newElementNode);
 
     parent.growupRealDOMElementTree();
+
+    this.updateRenderCSS();
   }
 
-  // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
-  this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+
   console.log(JSON.stringify(this.document.export()));
   return true;
 };

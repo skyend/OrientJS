@@ -171,6 +171,10 @@ var IFrameStage = React.createClass({
     innerDocument.addEventListener('mousedown', function(_ev) {
       self.onMouseDownAtStage(_ev);
     }, false);
+
+    innerDocument.addEventListener('scroll', function(_ev) {
+      self.onScrollAtStage(_ev);
+    }, false);
   },
 
 /**
@@ -178,9 +182,28 @@ var IFrameStage = React.createClass({
      *
      */
   onMouseClickAtStage(_e) {
+
+    this.elementClick(_e.path);
+  },
+
+  onScrollAtStage(_e){
+    this.emit("ScrollAtStage", {
+
+    }, _e, "Scroll");
+  },
+
+
+  elementClick(_path){
+    var pathArray = [];
+
+    for( var i = 0; i < _path.length; i++ ){
+      pathArray[i] = _path[i];
+    }
+    
     this.emit("ClickElementInStage", {
-      clickedTarget: null
-    }, _e, "MouseClick");
+      targetDOMElement: pathArray[0],
+      elementPath:pathArray
+    });
   },
 
 /**
@@ -208,7 +231,7 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-    return; // 임시로 무효화
+
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     console.log("call contextmenu", _e);

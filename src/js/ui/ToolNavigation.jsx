@@ -101,12 +101,12 @@
                 });
 
 
-
+                /*
                 this.emit("NoticeMessage", {
                     title: "From PanelNavigation",
                     message: "Equiped tool[" + _toolKey + "]",
                     level: "success"
-                });
+                });*/
 
             } else {
                 this.setState({

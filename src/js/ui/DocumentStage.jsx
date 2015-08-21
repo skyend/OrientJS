@@ -252,6 +252,8 @@ var _ = require('underscore');
                   var checkResult = ElementNode.checkDropableComponentWithDirection( _component, direction );
 
 
+                  // 드랍포지션 표시
+                  self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
 
                   if( checkResult === true ){
 
@@ -264,14 +266,10 @@ var _ = require('underscore');
                   }
                   //////// 확인 끝
 
-                  // 드랍포지션 표시
-                  self.showPreviewComponentDeployPosition(self.aimedTarget, direction, _component.positionHints);
+
 
                 }
               });
-
-
-
             }
           }
           this.prevMouseX = _absoluteX;
@@ -300,6 +298,7 @@ var _ = require('underscore');
 
             // 표적지정
             this.aimingTarget( target, _absoluteX, _absoluteY );
+
           }
 
 
@@ -738,6 +737,9 @@ var _ = require('underscore');
           this.showGuideBox(target, _absoluteX, _absoluteY);
           this.expectDropToVNode(target);
           this.aimedTarget = target;
+
+          this.changeElementHighlighterMode('canDrop');
+          this.changeDropPositionPlaceholderMode('canInsert');
         },
 
         expectDropToVNode( _target ){
@@ -754,6 +756,7 @@ var _ = require('underscore');
           this.hideElementHighlight();
           this.clearAimCounter();
           this.hidePreviewComponentDeployPosition();
+
         },
 
         clearAimCounter(){
