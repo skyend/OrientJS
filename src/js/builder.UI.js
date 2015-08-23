@@ -279,18 +279,72 @@
     if (_eventData.refPath[0] === 'ComponentPalette') {
 
       _eventData.path[0].setState({
-        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey)
+        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey)
       });
     }
   };
 
   UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
     var key = _eventData.componentKey;
-
-    var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey);
+    console.log(_eventData, 'get');
+    var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
 
     _eventData.return(null, loadedComponent)
   };
+
+  /**************
+   * Service Handling
+   *
+   *
+   *
+   */
+  UI.prototype.setProjectManager = function(_projectManager) {
+    this.projectManager = _projectManager;
+
+    this.uiServicer.setState({
+      'projectMeta': _projectManager.meta
+    });
+  };
+
+  UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
+    var who = _eventData.path[0];
+
+    who.setState({
+      pageMetaList: this.projectManager.serviceManager.getPageMetaList(),
+      documentMetaList: this.projectManager.serviceManager.getDocumentMetaList(),
+    });
+  };
+
+  UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
+    console.log('BringDocumentContext', _eventData.document);
+    var documentMeta = _eventData.documentMeta;
+
+    // Document Meta 정보로 DocumentContextController를 얻는다
+    var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
+
+    this.uiServicer.openDirectContext({
+      documentID: documentMeta.id,
+      contextID: 'document#' + documentMeta.id,
+      contextName: documentMeta.name,
+      contextType: 'document',
+      contextController: documentContextController,
+      iconClass: _eventData.iconClass
+    });
+  };
+
+
+  UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData, _pass) {
+    var who = _eventData.path[0];
+    console.log('meta', this.session.getComponentPool().getAvailablePackageMeta());
+
+    who.setState({
+      availableComponentPackageMeta: this.session.getComponentPool().getAvailablePackageMeta()
+    });
+  };
+
+
+
+
 
   UI.prototype.builderRender = function() {
     var rootUI = React.render(React.createElement(this.builderScreen, {
@@ -298,7 +352,6 @@
       LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
       RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
       Tools: DefaultBuilderConfig.tools,
-      AvailableComponents: this.session.componentPool.getAvailableComponents(),
       __keyName: 'uiServicer'
     }), this.window.document.getElementsByTagName('BODY')[0]);
 

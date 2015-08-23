@@ -25,7 +25,8 @@ var BasicButton = React.createClass({
 
 module.exports = {
   class :BasicButton,
-  renderType:'static',
+  renderType:'staticFromReact',
+  elementType:'react',
   struct: {},
   positionHints : {
     width:100,

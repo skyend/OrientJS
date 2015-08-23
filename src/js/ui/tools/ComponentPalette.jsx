@@ -13,18 +13,19 @@
 
         getInitialState(){
           return {
-            availabelComponentList : []
+            availableComponentPackageMeta : []
           }
         },
 
-        mouseOverListItem( _key){
+        mouseOverListItem( _componentKey, _packageKey){
 
           this.emit('IMustPreviewComponent', {
-            componentKey:_key
+            componentKey:_componentKey,
+            packageKey: _packageKey
           });
         },
 
-        mouseDownTo(_key){
+        mouseDownTo(_componentKey, _packageKey){
             app.ui.occupyGlobalDrag(this, true);
             app.ui.enableGlobalDrag();
             app.ui.toMouseDawn();
@@ -32,23 +33,41 @@
             var holderHTML = "<div class='componentDragHolder'></div>";
             app.ui.holdingElementWhileDrag(holderHTML);
 
-            this.willDeployComponentKey = _key;
+            this.willDeployComponentKey = _componentKey;
+            this.willDeployPackageKey = _packageKey;
         },
 
-        listItemRender( _componentKey){
+        renderComponentMeta( _componentMeta, _packageKey ){
           var self = this;
+
           return (
-            <li onMouseOver={ function(){ self.mouseOverListItem(_componentKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentKey) }}>
-              { _componentKey}
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
+              <i className='fa fa-cube'></i> { _componentMeta.name }
             </li>
           )
+        },
+
+        renderPackageMeta( _packageMeta ){
+          var self = this;
+
+          return (
+            <li className='package'>
+              <label> <i className='fa fa-gift'></i> {_packageMeta.name} </label>
+              <ul>
+                { _packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageMeta.key)} ) }
+              </ul>
+            </li>
+          );
+
+
         },
 
         onGlobalDragStartFromUI(_e){
             this.emit("BeginDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
         },
 
@@ -56,7 +75,8 @@
             this.emit("DragDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
         },
 
@@ -64,16 +84,18 @@
             this.emit("DropDeployComponent", {
                 absoluteX: _e.clientX,
                 absoluteY: _e.clientY,
-                componentKey : this.willDeployComponentKey
+                componentKey : this.willDeployComponentKey,
+                packageKey : this.willDeployPackageKey
             });
 
             this.willDeployComponentKey = undefined;
+            this.willDeployPackageKey = undefined;
         },
 
         componentDidMount(){
             this.refs['ComponentPreviewer'].displayComponent( InputBoxWithSelector, "reactClass");
 
-            this.emit('UpdateComponentListToMe');
+            this.emit('NeedStateComponentPackageMeta');
         },
 
         componentDidUpdate( _prevProps, _prevState){
@@ -86,7 +108,7 @@
 
         render() {
             var wide = false;
-            var rootClasses = ['ComponentPalette', 'black', this.getMySizeClass()];
+            var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
 
             return (
                 <div className={rootClasses.join(' ')}>
@@ -98,14 +120,14 @@
                             <div className='previewer-area'>
                                 <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
                             </div>
-                            <div className='list-area'>
-                                <ul>
-                                  {this.state.availabelComponentList.map(this.listItemRender)}
+                            <div className='package-list-area'>
+                                <ul className='package-list'>
+                                  {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
                                 </ul>
                             </div>
                         </div>
                         <div className='foot'>
-
+                            
                         </div>
                     </div>
                 </div>

@@ -1,12 +1,125 @@
 {
-  "host" : "http://localhost:8000",
-  "temporaryNamespaceDir" : "/BuildingResourceStore/Components/",
-  "availableComponents" : {
-    "TestPackage/A": {"path":"TestPackage/A.jsx"},
-    "TestPackage/B": {"path":"TestPackage/B.jsx"},
-    "TestPackage/TestInputBox": {"path":"TestPackage/TestInputBox.jsx"},
-    "TestPackage/BasicButton": {"path":"TestPackage/BasicButton.jsx"},
-    "TestPackage/BoxA": {"path":"TestPackage/BoxA.jsx"},
-    "TestPackage/BoxB": {"path":"TestPackage/BoxB.jsx"}
-  }
+  "host": "http://localhost:8000",
+  "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
+  "availablePackages": [{
+    "key": "BasicFramePackage",
+    "name": "BasicFramePackage",
+    "components": [{
+      "key": "root-wrapper",
+      "name": "RootWrapper",
+      "path": "BasicFramePackage/RootWrapper.jsx"
+    }, {
+      "key": "empty-type-element",
+      "name": "Empty Type Element",
+      "path": "BasicFramePackage/EmptyTypeElement.jsx"
+    }, {
+      "key": "grid-type-element",
+      "name": "GridTypeElement",
+      "path": "BasicFramePackage/GridTypeElement.jsx"
+    }]
+  }, {
+    "key": "HTMLTags",
+    "name": "HTMLTags",
+    "components": [{
+      "key": "a",
+      "name": "Anchor <A>",
+      "path": "HTMLTags/A.jsx"
+    }, {
+      "key": "article",
+      "name": "Article <Article>",
+      "path": "HTMLTags/Article.jsx"
+    }, {
+      "key": "Aside",
+      "name": "Aside <Aside>",
+      "path": "HTMLTags/Aside.jsx"
+    }, {
+      "key": "Button",
+      "name": "Button <Button>",
+      "path": "HTMLTags/Button.jsx"
+    }, {
+      "key": "Div",
+      "name": "Division <Div>",
+      "path": "HTMLTags/Div.jsx"
+    }, {
+      "key": "Footer",
+      "name": "Footer <Footer>",
+      "path": "HTMLTags/Footer.jsx"
+    }, {
+      "key": "Form",
+      "name": "Form <Form>",
+      "path": "HTMLTags/Form.jsx"
+    }, {
+      "key": "Fieldset",
+      "name": "Fieldset <Fieldset>",
+      "path": "HTMLTags/Fieldset.jsx"
+    }, {
+      "key": "Legend",
+      "name": "Legend <Legend>",
+      "path": "HTMLTags/Legend.jsx"
+    }, {
+      "key": "Header",
+      "name": "Header <Header>",
+      "path": "HTMLTags/Header.jsx"
+    }, {
+      "key": "Input",
+      "name": "Input <Input>",
+      "path": "HTMLTags/Input.jsx"
+    }, {
+      "key": "Label",
+      "name": "Label <Label>",
+      "path": "HTMLTags/Label.jsx"
+    }, {
+      "key": "Nav",
+      "name": "Navigation <Nav>",
+      "path": "HTMLTags/Nav.jsx"
+    }, {
+      "key": "Progress",
+      "name": "Progress <Progress>",
+      "path": "HTMLTags/Progress.jsx"
+    }, {
+      "key": "Section",
+      "name": "Section <Section>",
+      "path": "HTMLTags/Section.jsx"
+    }, {
+      "key": "Span",
+      "name": "Span <Span>",
+      "path": "HTMLTags/Span.jsx"
+    }]
+  }, {
+    "key": "TestPackage",
+    "name": "TestPackage",
+    "components": [{
+      "key": "a",
+      "name": "A",
+      "path": "TestPackage/A.jsx"
+    }, {
+      "key": "b",
+      "name": "B",
+      "path": "TestPackage/B.jsx"
+    }, {
+      "key": "testinputbox",
+      "name": "TestInputBox",
+      "path": "TestPackage/TestInputBox.jsx"
+    }, {
+      "key": "basicbutton",
+      "name": "BasicButton",
+      "path": "TestPackage/BasicButton.jsx"
+    }, {
+      "key": "boxa",
+      "name": "BoxA",
+      "path": "TestPackage/BoxA.jsx"
+    }, {
+      "key": "boxb",
+      "name": "BoxB",
+      "path": "TestPackage/BoxB.jsx"
+    }]
+  }, {
+    "key": "SampleReactPackage",
+    "name": "SampleReactPackage",
+    "components": [{
+      "key": "sample-react",
+      "name": "SampleReact",
+      "path": "SampleReactPackage/SampleReact.jsx"
+    }]
+  }]
 }

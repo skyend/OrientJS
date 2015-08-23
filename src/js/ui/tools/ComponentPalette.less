@@ -1,153 +1,248 @@
-@import "../CommonSnippet";
+@import '../CommonSnippet';
 
 @HeadHeight:0px;
-@FootHeight:35px;
+@FootHeight:0px;
 
-.ComponentPalette {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin:0;
+.ComponentPalette
+{
+    position: relative;
 
- >.wrapper {
-   position: relative;
-   height: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0;
 
-   >.head {
-     position: relative;
-     width:100%;
-     top:0px;
-     height:@HeadHeight;
-     font-size: 12px;
-     padding:5px;
-     box-sizing: border-box;
+    > .wrapper
+    {
+        position: relative;
 
-     overflow: hidden;
-     display: none;
-   }
+        height: 100%;
 
+        > .head
+        {
+            font-size: 12px;
 
-   >.body {
-     position: absolute;
-     width:100%;
-     box-sizing: border-box;
+            position: relative;
+            top: 0;
 
-     top:@HeadHeight;
-     bottom:@FootHeight;
+            display: none;
+            overflow: hidden;
 
-     overflow: auto;
-
-
-     >.previewer-area {
-       width:100%;
-       height: 100px;
-     }
-
-   }
-
-   > .foot {
-     position: absolute;
-     width:100%;
-     bottom:0px;
-     height:@FootHeight;
-
-     text-align: right;
-   }
- }
-
-
-  &.black {
-    background-color: rgba(0,0,0,0.5);
-
-    >.wrapper {
-      > .head {
-        background-color: #0d0d0d;
-        .noselect;
-
-      }
-
-      >.body {
-        border-top-color: #ccc;
-        border-bottom-color: #ccc;
-
-        >.previewer-area {
+            box-sizing: border-box;
+            width: 100%;
+            height: @HeadHeight;
+            padding: 5px;
         }
 
-        >.list-area {
 
-          > ul {
-              list-style-type:none;
-              padding:0px;
-              margin:0px;
-              text-align:justify;
+        > .body
+        {
+            position: absolute;
+            top: @HeadHeight;
+            bottom: @FootHeight;
 
-                > li {
+            overflow: auto;
 
-                  display:inline-block;
-                  height:30px;
-
-                  color:#fff;
-                  padding:5px;
-                  word-break: break-word;
-                  box-sizing:border-box;
-
-                  cursor:pointer;
-
-                  &:nth-child(even) {
-                      background-color:#454545;
-                      color:#eee;
-                  }
-
-                  &:nth-child(odd) {
-                      background-color:#555;
-                      color:#fff;
-                  }
-
-                  &:first-letter {
-                     text-transform: uppercase;
-                  }
-
-                  &:hover {
-                      background-color:#333;
-                  }
+            box-sizing: border-box;
+            width: 100%;
 
 
-                  .noselect;
-              }
-          }
+            > .previewer-area
+            {
+                width: 100%;
+                height: 100px;
+            }
 
+            > .package-list-area
+            {
+                > ul.package-list
+                {
+                    margin: 0;
+                    padding: 0;
+
+                    list-style-type: none;
+
+                    text-align: justify;
+
+                    > li.package
+                    {
+                        overflow: hidden;
+
+                        height: 25px;
+
+                        &:hover
+                        {
+                            height: auto;
+                        }
+                        > label
+                        {
+                            font-size: 13px;
+
+                            display: block;
+
+                            box-sizing: border-box;
+                            width: 100%;
+                            padding: 5px;
+
+                            transition: all .7;
+                        }
+
+                        > ul
+                        {
+                            margin: 0;
+                            padding: 0;
+
+                            > li
+                            {
+                                font-size: 12px;
+
+                                box-sizing: border-box;
+                                //display: inline-block;
+                                width: 100%;
+                                padding: 5px;
+
+                                cursor: pointer;
+                                transition: all .7;
+                                text-align: justify;
+                                letter-spacing: 1px;
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
 
-      > .foot {
-        background-color: #0d0d0d;
-      }
+        > .foot
+        {
+            position: absolute;
+            bottom: 0;
+
+            width: 100%;
+            height: @FootHeight;
+
+            text-align: right;
+        }
     }
-  }
+
+
+    &.black
+    {
+        background-color: rgba(0,0,0,.5);
+
+        > .wrapper
+        {
+            > .head
+            {
+                background-color: #0d0d0d;
+
+                .noselect;
+            }
+
+            > .body
+            {
+                border-top-color: #ccc;
+                border-bottom-color: #ccc;
+            }
+
+            > .foot
+            {
+                background-color: #0d0d0d;
+            }
+        }
+    }
+
+
+    &.theme-scott-mc-carthy
+    {
+        background-color: rgb(242,242,242);
+
+        > .wrapper
+        {
+            > .head
+            {
+                //
+            }
+
+            > .body
+            {
+                border-top-color: #ccc;
+                border-bottom-color: #ccc;
+
+                > .previewer-area
+                {
+                    //
+                }
+
+                > .package-list-area
+                {
+                    > ul.package-list
+                    {
+                        > li.package
+                        {
+                            > label
+                            {
+                                color: rgb(242,242,242);
+                                background-color: rgb(226, 60, 56);
+
+                                &:hover
+                                {
+                                    background-color: rgb(236, 60, 56);
+                                }
+                            }
+
+                            > ul
+                            {
+                                > li
+                                {
+                                    &:nth-child(even)
+                                    {
+                                        color: #fff;
+                                        border-color: rgb(182, 206, 216);
+                                        background-color: rgb(86, 126, 157);
+
+                                        &:hover
+                                        {
+                                            background-color: rgb(106, 146, 177);
+                                        }
+                                    }
+
+                                    &:nth-child(odd)
+                                    {
+                                        color: #333;
+                                        border-color: rgb(86, 126, 157);
+                                        background-color: rgb(182, 206, 216);
+
+                                        &:hover
+                                        {
+                                            background-color: rgb(162, 186, 196);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            > .foot
+            {
+                //
+            }
+        }
+    }
 
 
 
 
- /* Width Type */
- &.narrow-width {
-   .body {
-
-   }
- }
-
- &.wide-width {
-   .body {
-
-
-   }
- }
+    /* Width Type */
 }
 
-.componentDragHolder {
-  width:50px;
-  height:50px;
-  background-color:white;
-background-image: linear-gradient(90deg, rgba(200,0,0,.5) 50%, transparent 50%),
-linear-gradient(rgba(200,0,0,.5) 50%, transparent 50%);
-background-size:50px 50px;
+.componentDragHolder
+{
+    width: 50px;
+    height: 50px;
+
+    background-color: white;
+    background-image: linear-gradient(90deg, rgba(200,0,0,.5) 50%, transparent 50%),
+    linear-gradient(rgba(200,0,0,.5) 50%, transparent 50%);
+    background-size: 50px 50px;
 }

@@ -1,0 +1,98 @@
+@HeadHeight:25px;
+@FootHeight:35px;
+
+
+
+.ServiceResources
+{
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
+    > .wrapper
+    {
+        position: relative;
+
+        height: 100%;
+
+
+
+        > .resourceList
+        {
+            font-size: 12px;
+
+            padding: 5px;
+            padding-left: 10px;
+
+            > .listLabel
+            {
+                .temp-button
+                {
+                    font-size: 10px;
+
+                    margin-left: 10px;
+                }
+            }
+
+            ul
+            {
+                margin: 0;
+                padding: 5px;
+                padding-left: 15px;
+
+                li
+                {
+                    margin-top: 5px;
+                    padding: 3px;
+
+                    cursor: default;
+                }
+            }
+        }
+    }
+
+    /* Color Theme */
+    &.one-dark
+    {
+        font-family: 'Open Sans';
+
+        background-color: rgb(23,26,32);
+
+        > .wrapper
+        {
+            > .resourceList
+            {
+                > .listLabel
+                {
+                    color: #fff;
+                }
+
+                ul
+                {
+                    li
+                    {
+                        color: rgb(135,143,162);
+
+                        &:hover
+                        {
+                            color: rgb(155,163,182);
+                        }
+
+                        &.running
+                        {
+                            color: #fff;
+                            background-color: rgb(37,40,48);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+    /* Width Type */
+}

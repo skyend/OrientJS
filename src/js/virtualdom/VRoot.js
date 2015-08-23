@@ -41,13 +41,14 @@ var _ = function(domRootType, resolutionX, resolutionY) {
 };
 
 
-_.importHtmlElement = function(htmlElement, _depthArchive) {
+_.importHtmlElement = function(htmlElement, _depthArchive, _controller) {
   if (typeof htmlElement !== "object") {
     throw new Error("Object 객채가 아닙니다.");
   }
 
   var root = new _('page', htmlElement.offsetWidth, htmlElement.offsetHeight);
-  root.dom = new VNode('html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0, "0");
+  root.dom = new VNode(_controller, 'html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0, "0");
+  console.log(root);
   return root;
 }
 module.exports = _;

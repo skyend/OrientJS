@@ -3,12 +3,7 @@
     var React = require("react");
 
     var VNodePathNavigator = React.createClass({
-        getInitialState() {
-            return {
-                statusLevel: 'primary',
-                statusMessage: 'none'
-            }
-        },
+  
 
         renderVNodePathItem( _vnode ){
 

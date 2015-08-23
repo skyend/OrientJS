@@ -11,7 +11,7 @@ var _ = function() {
   this.createVRoot = function(htmlElement) {
     this.depthArchive = [];
 
-    this.setVRoot(require('./VRoot').importHtmlElement(htmlElement, this.depthArchive));
+    this.setVRoot(require('./VRoot').importHtmlElement(htmlElement, this.depthArchive, this));
 
     console.log(this.depthArchive);
   };
@@ -28,34 +28,34 @@ var _ = function() {
   };
 
 
-  this.rayTracer = function( _screenPointX, _screenPointY ){
+  this.rayTracer = function(_screenPointX, _screenPointY) {
     var tracedDepth;
     var tracedNodes = [];
 
-      for( var top = this.depthArchive.length -1 ; top >= 0 ; top-- ){
-        var depthLives = this.depthArchive[top];
-        var found = false;
+    for (var top = this.depthArchive.length - 1; top >= 0; top--) {
+      var depthLives = this.depthArchive[top];
+      var found = false;
 
-        for( var i = 0; i < depthLives.length; i++ ){
-            var node = depthLives[i];
+      for (var i = 0; i < depthLives.length; i++) {
+        var node = depthLives[i];
 
-            if( this.checkItIsBoundary( node, _screenPointX, _screenPointY) ){
-              found = true;
-              tracedNodes.push(node);
-            }
+        if (this.checkItIsBoundary(node, _screenPointX, _screenPointY)) {
+          found = true;
+          tracedNodes.push(node);
         }
-
-        if( found ) break;
       }
 
-      return tracedNodes;
+      if (found) break;
+    }
+
+    return tracedNodes;
   };
 
-  this.checkItIsBoundary = function( _vnode, _screenPointX, _screenPointY ){
+  this.checkItIsBoundary = function(_vnode, _screenPointX, _screenPointY) {
     var rect = _vnode.element.offset;
 
-    if( ( rect.x <= _screenPointX && rect.x + rect.width >= _screenPointX ) &&
-        ( rect.y <= _screenPointY && rect.y + rect.height >= _screenPointY )){
+    if ((rect.x <= _screenPointX && rect.x + rect.width >= _screenPointX) &&
+      (rect.y <= _screenPointY && rect.y + rect.height >= _screenPointY)) {
 
       return true;
     }

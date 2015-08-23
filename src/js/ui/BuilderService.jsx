@@ -6,6 +6,8 @@
  * Requires(css) : Screen.less
  */
 
+var _ = require('underscore');
+
 (function () {
     var loginData = {
         "sessionKey": "sdkdj3k3aFqskjrusQk22DA",
@@ -45,8 +47,8 @@
         // Mixin EventDistributor
         mixins: [require('./reactMixin/EventDistributor.js')],
 
-        getInitalState() {
-            return {};
+        getInitialState() {
+            return { toolStatesStore : {} };
         },
 
         displayModal(action) {
@@ -121,8 +123,6 @@
 
         onThrowCatcherClickElementInStage(_eventData, _pass) {
             this.offContextMenu();
-
-            //_pass();
         },
 
         onThrowCatcherStageElementDelete(_eventData, _pass) {
@@ -166,16 +166,6 @@
             this.offContextMenu();
         },
 
-        onThrowCatcherUpdateComponentListToMe( _eventData, _pass ) {
-
-            if( _eventData.refPath[0] === 'ComponentPalette'){
-
-              _eventData.path[0].setState({
-                availabelComponentList : Object.keys(this.props.AvailableComponents)
-              });
-            }
-
-        },
 
         onThrowCatcherFoldTool(_eventData, _pass) {
 
@@ -259,15 +249,29 @@
                 });
             }, function (__tool, __toolConfig) {
 
-                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey);
+                // Builder에 저장된 각 Tool State를 가져온다.
+                var toolState = self.state.toolStatesStore[ toolKey ];
+
+                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey, toolState);
             }]);
+        },
+
+        onThrowCatcherDisplayElementPath(_eventData, _pass) {
+          console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
+
+          var footStatusBar = this.refs['FootStatusBar'];
+
+
+          footStatusBar.setState({
+            domElementPathArray:_eventData.pathArray
+          });
+
         },
 
         onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
           console.log('recieve', _eventData);
 
           var footStatusBar = this.refs['FootStatusBar'];
-
 
           footStatusBar.setState({
             vnodePathArray:_eventData.nodeArrayPath
@@ -276,8 +280,59 @@
         },
 
 
+        onThrowCatcherNeedProjectMeta(_eventData, _pass){
+          console.log('NeedProjectMeta',this.state.projectMeta);
+
+          _eventData.path[0].setState( { 'meta': this.state.projectMeta });
+        },
+
+
         onThrowCatcherNoticeMessage(_eventData, _pass) {
             this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
+        },
+
+        // 열린 컨텍스트 탭
+        onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
+
+          console.log('컨텍스트가 열렸습니다.');
+          this.applyToolStates("ServiceResources",{
+            runningContext: _eventData.contextItem
+          });
+        },
+
+
+        applyToolStates( _toolEquipmentKey, _state ){
+          var prevToolStatesStore = this.state.toolStatesStore;
+          var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
+
+          if( typeof toolStateObject === 'undefined' ){
+            toolStateObject = {};
+            prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
+          }
+
+          // merge state
+          _.extend(toolStateObject, _state);
+
+          this.setState({toolStatesStore:prevToolStatesStore});
+
+
+          var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
+          var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
+
+
+          if( typeof leftEquipTool === 'object' ){
+            if( leftEquipTool.toolKey === _toolEquipmentKey ){
+              this.refs['LeftNavigation'].applyToolState( toolStateObject );
+            }
+          }
+
+          if( typeof rightEquipTool === 'object' ){
+            if( rightEquipTool.toolKey === _toolEquipmentKey ){
+              this.refs['RightNavigation'].applyToolState( toolStateObject );
+            }
+          }
+
+
         },
 
         notifyMessage(_title, _message, _level){
@@ -305,17 +360,33 @@
 
         onThrowCatcherBeginDeployComponent(_eventData, _pass){
             var documentStage = this.refs['DocumentStage'];
-            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+            //_componentName
+            documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDragDeployComponent(_eventData, _pass){
           var documentStage = this.refs['DocumentStage'];
-            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+            documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDropDeployComponent(_eventData, _pass){
           var documentStage = this.refs['DocumentStage'];
-            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey);
+
+          documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+        },
+
+        openDirectContext( _directContextItem ){
+          var documentStage = this.refs['DocumentStage'];
+
+          documentStage.openContext( _directContextItem );
+        },
+
+        onThrowCatcherSelectedElementNodeByDirectContext(_eventData, _pass){
+          this.applyToolStates("ElementNodeEditor", {
+            elementNode: _eventData.elementNode
+          });
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -393,7 +464,7 @@
                     <RightNavigation ref="RightNavigation"
                                      config={this.props.RightNavigationConfig}
                                      naviWidth={25}
-                                     toolWidth={230}
+                                     toolWidth={320}
                                      showTitle={true}
                                      verticalText={true}
                                      position='right'

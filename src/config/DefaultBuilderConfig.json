@@ -1,82 +1,96 @@
 {
   "LeftNavigation": {
-    "menuGroups": [
-      {
-        "groupName": "System",
-        "menuItems": [
-          {
-            "key": "user-account",
-            "title": "User Account",
-            "icon": "user",
-            "equipToolKey": "UserAccount"
-          },
-          {
-            "key": "project-setting",
-            "title": "Project Settings",
-            "icon": "cog",
-            "equipToolKey": "ProjectSetting"
-          },
-          {
-            "key": "builder-setting",
-            "title": "Builder Settings",
-            "icon": "cog",
-            "equipToolKey": "BuilderSetting"
-          }
-
-        ]
-      },
-      {
-        "groupName": "Editting",
-        "menuItems": [
-          {
-            "key": "project-navigator",
-            "title": "Project navigator",
-            "icon": "code-fork",
-            "equipToolKey": "ProjectNavigator"
-          },
-          {
-            "key": "component-palette",
-            "title": "Component Palette",
-            "icon": "th",
-            "equipToolKey": "ComponentPalette"
-          },
-          {
-            "key": "document-navigation",
-            "title": "Document Navigation",
-            "icon": "briefcase",
-            "equipToolKey": "DocumentsNavigation"
-          }
-        ]
-      }
-    ]
+    "menuGroups": [{
+      "groupName": "System",
+      "menuItems": [{
+        "key": "user-account",
+        "title": "User Account",
+        "icon": "user",
+        "equipToolKey": "UserAccount"
+      }, {
+        "key": "builder-setting",
+        "title": "Builder Settings",
+        "icon": "cog",
+        "equipToolKey": "BuilderSetting"
+      }, {
+        "key": "project-setting",
+        "title": "Project Settings",
+        "icon": "dashboard",
+        "equipToolKey": "ProjectSetting"
+      }]
+    }, {
+      "groupName": "Service Object Configure",
+      "menuItems": [{
+        "key": "service-resources",
+        "title": "Service Resources",
+        "icon": "book",
+        "equipToolKey": "ServiceResources"
+      }, {
+        "key": "page-configure",
+        "title": "Page Configure",
+        "icon": "file-o",
+        "equipToolKey": "PageConfigure"
+      }, {
+        "key": "document-configure",
+        "title": "Document Configure",
+        "icon": "file-text-o",
+        "equipToolKey": "DocumentConfigure"
+      }]
+    }, {
+      "groupName": "Service Resources",
+      "menuItems": [{
+        "key": "component-palette",
+        "title": "Component Palette",
+        "icon": "cubes",
+        "equipToolKey": "ComponentPalette"
+      }]
+    }]
   },
   "RightNavigation": {
-    "menuGroups": [
-      {
-        "groupName": "System",
-        "menuItems": [
-          {
-            "key": "user-account",
-            "title": "User Account",
-            "icon": "user",
-            "equipToolKey": "ComponentPalette"
-          }
-        ]
-      }
-    ]
+    "menuGroups": [{
+      "groupName": "System",
+      "menuItems": [{
+        "key": "element-node-editor",
+        "title": "Element Node",
+        "icon": "cube",
+        "equipToolKey": "ElementNodeEditor"
+      }, {
+        "key": "element-tree",
+        "title": "Element Tree",
+        "icon": "tree",
+        "equipToolKey": "ComponentPalette"
+      }]
+    }]
   },
   "tools": {
-    "UserAccount": {"jsxPath": "UserAccount"},
-    "ProjectSetting": {"jsxPath": "ProjectSetting"},
-    "BuilderSetting": {"jsxPath": "BuilderSetting"},
+    "UserAccount": {
+      "jsxPath": "UserAccount"
+    },
+    "ProjectSetting": {
+      "jsxPath": "ProjectSetting"
+    },
+    "BuilderSetting": {
+      "jsxPath": "BuilderSetting"
+    },
 
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
       "configPath": "ToolkitMenuConfig"
     },
+
     "DocumentsNavigation": {
       "jsxPath": "DocumentsNavigation",
       "configPath": "DeviceMenuConfig"
+    },
+
+    "ServiceResources": {
+      "jsxPath": "ServiceResources",
+      "configPath": "ServiceResources"
+    },
+
+    "ElementNodeEditor": {
+      "jsxPath": "ElementNodeEditor",
+      "configPath": "ElementNodeEditor"
     }
   }
 }
