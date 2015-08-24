@@ -77,7 +77,7 @@
       "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
     }, {
       "ext": "css",
-      "url": "/BuiderUI/BuildingProjectData/Services/ionTest/Resource/css/index.css"
+      "url": "/BuilderUI/BuildingProjectData/Services/ionTest/Resource/css/index.css"
     }],
     "js": [{
       "ext": "js",
