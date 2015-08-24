@@ -48,10 +48,11 @@ var _ = require('underscore');
         mixins: [require('./reactMixin/EventDistributor.js')],
 
         getInitialState() {
-            return {toolStatesStore: {}};
+            return { toolStatesStore : {} };
         },
 
-        displayModal(action) {
+        displayModal( _modalKey, _extraPram ) {
+          /*
             var target = action.target;
             var self = this;
             loadModal(action.parts + ".jsx", function (page, Modal) {
@@ -62,6 +63,18 @@ var _ = require('underscore');
                     self.refs['Modal'].setState(stateObj);
                 });
             });
+            */
+
+            var triggers = this.props.Modal.triggers;
+
+            var modalObj = triggers[_modalKey];
+
+
+            var toolKey = modalObj.equipToolKey;
+            var toolSpec = this.props.Tools[toolKey];
+
+
+            this.changeTool( toolKey, toolSpec, 'Modal', _extraPram);
         },
 
         onThrowCatcherCallContextMenu(_eventData, _pass) {
@@ -144,6 +157,9 @@ var _ = require('underscore');
 
         onThrowCatcherStageElementEdit(_eventData, _pass) {
             this.offContextMenu();
+            this.displayModal( 'ResourceUploader', { test:'a'} );
+
+            console.log('test');
         },
 
         onThrowCatcherNewSubWindow_Test(_eventData, _pass) {
@@ -201,89 +217,95 @@ var _ = require('underscore');
 
         },
 
+
+        changeTool( _toolKey, _toolSpec, _toEquipRef, _extraPram ){
+          var self  = this;
+          /**
+           * WaterFall 을 이용하여 비동기로드를 동기화한다.
+           */
+          Async.waterFall(_toolSpec, [function (__toolSpec, __cb) {
+
+              if (typeof __toolSpec !== 'object') {
+                  self.refs[_toEquipRef].equipTool();
+                  throw new Error("Tool[" + _toolKey + "] Spec Object is not exists.");
+              }
+
+              if (typeof __toolSpec.jsxPath !== 'string') {
+                  self.refs[_toEquipRef].equipTool();
+                  throw new Error("Tool[" + _toolKey + "] JSXPath is not exists.");
+              }
+
+              loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
+                  if (___err !== null) {
+
+                      self.refs[_toEquipRef].equipTool();
+                      throw new Error("Fail to load tool[" + _toolKey + "].");
+                  } else {
+                      __cb(__toolSpec, ___tool);
+                  }
+              });
+          }, function (__toolSpec, __tool, __cb) {
+
+              // config 파일이 없다면 지나간다.
+              if (typeof __toolSpec.configPath === 'undefined') {
+                  return __cb(__tool, null);
+              }
+
+              loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
+                  if (___err !== null) {
+                      throw new Error("Fail to load tool[" + _toolKey + "]Config.");
+                  } else {
+
+                      __cb(__tool, ___toolConfig);
+                  }
+              });
+          }, function (__tool, __toolConfig) {
+
+              // Builder에 저장된 각 Tool State를 가져온다.
+              var toolState = self.state.toolStatesStore[ _toolKey ] || {};
+              toolState.extraPram = _extraPram;
+
+              self.refs[_toEquipRef].equipTool(__tool, __toolConfig, _toolKey, toolState);
+          }]);
+        },
+
         onThrowCatcherNeedEquipTool(_eventData, _pass) {
-            var self = this;
 
             var toolKey = _eventData.toolKey;
             var toolSpec = this.props.Tools[toolKey];
             var toEquipRef = _eventData.refPath[0];
 
-            /**
-             * WaterFall 을 이용하여 비동기로드를 동기화한다.
-             */
-            Async.waterFall(toolSpec, [function (__toolSpec, __cb) {
-
-                if (typeof __toolSpec !== 'object') {
-                    self.refs[toEquipRef].equipTool();
-                    throw new Error("Tool[" + toolKey + "] Spec Object is not exists.");
-                }
-
-                if (typeof __toolSpec.jsxPath !== 'string') {
-                    self.refs[toEquipRef].equipTool();
-                    throw new Error("Tool[" + toolKey + "] JSXPath is not exists.");
-                }
-
-                loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
-                    if (___err !== null) {
-
-                        self.refs[toEquipRef].equipTool();
-                        throw new Error("Fail to load tool[" + toolKey + "].");
-                    } else {
-                        __cb(__toolSpec, ___tool);
-                    }
-                });
-            }, function (__toolSpec, __tool, __cb) {
-
-                // config 파일이 없다면 지나간다.
-                if (typeof __toolSpec.configPath === 'undefined') {
-                    return __cb(__tool, null);
-                }
-
-                loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
-                    if (___err !== null) {
-                        throw new Error("Fail to load tool[" + toolKey + "]Config.");
-                    } else {
-
-                        __cb(__tool, ___toolConfig);
-                    }
-                });
-            }, function (__tool, __toolConfig) {
-
-                // Builder에 저장된 각 Tool State를 가져온다.
-                var toolState = self.state.toolStatesStore[toolKey];
-
-                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey, toolState);
-            }]);
+            this.changeTool( toolKey, toolSpec, toEquipRef);
         },
 
         onThrowCatcherDisplayElementPath(_eventData, _pass) {
-            console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
+          console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
 
-            var footStatusBar = this.refs['FootStatusBar'];
+          var footStatusBar = this.refs['FootStatusBar'];
 
 
-            footStatusBar.setState({
-                domElementPathArray: _eventData.pathArray
-            });
+          footStatusBar.setState({
+            domElementPathArray:_eventData.pathArray
+          });
 
         },
 
         onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
-            console.log('recieve', _eventData);
+          console.log('recieve', _eventData);
 
-            var footStatusBar = this.refs['FootStatusBar'];
+          var footStatusBar = this.refs['FootStatusBar'];
 
-            footStatusBar.setState({
-                vnodePathArray: _eventData.nodeArrayPath
-            });
+          footStatusBar.setState({
+            vnodePathArray:_eventData.nodeArrayPath
+          });
 
         },
 
 
         onThrowCatcherNeedProjectMeta(_eventData, _pass){
-            console.log('NeedProjectMeta', this.state.projectMeta);
+          console.log('NeedProjectMeta',this.state.projectMeta);
 
-            _eventData.path[0].setState({'meta': this.state.projectMeta});
+          _eventData.path[0].setState( { 'meta': this.state.projectMeta });
         },
 
 
@@ -292,45 +314,45 @@ var _ = require('underscore');
         },
 
         // 열린 컨텍스트 탭
-        onThrowCatcherOpenedDirectContextTab(_eventData, _pass){
+        onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
 
-            console.log('컨텍스트가 열렸습니다.');
-            this.applyToolStates("ServiceResources", {
-                runningContext: _eventData.contextItem
-            });
+          console.log('컨텍스트가 열렸습니다.');
+          this.applyToolStates("ServiceResources",{
+            runningContext: _eventData.contextItem
+          });
         },
 
 
-        applyToolStates(_toolEquipmentKey, _state){
-            var prevToolStatesStore = this.state.toolStatesStore;
-            var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
+        applyToolStates( _toolEquipmentKey, _state ){
+          var prevToolStatesStore = this.state.toolStatesStore;
+          var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
 
-            if (typeof toolStateObject === 'undefined') {
-                toolStateObject = {};
-                prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
+          if( typeof toolStateObject === 'undefined' ){
+            toolStateObject = {};
+            prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
+          }
+
+          // merge state
+          _.extend(toolStateObject, _state);
+
+          this.setState({toolStatesStore:prevToolStatesStore});
+
+
+          var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
+          var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
+
+
+          if( typeof leftEquipTool === 'object' ){
+            if( leftEquipTool.toolKey === _toolEquipmentKey ){
+              this.refs['LeftNavigation'].applyToolState( toolStateObject );
             }
+          }
 
-            // merge state
-            _.extend(toolStateObject, _state);
-
-            this.setState({toolStatesStore: prevToolStatesStore});
-
-
-            var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
-            var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
-
-
-            if (typeof leftEquipTool === 'object') {
-                if (leftEquipTool.toolKey === _toolEquipmentKey) {
-                    this.refs['LeftNavigation'].applyToolState(toolStateObject);
-                }
+          if( typeof rightEquipTool === 'object' ){
+            if( rightEquipTool.toolKey === _toolEquipmentKey ){
+              this.refs['RightNavigation'].applyToolState( toolStateObject );
             }
-
-            if (typeof rightEquipTool === 'object') {
-                if (rightEquipTool.toolKey === _toolEquipmentKey) {
-                    this.refs['RightNavigation'].applyToolState(toolStateObject);
-                }
-            }
+          }
 
 
         },
@@ -366,27 +388,27 @@ var _ = require('underscore');
         },
 
         onThrowCatcherDragDeployComponent(_eventData, _pass){
-            var documentStage = this.refs['DocumentStage'];
+          var documentStage = this.refs['DocumentStage'];
 
             documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDropDeployComponent(_eventData, _pass){
-            var documentStage = this.refs['DocumentStage'];
+          var documentStage = this.refs['DocumentStage'];
 
-            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+          documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
-        openDirectContext(_directContextItem){
-            var documentStage = this.refs['DocumentStage'];
+        openDirectContext( _directContextItem ){
+          var documentStage = this.refs['DocumentStage'];
 
-            documentStage.openContext(_directContextItem);
+          documentStage.openContext( _directContextItem );
         },
 
         onThrowCatcherSelectedElementNodeByDirectContext(_eventData, _pass){
-            this.applyToolStates("ElementNodeEditor", {
-                elementNode: _eventData.elementNode
-            });
+          this.applyToolStates("ElementNodeEditor", {
+            elementNode: _eventData.elementNode
+          });
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -515,9 +537,9 @@ var _ = require('underscore');
 
 
                     <DocumentStage ref='DocumentStage'
-                                   aimingCount={100}
-                                   aimingEscapeStepSize={10}
-                                   boundaryBorderSize={5}/>
+                                    aimingCount={100}
+                                    aimingEscapeStepSize={10}
+                                    boundaryBorderSize={5}  />
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>
@@ -541,17 +563,17 @@ var _ = require('underscore');
             callback(null, page);
         })
     }
-
-    function loadModal(pageName, callback) {
-        try {
-            var pageBundle = require("bundle!./modal/" + pageName)
-        } catch (e) {
-            return callback(e);
-        }
-        pageBundle(function (page) {
-            callback(null, page);
-        })
-    }
+    //
+    // function loadModal(pageName, callback) {
+    //     try {
+    //         var pageBundle = require("bundle!./modal/" + pageName)
+    //     } catch (e) {
+    //         return callback(e);
+    //     }
+    //     pageBundle(function (page) {
+    //         callback(null, page);
+    //     })
+    // }
 
     function loadJson(pageName, callback) {
         try {

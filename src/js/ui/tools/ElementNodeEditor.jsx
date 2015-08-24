@@ -17,8 +17,16 @@ var ElementNodeEditor = React.createClass({
         };
     },
 
-    renderElementInfo(_elementNode){
-      var nameWidth = 120;
+    clickReset(){
+      
+    },
+
+    clickApply(){
+
+    },
+
+    renderElementNodeInfo(_elementNode){
+      var nameWidth = 130;
 
       return (
         <div className='part'>
@@ -40,19 +48,64 @@ var ElementNodeEditor = React.createClass({
                        width={this.props.width-2}
                        nameWidth={nameWidth}/>
 
-         <HorizonField fieldName="ElementType" theme="dark" type='enterable'
-                      fieldValue={_elementNode.getType().toUpperCase()}
-                      width={this.props.width-2}
-                      nameWidth={nameWidth}/>
+
+        </div>
+      );
+    },
+
+
+
+    renderElementNodeDOMSpec(_elementNode){
+      var nameWidth = 130;
+
+      return (
+        <div className='part'>
+          <div className='part-head'>
+              <label> Element Spec </label>
+          </div>
+          <HorizonField fieldName="TagName" theme="dark" type='enterable'
+                       fieldValue={_elementNode.getTagName()}
+                       width={this.props.width-2}
+                       nameWidth={nameWidth}/>
+
+          <HorizonField fieldName="Class" theme="dark" type='enterable'
+                       fieldValue={_elementNode.getClasses()}
+                       width={this.props.width-2}
+                       nameWidth={nameWidth}/>
+
+        </div>
+      )
+    },
+
+
+    renderAttibutesOfTag(_elementNode){
+      var nameWidth = 130;
+
+      return (
+        <div className='part'>
+          <div className='part-head'>
+            <label> Tag Attributes </label>
+          </div>
+
+          <HorizonField fieldName="DocumentName" theme="dark" type='enterable'
+                       fieldValue={_elementNode.document.documentName}
+                       width={this.props.width-2}
+                       nameWidth={nameWidth}/>
+
         </div>
       );
     },
 
     renderEditParts(_elementNode){
+
       return (
         <div className='edit-parts'>
 
-          { this.renderElementInfo(_elementNode) }
+          { this.renderElementNodeInfo(_elementNode) }
+
+          { this.renderElementNodeDOMSpec(_elementNode) }
+
+          { this.renderAttibutesOfTag(_elementNode) }
 
         </div>
       );
@@ -66,7 +119,14 @@ var ElementNodeEditor = React.createClass({
         return (
             <div className={rootClasses.join(' ')}>
                 <div className='wrapper'>
-                  { elementNode !== null ? this.renderEditParts(elementNode):"" }
+                  <div className='body'>
+                    { elementNode !== null ? this.renderEditParts(elementNode):"" }
+                  </div>
+                  <div className="footer">
+                    <BasicButton desc="Reset" color='error' size='small' onClick={this.clickReset}/>
+                    <BasicButton desc="Apply" color='primary' size='small' onClick={this.clickApply}/>
+
+                  </div>
                 </div>
             </div>
         );

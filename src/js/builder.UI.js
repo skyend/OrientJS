@@ -352,6 +352,7 @@
       LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
       RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
       Tools: DefaultBuilderConfig.tools,
+      Modal: DefaultBuilderConfig.Modal,
       __keyName: 'uiServicer'
     }), this.window.document.getElementsByTagName('BODY')[0]);
 

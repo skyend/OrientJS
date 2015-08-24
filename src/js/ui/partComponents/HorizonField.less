@@ -13,6 +13,7 @@
 {
     position: relative;
 
+    width: 100%;
     height: 26px;
 
     .noselect;
@@ -36,21 +37,14 @@
                 background-color: transparent;
             }
         }
-
-        &.enterable
-        {
-            > .field-value
-            {
-                color: #ddd;
-                background-color: #222;
-            }
-        }
     }
+
     > .field-name
     {
         font-size: 13px;
 
-        float: left;
+        position: absolute;
+        left: 0;
 
         box-sizing: border-box;
         padding: 5px 10px;
@@ -66,9 +60,8 @@
     {
         font-size: 13px;
 
-        position: relative;
-
-        float: left;
+        position: absolute;
+        right: 0;
 
         box-sizing: border-box;
         padding: 5px 10px;
