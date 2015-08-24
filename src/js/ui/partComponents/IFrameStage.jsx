@@ -199,7 +199,7 @@ var IFrameStage = React.createClass({
     for( var i = 0; i < _path.length; i++ ){
       pathArray[i] = _path[i];
     }
-    
+
     this.emit("ClickElementInStage", {
       targetDOMElement: pathArray[0],
       elementPath:pathArray
@@ -231,7 +231,8 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-
+    return;
+    
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     console.log("call contextmenu", _e);

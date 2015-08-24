@@ -64,6 +64,10 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
 };
+// tagName
+ElementNode.prototype.setTagName = function(_tagName) {
+  this.attributes.tagName = _tagName;
+};
 // classes
 ElementNode.prototype.setClasses = function(_classes) {
   this.attributes.class = _classes;
@@ -337,7 +341,7 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   this.setType('html');
 
   // element 업데이트
-  this.updateElement(_domElement);
+  this.updateAtrributes(_domElement);
 
   //////////////////
   // 자식노드 재귀처리 //
@@ -365,7 +369,7 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   this.children = children;
 };
 
-ElementNode.prototype.updateElement = function(_domElement) {
+ElementNode.prototype.updateAtrributes = function(_domElement) {
   var elementSpec = {
     'tagName': _domElement.nodeName.toLowerCase(),
   };
@@ -373,7 +377,10 @@ ElementNode.prototype.updateElement = function(_domElement) {
   // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
   var attributes = _domElement.attributes;
   for (var i = 0; i < attributes.length; i++) {
-    if (attributes[i].name === '__vid__') continue;
+    switch (attributes[i].name) {
+      case '__vid__':
+        continue;
+    }
     elementSpec[attributes[i].name] = attributes[i].nodeValue;
   }
 

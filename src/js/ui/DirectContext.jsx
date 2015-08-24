@@ -18,40 +18,18 @@ var DirectContext = React.createClass({
   },
 
   isDropableToRoot( _domElement ){
-    var dropTarget = _domElement;
-    var funcFind = false;
-
-    // function을 찾으면 루프탈출
-    while( dropTarget !== null ){
-      if( typeof dropTarget.getElementNode === 'function' ){
-        funcFind = true;
-        break;
-      }
-
-      dropTarget = dropTarget.parentNode;
-    }
-
-
-    var contextController;
-    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
-    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
-    if( funcFind ){
-      contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
-    } else {
-      contextController = this.contextController;
-    }
-
-
+    
     // 해당 ContextController에 메소드로 확인.
-    return contextController.isDropableToRoot();
+    return this.getContextControllerFromDOMElement(_domElement).isDropableToRoot();
   },
+
 
   deployComponentToInLast( _vid, _component ){
     console.log("deployed component", _component);
 
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
-    var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    var contextController = this.getContextControllerFromDOMElement(dropTarget);
 
     var result = contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
 
@@ -101,6 +79,35 @@ var DirectContext = React.createClass({
     return _elementNode.getMyContextControllerOfDocument();
   },
 
+  /**************
+   * getContextControllerFromDOMElement
+   * DOMElement를 이용하여 ContextController를 찾는다 하지만 지정된 DOMElement로 찾지 못할 경우 부모노드로 내려가 찾고
+   * 그래도 찾지 못할 경우에는 directContext에 지정된 ContextController를 반환한다.
+   */
+  getContextControllerFromDOMElement(_sourceDOMElement){
+    var funcFind = false;
+    var dropTarget = _sourceDOMElement;
+
+    // function을 찾으면 루프탈출
+    while( dropTarget !== null ){
+      if( typeof dropTarget.getElementNode === 'function' ){
+        funcFind = true;
+        break;
+      }
+
+      dropTarget = dropTarget.parentNode;
+    }
+
+
+    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
+    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
+    if( funcFind ){
+      return this.getContextControllerByElementNode(dropTarget.getElementNode());
+    }
+
+    return this.contextController;
+  },
+
   failToDrop(){
     this.emit("NoticeMessage",{
       "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
@@ -112,7 +119,6 @@ var DirectContext = React.createClass({
       title:"component 삽입실패",
       message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
       level : "error"
-
     });
   },
 
@@ -204,6 +210,14 @@ var DirectContext = React.createClass({
           return;
         }
       }
+
+      this.emit('NoticeMessage',{
+        title:"매핑된 ElementNode 를 얻을 수 없습니다.",
+        message:"ElementNode를 배치하여 주세요.",
+        level : "error"
+      });
+
+      return;
     }
 
 
@@ -217,7 +231,6 @@ var DirectContext = React.createClass({
       elementNavigatorHeight:targetRect.height,
       selectedElement:_target,
       selectedElementPath:_path});
-
 
     // DisplayElementPath 이벤트를 발생시키기 위해 path의 순서를 뒤집는다.
     var reversePath = [];

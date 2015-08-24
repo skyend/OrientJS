@@ -5,6 +5,7 @@ require('./ElementNodeEditor.less');
 var BasicButton = require('../partComponents/BasicButton.jsx');
 var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
 var HorizonField = require('../partComponents/HorizonField.jsx');
+var HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
 
 var ElementNodeEditor = React.createClass({
     mixins: [
@@ -17,96 +18,103 @@ var ElementNodeEditor = React.createClass({
         };
     },
 
-    clickReset(){
-      
+    onClickReset(){
+      this.refs['profile-set'].resetAll();
+      this.refs['spec-set'].resetAll();
+      this.refs['tag-attrs-set'].resetAll();
     },
 
-    clickApply(){
+    onClickApply(){
+      this.apply();
+    },
+
+    apply(){
+      var specData = this.refs['spec-set'].getAllFieldData();
+      var elementNode = this.state.elementNode;
+
+      specData.map( function( _fieldData ){
+        switch( _fieldData.name ){
+          case "Classes":
+          elementNode.setClasses( _fieldData.data );
+          break;
+          case "TagName":
+          elementNode.setTagName( _fieldData.data );
+          break;
+        }
+      });
+
+
+
+
+      var elementDocument = elementNode.document;
+      var contextController = elementDocument.getContextController();
+
+      contextController.constructToRealElement( elementNode );
+      elementNode.getParent().growupRealDOMElementTree();
+      this.setState({elementNode:elementNode});
+    },
+
+    componentDidUpdate(){
 
     },
 
-    renderElementNodeInfo(_elementNode){
-      var nameWidth = 130;
+    getEmptyFieldSet(_elementNode){
+      var emptyFieldSet = [
+        { "name": "RefferenceType", "initialValue": _elementNode.getRefferenceType() || 'Refference nothing', type:"static" },
+      ];
 
-      return (
-        <div className='part'>
-          <div className='part-head'>
-            <label> Element Profile </label>
-          </div>
-          <HorizonField fieldName="DocumentName" theme="dark" type='static'
-                       fieldValue={_elementNode.document.documentName}
-                       width={this.props.width-2}
-                       nameWidth={nameWidth}/>
+      if( _elementNode.getRefferenceType() === 'react' ){
+        var refferenceTarget =  _elementNode.getRefferenceTarget();
+        emptyFieldSet.push( { "name": "PackageKey", "initialValue": refferenceTarget.packageKey || 'none', type:"static" } );
+        emptyFieldSet.push( { "name": "ComponentKey", "initialValue": refferenceTarget.componentKey || 'none', type:"static" } );
+      }
 
-         <HorizonField fieldName="ElementID" theme="dark" type='static'
-                      fieldValue={_elementNode.id}
-                      width={this.props.width-2}
-                      nameWidth={nameWidth}/>
-
-          <HorizonField fieldName="ElementType" theme="dark" type='static'
-                       fieldValue={_elementNode.getType().toUpperCase()}
-                       width={this.props.width-2}
-                       nameWidth={nameWidth}/>
-
-
-        </div>
-      );
+      return emptyFieldSet;
     },
 
-
-
-    renderElementNodeDOMSpec(_elementNode){
-      var nameWidth = 130;
-
-      return (
-        <div className='part'>
-          <div className='part-head'>
-              <label> Element Spec </label>
-          </div>
-          <HorizonField fieldName="TagName" theme="dark" type='enterable'
-                       fieldValue={_elementNode.getTagName()}
-                       width={this.props.width-2}
-                       nameWidth={nameWidth}/>
-
-          <HorizonField fieldName="Class" theme="dark" type='enterable'
-                       fieldValue={_elementNode.getClasses()}
-                       width={this.props.width-2}
-                       nameWidth={nameWidth}/>
-
-        </div>
-      )
+    getEmptyRefferencePropFieldSet(_elementNode){
+      return [];
     },
 
-
-    renderAttibutesOfTag(_elementNode){
-      var nameWidth = 130;
-
-      return (
-        <div className='part'>
-          <div className='part-head'>
-            <label> Tag Attributes </label>
-          </div>
-
-          <HorizonField fieldName="DocumentName" theme="dark" type='enterable'
-                       fieldValue={_elementNode.document.documentName}
-                       width={this.props.width-2}
-                       nameWidth={nameWidth}/>
-
-        </div>
-      );
+    getElementProfileFieldSet(_elementNode){
+      return [
+        { "name": "DocumentName", "initialValue": _elementNode.document.documentName, type:"static" },
+        { "name": "ElementID", "initialValue": _elementNode.id, type:"static" },
+        { "name": "ElementType", "initialValue": _elementNode.getType().toUpperCase(), type:"static" }
+      ];
     },
+
+    getElementSpecFieldSet(_elementNode){
+      return [
+        { "name": "TagName", "initialValue": _elementNode.getTagName() || '', type:"enterable" },
+        { "name": "Classes", "initialValue":_elementNode.getClasses() || '', type:"enterable" }
+      ];
+    },
+
 
     renderEditParts(_elementNode){
 
+      var elementProfileFieldSet = this.getElementProfileFieldSet(_elementNode);
+      var elementSpecFieldSet = this.getElementSpecFieldSet(_elementNode);
+      var tagAttributesFieldSet = [];
+      var emptyFieldSet;
+      var emptyTargetPropFieldSet;
+      var isEmptyType = false;
+
+      if( _elementNode.getType() === 'empty' ){
+        isEmptyType = true;
+        emptyFieldSet = this.getEmptyFieldSet(_elementNode);
+        emptyTargetPropFieldSet = this.getEmptyRefferencePropFieldSet( _elementNode);
+      }
+
+
       return (
         <div className='edit-parts'>
-
-          { this.renderElementNodeInfo(_elementNode) }
-
-          { this.renderElementNodeDOMSpec(_elementNode) }
-
-          { this.renderAttibutesOfTag(_elementNode) }
-
+          <HorizonFieldSet title="Element Profile" theme='dark' nameWidth={130} fields={ elementProfileFieldSet } ref='profile-set'/>
+          <HorizonFieldSet title="Element Spec" theme='dark' nameWidth={130} fields={ elementSpecFieldSet } ref='spec-set'/>
+          <HorizonFieldSet title="Tag Attributes" theme='dark' nameWidth={130} fields={ tagAttributesFieldSet } ref='tag-attrs-set'/>
+          {isEmptyType? <HorizonFieldSet title="Empty Type Properties" theme='dark' nameWidth={130} fields={ emptyFieldSet } ref='empty-config-set'/>:''}
+          {isEmptyType? <HorizonFieldSet title="Empty Target Properties" theme='dark' nameWidth={130} fields={ emptyTargetPropFieldSet } ref='empty-config-set'/>:''}
         </div>
       );
     },
@@ -120,12 +128,12 @@ var ElementNodeEditor = React.createClass({
             <div className={rootClasses.join(' ')}>
                 <div className='wrapper'>
                   <div className='body'>
-                    { elementNode !== null ? this.renderEditParts(elementNode):"" }
+                    { elementNode !== null ? this.renderEditParts(elementNode):"No focused." }
                   </div>
                   <div className="footer">
-                    <BasicButton desc="Reset" color='error' size='small' onClick={this.clickReset}/>
-                    <BasicButton desc="Apply" color='primary' size='small' onClick={this.clickApply}/>
-
+                    <input type='checkbox'/> auto apply
+                    <BasicButton desc="Reset" color='error' size='small' onClick={this.onClickReset}/>
+                    <BasicButton desc="Apply" color='primary' size='small' onClick={this.onClickApply}/>
                   </div>
                 </div>
             </div>

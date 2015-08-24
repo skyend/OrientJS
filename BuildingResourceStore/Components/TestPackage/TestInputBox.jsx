@@ -27,7 +27,8 @@ var ReactClass = React.createClass({
     getDefaultProps: function(){
         return {
           selectorItems:['a','b'],
-          color:'red'
+          color:'red',
+          dontEnter:false
         }
     },
     getInitialState: function() {
@@ -185,7 +186,26 @@ var ReactClass = React.createClass({
 
 module.exports = {
   class :ReactClass,
-  struct: {},
+
+  propStruct: {
+    "selectorItems" : {
+      "title": " Selector Items",
+      "format" : "array[string]"
+    },
+    "color": {
+      "title" : "color",
+      "format" : "string",
+      "preparedData": [
+        "red","white-gray","gray"
+      ]
+    },
+    "dontEnter": {
+      "title":"Enterable",
+      "format" : "boolean"
+    }
+  },
+
+
   renderType:'staticFromReact',
   elementType:'react',
   positionHints : {
