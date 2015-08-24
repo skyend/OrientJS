@@ -48,7 +48,7 @@ var _ = require('underscore');
         mixins: [require('./reactMixin/EventDistributor.js')],
 
         getInitialState() {
-            return { toolStatesStore : {} };
+            return {toolStatesStore: {}};
         },
 
         displayModal(action) {
@@ -250,40 +250,40 @@ var _ = require('underscore');
             }, function (__tool, __toolConfig) {
 
                 // Builder에 저장된 각 Tool State를 가져온다.
-                var toolState = self.state.toolStatesStore[ toolKey ];
+                var toolState = self.state.toolStatesStore[toolKey];
 
                 self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey, toolState);
             }]);
         },
 
         onThrowCatcherDisplayElementPath(_eventData, _pass) {
-          console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
+            console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
 
-          var footStatusBar = this.refs['FootStatusBar'];
+            var footStatusBar = this.refs['FootStatusBar'];
 
 
-          footStatusBar.setState({
-            domElementPathArray:_eventData.pathArray
-          });
+            footStatusBar.setState({
+                domElementPathArray: _eventData.pathArray
+            });
 
         },
 
         onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
-          console.log('recieve', _eventData);
+            console.log('recieve', _eventData);
 
-          var footStatusBar = this.refs['FootStatusBar'];
+            var footStatusBar = this.refs['FootStatusBar'];
 
-          footStatusBar.setState({
-            vnodePathArray:_eventData.nodeArrayPath
-          });
+            footStatusBar.setState({
+                vnodePathArray: _eventData.nodeArrayPath
+            });
 
         },
 
 
         onThrowCatcherNeedProjectMeta(_eventData, _pass){
-          console.log('NeedProjectMeta',this.state.projectMeta);
+            console.log('NeedProjectMeta', this.state.projectMeta);
 
-          _eventData.path[0].setState( { 'meta': this.state.projectMeta });
+            _eventData.path[0].setState({'meta': this.state.projectMeta});
         },
 
 
@@ -292,45 +292,45 @@ var _ = require('underscore');
         },
 
         // 열린 컨텍스트 탭
-        onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
+        onThrowCatcherOpenedDirectContextTab(_eventData, _pass){
 
-          console.log('컨텍스트가 열렸습니다.');
-          this.applyToolStates("ServiceResources",{
-            runningContext: _eventData.contextItem
-          });
+            console.log('컨텍스트가 열렸습니다.');
+            this.applyToolStates("ServiceResources", {
+                runningContext: _eventData.contextItem
+            });
         },
 
 
-        applyToolStates( _toolEquipmentKey, _state ){
-          var prevToolStatesStore = this.state.toolStatesStore;
-          var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
+        applyToolStates(_toolEquipmentKey, _state){
+            var prevToolStatesStore = this.state.toolStatesStore;
+            var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
 
-          if( typeof toolStateObject === 'undefined' ){
-            toolStateObject = {};
-            prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
-          }
-
-          // merge state
-          _.extend(toolStateObject, _state);
-
-          this.setState({toolStatesStore:prevToolStatesStore});
-
-
-          var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
-          var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
-
-
-          if( typeof leftEquipTool === 'object' ){
-            if( leftEquipTool.toolKey === _toolEquipmentKey ){
-              this.refs['LeftNavigation'].applyToolState( toolStateObject );
+            if (typeof toolStateObject === 'undefined') {
+                toolStateObject = {};
+                prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
             }
-          }
 
-          if( typeof rightEquipTool === 'object' ){
-            if( rightEquipTool.toolKey === _toolEquipmentKey ){
-              this.refs['RightNavigation'].applyToolState( toolStateObject );
+            // merge state
+            _.extend(toolStateObject, _state);
+
+            this.setState({toolStatesStore: prevToolStatesStore});
+
+
+            var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
+            var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
+
+
+            if (typeof leftEquipTool === 'object') {
+                if (leftEquipTool.toolKey === _toolEquipmentKey) {
+                    this.refs['LeftNavigation'].applyToolState(toolStateObject);
+                }
             }
-          }
+
+            if (typeof rightEquipTool === 'object') {
+                if (rightEquipTool.toolKey === _toolEquipmentKey) {
+                    this.refs['RightNavigation'].applyToolState(toolStateObject);
+                }
+            }
 
 
         },
@@ -366,27 +366,27 @@ var _ = require('underscore');
         },
 
         onThrowCatcherDragDeployComponent(_eventData, _pass){
-          var documentStage = this.refs['DocumentStage'];
+            var documentStage = this.refs['DocumentStage'];
 
             documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
         onThrowCatcherDropDeployComponent(_eventData, _pass){
-          var documentStage = this.refs['DocumentStage'];
+            var documentStage = this.refs['DocumentStage'];
 
-          documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+            documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
-        openDirectContext( _directContextItem ){
-          var documentStage = this.refs['DocumentStage'];
+        openDirectContext(_directContextItem){
+            var documentStage = this.refs['DocumentStage'];
 
-          documentStage.openContext( _directContextItem );
+            documentStage.openContext(_directContextItem);
         },
 
         onThrowCatcherSelectedElementNodeByDirectContext(_eventData, _pass){
-          this.applyToolStates("ElementNodeEditor", {
-            elementNode: _eventData.elementNode
-          });
+            this.applyToolStates("ElementNodeEditor", {
+                elementNode: _eventData.elementNode
+            });
         },
 
         // 컨텐츠 영역 화면 리사이즈
@@ -439,6 +439,44 @@ var _ = require('underscore');
             this.resizeSelf();
         },
 
+        handleFileSelectDrop(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+
+            var files = evt.dataTransfer.files; // FileList object
+
+            // 파일목록을 통해 루프를 돌며 썸네일 생성
+            for (var i = 0, f; f = files[i]; i++) {
+
+                // Only process image files.
+                if (!f.type.match('image.*')) {
+                    continue;
+                }
+
+                var reader = new FileReader();
+
+                // Closure to capture the file information.
+                reader.onload = (function (theFile) {
+                    return function (e) {
+                        // Render thumbnail.
+                        var span = document.createElement('span');
+                        span.innerHTML = ['<img class="thumb" src="', e.target.result,
+                            '" title="', theFile.name, '"/>'].join('');
+                        document.getElementById('tool-body').insertBefore(span, null);
+                    };
+                })(f);
+
+                // Read in the image file as a data URL.
+                reader.readAsDataURL(f);
+            }
+        },
+
+        handleDragOver(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+        },
+
         componentDidMount() {
             var self = this;
             this.leftAreaWidth = this.leftAreaWidth || 0;
@@ -447,11 +485,16 @@ var _ = require('underscore');
             this.props.observers.resizeListener = function (_w, _h, _screenW, _screenH) {
                 self.resizeListener(_w, _h, _screenW, _screenH);
             };
+
+            // Setup the D&D listeners.
+            var ResourcedUpload = document.getElementById('ResourcedUpload');
+            ResourcedUpload.addEventListener('dragover', self.handleDragOver, false);
+            ResourcedUpload.addEventListener('drop', self.handleFileSelectDrop, false);
         },
 
         render() {
             return (
-                <div>
+                <div id="ResourcedUpload">
                     <HeadToolBar ref='HeadToolBar'/>
 
                     <LeftNavigation ref="LeftNavigation"
@@ -472,9 +515,9 @@ var _ = require('underscore');
 
 
                     <DocumentStage ref='DocumentStage'
-                                    aimingCount={100}
-                                    aimingEscapeStepSize={10}
-                                    boundaryBorderSize={5}  />
+                                   aimingCount={100}
+                                   aimingEscapeStepSize={10}
+                                   boundaryBorderSize={5}/>
                     <FootStatusBar ref='FootStatusBar'/>
 
                     <FloatingMenuBox ref='stage-context-menu'/>

@@ -276,7 +276,7 @@
                        <div className="title">{ headElement }</div>
                        { headMenuElement }
                     </div>
-                    <div className='tool-body'>
+                    <div id='tool-body' className='tool-body'>
                         {toolElement}
                     </div>
                 </div>

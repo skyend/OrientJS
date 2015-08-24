@@ -43,6 +43,11 @@
         "title": "Component Palette",
         "icon": "cubes",
         "equipToolKey": "ComponentPalette"
+        },{
+        "key": "resource-upload",
+        "title": "Resource Upload",
+        "icon": "file-image-o",
+        "equipToolKey": "ResourceUpload"
       }]
     }]
   },
@@ -91,6 +96,9 @@
     "ElementNodeEditor": {
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor"
+    },
+    "ResourceUpload": {
+      "jsxPath": "ResourceUpload"
     }
   }
 }
