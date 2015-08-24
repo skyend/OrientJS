@@ -51,7 +51,8 @@ var _ = require('underscore');
             return { toolStatesStore : {} };
         },
 
-        displayModal(action) {
+        displayModal( _modalKey, _extraPram ) {
+          /*
             var target = action.target;
             var self = this;
             loadModal(action.parts + ".jsx", function (page, Modal) {
@@ -62,6 +63,18 @@ var _ = require('underscore');
                     self.refs['Modal'].setState(stateObj);
                 });
             });
+            */
+
+            var triggers = this.props.Modal.triggers;
+
+            var modalObj = triggers[_modalKey];
+
+
+            var toolKey = modalObj.equipToolKey;
+            var toolSpec = this.props.Tools[toolKey];
+
+
+            this.changeTool( toolKey, toolSpec, 'Modal', _extraPram);
         },
 
         onThrowCatcherCallContextMenu(_eventData, _pass) {
@@ -144,6 +157,9 @@ var _ = require('underscore');
 
         onThrowCatcherStageElementEdit(_eventData, _pass) {
             this.offContextMenu();
+            this.displayModal( 'ResourceUploader', { test:'a'} );
+
+            console.log('test');
         },
 
         onThrowCatcherNewSubWindow_Test(_eventData, _pass) {
@@ -201,59 +217,65 @@ var _ = require('underscore');
 
         },
 
+
+        changeTool( _toolKey, _toolSpec, _toEquipRef, _extraPram ){
+          var self  = this;
+          /**
+           * WaterFall 을 이용하여 비동기로드를 동기화한다.
+           */
+          Async.waterFall(_toolSpec, [function (__toolSpec, __cb) {
+
+              if (typeof __toolSpec !== 'object') {
+                  self.refs[_toEquipRef].equipTool();
+                  throw new Error("Tool[" + _toolKey + "] Spec Object is not exists.");
+              }
+
+              if (typeof __toolSpec.jsxPath !== 'string') {
+                  self.refs[_toEquipRef].equipTool();
+                  throw new Error("Tool[" + _toolKey + "] JSXPath is not exists.");
+              }
+
+              loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
+                  if (___err !== null) {
+
+                      self.refs[_toEquipRef].equipTool();
+                      throw new Error("Fail to load tool[" + _toolKey + "].");
+                  } else {
+                      __cb(__toolSpec, ___tool);
+                  }
+              });
+          }, function (__toolSpec, __tool, __cb) {
+
+              // config 파일이 없다면 지나간다.
+              if (typeof __toolSpec.configPath === 'undefined') {
+                  return __cb(__tool, null);
+              }
+
+              loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
+                  if (___err !== null) {
+                      throw new Error("Fail to load tool[" + _toolKey + "]Config.");
+                  } else {
+
+                      __cb(__tool, ___toolConfig);
+                  }
+              });
+          }, function (__tool, __toolConfig) {
+
+              // Builder에 저장된 각 Tool State를 가져온다.
+              var toolState = self.state.toolStatesStore[ _toolKey ] || {};
+              toolState.extraPram = _extraPram;
+
+              self.refs[_toEquipRef].equipTool(__tool, __toolConfig, _toolKey, toolState);
+          }]);
+        },
+
         onThrowCatcherNeedEquipTool(_eventData, _pass) {
-            var self = this;
 
             var toolKey = _eventData.toolKey;
             var toolSpec = this.props.Tools[toolKey];
             var toEquipRef = _eventData.refPath[0];
 
-            /**
-             * WaterFall 을 이용하여 비동기로드를 동기화한다.
-             */
-            Async.waterFall(toolSpec, [function (__toolSpec, __cb) {
-
-                if (typeof __toolSpec !== 'object') {
-                    self.refs[toEquipRef].equipTool();
-                    throw new Error("Tool[" + toolKey + "] Spec Object is not exists.");
-                }
-
-                if (typeof __toolSpec.jsxPath !== 'string') {
-                    self.refs[toEquipRef].equipTool();
-                    throw new Error("Tool[" + toolKey + "] JSXPath is not exists.");
-                }
-
-                loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
-                    if (___err !== null) {
-
-                        self.refs[toEquipRef].equipTool();
-                        throw new Error("Fail to load tool[" + toolKey + "].");
-                    } else {
-                        __cb(__toolSpec, ___tool);
-                    }
-                });
-            }, function (__toolSpec, __tool, __cb) {
-
-                // config 파일이 없다면 지나간다.
-                if (typeof __toolSpec.configPath === 'undefined') {
-                    return __cb(__tool, null);
-                }
-
-                loadJson(__toolSpec.configPath + ".json", function (___err, ___toolConfig) {
-                    if (___err !== null) {
-                        throw new Error("Fail to load tool[" + toolKey + "]Config.");
-                    } else {
-
-                        __cb(__tool, ___toolConfig);
-                    }
-                });
-            }, function (__tool, __toolConfig) {
-
-                // Builder에 저장된 각 Tool State를 가져온다.
-                var toolState = self.state.toolStatesStore[ toolKey ];
-
-                self.refs[toEquipRef].equipTool(__tool, __toolConfig, toolKey, toolState);
-            }]);
+            this.changeTool( toolKey, toolSpec, toEquipRef);
         },
 
         onThrowCatcherDisplayElementPath(_eventData, _pass) {
@@ -318,6 +340,7 @@ var _ = require('underscore');
 
           var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
           var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
+          //var modalEquipTool = this.refs['Modal'].state.equipTool;
 
 
           if( typeof leftEquipTool === 'object' ){
@@ -498,17 +521,17 @@ var _ = require('underscore');
             callback(null, page);
         })
     }
-
-    function loadModal(pageName, callback) {
-        try {
-            var pageBundle = require("bundle!./modal/" + pageName)
-        } catch (e) {
-            return callback(e);
-        }
-        pageBundle(function (page) {
-            callback(null, page);
-        })
-    }
+    //
+    // function loadModal(pageName, callback) {
+    //     try {
+    //         var pageBundle = require("bundle!./modal/" + pageName)
+    //     } catch (e) {
+    //         return callback(e);
+    //     }
+    //     pageBundle(function (page) {
+    //         callback(null, page);
+    //     })
+    // }
 
     function loadJson(pageName, callback) {
         try {

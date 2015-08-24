@@ -62,6 +62,19 @@
       }]
     }]
   },
+
+  "Modal": {
+    "triggers": {
+      "ResourceUploader": {
+        "title": "Test Modal",
+        "icon": "tree",
+        "equipToolKey": "TestModal"
+      }
+    }
+  },
+
+
+
   "tools": {
     "UserAccount": {
       "jsxPath": "UserAccount"
@@ -91,6 +104,10 @@
     "ElementNodeEditor": {
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor"
+    },
+
+    "TestModal": {
+      "jsxPath": "TestModal"
     }
   }
 }

@@ -64,6 +64,10 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
 };
+// classes
+ElementNode.prototype.setClasses = function(_classes) {
+  this.attributes.class = _classes;
+};
 // type
 ElementNode.prototype.setType = function(_type) {
   this.type = _type;
@@ -137,6 +141,9 @@ ElementNode.prototype.setRealElement = function(_realElement) {
 ElementNode.prototype.getTagName = function() {
   return this.attributes.tagName;
 };
+ElementNode.prototype.getClasses = function() {
+  return this.attributes.class;
+};
 // element.text -> getText()
 ElementNode.prototype.getText = function() {
   return this.attributes.text;
@@ -163,7 +170,7 @@ ElementNode.prototype.getRefferenceTarget = function() {
 };
 // refferenceTargetProps
 ElementNode.prototype.getRefferenceTargetProps = function() {
-  return this.refferenceTargetProps
+  return this.refferenceTargetProps;
 };
 // refferenceInstance
 ElementNode.prototype.getRefferenceInstance = function() {
