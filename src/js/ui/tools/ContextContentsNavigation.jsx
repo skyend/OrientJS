@@ -31,9 +31,9 @@ var ContextContentsNavigation = React.createClass({
       if( this.state.runningContext === null ) return <div/>;
       var runningContext = this.state.runningContext;
       var elementNode;// = runningContext.
-
+      console.log(runningContext);
       if( runningContext.contextType === 'document' ){
-        elementNode = runningContext.document.rootElementNode;
+        elementNode = runningContext.contextController.document.rootElementNode;
       }
 
 

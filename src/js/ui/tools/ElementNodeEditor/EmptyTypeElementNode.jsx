@@ -30,12 +30,16 @@ var EmptyTypeElementNode = React.createClass({
 
         var emptyFieldSet = [
           { "name": "RefferenceType", "initialValue": elementNode.getRefferenceType() || 'Refference nothing', enterable:true, type:'select', options:refTypeOptions },
+          { "name": "RefferenceKey", "initialValue": '준비중', enterable:true, type:'input'},
         ];
 
+        var refferenceTarget =  elementNode.getRefferenceTarget();
+
         if( elementNode.getRefferenceType() === 'react' ){
-          var refferenceTarget =  elementNode.getRefferenceTarget();
           emptyFieldSet.push( { "name": "PackageKey", "initialValue": refferenceTarget.packageKey || 'none', enterable:false, } );
           emptyFieldSet.push( { "name": "ComponentKey", "initialValue": refferenceTarget.componentKey || 'none', enterable:false, } );
+        } else if ( elementNode.getRefferenceType() === 'document'  ){
+          emptyFieldSet.push( { "name": "DocumentRefKey", "initialValue": refferenceTarget.documentRefKey || 'none', enterable:true, type:'input' } );
         }
 
         var tagAttributesFieldSet = [];
