@@ -15,7 +15,7 @@
         getInitialState() {
             return {
                 Modal: <div/>,
-              equipTool:null
+                equipTool: null
             }
         },
 
@@ -42,51 +42,46 @@
         },
 
         renderEquipTool(){
-          if( this.state.equipTool === null ) return;
-
-          return (
-            React.createElement(this.state.equipTool.class, { config : this.state.config, ref: this.state.equipTool.toolKey })
-          );
+            if (this.state.equipTool === null) return;
+            return (
+                React.createElement(this.state.equipTool.class, {config: this.state.config, ref: this.state.equipTool.toolKey})
+            );
         },
 
         show(){
-          var selfDom = this.getDOMNode();
-          selfDom.style.pointerEvents = 'auto';
-          selfDom.style.opacity = 1;
+            var selfDom = this.getDOMNode();
+            selfDom.style.pointerEvents = 'auto';
+            selfDom.style.opacity = 1;
+
         },
 
         hide(){
-          var selfDom = this.getDOMNode();
-          selfDom.style.pointerEvents = 'none';
-          selfDom.style.opacity = 0;
+            var selfDom = this.getDOMNode();
+            selfDom.style.pointerEvents = 'none';
+            selfDom.style.opacity = 0;
         },
 
         onClose(){
-
-          this.setState( {equipTool:null} );
+            this.setState({equipTool: null});
         },
 
 
         componentDidUpdate(){
-          if( this.state.equipTool !== null ){
-            this.show();
+            if (this.state.equipTool !== null) {
+                this.show();
+                this.refs[this.state.equipTool.toolKey].setState({storedToolState: this.state.equipTool.storedToolState});
 
-
-            this.refs[this.state.equipTool.toolKey].setState({storedToolState:this.state.equipTool.storedToolState});
-
-
-          } else {
-            this.hide();
-          }
+            } else {
+                this.hide();
+            }
         },
 
         render: function () {
-
             return (
                 <div id="ui-modal">
                     <div className="modal">
                         <div className="modalHeader">
-                            <i className="close fa fa-times"  onClick={ this.onClose } ></i>
+                            <i className="close fa fa-times" onClick={ this.onClose }></i>
                         </div>
                         <div className="modalBody">
                             {this.renderEquipTool()}

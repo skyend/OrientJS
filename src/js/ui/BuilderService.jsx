@@ -35,6 +35,7 @@ var _ = require('underscore');
     var FloatingMenuBox = require('./FloatingMenuBox.jsx');     //StageContextMenu
     var NotificationSystem = require('./NotificationSystem.jsx');             //PushMessage
     var SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
+    var ResourceUploadArea = require('./ResourceUploadArea.jsx');
 
     var React = require('react');
     var cookie = require('js-cookie');
@@ -51,30 +52,15 @@ var _ = require('underscore');
             return { toolStatesStore : {} };
         },
 
-        displayModal( _modalKey, _extraPram ) {
-          /*
-            var target = action.target;
-            var self = this;
-            loadModal(action.parts + ".jsx", function (page, Modal) {
-                loadJson(action.config + ".json", function (page, json) {
-                    var config = json;
-                    var stateObj = {};
-                    stateObj[target] = <Modal items={config}/>;
-                    self.refs['Modal'].setState(stateObj);
-                });
-            });
-            */
-
+        onThrowCatcherDisplayModal( _modalData, _pass ) {
             var triggers = this.props.Modal.triggers;
 
-            var modalObj = triggers[_modalKey];
-
+            var modalObj = triggers[_modalData.triggerKey];
 
             var toolKey = modalObj.equipToolKey;
             var toolSpec = this.props.Tools[toolKey];
 
-
-            this.changeTool( toolKey, toolSpec, 'Modal', _extraPram);
+            this.changeTool( toolKey, toolSpec, 'Modal', _modalData.value);
         },
 
         onThrowCatcherCallContextMenu(_eventData, _pass) {
@@ -157,9 +143,6 @@ var _ = require('underscore');
 
         onThrowCatcherStageElementEdit(_eventData, _pass) {
             this.offContextMenu();
-            this.displayModal( 'ResourceUploader', { test:'a'} );
-
-            console.log('test');
         },
 
         onThrowCatcherNewSubWindow_Test(_eventData, _pass) {
@@ -169,12 +152,10 @@ var _ = require('underscore');
 
         onThrowCatcherPopupModal_Test(_eventData, _pass){
             this.offContextMenu();
-            this.popupModal();
         },
 
         onThrowCatcherPushMessage_Test(_eventData, _pass){
             this.offContextMenu();
-            this.popupModal();
         },
 
         onThrowCatcherSelectParentElementByStageElement(_eventData, _pass) {
@@ -218,7 +199,7 @@ var _ = require('underscore');
         },
 
 
-        changeTool( _toolKey, _toolSpec, _toEquipRef, _extraPram ){
+        changeTool( _toolKey, _toolSpec, _toEquipRef, _extraParam ){
           var self  = this;
           /**
            * WaterFall 을 이용하여 비동기로드를 동기화한다.
@@ -263,9 +244,10 @@ var _ = require('underscore');
 
               // Builder에 저장된 각 Tool State를 가져온다.
               var toolState = self.state.toolStatesStore[ _toolKey ] || {};
-              toolState.extraPram = _extraPram;
+              toolState.extraParam = _extraParam;
 
               self.refs[_toEquipRef].equipTool(__tool, __toolConfig, _toolKey, toolState);
+              toolState.extraParam = null;
           }]);
         },
 
@@ -461,62 +443,18 @@ var _ = require('underscore');
             this.resizeSelf();
         },
 
-        handleFileSelectDrop(evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
-
-            var files = evt.dataTransfer.files; // FileList object
-
-            // 파일목록을 통해 루프를 돌며 썸네일 생성
-            for (var i = 0, f; f = files[i]; i++) {
-
-                // Only process image files.
-                if (!f.type.match('image.*')) {
-                    continue;
-                }
-
-                var reader = new FileReader();
-
-                // Closure to capture the file information.
-                reader.onload = (function (theFile) {
-                    return function (e) {
-                        // Render thumbnail.
-                        var span = document.createElement('span');
-                        span.innerHTML = ['<img class="thumb" src="', e.target.result,
-                            '" title="', theFile.name, '"/>'].join('');
-                        document.getElementById('tool-body').insertBefore(span, null);
-                    };
-                })(f);
-
-                // Read in the image file as a data URL.
-                reader.readAsDataURL(f);
-            }
-        },
-
-        handleDragOver(evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
-            evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-        },
-
         componentDidMount() {
             var self = this;
             this.leftAreaWidth = this.leftAreaWidth || 0;
             this.rightAreaWidth = this.rightAreaWidth || 0;
-
             this.props.observers.resizeListener = function (_w, _h, _screenW, _screenH) {
                 self.resizeListener(_w, _h, _screenW, _screenH);
             };
-
-            // Setup the D&D listeners.
-            var ResourcedUpload = document.getElementById('ResourcedUpload');
-            ResourcedUpload.addEventListener('dragover', self.handleDragOver, false);
-            ResourcedUpload.addEventListener('drop', self.handleFileSelectDrop, false);
         },
 
         render() {
             return (
-                <div id="ResourcedUpload">
+                <div>
                     <HeadToolBar ref='HeadToolBar'/>
 
                     <LeftNavigation ref="LeftNavigation"
@@ -544,6 +482,7 @@ var _ = require('underscore');
 
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
+                    <ResourceUploadArea/>
                     <NotificationSystem ref='NotificationSystem'/>
                     <SubWindowSystem ref='SubWindowSystem'/>
                 </div>

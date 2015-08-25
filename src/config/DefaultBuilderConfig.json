@@ -71,9 +71,8 @@
   "Modal": {
     "triggers": {
       "ResourceUploader": {
-        "title": "Test Modal",
-        "icon": "tree",
-        "equipToolKey": "TestModal"
+        "title": "Resource Upload",
+        "equipToolKey": "ResourceUploadModal"
       }
     }
   },
@@ -110,9 +109,8 @@
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor"
     },
-
-    "TestModal": {
-      "jsxPath": "TestModal"
+    "ResourceUploadModal": {
+      "jsxPath": "ResourceUploadModal"
     }
   }
 }
