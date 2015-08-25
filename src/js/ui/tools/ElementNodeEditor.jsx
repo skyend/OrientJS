@@ -6,6 +6,9 @@ var BasicButton = require('../partComponents/BasicButton.jsx');
 var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
 var HorizonField = require('../partComponents/HorizonField.jsx');
 var HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
+var htmlTag = require('./toolsData/htmlTag.json');
+var HTMLDOMSpec = require('./ElementNodeEditor/HTMLDOMSpec.jsx');
+var EmptyTypeElementNode = require('./ElementNodeEditor/EmptyTypeElementNode.jsx');
 
 var ElementNodeEditor = React.createClass({
     mixins: [
@@ -25,26 +28,36 @@ var ElementNodeEditor = React.createClass({
     },
 
     onClickApply(){
-      this.apply();
+      //this.apply();
     },
 
-    apply(){
-      var specData = this.refs['spec-set'].getAllFieldData();
+    // 변경되는 값에따라 바로바로 ElementNode에 반영하고 랜더링을 진행한다.
+    onThrowCatcherChangedValue( _eventData, _pass ){
       var elementNode = this.state.elementNode;
+      var chanedData = _eventData.data;
 
-      specData.map( function( _fieldData ){
-        switch( _fieldData.name ){
-          case "Classes":
-          elementNode.setClasses( _fieldData.data );
-          break;
-          case "TagName":
-          elementNode.setTagName( _fieldData.data );
-          break;
+      if( _eventData.refPath[2] === 'HTMLDOMSpec'){
+        if( _eventData.refPath[1] === 'elementDOMSpec' ){
+          switch( _eventData.refPath[0] ){
+            case "TagName" :
+              elementNode.setTagName( chanedData );
+              break;
+            case "Classes" :
+              elementNode.setClasses( chanedData );
+              break;
+          }
         }
-      });
+      } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
+        if( _eventData.refPath[1] === 'emptyTypeProps' ){
+          switch( _eventData.refPath[0] ){
+            case "RefferenceType" :
+              elementNode.setRefferenceType( chanedData );
+              break;
+          }
+        }
+      }
 
-
-
+      console.log(_eventData);
 
       var elementDocument = elementNode.document;
       var contextController = elementDocument.getContextController();
@@ -54,27 +67,6 @@ var ElementNodeEditor = React.createClass({
       this.setState({elementNode:elementNode});
     },
 
-    componentDidUpdate(){
-
-    },
-
-    getEmptyFieldSet(_elementNode){
-      var emptyFieldSet = [
-        { "name": "RefferenceType", "initialValue": _elementNode.getRefferenceType() || 'Refference nothing', type:"static" },
-      ];
-
-      if( _elementNode.getRefferenceType() === 'react' ){
-        var refferenceTarget =  _elementNode.getRefferenceTarget();
-        emptyFieldSet.push( { "name": "PackageKey", "initialValue": refferenceTarget.packageKey || 'none', type:"static" } );
-        emptyFieldSet.push( { "name": "ComponentKey", "initialValue": refferenceTarget.componentKey || 'none', type:"static" } );
-      }
-
-      return emptyFieldSet;
-    },
-
-    getEmptyRefferencePropFieldSet(_elementNode){
-      return [];
-    },
 
     getElementProfileFieldSet(_elementNode){
       return [
@@ -84,37 +76,20 @@ var ElementNodeEditor = React.createClass({
       ];
     },
 
-    getElementSpecFieldSet(_elementNode){
-      return [
-        { "name": "TagName", "initialValue": _elementNode.getTagName() || '', type:"enterable" },
-        { "name": "Classes", "initialValue":_elementNode.getClasses() || '', type:"enterable" }
-      ];
-    },
-
-
     renderEditParts(_elementNode){
-
       var elementProfileFieldSet = this.getElementProfileFieldSet(_elementNode);
-      var elementSpecFieldSet = this.getElementSpecFieldSet(_elementNode);
-      var tagAttributesFieldSet = [];
-      var emptyFieldSet;
-      var emptyTargetPropFieldSet;
+
       var isEmptyType = false;
 
-      if( _elementNode.getType() === 'empty' ){
-        isEmptyType = true;
-        emptyFieldSet = this.getEmptyFieldSet(_elementNode);
-        emptyTargetPropFieldSet = this.getEmptyRefferencePropFieldSet( _elementNode);
-      }
-
+      if( _elementNode.getType() === 'empty' ) isEmptyType = true;
 
       return (
         <div className='edit-parts'>
           <HorizonFieldSet title="Element Profile" theme='dark' nameWidth={130} fields={ elementProfileFieldSet } ref='profile-set'/>
-          <HorizonFieldSet title="Element Spec" theme='dark' nameWidth={130} fields={ elementSpecFieldSet } ref='spec-set'/>
-          <HorizonFieldSet title="Tag Attributes" theme='dark' nameWidth={130} fields={ tagAttributesFieldSet } ref='tag-attrs-set'/>
-          {isEmptyType? <HorizonFieldSet title="Empty Type Properties" theme='dark' nameWidth={130} fields={ emptyFieldSet } ref='empty-config-set'/>:''}
-          {isEmptyType? <HorizonFieldSet title="Empty Target Properties" theme='dark' nameWidth={130} fields={ emptyTargetPropFieldSet } ref='empty-config-set'/>:''}
+
+          <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
+
+          {isEmptyType? <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='EmptyTypeElementNode'/>:''}
         </div>
       );
     },

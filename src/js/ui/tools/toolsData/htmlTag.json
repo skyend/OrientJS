@@ -1,0 +1,209 @@
+[{
+  "tagName": "a"
+}, {
+  "tagName": "abbr"
+}, {
+  "tagName": "address"
+}, {
+  "tagName": "area"
+}, {
+  "tagName": "article"
+}, {
+  "tagName": "aside"
+}, {
+  "tagName": "audio"
+}, {
+  "tagName": "b"
+}, {
+  "tagName": "base"
+}, {
+  "tagName": "bdi"
+}, {
+  "tagName": "bdo"
+}, {
+  "tagName": "blockquote"
+}, {
+  "tagName": "body"
+}, {
+  "tagName": "br"
+}, {
+  "tagName": "button"
+}, {
+  "tagName": "canvas"
+}, {
+  "tagName": "caption"
+}, {
+  "tagName": "cite"
+}, {
+  "tagName": "code"
+}, {
+  "tagName": "col"
+}, {
+  "tagName": "colgroup"
+}, {
+  "tagName": "datalist"
+}, {
+  "tagName": "dd"
+}, {
+  "tagName": "del"
+}, {
+  "tagName": "details"
+}, {
+  "tagName": "dfn"
+}, {
+  "tagName": "dialog"
+}, {
+  "tagName": "div"
+}, {
+  "tagName": "dl"
+}, {
+  "tagName": "dt"
+}, {
+  "tagName": "em"
+}, {
+  "tagName": "embed"
+}, {
+  "tagName": "fieldset"
+}, {
+  "tagName": "figcaption"
+}, {
+  "tagName": "figure"
+}, {
+  "tagName": "footer"
+}, {
+  "tagName": "form"
+}, {
+  "tagName": "h1 to h6"
+}, {
+  "tagName": "head"
+}, {
+  "tagName": "header"
+}, {
+  "tagName": "hr"
+}, {
+  "tagName": "html"
+}, {
+  "tagName": "i"
+}, {
+  "tagName": "iframe"
+}, {
+  "tagName": "img"
+}, {
+  "tagName": "input"
+}, {
+  "tagName": "ins"
+}, {
+  "tagName": "kbd"
+}, {
+  "tagName": "keygen"
+}, {
+  "tagName": "label"
+}, {
+  "tagName": "legend"
+}, {
+  "tagName": "li"
+}, {
+  "tagName": "link"
+}, {
+  "tagName": "main"
+}, {
+  "tagName": "map"
+}, {
+  "tagName": "mark"
+}, {
+  "tagName": "menu"
+}, {
+  "tagName": "menuitem"
+}, {
+  "tagName": "meta"
+}, {
+  "tagName": "meter"
+}, {
+  "tagName": "nav"
+}, {
+  "tagName": "noscript"
+}, {
+  "tagName": "object"
+}, {
+  "tagName": "ol"
+}, {
+  "tagName": "optgroup"
+}, {
+  "tagName": "option"
+}, {
+  "tagName": "output"
+}, {
+  "tagName": "p"
+}, {
+  "tagName": "param"
+}, {
+  "tagName": "pre"
+}, {
+  "tagName": "progress"
+}, {
+  "tagName": "q"
+}, {
+  "tagName": "rp"
+}, {
+  "tagName": "rt"
+}, {
+  "tagName": "ruby"
+}, {
+  "tagName": "s"
+}, {
+  "tagName": "samp"
+}, {
+  "tagName": "script"
+}, {
+  "tagName": "section"
+}, {
+  "tagName": "select"
+}, {
+  "tagName": "small"
+}, {
+  "tagName": "source"
+}, {
+  "tagName": "span"
+}, {
+  "tagName": "strong"
+}, {
+  "tagName": "style"
+}, {
+  "tagName": "sub"
+}, {
+  "tagName": "summary"
+}, {
+  "tagName": "sup"
+}, {
+  "tagName": "table"
+}, {
+  "tagName": "tbody"
+}, {
+  "tagName": "td"
+}, {
+  "tagName": "textarea"
+}, {
+  "tagName": "tfoot"
+}, {
+  "tagName": "th"
+}, {
+  "tagName": "thead"
+}, {
+  "tagName": "time"
+}, {
+  "tagName": "title"
+}, {
+  "tagName": "tr"
+}, {
+  "tagName": "track"
+}, {
+  "tagName": "u"
+}, {
+  "tagName": "ul"
+}, {
+  "tagName": "var"
+}, {
+  "tagName": "video"
+}, {
+  "tagName": "wbr"
+}]

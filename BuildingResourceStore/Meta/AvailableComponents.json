@@ -37,6 +37,14 @@
       "name": "Button <Button>",
       "path": "HTMLTags/Button.jsx"
     }, {
+      "key": "UL",
+      "name": "UL <UL>",
+      "path": "HTMLTags/UL.jsx"
+    }, {
+      "key": "LI",
+      "name": "LI <LI>",
+      "path": "HTMLTags/LI.jsx"
+    }, {
       "key": "Div",
       "name": "Division <Div>",
       "path": "HTMLTags/Div.jsx"

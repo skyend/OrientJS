@@ -15,8 +15,9 @@ var HorizonFieldSet = React.createClass({
       });
     },
 
-    onThrowCatcherChangedValue( _eventData ){
-      console.log(_eventData );
+    onThrowCatcherChangedValue( _eventData, _pass ){
+      //console.log(_eventData );
+      _pass();
     },
 
     resetAll(){
@@ -28,8 +29,8 @@ var HorizonFieldSet = React.createClass({
 
     renderField( _field ){
       return (
-        <HorizonField fieldName={_field.name} theme="dark" type={_field.type} ref={ _field.name } onChange={ this.onChange }
-                     fieldValue={_field.initialValue}
+        <HorizonField fieldName={_field.name} theme="dark" enterable={_field.enterable} type={_field.type} ref={ _field.name } onChange={ this.onChange }
+                     defaultValue={_field.initialValue} options={ _field.options }
                      nameWidth={this.props.nameWidth}/>
       )
     },

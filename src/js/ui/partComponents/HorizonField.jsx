@@ -3,6 +3,90 @@ require('./HorizonField.less');
 
 var React = require("react");
 
+
+var EnterableWrapperInput = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+    return (
+      <input value={ this.state.value } onChange={this.onChange}/>
+    );
+  }
+});
+
+var EnterableWrapperSelect = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  renderOption( _option ){
+    return (
+      <option value={ _option.value }> { _option.value } </option>
+    )
+  },
+
+  render(){
+    return (
+      <select value={ this.state.value } onChange={this.onChange}>
+        { this.props.options.map( this.renderOption )}
+
+      </select>
+    );
+  }
+});
+
 var HorizonField = React.createClass({
     mixins:[require('../reactMixin/EventDistributor.js')],
 
@@ -12,76 +96,73 @@ var HorizonField = React.createClass({
         };
     },
 
-    onChange(){
-      var changedValue = this.getValue();
+    onThrowCatcherChangedValue( _eventData ){
+      var value = _eventData.value;
 
-      if( this.props.fieldValue === changedValue ){
-        this.setState({ valueIsDiff : false });
-      } else {
-        this.setState({ valueIsDiff : true});
-      }
 
       this.emit("ChangedValue", {
         name:this.props.fieldName,
-        data:changedValue
+        data:value
       });
     },
 
     reset(){
-      switch( this.props.type ){
-        case "enterable":
-          this.setInputValue( this.props.fieldValue );
-          this.onChange();
-          break;
-      }
+      this.setValue(this.props.defaultValue);
     },
 
     getValue(){
-      switch( this.props.type ){
-        case "static":
-          return this.props.fieldValue;
-        case "enterable":
-          return this.readInputValue();
+      if( this.props.enterable ){
+        return this.refs['enterable-field'].getValue();
+      } else {
+        return this.props.defaultValue;
       }
     },
 
-    readInputValue(){
-      var enterableField = this.refs['enterable-field'];
-      if( enterableField === undefined ) throw new Error("Horizon Field is not enterable type.");
-      return enterableField.getDOMNode().value;
+    setValue(_value){
+      if( this.props.enterable ){
+        this.refs['enterable-field'].setState({value:_value});
+      } else {
+        this.props.defaultValue = _value;
+      }
     },
 
-    setInputValue( _value ){
-      var enterableField = this.refs['enterable-field'];
-      if( enterableField === undefined ) throw new Error("Horizon Field is not enterable type.");
-      enterableField.getDOMNode().value = _value ;
-    },
 
     render(){
         var classes = ['HorizonField', this.props.theme, this.props.type];
         var field;
         var iconClass;
 
-        switch( this.props.type ){
-          case "static":
-            field = this.props.fieldValue;
-            iconClass = "fa fa-lock";
-            break;
-          case "enterable":
-            field = <input defaultValue={this.props.fieldValue} ref='enterable-field' onChange={this.onChange}/>
-            iconClass = "fa fa-pencil";
-            break;
+        if( this.props.enterable ){
+          switch( this.props.type ){
+            case "input":
+              field = <EnterableWrapperInput defaultValue={this.props.defaultValue} ref='enterable-field'/>
+              iconClass = "fa fa-pencil";
+              break;
+            case "select":
+              field = <EnterableWrapperSelect defaultValue={this.props.defaultValue} options={ this.props.options } ref='enterable-field'/>
+              iconClass = "fa fa-pencil";
+              break;
+          }
+        } else {
+          field = <label title={this.props.defaultValue}>{this.props.defaultValue}</label>
+          iconClass = "fa fa-lock";
         }
+
+
+
 
         return (
             <div className={classes.join(' ')}>
               <div className="field-name" style={{width:this.props.nameWidth}}>
-                {this.props.fieldName}
+                <div className='vertical-standard'></div>
+                <span>{this.props.fieldName}</span>
               </div>
               <div className={['field-value',this.state.valueIsDiff? 'diff':''].join(' ')} style={{left:this.props.nameWidth}}>
+                <div className='vertical-standard'></div>
                 { field }
               </div>
               <div className='field-type-guide'>
+                <div className='vertical-standard'></div>
                 <i className={ iconClass } />
               </div>
             </div>
