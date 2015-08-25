@@ -106,9 +106,8 @@ var ElementNodeEditor = React.createClass({
                     { elementNode !== null ? this.renderEditParts(elementNode):"No focused." }
                   </div>
                   <div className="footer">
-                    <input type='checkbox'/> auto apply
-                    <BasicButton desc="Reset" color='error' size='small' onClick={this.onClickReset}/>
-                    <BasicButton desc="Apply" color='primary' size='small' onClick={this.onClickApply}/>
+                    
+
                   </div>
                 </div>
             </div>

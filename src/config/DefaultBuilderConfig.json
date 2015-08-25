@@ -58,7 +58,7 @@
         "key": "element-tree",
         "title": "Element Tree",
         "icon": "tree",
-        "equipToolKey": "ComponentPalette"
+        "equipToolKey": "ContextContentsNavigation"
       }]
     }]
   },
@@ -104,6 +104,11 @@
     "ElementNodeEditor": {
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor"
+    },
+
+    "ContextContentsNavigation": {
+      "jsxPath": "ContextContentsNavigation",
+      "configPath": "ContextContentsNavigation"
     },
 
     "TestModal": {

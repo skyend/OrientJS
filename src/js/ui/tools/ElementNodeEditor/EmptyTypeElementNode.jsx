@@ -23,7 +23,9 @@ var EmptyTypeElementNode = React.createClass({
 
         var refTypeOptions = [
           { value:'react' },
-          { value:'document'}
+          { value:'document'},
+          { value: 'elementNode'},
+          { value: 'none' }
         ];
 
         var emptyFieldSet = [

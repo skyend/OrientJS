@@ -23,8 +23,6 @@
 }, {
   "tagName": "blockquote"
 }, {
-  "tagName": "body"
-}, {
   "tagName": "br"
 }, {
   "tagName": "button"
@@ -73,15 +71,21 @@
 }, {
   "tagName": "form"
 }, {
-  "tagName": "h1 to h6"
+  "tagName": "h1"
 }, {
-  "tagName": "head"
+  "tagName": "h2"
+}, {
+  "tagName": "h3"
+}, {
+  "tagName": "h4"
+}, {
+  "tagName": "h5"
+}, {
+  "tagName": "h6"
 }, {
   "tagName": "header"
 }, {
   "tagName": "hr"
-}, {
-  "tagName": "html"
 }, {
   "tagName": "i"
 }, {
@@ -102,8 +106,6 @@
   "tagName": "legend"
 }, {
   "tagName": "li"
-}, {
-  "tagName": "link"
 }, {
   "tagName": "main"
 }, {
@@ -153,8 +155,6 @@
 }, {
   "tagName": "samp"
 }, {
-  "tagName": "script"
-}, {
   "tagName": "section"
 }, {
   "tagName": "select"
@@ -166,8 +166,6 @@
   "tagName": "span"
 }, {
   "tagName": "strong"
-}, {
-  "tagName": "style"
 }, {
   "tagName": "sub"
 }, {
@@ -190,8 +188,6 @@
   "tagName": "thead"
 }, {
   "tagName": "time"
-}, {
-  "tagName": "title"
 }, {
   "tagName": "tr"
 }, {
