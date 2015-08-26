@@ -11,6 +11,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.type; // html / string / react / grid
   this.attributes;
   this.componentName;
+  this.comment;
 
   // refference
   this.refferenceType; // react | document | ...
@@ -44,6 +45,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.componentName = _elementNodeDataObject.componentName;
     this.refferenceType = _elementNodeDataObject.refferenceType;
     this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+    this.comment = _elementNodeDataObject.comment || '';
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
@@ -54,7 +56,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.createDate = new Date();
     this.attributes = {};
     this.children = [];
-
+    this.comment = '';
   }
 };
 
@@ -115,6 +117,10 @@ ElementNode.prototype.setInlineStyle = function(_style) {
 // text
 ElementNode.prototype.setText = function(_text) {
   this.attributes.text = _text;
+};
+// comment : 주석
+ElementNode.prototype.setComment = function(_comment) {
+  this.comment = _comment;
 };
 // ReactTypeComponent
 ElementNode.prototype.setReactTypeComponent = function(_component) {
@@ -206,6 +212,10 @@ ElementNode.prototype.getInlineStyle = function() {
 // text
 ElementNode.prototype.getText = function() {
   return this.attributes.text;
+};
+// comment : 주석
+ElementNode.prototype.getComment = function() {
+  return this.comment;
 };
 // ReactTypeComponent
 ElementNode.prototype.getReactTypeComponent = function() {
@@ -315,6 +325,9 @@ ElementNode.prototype.buildByComponent = function(_component) {
     // Todo
     this.buildEmptyTypeElement();
 
+  } else if (elementNodeType === 'string') {
+    this.setText("Text");
+    this.setTagName('text');
   } else if (elementNodeType === 'grid') {
     // Todo
   } else if (elementNodeType === 'react') {
@@ -589,6 +602,7 @@ ElementNode.prototype.export = function() {
     id: this.id,
     type: this.getType(),
     attributes: this.getAttributes(),
+    comment: this.getComment(),
     componentName: this.getComponentName(),
     createDate: this.createDate,
     updateDate: this.updateDate,

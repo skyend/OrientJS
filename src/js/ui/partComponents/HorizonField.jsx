@@ -255,7 +255,7 @@ var HorizonField = React.createClass({
             <div className={classes.join(' ')} style={{height: this.props.height || 26}}>
               <div className="field-name" style={{width:this.props.nameWidth}}>
                 <div className='vertical-standard'></div>
-                <span>{this.props.fieldName}</span>
+                <span>{this.props.title || this.props.fieldName}</span>
               </div>
               <div className={['field-value',this.state.valueIsDiff? 'diff':''].join(' ')} style={{left:this.props.nameWidth}}>
                 <div className='vertical-standard'></div>

@@ -29,17 +29,17 @@ var EmptyTypeElementNode = React.createClass({
         ];
 
         var emptyFieldSet = [
-          { "name": "RefferenceType", "initialValue": elementNode.getRefferenceType() || 'Refference nothing', enterable:true, type:'select', options:refTypeOptions },
-          { "name": "RefferenceKey", "initialValue": '준비중', enterable:true, type:'input'},
+          { "name": "RefferenceType", title:"참조 타입", "initialValue": elementNode.getRefferenceType() || 'Refference nothing', enterable:true, type:'select', options:refTypeOptions },
+          { "name": "RefferenceKey", title:"참조 키", "initialValue": '준비중', enterable:true, type:'input'},
         ];
 
         var refferenceTarget =  elementNode.getRefferenceTarget();
 
         if( elementNode.getRefferenceType() === 'react' ){
-          emptyFieldSet.push( { "name": "PackageKey", "initialValue": refferenceTarget.packageKey || 'none', enterable:false, } );
-          emptyFieldSet.push( { "name": "ComponentKey", "initialValue": refferenceTarget.componentKey || 'none', enterable:false, } );
+          emptyFieldSet.push( { "name": "PackageKey",  title:"패키지 키","initialValue": refferenceTarget.packageKey || 'none', enterable:false, } );
+          emptyFieldSet.push( { "name": "ComponentKey", title:"컴포넌트 키", "initialValue": refferenceTarget.componentKey || 'none', enterable:false, } );
         } else if ( elementNode.getRefferenceType() === 'document'  ){
-          emptyFieldSet.push( { "name": "DocumentRefKey", "initialValue": refferenceTarget.documentRefKey || '', enterable:true, type:'input' } );
+          emptyFieldSet.push( { "name": "DocumentRefKey",  title:"문서 참조 키","initialValue": refferenceTarget.documentRefKey || '', enterable:true, type:'input' } );
         }
 
         var tagAttributesFieldSet = [];

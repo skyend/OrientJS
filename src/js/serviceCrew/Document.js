@@ -239,7 +239,7 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
 
       return newElementNode;
     } else {
-
+      console.log(_component, 'in');
       // 드랍된 컴포넌트가 React 타입일 경우
       // 대상요소에 드롭밖에 할 수 없다. 그리고 그 대상노드는 Empty Type의 ElementNode여야 한다.
       // 일단 inertType이 어떻든 드롭으로 가정

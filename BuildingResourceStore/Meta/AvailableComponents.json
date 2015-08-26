@@ -13,6 +13,10 @@
       "name": "Empty Type Element",
       "path": "BasicFramePackage/EmptyTypeElement.jsx"
     }, {
+      "key": "string-type-element",
+      "name": "String Type Element",
+      "path": "BasicFramePackage/StringTypeElement.jsx"
+    }, {
       "key": "grid-type-element",
       "name": "GridTypeElement",
       "path": "BasicFramePackage/GridTypeElement.jsx"

@@ -26,24 +26,27 @@ var HTMLDOMSpec = React.createClass({
         });
 
         var elementSpecFieldSet = [
-          { "name": "TagName", "initialValue": elementNode.getTagName() || '', type:"select" , "enterable":true, options:htmlTagSelectOptions},
-          { "name": "Classes", "initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true},
+          { "name": "TagName", title:"태그명","initialValue": elementNode.getTagName() || '', type:"select" , "enterable":true, options:htmlTagSelectOptions},
+          { "name": "Classes", title:"클래스","initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true},
+          { "name": "Comment", title:"주석","initialValue":elementNode.getComment() , type:"textarea"  , "enterable":true, height:50}
+        ];
+
+        var tagAttributeFieldSet = [
+          { "name": "InlineStyle",  title:"인라인스타일","initialValue": elementNode.getInlineStyle() || '', enterable:true, type:'ace' , lang:'css',height:100},
         ];
 
         if ( elementNode.getType() === 'string' ){
           elementSpecFieldSet.pop();
           elementSpecFieldSet.pop();
-          elementSpecFieldSet.push(  { "name": "Text", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} );
+          elementSpecFieldSet.push(  { "name": "Text",  title:"텍스트", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} );
         }
 
-        var tagAttributeFieldSet = [
-          { "name": "InlineStyle", "initialValue": elementNode.getInlineStyle() || '', enterable:true, type:'ace' , lang:'css',height:100},
-        ];
+
 
         return (
             <div className={rootClasses.join(' ')}>
               <HorizonFieldSet title="Element DOM Spec" theme={ this.props.theme} nameWidth={130} fields={ elementSpecFieldSet } ref='elementDOMSpec'/>
-              <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>
+              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>:''}
             </div>
         );
     }

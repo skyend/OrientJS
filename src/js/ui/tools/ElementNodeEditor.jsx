@@ -48,6 +48,9 @@ var ElementNodeEditor = React.createClass({
             case "Text" :
               elementNode.setText( changedData );
               break;
+            case "Comment" :
+              elementNode.setComment( changedData );
+              break;
           }
         }
 
@@ -88,9 +91,9 @@ var ElementNodeEditor = React.createClass({
 
     getElementProfileFieldSet(_elementNode){
       return [
-        { "name": "DocumentName", "initialValue": _elementNode.document.documentName, type:"static" },
-        { "name": "ElementID", "initialValue": _elementNode.id, type:"static" },
-        { "name": "ElementType", "initialValue": _elementNode.getType().toUpperCase(), type:"static" }
+        { "name": "DocumentName", title:"Document Name", "initialValue": _elementNode.document.documentName, type:"static" },
+        { "name": "ElementID",  title:"Element ID","initialValue": _elementNode.id, type:"static" },
+        { "name": "ElementType",  title:"Element Type","initialValue": _elementNode.getType().toUpperCase(), type:"static" }
       ];
     },
 
