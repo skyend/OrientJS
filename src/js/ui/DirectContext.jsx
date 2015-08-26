@@ -189,6 +189,15 @@ var DirectContext = React.createClass({
   jumpToParentElement(){
     var parent = this.state.selectedElementNode.getParent();
 
+    if( parent === null ){
+      this.emit('NoticeMessage',{
+        title:"상위 노드로 점프 실패",
+        message:"더이상 상위노드가 존재하지 않습니다.",
+        level : "error"
+      });
+      return;
+    }
+
     var parentRealDOMElement =  parent.getRealDOMElement();
 
     this.selectElement( parentRealDOMElement,  parentRealDOMElement.getBoundingClientRect() );
@@ -212,24 +221,32 @@ var DirectContext = React.createClass({
   showElementNavigator( _elementNode, _boundingRect ){
 
     var target = _elementNode.getRealDOMElement();
-    var targetRect = _boundingRect;
+
+    var boundingRect;
+    if( target.nodeName === '#text' ){
+      range = document.createRange();
+      range.selectNodeContents(target);
+      boundingRect = range.getClientRects()[0];
+    } else {
+      boundingRect = target.getBoundingClientRect();
+    }
 
     this.setState({
       showElementNavigator:true,
-      elementNavigatorX:targetRect.left,
-      elementNavigatorY:targetRect.top,
-      elementNavigatorWidth:targetRect.width,
-      elementNavigatorHeight:targetRect.height,
+      elementNavigatorX:boundingRect.left,
+      elementNavigatorY:boundingRect.top,
+      elementNavigatorWidth:boundingRect.width,
+      elementNavigatorHeight:boundingRect.height,
       selectedElementNode:_elementNode});
   },
 
-  selectElement( _targetNode, _boundingRect ){
+  selectElement( _targetNode  ){
 
     // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
     // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
     var targetNode = _targetNode;
-    console.log(targetNode);
-    
+
+
     // target 에 getElementNode 메소드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
     while( typeof targetNode.getElementNode !== 'function' ){
       if( targetNode.parentElement === null ) break;
@@ -247,11 +264,10 @@ var DirectContext = React.createClass({
 
       return;
     }
-    console.log(targetNode);
+
 
     this.emit("SelecteElementNode",{
-      elementNode: targetNode.getElementNode(),
-      boundingRect : _boundingRect
+      elementNode: targetNode.getElementNode()
     });
   },
 

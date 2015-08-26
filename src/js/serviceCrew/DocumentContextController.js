@@ -244,10 +244,32 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
 };
 
+/********
+ * updateHTMLTypeElementNodeCSS
+ * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
+ *
+ */
+DocumentContextController.prototype.updatePageCSS = function() {
+
+  // 현재 생성되어 있는 스타일블럭이 없다면 생성
+  if (typeof this.pageCSSBlock === 'undefined') {
+    var baseWindow = this.directContext.getWindow();
+    var styleBlock = baseWindow.document.createElement('style');
+    this.directContext.applyStyleElement(styleBlock);
+
+    this.pageCSSBlock = styleBlock;
+  }
+
+  // 변경된 css반영
+  this.pageCSSBlock.innerHTML = this.document.getPageCSS();
+
+};
+
 
 DocumentContextController.prototype.updateRenderCSS = function() {
   // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
   this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+  this.updatePageCSS();
 };
 
 DocumentContextController.prototype.isDropableToRoot = function() {

@@ -787,8 +787,8 @@ var _ = require('underscore');
         },
 
 
-        selectedElementNode( _elementNode, _boundingRect ){
-          this.getCurrentRunningContext().showElementNavigator( _elementNode, _boundingRect);
+        selectedElementNode( _elementNode ){
+          this.getCurrentRunningContext().showElementNavigator( _elementNode);
         },
 
 

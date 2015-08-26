@@ -419,7 +419,7 @@ var _ = require('underscore');
             selectedElementNode: _eventData.elementNode
           });
 
-          this.refs['DocumentStage'].selectedElementNode( _eventData.elementNode, _eventData.boundingRect);
+          this.refs['DocumentStage'].selectedElementNode( _eventData.elementNode);
         },
 
         onThrowCatcherCancelSelectElementNode(_eventData, _pass){

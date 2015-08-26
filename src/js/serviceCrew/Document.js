@@ -90,7 +90,7 @@ Document.prototype.getElementNodes = function() {
 };
 // pageCSS
 Document.prototype.getPageCSS = function() {
-  return this.pageCSS;
+  return this.pageCSS || '';
 };
 
 ///////////////////////
