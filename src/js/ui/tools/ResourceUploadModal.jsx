@@ -16,27 +16,27 @@
                 storedToolState: null
             };
         },
-        render() {
+        componentDidUpdate(){
             if (this.state.storedToolState !== null) {
                 if(this.state.storedToolState.extraParam !== null){
                     var fileName = this.state.storedToolState.extraParam.fileName;
                     var src = this.state.storedToolState.extraParam.src;
-                    console.log(this.state.storedToolState.extraParam);
                     var div = document.createElement('div');
-                    //this.refs['render-zone'].getDOMNode().innerHTML = ['<img class="thumb" src="', src,
-                    //    '" title="', fileName, '"/>'].join('');
-                    div.innerHTML = ['<img class="thumb" src="', src,
-                        '" title="', fileName, '"/>'].join('');
+                    div.innerHTML = ['<img class="thumb" src="', src, '" title="', fileName, '"/>'].join('');
                     document.getElementById('form').insertBefore(div, document.getElementById('form').childNodes[0]);
+                    document.getElementById('fileNameInput').value = fileName;
                 }
             }
+        },
+        render() {
             return (
                 <div className="ResourceUploadModal">
                     <form>
-                        <div id="form" class="form-group">
-                            <div ref='render-zone'/>
+                        <div id="form" className="form-group">
                             <label id="fileName" forHtml="fileNameInput">File Name</label>
                             <input type="text" className="form-control" id="fileNameInput" placeholder="file name"/>
+                            <input type="button" className="btn btn-primary" value="Upload"/>
+                            <input type="button" className="btn btn-danger" value="Cancel"/>
                         </div>
                     </form>
                 </div>
@@ -44,7 +44,5 @@
             );
         }
     });
-
     module.exports = ResourceUploadModal;
-
 })();

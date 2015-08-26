@@ -14,11 +14,7 @@ require('./LoginService.less');
     var React = require("react");
     var $ = require("jquery");
     var cookie = require('js-cookie');
-    var sampleData = {
-        "id": "ion",
-        "password": "ion",
-        "sessionKey": "dkjS12KI9xz2Srkzeo74ewqa"
-    }
+    var sha1Hex = require('sha1-hex');
     var LoginService = React.createClass({
 
         getInitialState() {
@@ -27,35 +23,42 @@ require('./LoginService.less');
         loginProcess: function () {
             var id = $('#log-id').val();
             var pass = $("input:password").passwordConverter()[0].pass[0].value;
-            $("#login-button").html('<i className="fa fa-spinner fa-pulse"></i>');
-            if (id.length < 3) {
-                $(".login-form-message").addClass('show error').text('아이디는 4글자 이상입니다.');
-                $(".main-login-form").addClass('swing');
-                setTimeout(function () {
-                    $(".main-login-form").removeClass("swing");
-                }, 1000);
-                setTimeout(function () {
-                    $("#login-button").html('<i className="fa fa-chevron-right"></i>');
-                }, 1000);
-            } else {
-                $(".login-form-message").addClass('show success').text('Connecting...');
-                if (sampleData.id == id && sampleData.password == pass) {
-                    cookie.set('sessionKey', sampleData.sessionKey);
-                    cookie.set('id', sampleData.id);
+            var encodingPass = sha1Hex(pass);
+            console.log('id', id);
+            console.log('pass', encodingPass);
+            $("#login-button").html('<i class="fa fa-spinner fa-pulse"></i>');
+            $.ajax({
+                //url: "http://125.131.88.77:8081/restful/servicebulider/resoruce/login",
+                url: "http://localhost:8080/restful/servicebulider/resoruce/login",
+                method: "POST",
+                data: JSON.stringify({user_id: id, password: encodingPass}),
+                success: function (data) {
+                    cookie.set('session_token', data.session_token);
+                    $(".login-form-message").addClass('show success').text('Connecting...');
                     setTimeout(function () {
                         $("#login-form").submit();
-                    }, 1000);
-                } else {
-                    $(".login-form-message").addClass('show error').text('아이디나 패스워드가 잘못되었습니다.');
+                    }, 2000);
+                },
+                error: function (data) {
+                    var result = JSON.parse(data.responseText);
+                    $(".login-form-message").addClass('show error').text(result.message);
                     $(".main-login-form").addClass('swing');
                     setTimeout(function () {
                         $(".main-login-form").removeClass("swing");
                     }, 1000);
                     setTimeout(function () {
-                        $("#login-button").html('<i className="fa fa-chevron-right"></i>');
+                        $("#login-button").html('<i class="fa fa-chevron-right"></i>');
                     }, 1000);
                 }
+
+            });
+        },
+        enterLoginProcess(evt){
+            var self = this;
+            if(evt.keyCode === 13){
+                self.loginProcess();
             }
+            console.log('enter')
         },
         registerProcess: function () {
             var reg_id = $('#reg_id').val();
@@ -177,7 +180,6 @@ require('./LoginService.less');
                     <div id="log-page">
                         <div className="text-center">
                             <div className="login-logo">Login</div>
-                            <p>Test ID, Pass = ion</p>
                             <form id="login-form" className="login-form">
                                 <div className="login-form-message"></div>
                                 <div className="main-login-form">
@@ -185,7 +187,7 @@ require('./LoginService.less');
                                         <div className="form-group">
                                             <input id="log-id" type="text" className="form-control" placeholder="id"/>
                                         </div>
-                                        <div className="form-group">
+                                        <div className="form-group" onKeyDown={this.enterLoginProcess}>
                                             <input id="log-password" type="password" className="form-control" placeholder="password"/>
                                         </div>
                                         <div className="form-group form-group-checkbox">

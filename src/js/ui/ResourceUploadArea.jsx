@@ -29,13 +29,6 @@ var ResourceUploadArea = React.createClass({
                     self.emit('DisplayModal', {triggerKey:'ResourceUploader', value: { fileName: theFile.name, src: e.target.result }});
                 };
             })(f);
-
-            reader.onprogress = (function(data) {
-                if (data.lengthComputable) {
-                    var progress = parseInt( ((data.loaded / data.total) * 100), 10 );
-                    console.log(progress);
-                }
-            })(f);
             // Read in the image file as a data URL.
             reader.readAsDataURL(f);
         }

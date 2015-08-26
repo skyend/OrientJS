@@ -367,8 +367,8 @@
     var rootUI = React.render(React.createElement(this.loginScreen),
       this.window.document.getElementsByTagName('BODY')[0]);
     this.onResize();
+
     this.uiServicer = rootUI;
-    console.log(this.uiServicer);
 
     EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
   };

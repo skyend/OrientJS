@@ -9,13 +9,6 @@
 var _ = require('underscore');
 
 (function () {
-    var loginData = {
-        "sessionKey": "sdkdj3k3aFqskjrusQk22DA",
-        "id": "ion",
-        "password": "ion",
-        "rule": "admin"
-    }
-
     require('./BuilderService.less');
 
     /* Panel Styles */

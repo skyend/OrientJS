@@ -9,7 +9,6 @@
 
 (function () {
     require('./Modal.less');
-
     var React = require("react");
     var Modal = React.createClass({
         getInitialState() {
@@ -64,18 +63,28 @@
         onClose(){
             this.setState({equipTool: null});
         },
-
-
+        handleFileSelectDrop(evt){
+            console.log('drop');
+            evt.stopPropagation();
+            evt.preventDefault();
+        },
+        handleDragOver(evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+        },
         componentDidUpdate(){
+            console.log('didUpdate');
             if (this.state.equipTool !== null) {
                 this.show();
+                var ui_modal = document.getElementById('ui-modal');
+                ui_modal.addEventListener('drop', this.handleFileSelectDrop, false);
+                ui_modal.addEventListener('dragover', this.handleDragOver, false);
                 this.refs[this.state.equipTool.toolKey].setState({storedToolState: this.state.equipTool.storedToolState});
 
             } else {
                 this.hide();
             }
         },
-
         render: function () {
             return (
                 <div id="ui-modal">
