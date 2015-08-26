@@ -129,7 +129,7 @@ var EnterableWrapperCodeEditor = React.createClass({
             value={ this.state.value }
             width='100%'
             height='100%'
-            editorProps={{$blockScrolling: true, $enableBasicAutocompletion:true}}
+            editorProps={{$blockScrolling: true}}
           />
       </div>
     );

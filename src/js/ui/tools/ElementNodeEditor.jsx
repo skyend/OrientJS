@@ -75,8 +75,13 @@ var ElementNodeEditor = React.createClass({
       var elementDocument = elementNode.document;
       var contextController = elementDocument.getContextController();
 
-      contextController.constructToRealElement( elementNode );
-      elementNode.getParent().growupRealDOMElementTree();
+      if( elementNode.getParent() !== null ){
+        contextController.constructToRealElement( elementNode );
+        elementNode.getParent().growupRealDOMElementTree();
+      } else {
+        contextController.rootRender();
+      }
+
       this.setState({elementNode:elementNode});
     },
 
