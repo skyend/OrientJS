@@ -80,7 +80,7 @@ var _ = require('underscore');
         onThrowCatcherCallContextMenu(_eventData, _pass) {
             this.emit("RootTest", _eventData);
             if (_eventData.for === "StageElement") {
-                console.log(_eventData);
+                //console.log(_eventData);
 
                 this.refs['stage-context-menu'].setState({
                     display: 'on',
@@ -291,7 +291,7 @@ var _ = require('underscore');
         },
 
         onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
-          console.log('recieve', _eventData);
+          //console.log('recieve', _eventData);
 
           var footStatusBar = this.refs['FootStatusBar'];
 
@@ -303,7 +303,7 @@ var _ = require('underscore');
 
 
         onThrowCatcherNeedProjectMeta(_eventData, _pass){
-          console.log('NeedProjectMeta',this.state.projectMeta);
+          //console.log('NeedProjectMeta',this.state.projectMeta);
 
           _eventData.path[0].setState( { 'meta': this.state.projectMeta });
         },
@@ -315,8 +315,8 @@ var _ = require('underscore');
 
         // 열린 컨텍스트 탭
         onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
-          console.log(_eventData);
-          console.log('컨텍스트가 열렸습니다.');
+          //console.log(_eventData);
+          //console.log('컨텍스트가 열렸습니다.');
           this.applyToolStates("ServiceResources",{
             runningContext: _eventData.contextItem
           });
@@ -410,11 +410,49 @@ var _ = require('underscore');
           documentStage.openContext( _directContextItem );
         },
 
-        onThrowCatcherSelectedElementNodeByDirectContext(_eventData, _pass){
+        onThrowCatcherSelecteElementNode(_eventData, _pass){
           this.applyToolStates("ElementNodeEditor", {
             elementNode: _eventData.elementNode
           });
+
+          this.applyToolStates("ContextContentsNavigation", {
+            selectedElementNode: _eventData.elementNode
+          });
+
+          this.refs['DocumentStage'].selectedElementNode( _eventData.elementNode, _eventData.boundingRect);
         },
+
+        onThrowCatcherCancelSelectElementNode(_eventData, _pass){
+          this.applyToolStates("ElementNodeEditor", {
+            elementNode: null
+          });
+
+          this.applyToolStates("ContextContentsNavigation", {
+            selectedElementNode: null
+          });
+        },
+
+        onThrowCatcherUpdatedContext(_eventData, _pass){
+
+          this.applyToolStates("ContextContentsNavigation");
+        },
+
+
+        // 저장
+        onThrowCatcherSaveCurrentContext( _eventData, _pass ){
+          console.log(_eventData, _pass);
+
+          var docStage = this.refs['DocumentStage'];
+          var currentContext = docStage.getCurrentRunningContext();
+          if( currentContext !== undefined ){
+            currentContext.save();
+          } else {
+            this.notifyMessage('저장실패', "저장할 대상이 없습니다.", "error");
+          }
+        },
+
+
+
 
         // 컨텐츠 영역 화면 리사이즈
         resizeSelf() {
@@ -491,7 +529,7 @@ var _ = require('underscore');
                     <RightNavigation ref="RightNavigation"
                                      config={this.props.RightNavigationConfig}
                                      naviWidth={25}
-                                     toolWidth={320}
+                                     toolWidth={420}
                                      showTitle={true}
                                      verticalText={true}
                                      position='right'

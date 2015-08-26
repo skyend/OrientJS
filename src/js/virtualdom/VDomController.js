@@ -5,7 +5,7 @@ var _ = function() {
 
   this.setVRoot = function(vroot) {
     this.vroot = vroot;
-    console.log(this.vroot);
+    //console.log(this.vroot);
   };
 
   this.createVRoot = function(htmlElement) {
@@ -13,7 +13,7 @@ var _ = function() {
 
     this.setVRoot(require('./VRoot').importHtmlElement(htmlElement, this.depthArchive, this));
 
-    console.log(this.depthArchive);
+    //console.log(this.depthArchive);
   };
 
   this.click = function(pointX, pointY) {

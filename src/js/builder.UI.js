@@ -286,7 +286,7 @@
 
   UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
     var key = _eventData.componentKey;
-    console.log(_eventData, 'get');
+    //console.log(_eventData, 'get');
     var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
 
     _eventData.return(null, loadedComponent)
@@ -316,7 +316,7 @@
   };
 
   UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
-    console.log('BringDocumentContext', _eventData.document);
+    //console.log('BringDocumentContext', _eventData.document);
     var documentMeta = _eventData.documentMeta;
 
     // Document Meta 정보로 DocumentContextController를 얻는다
@@ -335,7 +335,7 @@
 
   UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData, _pass) {
     var who = _eventData.path[0];
-    console.log('meta', this.session.getComponentPool().getAvailablePackageMeta());
+    //console.log('meta', this.session.getComponentPool().getAvailablePackageMeta());
 
     who.setState({
       availableComponentPackageMeta: this.session.getComponentPool().getAvailablePackageMeta()
@@ -368,7 +368,7 @@
       this.window.document.getElementsByTagName('BODY')[0]);
     this.onResize();
     this.uiServicer = rootUI;
-    console.log(this.uiServicer);
+    //console.log(this.uiServicer);
 
     EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
   };

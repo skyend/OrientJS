@@ -3,7 +3,7 @@
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
     "key": "BasicFramePackage",
-    "name": "BasicFramePackage",
+    "name": "프레임 컴포넌트 패키지",
     "components": [{
       "key": "root-wrapper",
       "name": "RootWrapper",
@@ -19,7 +19,7 @@
     }]
   }, {
     "key": "HTMLTags",
-    "name": "HTMLTags",
+    "name": "HTML 태그 패키지",
     "components": [{
       "key": "a",
       "name": "Anchor <A>",
@@ -95,7 +95,7 @@
     }]
   }, {
     "key": "TestPackage",
-    "name": "TestPackage",
+    "name": "테스트",
     "components": [{
       "key": "a",
       "name": "A",
@@ -123,7 +123,7 @@
     }]
   }, {
     "key": "SampleReactPackage",
-    "name": "SampleReactPackage",
+    "name": "샘플 React 패키지",
     "components": [{
       "key": "sample-react",
       "name": "SampleReact",

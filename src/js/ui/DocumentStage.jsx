@@ -163,7 +163,7 @@ var _ = require('underscore');
 
 
         deleteElement(_targetObject) {
-            console.log('called element delete ', _targetObject);
+            //console.log('called element delete ', _targetObject);
 
             // 임시로 요소 제거 공지
             this.emit('NoticeMessage', {
@@ -184,7 +184,7 @@ var _ = require('underscore');
           if( ! this.hasCurrentRunningContext() ) return;
 
 
-          console.log(arguments);
+          //console.log(arguments);
           var iframeStageInnerDoc = this.getCurrentRunningContext().getDocument();
 
           // VDomController Construct
@@ -276,7 +276,7 @@ var _ = require('underscore');
           this.prevMouseY = _absoluteY;
           /*****************************************--끝--*/
 
-          console.log('drag');
+          //console.log('drag');
           //****************************************/
           // 드래그위치에 따라 표적을 지정
           // 현재 드래그중인 영역이 스테이지 바운더리 내에 있는지 확인후 밖에 있다면 표적을 해제하고 함수 탈출
@@ -287,7 +287,7 @@ var _ = require('underscore');
             return;
           }
 
-          console.log('come inside / drag raytrace');
+          //console.log('come inside / drag raytrace');
 
           // 대상리스트 뽑기
           var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
@@ -342,7 +342,7 @@ var _ = require('underscore');
 
           var self = this;
 
-          console.log('stop');
+          //console.log('stop');
 
           //var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
 
@@ -787,6 +787,11 @@ var _ = require('underscore');
         },
 
 
+        selectedElementNode( _elementNode, _boundingRect ){
+          this.getCurrentRunningContext().showElementNavigator( _elementNode, _boundingRect);
+        },
+
+
         hideGuideBox(){
           var dropGuideBox = this.refs['drop-guide-box'].getDOMNode();
           dropGuideBox.style.display = 'none';
@@ -852,6 +857,7 @@ var _ = require('underscore');
                                               width="100%"
                                               height="100%"
                                               contextId={_directContext.contextId}
+                                              contextType={_directContext.contextType}
                                               runningState={running}
                                               contextController={ _directContext.contextController } />;
 

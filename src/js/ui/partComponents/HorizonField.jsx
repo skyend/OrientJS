@@ -3,6 +3,14 @@ require('./HorizonField.less');
 
 var React = require("react");
 
+var brace  = require('brace');
+var AceEditor  = require('react-ace');
+
+require('brace/mode/css')
+require('brace/mode/javascript')
+require('brace/mode/html')
+require('brace/mode/json')
+require('brace/theme/twilight')
 
 var EnterableWrapperInput = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
@@ -37,6 +45,93 @@ var EnterableWrapperInput = React.createClass({
   render(){
     return (
       <input value={ this.state.value } onChange={this.onChange}/>
+    );
+  }
+});
+
+var EnterableWrapperTextarea = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+
+    return (
+      <textarea onChange={this.onChange} spellCheck="false" value={ this.state.value }/>
+    );
+  }
+});
+
+var EnterableWrapperCodeEditor = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_value){
+    var value = _value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+
+    return (
+      <div className='ace'>
+          <AceEditor
+            mode={this.props.lang}
+            theme="twilight"
+            onChange={this.onChange}
+            name="UNIQUE_ID_OF_DIV"
+            value={ this.state.value }
+            width='100%'
+            height='100%'
+            editorProps={{$blockScrolling: true, $enableBasicAutocompletion:true}}
+          />
+      </div>
     );
   }
 });
@@ -136,13 +231,18 @@ var HorizonField = React.createClass({
           switch( this.props.type ){
             case "input":
               field = <EnterableWrapperInput defaultValue={this.props.defaultValue} ref='enterable-field'/>
-              iconClass = "fa fa-pencil";
               break;
             case "select":
               field = <EnterableWrapperSelect defaultValue={this.props.defaultValue} options={ this.props.options } ref='enterable-field'/>
-              iconClass = "fa fa-pencil";
+              break;
+            case "textarea":
+              field = <EnterableWrapperTextarea defaultValue={this.props.defaultValue}  ref='enterable-field'/>
+              break;
+            case "ace":
+              field = <EnterableWrapperCodeEditor lang={this.props.lang || 'plain'} defaultValue={this.props.defaultValue} ref='enterable-field'/>
               break;
           }
+          iconClass = "fa fa-pencil";
         } else {
           field = <label title={this.props.defaultValue}>{this.props.defaultValue}</label>
           iconClass = "fa fa-lock";
@@ -152,7 +252,7 @@ var HorizonField = React.createClass({
 
 
         return (
-            <div className={classes.join(' ')}>
+            <div className={classes.join(' ')} style={{height: this.props.height || 26}}>
               <div className="field-name" style={{width:this.props.nameWidth}}>
                 <div className='vertical-standard'></div>
                 <span>{this.props.fieldName}</span>

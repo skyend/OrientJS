@@ -34,30 +34,43 @@ var ElementNodeEditor = React.createClass({
     // 변경되는 값에따라 바로바로 ElementNode에 반영하고 랜더링을 진행한다.
     onThrowCatcherChangedValue( _eventData, _pass ){
       var elementNode = this.state.elementNode;
-      var chanedData = _eventData.data;
+      var changedData = _eventData.data;
 
       if( _eventData.refPath[2] === 'HTMLDOMSpec'){
         if( _eventData.refPath[1] === 'elementDOMSpec' ){
-          switch( _eventData.refPath[0] ){
+          switch( _eventData.name ){
             case "TagName" :
-              elementNode.setTagName( chanedData );
+              elementNode.setTagName( changedData );
               break;
             case "Classes" :
-              elementNode.setClasses( chanedData );
+              elementNode.setClasses( changedData );
+              break;
+            case "Text" :
+              elementNode.setText( changedData );
+              break;
+          }
+        }
+
+        if( _eventData.refPath[1] === 'tagAttribute' ){
+          switch( _eventData.name ){
+            case "InlineStyle" :
+              elementNode.setInlineStyle( changedData );
               break;
           }
         }
       } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
-          switch( _eventData.refPath[0] ){
+          switch( _eventData.name ){
             case "RefferenceType" :
-              elementNode.setRefferenceType( chanedData );
+              elementNode.setRefferenceType( changedData );
+              break;
+            case "DocumentRefKey" :
+              elementNode.setRefferenceTarget( {documentRefKey: changedData} );
               break;
           }
         }
       }
 
-      console.log(_eventData);
 
       var elementDocument = elementNode.document;
       var contextController = elementDocument.getContextController();
@@ -106,7 +119,7 @@ var ElementNodeEditor = React.createClass({
                     { elementNode !== null ? this.renderEditParts(elementNode):"No focused." }
                   </div>
                   <div className="footer">
-                    
+
 
                   </div>
                 </div>

@@ -27,15 +27,23 @@ var HTMLDOMSpec = React.createClass({
 
         var elementSpecFieldSet = [
           { "name": "TagName", "initialValue": elementNode.getTagName() || '', type:"select" , "enterable":true, options:htmlTagSelectOptions},
-          { "name": "Classes", "initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true}
+          { "name": "Classes", "initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true},
         ];
 
-        var tagAttributesFieldSet = [];
+        if ( elementNode.getType() === 'string' ){
+          elementSpecFieldSet.pop();
+          elementSpecFieldSet.pop();
+          elementSpecFieldSet.push(  { "name": "Text", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} );
+        }
+
+        var tagAttributeFieldSet = [
+          { "name": "InlineStyle", "initialValue": elementNode.getInlineStyle() || '', enterable:true, type:'ace' , lang:'css',height:100},
+        ];
 
         return (
             <div className={rootClasses.join(' ')}>
               <HorizonFieldSet title="Element DOM Spec" theme={ this.props.theme} nameWidth={130} fields={ elementSpecFieldSet } ref='elementDOMSpec'/>
-              <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributesFieldSet } ref='tagAttribute'/>
+              <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>
             </div>
         );
     }

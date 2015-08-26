@@ -18,14 +18,14 @@ var DirectContext = React.createClass({
   },
 
   isDropableToRoot( _domElement ){
-    
+
     // 해당 ContextController에 메소드로 확인.
     return this.getContextControllerFromDOMElement(_domElement).isDropableToRoot();
   },
 
 
   deployComponentToInLast( _vid, _component ){
-    console.log("deployed component", _component);
+    //console.log("deployed component", _component);
 
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
@@ -35,6 +35,10 @@ var DirectContext = React.createClass({
 
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
 
     //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
@@ -47,6 +51,10 @@ var DirectContext = React.createClass({
     var result = contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
@@ -59,6 +67,10 @@ var DirectContext = React.createClass({
     var result = contextController.insertNewElementNodeFromComponent('insertAfter',_component, dropTarget);
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
@@ -155,13 +167,15 @@ var DirectContext = React.createClass({
   },
 
   goingToContextStop(){
+    this.closeElementNavigator();
+
     this.contextController.pause();
-    console.log('changed context state to stop!');
+    //console.log('changed context state to stop!');
   },
 
   goingToContextRunning(){
     this.contextController.resume();
-    console.log('changed context state to running!');
+    //console.log('changed context state to running!');
   },
 
   removeElement(){
@@ -173,18 +187,11 @@ var DirectContext = React.createClass({
   },
 
   jumpToParentElement(){
-    var nextParent = this.state.selectedElementPath[1];
-    if( nextParent === undefined ){
-      return;
-    }
+    var parent = this.state.selectedElementNode.getParent();
 
-    if( typeof nextParent.getElementNode !== 'function' ){
-      return;
-    }
+    var parentRealDOMElement =  parent.getRealDOMElement();
 
-    this.state.selectedElementPath.shift();
-
-    this.selectElement( this.state.selectedElementPath[0], this.state.selectedElementPath );
+    this.selectElement( parentRealDOMElement,  parentRealDOMElement.getBoundingClientRect() );
   },
 
   closeElementNavigator(){
@@ -197,19 +204,40 @@ var DirectContext = React.createClass({
       elementNavigatorHeight:0,
       selectedElement:null,
       selectedElementPath:null});
+
+
+      this.emit("CancelSelectElementNode");
   },
 
-  selectElement( _target, _path){
+  showElementNavigator( _elementNode, _boundingRect ){
+
+    var target = _elementNode.getRealDOMElement();
+    var targetRect = _boundingRect;
+
+    this.setState({
+      showElementNavigator:true,
+      elementNavigatorX:targetRect.left,
+      elementNavigatorY:targetRect.top,
+      elementNavigatorWidth:targetRect.width,
+      elementNavigatorHeight:targetRect.height,
+      selectedElementNode:_elementNode});
+  },
+
+  selectElement( _targetNode, _boundingRect ){
 
     // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
     // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
-    if( typeof _target.getElementNode !== 'function' ){
-      for( var i = 0; i < _path.length; i++ ){
-        if( typeof _path[i].getElementNode === 'function' ){
-          this.selectElement( _path[i], _path.slice(i, _path.length -1) );
-          return;
-        }
-      }
+    var targetNode = _targetNode;
+    console.log(targetNode);
+    
+    // target 에 getElementNode 메소드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
+    while( typeof targetNode.getElementNode !== 'function' ){
+      if( targetNode.parentElement === null ) break;
+      targetNode = targetNode.parentElement;
+    }
+
+    // target 변수가 가르키는 element에 getElementNode 메소드가 존재하지 않는다면.
+    if( typeof targetNode.getElementNode !== 'function' ){
 
       this.emit('NoticeMessage',{
         title:"매핑된 ElementNode 를 얻을 수 없습니다.",
@@ -219,32 +247,11 @@ var DirectContext = React.createClass({
 
       return;
     }
+    console.log(targetNode);
 
-
-    var targetRect = _target.getBoundingClientRect();
-
-    this.setState({
-      showElementNavigator:true,
-      elementNavigatorX:targetRect.left,
-      elementNavigatorY:targetRect.top,
-      elementNavigatorWidth:targetRect.width,
-      elementNavigatorHeight:targetRect.height,
-      selectedElement:_target,
-      selectedElementPath:_path});
-
-    // DisplayElementPath 이벤트를 발생시키기 위해 path의 순서를 뒤집는다.
-    var reversePath = [];
-    for(var i =0; i < _path.length; i++ ){
-      reversePath.push( _path[i] );
-    }
-
-
-    this.emit("DisplayElementPath",{
-      elementPathArray: reversePath
-    });
-
-    this.emit("SelectedElementNodeByDirectContext",{
-      elementNode: _target.getElementNode()
+    this.emit("SelecteElementNode",{
+      elementNode: targetNode.getElementNode(),
+      boundingRect : _boundingRect
     });
   },
 
@@ -253,15 +260,24 @@ var DirectContext = React.createClass({
   },
 
   onThrowCatcherClickElementInStage(_eventData, _pass) {
-    this.selectElement( _eventData.targetDOMElement, _eventData.elementPath);
+
+    this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
 
     // BuilderSService가 contextMenu를 닫을 수 있도록 pass 한다.
     _pass();
   },
 
+  save(){
+    var contextController = this.props.contextController;
+
+    contextController.testSave();
+  },
+
 
 
   componentDidUpdate(){
+    if( this.props.runningState === this.props.contextController.running ) return;
+
     if( this.props.runningState ){
       this.goingToContextRunning();
     } else {

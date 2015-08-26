@@ -1,5 +1,7 @@
 
 var React = require("react");
+var ElementNode = require('../../serviceCrew/ElementNode.js');
+
 require('./ContextContentsNavigation.less');
 
 var ContextContentsNavigation = React.createClass({
@@ -14,24 +16,112 @@ var ContextContentsNavigation = React.createClass({
         };
     },
 
-    componentDidUpdate(){
-        console.log('tree navi updated', this.state.runningContext);
+    clickElementNode( _elementNode ){
+      this.emit("SelecteElementNode",{
+        elementNode: _elementNode
+      });
     },
 
-    renderElementNode( _elementNode ){
+    componentDidUpdate(){
+        //console.log('tree navi updated', this.state.runningContext);
+    },
+
+    renderElementVisibility(_elementNode, _indentBlocks){
+      return (
+        <div>
+          { _indentBlocks }
+          <label className='visibility'>
+            <span className='tag-name'>
+              {_elementNode.getTagName()}
+            </span>
+            <span className='en-type'>
+              {_elementNode.getType()}
+            </span>
+            <span className='en-id'>
+              {_elementNode.id}
+            </span>
+          </label>
+        </div>
+      );
+    },
+
+    renderEmptyInfo(_elementNode, _indentBlocks){
+      var refType =  _elementNode.getRefferenceType();
+      var refTarget;
+      switch( refType ){
+        case "react":
+          refTarget = _elementNode.getRefferenceTarget().componentKey;
+          break;
+        case "document":
+          refTarget = _elementNode.getRefferenceTarget().documentRefKey;
+          break;
+      }
+
+
+      return (
+        <div>
+          { _indentBlocks }
+
+          <label className='empty-type-info'>
+            <i className='fa fa-arrow-right'/>
+            <span className='ref-type'>{ refType }</span>
+            <i className='fa fa-link'/>
+            <span className='ref-target'>{ refTarget }</span>
+          </label>
+
+        </div>
+      )
+    },
+
+    renderElementNodeChildren(_children, _depth){
+      var self = this;
+
+      return (
+        <ul>
+          { _children.map( function(__en){ return self.renderElementNode(__en, _depth); } ) }
+        </ul>
+      );
+    },
+
+    renderElementNode( _elementNode, _depth ){
+
+      var self = this;
+      var indentBlocks = [];
+      for( var i = 0; i < _depth; i++ ){
+        indentBlocks.push(<div className='indent-block'/>);
+      }
+
+      var selectedClass = '';
+      if( this.state.selectedElementNode === _elementNode ){
+        selectedClass = 'focused';
+      }
+
+      var isEmptyType = false;
+      if( _elementNode.getType() === 'empty' ) isEmptyType = true;
+
+      var hasChildren = false;
+      if( _elementNode.children.length > 0 ) hasChildren = true;
+
       return (
         <li>
+          <div className={'element-node ' + selectedClass} onClick={function(){self.clickElementNode(_elementNode)}}>
+            { this.renderElementVisibility(_elementNode, indentBlocks) }
+            { isEmptyType ? this.renderEmptyInfo(_elementNode,indentBlocks): '' }
+          </div>
 
 
+          { hasChildren ? this.renderElementNodeChildren(_elementNode.children, _depth + 1): '' }
         </li>
       );
     },
 
     renderTreeWrapper(){
+
       if( this.state.runningContext === null ) return <div/>;
       var runningContext = this.state.runningContext;
-      var elementNode;// = runningContext.
-      console.log(runningContext);
+      var elementNode;
+
+      //console.log(runningContext);
       if( runningContext.contextType === 'document' ){
         elementNode = runningContext.contextController.document.rootElementNode;
       }
@@ -44,10 +134,7 @@ var ContextContentsNavigation = React.createClass({
             <span className='context-name'>{runningContext.contextName}</span>
           </div>
           <ul>
-            <li>
-              <label className='element-node'><span>Root</span></label>
-              { elementNode !== null ? this.renderElementNode( elementNode ): <div/> }
-            </li>
+            { elementNode instanceof ElementNode ? this.renderElementNode( elementNode,0 ): <div/> }
           </ul>
         </div>
       );

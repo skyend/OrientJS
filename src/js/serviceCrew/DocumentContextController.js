@@ -16,9 +16,6 @@ var DocumentContextController = function(_document, _session) {
     // 없다면 새로운 Document를 생성한다.
     this.document = new Document(this);
   }
-
-  console.log('document created', this.document);
-
 };
 
 /*********
@@ -148,8 +145,6 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
     element.setAttribute(keys[i], elementAttributes[keys[i]]);
   }
 
-  //element.setAttribute('__enid', _nodeElement.id);
-  console.log(_nodeElement, 'instillRealHTMLElement');
   _nodeElement.setRealElement(element);
 };
 
@@ -294,8 +289,13 @@ DocumentContextController.prototype.insertNewElementNodeFromComponent = function
   }
 
 
-  console.log(JSON.stringify(this.document.export()));
+
   return true;
+};
+
+
+DocumentContextController.prototype.testSave = function() {
+  console.log(JSON.stringify(this.document.export()));
 };
 
 

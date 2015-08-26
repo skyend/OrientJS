@@ -51,7 +51,71 @@
                         {
                             > .element-node
                             {
-                                color: #fff;
+                                > div
+                                {
+                                    > .visibility
+                                    {
+                                        &::before
+                                        {
+                                            color: #fff;
+                                        }
+
+                                        &::after
+                                        {
+                                            color: #fff;
+                                        }
+
+
+                                        > .tag-name
+                                        {
+                                            color: rgb(20,133,196);
+                                        }
+
+                                        > .en-id
+                                        {
+                                            color: rgb(3,141,211);
+                                            &::before
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
+
+                                        > .en-type
+                                        {
+                                            color: rgb(3,141,211);
+                                            &::before
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
+                                    }
+
+                                    > .empty-type-info
+                                    {
+                                        color: #848484;
+
+                                        > .ref-type
+                                        {
+                                            color: #de4e4e;
+                                        }
+
+                                        > .ref-target
+                                        {
+                                            color: #b39797;
+                                        }
+                                    }
+                                }
+
+
+                                &:hover
+                                {
+                                    background-color: #3c4146;
+                                }
+
+                                &.focused
+                                {
+                                    background-color: #1b1c1d;
+                                }
                             }
                         }
                     }
@@ -121,7 +185,68 @@
 
                         > .element-node
                         {
-                            font-size: 12px;
+                            line-height: 100%;
+                            > div
+                            {
+                                > .indent-block
+                                {
+                                    display: inline-block;
+
+                                    width: 12px;
+                                    height: 12px;
+                                }
+
+                                > .visibility
+                                {
+                                    font-family: 'Lucida Console',Monaco;
+                                    font-size: 12px;
+
+                                    &::before
+                                    {
+                                        content: '<';
+                                    }
+
+                                    &::after
+                                    {
+                                        content: '>';
+                                    }
+
+
+
+                                    > .en-id
+                                    {
+                                        &::before
+                                        {
+                                            content: ' en#';
+                                        }
+                                    }
+
+                                    > .en-type
+                                    {
+                                        &::before
+                                        {
+                                            content: ' t:';
+                                        }
+                                    }
+                                }
+
+                                > .empty-type-info
+                                {
+                                    font-family: 'Lucida Console',Monaco;
+                                    font-size: 12px;
+
+                                    padding-left: 12px;
+
+                                    > .ref-type
+                                    {
+                                        padding: 0 5px;
+                                    }
+                                    > .ref-target
+                                    {
+                                        padding: 0 5px;
+                                    }
+                                }
+                            }
                         }
                     }
                 }

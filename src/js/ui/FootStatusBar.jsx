@@ -32,15 +32,7 @@
                                 <i className="fa fa-info-circle"></i>
                             </a>
                         </li>
-                        <li className="item-right">
-                            <a>UTF-8</a>
-                        </li>
-                        <li className="item-right">
-                            <a>HTML</a>
-                        </li>
-                        <li className="item-right">
-                            <a>EDIT</a>
-                        </li>
+                        
                         <li className="item-right">
                             <VNodePathNavigator vnodePathArray={this.state.vnodePathArray} height="100%" />
                         </li>

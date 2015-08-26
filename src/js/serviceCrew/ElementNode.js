@@ -108,10 +108,18 @@ ElementNode.prototype.setAttributes = function(_attributes) {
 ElementNode.prototype.setCSS = function(_css) {
   this.css = _css;
 };
+// Inline Style
+ElementNode.prototype.setInlineStyle = function(_style) {
+  this.attributes.style = _style;
+};
+// text
+ElementNode.prototype.setText = function(_text) {
+  this.attributes.text = _text;
+};
 // ReactTypeComponent
 ElementNode.prototype.setReactTypeComponent = function(_component) {
   this.reactTypeComponent = _component;
-}
+};
 
 // real element
 ElementNode.prototype.setRealElement = function(_realElement) {
@@ -123,18 +131,17 @@ ElementNode.prototype.setRealElement = function(_realElement) {
     this.realElement = null;
   }
 
+  // RealElement 매핑
   this.realElement = _realElement;
 
-  // string type을 제외하고 _enid_ 에 자신의 id를 입력한다.
-  if (this.type !== 'string') {
-    this.realElement.setAttribute('_enid_', this.id);
-    this.realElement.___en = this;
+  // RealElement의 ___en속성에 this(ElementNode) 매핑
+  this.realElement.___en = this;
 
-    // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
-    this.realElement.getElementNode = function() {
-      return this.___en;
-    };
-  }
+  // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
+  this.realElement.getElementNode = function() {
+    return this.___en;
+  };
+
 };
 
 
@@ -192,10 +199,18 @@ ElementNode.prototype.getParent = function() {
 ElementNode.prototype.getCSS = function() {
   return this.css;
 };
+// Inline Style
+ElementNode.prototype.getInlineStyle = function() {
+  return this.attributes.style;
+};
+// text
+ElementNode.prototype.getText = function() {
+  return this.attributes.text;
+};
 // ReactTypeComponent
 ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
-}
+};
 
 
 ////////////////////
@@ -222,6 +237,7 @@ ElementNode.prototype.getMyContextControllerOfDocument = function() {
 ElementNode.prototype.updated = function() {
   this.updateDate = new Date();
 };
+
 
 /********
  * checkDropableComponent
@@ -277,7 +293,7 @@ ElementNode.prototype.checkDropableComponentWithDirection = function(_component,
  *
  */
 ElementNode.prototype.buildByComponent = function(_component) {
-  console.log('빌드해라', _component);
+  //console.log('빌드해라', _component);
 
   var elementNodeType = _component.elementType;
   this.setType(elementNodeType);
@@ -316,6 +332,13 @@ ElementNode.prototype.buildEmptyTypeElement = function(_domElement) {
   this.setAttributes({
     'tagName': 'div',
     'style': "width:100px;height:100px;border:1px solid #fff"
+  });
+
+  this.setRefferenceType('none');
+  this.setRefferenceTarget({
+    packageKey: undefined,
+    componentKey: undefined,
+    documentRefKey: undefined
   });
 };
 
@@ -531,6 +554,9 @@ ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
 
   if (refType === 'react') {
     var refTarget = this.getRefferenceTarget();
+
+    if (!(refTarget.packageKey !== undefined && refTarget.componentKey !== undefined)) return;
+
 
     var packageKey = refTarget.packageKey;
     var componentKey = refTarget.componentKey;

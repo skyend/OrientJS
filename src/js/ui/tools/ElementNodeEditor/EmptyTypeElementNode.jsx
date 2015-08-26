@@ -39,7 +39,7 @@ var EmptyTypeElementNode = React.createClass({
           emptyFieldSet.push( { "name": "PackageKey", "initialValue": refferenceTarget.packageKey || 'none', enterable:false, } );
           emptyFieldSet.push( { "name": "ComponentKey", "initialValue": refferenceTarget.componentKey || 'none', enterable:false, } );
         } else if ( elementNode.getRefferenceType() === 'document'  ){
-          emptyFieldSet.push( { "name": "DocumentRefKey", "initialValue": refferenceTarget.documentRefKey || 'none', enterable:true, type:'input' } );
+          emptyFieldSet.push( { "name": "DocumentRefKey", "initialValue": refferenceTarget.documentRefKey || '', enterable:true, type:'input' } );
         }
 
         var tagAttributesFieldSet = [];
