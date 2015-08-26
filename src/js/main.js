@@ -3,11 +3,10 @@
   var cookie = require('js-cookie');
   window.onload = function() {
     var app = new App();
-    if(cookie.get('sessionKey') === null || cookie.get('sessionKey') === undefined){
+    if(cookie.get('session_token') === null || cookie.get('session_token') === undefined){
         console.log('Login init');
         app.initLogin();
     }else{
-        console.log(cookie.get('sessionKey'));
         app.initBuilder();
     }
     window.app = app;

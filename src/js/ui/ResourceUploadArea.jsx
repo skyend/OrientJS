@@ -41,14 +41,14 @@ var ResourceUploadArea = React.createClass({
     },
 
     componentDidMount(){
-        var ResourcedUpload = document.getElementById('information');
+        var ResourcedUpload = document.getElementById('ResourceUploadArea');
         ResourcedUpload.addEventListener('dragover', this.handleDragOver, false);
         ResourcedUpload.addEventListener('drop', this.handleFileSelectDrop, false);
 
     },
     render() {
         return (
-            <div id="information" className="information">
+            <div id="ResourceUploadArea" className="ResourceUploadArea">
                 <div id="contentBox" className="contentBox">
                 </div>
             </div>
