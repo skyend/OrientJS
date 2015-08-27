@@ -7,6 +7,8 @@ var DocumentContextController = function(_document, _session) {
 
   this.session = _session;
 
+  this.superElement = null;
+
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
@@ -22,10 +24,10 @@ var DocumentContextController = function(_document, _session) {
  * Attach / Pause / Resume
  *
  */
-DocumentContextController.prototype.attach = function(_directContext) {
+DocumentContextController.prototype.attach = function(_directContext, _superDOMElement) {
   this.attached = true;
   this.directContext = _directContext;
-
+  this.setSuperElement(_superDOMElement);
   /* processing */
 
   this.beginRender();
@@ -45,6 +47,13 @@ DocumentContextController.prototype.resume = function() {
   /* processing */
 
 };
+
+// superElement
+// superElement는 RootElementNode가 랜더링되는 지점이다.
+DocumentContextController.prototype.setSuperElement = function(_domElement) {
+  this.superElement = _domElement;
+};
+
 
 /***************
  * beginRender
@@ -92,18 +101,35 @@ DocumentContextController.prototype.getReactComponentFromSession = function(_pac
 };
 
 DocumentContextController.prototype.rootRender = function() {
-  // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
-  this.constructToRealElement(this.document.rootElementNode);
 
-  // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-  var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
+  if (this.document.rootElementNode !== null) {
 
-  // rootRealElement 를 directContext에 랜더링한다.
-  this.directContext.appendElementToBody(rootRealElement);
+    // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
+    this.constructToRealElement(this.document.rootElementNode);
 
+    // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+    var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
 
-  this.updateRenderCSS();
-}
+    // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
+    this.attachRootRealElementToSuperElement();
+
+    this.updateRenderCSS();
+  } else {
+    this.clearSuperElement();
+  }
+
+};
+
+DocumentContextController.prototype.attachRootRealElementToSuperElement = function() {
+
+  // rootRealElement 를 지정된 superElement에 랜더링한다.
+  this.superElement.appendChild(this.document.rootElementNode.getRealDOMElement());
+};
+
+DocumentContextController.prototype.clearSuperElement = function() {
+
+  this.superElement.innerHTML = '';
+};
 
 /**
  * constructToRealElement

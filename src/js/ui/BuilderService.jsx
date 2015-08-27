@@ -25,8 +25,8 @@ var _ = require('underscore');
 
     var HeadToolBar = require('./HeadToolBar.jsx');                     //상단 네비게이션 UI
 
-    var LeftNavigation = require('./ToolNavigation.jsx'); // 좌측 네비게이션 UI
-    var RightNavigation = require('./ToolNavigation.jsx'); // 우측 네비게이션 UI
+    var VToolNavigation = require('./VerticalToolNavigation.jsx');
+
 
 
     var DocumentStage = require('./DocumentStage.jsx');                 //중앙 컨텐츠 영역 UI
@@ -278,6 +278,16 @@ var _ = require('underscore');
             this.changeTool( toolKey, toolSpec, toEquipRef);
         },
 
+        // ElementNodeEditor 툴을 연다.
+        onThrowCatcherOpenElementEditTool( _eventData, _pass ){
+          var toolKey = "ElementNodeEditor";
+          var toolSpec = this.props.Tools[toolKey];
+          var toEquipRef = "RightNavigation";
+
+          this.refs[toEquipRef].unfoldTool();
+          this.changeTool( toolKey, toolSpec, toEquipRef);
+        },
+
         onThrowCatcherDisplayElementPath(_eventData, _pass) {
           console.warn('recieve onThrowCatcherDisplayElementPath', _eventData);
 
@@ -437,6 +447,12 @@ var _ = require('underscore');
           this.applyToolStates("ContextContentsNavigation");
         },
 
+        onThrowCatcherDocumentFocused(_eventData, _pass){
+          this.applyToolStates("DocumentConfig", {
+            document: _eventData.document
+          });
+        },
+
 
         // 저장
         onThrowCatcherSaveCurrentContext( _eventData, _pass ){
@@ -519,14 +535,14 @@ var _ = require('underscore');
                 <div>
                     <HeadToolBar ref='HeadToolBar'/>
 
-                    <LeftNavigation ref="LeftNavigation"
+                    <VToolNavigation ref="LeftNavigation"
                                     config={this.props.LeftNavigationConfig}
                                     naviWidth={50}
-                                    toolWidth={210}
+                                    toolWidth={270}
                                     position='left'
                                     naviItemFontSize={20}/>
 
-                    <RightNavigation ref="RightNavigation"
+                    <VToolNavigation ref="RightNavigation"
                                      config={this.props.RightNavigationConfig}
                                      naviWidth={25}
                                      toolWidth={420}
@@ -534,6 +550,7 @@ var _ = require('underscore');
                                      verticalText={true}
                                      position='right'
                                      naviItemFontSize={16}/>
+
 
 
                     <DocumentStage ref='DocumentStage'

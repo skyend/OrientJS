@@ -1,4 +1,5 @@
 {
+  "documentID": 0,
   "documentName": "DefaultLayout",
   "documentCreate": "2015-08-01T12:00:00+08",
   "documentUpdate": "2015-08-02T12:00:00+08",
@@ -17,7 +18,7 @@
       "attributes": {
         "tagName": "div",
         "class": "head",
-        "style": "background-color:#222;\nfont-family:'monaco';\npadding:20px;"
+        "style": ""
       },
       "comment": "헤더",
       "children": [{
@@ -36,7 +37,7 @@
       "attributes": {
         "tagName": "div",
         "class": "body",
-        "style": "background-color:#eee;"
+        "style": ""
       },
       "comment": "바디",
       "children": [{
@@ -94,7 +95,7 @@
     }]
   },
   "elementNodes": [],
-  "pageCSS": "",
+  "pageCSS": ".wrapper\n{\n    position: relative;\n\n    width: 100%;\n    height: 1000px;\n\n    background-color: #eee;\n}\n\n.wrapper > .head\n{\n    font-size: 16px;\n\n    position: absolute;\n    top: 0;\n\n    width: 100%;\n    height: 100px;\n\n    text-align: center;\n\n    background-color:#222;\n    font-family:'monaco';\n    padding:20px;\n    color:#fff;\n}\n\n.wrapper > .body\n{\n    position: absolute;\n    top: 100px;\n    bottom: 100px;\n\n    overflow: auto;\n\n    width: 100%;\n\n    background-color:#eee;\n}\n\n.wrapper > .footer\n{\n    font-size: 12px;\n\n    position: absolute;\n    bottom: 0;\n\n    box-sizing: border-box;\n    width: 100%;\n    height: 100px;\n    padding: 30px;\n\n    text-align: center;\n\n    color: #333;\n    background-color: rgb(242,242,242);\n}\n\n\n.testIn\n{\n    width: 100px;\n    height: 100px;\n\n    background-color: #123;\n}\n\n\n.bgRed\n{\n    background-color: red;\n}\n\n.bgGreen\n{\n    background-color: green;\n}\n\n.bgBlack\n{\n    background-color: black;\n}\n",
   "usingResources": {
     "style": [{
       "ext": "css",

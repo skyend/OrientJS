@@ -125,7 +125,7 @@ var EnterableWrapperCodeEditor = React.createClass({
             mode={this.props.lang}
             theme="twilight"
             onChange={this.onChange}
-            name="UNIQUE_ID_OF_DIV"
+            name={this.props.editorId}
             value={ this.state.value }
             width='100%'
             height='100%'
@@ -239,7 +239,7 @@ var HorizonField = React.createClass({
               field = <EnterableWrapperTextarea defaultValue={this.props.defaultValue}  ref='enterable-field'/>
               break;
             case "ace":
-              field = <EnterableWrapperCodeEditor lang={this.props.lang || 'plain'} defaultValue={this.props.defaultValue} ref='enterable-field'/>
+              field = <EnterableWrapperCodeEditor lang={this.props.lang || 'plain'} editorId={this.props.editorId} defaultValue={this.props.defaultValue} ref='enterable-field'/>
               break;
           }
           iconClass = "fa fa-pencil";

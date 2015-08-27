@@ -34,7 +34,7 @@
         "key": "document-configure",
         "title": "Document Configure",
         "icon": "file-text-o",
-        "equipToolKey": "DocumentConfigure"
+        "equipToolKey": "DocumentConfig"
       }]
     }, {
       "groupName": "Service Resources",
@@ -87,8 +87,7 @@
     },
 
     "ComponentPalette": {
-      "jsxPath": "ComponentPalette",
-      "configPath": "ToolkitMenuConfig"
+      "jsxPath": "ComponentPalette"
     },
 
     "DocumentsNavigation": {
@@ -109,6 +108,11 @@
     "ContextContentsNavigation": {
       "jsxPath": "ContextContentsNavigation",
       "configPath": "ContextContentsNavigation"
+    },
+
+    "DocumentConfig": {
+      "jsxPath": "DocumentConfig",
+      "configPath": "DocumentConfig"
     },
 
     "TestModal": {

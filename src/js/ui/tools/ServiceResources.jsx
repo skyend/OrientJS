@@ -40,7 +40,7 @@
           if( _documentMeta.purpose === 'layout' ){
             iconClass = 'fa-file-pdf-o'
           } else if ( _documentMeta.purpose === 'contents' ){
-            iconClass = "fa-file-text"
+            iconClass = "fa-file-text-o"
           }
 
           var self = this;
@@ -87,7 +87,7 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file'></i> Documents <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-file-text-o'></i> Documents <span className='temp-button'> <i className='fa fa-plus'></i> </span>
               </label>
               <ul>
                 { this.state.documentMetaList.map(this.renderDocumentItem) }

@@ -10,8 +10,6 @@ var _ = require('underscore');
 
 (function () {
     require('./DocumentStage.less');
-    var DOMEditor = require('./tools/DocumentEditor.jsx');
-    var ToolContainer = require('./ToolContainer.jsx');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var DirectContext = require('./DirectContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');

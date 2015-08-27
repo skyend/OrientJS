@@ -175,15 +175,27 @@ var DirectContext = React.createClass({
 
   goingToContextRunning(){
     this.contextController.resume();
-    //console.log('changed context state to running!');
+
+    if( this.props.contextType ===  "document" ){
+
+      this.emit("DocumentFocused", {
+        document:this.contextController.document
+      });
+    }
+
   },
 
   removeElement(){
+    this.state.selectedElementNode.dettachMeFromParent();
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
 
+    this.closeElementNavigator();
   },
 
   editElement(){
-
+    this.emit('OpenElementEditTool');
   },
 
   jumpToParentElement(){
@@ -304,7 +316,7 @@ var DirectContext = React.createClass({
   componentDidMount(){
     // contextController 연결
     this.contextController = this.props.contextController;
-    this.contextController.attach(this);
+    this.contextController.attach(this, this.getDocument().body);
 
     if( this.props.runningState ){
       this.goingToContextRunning();

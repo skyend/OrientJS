@@ -248,6 +248,58 @@ ElementNode.prototype.updated = function() {
   this.updateDate = new Date();
 };
 
+/**************
+ * dettachMeFromParent
+ * 부모의 Children 리스트에서 자신을 제거한다.
+ * 하지만 사라지지는 않는다.
+ */
+ElementNode.prototype.dettachMeFromParent = function() {
+
+  var parent = this.getParent();
+
+  // 부모 ElementNode가 존재한다면.
+  if (parent !== null) {
+    // 부모에게 detach요청
+    parent.dettachChild(this);
+  } else {
+    // 부모 ElementNode가 존재하지 않는다면 자신이 Document의 RootElementNode이거나 ElementNodes 리스트에 존재하는 노드이므로
+    // 다르게 처리해준다.
+
+    // RootElement일 경우
+    if (this.document.getRootElementNode() === this) {
+      this.document.removeRootElementNode();
+    } else {
+      //  ElementNodes 리스트에 존재하는 노드
+      // 추후 구현
+
+
+    }
+  }
+
+  return this;
+};
+
+/**************
+ * dettachChild
+ * 자신의 Children에서 하나의 child를 제거한다.
+ */
+ElementNode.prototype.dettachChild = function(_child) {
+  var children = this.children;
+  var newChildList = [];
+
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+
+    if (child != _child) {
+      newChildList.push(child);
+    }
+  }
+
+  this.children = newChildList;
+
+  this.growupRealDOMElementTree();
+};
+
 
 /********
  * checkDropableComponent
@@ -273,7 +325,6 @@ ElementNode.prototype.checkDropableComponentWithDirection = function(_component,
     return false;
   }
 
-  console.log(targetElementNode.getRealDOMElement());
 
   switch (_component.elementType) {
     case "html":

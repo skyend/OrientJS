@@ -30,7 +30,7 @@ var HorizonFieldSet = React.createClass({
     renderField( _field ){
       return (
         <HorizonField fieldName={_field.name} title={_field.title} theme="dark" enterable={_field.enterable} type={_field.type} ref={ _field.name } onChange={ this.onChange }
-                     defaultValue={_field.initialValue} options={ _field.options } height={_field.height} lang={_field.lang}
+                     defaultValue={_field.initialValue} options={ _field.options } height={_field.height} lang={_field.lang} editorId={_field.editorId}
                      nameWidth={this.props.nameWidth}/>
       )
     },
