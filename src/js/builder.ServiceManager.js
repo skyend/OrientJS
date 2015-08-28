@@ -11,6 +11,7 @@ var DocumentContextController = require('./serviceCrew/DocumentContextController
 var ServiceManager = function(_session, _serviceKey) {
   this.serviceKey = _serviceKey;
   this.session = _session;
+  this.docContextControllers = {};
 
   this.init();
 };
@@ -47,12 +48,17 @@ ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
 
 ServiceManager.prototype.getDocumentContextController = function(_documentId) {
 
-  var docMeta = this.getDocumentMetaById(_documentId);
-  var doc = this.loadDocumentByMeta(docMeta);
+  if (this.docContextControllers[_documentId] === undefined) {
+    var docMeta = this.getDocumentMetaById(_documentId);
+    var doc = this.loadDocumentByMeta(docMeta);
 
-  var documentContextController = new DocumentContextController(doc, this.session);
+    var documentContextController = new DocumentContextController(doc, this.session);
 
-  return documentContextController
+    this.docContextControllers[_documentId] = documentContextController;
+  }
+
+
+  return this.docContextControllers[_documentId];
 };
 
 module.exports = ServiceManager;
