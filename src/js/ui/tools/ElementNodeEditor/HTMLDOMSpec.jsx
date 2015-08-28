@@ -1,5 +1,6 @@
 
 var React = require("react");
+var _ = require('underscore');
 
 var HorizonFieldSet = require('../../partComponents/HorizonFieldSet.jsx');
 var htmlTag = require('../toolsData/htmlTag.json');
@@ -13,6 +14,15 @@ var HTMLDOMSpec = React.createClass({
         return {
           elementNode:null
         };
+    },
+
+    onThrowCatcherNewFieldAdd(_eventData, _pass){
+      if( _eventData.refPath[0] === "dataAttribute" ){
+        this.props.elementNode.setAttribute("data-new", "");
+
+
+        this.forceUpdate();
+      }
     },
 
     render() {
@@ -35,10 +45,27 @@ var HTMLDOMSpec = React.createClass({
           { "name": "InlineStyle",  title:"인라인스타일","initialValue": elementNode.getInlineStyle() || '', enterable:true, type:'ace' , lang:'css',height:100},
         ];
 
+        var dataAttributeFieldSet = [];
+
         if ( elementNode.getType() === 'string' ){
-          elementSpecFieldSet.pop();
-          elementSpecFieldSet.pop();
-          elementSpecFieldSet.push(  { "name": "Text",  title:"텍스트", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} );
+          elementSpecFieldSet = [ { "name": "Text",  title:"텍스트", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} ];
+        } else {
+          var targetTagSpecIndex = _.findIndex(htmlTag, {tagName:elementNode.getTagName()});
+          var targetTagSpec = htmlTag[targetTagSpecIndex];
+
+          tagAttributeFieldSet.push( { "name": "title",  title:"tooltipMsg", "initialValue":elementNode.getAttribute('title') || '', type:"input"  , "enterable":true} )
+
+          targetTagSpec.attributes.map( function( _attrSpec ){
+            tagAttributeFieldSet.push( { "name": _attrSpec.n,  title:_attrSpec.title, "initialValue":elementNode.getAttribute(_attrSpec.n) || '', type:"input", "enterable":true} )
+          });
+
+          var elementAttrKeys = Object.keys(elementNode.getAttributes());
+
+          elementAttrKeys.map( function(_key){
+            if( /^data-.*/.test( _key ) ){
+              dataAttributeFieldSet.push({ "name": _key, title:_key,"initialValue":elementNode.getAttribute(_key)|| '', type:"input"  , "enterable":true});
+            }
+          });
         }
 
 
@@ -47,6 +74,7 @@ var HTMLDOMSpec = React.createClass({
             <div className={rootClasses.join(' ')}>
               <HorizonFieldSet title="Element DOM Spec" theme={ this.props.theme} nameWidth={130} fields={ elementSpecFieldSet } ref='elementDOMSpec'/>
               {elementNode.getType() !== 'string'? <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>:''}
+              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Data Attributes" theme={ this.props.theme} nameWidth={130} fields={ dataAttributeFieldSet } extendable={true} ref='dataAttribute'/>:''}
             </div>
         );
     }

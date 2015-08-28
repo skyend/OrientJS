@@ -103,6 +103,10 @@ ElementNode.prototype.setParent = function(_parentENode) {
   this.parent = _parentENode;
 };
 // attribute
+ElementNode.prototype.setAttribute = function(_name, _value) {
+  this.attributes[_name] = _value;
+};
+// attributes
 ElementNode.prototype.setAttributes = function(_attributes) {
   this.attributes = _attributes;
 };
@@ -169,7 +173,11 @@ ElementNode.prototype.getText = function() {
 ElementNode.prototype.getType = function() {
   return this.type;
 };
-// Element Spec
+// attribute
+ElementNode.prototype.getAttribute = function(_name) {
+  return this.attributes[_name];
+};
+// attributes
 ElementNode.prototype.getAttributes = function() {
   return this.attributes;
 };

@@ -316,6 +316,7 @@
   };
 
   UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
+    console.log('BringDocumentContext', _eventData);
     //console.log('BringDocumentContext', _eventData.document);
     var documentMeta = _eventData.documentMeta;
 

@@ -22,6 +22,27 @@ var ContextContentsNavigation = React.createClass({
       });
     },
 
+    menterElementNode( _elementNode ){
+      console.log(_elementNode);
+      // Strign 타입이면서 내용이 없는 String일 경우 바운딩박스를 구하지 못한다.
+      // 그러므로 하이라이트도 불가능하므로 함수 탈출
+      if( _elementNode.getType() === 'string' ){
+        if(! /..*/.test(_elementNode.getText()) ){
+          return;
+        }
+      }
+
+      this.emit("MouseEnterElementNode",{
+        elementNode: _elementNode
+      });
+    },
+
+    mleaveElementNode( _elementNode ){
+      this.emit("MouseLeaveElementNode",{
+        elementNode: _elementNode
+      });
+    },
+
     componentDidUpdate(){
         //console.log('tree navi updated', this.state.runningContext);
     },
@@ -104,7 +125,9 @@ var ContextContentsNavigation = React.createClass({
 
       return (
         <li>
-          <div className={'element-node ' + selectedClass} onClick={function(){self.clickElementNode(_elementNode)}}>
+          <div className={'element-node ' + selectedClass} onClick={function(){self.clickElementNode(_elementNode)}}
+                                                            onMouseEnter={function(){self.menterElementNode(_elementNode)}}
+                                                            onMouseLeave={function(){self.mleaveElementNode(_elementNode)}} >
             { this.renderElementVisibility(_elementNode, indentBlocks) }
             { isEmptyType ? this.renderEmptyInfo(_elementNode,indentBlocks): '' }
           </div>

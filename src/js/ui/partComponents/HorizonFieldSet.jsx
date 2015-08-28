@@ -7,6 +7,14 @@ var HorizonField = require('./HorizonField.jsx');
 var HorizonFieldSet = React.createClass({
     mixins:[require('../reactMixin/EventDistributor.js')],
 
+    getDefaultProps(){
+      return {
+        fields : [
+          { "name": "default",  title:"default", "initialValue": 'default', enterable:true, type:'ace' , lang:'css', height:100}
+        ]
+      }
+    },
+
     getAllFieldData(){
       var self = this;
 
@@ -27,12 +35,8 @@ var HorizonFieldSet = React.createClass({
       });
     },
 
-    renderField( _field ){
-      return (
-        <HorizonField fieldName={_field.name} title={_field.title} theme="dark" enterable={_field.enterable} type={_field.type} ref={ _field.name } onChange={ this.onChange }
-                     defaultValue={_field.initialValue} options={ _field.options } height={_field.height} lang={_field.lang} editorId={_field.editorId}
-                     nameWidth={this.props.nameWidth}/>
-      )
+    addNewField(){
+      this.emit('NewFieldAdd');
     },
 
     componentDidUpdate(){
@@ -43,14 +47,41 @@ var HorizonFieldSet = React.createClass({
 
     },
 
+    renderOptions(){
+      var optionEles = [];
+
+      if( this.props.extendable ){
+        optionEles.push(
+          <li className='trigger' onClick={this.addNewField}>
+            <i className="fa fa-plus"/>
+          </li>
+        )
+
+      }
+
+      return optionEles;
+    },
+
+    renderField( _field ){
+      return (
+        <HorizonField fieldName={_field.name} title={_field.title} theme="dark" enterable={_field.enterable} type={_field.type} ref={ _field.name } onChange={ this.onChange }
+                     defaultValue={_field.initialValue} options={ _field.options } height={_field.height} lang={_field.lang} editorId={_field.editorId}
+                     nameWidth={this.props.nameWidth}/>
+      )
+    },
+
     render(){
         var classes = ['HorizonFieldSet', this.props.theme];
+
 
         return (
             <div className={classes.join(' ')}>
               <div className='wrapper'>
                 <div className='head'>
                   <label> {this.props.title} </label>
+                  <ul className='options'>
+                    { this.renderOptions() }
+                  </ul>
                 </div>
                 <div className='body'>
                   { this.props.fields.map( this.renderField )}

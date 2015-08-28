@@ -53,6 +53,10 @@
       "name": "Division <Div>",
       "path": "HTMLTags/Div.jsx"
     }, {
+      "key": "Img",
+      "name": "Image <Img>",
+      "path": "HTMLTags/Img.jsx"
+    }, {
       "key": "Footer",
       "name": "Footer <Footer>",
       "path": "HTMLTags/Footer.jsx"

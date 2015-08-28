@@ -218,6 +218,9 @@ var IFrameStage = React.createClass({
         range.selectNodeContents(childNode);
         rects = range.getClientRects();
 
+        if( rects.length == 0 ) break;
+
+        //console.log( childNode, range, rects);
         if( ( rects[0].left < _e.x && rects[0].right > _e.x )&&
             ( rects[0].top < _e.y && rects[0].bottom > _e.y )){
           targetNode = childNode;

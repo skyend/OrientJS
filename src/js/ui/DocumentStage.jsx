@@ -696,7 +696,7 @@ var _ = require('underscore');
           // 엘리먼트의 영역을 표시하는 박스를 표시한다.
           // if 표적이 지정된 상태라면 then 해당 표적을 하이라이팅한다.
           if( this.aimedTarget !== null && typeof this.aimedTarget !== 'undefined'){
-            this.showElementHighlight( this.aimedTarget );
+            this.showElementHighlight( this.aimedTarget.element.object );
 
 
 
@@ -706,7 +706,7 @@ var _ = require('underscore');
             // 카운드가 되는 도중 aimingTarget 메소드가 호출되면 재 카운팅에 들어간다.
 
             // 현재 대상 하이라이팅
-            this.showElementHighlight( target );
+            this.showElementHighlight( target.element.object );
 
 
             //////////////////////////////
@@ -789,6 +789,13 @@ var _ = require('underscore');
           this.getCurrentRunningContext().showElementNavigator( _elementNode);
         },
 
+        mouseEnterElement( _elementNode ){
+          this.showElementHighlight( _elementNode.getRealDOMElement() );
+        },
+
+        mouseLeaveElement( _elementNode ){
+          this.hideElementHighlight();
+        },
 
         hideGuideBox(){
           var dropGuideBox = this.refs['drop-guide-box'].getDOMNode();
@@ -797,14 +804,24 @@ var _ = require('underscore');
           this.guideBoxLive = false;
         },
 
-        showElementHighlight( _target ){
+        showElementHighlight( _DOMElement ){
 
           var highligher = this.getElementHighligherDOMElement();
-          highligher.style.left = _target.element.offset.x +'px';
-          //console.log( this.getTabContextOffsetTopByDS() ,'top');
-          highligher.style.top = _target.element.offset.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
-          highligher.style.width = _target.element.offset.width +'px';
-          highligher.style.height = _target.element.offset.height +'px';
+          var boundingBox;
+
+          if( _DOMElement.nodeName === '#text' ){
+            var range = document.createRange();
+            range.selectNodeContents(_DOMElement);
+            boundingBox = range.getClientRects()[0];
+          } else {
+            boundingBox =_DOMElement.getBoundingClientRect();
+          }
+
+
+          highligher.style.left = boundingBox.left +'px';
+          highligher.style.top = boundingBox.top - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
+          highligher.style.width = boundingBox.width +'px';
+          highligher.style.height = boundingBox.height +'px';
           highligher.style.display = 'block';
         },
 

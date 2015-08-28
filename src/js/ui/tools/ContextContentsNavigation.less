@@ -131,6 +131,131 @@
         }
     }
 
+    &.chrome
+    {
+        > .wrapper
+        {
+            background-color: #fff;
+
+
+            > .body
+            {
+                > .tree-wrapper
+                {
+                    > .context-info
+                    {
+                        > .context-type
+                        {
+                            color: #eee;
+                            &::before
+                            {
+                                color: #777;
+                            }
+                        }
+
+                        > .context-name
+                        {
+                            color: #eee;
+                            &::before
+                            {
+                                color: #777;
+                            }
+                        }
+                    }
+                    ul
+                    {
+                        > li
+                        {
+                            > .element-node
+                            {
+                                > div
+                                {
+                                    > .visibility
+                                    {
+                                        &::before
+                                        {
+                                            color: #a9247f;
+                                        }
+
+                                        &::after
+                                        {
+                                            color: #a9247f;
+                                        }
+
+
+                                        > .tag-name
+                                        {
+                                            color: #a9247f;
+                                        }
+
+                                        > .en-id
+                                        {
+                                            color: #072f86;
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
+
+                                        > .en-type
+                                        {
+                                            color: rgb(3,141,211);
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
+                                    }
+
+                                    > .empty-type-info
+                                    {
+                                        color: #848484;
+
+                                        > .ref-type
+                                        {
+                                            color: #de4e4e;
+                                        }
+
+                                        > .ref-target
+                                        {
+                                            color: #b39797;
+                                        }
+                                    }
+                                }
+
+
+                                &:hover
+                                {
+                                    background-color: #d8eafd;
+                                }
+
+                                &.focused
+                                {
+                                    background-color: #0059b3;
+                                    *,
+                                    *::after,
+                                    *::before
+                                    {
+                                        color: #fff!important;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            .footer
+            {
+                border-top-color: #4b4f52;
+                background-color: #404246;
+                box-shadow: inset 0 1px 0 rgba(22, 22, 23, .35),inset 0 3px 3px rgba(26, 27, 29, .21);
+            }
+        }
+    }
+
     > .wrapper
     {
         position: relative;
@@ -217,15 +342,26 @@
                                     {
                                         &::before
                                         {
-                                            content: ' en#';
+                                            content: ' en=[';
+                                        }
+
+                                        &::after
+                                        {
+                                            content: ']';
                                         }
                                     }
 
                                     > .en-type
                                     {
+                                        text-transform: uppercase;
                                         &::before
                                         {
-                                            content: ' t:';
+                                            content: ' type=[';
+                                        }
+
+                                        &::after
+                                        {
+                                            content: ']';
                                         }
                                     }
                                 }

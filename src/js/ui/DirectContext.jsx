@@ -121,17 +121,16 @@ var DirectContext = React.createClass({
   },
 
   failToDrop(){
-    this.emit("NoticeMessage",{
-      "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
-      "message" : "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.",
-      "level" : 'error'
-    });
+    this.errorNotice(
+      "해당 컴포넌트를 삽입 할 수 없습니다.",
+      "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다."
+    );
 
-    this.emit('NoticeMessage',{
-      title:"component 삽입실패",
-      message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
-      level : "error"
-    });
+    this.errorNotice(
+      "component 삽입실패",
+      "영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다."
+    );
+
   },
 
   addStyle( _key, _css ){
@@ -177,6 +176,7 @@ var DirectContext = React.createClass({
     this.contextController.resume();
 
     if( this.props.contextType ===  "document" ){
+      console.log(this.contextController.document);
 
       this.emit("DocumentFocused", {
         document:this.contextController.document
@@ -202,11 +202,10 @@ var DirectContext = React.createClass({
     var parent = this.state.selectedElementNode.getParent();
 
     if( parent === null ){
-      this.emit('NoticeMessage',{
-        title:"상위 노드로 점프 실패",
-        message:"더이상 상위노드가 존재하지 않습니다.",
-        level : "error"
-      });
+      this.errorNotice(
+        "상위 노드로 점프 실패.",
+        "더이상 상위노드가 존재하지 않습니다."
+      );
       return;
     }
 
@@ -236,9 +235,21 @@ var DirectContext = React.createClass({
 
     var boundingRect;
     if( target.nodeName === '#text' ){
-      range = document.createRange();
-      range.selectNodeContents(target);
-      boundingRect = range.getClientRects()[0];
+
+      if( target.nodeValue === '' ){
+
+          boundingRect = { left:0, top:0, width:0, height:0};
+
+          this.errorNotice(
+            "영역을 확인할 수 없습니다.",
+            "String Type Element의 영역을 확인하기 위해서는 하나이상의 문자를 가지고 있어야합니다."
+          );
+      } else {
+
+        range = document.createRange();
+        range.selectNodeContents(target);
+        boundingRect = range.getClientRects()[0];
+      }
     } else {
       boundingRect = target.getBoundingClientRect();
     }
@@ -268,11 +279,10 @@ var DirectContext = React.createClass({
     // target 변수가 가르키는 element에 getElementNode 메소드가 존재하지 않는다면.
     if( typeof targetNode.getElementNode !== 'function' ){
 
-      this.emit('NoticeMessage',{
-        title:"매핑된 ElementNode 를 얻을 수 없습니다.",
-        message:"ElementNode를 배치하여 주세요.",
-        level : "error"
-      });
+      this.errorNotice(
+        "매핑된 ElementNode 를 얻을 수 없습니다.",
+        "ElementNode를 배치하여 주세요."
+      );
 
       return;
     }
@@ -299,6 +309,15 @@ var DirectContext = React.createClass({
     var contextController = this.props.contextController;
 
     contextController.testSave();
+  },
+
+
+  errorNotice( _title, _message){
+    this.emit('NoticeMessage',{
+      title:_title,
+      message:_message,
+      level : "error"
+    });
   },
 
 

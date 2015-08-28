@@ -326,11 +326,13 @@ var _ = require('underscore');
         // 열린 컨텍스트 탭
         onThrowCatcherOpenedDirectContextTab( _eventData, _pass ){
           //console.log(_eventData);
-          //console.log('컨텍스트가 열렸습니다.');
+          console.log('컨텍스트가 열렸습니다.');
           this.applyToolStates("ServiceResources",{
             runningContext: _eventData.contextItem
           });
 
+
+          console.log("con", _eventData );
           this.applyToolStates("ContextContentsNavigation",{
             runningContext: _eventData.contextItem
           });
@@ -440,6 +442,14 @@ var _ = require('underscore');
           this.applyToolStates("ContextContentsNavigation", {
             selectedElementNode: null
           });
+        },
+
+        onThrowCatcherMouseEnterElementNode(_eventData, _pass){
+          this.refs['DocumentStage'].mouseEnterElement( _eventData.elementNode);
+        },
+
+        onThrowCatcherMouseLeaveElementNode(_eventData, _pass){
+          this.refs['DocumentStage'].mouseLeaveElement( _eventData.elementNode);
         },
 
         onThrowCatcherUpdatedContext(_eventData, _pass){

@@ -26,8 +26,30 @@
 
                 > label
                 {
-                    color: #a9a9a9;
-                    text-shadow: 0 0 5px rgb(0, 0, 0);
+                    color: #e2e2e2;
+                    text-shadow: 0 0 5px rgba(255, 255, 255, .57);
+                }
+
+                > ul.options
+                {
+                    li
+                    {
+                        &.trigger
+                        {
+                            transition: all .7s;
+                            &:hover
+                            {
+                                color: #fff;
+                                text-shadow: 0 0 5px #fff;
+                            }
+
+                            &:active
+                            {
+                                color: #fff;
+                                text-shadow: 0 0 5px #000;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -56,18 +78,48 @@
         > .head
         {
             font-size: 13px;
-            line-height: 0;
+            //line-height: 0;
+
+            position: relative;
 
             box-sizing: border-box;
-            height: 23px;
-            padding: 10px;
+            height: 25px;
+            padding: 6px;
 
             cursor: default;
 
             .noselect;
             > label
             {
-                line-height: 0;
+                //line-height: 0;
+            }
+
+            > ul.options
+            {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+                li
+                {
+                    font-size: 13px;
+
+                    display: inline-block;
+
+                    box-sizing: border-box;
+                    height: 100%;
+                    padding: 6px;
+
+                    &.trigger
+                    {
+                        cursor: pointer;
+                    }
+                }
             }
         }
 

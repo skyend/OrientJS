@@ -59,8 +59,15 @@ var ElementNodeEditor = React.createClass({
             case "InlineStyle" :
               elementNode.setInlineStyle( changedData );
               break;
+            default:
+              elementNode.setAttribute(  _eventData.name, changedData );
           }
         }
+
+        if( _eventData.refPath[1] === 'dataAttribute' ){
+          elementNode.setAttribute(  _eventData.name, changedData );
+        }
+
       } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
           switch( _eventData.name ){
