@@ -72,6 +72,7 @@ var HTMLDOMSpec = React.createClass({
         var elementSpecFieldSet = [
           { "name": "TagName", title:"태그명","initialValue": elementNode.getTagName() || '', type:"select" , "enterable":true, options:htmlTagSelectOptions},
           { "name": "Classes", title:"클래스","initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true},
+          { "name": "Id", title:"아이디","initialValue":elementNode.getIdAtrribute() || '', type:"input"  , "enterable":true},          
           { "name": "Comment", title:"주석","initialValue":elementNode.getComment() , type:"textarea"  , "enterable":true, height:50}
         ];
 
@@ -90,7 +91,26 @@ var HTMLDOMSpec = React.createClass({
           tagAttributeFieldSet.push( { "name": "title",  title:"tooltipMsg", "initialValue":elementNode.getAttribute('title') || '', type:"input"  , "enterable":true} )
 
           targetTagSpec.attributes.map( function( _attrSpec ){
-            tagAttributeFieldSet.push( { "name": _attrSpec.n,  title:_attrSpec.title, "initialValue":elementNode.getAttribute(_attrSpec.n) || '', type:"input", "enterable":true} )
+            var fieldConfig = {
+              name: _attrSpec.n,
+              title:_attrSpec.title || _attrSpec.n,
+              initialValue:elementNode.getAttribute(_attrSpec.n) || '',
+              type:'input',
+              enterable:true};
+
+            switch(_attrSpec.type){
+              case "select":
+                fieldConfig.type = "select";
+
+                fieldConfig.options = _attrSpec.options;
+                break;
+              case "string":
+                fieldConfig.type = "input";
+                break;
+            }
+
+
+            tagAttributeFieldSet.push( fieldConfig )
           });
 
           var elementAttrKeys = Object.keys(elementNode.getAttributes());

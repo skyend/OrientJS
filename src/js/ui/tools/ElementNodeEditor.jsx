@@ -42,6 +42,9 @@ var ElementNodeEditor = React.createClass({
             case "TagName" :
               elementNode.setTagName( changedData );
               break;
+            case "Id" :
+              elementNode.setIdAtrribute( changedData );
+              break;
             case "Classes" :
               elementNode.setClasses( changedData );
               break;

@@ -217,7 +217,7 @@ var HorizonField = React.createClass({
 
     nameDoubleClick( _e ){
       if( !this.props.editorableFieldName) return;
-      
+
       if( this.state.fieldNameEditMode ){
         var input = this.refs['FieldNameInput'].getDOMNode();
 

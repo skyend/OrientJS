@@ -172,16 +172,30 @@
                                 {
                                     > .visibility
                                     {
-                                        &::before
-                                        {
-                                            color: #a9247f;
-                                        }
-
+                                        &::before,
                                         &::after
                                         {
                                             color: #a9247f;
                                         }
 
+                                        > .en-class
+                                        {
+                                            olor: #072f86;
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
+                                        > .en-element-id
+                                        {
+                                            olor: #072f86;
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #ce9b76;
+                                            }
+                                        }
 
                                         > .tag-name
                                         {
@@ -336,8 +350,30 @@
                                         content: '>';
                                     }
 
+                                    > .en-class
+                                    {
+                                        &::before
+                                        {
+                                            content: ' class="';
+                                        }
 
+                                        &::after
+                                        {
+                                            content: '"';
+                                        }
+                                    }
+                                    > .en-element-id
+                                    {
+                                        &::before
+                                        {
+                                            content: ' id="';
+                                        }
 
+                                        &::after
+                                        {
+                                            content: '"';
+                                        }
+                                    }
                                     > .en-id
                                     {
                                         &::before
@@ -353,7 +389,6 @@
 
                                     > .en-type
                                     {
-                                        text-transform: uppercase;
                                         &::before
                                         {
                                             content: ' type=[';

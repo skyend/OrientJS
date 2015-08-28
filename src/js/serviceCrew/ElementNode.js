@@ -62,9 +62,13 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 
 ////////////////////
 // Setters
-// id
+// enid
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
+};
+// Id Atrribute
+ElementNode.prototype.setIdAtrribute = function(_id) {
+  this.attributes.id = _id;
 };
 // tagName
 ElementNode.prototype.setTagName = function(_tagName) {
@@ -162,6 +166,11 @@ ElementNode.prototype.setRealElement = function(_realElement) {
 ElementNode.prototype.getTagName = function() {
   return this.attributes.tagName;
 };
+
+ElementNode.prototype.getIdAtrribute = function() {
+  return this.attributes.id;
+};
+
 ElementNode.prototype.getClasses = function() {
   return this.attributes.class;
 };

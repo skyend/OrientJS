@@ -140,7 +140,38 @@
   "title": "footer"
 }, {
   "tagName": "form",
-  "attributes": [],
+  "attributes": [{
+    "n": "method",
+    "title": "전송형식",
+    "type": "select",
+    "options": [{
+      "value": "get",
+      "title": "get"
+    }, {
+      "value": "post",
+      "title": "post"
+    }, {
+      "value": "put",
+      "title": "put"
+    }, {
+      "value": "delete",
+      "title": "delete"
+    }]
+  }, {
+    "n": "enctype",
+    "title": "인코딩",
+    "type": "select",
+    "options": [{
+      "value": "application/x-www-form-urlencoded",
+      "title": "application/x-www-form-urlencoded"
+    }, {
+      "value": "multipart/form-data",
+      "title": "multipart/form-data "
+    }, {
+      "value": "text/plain",
+      "title": "text/plain"
+    }]
+  }],
   "title": "form"
 }, {
   "tagName": "h1",

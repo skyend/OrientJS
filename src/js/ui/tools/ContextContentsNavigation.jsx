@@ -55,12 +55,22 @@ var ContextContentsNavigation = React.createClass({
             <span className='tag-name'>
               {_elementNode.getTagName()}
             </span>
+            { _elementNode.attributes.id !== undefined ? (
+            <span className='en-element-id'>
+              {_elementNode.attributes.id}
+            </span>) : ''
+            }
             <span className='en-type'>
               {_elementNode.getType()}
             </span>
             <span className='en-id'>
               {_elementNode.id}
             </span>
+            { _elementNode.attributes.class !== undefined ? (
+            <span className='en-class'>
+              {_elementNode.attributes.class}
+            </span>
+          ) : '' }
           </label>
         </div>
       );
