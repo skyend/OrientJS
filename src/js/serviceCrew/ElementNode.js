@@ -230,6 +230,26 @@ ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
 };
 
+///////////
+// Remove Attribute
+ElementNode.prototype.removeAttribute = function(_attrName) {
+  delete this.attributes[_attrName];
+
+  if (this.getRealDOMElement() !== null) {
+    this.getRealDOMElement().removeAttribute(_attrName);
+  }
+};
+
+//////////
+// Remove Attribute
+ElementNode.prototype.renameAttribute = function(_prevName, _nextName) {
+  var fieldData = this.getAttribute(_prevName);
+  this.removeAttribute(_prevName);
+  this.setAttribute(_nextName, fieldData);
+
+  this.applyAttributesToRealDOM();
+};
+
 
 ////////////////////
 // Exists
@@ -435,8 +455,8 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   // TextNode가 아닌경우
   this.setType('html');
 
-  // element 업데이트
-  this.updateAtrributes(_domElement);
+  // element Attribute를 읽어서 자신에게 매핑한다.
+  this.copyAllAtrributeFromDOMElement(_domElement);
 
   //////////////////
   // 자식노드 재귀처리 //
@@ -464,7 +484,7 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   this.children = children;
 };
 
-ElementNode.prototype.updateAtrributes = function(_domElement) {
+ElementNode.prototype.copyAllAtrributeFromDOMElement = function(_domElement) {
   var elementSpec = {
     'tagName': _domElement.nodeName.toLowerCase(),
   };
@@ -483,9 +503,15 @@ ElementNode.prototype.updateAtrributes = function(_domElement) {
   this.setAttributes(elementSpec);
 };
 
-ElementNode.prototype.applyDOMElement = function(_domElement) {
+ElementNode.prototype.applyAttributesToRealDOM = function() {
+  var elementAttributes = this.getAttributes();
+  var keys = Object.keys(elementAttributes);
 
+  var realElement = this.getRealDOMElement();
 
+  for (var i = 0; i < keys.length; i++) {
+    realElement.setAttribute(keys[i], elementAttributes[keys[i]]);
+  }
 };
 
 ElementNode.prototype.appendChild = function(_elementNode) {

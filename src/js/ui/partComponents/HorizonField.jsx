@@ -158,6 +158,8 @@ var EnterableWrapperSelect = React.createClass({
     });
   },
 
+
+
   componentWillReceiveProps( _props ){
     this.state.value = _props.defaultValue;
   },
@@ -187,7 +189,9 @@ var HorizonField = React.createClass({
 
     getInitialState(){
         return {
-          valueIsDiff : false
+          valueIsDiff : false,
+          nameBoxSlideX: 0,
+          fieldNameEditMode: false
         };
     },
 
@@ -205,11 +209,89 @@ var HorizonField = React.createClass({
       this.setValue(this.props.defaultValue);
     },
 
+    onRemove(){
+      this.emit("RemoveField", {
+        fieldName: this.props.fieldName
+      });
+    },
+
+    nameDoubleClick( _e ){
+      if( !this.props.editorableFieldName) return;
+      
+      if( this.state.fieldNameEditMode ){
+        var input = this.refs['FieldNameInput'].getDOMNode();
+
+        this.emit("RenameField", {
+          'past':this.props.fieldName,
+          'current':input.value
+        });
+      }
+
+      this.setState( { fieldNameEditMode: !this.state.fieldNameEditMode });
+
+
+    },
+
+    fieldNameMouseDown( _e){
+      if( !this.state.fieldNameEditMode ){
+          app.ui.occupyGlobalDrag(this, true);
+          app.ui.enableGlobalDrag();
+          app.ui.toMouseDawn();
+      }
+
+
+    },
+
+    onGlobalDragStartFromUI(_e){
+
+    },
+
+    onGlobalDragFromUI(_e){
+      var currentX = _e.clientX;
+      var currentY = _e.clientY;
+
+      if( this.prevX !== undefined ){
+          var moveX = currentX - this.prevX;
+          var moveY = currentY - this.prevY;
+
+
+          var toLeft = this.state.nameBoxSlideX + moveX;
+
+          if( this.refs['field-option-box'] === undefined ) return;
+          var optionBoxDom = this.refs['field-option-box'].getDOMNode();
+          var optionBoxWidth = optionBoxDom.offsetWidth;
+
+          if( (toLeft*-1) > optionBoxWidth ){
+            toLeft = optionBoxWidth * -1;
+          }
+
+          if( toLeft > 0 ) toLeft = 0;
+
+
+          this.setState({nameBoxSlideX: toLeft});
+      }
+
+      this.prevX = currentX;
+      this.prevY = currentY;
+    },
+
+    onGlobalDragStopFromUI(_e){
+      this.prevX = undefined;
+      this.prevY = undefined;
+    },
+
     getValue(){
       if( this.props.enterable ){
         return this.refs['enterable-field'].getValue();
       } else {
         return this.props.defaultValue;
+      }
+    },
+
+    componentDidUpdate(){
+      if( this.refs['FieldNameInput'] !== undefined ){
+        var input = this.refs['FieldNameInput'].getDOMNode();
+        input.value = this.props.fieldName;
       }
     },
 
@@ -220,7 +302,6 @@ var HorizonField = React.createClass({
         this.props.defaultValue = _value;
       }
     },
-
 
     render(){
         var classes = ['HorizonField', this.props.theme, this.props.type];
@@ -248,14 +329,31 @@ var HorizonField = React.createClass({
           iconClass = "fa fa-lock";
         }
 
-
+        var fieldNameRender;
+        if( ! this.state.fieldNameEditMode ){
+          fieldNameRender = <span>{this.props.title || this.props.fieldName}</span>;
+        } else {
+          fieldNameRender = <input  ref='FieldNameInput'/>;
+        }
 
 
         return (
             <div className={classes.join(' ')} style={{height: this.props.height || 26}}>
-              <div className="field-name" style={{width:this.props.nameWidth}}>
-                <div className='vertical-standard'></div>
-                <span>{this.props.title || this.props.fieldName}</span>
+              <div className="field-name" style={{width:this.props.nameWidth}} onMouseDown={ this.fieldNameMouseDown }>
+                <ul className='field-option-box' ref='field-option-box'>
+                  { this.props.deletable? (
+                    <li className='remove-box' onClick={this.onRemove}>
+                      <div className='vertical-standard'></div>
+                      <i className='fa fa-trash'/>
+                    </li>
+                  ) : ''}
+                </ul>
+
+                <div className='field-name-box' ref='field-name-box' style={{left:this.state.nameBoxSlideX}} onDoubleClick={this.nameDoubleClick}>
+                  <div className='vertical-standard'></div>
+                  { fieldNameRender }
+                </div>
+
               </div>
               <div className={['field-value',this.state.valueIsDiff? 'diff':''].join(' ')} style={{left:this.props.nameWidth}}>
                 <div className='vertical-standard'></div>
