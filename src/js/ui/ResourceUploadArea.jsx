@@ -23,10 +23,11 @@ var ResourceUploadArea = React.createClass({
             var reader = new FileReader();
 
             // Closure to capture the file information.
-            reader.onload = (function (theFile) {
+            reader.onload = (function (uploadFile) {
                 return function (e) {
                     // Render thumbnail.
-                    self.emit('DisplayModal', {triggerKey:'ResourceUploader', value: { fileName: theFile.name, src: e.target.result }});
+                    console.log(uploadFile);
+                    self.emit('DisplayModal', {triggerKey:'ResourceUploader', value: { uploadFile: uploadFile, src: e.target.result }});
                 };
             })(f);
             // Read in the image file as a data URL.

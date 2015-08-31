@@ -16,7 +16,7 @@ var ServiceManager = require('./builder.ServiceManager.js');
   };
 
   ProjectManager.prototype.init = function() {
-    this.meta = this.session.certifiedRequestJSON("/BuilderUI/BuildingProjectData/Projects/" + this.projectKey + ".json");
+    this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Projects/" + this.projectKey + ".json");
 
     // 서비스 매니저 시작
     this.serviceManager = new ServiceManager(this.session, this.meta.ServiceKey);

@@ -17,7 +17,7 @@
   };
 
   Session.prototype.ready = function() {
-    this.componentPool.updateMeta('/BuilderUI/BuildingResourceStore/Meta/AvailableComponents.json');
+    this.componentPool.updateMeta('/BuildingResourceStore/Meta/AvailableComponents.json');
   };
 
   Session.prototype.signIn = function() {

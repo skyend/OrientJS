@@ -1,6 +1,6 @@
 {
-  "host": "http://localhost:63342",
-  "temporaryNamespaceDir": "/BuilderUI/BuildingResourceStore/Components/",
+  "host": "http://localhost:8080",
+  "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
     "key": "BasicFramePackage",
     "name": "BasicFramePackage",

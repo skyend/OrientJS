@@ -29,15 +29,15 @@ require('./LoginService.less');
             $("#login-button").html('<i class="fa fa-spinner fa-pulse"></i>');
             $.ajax({
                 //url: "http://125.131.88.77:8081/restful/servicebulider/resoruce/login",
-                url: "http://localhost:8080/restful/servicebulider/resoruce/login",
+                url: "http://localhost:8081/restful/servicebuilder/resource/login",
                 method: "POST",
                 data: JSON.stringify({user_id: id, password: encodingPass}),
                 success: function (data) {
                     cookie.set('session_token', data.session_token);
                     $(".login-form-message").addClass('show success').text('Connecting...');
-                    setTimeout(function () {
-                        $("#login-form").submit();
-                    }, 2000);
+                    //setTimeout(function () {
+                    //    $("#login-form").submit();
+                    //}, 2000);
                 },
                 error: function (data) {
                     var result = JSON.parse(data.responseText);
@@ -176,7 +176,7 @@ require('./LoginService.less');
                             <div className="bubble-9"></div>
                         </div>
                     </div>
-                    <div className="popup-logos">UI builder</div>
+                    <div className="popup-logos">UI Builder For ICE</div>
                     <div id="log-page">
                         <div className="text-center">
                             <div className="login-logo">Login</div>

@@ -64,7 +64,6 @@
             this.setState({equipTool: null});
         },
         handleFileSelectDrop(evt){
-            console.log('drop');
             evt.stopPropagation();
             evt.preventDefault();
         },
@@ -73,7 +72,6 @@
             evt.preventDefault();
         },
         componentDidUpdate(){
-            console.log('didUpdate');
             if (this.state.equipTool !== null) {
                 this.show();
                 var ui_modal = document.getElementById('ui-modal');

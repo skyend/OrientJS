@@ -26,11 +26,13 @@
     -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
     -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    outline: none;
   }
   .btn {
+    outline: none;
     display: inline-block;
     padding: 6px 12px;
-    margin:  5px 5px 0px 0px;
+    margin: 5px 5px 0px 0px;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.42857143;
@@ -47,17 +49,27 @@
     background-image: none;
     border: 1px solid transparent;
     border-radius: 4px;
-    left: 325px;
+    left: 398px;
     position: relative;
     &.btn-primary {
       color: #fff;
       background-color: #337ab7;
       border-color: #2e6da4;
+      &:hover {
+        color: #fff;
+        background-color: #286090;
+        border-color: #204d74;
+      }
     }
     &.btn-danger {
       color: #fff;
       background-color: #d9534f;
       border-color: #d43f3a;
+      &:hover {
+        color: #fff;
+        background-color: #c9302c;
+        border-color: #ac2925;
+      }
     }
   }
   label {

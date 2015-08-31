@@ -16,7 +16,7 @@ var ServiceManager = function(_session, _serviceKey) {
 };
 
 ServiceManager.prototype.init = function() {
-  this.meta = this.session.certifiedRequestJSON("/BuilderUI/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
+  this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
 };
 
 ServiceManager.prototype.getDocumentMetaList = function() {
@@ -38,7 +38,7 @@ ServiceManager.prototype.getDocumentMetaById = function(_id) {
 }
 
 ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
-  var documentURL = "/BuilderUI/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
+  var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
 
   var document = this.session.certifiedRequestJSON(documentURL);
 
