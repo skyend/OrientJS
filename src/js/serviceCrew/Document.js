@@ -295,18 +295,7 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
       var newElementNode = this.newElementNode();
       newElementNode.buildByComponent(_component);
 
-      if (_insertType === 'appendChild') {
-        targetElementNode.appendChild(newElementNode);
-      } else if (_insertType === 'insertBefore') {
-        if (targetElementNode.getParent() === null) return null;
-
-        targetElementNode.insertBefore(newElementNode);
-      } else if (_insertType === 'insertAfter') {
-        if (targetElementNode.getParent() === null) return null;
-
-        targetElementNode.insertAfter(newElementNode);
-      }
-
+      this.insertElementNode(_insertType, newElementNode, targetElementNode);
 
       return newElementNode;
     } else {
@@ -329,6 +318,23 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
     return null;
   }
   return null
+};
+
+Document.prototype.insertElementNode = function(_insertType, _elementNode, _baseElementNode) {
+
+  if (_insertType === 'appendChild') {
+    _baseElementNode.appendChild(_elementNode);
+  } else if (_insertType === 'insertBefore') {
+    if (_baseElementNode.getParent() === null) return null;
+
+    _baseElementNode.insertBefore(_elementNode);
+  } else if (_insertType === 'insertAfter') {
+    if (_baseElementNode.getParent() === null) return null;
+
+    _baseElementNode.insertAfter(_elementNode);
+  }
+
+  return _elementNode;
 };
 
 

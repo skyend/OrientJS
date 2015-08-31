@@ -42,6 +42,7 @@
 
         renderEquipTool(){
             if (this.state.equipTool === null) return;
+            
             return (
                 React.createElement(this.state.equipTool.class, {config: this.state.config, ref: this.state.equipTool.toolKey})
             );

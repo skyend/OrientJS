@@ -90,6 +90,11 @@ var _ = require('underscore');
                             key: "newSubwindowTest",
                             eventName: "NewSubWindow_Test"
                         }, {
+                            title: "Stage Fullscreen",
+                            type: "button",
+                            key: "newSubwindowTest",
+                            eventName: "NewSubWindow_Test"
+                        }, {
                             title: "Popup Modal(Test)",
                             type: "button",
                             key: "popupModalTest",
@@ -194,25 +199,27 @@ var _ = require('underscore');
 
         changeTool( _toolKey, _toolSpec, _toEquipRef, _extraParam ){
           var self  = this;
+
           /**
            * WaterFall 을 이용하여 비동기로드를 동기화한다.
            */
-          Async.waterFall(_toolSpec, [function (__toolSpec, __cb) {
+          Async.waterFall(_toolSpec, [function (__toolSpec, __cb)  {
 
               if (typeof __toolSpec !== 'object') {
-                  self.refs[_toEquipRef].equipTool();
-                  throw new Error("Tool[" + _toolKey + "] Spec Object is not exists.");
+
+                //self.refs[_toEquipRef].equipTool();
+                throw new Error("Tool[" + _toolKey + "] Spec Object is not exists.");
               }
 
               if (typeof __toolSpec.jsxPath !== 'string') {
-                  self.refs[_toEquipRef].equipTool();
+                  //self.refs[_toEquipRef].equipTool();
                   throw new Error("Tool[" + _toolKey + "] JSXPath is not exists.");
               }
 
               loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
                   if (___err !== null) {
 
-                      self.refs[_toEquipRef].equipTool();
+                      //self.refs[_toEquipRef].equipTool();
                       throw new Error("Fail to load tool[" + _toolKey + "].");
                   } else {
                       __cb(__toolSpec, ___tool);
@@ -238,7 +245,7 @@ var _ = require('underscore');
               // Builder에 저장된 각 Tool State를 가져온다.
               var toolState = self.state.toolStatesStore[ _toolKey ] || {};
               toolState.extraParam = _extraParam;
-
+              console.log( 'displayModal', _toolKey );
               self.refs[_toEquipRef].equipTool(__tool, __toolConfig, _toolKey, toolState);
               toolState.extraParam = null;
           }]);
@@ -544,7 +551,7 @@ var _ = require('underscore');
 
                     <FloatingMenuBox ref='stage-context-menu'/>
                     <Modal ref="Modal"/>
-                    <ResourceUploadArea/>
+
                     <NotificationSystem ref='NotificationSystem'/>
                     <SubWindowSystem ref='SubWindowSystem'/>
                 </div>

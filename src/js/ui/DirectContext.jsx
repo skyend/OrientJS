@@ -197,17 +197,15 @@ var DirectContext = React.createClass({
 
   cloneElement(){
     var elementNode = this.state.selectedElementNode;
+    var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
 
     var elementNodeDoc = elementNode.document;
 
     var clonedElementNode = elementNodeDoc.cloneElement( elementNode );
 
-    elementNode.insertAfter(clonedElementNode);
+    console.log(contextController.buildElementNodeReality(elementNode));
 
 
-    var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
-
-    contextController.renderElementNode(elementNode);
     this.emit('UpdatedContext', {
       directContext: this
     });
