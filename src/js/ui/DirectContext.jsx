@@ -49,6 +49,7 @@ var DirectContext = React.createClass({
     var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
 
     var result = contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
+
     if( ! result ) {
       this.failToDrop();
     } else {
@@ -187,6 +188,26 @@ var DirectContext = React.createClass({
 
   removeElement(){
     this.state.selectedElementNode.dettachMeFromParent();
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
+
+    this.closeElementNavigator();
+  },
+
+  cloneElement(){
+    var elementNode = this.state.selectedElementNode;
+
+    var elementNodeDoc = elementNode.document;
+
+    var clonedElementNode = elementNodeDoc.cloneElement( elementNode );
+
+    elementNode.insertAfter(clonedElementNode);
+
+
+    var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
+
+    contextController.renderElementNode(elementNode);
     this.emit('UpdatedContext', {
       directContext: this
     });
@@ -411,17 +432,22 @@ var DirectContext = React.createClass({
              <ul>
               <li>
                 <button onClick={this.jumpToParentElement}>
-                  <i className='fa fa-bolt'/> Parent
+                  <i className='fa fa-bolt'/> <span className='title'>Parent</span>
                 </button>
               </li>
               <li>
                 <button onClick={this.editElement}>
-                  <i className='fa fa-pencil-square-o'/> Edit
+                  <i className='fa fa-pencil-square-o'/> <span className='title'>Edit</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={this.cloneElement}>
+                  <i className='fa fa-clone'/> <span className='title'>Clone</span>
                 </button>
               </li>
               <li>
                 <button onClick={this.removeElement}>
-                  <i className='fa fa-trash'/> Remove
+                  <i className='fa fa-trash'/> <span className='title'>Remove</span>
                 </button>
               </li>
               <li>

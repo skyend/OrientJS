@@ -23,7 +23,7 @@ var ContextContentsNavigation = React.createClass({
     },
 
     menterElementNode( _elementNode ){
-      console.log(_elementNode);
+
       // Strign 타입이면서 내용이 없는 String일 경우 바운딩박스를 구하지 못한다.
       // 그러므로 하이라이트도 불가능하므로 함수 탈출
       if( _elementNode.getType() === 'string' ){

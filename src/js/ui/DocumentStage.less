@@ -203,13 +203,13 @@
     position: absolute;
     z-index: 3;
 
-    transition: all .45s;
+    transition: all .2s;
     transition-timing-function: ease;
+    pointer-events: none;
 
     color: rgba(255,255,255,.7);
 
     .noselect;
-
     &[mode='canDrop']
     {
         font: normal 100%/normal Arial, Helvetica, sans-serif;
@@ -257,7 +257,7 @@
         content: ' ';
 
         border: 3px solid #fff;
-        background-color: rgba(0,0,0,.5);
+        background-color: rgba(9, 117, 253, .5);
 
         mix-blend-mode: difference;
     }

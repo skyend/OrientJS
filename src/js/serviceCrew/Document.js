@@ -231,12 +231,33 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
 
   if (typeof _elementNodeDataObject !== 'undefined') {
     elementNode = new ElementNode(this, _elementNodeDataObject);
+
+    // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
+    if (!/^\d+$/.test(elementNode.getId())) {
+      elementNode.setId(this.getNewElementNodeId());
+    }
   } else {
     elementNode = new ElementNode(this);
-    elementNode.setId(++(this.lastElementId));
+    elementNode.setId(this.getNewElementNodeId());
   }
 
   return elementNode;
+};
+
+///////////
+/********
+ * cloneElement
+ * 요소를 복제한다
+ */
+Document.prototype.cloneElement = function(_elementNode) {
+  var elementNodeExportObject = _elementNode.export(true);
+  var newClonedElementNode = this.newElementNode(elementNodeExportObject);
+
+  return newClonedElementNode;
+};
+
+Document.prototype.getNewElementNodeId = function() {
+  return ++(this.lastElementId);
 };
 
 /////////////////

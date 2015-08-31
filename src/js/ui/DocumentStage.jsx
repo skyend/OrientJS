@@ -804,7 +804,7 @@ var _ = require('underscore');
           this.guideBoxLive = false;
         },
 
-        showElementHighlight( _DOMElement ){
+        showElementHighlight( _DOMElement, _mode ){
 
           var highligher = this.getElementHighligherDOMElement();
           var boundingBox;
@@ -819,10 +819,13 @@ var _ = require('underscore');
 
 
           highligher.style.left = boundingBox.left +'px';
-          highligher.style.top = boundingBox.top - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
+          highligher.style.top = boundingBox.top + this.getTabContextOffsetTopByDS() + 'px';
           highligher.style.width = boundingBox.width +'px';
           highligher.style.height = boundingBox.height +'px';
-          highligher.style.display = 'block';
+          //highligher.style.display = 'block';
+          highligher.style.opacity = 1;
+
+          this.changeElementHighlighterMode( _mode )
         },
 
 
@@ -833,7 +836,8 @@ var _ = require('underscore');
 
         hideElementHighlight(){
           var highligher = this.getElementHighligherDOMElement();
-          highligher.style.display = 'none';
+          //highligher.style.display = 'none';
+          highligher.style.opacity = 0;
         },
 
         changeElementHighlighterMode( _mode ){

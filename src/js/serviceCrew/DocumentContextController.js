@@ -70,15 +70,6 @@ DocumentContextController.prototype.beginRender = function() {
   // script element block 을 적용한다.
   jsElements.map(function(_jsElement) {
 
-    /*
-    if (_jsElement.getAttribute('src') !== undefined) {
-      _jsElement.onload = function() {
-        console.log('loaded', _jsElement);
-
-        console.log(self.directContext.getWindow());
-      }
-    }*/
-
     self.directContext.applyScriptElement(_jsElement);
 
   });
@@ -103,12 +94,7 @@ DocumentContextController.prototype.getReactComponentFromSession = function(_pac
 DocumentContextController.prototype.rootRender = function() {
 
   if (this.document.rootElementNode !== null) {
-
-    // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
-    this.constructToRealElement(this.document.rootElementNode);
-
-    // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-    var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
+    this.renderElementNode(this.document.rootElementNode);
 
     // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
     this.attachRootRealElementToSuperElement();
@@ -118,6 +104,14 @@ DocumentContextController.prototype.rootRender = function() {
     this.clearSuperElement();
   }
 
+};
+
+DocumentContextController.prototype.renderElementNode = function(_elementNode) {
+  // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
+  this.constructToRealElement(_elementNode);
+
+  // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+  _elementNode.growupRealDOMElementTree();
 };
 
 DocumentContextController.prototype.attachRootRealElementToSuperElement = function() {

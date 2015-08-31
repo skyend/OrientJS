@@ -162,6 +162,10 @@ ElementNode.prototype.setRealElement = function(_realElement) {
 
 ////////////////////
 // Getters
+// id
+ElementNode.prototype.getId = function() {
+  return this.id;
+};
 // element.tagName -> getTagName()
 ElementNode.prototype.getTagName = function() {
   return this.attributes.tagName;
@@ -691,9 +695,9 @@ ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
 
 //////////////////////////
 // export methods
-ElementNode.prototype.export = function() {
+ElementNode.prototype.export = function(_withoutId) {
   var exportObject = {
-    id: this.id,
+    id: _withoutId ? undefined : this.id,
     type: this.getType(),
     attributes: this.getAttributes(),
     comment: this.getComment(),
@@ -702,7 +706,7 @@ ElementNode.prototype.export = function() {
     updateDate: this.updateDate,
     inherentCSS: this.getType() !== 'empty' ? this.getCSS() : '', // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
     children: this.children.map(function(_child) {
-      return _child.export();
+      return _child.export(_withoutId);
     })
   };
 
