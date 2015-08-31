@@ -7,6 +7,8 @@ var DocumentContextController = function(_document, _session) {
 
   this.session = _session;
 
+  this.superElement = null;
+
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
@@ -16,19 +18,16 @@ var DocumentContextController = function(_document, _session) {
     // 없다면 새로운 Document를 생성한다.
     this.document = new Document(this);
   }
-
-  console.log('document created', this.document);
-
 };
 
 /*********
  * Attach / Pause / Resume
  *
  */
-DocumentContextController.prototype.attach = function(_directContext) {
+DocumentContextController.prototype.attach = function(_directContext, _superDOMElement) {
   this.attached = true;
   this.directContext = _directContext;
-
+  this.setSuperElement(_superDOMElement);
   /* processing */
 
   this.beginRender();
@@ -49,6 +48,13 @@ DocumentContextController.prototype.resume = function() {
 
 };
 
+// superElement
+// superElement는 RootElementNode가 랜더링되는 지점이다.
+DocumentContextController.prototype.setSuperElement = function(_domElement) {
+  this.superElement = _domElement;
+};
+
+
 /***************
  * beginRender
  * DirectContext 의 iframeStage에 현재 Document의 내용을 랜더링한다.
@@ -63,15 +69,6 @@ DocumentContextController.prototype.beginRender = function() {
 
   // script element block 을 적용한다.
   jsElements.map(function(_jsElement) {
-
-    /*
-    if (_jsElement.getAttribute('src') !== undefined) {
-      _jsElement.onload = function() {
-        console.log('loaded', _jsElement);
-
-        console.log(self.directContext.getWindow());
-      }
-    }*/
 
     self.directContext.applyScriptElement(_jsElement);
 
@@ -95,18 +92,38 @@ DocumentContextController.prototype.getReactComponentFromSession = function(_pac
 };
 
 DocumentContextController.prototype.rootRender = function() {
+
+  if (this.document.rootElementNode !== null) {
+    this.renderElementNode(this.document.rootElementNode);
+
+    // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
+    this.attachRootRealElementToSuperElement();
+
+    this.updateRenderCSS();
+  } else {
+    this.clearSuperElement();
+  }
+
+};
+
+DocumentContextController.prototype.renderElementNode = function(_elementNode) {
   // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
-  this.constructToRealElement(this.document.rootElementNode);
+  this.constructToRealElement(_elementNode);
 
   // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-  var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
+  _elementNode.growupRealDOMElementTree();
+};
 
-  // rootRealElement 를 directContext에 랜더링한다.
-  this.directContext.appendElementToBody(rootRealElement);
+DocumentContextController.prototype.attachRootRealElementToSuperElement = function() {
 
+  // rootRealElement 를 지정된 superElement에 랜더링한다.
+  this.superElement.appendChild(this.document.rootElementNode.getRealDOMElement());
+};
 
-  this.updateRenderCSS();
-}
+DocumentContextController.prototype.clearSuperElement = function() {
+
+  this.superElement.innerHTML = '';
+};
 
 /**
  * constructToRealElement
@@ -148,8 +165,6 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
     element.setAttribute(keys[i], elementAttributes[keys[i]]);
   }
 
-  //element.setAttribute('__enid', _nodeElement.id);
-  console.log(_nodeElement, 'instillRealHTMLElement');
   _nodeElement.setRealElement(element);
 };
 
@@ -249,10 +264,32 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
 };
 
+/********
+ * updateHTMLTypeElementNodeCSS
+ * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
+ *
+ */
+DocumentContextController.prototype.updatePageCSS = function() {
+
+  // 현재 생성되어 있는 스타일블럭이 없다면 생성
+  if (typeof this.pageCSSBlock === 'undefined') {
+    var baseWindow = this.directContext.getWindow();
+    var styleBlock = baseWindow.document.createElement('style');
+    this.directContext.applyStyleElement(styleBlock);
+
+    this.pageCSSBlock = styleBlock;
+  }
+
+  // 변경된 css반영
+  this.pageCSSBlock.innerHTML = this.document.getPageCSS();
+
+};
+
 
 DocumentContextController.prototype.updateRenderCSS = function() {
   // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
   this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+  this.updatePageCSS();
 };
 
 DocumentContextController.prototype.isDropableToRoot = function() {
@@ -294,8 +331,13 @@ DocumentContextController.prototype.insertNewElementNodeFromComponent = function
   }
 
 
-  console.log(JSON.stringify(this.document.export()));
+
   return true;
+};
+
+
+DocumentContextController.prototype.testSave = function() {
+  console.log(JSON.stringify(this.document.export()));
 };
 
 

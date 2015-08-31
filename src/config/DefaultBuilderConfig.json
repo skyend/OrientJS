@@ -34,7 +34,7 @@
         "key": "document-configure",
         "title": "Document Configure",
         "icon": "file-text-o",
-        "equipToolKey": "DocumentConfigure"
+        "equipToolKey": "DocumentConfig"
       }]
     }, {
       "groupName": "Service Resources",
@@ -63,7 +63,7 @@
         "key": "element-tree",
         "title": "Element Tree",
         "icon": "tree",
-        "equipToolKey": "ComponentPalette"
+        "equipToolKey": "ContextContentsNavigation"
       }]
     }]
   },
@@ -91,8 +91,7 @@
     },
 
     "ComponentPalette": {
-      "jsxPath": "ComponentPalette",
-      "configPath": "ToolkitMenuConfig"
+      "jsxPath": "ComponentPalette"
     },
 
     "DocumentsNavigation": {
@@ -109,8 +108,24 @@
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor"
     },
+<<<<<<< HEAD
     "ResourceUploadModal": {
       "jsxPath": "ResourceUploadModal"
+=======
+
+    "ContextContentsNavigation": {
+      "jsxPath": "ContextContentsNavigation",
+      "configPath": "ContextContentsNavigation"
+    },
+
+    "DocumentConfig": {
+      "jsxPath": "DocumentConfig",
+      "configPath": "DocumentConfig"
+    },
+
+    "TestModal": {
+      "jsxPath": "TestModal"
+>>>>>>> ParallelDocumentDirecting
     }
   }
 }

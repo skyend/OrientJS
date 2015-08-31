@@ -10,8 +10,6 @@ var _ = require('underscore');
 
 (function () {
     require('./DocumentStage.less');
-    var DOMEditor = require('./tools/DocumentEditor.jsx');
-    var ToolContainer = require('./ToolContainer.jsx');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var DirectContext = require('./DirectContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
@@ -163,7 +161,7 @@ var _ = require('underscore');
 
 
         deleteElement(_targetObject) {
-            console.log('called element delete ', _targetObject);
+            //console.log('called element delete ', _targetObject);
 
             // 임시로 요소 제거 공지
             this.emit('NoticeMessage', {
@@ -184,7 +182,7 @@ var _ = require('underscore');
           if( ! this.hasCurrentRunningContext() ) return;
 
 
-          console.log(arguments);
+          //console.log(arguments);
           var iframeStageInnerDoc = this.getCurrentRunningContext().getDocument();
 
           // VDomController Construct
@@ -276,7 +274,7 @@ var _ = require('underscore');
           this.prevMouseY = _absoluteY;
           /*****************************************--끝--*/
 
-          console.log('drag');
+          //console.log('drag');
           //****************************************/
           // 드래그위치에 따라 표적을 지정
           // 현재 드래그중인 영역이 스테이지 바운더리 내에 있는지 확인후 밖에 있다면 표적을 해제하고 함수 탈출
@@ -287,7 +285,7 @@ var _ = require('underscore');
             return;
           }
 
-          console.log('come inside / drag raytrace');
+          //console.log('come inside / drag raytrace');
 
           // 대상리스트 뽑기
           var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
@@ -342,7 +340,7 @@ var _ = require('underscore');
 
           var self = this;
 
-          console.log('stop');
+          //console.log('stop');
 
           //var targetedList = this.rayTracingListUp( _absoluteX, _absoluteY );
 
@@ -698,7 +696,7 @@ var _ = require('underscore');
           // 엘리먼트의 영역을 표시하는 박스를 표시한다.
           // if 표적이 지정된 상태라면 then 해당 표적을 하이라이팅한다.
           if( this.aimedTarget !== null && typeof this.aimedTarget !== 'undefined'){
-            this.showElementHighlight( this.aimedTarget );
+            this.showElementHighlight( this.aimedTarget.element.object );
 
 
 
@@ -708,7 +706,7 @@ var _ = require('underscore');
             // 카운드가 되는 도중 aimingTarget 메소드가 호출되면 재 카운팅에 들어간다.
 
             // 현재 대상 하이라이팅
-            this.showElementHighlight( target );
+            this.showElementHighlight( target.element.object );
 
 
             //////////////////////////////
@@ -787,6 +785,18 @@ var _ = require('underscore');
         },
 
 
+        selectedElementNode( _elementNode ){
+          this.getCurrentRunningContext().showElementNavigator( _elementNode);
+        },
+
+        mouseEnterElement( _elementNode ){
+          this.showElementHighlight( _elementNode.getRealDOMElement() );
+        },
+
+        mouseLeaveElement( _elementNode ){
+          this.hideElementHighlight();
+        },
+
         hideGuideBox(){
           var dropGuideBox = this.refs['drop-guide-box'].getDOMNode();
           dropGuideBox.style.display = 'none';
@@ -794,15 +804,28 @@ var _ = require('underscore');
           this.guideBoxLive = false;
         },
 
-        showElementHighlight( _target ){
+        showElementHighlight( _DOMElement, _mode ){
 
           var highligher = this.getElementHighligherDOMElement();
-          highligher.style.left = _target.element.offset.x +'px';
-          //console.log( this.getTabContextOffsetTopByDS() ,'top');
-          highligher.style.top = _target.element.offset.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS() + 'px';
-          highligher.style.width = _target.element.offset.width +'px';
-          highligher.style.height = _target.element.offset.height +'px';
-          highligher.style.display = 'block';
+          var boundingBox;
+
+          if( _DOMElement.nodeName === '#text' ){
+            var range = document.createRange();
+            range.selectNodeContents(_DOMElement);
+            boundingBox = range.getClientRects()[0];
+          } else {
+            boundingBox =_DOMElement.getBoundingClientRect();
+          }
+
+
+          highligher.style.left = boundingBox.left +'px';
+          highligher.style.top = boundingBox.top + this.getTabContextOffsetTopByDS() + 'px';
+          highligher.style.width = boundingBox.width +'px';
+          highligher.style.height = boundingBox.height +'px';
+          //highligher.style.display = 'block';
+          highligher.style.opacity = 1;
+
+          this.changeElementHighlighterMode( _mode )
         },
 
 
@@ -813,7 +836,8 @@ var _ = require('underscore');
 
         hideElementHighlight(){
           var highligher = this.getElementHighligherDOMElement();
-          highligher.style.display = 'none';
+          //highligher.style.display = 'none';
+          highligher.style.opacity = 0;
         },
 
         changeElementHighlighterMode( _mode ){
@@ -852,6 +876,7 @@ var _ = require('underscore');
                                               width="100%"
                                               height="100%"
                                               contextId={_directContext.contextId}
+                                              contextType={_directContext.contextType}
                                               runningState={running}
                                               contextController={ _directContext.contextController } />;
 

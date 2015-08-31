@@ -37,30 +37,7 @@
             this.willDeployPackageKey = _packageKey;
         },
 
-        renderComponentMeta( _componentMeta, _packageKey ){
-          var self = this;
 
-          return (
-            <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
-              <i className='fa fa-cube'></i> { _componentMeta.name }
-            </li>
-          )
-        },
-
-        renderPackageMeta( _packageMeta ){
-          var self = this;
-
-          return (
-            <li className='package'>
-              <label> <i className='fa fa-gift'></i> {_packageMeta.name} </label>
-              <ul>
-                { _packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageMeta.key)} ) }
-              </ul>
-            </li>
-          );
-
-
-        },
 
         onGlobalDragStartFromUI(_e){
             this.emit("BeginDeployComponent", {
@@ -106,6 +83,31 @@
             }
         },
 
+        renderComponentMeta( _componentMeta, _packageKey ){
+          var self = this;
+
+          return (
+            <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} } onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
+              <i className='fa fa-cube'></i> { _componentMeta.name }
+            </li>
+          )
+        },
+
+        renderPackageMeta( _packageMeta ){
+          var self = this;
+
+          return (
+            <li className='package'>
+              <label> <i className='fa fa-gift'></i> {_packageMeta.name} </label>
+              <ul>
+                { _packageMeta.components.map( function(__component){return self.renderComponentMeta(__component, _packageMeta.key)} ) }
+              </ul>
+            </li>
+          );
+
+
+        },
+
         render() {
             var wide = false;
             var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
@@ -127,7 +129,7 @@
                             </div>
                         </div>
                         <div className='foot'>
-                            
+
                         </div>
                     </div>
                 </div>

@@ -3,7 +3,7 @@
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
     "key": "BasicFramePackage",
-    "name": "BasicFramePackage",
+    "name": "프레임 컴포넌트 패키지",
     "components": [{
       "key": "root-wrapper",
       "name": "RootWrapper",
@@ -13,13 +13,17 @@
       "name": "Empty Type Element",
       "path": "BasicFramePackage/EmptyTypeElement.jsx"
     }, {
+      "key": "string-type-element",
+      "name": "String Type Element",
+      "path": "BasicFramePackage/StringTypeElement.jsx"
+    }, {
       "key": "grid-type-element",
       "name": "GridTypeElement",
       "path": "BasicFramePackage/GridTypeElement.jsx"
     }]
   }, {
     "key": "HTMLTags",
-    "name": "HTMLTags",
+    "name": "HTML 태그 패키지",
     "components": [{
       "key": "a",
       "name": "Anchor <A>",
@@ -37,9 +41,21 @@
       "name": "Button <Button>",
       "path": "HTMLTags/Button.jsx"
     }, {
+      "key": "UL",
+      "name": "UL <UL>",
+      "path": "HTMLTags/UL.jsx"
+    }, {
+      "key": "LI",
+      "name": "LI <LI>",
+      "path": "HTMLTags/LI.jsx"
+    }, {
       "key": "Div",
       "name": "Division <Div>",
       "path": "HTMLTags/Div.jsx"
+    }, {
+      "key": "Img",
+      "name": "Image <Img>",
+      "path": "HTMLTags/Img.jsx"
     }, {
       "key": "Footer",
       "name": "Footer <Footer>",
@@ -87,7 +103,7 @@
     }]
   }, {
     "key": "TestPackage",
-    "name": "TestPackage",
+    "name": "테스트",
     "components": [{
       "key": "a",
       "name": "A",
@@ -114,8 +130,28 @@
       "path": "TestPackage/BoxB.jsx"
     }]
   }, {
+    "key": "TwitterBootstrap",
+    "name": "트위터 부트스트랩",
+    "components": [{
+      "key": "container",
+      "name": "컨테이너",
+      "path": "TwitterBootstrap/Container.jsx"
+    }, {
+      "key": "container-fluid",
+      "name": "플루이드 컨테이너",
+      "path": "TwitterBootstrap/FluidContainer.jsx"
+    }, {
+      "key": "row",
+      "name": "행",
+      "path": "TwitterBootstrap/Row.jsx"
+    }, {
+      "key": "col-md-1",
+      "name": "Column md 1",
+      "path": "TwitterBootstrap/Column-md1.jsx"
+    }]
+  }, {
     "key": "SampleReactPackage",
-    "name": "SampleReactPackage",
+    "name": "샘플 React 패키지",
     "components": [{
       "key": "sample-react",
       "name": "SampleReact",

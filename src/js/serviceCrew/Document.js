@@ -6,6 +6,7 @@ var Document = function(_contextController, _documentDataObject) {
   ////////////////////////
   // document profile
   this.documentName;
+  this.documentTitle;
 
   // date fields
   this.documentCreate;
@@ -33,7 +34,9 @@ var Document = function(_contextController, _documentDataObject) {
   //////////////////////////
   // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
   if (typeof _documentDataObject !== 'undefined') {
+    this.documentID = _documentDataObject.documentID;
     this.documentName = _documentDataObject.documentName;
+    this.documentTitle = _documentDataObject.documentTitle;
     this.documentCreate = _documentDataObject.documentCreate;
     this.documentUpdate = _documentDataObject.documentUpdate;
     this.lastElementId = _documentDataObject.lastElementId || 0;
@@ -63,13 +66,46 @@ var Document = function(_contextController, _documentDataObject) {
 Document.prototype.setDocumentName = function(_documentName) {
   this.documentName = _documentName;
 };
+// documentTitle
+Document.prototype.setDocumentTitle = function(_documentTitle) {
+  this.documentTitle = _documentTitle;
+};
+// pa
 // pageCSS
 Document.prototype.setPageCSS = function(_pageCSS) {
   this.pageCSS = _pageCSS;
-};
 
+  this.contextController.updatePageCSS();
+};
+// type
+Document.prototype.setType = function(_type) {
+  this.type = _type;
+};
+// rootElementNode
+Document.prototype.setRootElementNode = function(_elementNode) {
+  this.rootElementNode = _elementNode;
+};
 ////////////////////
 // Getters
+// documentID
+Document.prototype.getDocumentID = function() {
+  return this.documentID;
+};
+// documentName
+Document.prototype.getDocumentName = function() {
+  return this.documentName;
+};
+// documentTitle
+Document.prototype.getDocumentTitle = function() {
+  return this.documentTitle;
+};
+Document.prototype.getDocumentCreate = function() {
+  return this.documentCreate;
+};
+// documentTitle
+Document.prototype.getDocumentUpdate = function() {
+  return this.documentUpdate;
+};
 // lastElementId
 Document.prototype.getLastElementId = function() {
   return this.lastElementId;
@@ -88,16 +124,30 @@ Document.prototype.getStyleResources = function() {
 Document.prototype.getElementNodes = function() {
   return this.elementNodes;
 };
+// rootElementNode
+Document.prototype.getRootElementNode = function() {
+  return this.rootElementNode;
+};
 // pageCSS
 Document.prototype.getPageCSS = function() {
-  return this.pageCSS;
+  return this.pageCSS || '';
 };
-
+// type
+Document.prototype.getType = function() {
+  return this.type;
+};
 ///////////////////////
 // documentUpdate
 Document.prototype.documentUpdated = function() {
   this.documentUpdate = new Date();
 };
+
+////////////////
+// removeRootElementNode
+Document.prototype.removeRootElementNode = function() {
+  this.setRootElementNode(null);
+  this.contextController.rootRender();
+}
 
 ////////////////////
 /****************
@@ -168,7 +218,7 @@ Document.prototype.getReactElementNodeCSSLines = function() {
   }
 
   return lines;
-}
+};
 
 
 ///////////////
@@ -181,12 +231,33 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
 
   if (typeof _elementNodeDataObject !== 'undefined') {
     elementNode = new ElementNode(this, _elementNodeDataObject);
+
+    // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
+    if (!/^\d+$/.test(elementNode.getId())) {
+      elementNode.setId(this.getNewElementNodeId());
+    }
   } else {
     elementNode = new ElementNode(this);
-    elementNode.setId(++(this.lastElementId));
+    elementNode.setId(this.getNewElementNodeId());
   }
 
   return elementNode;
+};
+
+///////////
+/********
+ * cloneElement
+ * 요소를 복제한다
+ */
+Document.prototype.cloneElement = function(_elementNode) {
+  var elementNodeExportObject = _elementNode.export(true);
+  var newClonedElementNode = this.newElementNode(elementNodeExportObject);
+
+  return newClonedElementNode;
+};
+
+Document.prototype.getNewElementNodeId = function() {
+  return ++(this.lastElementId);
 };
 
 /////////////////
@@ -198,19 +269,19 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
  * @Return ElementNode{} : 생성된 ElementNode
  */
 Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toRealDOMElement) {
-  console.log(_toRealDOMElement);
+  //console.log(_toRealDOMElement);
 
   var targetElementNode = _toRealDOMElement.___en;
 
   // 대상 Element가 존재하지 않으면 rootNode로 편입또는 삽입실패로 지정한다.
   if (typeof targetElementNode === 'undefined') {
 
-    if (this.rootElementNode === null) {
+    if (this.getRootElementNode() === null) {
       var newElementNode = this.newElementNode();
       newElementNode.buildByComponent(_component);
 
       // 방금 생성된 elementNode를 root로 정의한다.
-      this.rootElementNode = newElementNode;
+      this.setRootElementNode(newElementNode);
       return newElementNode;
     } else {
 
@@ -239,7 +310,7 @@ Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _co
 
       return newElementNode;
     } else {
-
+      console.log(_component, 'in');
       // 드랍된 컴포넌트가 React 타입일 경우
       // 대상요소에 드롭밖에 할 수 없다. 그리고 그 대상노드는 Empty Type의 ElementNode여야 한다.
       // 일단 inertType이 어떻든 드롭으로 가정
@@ -284,9 +355,11 @@ Document.prototype.inspireElementNodes = function(_elementNodeDataList) {
 // export methods
 Document.prototype.export = function() {
   return {
-    documentName: this.documentName,
-    documentCreate: this.documentCreate,
-    documentUpdate: this.documentUpdate,
+    documentID: this.getDocumentID(),
+    documentName: this.getDocumentName(),
+    documentTitle: this.getDocumentTitle(),
+    documentCreate: this.getDocumentCreate(),
+    documentUpdate: this.getDocumentUpdate(),
     lastElementId: this.getLastElementId(),
     rootElementNode: this.rootElementNode.export(),
     elementNodes: this.elementNodes.map(function(_elementNode) {

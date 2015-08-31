@@ -9,9 +9,9 @@
 
 (function () {
     var React = require("react");
-    require('./ToolNavigation.less');
+    require('./VerticalToolNavigation.less');
 
-    var ToolNavigation = React.createClass({
+    var VerticalToolNavigation = React.createClass({
         mixins: [require('./reactMixin/EventDistributor.js')],
         getInitialState() {
 
@@ -101,12 +101,12 @@
                 });
 
 
-                /*
-                this.emit("NoticeMessage", {
-                    title: "From PanelNavigation",
-                    message: "Equiped tool[" + _toolKey + "]",
-                    level: "success"
-                });*/
+                //
+                // this.emit("NoticeMessage", {
+                //     title: "From PanelNavigation",
+                //     message: "Equiped tool[" + _toolKey + "]",
+                //     level: "success"
+                // });
 
             } else {
                 this.setState({
@@ -315,7 +315,7 @@
 
         render() {
             var rootClasses = [];
-            rootClasses.push('ToolNavigation');
+            rootClasses.push('VerticalToolNavigation');
             rootClasses.push(this.props.position + '-wall');
 
 
@@ -384,6 +384,6 @@
         }
     });
 
-    module.exports = ToolNavigation;
+    module.exports = VerticalToolNavigation;
 
 })();

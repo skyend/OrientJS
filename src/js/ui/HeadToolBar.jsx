@@ -29,6 +29,11 @@ require('js-cookie');
                 $(".login-form").slideDown().slideToggle("fast");
             }
         },
+
+        clickSave(){
+          this.emit('SaveCurrentContext');
+        },
+
         componentDidMount: function () {
             this.setUserInfo();
         },
@@ -37,14 +42,15 @@ require('js-cookie');
                 <header id="ui-header">
                     <ul className="navigation">
                         <li>
-                            <a>
-                                <i className="fa fa-columns"></i>
-                            </a>
+                            <button onClick={this.clickSave}>
+                                <i className="fa fa-floppy-o"></i>
+                            </button>
                         </li>
+
                         <li>
-                            <a className="user-info">
+                            <button className="user-info">
                                 <i className="fa fa-user"></i>
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </header>

@@ -48,7 +48,7 @@ _.importHtmlElement = function(htmlElement, _depthArchive, _controller) {
 
   var root = new _('page', htmlElement.offsetWidth, htmlElement.offsetHeight);
   root.dom = new VNode(_controller, 'html', htmlElement.nodeName.toLowerCase(), htmlElement, null, _depthArchive, 0, "0");
-  console.log(root);
+  //console.log(root);
   return root;
 }
 module.exports = _;

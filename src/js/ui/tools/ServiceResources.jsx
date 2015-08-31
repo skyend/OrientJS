@@ -40,7 +40,7 @@
           if( _documentMeta.purpose === 'layout' ){
             iconClass = 'fa-file-pdf-o'
           } else if ( _documentMeta.purpose === 'contents' ){
-            iconClass = "fa-file-text"
+            iconClass = "fa-file-text-o"
           }
 
           var self = this;
@@ -52,7 +52,7 @@
           };
 
           var contextIsRunning = false;
-          
+
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === 'document' ){
               if( this.state.runningContext.documentID ==  _documentMeta.id ){
@@ -87,7 +87,7 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file'></i> Documents <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-file-text-o'></i> Documents <span className='temp-button'> <i className='fa fa-plus'></i> </span>
               </label>
               <ul>
                 { this.state.documentMetaList.map(this.renderDocumentItem) }
@@ -105,7 +105,7 @@
             var rootClasses = ['ServiceResources', this.props.config.theme,  this.getMySizeClass()];
 
 
-            console.log('STAET CHECK', this.state);
+
             return (
                 <div className={rootClasses.join(' ')}>
                     <div className='wrapper'>

@@ -3,76 +3,304 @@ require('./HorizonField.less');
 
 var React = require("react");
 
+var brace  = require('brace');
+var AceEditor  = require('react-ace');
+
+require('brace/mode/css')
+require('brace/mode/javascript')
+require('brace/mode/html')
+require('brace/mode/json')
+require('brace/theme/twilight')
+
+var EnterableWrapperInput = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+    return (
+      <input value={ this.state.value } onChange={this.onChange}/>
+    );
+  }
+});
+
+var EnterableWrapperTextarea = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+
+    return (
+      <textarea onChange={this.onChange} spellCheck="false" value={ this.state.value }/>
+    );
+  }
+});
+
+var EnterableWrapperCodeEditor = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_value){
+    var value = _value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  render(){
+
+    return (
+      <div className='ace'>
+          <AceEditor
+            mode={this.props.lang}
+            theme="twilight"
+            onChange={this.onChange}
+            name={this.props.editorId}
+            value={ this.state.value }
+            width='100%'
+            height='100%'
+            editorProps={{$blockScrolling: true}}
+          />
+      </div>
+    );
+  }
+});
+
+var EnterableWrapperSelect = React.createClass({
+  mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+      return {
+        value:undefined
+      };
+  },
+
+  getValue(){
+    return this.state.value;
+  },
+
+  onChange(_e){
+    var value = _e.target.value;
+
+    this.setState({value:value});
+
+    this.emit("ChangedValue", {
+      value: value
+    });
+  },
+
+
+
+  componentWillReceiveProps( _props ){
+    this.state.value = _props.defaultValue;
+  },
+
+  componentDidMount(){
+    this.setState({value:this.props.defaultValue});
+  },
+
+  renderOption( _option ){
+    return (
+      <option value={ _option.value }> { _option.value } </option>
+    )
+  },
+
+  render(){
+    return (
+      <select value={ this.state.value } onChange={this.onChange}>
+        { this.props.options.map( this.renderOption )}
+
+      </select>
+    );
+  }
+});
+
 var HorizonField = React.createClass({
+    mixins:[require('../reactMixin/EventDistributor.js')],
+
     getInitialState(){
         return {
-          valueIsDiff : false
+          valueIsDiff : false,
+          nameBoxSlideX: 0,
+          fieldNameEditMode: false
         };
     },
 
-    onChanged(_e){
-      var changedValue = this.getValue();
+    onThrowCatcherChangedValue( _eventData ){
+      var value = _eventData.value;
 
-      this.setState({valueIsDiff:this.isChanged()});
+
+      this.emit("ChangedValue", {
+        name:this.props.fieldName,
+        data:value
+      });
     },
 
-    isChanged(){
+    reset(){
+      this.setValue(this.props.defaultValue);
+    },
 
-      if( this.originValue === this.getValue()) {
-        return false;
-      } else {
-        return true;
+    onRemove(){
+      this.emit("RemoveField", {
+        fieldName: this.props.fieldName
+      });
+    },
+
+    nameDoubleClick( _e ){
+      if( !this.props.editorableFieldName) return;
+
+      if( this.state.fieldNameEditMode ){
+        var input = this.refs['FieldNameInput'].getDOMNode();
+
+        this.emit("RenameField", {
+          'past':this.props.fieldName,
+          'current':input.value
+        });
       }
+
+      this.setState( { fieldNameEditMode: !this.state.fieldNameEditMode });
+
+
+    },
+
+    fieldNameMouseDown( _e){
+      if( !this.state.fieldNameEditMode ){
+          app.ui.occupyGlobalDrag(this, true);
+          app.ui.enableGlobalDrag();
+          app.ui.toMouseDawn();
+      }
+
+
+    },
+
+    onGlobalDragStartFromUI(_e){
+
+    },
+
+    onGlobalDragFromUI(_e){
+      var currentX = _e.clientX;
+      var currentY = _e.clientY;
+
+      if( this.prevX !== undefined ){
+          var moveX = currentX - this.prevX;
+          var moveY = currentY - this.prevY;
+
+
+          var toLeft = this.state.nameBoxSlideX + moveX;
+
+          if( this.refs['field-option-box'] === undefined ) return;
+          var optionBoxDom = this.refs['field-option-box'].getDOMNode();
+          var optionBoxWidth = optionBoxDom.offsetWidth;
+
+          if( (toLeft*-1) > optionBoxWidth ){
+            toLeft = optionBoxWidth * -1;
+          }
+
+          if( toLeft > 0 ) toLeft = 0;
+
+
+          this.setState({nameBoxSlideX: toLeft});
+      }
+
+      this.prevX = currentX;
+      this.prevY = currentY;
+    },
+
+    onGlobalDragStopFromUI(_e){
+      this.prevX = undefined;
+      this.prevY = undefined;
     },
 
     getValue(){
-      switch( this.props.type ){
-        case "static":
-          return this.props.fieldValue;
-        case "enterable":
-          return this.readInputValue();
-      }
-    },
-
-    readInputValue(){
-      var enterableField = this.refs['enterable-field'];
-      if( enterableField === undefined ) throw new Error("Horizon Field is not enterable type.");
-      return enterableField.getDOMNode().value;
-    },
-
-    valueReset( _value ){
-      this.originValue = _value;
-
-      var enterableField = this.refs['enterable-field'];
-      if( enterableField !== undefined ){
-        var enterableFieldDom = enterableField.getDOMNode();
-
-        if( this.originValue !== undefined )
-          enterableFieldDom.value = this.originValue;
-        else
-          enterableFieldDom.value = '';
+      if( this.props.enterable ){
+        return this.refs['enterable-field'].getValue();
+      } else {
+        return this.props.defaultValue;
       }
     },
 
     componentDidUpdate(){
-
-      // fieldValue 속성과 originValue 값이 다르면 값을 변경해준다.
-      if( this.resetValueFlag ){
-        this.resetValueFlag = false;
-
-        this.valueReset(this.props.fieldValue);
+      if( this.refs['FieldNameInput'] !== undefined ){
+        var input = this.refs['FieldNameInput'].getDOMNode();
+        input.value = this.props.fieldName;
       }
     },
 
-    componentWillReceiveProps( _nextProps ){
-      this.resetValueFlag = true;
-    },
-
-
-    componentDidMount(){
-      this.originValue = this.props.value;
-
-
+    setValue(_value){
+      if( this.props.enterable ){
+        this.refs['enterable-field'].setState({value:_value});
+      } else {
+        this.props.defaultValue = _value;
+      }
     },
 
     render(){
@@ -80,26 +308,59 @@ var HorizonField = React.createClass({
         var field;
         var iconClass;
 
-        switch( this.props.type ){
-          case "static":
-            field = this.props.fieldValue;
-            iconClass = "fa fa-lock";
-            break;
-          case "enterable":
-            field = <input defaultValue={this.props.fieldValue} ref='enterable-field' onChange={this.onChanged}/>
-            iconClass = "fa fa-pencil";
-            break;
+        if( this.props.enterable ){
+          switch( this.props.type ){
+            case "input":
+              field = <EnterableWrapperInput defaultValue={this.props.defaultValue} ref='enterable-field'/>
+              break;
+            case "select":
+              field = <EnterableWrapperSelect defaultValue={this.props.defaultValue} options={ this.props.options } ref='enterable-field'/>
+              break;
+            case "textarea":
+              field = <EnterableWrapperTextarea defaultValue={this.props.defaultValue}  ref='enterable-field'/>
+              break;
+            case "ace":
+              field = <EnterableWrapperCodeEditor lang={this.props.lang || 'plain'} editorId={this.props.editorId} defaultValue={this.props.defaultValue} ref='enterable-field'/>
+              break;
+          }
+          iconClass = "fa fa-pencil";
+        } else {
+          field = <label title={this.props.defaultValue}>{this.props.defaultValue}</label>
+          iconClass = "fa fa-lock";
         }
 
+        var fieldNameRender;
+        if( ! this.state.fieldNameEditMode ){
+          fieldNameRender = <span>{this.props.title || this.props.fieldName}</span>;
+        } else {
+          fieldNameRender = <input  ref='FieldNameInput'/>;
+        }
+
+
         return (
-            <div className={classes.join(' ')}>
-              <div className="field-name" style={{width:this.props.nameWidth}}>
-                {this.props.fieldName}
+            <div className={classes.join(' ')} style={{height: this.props.height || 26}}>
+              <div className="field-name" style={{width:this.props.nameWidth}} onMouseDown={ this.fieldNameMouseDown }>
+                <ul className='field-option-box' ref='field-option-box'>
+                  { this.props.deletable? (
+                    <li className='remove-box' onClick={this.onRemove}>
+                      <div className='vertical-standard'></div>
+                      <i className='fa fa-trash'/>
+                    </li>
+                  ) : ''}
+                </ul>
+
+                <div className='field-name-box' ref='field-name-box' style={{left:this.state.nameBoxSlideX}} onDoubleClick={this.nameDoubleClick}>
+                  <div className='vertical-standard'></div>
+                  { fieldNameRender }
+                </div>
+
               </div>
-              <div className='field-value' style={{left:this.props.nameWidth}}>
+              <div className={['field-value',this.state.valueIsDiff? 'diff':''].join(' ')} style={{left:this.props.nameWidth}}>
+                <div className='vertical-standard'></div>
                 { field }
               </div>
               <div className='field-type-guide'>
+                <div className='vertical-standard'></div>
                 <i className={ iconClass } />
               </div>
             </div>

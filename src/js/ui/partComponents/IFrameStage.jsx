@@ -183,7 +183,7 @@ var IFrameStage = React.createClass({
      */
   onMouseClickAtStage(_e) {
 
-    this.elementClick(_e.path);
+    this.elementClick(_e.target, _e);
   },
 
   onScrollAtStage(_e){
@@ -193,16 +193,45 @@ var IFrameStage = React.createClass({
   },
 
 
-  elementClick(_path){
+  elementClick(_target, _e){
+    /*
     var pathArray = [];
 
     for( var i = 0; i < _path.length; i++ ){
       pathArray[i] = _path[i];
     }
-    
+
+*/
+
+
+    var targetNode = _target;
+    var childNodes = targetNode.childNodes;
+
+    if( childNodes.length > 0 ){
+      var childNode;
+      var range;
+      var rects;
+      for(var i = 0; i < childNodes.length ; i++){
+        childNode = childNodes[i];
+
+        range = document.createRange();
+        range.selectNodeContents(childNode);
+        rects = range.getClientRects();
+
+        if( rects.length == 0 ) break;
+
+        //console.log( childNode, range, rects);
+        if( ( rects[0].left < _e.x && rects[0].right > _e.x )&&
+            ( rects[0].top < _e.y && rects[0].bottom > _e.y )){
+          targetNode = childNode;
+
+          break;
+        }
+      }
+    }
+
     this.emit("ClickElementInStage", {
-      targetDOMElement: pathArray[0],
-      elementPath:pathArray
+      targetDOMNode: targetNode
     });
   },
 
@@ -231,6 +260,7 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
+    return;
 
     _e.preventDefault();
     var selfDom = this.getDOMNode();

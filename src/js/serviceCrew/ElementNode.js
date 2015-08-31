@@ -11,6 +11,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.type; // html / string / react / grid
   this.attributes;
   this.componentName;
+  this.comment;
 
   // refference
   this.refferenceType; // react | document | ...
@@ -44,6 +45,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.componentName = _elementNodeDataObject.componentName;
     this.refferenceType = _elementNodeDataObject.refferenceType;
     this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+    this.comment = _elementNodeDataObject.comment || '';
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
@@ -54,15 +56,23 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.createDate = new Date();
     this.attributes = {};
     this.children = [];
-
+    this.comment = '';
   }
 };
 
 ////////////////////
 // Setters
-// id
+// enid
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
+};
+// Id Atrribute
+ElementNode.prototype.setIdAtrribute = function(_id) {
+  this.attributes.id = _id;
+};
+// tagName
+ElementNode.prototype.setTagName = function(_tagName) {
+  this.attributes.tagName = _tagName;
 };
 // classes
 ElementNode.prototype.setClasses = function(_classes) {
@@ -97,6 +107,10 @@ ElementNode.prototype.setParent = function(_parentENode) {
   this.parent = _parentENode;
 };
 // attribute
+ElementNode.prototype.setAttribute = function(_name, _value) {
+  this.attributes[_name] = _value;
+};
+// attributes
 ElementNode.prototype.setAttributes = function(_attributes) {
   this.attributes = _attributes;
 };
@@ -104,10 +118,22 @@ ElementNode.prototype.setAttributes = function(_attributes) {
 ElementNode.prototype.setCSS = function(_css) {
   this.css = _css;
 };
+// Inline Style
+ElementNode.prototype.setInlineStyle = function(_style) {
+  this.attributes.style = _style;
+};
+// text
+ElementNode.prototype.setText = function(_text) {
+  this.attributes.text = _text;
+};
+// comment : 주석
+ElementNode.prototype.setComment = function(_comment) {
+  this.comment = _comment;
+};
 // ReactTypeComponent
 ElementNode.prototype.setReactTypeComponent = function(_component) {
   this.reactTypeComponent = _component;
-}
+};
 
 // real element
 ElementNode.prototype.setRealElement = function(_realElement) {
@@ -119,28 +145,36 @@ ElementNode.prototype.setRealElement = function(_realElement) {
     this.realElement = null;
   }
 
+  // RealElement 매핑
   this.realElement = _realElement;
 
-  // string type을 제외하고 _enid_ 에 자신의 id를 입력한다.
-  if (this.type !== 'string') {
-    this.realElement.setAttribute('_enid_', this.id);
-    this.realElement.___en = this;
+  // RealElement의 ___en속성에 this(ElementNode) 매핑
+  this.realElement.___en = this;
 
-    // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
-    this.realElement.getElementNode = function() {
-      return this.___en;
-    };
-  }
+  // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
+  this.realElement.getElementNode = function() {
+    return this.___en;
+  };
+
 };
 
 
 
 ////////////////////
 // Getters
+// id
+ElementNode.prototype.getId = function() {
+  return this.id;
+};
 // element.tagName -> getTagName()
 ElementNode.prototype.getTagName = function() {
   return this.attributes.tagName;
 };
+
+ElementNode.prototype.getIdAtrribute = function() {
+  return this.attributes.id;
+};
+
 ElementNode.prototype.getClasses = function() {
   return this.attributes.class;
 };
@@ -152,7 +186,11 @@ ElementNode.prototype.getText = function() {
 ElementNode.prototype.getType = function() {
   return this.type;
 };
-// Element Spec
+// attribute
+ElementNode.prototype.getAttribute = function(_name) {
+  return this.attributes[_name];
+};
+// attributes
 ElementNode.prototype.getAttributes = function() {
   return this.attributes;
 };
@@ -188,10 +226,42 @@ ElementNode.prototype.getParent = function() {
 ElementNode.prototype.getCSS = function() {
   return this.css;
 };
+// Inline Style
+ElementNode.prototype.getInlineStyle = function() {
+  return this.attributes.style;
+};
+// text
+ElementNode.prototype.getText = function() {
+  return this.attributes.text;
+};
+// comment : 주석
+ElementNode.prototype.getComment = function() {
+  return this.comment;
+};
 // ReactTypeComponent
 ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
-}
+};
+
+///////////
+// Remove Attribute
+ElementNode.prototype.removeAttribute = function(_attrName) {
+  delete this.attributes[_attrName];
+
+  if (this.getRealDOMElement() !== null) {
+    this.getRealDOMElement().removeAttribute(_attrName);
+  }
+};
+
+//////////
+// Remove Attribute
+ElementNode.prototype.renameAttribute = function(_prevName, _nextName) {
+  var fieldData = this.getAttribute(_prevName);
+  this.removeAttribute(_prevName);
+  this.setAttribute(_nextName, fieldData);
+
+  this.applyAttributesToRealDOM();
+};
 
 
 ////////////////////
@@ -219,6 +289,59 @@ ElementNode.prototype.updated = function() {
   this.updateDate = new Date();
 };
 
+/**************
+ * dettachMeFromParent
+ * 부모의 Children 리스트에서 자신을 제거한다.
+ * 하지만 사라지지는 않는다.
+ */
+ElementNode.prototype.dettachMeFromParent = function() {
+
+  var parent = this.getParent();
+
+  // 부모 ElementNode가 존재한다면.
+  if (parent !== null) {
+    // 부모에게 detach요청
+    parent.dettachChild(this);
+  } else {
+    // 부모 ElementNode가 존재하지 않는다면 자신이 Document의 RootElementNode이거나 ElementNodes 리스트에 존재하는 노드이므로
+    // 다르게 처리해준다.
+
+    // RootElement일 경우
+    if (this.document.getRootElementNode() === this) {
+      this.document.removeRootElementNode();
+    } else {
+      //  ElementNodes 리스트에 존재하는 노드
+      // 추후 구현
+
+
+    }
+  }
+
+  return this;
+};
+
+/**************
+ * dettachChild
+ * 자신의 Children에서 하나의 child를 제거한다.
+ */
+ElementNode.prototype.dettachChild = function(_child) {
+  var children = this.children;
+  var newChildList = [];
+
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+
+    if (child != _child) {
+      newChildList.push(child);
+    }
+  }
+
+  this.children = newChildList;
+
+  this.growupRealDOMElementTree();
+};
+
+
 /********
  * checkDropableComponent
  * 현재 ElementNode에 다른 component가 드랍될 수 있는지 체크
@@ -243,7 +366,6 @@ ElementNode.prototype.checkDropableComponentWithDirection = function(_component,
     return false;
   }
 
-  console.log(targetElementNode.getRealDOMElement());
 
   switch (_component.elementType) {
     case "html":
@@ -273,7 +395,7 @@ ElementNode.prototype.checkDropableComponentWithDirection = function(_component,
  *
  */
 ElementNode.prototype.buildByComponent = function(_component) {
-  console.log('빌드해라', _component);
+  //console.log('빌드해라', _component);
 
   var elementNodeType = _component.elementType;
   this.setType(elementNodeType);
@@ -295,6 +417,9 @@ ElementNode.prototype.buildByComponent = function(_component) {
     // Todo
     this.buildEmptyTypeElement();
 
+  } else if (elementNodeType === 'string') {
+    this.setText("Text");
+    this.setTagName('text');
   } else if (elementNodeType === 'grid') {
     // Todo
   } else if (elementNodeType === 'react') {
@@ -312,6 +437,13 @@ ElementNode.prototype.buildEmptyTypeElement = function(_domElement) {
   this.setAttributes({
     'tagName': 'div',
     'style': "width:100px;height:100px;border:1px solid #fff"
+  });
+
+  this.setRefferenceType('none');
+  this.setRefferenceTarget({
+    packageKey: undefined,
+    componentKey: undefined,
+    documentRefKey: undefined
   });
 };
 
@@ -336,8 +468,8 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   // TextNode가 아닌경우
   this.setType('html');
 
-  // element 업데이트
-  this.updateElement(_domElement);
+  // element Attribute를 읽어서 자신에게 매핑한다.
+  this.copyAllAtrributeFromDOMElement(_domElement);
 
   //////////////////
   // 자식노드 재귀처리 //
@@ -365,7 +497,7 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
   this.children = children;
 };
 
-ElementNode.prototype.updateElement = function(_domElement) {
+ElementNode.prototype.copyAllAtrributeFromDOMElement = function(_domElement) {
   var elementSpec = {
     'tagName': _domElement.nodeName.toLowerCase(),
   };
@@ -373,7 +505,10 @@ ElementNode.prototype.updateElement = function(_domElement) {
   // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
   var attributes = _domElement.attributes;
   for (var i = 0; i < attributes.length; i++) {
-    if (attributes[i].name === '__vid__') continue;
+    switch (attributes[i].name) {
+      case '__vid__':
+        continue;
+    }
     elementSpec[attributes[i].name] = attributes[i].nodeValue;
   }
 
@@ -381,9 +516,15 @@ ElementNode.prototype.updateElement = function(_domElement) {
   this.setAttributes(elementSpec);
 };
 
-ElementNode.prototype.applyDOMElement = function(_domElement) {
+ElementNode.prototype.applyAttributesToRealDOM = function() {
+  var elementAttributes = this.getAttributes();
+  var keys = Object.keys(elementAttributes);
 
+  var realElement = this.getRealDOMElement();
 
+  for (var i = 0; i < keys.length; i++) {
+    realElement.setAttribute(keys[i], elementAttributes[keys[i]]);
+  }
 };
 
 ElementNode.prototype.appendChild = function(_elementNode) {
@@ -525,6 +666,9 @@ ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
   if (refType === 'react') {
     var refTarget = this.getRefferenceTarget();
 
+    if (!(refTarget.packageKey !== undefined && refTarget.componentKey !== undefined)) return;
+
+
     var packageKey = refTarget.packageKey;
     var componentKey = refTarget.componentKey;
 
@@ -551,17 +695,18 @@ ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
 
 //////////////////////////
 // export methods
-ElementNode.prototype.export = function() {
+ElementNode.prototype.export = function(_withoutId) {
   var exportObject = {
-    id: this.id,
+    id: _withoutId ? undefined : this.id,
     type: this.getType(),
     attributes: this.getAttributes(),
+    comment: this.getComment(),
     componentName: this.getComponentName(),
     createDate: this.createDate,
     updateDate: this.updateDate,
     inherentCSS: this.getType() !== 'empty' ? this.getCSS() : '', // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
     children: this.children.map(function(_child) {
-      return _child.export();
+      return _child.export(_withoutId);
     })
   };
 

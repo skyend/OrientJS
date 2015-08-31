@@ -18,45 +18,27 @@ var DirectContext = React.createClass({
   },
 
   isDropableToRoot( _domElement ){
-    var dropTarget = _domElement;
-    var funcFind = false;
-
-    // function을 찾으면 루프탈출
-    while( dropTarget !== null ){
-      if( typeof dropTarget.getElementNode === 'function' ){
-        funcFind = true;
-        break;
-      }
-
-      dropTarget = dropTarget.parentNode;
-    }
-
-
-    var contextController;
-    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
-    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
-    if( funcFind ){
-      contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
-    } else {
-      contextController = this.contextController;
-    }
-
 
     // 해당 ContextController에 메소드로 확인.
-    return contextController.isDropableToRoot();
+    return this.getContextControllerFromDOMElement(_domElement).isDropableToRoot();
   },
 
+
   deployComponentToInLast( _vid, _component ){
-    console.log("deployed component", _component);
+    //console.log("deployed component", _component);
 
     var dropTarget = this.getIFrameStage().getElementByVid(_vid);
 
-    var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    var contextController = this.getContextControllerFromDOMElement(dropTarget);
 
     var result = contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
 
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
 
     //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
@@ -67,8 +49,13 @@ var DirectContext = React.createClass({
     var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
 
     var result = contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
+
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
@@ -81,6 +68,10 @@ var DirectContext = React.createClass({
     var result = contextController.insertNewElementNodeFromComponent('insertAfter',_component, dropTarget);
     if( ! result ) {
       this.failToDrop();
+    } else {
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
     }
     // console.log("deployed component", _component);
     // return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
@@ -101,19 +92,46 @@ var DirectContext = React.createClass({
     return _elementNode.getMyContextControllerOfDocument();
   },
 
+  /**************
+   * getContextControllerFromDOMElement
+   * DOMElement를 이용하여 ContextController를 찾는다 하지만 지정된 DOMElement로 찾지 못할 경우 부모노드로 내려가 찾고
+   * 그래도 찾지 못할 경우에는 directContext에 지정된 ContextController를 반환한다.
+   */
+  getContextControllerFromDOMElement(_sourceDOMElement){
+    var funcFind = false;
+    var dropTarget = _sourceDOMElement;
+
+    // function을 찾으면 루프탈출
+    while( dropTarget !== null ){
+      if( typeof dropTarget.getElementNode === 'function' ){
+        funcFind = true;
+        break;
+      }
+
+      dropTarget = dropTarget.parentNode;
+    }
+
+
+    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
+    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
+    if( funcFind ){
+      return this.getContextControllerByElementNode(dropTarget.getElementNode());
+    }
+
+    return this.contextController;
+  },
+
   failToDrop(){
-    this.emit("NoticeMessage",{
-      "title" : "해당 컴포넌트를 삽입 할 수 없습니다.",
-      "message" : "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.",
-      "level" : 'error'
-    });
+    this.errorNotice(
+      "해당 컴포넌트를 삽입 할 수 없습니다.",
+      "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다."
+    );
 
-    this.emit('NoticeMessage',{
-      title:"component 삽입실패",
-      message:"영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.",
-      level : "error"
+    this.errorNotice(
+      "component 삽입실패",
+      "영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다."
+    );
 
-    });
   },
 
   addStyle( _key, _css ){
@@ -149,36 +167,72 @@ var DirectContext = React.createClass({
   },
 
   goingToContextStop(){
+    this.closeElementNavigator();
+
     this.contextController.pause();
-    console.log('changed context state to stop!');
+    //console.log('changed context state to stop!');
   },
 
   goingToContextRunning(){
     this.contextController.resume();
-    console.log('changed context state to running!');
+
+    if( this.props.contextType ===  "document" ){
+      console.log(this.contextController.document);
+
+      this.emit("DocumentFocused", {
+        document:this.contextController.document
+      });
+    }
+
   },
 
   removeElement(){
+    this.state.selectedElementNode.dettachMeFromParent();
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
 
+    this.closeElementNavigator();
+  },
+
+  cloneElement(){
+    var elementNode = this.state.selectedElementNode;
+
+    var elementNodeDoc = elementNode.document;
+
+    var clonedElementNode = elementNodeDoc.cloneElement( elementNode );
+
+    elementNode.insertAfter(clonedElementNode);
+
+
+    var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
+
+    contextController.renderElementNode(elementNode);
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
+
+    this.closeElementNavigator();
   },
 
   editElement(){
-
+    this.emit('OpenElementEditTool');
   },
 
   jumpToParentElement(){
-    var nextParent = this.state.selectedElementPath[1];
-    if( nextParent === undefined ){
+    var parent = this.state.selectedElementNode.getParent();
+
+    if( parent === null ){
+      this.errorNotice(
+        "상위 노드로 점프 실패.",
+        "더이상 상위노드가 존재하지 않습니다."
+      );
       return;
     }
 
-    if( typeof nextParent.getElementNode !== 'function' ){
-      return;
-    }
+    var parentRealDOMElement =  parent.getRealDOMElement();
 
-    this.state.selectedElementPath.shift();
-
-    this.selectElement( this.state.selectedElementPath[0], this.state.selectedElementPath );
+    this.selectElement( parentRealDOMElement,  parentRealDOMElement.getBoundingClientRect() );
   },
 
   closeElementNavigator(){
@@ -187,51 +241,78 @@ var DirectContext = React.createClass({
       showElementNavigator:false,
       elementNavigatorX:0,
       elementNavigatorY:0,
+      prevElementNavigatorX: this.state.elementNavigatorX,
+      prevElementNavigatorY: this.state.elementNavigatorY,
       elementNavigatorWidth:0,
       elementNavigatorHeight:0,
       selectedElement:null,
       selectedElementPath:null});
+
+
+      this.emit("CancelSelectElementNode");
   },
 
-  selectElement( _target, _path){
+  showElementNavigator( _elementNode, _boundingRect ){
 
-    // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
-    // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
-    if( typeof _target.getElementNode !== 'function' ){
-      for( var i = 0; i < _path.length; i++ ){
-        if( typeof _path[i].getElementNode === 'function' ){
-          this.selectElement( _path[i], _path.slice(i, _path.length -1) );
-          return;
-        }
+    var target = _elementNode.getRealDOMElement();
+
+    var boundingRect;
+    if( target.nodeName === '#text' ){
+
+      if( target.nodeValue === '' ){
+
+          boundingRect = { left:0, top:0, width:0, height:0};
+
+          this.errorNotice(
+            "영역을 확인할 수 없습니다.",
+            "String Type Element의 영역을 확인하기 위해서는 하나이상의 문자를 가지고 있어야합니다."
+          );
+      } else {
+
+        range = document.createRange();
+        range.selectNodeContents(target);
+        boundingRect = range.getClientRects()[0];
       }
+    } else {
+      boundingRect = target.getBoundingClientRect();
     }
-
-
-    var targetRect = _target.getBoundingClientRect();
 
     this.setState({
       showElementNavigator:true,
-      elementNavigatorX:targetRect.left,
-      elementNavigatorY:targetRect.top,
-      elementNavigatorWidth:targetRect.width,
-      elementNavigatorHeight:targetRect.height,
-      selectedElement:_target,
-      selectedElementPath:_path});
+      elementNavigatorX:boundingRect.left,
+      elementNavigatorY:boundingRect.top,
+      elementNavigatorWidth:boundingRect.width,
+      elementNavigatorHeight:boundingRect.height,
+      selectedElementNode:_elementNode});
+  },
+
+  selectElement( _targetNode  ){
+
+    // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
+    // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
+    var targetNode = _targetNode;
 
 
-    // DisplayElementPath 이벤트를 발생시키기 위해 path의 순서를 뒤집는다.
-    var reversePath = [];
-    for(var i =0; i < _path.length; i++ ){
-      reversePath.push( _path[i] );
+    // target 에 getElementNode 메소드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
+    while( typeof targetNode.getElementNode !== 'function' ){
+      if( targetNode.parentElement === null ) break;
+      targetNode = targetNode.parentElement;
+    }
+
+    // target 변수가 가르키는 element에 getElementNode 메소드가 존재하지 않는다면.
+    if( typeof targetNode.getElementNode !== 'function' ){
+
+      this.errorNotice(
+        "매핑된 ElementNode 를 얻을 수 없습니다.",
+        "ElementNode를 배치하여 주세요."
+      );
+
+      return;
     }
 
 
-    this.emit("DisplayElementPath",{
-      elementPathArray: reversePath
-    });
-
-    this.emit("SelectedElementNodeByDirectContext",{
-      elementNode: _target.getElementNode()
+    this.emit("SelecteElementNode",{
+      elementNode: targetNode.getElementNode()
     });
   },
 
@@ -240,15 +321,31 @@ var DirectContext = React.createClass({
   },
 
   onThrowCatcherClickElementInStage(_eventData, _pass) {
-    this.selectElement( _eventData.targetDOMElement, _eventData.elementPath);
+
+    this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
 
     // BuilderSService가 contextMenu를 닫을 수 있도록 pass 한다.
     _pass();
   },
 
+  save(){
+    var contextController = this.props.contextController;
 
+    contextController.testSave();
+  },
+
+
+  errorNotice( _title, _message){
+    this.emit('NoticeMessage',{
+      title:_title,
+      message:_message,
+      level : "error"
+    });
+  },
 
   componentDidUpdate(){
+    if( this.props.runningState === this.props.contextController.running ) return;
+
     if( this.props.runningState ){
       this.goingToContextRunning();
     } else {
@@ -259,7 +356,7 @@ var DirectContext = React.createClass({
   componentDidMount(){
     // contextController 연결
     this.contextController = this.props.contextController;
-    this.contextController.attach(this);
+    this.contextController.attach(this, this.getDocument().body);
 
     if( this.props.runningState ){
       this.goingToContextRunning();
@@ -279,16 +376,34 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
-    var elNavY = this.state.elementNavigatorY - 35;
-    if( elNavY < 0 ){
-      elNavY = 0;
+
+
+    var elementNavigatorStyle = {};
+    var elementNavigatorClasses = ['element-navigator'];
+    if(! this.state.showElementNavigator ){
+      elementNavigatorClasses.push('off');
+
+      var elNavY = this.state.prevElementNavigatorY - 35;
+      if( elNavY < 0 ){
+        elNavY = 0;
+      }
+
+      elementNavigatorStyle = {
+        left:this.state.prevElementNavigatorX,
+        top: elNavY
+      };
+    } else {
+      var elNavY = this.state.elementNavigatorY - 35;
+      if( elNavY < 0 ){
+        elNavY = 0;
+      }
+
+      elementNavigatorStyle = {
+        left:this.state.elementNavigatorX,
+        top: elNavY
+      };
     }
 
-    var elementNavigatorStyle = {
-      left:this.state.elementNavigatorX,
-      top: elNavY,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
 
     var selectedOutlineStyleTop = {
       left:this.state.elementNavigatorX,
@@ -322,6 +437,8 @@ var DirectContext = React.createClass({
       display: this.state.showElementNavigator? 'inherit':'none'
     }
 
+
+
     /******
      * DirectContext와 Iframe-stage의 ContentBox 는 일치하여야 한다.
      *
@@ -330,22 +447,27 @@ var DirectContext = React.createClass({
     return (
       <div className='DirectContext theme-black' style={style}>
         <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height}/>
-         <div className='element-navigator' ref='element-navigator' style={elementNavigatorStyle}>
+         <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
            <div className='box'>
              <ul>
               <li>
                 <button onClick={this.jumpToParentElement}>
-                  <i className='fa fa-bolt'/> Parent
+                  <i className='fa fa-bolt'/> <span className='title'>Parent</span>
                 </button>
               </li>
               <li>
                 <button onClick={this.editElement}>
-                  <i className='fa fa-pencil-square-o'/> Edit
+                  <i className='fa fa-pencil-square-o'/> <span className='title'>Edit</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={this.cloneElement}>
+                  <i className='fa fa-clone'/> <span className='title'>Clone</span>
                 </button>
               </li>
               <li>
                 <button onClick={this.removeElement}>
-                  <i className='fa fa-trash'/> Remove
+                  <i className='fa fa-trash'/> <span className='title'>Remove</span>
                 </button>
               </li>
               <li>
