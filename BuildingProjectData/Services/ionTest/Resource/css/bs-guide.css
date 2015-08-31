@@ -1,0 +1,70 @@
+.bs-guide .container,
+.bs-guide .container-fluid
+{
+    position: relative;
+
+    padding: 20px 0;
+
+    background-color: rgba(224, 10, 10, .28);
+}
+
+.bs-guide .container::before
+{
+    font-size: 32px;
+
+    position: absolute;
+    top: 0;
+
+    display: inline-block;
+
+    content: 'container';
+
+    color: rgba(255,255,255,.5);
+}
+
+.bs-guide .row
+{
+    position: relative;
+
+    padding: 20px 0;
+
+    background-color: rgba(12, 152, 249, .5);
+}
+
+.bs-guide .row::before
+{
+    font-size: 32px;
+
+    position: absolute;
+    top: 0;
+
+    display: inline-block;
+
+    content: 'row';
+
+    color: rgba(255,255,255,.5);
+}
+
+
+.bs-guide .column
+{
+    position: relative;
+
+    padding: 20px 0;
+
+    background-color: rgba(17, 224, 9, .56);
+}
+
+.bs-guide .column::before
+{
+    font-size: 32px;
+
+    position: absolute;
+    top: 0;
+
+    display: inline-block;
+
+    content: 'column';
+
+    color: rgba(255,255,255,.5);
+}

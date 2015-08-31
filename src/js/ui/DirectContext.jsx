@@ -241,6 +241,8 @@ var DirectContext = React.createClass({
       showElementNavigator:false,
       elementNavigatorX:0,
       elementNavigatorY:0,
+      prevElementNavigatorX: this.state.elementNavigatorX,
+      prevElementNavigatorY: this.state.elementNavigatorY,
       elementNavigatorWidth:0,
       elementNavigatorHeight:0,
       selectedElement:null,
@@ -341,8 +343,6 @@ var DirectContext = React.createClass({
     });
   },
 
-
-
   componentDidUpdate(){
     if( this.props.runningState === this.props.contextController.running ) return;
 
@@ -376,16 +376,34 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
-    var elNavY = this.state.elementNavigatorY - 35;
-    if( elNavY < 0 ){
-      elNavY = 0;
+
+
+    var elementNavigatorStyle = {};
+    var elementNavigatorClasses = ['element-navigator'];
+    if(! this.state.showElementNavigator ){
+      elementNavigatorClasses.push('off');
+
+      var elNavY = this.state.prevElementNavigatorY - 35;
+      if( elNavY < 0 ){
+        elNavY = 0;
+      }
+
+      elementNavigatorStyle = {
+        left:this.state.prevElementNavigatorX,
+        top: elNavY
+      };
+    } else {
+      var elNavY = this.state.elementNavigatorY - 35;
+      if( elNavY < 0 ){
+        elNavY = 0;
+      }
+
+      elementNavigatorStyle = {
+        left:this.state.elementNavigatorX,
+        top: elNavY
+      };
     }
 
-    var elementNavigatorStyle = {
-      left:this.state.elementNavigatorX,
-      top: elNavY,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
 
     var selectedOutlineStyleTop = {
       left:this.state.elementNavigatorX,
@@ -419,6 +437,8 @@ var DirectContext = React.createClass({
       display: this.state.showElementNavigator? 'inherit':'none'
     }
 
+
+
     /******
      * DirectContext와 Iframe-stage의 ContentBox 는 일치하여야 한다.
      *
@@ -427,7 +447,7 @@ var DirectContext = React.createClass({
     return (
       <div className='DirectContext theme-black' style={style}>
         <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height}/>
-         <div className='element-navigator' ref='element-navigator' style={elementNavigatorStyle}>
+         <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
            <div className='box'>
              <ul>
               <li>

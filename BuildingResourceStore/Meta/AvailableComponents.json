@@ -1,5 +1,5 @@
 {
-  "host": "http://localhost:8000",
+  "host": "http://localhost:8080",
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
     "key": "BasicFramePackage",
@@ -128,6 +128,26 @@
       "key": "boxb",
       "name": "BoxB",
       "path": "TestPackage/BoxB.jsx"
+    }]
+  }, {
+    "key": "TwitterBootstrap",
+    "name": "트위터 부트스트랩",
+    "components": [{
+      "key": "container",
+      "name": "컨테이너",
+      "path": "TwitterBootstrap/Container.jsx"
+    }, {
+      "key": "container-fluid",
+      "name": "플루이드 컨테이너",
+      "path": "TwitterBootstrap/FluidContainer.jsx"
+    }, {
+      "key": "row",
+      "name": "행",
+      "path": "TwitterBootstrap/Row.jsx"
+    }, {
+      "key": "col-md-1",
+      "name": "Column md 1",
+      "path": "TwitterBootstrap/Column-md1.jsx"
     }]
   }, {
     "key": "SampleReactPackage",

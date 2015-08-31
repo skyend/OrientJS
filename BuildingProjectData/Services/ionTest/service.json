@@ -11,6 +11,11 @@
     "name": "IndexContents",
     "key": "index-contents",
     "purpose": "contents"
+  }, {
+    "id": 3,
+    "name": "Bootstrap",
+    "key": "bootstrap-test",
+    "purpose": "layout"
   }],
 
   "pages": [{
