@@ -1,7 +1,7 @@
 {
   "documentID": 1,
   "documentName": "IndexContents",
-  "lastElementId": 38,
+  "lastElementId": 41,
   "rootElementNode": {
     "id": 1,
     "type": "html",
@@ -166,20 +166,30 @@
         "type": "html",
         "attributes": {
           "tagName": "header",
-          "style": ""
+          "style": "background-image:url(http://40.media.tumblr.com/b8c12a5f161939e98012349dfac5062e/tumblr_nt4jea8EQx1slhhf0o1_1280.jpg);\nbackground-position:0 30%;"
         },
         "comment": "",
         "createDate": "2015-08-27T07:05:07.598Z",
         "children": [{
-          "id": 13,
-          "type": "string",
+          "id": 40,
+          "type": "html",
           "attributes": {
-            "tagName": "text",
-            "text": "header"
+            "tagName": "h1",
+            "style": "margin:0;\ntext-align:center;\npadding:30px;"
           },
           "comment": "",
-          "createDate": "2015-08-27T07:05:07.599Z",
-          "children": []
+          "createDate": "2015-08-28T10:30:34.656Z",
+          "children": [{
+            "id": 41,
+            "type": "string",
+            "attributes": {
+              "tagName": "text",
+              "text": "Sky Header "
+            },
+            "comment": "",
+            "createDate": "2015-08-28T10:30:34.656Z",
+            "children": []
+          }]
         }]
       }, {
         "id": 16,
@@ -302,7 +312,7 @@
         "type": "html",
         "attributes": {
           "tagName": "footer",
-          "style": ""
+          "style": "background-image:url(http://40.media.tumblr.com/b8c12a5f161939e98012349dfac5062e/tumblr_nt4jea8EQx1slhhf0o1_1280.jpg);\nbackground-position:0 50%;"
         },
         "comment": "",
         "createDate": "2015-08-27T07:05:14.830Z",
