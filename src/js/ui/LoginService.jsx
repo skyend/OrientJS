@@ -35,9 +35,9 @@ require('./LoginService.less');
                 success: function (data) {
                     cookie.set('session_token', data.session_token);
                     $(".login-form-message").addClass('show success').text('Connecting...');
-                    //setTimeout(function () {
-                    //    $("#login-form").submit();
-                    //}, 2000);
+                    setTimeout(function () {
+                       $("#login-form").submit();
+                    }, 2000);
                 },
                 error: function (data) {
                     var result = JSON.parse(data.responseText);

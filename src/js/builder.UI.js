@@ -369,10 +369,7 @@
       this.window.document.getElementsByTagName('BODY')[0]);
     this.onResize();
 
-    this.uiServicer = rootUI; << << << < HEAD
-      === === =
-      //console.log(this.uiServicer);
-      >>> >>> > ParallelDocumentDirecting
+    this.uiServicer = rootUI;
 
     EventDistributor.manualBindForNotReactClass(this, this.uiServicer);
   };
