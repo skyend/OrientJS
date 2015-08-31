@@ -43,7 +43,7 @@
             var session_token = cookie.get('session_token');
             $.each(uploadFileList, function (index, file) {
                 $.ajax({
-                    url: "http://localhost:8081/restful/servicebuilder/resource/upload",
+                    url: "http://125.131.88.77:8081/restful/servicebuilder/resource/upload",
                     type: 'POST',
                     crossDomain: true,
                     headers: {session_token: session_token},

@@ -29,7 +29,7 @@ require('./LoginService.less');
             $("#login-button").html('<i class="fa fa-spinner fa-pulse"></i>');
             $.ajax({
                 //url: "http://125.131.88.77:8081/restful/servicebulider/resoruce/login",
-                url: "http://localhost:8081/restful/servicebuilder/resource/login",
+                url: "http://125.131.88.77:8081/restful/servicebuilder/resource/login",
                 method: "POST",
                 data: JSON.stringify({user_id: id, password: encodingPass}),
                 success: function (data) {
