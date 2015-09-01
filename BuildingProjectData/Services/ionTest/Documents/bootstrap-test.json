@@ -1,7 +1,7 @@
 {
   "documentID": 3,
   "documentName": "BootStrapTest",
-  "lastElementId": 11,
+  "lastElementId": 12,
   "rootElementNode": {
     "id": 1,
     "type": "html",
@@ -37,7 +37,8 @@
           "type": "html",
           "attributes": {
             "tagName": "div",
-            "class": "column col-md-4"
+            "class": "column col-md-4",
+            "style": ""
           },
           "comment": "",
           "createDate": "2015-08-31T05:43:24.728Z",
@@ -46,7 +47,7 @@
             "type": "empty",
             "attributes": {
               "tagName": "div",
-              "style": ""
+              "style": "width:100%;\nheight:50px;"
             },
             "comment": "",
             "createDate": "2015-08-31T05:45:52.160Z",
@@ -142,7 +143,16 @@
       }]
     }]
   },
-  "elementNodes": [],
+  "elementNodes": [{
+    "id": 12,
+    "type": "react",
+    "attributes": {},
+    "comment": "",
+    "createDate": "2015-09-01T01:28:03.865Z",
+    "children": [],
+    "reactPackageKey": "TestPackage",
+    "reactComponentKey": "testinputbox"
+  }],
   "pageCSS": "",
   "usingResources": {
     "style": [{

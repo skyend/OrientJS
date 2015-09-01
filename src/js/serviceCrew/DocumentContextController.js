@@ -150,7 +150,7 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
   } else if (_nodeElement.type === 'string') {
     this.instillRealTextElement(_nodeElement);
   } else if (_nodeElement.type === 'empty') {
-    this.instillRealHTMLElement(_nodeElement);
+    this.instillRealEMPTYElement(_nodeElement);
   } else if (_nodeElement.type === 'react') {
     this.instillRealReactElement(_nodeElement);
   }
@@ -162,9 +162,8 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealHTMLElement = function(_nodeElement) {
-  var element;
 
-  element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
+  var element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
   var elementAttributes = _nodeElement.getAttributes();
   var keys = Object.keys(elementAttributes);
   for (var i = 0; i < keys.length; i++) {
@@ -186,15 +185,34 @@ DocumentContextController.prototype.instillRealTextElement = function(_nodeEleme
 };
 
 /**
+ * instillRealEMPTYElement
+ * ElementNode에 TextNode 타입의 RealElement를 주입한다.
+ *
+ */
+DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElement) {
+  var refferenceElementNode = this.document.getElementNodeFromPool(_nodeElement.getRefferenceTarget());
+
+  if (refferenceElementNode !== undefined) {
+    this.constructToRealElement(refferenceElementNode);
+  }
+
+};
+
+/**
  * instillRealReactElement
  * ElementNode에 React 타입의 RealElement를 주입한다.
  *
  */
 DocumentContextController.prototype.instillRealReactElement = function(_nodeElement) {
 
-  ////// TOTOTOTOTO DODODODODO
-  console.warn("React RealElement 주입방식 정의 안됨. 안만들어도 될듯");
+  var element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
+  var elementAttributes = _nodeElement.getAttributes();
+  var keys = Object.keys(elementAttributes);
+  for (var i = 0; i < keys.length; i++) {
+    element.setAttribute(keys[i], elementAttributes[keys[i]]);
+  }
 
+  _nodeElement.setRealElement(element);
 };
 
 /**
@@ -312,48 +330,33 @@ DocumentContextController.prototype.isDropableToRoot = function() {
  * @Param _toElement : DOMElement // 기준이 되는 DomElement
  */
 DocumentContextController.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
-  var newElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
-
-
-  // null 이라면 삽입실패로 false를 반환한다.
-  if (newElementNode === null) return false;
-
-  // 부모가 null이면
-  if (newElementNode.getParent() === null) {
-
-    // 부모가 null이고 elementNodes pool의 길이가 0이라면 root로 삽입된것으로 루트를 랜더링한다.
-    if (this.document.getElementNodes().length == 0) {
-      this.rootRender();
-    }
-
-  } else {
-    var parent = newElementNode.getParent();
-
-    this.constructToRealElement(newElementNode);
-
-    parent.growupRealDOMElementTree();
-
-    this.updateRenderCSS();
-  }
-
-
+  // var newElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
+  //
+  //
+  // // null 이라면 삽입실패로 false를 반환한다.
+  // if (newElementNode === null) return false;
+  //
+  // // 부모가 null이면
+  // if (newElementNode.getParent() === null) {
+  // z
+  //   // 부모가 null이고 elementNodes pool의 길이가 0이라면 root로 삽입된것으로 루트를 랜더링한다.
+  //   if (this.document.getElementNodes().length == 0) {
+  //     this.rootRender();
+  //   }
+  //
+  // } else {
+  //   var parent = newElementNode.getParent();
+  //
+  //   this.constructToRealElement(newElementNode);
+  //
+  //   parent.growupRealDOMElementTree();
+  //
+  //   this.updateRenderCSS();
+  // }
 
   return true;
 };
 
-DocumentContextController.prototype.insertNewElementNode = function(_insertType, _elementNode, _toElement) {
-  var newElementNode = this.document.insertElementNode(_insertType, _component, _toElement.getElementNode());
-
-  var parent = newElementNode.getParent();
-
-  this.constructToRealElement(newElementNode);
-
-  parent.growupRealDOMElementTree();
-
-  this.updateRenderCSS();
-
-  return true;
-};
 
 
 DocumentContextController.prototype.testSave = function() {

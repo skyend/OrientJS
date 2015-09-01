@@ -25,10 +25,16 @@ var DirectContext = React.createClass({
 
 
   deployComponentToInLast( _vid, _component ){
-    //console.log("deployed component", _component);
+    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
+    var dropTargetElementNode = dropTargetDOMElement.getElementNode();
+    var baseDocument = dropTargetElementNode.document;
 
-    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
+    var newElementNode = baseDocument.newElementNodeFromComponent( _component );
 
+    baseDocument.insertElementNode( 'appendChild', newElementNode, dropTargetElementNode );
+    console.log(baseDocument);
+    console.log(baseDocument.elementNodes);
+    return;
     var contextController = this.getContextControllerFromDOMElement(dropTarget);
 
     var result = contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
@@ -203,7 +209,7 @@ var DirectContext = React.createClass({
 
     var clonedElementNode = elementNodeDoc.cloneElement( elementNode );
 
-    console.log(contextController.buildElementNodeReality(elementNode));
+    elementNode.insertAfter( clonedElementNode );
 
 
     this.emit('UpdatedContext', {

@@ -1,4 +1,5 @@
 var ElementNode = require('./ElementNode.js');
+var _ = require('underscore');
 
 var Document = function(_contextController, _documentDataObject) {
   //////////////
@@ -244,6 +245,13 @@ Document.prototype.newElementNode = function(_elementNodeDataObject) {
   return elementNode;
 };
 
+Document.prototype.newElementNodeFromComponent = function(_component) {
+  var newElementNode = this.newElementNode();
+  newElementNode.buildByComponent(_component);
+
+  return newElementNode;
+};
+
 ///////////
 /********
  * cloneElement
@@ -260,6 +268,17 @@ Document.prototype.getNewElementNodeId = function() {
   return ++(this.lastElementId);
 };
 
+Document.prototype.getElementNodeFromPool = function(_id) {
+  console.log(_id);
+  console.log(this.elementNodes);
+  var index = _.findIndex(this.elementNodes, function(__elementNode) {
+    console.log(__elementNode.getId());
+    return __elementNode.getId() == _id;
+  });
+
+  return this.elementNodes[index];
+};
+
 /////////////////
 /***************
  * insertNewElementNodeFromComponent
@@ -268,62 +287,70 @@ Document.prototype.getNewElementNodeId = function() {
  * @Param _toElement
  * @Return ElementNode{} : 생성된 ElementNode
  */
-Document.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toRealDOMElement) {
-  //console.log(_toRealDOMElement);
+Document.prototype.insertElementNodeFromComponent = function(_insertType, _elementNode, _toElementNode) {
 
-  var targetElementNode = _toRealDOMElement.___en;
 
-  // 대상 Element가 존재하지 않으면 rootNode로 편입또는 삽입실패로 지정한다.
-  if (typeof targetElementNode === 'undefined') {
 
-    if (this.getRootElementNode() === null) {
-      var newElementNode = this.newElementNode();
-      newElementNode.buildByComponent(_component);
 
-      // 방금 생성된 elementNode를 root로 정의한다.
-      this.setRootElementNode(newElementNode);
-      return newElementNode;
-    } else {
-
-      return null;
-    }
-  } else {
-
-    // react ElementType 의 컴포넌트가 아닐 경우 자식으로 등록
-    if (_component.elementType !== 'react') {
-      // 대상노드가 존재하면 대상노드기준으로 삽입
-      var newElementNode = this.newElementNode();
-      newElementNode.buildByComponent(_component);
-
-      this.insertElementNode(_insertType, newElementNode, targetElementNode);
-
-      return newElementNode;
-    } else {
-      console.log(_component, 'in');
-      // 드랍된 컴포넌트가 React 타입일 경우
-      // 대상요소에 드롭밖에 할 수 없다. 그리고 그 대상노드는 Empty Type의 ElementNode여야 한다.
-      // 일단 inertType이 어떻든 드롭으로 가정
-      if (targetElementNode.getType() === 'empty') {
-        targetElementNode.setRefferenceType("react");
-
-        targetElementNode.setRefferenceTarget({
-          "componentKey": _component.componentKey,
-          "packageKey": _component.packageKey
-        });
-
-        return targetElementNode;
-      }
-      return null;
-    }
-    return null;
-  }
-  return null
+  //
+  // var targetElementNode = _toRealDOMElement.___en;
+  //
+  // // 대상 Element가 존재하지 않으면 rootNode로 편입또는 삽입실패로 지정한다.
+  // if (typeof targetElementNode === 'undefined') {
+  //
+  //   if (this.getRootElementNode() === null) {
+  //
+  //     // 방금 생성된 elementNode를 root로 정의한다.
+  //     this.setRootElementNode(newElementNode);
+  //     return newElementNode;
+  //   } else {
+  //
+  //     return null;
+  //   }
+  // } else {
+  //
+  //   // react ElementType 의 컴포넌트가 아닐 경우 자식으로 등록
+  //   if (_component.elementType !== 'react') {
+  //     // 대상노드가 존재하면 대상노드기준으로 삽입
+  //
+  //     this.insertElementNode(_insertType, newElementNode, targetElementNode);
+  //
+  //     return newElementNode;
+  //   } else {
+  //     // 드랍된 컴포넌트가 React 타입일 경우
+  //     // 대상요소에 드롭밖에 할 수 없다. 그리고 그 대상노드는 Empty Type의 ElementNode여야 한다.
+  //     // 일단 inertType이 어떻든 드롭으로 가정
+  //     if (targetElementNode.getType() === 'empty') {
+  //       targetElementNode.setRefferenceType("react");
+  //
+  //       targetElementNode.setRefferenceTarget({
+  //         "componentKey": _component.componentKey,
+  //         "packageKey": _component.packageKey
+  //       });
+  //
+  //       return targetElementNode;
+  //     }
+  //     return null;
+  //   }
+  //   return null;
+  // }
+  // return null
 };
 
 Document.prototype.insertElementNode = function(_insertType, _elementNode, _baseElementNode) {
 
   if (_insertType === 'appendChild') {
-    _baseElementNode.appendChild(_elementNode);
+
+    // Empty Type의 ElementNode에 appendChild를 하려고 할때 ElementNode를 따로 저장하고 드롭 대상 ElementNode에 참조를 설정한다.
+    if (_baseElementNode.getType() === 'empty') {
+      // Empty Type Element의 참조 Type을 새로운 ElementNode로 동일하게 설정하고
+      // 해당 요소의 Id를 참조 Target으로 설정한다.
+      _baseElementNode.setRefferenceType(_elementNode.getType());
+      _baseElementNode.setRefferenceTarget(_elementNode.getId());
+      this.elementNodes.push(_elementNode);
+    } else {
+      _baseElementNode.appendChild(_elementNode);
+    }
   } else if (_insertType === 'insertBefore') {
     if (_baseElementNode.getParent() === null) return null;
 

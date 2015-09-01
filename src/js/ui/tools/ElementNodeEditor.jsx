@@ -77,8 +77,8 @@ var ElementNodeEditor = React.createClass({
             case "RefferenceType" :
               elementNode.setRefferenceType( changedData );
               break;
-            case "DocumentRefKey" :
-              elementNode.setRefferenceTarget( {documentRefKey: changedData} );
+            case "RefferenceTarget" :
+              elementNode.setRefferenceTarget( changedData );
               break;
           }
         }
