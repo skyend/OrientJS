@@ -1,7 +1,12 @@
 var React = require('react');
+var EventEmitter = require('../lib/EventEmitter.js');
+var Extender = require('../lib/Extender.js');
+
 var _ = require('underscore');
 
 var ElementNode = function(_document, _elementNodeDataObject) {
+  Extender.extends(EventEmitter, this);
+
   //////////////
   // 필드 정의
   ////////////////////////
@@ -270,6 +275,12 @@ ElementNode.prototype.getComment = function() {
 // ReactTypeComponent
 ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
+};
+
+
+// getIsMounted
+ElementNode.prototype.getIsMounted = function() {
+  return this.getParent() !== null;
 };
 
 ///////////
@@ -639,7 +650,7 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
  */
 ElementNode.prototype.growupRealDOMElementTree = function() {
   var self = this;
-
+  console.log(this);
   // Real Element 를 가지고 있으면 growupRealElementTree 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
   if (this.hasRealDOMElement()) {
 
@@ -651,7 +662,7 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
 
     // empty Type의 ElementNode는 RealElement의 내용을 다르게 갱신한다.
     if (this.getType() === 'empty') {
-
+      console.log('aa');
       // emptyType 구축
       this.growupEmptyTypeRealDOMElement();
     } else {
@@ -679,38 +690,44 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
     }
 
 
-
+    console.log('return realDOMElement');
     return realDOMElement;
   }
 };
 
 ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
+  console.log('asd');
   var realElement = this.getRealDOMElement();
   // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
   // 그에따른 처리..
-
+  console.log('asd2');
   var refType = this.getRefferenceType();
+  console.log('asd22');
+  if (this.getRefferenceTarget() !== 'none') {
+    console.log('asdss');
+    switch (refType) {
+      case "react":
+      case "html":
+      case "grid":
+      case "empty":
+        var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
 
-  switch (refType) {
-    case "react":
-    case "html":
-    case "grid":
-    case "empty":
-      var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+        if (refferenceElementNode !== undefined) {
+          console.log('growupEmptyTypeRealDOMElement');
+          realElement.appendChild(refferenceElementNode.growupRealDOMElementTree());
+        } else {
+          console.warn("참조중인 id의 노드가 존재하지 않습니다.");
+        }
 
-      if (refferenceElementNode !== undefined) {
-        realElement.appendChild(refferenceElementNode.growupRealDOMElementTree());
-      } else {
-        console.warn("참조중인 id의 노드가 존재하지 않습니다.");
-      }
+        break;
+      case "document":
 
-      break;
-    case "document":
-
-      break;
-    default:
+        break;
+      default:
+    }
   }
 
+  console.log('asdss2');
   return realElement;
 };
 

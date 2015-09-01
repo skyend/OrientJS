@@ -170,7 +170,7 @@ var EnterableWrapperSelect = React.createClass({
 
   renderOption( _option ){
     return (
-      <option value={ _option.value }> { _option.value } </option>
+      <option value={ _option.value }> { _option.title || _option.value } </option>
     )
   },
 

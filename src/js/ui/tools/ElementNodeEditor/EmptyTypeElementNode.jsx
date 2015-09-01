@@ -22,22 +22,36 @@ var EmptyTypeElementNode = React.createClass({
         var elementNode = this.props.elementNode;
 
         var refTypeOptions = [
-          { value:'react' },
-          { value:'document'},
-          { value: 'elementNode'},
+          { value:'react' , title:'React'},
+          { value:'document' , title:'Document'},
+          { value: 'html' , title:'ElementNode'},
           { value: 'none' }
         ];
 
         var emptyFieldSet = [
           { "name": "RefferenceType", title:"참조 타입", "initialValue": elementNode.getRefferenceType() || 'Refference nothing', enterable:true, type:'select', options:refTypeOptions },
-        //  { "name": "RefferenceKey", title:"참조 키", "initialValue": '준비중', enterable:true, type:'input'},
         ];
 
 
-        if( elementNode.getRefferenceType() === 'react' ){
-          emptyFieldSet.push( { "name": "RefferenceTarget",  title:"대상 ID","initialValue": elementNode.getRefferenceTarget() || 'none', enterable:false, } );
-        } else if ( elementNode.getRefferenceType() === 'document'  ){
-          emptyFieldSet.push( { "name": "RefferenceTarget",  title:"문서 참조 키","initialValue": elementNode.getRefferenceTarget() || '', enterable:true, type:'input' } );
+        if( elementNode.getRefferenceType() !== 'document' ){
+          var options = [{value:'none', 'title':'참조 안함'}];
+
+          elementNode.document.elementNodes.map(function(_elementNode){
+              if( _elementNode.getId() === elementNode.getRefferenceTarget() ){
+                options.push({value:_elementNode.getId(), title:'현재 참조중['+_elementNode.getId()+']'});
+              } else {
+
+                if( ! _elementNode.getIsMounted() ){
+                  options.push({value:_elementNode.getId(), title:_elementNode.getId()});
+                }
+              }
+          });
+
+          emptyFieldSet.push( { "name": "RefferenceTarget",  title:"참조 요소 ID","initialValue": elementNode.getRefferenceTarget() || 'none', enterable:true, type:'select', options:options } );
+        } else {
+          var options = [{value:'none', 'title':'참조 안함'}];
+          emptyFieldSet.push( { "name": "RefferenceTarget",  title:"참조 문서 키","initialValue": elementNode.getRefferenceTarget() || 'none', enterable:true, type:'select', options:options } );
+
         }
 
         var tagAttributesFieldSet = [];

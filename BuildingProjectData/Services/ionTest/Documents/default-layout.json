@@ -53,22 +53,6 @@
         "children": [],
         "refferenceType": "html",
         "refferenceTarget": 11
-      }, {
-        "id": 8,
-        "type": "empty",
-        "attributes": {
-          "tagName": "div",
-          "style": ""
-        },
-        "comment": "",
-        "createDate": "2015-08-26T07:40:08.399Z",
-        "inherentCSS": "",
-        "children": [],
-        "refferenceType": "react",
-        "refferenceTarget": {
-          "componentKey": "boxb",
-          "packageKey": "TestPackage"
-        }
       }]
     }, {
       "id": 5,

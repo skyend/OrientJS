@@ -26,61 +26,70 @@ var DirectContext = React.createClass({
 
   deployComponentToInLast( _vid, _component ){
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
-    var dropTargetElementNode = dropTargetDOMElement.getElementNode();
-    var baseDocument = dropTargetElementNode.document;
 
-    var newElementNode = baseDocument.newElementNodeFromComponent( _component );
+    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
 
-    baseDocument.insertElementNode( 'appendChild', newElementNode, dropTargetElementNode );
-    console.log(baseDocument);
-    console.log(baseDocument.elementNodes);
-    return;
-    var contextController = this.getContextControllerFromDOMElement(dropTarget);
-
-    var result = contextController.insertNewElementNodeFromComponent('appendChild',_component, dropTarget);
-
-    if( ! result ) {
-      this.failToDrop();
+      var baseElementNode = dropTargetDOMElement.getElementNode();
+      this.deployComponentToElementNode("appendChild", _component, baseElementNode);
     } else {
-      this.emit('UpdatedContext', {
-        directContext: this
-      });
+
+      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
+      this.contextController.rootRender();
     }
 
-    //return this.getIFrameStage().insertElementToInLastByVid(_vid, _staticElement);
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
   },
 
   deployComponentToBefore( _vid, _component ){
-    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
-    var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
-    var result = contextController.insertNewElementNodeFromComponent('insertBefore',_component, dropTarget);
+    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
 
-    if( ! result ) {
-      this.failToDrop();
+      var baseElementNode = dropTargetDOMElement.getElementNode();
+      this.deployComponentToElementNode("insertBefore", _component, baseElementNode);
     } else {
-      this.emit('UpdatedContext', {
-        directContext: this
-      });
+
+      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
+      this.contextController.rootRender();
     }
-    // console.log("deployed component", _component);
-    // return this.getIFrameStage().insertElementToBeforeByVid(_vid, _staticElement);
+
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
   },
 
   deployComponentToAfter( _vid, _component ){
-    var dropTarget = this.getIFrameStage().getElementByVid(_vid);
-    var contextController = this.getContextControllerByElementNode(dropTarget.getElementNode());
+    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
-    var result = contextController.insertNewElementNodeFromComponent('insertAfter',_component, dropTarget);
-    if( ! result ) {
-      this.failToDrop();
+    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
+
+      var baseElementNode = dropTargetDOMElement.getElementNode();
+      this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
     } else {
-      this.emit('UpdatedContext', {
-        directContext: this
-      });
+
+      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
+      this.contextController.rootRender();
     }
-    // console.log("deployed component", _component);
-    // return this.getIFrameStage().insertElementToAfterByVid(_vid, _staticElement);
+
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
+  },
+
+  deployComponentToElementNode( _insertType, _component, _baseElementNode ){
+
+      var baseDocument = _baseElementNode.document;
+
+      var newElementNode = baseDocument.newElementNodeFromComponent( _component );
+
+      var resultElementNode = baseDocument.insertElementNode( _insertType, newElementNode, _baseElementNode );
+
+      var contextController = baseDocument.contextController;
+
+      contextController.rootRender();
+
   },
 
   /***********

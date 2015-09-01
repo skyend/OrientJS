@@ -191,11 +191,11 @@ DocumentContextController.prototype.instillRealTextElement = function(_nodeEleme
  */
 DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElement) {
   var refferenceElementNode = this.document.getElementNodeFromPool(_nodeElement.getRefferenceTarget());
+  console.log(_nodeElement.getRefferenceTarget(), refferenceElementNode, 'instillRealEMPTYElement');
 
   if (refferenceElementNode !== undefined) {
     this.constructToRealElement(refferenceElementNode);
   }
-
 };
 
 /**
@@ -319,44 +319,6 @@ DocumentContextController.prototype.updateRenderCSS = function() {
 DocumentContextController.prototype.isDropableToRoot = function() {
   return this.document.rootElementNode === null;
 };
-
-
-/****
- * insertNewElementNodeFromComponent
- * Component를 ElementNode로 변환하여 ElementNode에 추가하고
- * 변경된 ElementNode를 다시 빌드하여 화면에 표시한다.
- * @Param _insertType : "appendChild" | 'insertBefore' | 'insertAfter'
- * @Param _component : ComponentModule // ComponentPool로 부터 공급받은 컴포넌트 모듈
- * @Param _toElement : DOMElement // 기준이 되는 DomElement
- */
-DocumentContextController.prototype.insertNewElementNodeFromComponent = function(_insertType, _component, _toElement) {
-  // var newElementNode = this.document.insertNewElementNodeFromComponent(_insertType, _component, _toElement);
-  //
-  //
-  // // null 이라면 삽입실패로 false를 반환한다.
-  // if (newElementNode === null) return false;
-  //
-  // // 부모가 null이면
-  // if (newElementNode.getParent() === null) {
-  // z
-  //   // 부모가 null이고 elementNodes pool의 길이가 0이라면 root로 삽입된것으로 루트를 랜더링한다.
-  //   if (this.document.getElementNodes().length == 0) {
-  //     this.rootRender();
-  //   }
-  //
-  // } else {
-  //   var parent = newElementNode.getParent();
-  //
-  //   this.constructToRealElement(newElementNode);
-  //
-  //   parent.growupRealDOMElementTree();
-  //
-  //   this.updateRenderCSS();
-  // }
-
-  return true;
-};
-
 
 
 DocumentContextController.prototype.testSave = function() {
