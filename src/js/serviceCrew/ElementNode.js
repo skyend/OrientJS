@@ -721,7 +721,7 @@ ElementNode.prototype.linkRealDOMofChild_empty_type = function() {
   // 그에따른 처리..
 
 
-
+  this.clearRefferenceInstance();
   var refTarget = this.getRefferenceTarget();
   if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
 
@@ -738,6 +738,10 @@ ElementNode.prototype.linkRealDOMofChild_empty_type = function() {
         if (refferenceElementNode !== undefined) {
 
           realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
+
+          if (this.getRefferenceType() === 'react') {
+            refferenceElementNode.renderReact();
+          }
         } else {
           console.warn("참조중인 id의 노드가 존재하지 않습니다.");
         }
@@ -777,6 +781,29 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   }
 
   return realElement;
+};
+
+ElementNode.prototype.renderReact = function() {
+  var realElement = this.getRealDOMElement();
+  console.log('react linked');
+  var packageKey = this.getReactPackageKey();
+  var componentKey = this.getReactComponentKey();
+
+  // ReactComponent 를 얻어온다.
+  var component = this.document.getReactTypeComponent(packageKey, componentKey);
+
+
+  var React = require('react');
+  var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+
+
+
+  React.render(refferenceInstance, realElement);
+
+  if (typeof component.CSS !== 'undefined') {
+    this.setCSS(component.CSS);
+    this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+  }
 };
 
 //////////////////////////

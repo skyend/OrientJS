@@ -83,7 +83,6 @@ var ElementNodeEditor = React.createClass({
               elementNode.setRefferenceType( changedData );
               break;
             case "RefferenceTarget" :
-              elementNode.clearRefferenceInstance();
               elementNode.setRefferenceTarget( changedData );
               break;
           }
