@@ -62,7 +62,7 @@ DocumentContextController.prototype.setSuperElement = function(_domElement) {
  */
 DocumentContextController.prototype.beginRender = function() {
   var self = this;
-
+  console.log(this.document);
   // resource convert
   var jsElements = this.convertToScriptElement(this.document.getScriptResources() || []);
   var styleElements = this.convertToStyleElements(this.document.getStyleResources() || []);
@@ -108,7 +108,7 @@ DocumentContextController.prototype.rootRender = function() {
     this.constructToRealElement(this.document.rootElementNode);
 
     // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-    var rootRealElement = this.document.rootElementNode.growupRealDOMElementTree();
+    var rootRealElement = this.document.rootElementNode.linkRealDOMofChild();
 
     // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
     this.attachRootRealElementToSuperElement();
@@ -142,6 +142,7 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
   if (_nodeElement.type === "html") {
     this.instillRealHTMLElement(_nodeElement);
 
+    // 자식도 재귀호출로 처리
     if (typeof _nodeElement.children === 'object') {
       _nodeElement.children.map(function(__childNodeElement) {
         self.constructToRealElement(__childNodeElement);
@@ -151,6 +152,12 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
     this.instillRealTextElement(_nodeElement);
   } else if (_nodeElement.type === 'empty') {
     this.instillRealEMPTYElement(_nodeElement);
+
+    // 참조중인 ElementNode도 함께 생성
+    var refEleNode = _nodeElement.getRefferencingElementNode();
+    if (refEleNode !== undefined) {
+      this.constructToRealElement(refEleNode);
+    }
   } else if (_nodeElement.type === 'react') {
     this.instillRealReactElement(_nodeElement);
   }
@@ -162,15 +169,10 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealHTMLElement = function(_nodeElement) {
+  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
 
-  var element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
-  var elementAttributes = _nodeElement.getAttributes();
-  var keys = Object.keys(elementAttributes);
-  for (var i = 0; i < keys.length; i++) {
-    element.setAttribute(keys[i], elementAttributes[keys[i]]);
-  }
-
-  _nodeElement.setRealElement(element);
+  _nodeElement.setRealElement(realElement);
+  _nodeElement.applyAttributesToRealDOM();
 };
 
 /**
@@ -179,8 +181,8 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealTextElement = function(_nodeElement) {
-
   var textNode = this.directContext.getDocument().createTextNode(_nodeElement.getText());
+
   _nodeElement.setRealElement(textNode);
 };
 
@@ -190,12 +192,10 @@ DocumentContextController.prototype.instillRealTextElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElement) {
-  var refferenceElementNode = this.document.getElementNodeFromPool(_nodeElement.getRefferenceTarget());
-  console.log(_nodeElement.getRefferenceTarget(), refferenceElementNode, 'instillRealEMPTYElement');
+  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
 
-  if (refferenceElementNode !== undefined) {
-    this.constructToRealElement(refferenceElementNode);
-  }
+  _nodeElement.setRealElement(realElement);
+  _nodeElement.applyAttributesToRealDOM();
 };
 
 /**
@@ -204,15 +204,10 @@ DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElem
  *
  */
 DocumentContextController.prototype.instillRealReactElement = function(_nodeElement) {
+  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
 
-  var element = this.directContext.getDocument().createElement(_nodeElement.getTagName());
-  var elementAttributes = _nodeElement.getAttributes();
-  var keys = Object.keys(elementAttributes);
-  for (var i = 0; i < keys.length; i++) {
-    element.setAttribute(keys[i], elementAttributes[keys[i]]);
-  }
-
-  _nodeElement.setRealElement(element);
+  _nodeElement.setRealElement(realElement);
+  _nodeElement.applyAttributesToRealDOM();
 };
 
 /**

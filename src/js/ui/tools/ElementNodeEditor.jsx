@@ -55,6 +55,7 @@ var ElementNodeEditor = React.createClass({
               elementNode.setComment( changedData );
               break;
           }
+
         }
 
         if( _eventData.refPath[1] === 'tagAttribute' ){
@@ -71,6 +72,10 @@ var ElementNodeEditor = React.createClass({
           elementNode.setAttribute(  _eventData.name, changedData );
         }
 
+
+
+        // attribute를 실제 요소에 반영
+        elementNode.applyAttributesToRealDOM();
       } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
           switch( _eventData.name ){
@@ -78,22 +83,26 @@ var ElementNodeEditor = React.createClass({
               elementNode.setRefferenceType( changedData );
               break;
             case "RefferenceTarget" :
+              elementNode.clearRefferenceInstance();
               elementNode.setRefferenceTarget( changedData );
               break;
           }
         }
+
+        // 변경된 참조 정보를 요소로부터 갱신
+
+        var elementDocument = elementNode.document;
+        var contextController = elementDocument.getContextController();
+
+        if( elementNode.getParent() !== null ){
+          contextController.constructToRealElement( elementNode );
+          elementNode.getParent().linkRealDOMofChild();
+        } else {
+          contextController.rootRender();
+        }
       }
 
 
-      var elementDocument = elementNode.document;
-      var contextController = elementDocument.getContextController();
-
-      if( elementNode.getParent() !== null ){
-        contextController.constructToRealElement( elementNode );
-        elementNode.getParent().growupRealDOMElementTree();
-      } else {
-        contextController.rootRender();
-      }
 
       this.setState({elementNode:elementNode});
     },

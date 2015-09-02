@@ -37,6 +37,7 @@ var DirectContext = React.createClass({
       this.contextController.rootRender();
     }
 
+
     this.emit('UpdatedContext', {
       directContext: this
     });
@@ -173,6 +174,10 @@ var DirectContext = React.createClass({
     return this.getIFrameStage().getDOMNode().getBoundingClientRect();
   },
 
+  getIFrameStageScrollX(){
+    return this.getIFrameStage().getScrollX();
+  },
+
   getIFrameStageScrollY(){
     return this.getIFrameStage().getScrollY();
   },
@@ -254,8 +259,8 @@ var DirectContext = React.createClass({
       showElementNavigator:false,
       elementNavigatorX:0,
       elementNavigatorY:0,
-      prevElementNavigatorX: this.state.elementNavigatorX,
-      prevElementNavigatorY: this.state.elementNavigatorY,
+      prevElementNavigatorX: this.state.elementNavigatorX + this.getIFrameStage().props.left ,
+      prevElementNavigatorY: this.state.elementNavigatorY + this.getIFrameStage().props.top ,
       elementNavigatorWidth:0,
       elementNavigatorHeight:0,
       selectedElement:null,
@@ -292,8 +297,8 @@ var DirectContext = React.createClass({
 
     this.setState({
       showElementNavigator:true,
-      elementNavigatorX:boundingRect.left,
-      elementNavigatorY:boundingRect.top,
+      elementNavigatorX:boundingRect.left + this.getIFrameStage().props.left ,
+      elementNavigatorY:boundingRect.top + this.getIFrameStage().props.top ,
       elementNavigatorWidth:boundingRect.width,
       elementNavigatorHeight:boundingRect.height,
       selectedElementNode:_elementNode});
@@ -324,7 +329,7 @@ var DirectContext = React.createClass({
     }
 
 
-    this.emit("SelecteElementNode",{
+    this.emit("SelectElementNode",{
       elementNode: targetNode.getElementNode()
     });
   },
@@ -379,6 +384,13 @@ var DirectContext = React.createClass({
   },
 
   render(){
+    var iframeStageWidth = 720;
+    var iframeStageHeight= 480;
+    var stageX = ( this.props.width - iframeStageWidth ) / 2;
+    var stageY = ( this.props.height - iframeStageHeight ) / 2;
+    this.stageX = stageX;
+    this.stageY = stageY;
+
     var style = {
       display:'none',
       width: this.props.width,
@@ -459,7 +471,7 @@ var DirectContext = React.createClass({
      */
     return (
       <div className='DirectContext theme-black' style={style}>
-        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height}/>
+        <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
          <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
            <div className='box'>
              <ul>
@@ -491,6 +503,7 @@ var DirectContext = React.createClass({
              </ul>
            </div>
          </div>
+
          <div className='selected-element-outline' style={selectedOutlineStyleTop}/>
          <div className='selected-element-outline' style={selectedOutlineStyleBottom}/>
          <div className='selected-element-outline' style={selectedOutlineStyleLeft}/>

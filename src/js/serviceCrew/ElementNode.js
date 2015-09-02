@@ -23,7 +23,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
   this.refferenceTargetProps; // {...}
 
-  this.setRefferenceInstance;
+  this.refferenceInstance = null;
 
   this.reactPackageKey;
   this.reactComponentKey;
@@ -127,10 +127,21 @@ ElementNode.prototype.setRefferenceTargetProps = function(_refferenceTargetProps
 // refferenceInstance
 ElementNode.prototype.setRefferenceInstance = function(_refferenceInstance) {
   this.refferenceInstance = _refferenceInstance;
+  if (this.refferenceInstance !== 'none') {
+    this.refferenceInstance.setParent(this);
+  }
+};
+// clear refferenceInstance
+ElementNode.prototype.clearRefferenceInstance = function() {
+  if (this.refferenceInstance !== null) this.refferenceInstance.unlinkParent();
+  else console.warn("참조중인 인스턴스가 없습니다.");
 };
 // parent
 ElementNode.prototype.setParent = function(_parentENode) {
   this.parent = _parentENode;
+};
+ElementNode.prototype.unlinkParent = function() {
+  this.parent = null;
 };
 // attribute
 ElementNode.prototype.setAttribute = function(_name, _value) {
@@ -278,9 +289,15 @@ ElementNode.prototype.getReactTypeComponent = function() {
 };
 
 
-// getIsMounted
-ElementNode.prototype.getIsMounted = function() {
+// isReferenced
+ElementNode.prototype.isReferenced = function() {
   return this.getParent() !== null;
+};
+
+// getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
+ElementNode.prototype.getRefferencingElementNode = function() {
+  var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+  return refElNode;
 };
 
 ///////////
@@ -469,6 +486,7 @@ ElementNode.prototype.buildByComponent = function(_component) {
     this.setReactComponentKey(_component.componentKey);
   }
 };
+
 /******************
  * buildByDomElement
  * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
@@ -483,7 +501,7 @@ ElementNode.prototype.buildEmptyTypeElement = function(_domElement) {
   });
 
   this.setRefferenceType('none');
-  this.setRefferenceTarget('');
+  this.setRefferenceTarget('none');
 };
 
 /******************
@@ -642,16 +660,16 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
 //////////////////////
 //
 /********************
- * growupRealDOMElementTree
+ * linkRealDOMofChild
  * 자신의 ElementNode에 생성된 RealDOMElement Tree를 갱신한다.
  * 자신의 자식 ElementNode의 구조가 변경되었고 자신의 하위 ElementNode중 RealElement를 가지지 않는 ElementNode가 없을 때 호출한다.
  * 자신의 자식 ElementNode에 구축된 realElement를 자신의 realElement에 자식으로 추가한다.
- * 그리고 자식의 growupRealElementTree 메소드를 호출하여 재귀로 동작한다.
+ * 그리고 자식의 linkRealDOMofChild 메소드를 호출하여 재귀로 동작한다.
  */
-ElementNode.prototype.growupRealDOMElementTree = function() {
+ElementNode.prototype.linkRealDOMofChild = function() {
   var self = this;
-  console.log(this);
-  // Real Element 를 가지고 있으면 growupRealElementTree 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
+
+  // Real Element 를 가지고 있으면 linkRealDOMofChild 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
   if (this.hasRealDOMElement()) {
 
     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
@@ -662,9 +680,9 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
 
     // empty Type의 ElementNode는 RealElement의 내용을 다르게 갱신한다.
     if (this.getType() === 'empty') {
-      console.log('aa');
+
       // emptyType 구축
-      this.growupEmptyTypeRealDOMElement();
+      this.linkRealDOMofChild_empty_type();
     } else {
       // empty Type이 아닌 ElementNode만 자식 재귀호출
 
@@ -680,9 +698,10 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
             if (_child.hasRealDOMElement()) {
 
               // HTML DOM append
-              realDOMElement.appendChild(_child.growupRealDOMElementTree());
+              realDOMElement.appendChild(_child.linkRealDOMofChild());
             }
             break;
+
         }
       });
       // 자식 RealElement 처리 완료
@@ -690,31 +709,35 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
     }
 
 
-    console.log('return realDOMElement');
+
     return realDOMElement;
   }
 };
 
-ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
-  console.log('asd');
+ElementNode.prototype.linkRealDOMofChild_empty_type = function() {
+
   var realElement = this.getRealDOMElement();
   // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
   // 그에따른 처리..
-  console.log('asd2');
-  var refType = this.getRefferenceType();
-  console.log('asd22');
-  if (this.getRefferenceTarget() !== 'none') {
-    console.log('asdss');
-    switch (refType) {
+
+
+
+  var refTarget = this.getRefferenceTarget();
+  if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
+
+    switch (this.getRefferenceType()) {
       case "react":
       case "html":
       case "grid":
       case "empty":
         var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
 
+
+        this.setRefferenceInstance(refferenceElementNode);
+
         if (refferenceElementNode !== undefined) {
-          console.log('growupEmptyTypeRealDOMElement');
-          realElement.appendChild(refferenceElementNode.growupRealDOMElementTree());
+
+          realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
         } else {
           console.warn("참조중인 id의 노드가 존재하지 않습니다.");
         }
@@ -727,13 +750,13 @@ ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
     }
   }
 
-  console.log('asdss2');
+
   return realElement;
 };
 
-ElementNode.prototype.growupReactTypeRealElement = function() {
+ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   var realElement = this.getRealDOMElement();
-
+  console.log('react linked');
   var packageKey = this.getReactPackageKey();
   var componentKey = this.getReactComponentKey();
 

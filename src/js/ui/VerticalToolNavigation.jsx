@@ -48,20 +48,27 @@
         },
 
         foldTool() {
-            this.resize(this.props.naviWidth);
-            this.refs['toolArea'].getDOMNode().style.display = 'none';
+            //this.resize(this.props.naviWidth);
+            //this.refs['toolArea'].getDOMNode().style.display = 'none';
+
             this.fold = true;
+
+            this.setState({fold:true});
 
             this.emit('FoldTool', {width: this.props.naviWidth});
         },
 
         unfoldTool() {
             var width = this.props.naviWidth + this.props.toolWidth;
-            this.resize(width);
-            this.refs['toolArea'].getDOMNode().style.display = 'block';
+            //this.resize(width);
+
+            //this.refs['toolArea'].getDOMNode().style.display = 'block';
             this.fold = false;
+            this.setState({fold:false});
 
             this.emit('UnfoldTool', {width: width});
+
+            console.log('unfold');
         },
 
         startHookDrag(e) {
@@ -328,6 +335,14 @@
 
             var naviWidth;
             var toolWidth;
+
+            if( this.state.fold ){
+              rootStyle.overflow = 'hidden';
+              rootStyle.width = this.props.naviWidth;
+            } else {
+              //rootStyle.overflow = 'visibility';
+              rootStyle.width = this.props.naviWidth + this.props.toolWidth;
+            }
 
             switch( this.state.toolWidthMode ){
               case "auto" :

@@ -241,9 +241,10 @@ var _ = require('underscore');
                   }
               });
           }, function (__tool, __toolConfig) {
+              var toolStateStore = self.toolStateStore || {};
 
               // Builder에 저장된 각 Tool State를 가져온다.
-              var toolState = self.state.toolStatesStore[ _toolKey ] || {};
+              var toolState = toolStateStore[ _toolKey ] || {};
               toolState.extraParam = _extraParam;
               console.log( 'displayModal', _toolKey );
               self.refs[_toEquipRef].equipTool(__tool, __toolConfig, _toolKey, toolState);
@@ -322,10 +323,11 @@ var _ = require('underscore');
 
 
         applyToolStates( _toolEquipmentKey, _state ){
-          var prevToolStatesStore = this.state.toolStatesStore;
+
+          var prevToolStatesStore = this.toolStateStore || {};
           var toolStateObject = prevToolStatesStore[_toolEquipmentKey];
 
-          if( typeof toolStateObject === 'undefined' ){
+          if( toolStateObject === undefined ){
             toolStateObject = {};
             prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
           }
@@ -333,8 +335,9 @@ var _ = require('underscore');
           // merge state
           _.extend(toolStateObject, _state);
 
-          this.setState({toolStatesStore:prevToolStatesStore});
 
+          prevToolStatesStore[_toolEquipmentKey] = toolStateObject;
+          this.toolStateStore = prevToolStatesStore;
 
           var leftEquipTool = this.refs['LeftNavigation'].state.equipTool;
           var rightEquipTool = this.refs['RightNavigation'].state.equipTool;
@@ -403,7 +406,7 @@ var _ = require('underscore');
           documentStage.openContext( _directContextItem );
         },
 
-        onThrowCatcherSelecteElementNode(_eventData, _pass){
+        onThrowCatcherSelectElementNode(_eventData, _pass){
           this.applyToolStates("ElementNodeEditor", {
             elementNode: _eventData.elementNode
           });
@@ -434,8 +437,8 @@ var _ = require('underscore');
         },
 
         onThrowCatcherUpdatedContext(_eventData, _pass){
-
           this.applyToolStates("ContextContentsNavigation");
+          this.refs['RightNavigation'].forceUpdate();
         },
 
         onThrowCatcherDocumentFocused(_eventData, _pass){

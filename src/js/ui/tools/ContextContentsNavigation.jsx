@@ -17,7 +17,7 @@ var ContextContentsNavigation = React.createClass({
     },
 
     clickElementNode( _elementNode ){
-      this.emit("SelecteElementNode",{
+      this.emit("SelectElementNode",{
         elementNode: _elementNode
       });
     },
