@@ -36,7 +36,7 @@ require('./LoginService.less');
                     cookie.set('session_token', data.session_token);
                     $(".login-form-message").addClass('show success').text('Connecting...');
                     setTimeout(function () {
-                       $("#login-form").submit();
+                        $("#login-form").submit();
                     }, 2000);
                 },
                 error: function (data) {
@@ -55,7 +55,7 @@ require('./LoginService.less');
         },
         enterLoginProcess(evt){
             var self = this;
-            if(evt.keyCode === 13){
+            if (evt.keyCode === 13) {
                 self.loginProcess();
             }
             console.log('enter')
@@ -178,38 +178,37 @@ require('./LoginService.less');
                     </div>
                     <div className="popup-logos">UI Builder For ICE</div>
                     <div id="log-page">
-                        <div className="text-center">
-                            <div className="login-logo">Login</div>
-                            <form id="login-form" className="login-form">
-                                <div className="login-form-message"></div>
-                                <div className="main-login-form">
-                                    <div className="login-group">
-                                        <div className="form-group">
-                                            <input id="log-id" type="text" className="form-control" placeholder="id"/>
-                                        </div>
-                                        <div className="form-group" onKeyDown={this.enterLoginProcess}>
-                                            <input id="log-password" type="password" className="form-control" placeholder="password"/>
-                                        </div>
-                                        <div className="form-group form-group-checkbox">
-                                            <input type="checkbox" id="remember"/>
-                                            <label htmlFor="remember">remember</label>
-                                        </div>
-                                    </div>
-                                    <button id="login-button" type="button" className="login-button" onClick={this.loginProcess}>
-                                        <i className="fa fa-chevron-right"></i>
-                                    </button>
-                                </div>
-                                <div className="etc-login-form">
-                                    <p>패스워드를 잊어버렸어요.
-                                        <input type="button" onClick={this.viewForgotPass} id="forget-pass" value="클릭"/>
-                                    </p>
+                        <h2 className="login-logo">Login</h2>
 
-                                    <p>새로운 계정 생성이 필요합니다.
-                                        <input type="button" onClick={this.viewRegister} id="go-register" value="클릭"/>
-                                    </p>
+                        <form id="login-form" className="login-form">
+                            <div className="login-form-message"></div>
+                            <div className="main-login-form">
+                                <div className="login-group">
+                                    <div className="form-group">
+                                        <input id="log-id" type="text" className="form-control" placeholder="id"/>
+                                    </div>
+                                    <div className="form-group" onKeyDown={this.enterLoginProcess}>
+                                        <input id="log-password" type="password" className="form-control" placeholder="password"/>
+                                    </div>
+                                    <div className="form-group form-group-checkbox">
+                                        <input type="checkbox" id="remember"/>
+                                        <label htmlFor="remember">remember</label>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                                <button id="login-button" type="button" className="login-button" onClick={this.loginProcess}>
+                                    <i className="fa fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div className="etc-login-form">
+                                <p>패스워드를 잊어버렸어요.
+                                    <input type="button" onClick={this.viewForgotPass} id="forget-pass" value="클릭"/>
+                                </p>
+
+                                <p>새로운 계정 생성이 필요합니다.
+                                    <input type="button" onClick={this.viewRegister} id="go-register" value="클릭"/>
+                                </p>
+                            </div>
+                        </form>
                     </div>
                     <div id="reg-page">
                         <div className="text-center">

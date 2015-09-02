@@ -355,6 +355,11 @@ body {
 
 #index {
   font-size: 14px;
+  position: relative;
+  .bokeh{
+    position: absolute;
+    top: 0; left : 0; bottom: 0; right: 0;
+  }
   .popup-logos {
     font-family: Consolas, monospace;
     font-size: 25px;
@@ -368,10 +373,16 @@ body {
 
     color: #fff;
   }
-  .text-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+  #log-page {
+
+    /*position: absolute;*/
+    /*top: 50%;
+    left: 50%;*/
+    position: relative;
+    width: 350px;
+
+    margin: 0 auto;
+    padding-top: 200px;
 
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -405,7 +416,7 @@ body {
 
       display: inline-block;
 
-      height: auto;
+      width: inherit;
 
       color: #555;
       border: 0;
@@ -449,16 +460,18 @@ body {
           background: #fff;
           .form-group {
             position: relative;
-
+            padding: 5px 0;
             margin-bottom: 0;
-            padding-right: 20px;
-
+            margin-right: 20px;
+            height: 35px;
             border-bottom: 2px solid #efefef;
             &:last-child {
               border-bottom: 0;
+              height: 30px;
+              line-height: 30px
             }
             .form-control {
-              font-size: 14px;
+              font-size: 17px;
               font-weight: bold;
 
               height: auto;
@@ -517,6 +530,10 @@ body {
           color: #a2f;
           border: 0;
           background: transparent;
+        }
+        p{
+          margin: 7px 0;
+          font-weight: normal;
         }
       }
     }
