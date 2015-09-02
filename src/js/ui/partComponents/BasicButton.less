@@ -1,0 +1,112 @@
+@import '../CommonSnippet';
+
+.BasicButton
+{
+    font-family: 'Open Sans','Segoe UI';
+    font-size: 12px;
+
+    margin: 5px;
+    padding: 7px 15px;
+
+    cursor: pointer;
+    transition: all .15s ease;
+
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(66, 66, 66, .4);
+
+    /*
+      Color Themes
+      */
+    &.primary
+    {
+        color: #fff;
+        border-color: @PrimaryBorderColor;
+        background-color: @PrimaryBGColor;
+
+        &:hover
+        {
+            background-color: @PrimaryBGHoverColor;
+        }
+    }
+
+    &.success
+    {
+        color: #fff;
+        border-color: @SuccessBorderColor;
+        background-color: @SuccessBGColor;
+
+        &:hover
+        {
+            background-color: @SuccessBGHoverColor;
+        }
+    }
+
+    &.warnings
+    {
+        color: #fff;
+        border-color: @WarningsBorderColor;
+        background-color: @WarningsBGColor;
+
+        &:hover
+        {
+            background-color: @WarningsBGHoverColor;
+        }
+    }
+
+    &.error
+    {
+        color: #fff;
+        border-color: @ErrorBorderColor;
+        background-color: @ErrorBGColor;
+
+        &:hover
+        {
+            background-color: @ErrorBGHoverColor;
+        }
+    }
+
+    &.default
+    {
+        color: #333;
+        border-color: @DefaultBorderColor;
+        background-color: @DefaultBGColor;
+
+        &:hover
+        {
+            background-color: @DefaultBGHoverColor;
+        }
+    }
+
+    &:active
+    {
+        outline: none;
+        box-shadow: 0 0 10px #fff, inset 0 3px 5px rgba(0,0,0,.125);
+    }
+
+
+    /*
+      Size
+      */
+    &.small
+    {
+        font-size: 12px;
+
+        padding: 3px 7px;
+    }
+
+    &.normal
+    {
+        font-size: 14px;
+
+        padding: 5px 15px;
+    }
+
+    &.large
+    {
+        font-size: 16px;
+
+        padding: 7px 20px;
+    }
+}

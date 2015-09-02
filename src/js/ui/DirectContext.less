@@ -1,0 +1,161 @@
+.DirectContext
+{
+    background-color: #eee;
+    background-image: linear-gradient(45deg, #aaa 25%, transparent 25%, transparent 75%, #aaa 75%, #aaa),
+    linear-gradient(45deg, #aaa 25%, transparent 25%, transparent 75%, #aaa 75%, #aaa);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+
+    &.theme-black
+    {
+        > .element-navigator
+        {
+            > .box
+            {
+                color: #fff;
+                background-color: rgba(30,30,30,.8);
+                box-shadow: 0 0 10px rgba(255,255,255,.2);
+                > ul
+                {
+                    > li
+                    {
+                        > button
+                        {
+                            transition: all .5s;
+                            transition-timing-function: ease;
+
+                            color: #fff;
+                            border-bottom-color: #fff;
+                            background-color: transparent;
+
+
+                            &:hover
+                            {
+                                color: #333;
+                                border-bottom-color: #333;
+                                background-color: rgba(255,255,255,.9);
+
+                                > .title
+                                {
+                                    width: auto;
+                                }
+                            }
+
+                            &:active
+                            {
+                                color: #000;
+                                border-bottom-color: #faa;
+                                box-shadow: inset 0 5px 4px rgba(0,0,0,.3);
+                                > .title
+                                {
+                                    width: auto;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    > .element-navigator
+    {
+        position: absolute;
+        z-index: 5;
+        top: 50%;
+        left: 50%;
+
+        display: inline-block;
+        overflow: hidden;
+
+        height: 35px;
+
+        transition: all .45s, height .1s, margin .1s;
+        transition-timing-function: ease;
+
+        > .box
+        {
+            display: inline-block;
+            > ul
+            {
+                display: inline-block;
+
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+                > li
+                {
+                    display: inline-block;
+                    > button
+                    {
+                        font-family: 'Open Sans';
+                        font-size: 12px;
+                        line-height: 0;
+
+                        overflow: hidden;
+
+                        box-sizing: border-box;
+                        width: 30px;
+                        height: 35px;
+                        margin: 0;
+                        padding: 10px;
+
+                        cursor: pointer;
+                        word-break: keep-all;
+
+                        border: 0;
+                        border-bottom-width: 3px;
+                        border-bottom-style: solid;
+                        outline: none;
+                        > .title
+                        {
+                            display: none;
+                        }
+
+                        &:hover
+                        {
+                            width: 100px;
+                            > .title
+                            {
+                                display: inline-block;
+                            }
+                        }
+
+                        &:active
+                        {
+                            width: 100px;
+                            > .title
+                            {
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &.off
+        {
+            height: 0;
+            margin-top: 15px;
+            margin-left: -50px;
+
+            background-color: #000;
+        }
+    }
+
+    > .selected-element-outline
+    {
+        position: absolute;
+        z-index: 4;
+
+        display: block;
+
+        transition: all .45s;
+        transition-timing-function: ease;
+
+        background-color: #fff;
+
+        mix-blend-mode: exclusion;
+    }
+}

@@ -1,60 +1,104 @@
-.FloatingMenuBox {
+.noselect
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 
-  &.black {
-    background-color: #222;
-    color:#fff;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    -webkit-touch-callout: none;
+     -khtml-user-select: none;
+}
 
-    > .header {
-      background-color: #555;
-    }
+.FloatingMenuBox
+{
+    position: fixed;
+    z-index: 9;
+    top: 100px;
+    left: 400px;
+    &.black
+    {
+        color: #fff;
+        background-color: #222;
+        box-shadow: 0 0 5px rgba(0, 0, 0, .3);
 
-    > .body {
-
-      > ul {
-
-        > li {
-          background-color: #222;
-          &:hover {
-            background-color: #333;
-          }
+        > .header
+        {
+            background-color: #555;
         }
-      }
+
+        > .body
+        {
+            > ul
+            {
+                > li
+                {
+                    transition: background-color .5s ease;
+
+                    background-color: #222;
+
+                    &:hover
+                    {
+                        background-color: #333;
+                    }
+
+                    &:active
+                    {
+                        background-color: #111;
+                    }
+
+                    &.button
+                    {
+                        cursor: pointer;
+                    }
+                }
+
+                > hr
+                {
+                    border-color: #333;
+                }
+            }
+        }
     }
-  }
 
+    > .header
+    {
+        font-size: 13px;
 
-  position:fixed;
-  z-index: 1000;
-  left:100px;
-  top:100px;
-
-  > .header {
-    width:100%;
-    padding:10px;
-    box-sizing: border-box;
-    font-size:13px;
-  }
-
-  > .body {
-    position: relative;
-    width:100%;
-
-    > ul {
-      position: relative;
-      padding:0px;
-      margin: 0px;
-      width:100%;
-
-      > li {
-        width:100%;
-        padding:10px;
         box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
 
-        font-size:12px;
+        cursor: default;
 
-        cursor:pointer;
-      }
+        .noselect;
     }
-  }
+
+    > .body
+    {
+        position: relative;
+
+        width: 100%;
+
+        > ul
+        {
+            position: relative;
+
+            width: 100%;
+            margin: 0;
+            padding: 0;
+
+            > li
+            {
+                font-size: 12px;
+
+                box-sizing: border-box;
+                width: 100%;
+                padding: 10px;
+
+                cursor: pointer;
+
+                .noselect;
+            }
+        }
+    }
 }

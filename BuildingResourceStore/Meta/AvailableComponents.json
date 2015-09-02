@@ -1,0 +1,161 @@
+{
+  "host": "http://localhost:8080",
+  "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
+  "availablePackages": [{
+    "key": "BasicFramePackage",
+    "name": "프레임 컴포넌트 패키지",
+    "components": [{
+      "key": "root-wrapper",
+      "name": "RootWrapper",
+      "path": "BasicFramePackage/RootWrapper.jsx"
+    }, {
+      "key": "empty-type-element",
+      "name": "Empty Type Element",
+      "path": "BasicFramePackage/EmptyTypeElement.jsx"
+    }, {
+      "key": "string-type-element",
+      "name": "String Type Element",
+      "path": "BasicFramePackage/StringTypeElement.jsx"
+    }, {
+      "key": "grid-type-element",
+      "name": "GridTypeElement",
+      "path": "BasicFramePackage/GridTypeElement.jsx"
+    }]
+  }, {
+    "key": "HTMLTags",
+    "name": "HTML 태그 패키지",
+    "components": [{
+      "key": "a",
+      "name": "Anchor <A>",
+      "path": "HTMLTags/A.jsx"
+    }, {
+      "key": "article",
+      "name": "Article <Article>",
+      "path": "HTMLTags/Article.jsx"
+    }, {
+      "key": "Aside",
+      "name": "Aside <Aside>",
+      "path": "HTMLTags/Aside.jsx"
+    }, {
+      "key": "Button",
+      "name": "Button <Button>",
+      "path": "HTMLTags/Button.jsx"
+    }, {
+      "key": "UL",
+      "name": "UL <UL>",
+      "path": "HTMLTags/UL.jsx"
+    }, {
+      "key": "LI",
+      "name": "LI <LI>",
+      "path": "HTMLTags/LI.jsx"
+    }, {
+      "key": "Div",
+      "name": "Division <Div>",
+      "path": "HTMLTags/Div.jsx"
+    }, {
+      "key": "Img",
+      "name": "Image <Img>",
+      "path": "HTMLTags/Img.jsx"
+    }, {
+      "key": "Footer",
+      "name": "Footer <Footer>",
+      "path": "HTMLTags/Footer.jsx"
+    }, {
+      "key": "Form",
+      "name": "Form <Form>",
+      "path": "HTMLTags/Form.jsx"
+    }, {
+      "key": "Fieldset",
+      "name": "Fieldset <Fieldset>",
+      "path": "HTMLTags/Fieldset.jsx"
+    }, {
+      "key": "Legend",
+      "name": "Legend <Legend>",
+      "path": "HTMLTags/Legend.jsx"
+    }, {
+      "key": "Header",
+      "name": "Header <Header>",
+      "path": "HTMLTags/Header.jsx"
+    }, {
+      "key": "Input",
+      "name": "Input <Input>",
+      "path": "HTMLTags/Input.jsx"
+    }, {
+      "key": "Label",
+      "name": "Label <Label>",
+      "path": "HTMLTags/Label.jsx"
+    }, {
+      "key": "Nav",
+      "name": "Navigation <Nav>",
+      "path": "HTMLTags/Nav.jsx"
+    }, {
+      "key": "Progress",
+      "name": "Progress <Progress>",
+      "path": "HTMLTags/Progress.jsx"
+    }, {
+      "key": "Section",
+      "name": "Section <Section>",
+      "path": "HTMLTags/Section.jsx"
+    }, {
+      "key": "Span",
+      "name": "Span <Span>",
+      "path": "HTMLTags/Span.jsx"
+    }]
+  }, {
+    "key": "TestPackage",
+    "name": "테스트",
+    "components": [{
+      "key": "a",
+      "name": "A",
+      "path": "TestPackage/A.jsx"
+    }, {
+      "key": "b",
+      "name": "B",
+      "path": "TestPackage/B.jsx"
+    }, {
+      "key": "testinputbox",
+      "name": "TestInputBox",
+      "path": "TestPackage/TestInputBox.jsx"
+    }, {
+      "key": "basicbutton",
+      "name": "BasicButton",
+      "path": "TestPackage/BasicButton.jsx"
+    }, {
+      "key": "boxa",
+      "name": "BoxA",
+      "path": "TestPackage/BoxA.jsx"
+    }, {
+      "key": "boxb",
+      "name": "BoxB",
+      "path": "TestPackage/BoxB.jsx"
+    }]
+  }, {
+    "key": "TwitterBootstrap",
+    "name": "트위터 부트스트랩",
+    "components": [{
+      "key": "container",
+      "name": "컨테이너",
+      "path": "TwitterBootstrap/Container.jsx"
+    }, {
+      "key": "container-fluid",
+      "name": "플루이드 컨테이너",
+      "path": "TwitterBootstrap/FluidContainer.jsx"
+    }, {
+      "key": "row",
+      "name": "행",
+      "path": "TwitterBootstrap/Row.jsx"
+    }, {
+      "key": "col-md-1",
+      "name": "Column md 1",
+      "path": "TwitterBootstrap/Column-md1.jsx"
+    }]
+  }, {
+    "key": "SampleReactPackage",
+    "name": "샘플 React 패키지",
+    "components": [{
+      "key": "sample-react",
+      "name": "SampleReact",
+      "path": "SampleReactPackage/SampleReact.jsx"
+    }]
+  }]
+}

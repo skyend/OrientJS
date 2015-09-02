@@ -1,4 +1,0 @@
-[
-  {"itemKey": "css", "itemTitle": "css", "UI": "CSSMenu", "area": "RightPanel", "config": "CSSMenuConfig"},
-  {"itemKey": "Treeview", "itemTitle": "Treeview", "UI": "CSSMenu", "area": "RightPanel", "config": "TreeViewConfig"}
-]

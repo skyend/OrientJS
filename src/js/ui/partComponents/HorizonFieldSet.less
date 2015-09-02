@@ -1,0 +1,131 @@
+.noselect
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+     -khtml-user-select: none;
+}
+
+
+.HorizonFieldSet
+{
+    width: 100%;
+    height: 100%;
+
+    &.dark
+    {
+        > .wrapper
+        {
+            > .head
+            {
+                background-color: #252729;
+                box-shadow: inset 0 -1px 0 rgb(13, 14, 14), inset 0 -2px 0 rgb(52, 55, 58), inset 0 1px 0 rgb(52, 55, 58), inset 0 1px 5px rgb(52, 55, 58);
+
+                > label
+                {
+                    color: #e2e2e2;
+                    text-shadow: 0 0 5px rgba(255, 255, 255, .57);
+                }
+
+                > ul.options
+                {
+                    li
+                    {
+                        &.trigger
+                        {
+                            transition: all .7s;
+                            &:hover
+                            {
+                                color: #fff;
+                                text-shadow: 0 0 5px #fff;
+                            }
+
+                            &:active
+                            {
+                                color: #fff;
+                                text-shadow: 0 0 5px #000;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.gold
+    {
+        > .wrapper
+        {
+            > .head
+            {
+                background-color: #231d11;
+                box-shadow: inset 0 -1px 0 rgb(13, 14, 14), inset 0 -2px 0 rgb(52, 55, 58), inset 0 1px 0 rgb(52, 55, 58), inset 0 1px 5px rgb(52, 55, 58);
+
+                > label
+                {
+                    color: #d0c4a6;
+                    text-shadow: 0 0 5px rgba(197, 197, 197, .67);
+                }
+            }
+        }
+    }
+
+    > .wrapper
+    {
+        > .head
+        {
+            font-size: 13px;
+            //line-height: 0;
+
+            position: relative;
+
+            box-sizing: border-box;
+            height: 25px;
+            padding: 6px;
+
+            cursor: default;
+
+            .noselect;
+            > label
+            {
+                //line-height: 0;
+            }
+
+            > ul.options
+            {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+                li
+                {
+                    font-size: 13px;
+
+                    display: inline-block;
+
+                    box-sizing: border-box;
+                    height: 100%;
+                    padding: 6px;
+
+                    &.trigger
+                    {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+
+        > .body
+        {
+            width: 100%;
+        }
+    }
+}

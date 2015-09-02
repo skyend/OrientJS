@@ -1,0 +1,34 @@
+{
+  "serviceName": "Ion Test Service",
+
+  "documents": [{
+    "id": 1,
+    "name": "DefaultLayout",
+    "key": "default-layout",
+    "purpose": "layout"
+  }, {
+    "id": 2,
+    "name": "IndexContents",
+    "key": "index-contents",
+    "purpose": "contents"
+  }, {
+    "id": 3,
+    "name": "Bootstrap",
+    "key": "bootstrap-test",
+    "purpose": "layout"
+  }],
+
+  "pages": [{
+    "id": 1,
+    "name": "Index",
+    "key": "index"
+  }],
+
+  "registeredResources": {
+    "css": [],
+    "js": [],
+    "image": [],
+    "font": [],
+    "string": []
+  }
+}
