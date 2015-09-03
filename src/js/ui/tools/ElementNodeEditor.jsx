@@ -7,6 +7,8 @@ var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx')
 var HorizonField = require('../partComponents/HorizonField.jsx');
 var HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
 var htmlTag = require('./toolsData/htmlTag.json');
+
+var ElementProfile = require('./ElementNodeEditor/ElementProfile.jsx');
 var HTMLDOMSpec = require('./ElementNodeEditor/HTMLDOMSpec.jsx');
 var EmptyTypeElementNode = require('./ElementNodeEditor/EmptyTypeElementNode.jsx');
 
@@ -36,7 +38,17 @@ var ElementNodeEditor = React.createClass({
       var elementNode = this.state.elementNode;
       var changedData = _eventData.data;
 
-      if( _eventData.refPath[2] === 'HTMLDOMSpec'){
+      if( _eventData.refPath[2] === 'ElementProfile'){
+
+        if( _eventData.refPath[1] === 'profile-set' ){
+          switch( _eventData.name ){
+            case "Name" :
+              elementNode.setName( changedData );
+              break;
+          }
+        }
+
+      } else if ( _eventData.refPath[2] === 'HTMLDOMSpec'){
         if( _eventData.refPath[1] === 'elementDOMSpec' ){
           switch( _eventData.name ){
             case "TagName" :
@@ -107,16 +119,7 @@ var ElementNodeEditor = React.createClass({
     },
 
 
-    getElementProfileFieldSet(_elementNode){
-      return [
-        { "name": "DocumentName", title:"Document Name", "initialValue": _elementNode.document.documentName, type:"static" },
-        { "name": "ElementID",  title:"Element ID","initialValue": _elementNode.id, type:"static" },
-        { "name": "ElementType",  title:"Element Type","initialValue": _elementNode.getType().toUpperCase(), type:"static" }
-      ];
-    },
-
     renderEditParts(_elementNode){
-      var elementProfileFieldSet = this.getElementProfileFieldSet(_elementNode);
 
       var isEmptyType = false;
 
@@ -124,7 +127,7 @@ var ElementNodeEditor = React.createClass({
 
       return (
         <div className='edit-parts'>
-          <HorizonFieldSet title="Element Profile" theme='dark' nameWidth={130} fields={ elementProfileFieldSet } ref='profile-set'/>
+          <ElementProfile  elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ElementProfile'/>
 
           <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
 

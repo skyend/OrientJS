@@ -72,7 +72,7 @@ var HTMLDOMSpec = React.createClass({
         var elementSpecFieldSet = [
           { "name": "TagName", title:"태그명","initialValue": elementNode.getTagName() || '', type:"select" , "enterable":true, options:htmlTagSelectOptions},
           { "name": "Classes", title:"클래스","initialValue":elementNode.getClasses() || '', type:"input"  , "enterable":true},
-          { "name": "Id", title:"아이디","initialValue":elementNode.getIdAtrribute() || '', type:"input"  , "enterable":true},          
+          { "name": "Id", title:"아이디","initialValue":elementNode.getIdAtrribute() || '', type:"input"  , "enterable":true},
           { "name": "Comment", title:"주석","initialValue":elementNode.getComment() , type:"textarea"  , "enterable":true, height:50}
         ];
 
@@ -126,9 +126,9 @@ var HTMLDOMSpec = React.createClass({
 
         return (
             <div className={rootClasses.join(' ')}>
-              <HorizonFieldSet title="Element DOM Spec" theme={ this.props.theme} nameWidth={130} fields={ elementSpecFieldSet } ref='elementDOMSpec'/>
-              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Tag Attributes" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>:''}
-              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Data Attributes" theme={ this.props.theme} nameWidth={130} fields={ dataAttributeFieldSet } extendable={true} ref='dataAttribute'/>:''}
+              <HorizonFieldSet title="DOM 명세표" theme={ this.props.theme} nameWidth={130} fields={ elementSpecFieldSet } ref='elementDOMSpec'/>
+              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Tag 지원 속성" theme={ this.props.theme} nameWidth={130} fields={ tagAttributeFieldSet } ref='tagAttribute'/>:''}
+              {elementNode.getType() !== 'string'? <HorizonFieldSet title="Tag 명시 데이터" theme={ this.props.theme} nameWidth={130} fields={ dataAttributeFieldSet } extendable={true} ref='dataAttribute'/>:''}
             </div>
         );
     }

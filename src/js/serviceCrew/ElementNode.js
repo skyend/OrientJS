@@ -14,6 +14,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   // document profile
   this.id;
   this.type; // html / string / react / grid
+  this.name; // 참고용 이름
   this.attributes;
   this.componentName;
   this.comment;
@@ -50,6 +51,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   if (typeof _elementNodeDataObject === 'object') {
     this.id = _elementNodeDataObject.id;
     this.type = _elementNodeDataObject.type;
+    this.name = _elementNodeDataObject.name;
 
     this.attributes = _elementNodeDataObject.attributes;
 
@@ -83,6 +85,10 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 // enid
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
+};
+// name
+ElementNode.prototype.setName = function(_name) {
+  this.name = _name;
 };
 // Id Atrribute
 ElementNode.prototype.setIdAtrribute = function(_id) {
@@ -127,7 +133,7 @@ ElementNode.prototype.setRefferenceTargetProps = function(_refferenceTargetProps
 // refferenceInstance
 ElementNode.prototype.setRefferenceInstance = function(_refferenceInstance) {
   this.refferenceInstance = _refferenceInstance;
-  if (this.refferenceInstance !== 'none') {
+  if (this.refferenceInstance !== 'none' && this.refferenceInstance !== undefined) {
     this.refferenceInstance.setParent(this);
   }
 };
@@ -202,6 +208,10 @@ ElementNode.prototype.setRealElement = function(_realElement) {
 // id
 ElementNode.prototype.getId = function() {
   return this.id;
+};
+// name
+ElementNode.prototype.getName = function() {
+  return this.name;
 };
 // element.tagName -> getTagName()
 ElementNode.prototype.getTagName = function() {
@@ -395,7 +405,7 @@ ElementNode.prototype.dettachChild = function(_child) {
 
   this.children = newChildList;
 
-  this.growupRealDOMElementTree();
+  this.linkRealDOMofChild();
 };
 
 
@@ -812,6 +822,7 @@ ElementNode.prototype.export = function(_withoutId) {
   var exportObject = {
     id: _withoutId ? undefined : this.id,
     type: this.getType(),
+    name: this.getName(),
     attributes: this.getAttributes(),
     comment: this.getComment(),
     componentName: this.getComponentName(),

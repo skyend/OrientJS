@@ -225,12 +225,11 @@ var DirectContext = React.createClass({
 
     elementNode.insertAfter( clonedElementNode );
 
+    contextController.rootRender();
 
     this.emit('UpdatedContext', {
       directContext: this
     });
-
-    this.closeElementNavigator();
   },
 
   editElement(){
