@@ -6,9 +6,7 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <fieldset style={{padding:'10px', outline:'1px solid #333'}}>
-            fieldset
-          </fieldset>
+          <fieldset style={{padding:'30px', outline:'1px solid #333'}}/>
         )
       }
 

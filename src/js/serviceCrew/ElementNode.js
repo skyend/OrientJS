@@ -835,11 +835,11 @@ ElementNode.prototype.export = function(_withoutId) {
     id: _withoutId ? undefined : this.id,
     type: this.getType(),
     name: this.getName(),
-    attributes: this.getAttributes(),
+    attributes: _.clone(this.getAttributes()),
     comment: this.getComment(),
     componentName: this.getComponentName(),
-    createDate: this.createDate,
-    updateDate: this.updateDate,
+    createDate: new Date(this.createDate),
+    updateDate: new Date(this.updateDate),
     inherentCSS: this.getType() !== 'empty' ? this.getCSS() : '', // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
     children: this.children.map(function(_child) {
       return _child.export(_withoutId);

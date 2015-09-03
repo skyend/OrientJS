@@ -83,7 +83,7 @@ var HTMLDOMSpec = React.createClass({
         var dataAttributeFieldSet = [];
 
         if ( elementNode.getType() === 'string' ){
-          elementSpecFieldSet = [ { "name": "Text",  title:"텍스트", "initialValue":elementNode.getText() || '', type:"textarea"  ,  lang:'plain',"enterable":true,height:50} ];
+          elementSpecFieldSet = [ { "name": "Text",  title:"텍스트", "initialValue":elementNode.getText() || '', type:"textarea", "enterable":true ,height:50} ];
         } else {
           var targetTagSpecIndex = _.findIndex(htmlTag, {tagName:elementNode.getTagName()});
           var targetTagSpec = htmlTag[targetTagSpecIndex];

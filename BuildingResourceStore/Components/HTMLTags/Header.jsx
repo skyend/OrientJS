@@ -6,9 +6,7 @@ module.exports =  {
       // 예시
       render: function () {
         return (
-          <header style={{padding:'10px', outline:'1px solid #333'}}>
-            header
-          </header>
+          <header style={{padding:'30px', outline:'1px solid #333'}}/>
         )
       }
 
