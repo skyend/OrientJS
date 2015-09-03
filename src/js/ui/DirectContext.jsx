@@ -7,6 +7,8 @@ var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
+      stageWidth:720,
+      stageHeight:480,
       elementNavigatorX: 0,
       elementNavigatorY: 0,
       showElementNavigator: false
@@ -383,8 +385,10 @@ var DirectContext = React.createClass({
   },
 
   render(){
-    var iframeStageWidth = 720;
-    var iframeStageHeight= 480;
+    var iframeStageWidth = (this.state.stageWidth > this.props.width)? this.props.width:this.state.stageWidth;
+    var iframeStageHeight= (this.state.stageHeight > this.props.height)? this.props.height:this.state.stageHeight;
+    iframeStageWidth -= 10;
+    iframeStageHeight -= 10;
     var stageX = ( this.props.width - iframeStageWidth ) / 2;
     var stageY = ( this.props.height - iframeStageHeight ) / 2;
     this.stageX = stageX;
@@ -400,7 +404,7 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
-
+    console.log(stageX);
 
     var elementNavigatorStyle = {};
     var elementNavigatorClasses = ['element-navigator'];

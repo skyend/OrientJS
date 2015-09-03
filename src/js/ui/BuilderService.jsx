@@ -461,6 +461,12 @@ var _ = require('underscore');
           }
         },
 
+        onThrowCatcherChangeStageMode( _eventData, _pass){
+          var mode = _eventData.mode;
+
+          this.refs['DocumentStage'].setStageMode( mode );
+        },
+
 
 
 

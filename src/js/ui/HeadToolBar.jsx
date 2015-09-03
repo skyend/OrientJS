@@ -34,6 +34,24 @@ require('js-cookie');
           this.emit('SaveCurrentContext');
         },
 
+        modeChangeTablet(){
+          this.emit('ChangeStageMode', {
+            mode:'tablet'
+          });
+        },
+
+        modeChangeMobile(){
+          this.emit('ChangeStageMode', {
+            mode:'mobile'
+          });
+        },
+
+        modeChangeDesktop(){
+          this.emit('ChangeStageMode', {
+            mode:'desktop'
+          });
+        },
+
         componentDidMount: function () {
             this.setUserInfo();
         },
@@ -41,6 +59,21 @@ require('js-cookie');
             return (
                 <header id="ui-header">
                     <ul className="navigation">
+                      <li>
+                          <button onClick={this.modeChangeTablet}>
+                              <i className="fa fa-tablet"></i>
+                          </button>
+                      </li>
+                      <li>
+                          <button onClick={this.modeChangeMobile}>
+                              <i className="fa fa-mobile"></i>
+                          </button>
+                      </li>
+                      <li>
+                          <button onClick={this.modeChangeDesktop}>
+                              <i className="fa fa-desktop"></i>
+                          </button>
+                      </li>
                         <li>
                             <button onClick={this.clickSave}>
                                 <i className="fa fa-floppy-o"></i>

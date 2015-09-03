@@ -24,6 +24,7 @@ var _ = require('underscore');
 
             return {
               runningContextID: "TEST#1",
+              stageMode:'desktop',
               directContexts : [
                 //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
               ]
@@ -859,6 +860,10 @@ var _ = require('underscore');
           return typeof this.refs[ this.state.runningContextID ] === 'object' && this.refs[ this.state.runningContextID ] !== null;
         },
 
+        setStageMode( _mode ){
+          this.setState({ stageMode: _mode });
+        },
+
         attachDirectContext( _directContext ){
 
           var running = false;
@@ -868,7 +873,7 @@ var _ = require('underscore');
 
           var directContext = <DirectContext ref={_directContext.contextID}
                                               width={this.state.width}
-                                              height={this.state.height}
+                                              height={this.state.height - this.getTabContextOffsetTopByDS()}
                                               contextId={_directContext.contextId}
                                               contextType={_directContext.contextType}
                                               runningState={running}
@@ -881,7 +886,23 @@ var _ = require('underscore');
 
           if( this.getCurrentRunningContext() ){
             this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
+
+            switch( this.state.stageMode ){
+              case "desktop":
+                this.getCurrentRunningContext().setState({ stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
+                break;
+              case "tablet":
+                this.getCurrentRunningContext().setState({ stageWidth: 480, stageHeight: 760});
+                break;
+              case "mobile":
+                this.getCurrentRunningContext().setState({ stageWidth: 320, stageHeight: 480});
+                break;
+            }
+
           }
+
+
+
         },
 
         componentDidMount() {
