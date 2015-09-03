@@ -129,14 +129,8 @@ var _ = require('underscore');
 
             /* tab-context 리사이즈 */
             this.tabContextResize();
-
-            this.documentEditorUpdate();
         },
 
-        documentEditorUpdate() {
-            /* PanelContainer 에 삽입된 documentEditor 를 강제 업데이트 한다. */
-            //this.refs['document-editor'].forceUpdate();
-        },
 
         renderContextTabItem(_contextItem) {
             var self = this;
@@ -203,7 +197,7 @@ var _ = require('underscore');
           if( ! this.hasCurrentRunningContext() ) return;
 
           var self = this;
-          var selfClientRect = this.iframeStageBoundingRect;
+          var selfClientRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
           //console.log('drag');
 
           //****************************************/
@@ -604,8 +598,8 @@ var _ = require('underscore');
 
 
 
-          placeHolderDOM.style.left = x + 'px';
-          placeHolderDOM.style.top = y + 'px';
+          placeHolderDOM.style.left = this.getCurrentRunningContext().stageX + x + 'px';
+          placeHolderDOM.style.top = this.getCurrentRunningContext().stageY + y + 'px';
           placeHolderDOM.style.width = w +'px';
           placeHolderDOM.style.height = h +'px';
           placeHolderDOM.style.display = 'block';
@@ -643,7 +637,7 @@ var _ = require('underscore');
         transformIFrameDocCoordinateIntoStageScreen( _coordinate ){
 
           return {
-            x : _coordinate.x - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetLeftByDS(),
+            x : _coordinate.x - this.getCurrentRunningContext().getIFrameStageScrollX() + this.getTabContextOffsetLeftByDS(),
             y : _coordinate.y - this.getCurrentRunningContext().getIFrameStageScrollY() + this.getTabContextOffsetTopByDS()
           };
         },
@@ -657,8 +651,8 @@ var _ = require('underscore');
 
           var selfClientRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
 
-          var checkX =  _absoluteX - this.iframeStageBoundingRect.left;
-          var checkY =  _absoluteY - this.iframeStageBoundingRect.top + this.getCurrentRunningContext().getIFrameStageScrollY();
+          var checkX =  _absoluteX - selfClientRect.left;
+          var checkY =  _absoluteY - selfClientRect.top + this.getCurrentRunningContext().getIFrameStageScrollY();
 
           var collisions = this.liveVDomController.rayTracer(checkX,checkY);
 
@@ -818,8 +812,8 @@ var _ = require('underscore');
           }
 
 
-          highligher.style.left = boundingBox.left +'px';
-          highligher.style.top = boundingBox.top + this.getTabContextOffsetTopByDS() + 'px';
+          highligher.style.left = this.getCurrentRunningContext().stageX + boundingBox.left +'px';
+          highligher.style.top =  this.getCurrentRunningContext().stageY + boundingBox.top + this.getTabContextOffsetTopByDS() + 'px';
           highligher.style.width = boundingBox.width +'px';
           highligher.style.height = boundingBox.height +'px';
           //highligher.style.display = 'block';
@@ -873,8 +867,8 @@ var _ = require('underscore');
           }
 
           var directContext = <DirectContext ref={_directContext.contextID}
-                                              width="100%"
-                                              height="100%"
+                                              width={this.state.width}
+                                              height={this.state.height}
                                               contextId={_directContext.contextId}
                                               contextType={_directContext.contextType}
                                               runningState={running}
@@ -901,8 +895,8 @@ var _ = require('underscore');
         resize( _width, _height){
             this.props.width = _width;
             this.props.height = _height;
+            this.setState( {width:_width, height:_height});
             this.tabContextResize();
-            this.documentEditorUpdate();
         },
 
         render: function () {

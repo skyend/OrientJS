@@ -7,6 +7,8 @@ var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx')
 var HorizonField = require('../partComponents/HorizonField.jsx');
 var HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
 var htmlTag = require('./toolsData/htmlTag.json');
+
+var ElementProfile = require('./ElementNodeEditor/ElementProfile.jsx');
 var HTMLDOMSpec = require('./ElementNodeEditor/HTMLDOMSpec.jsx');
 var EmptyTypeElementNode = require('./ElementNodeEditor/EmptyTypeElementNode.jsx');
 
@@ -36,7 +38,17 @@ var ElementNodeEditor = React.createClass({
       var elementNode = this.state.elementNode;
       var changedData = _eventData.data;
 
-      if( _eventData.refPath[2] === 'HTMLDOMSpec'){
+      if( _eventData.refPath[2] === 'ElementProfile'){
+
+        if( _eventData.refPath[1] === 'profile-set' ){
+          switch( _eventData.name ){
+            case "Name" :
+              elementNode.setName( changedData );
+              break;
+          }
+        }
+
+      } else if ( _eventData.refPath[2] === 'HTMLDOMSpec'){
         if( _eventData.refPath[1] === 'elementDOMSpec' ){
           switch( _eventData.name ){
             case "TagName" :
@@ -55,6 +67,7 @@ var ElementNodeEditor = React.createClass({
               elementNode.setComment( changedData );
               break;
           }
+
         }
 
         if( _eventData.refPath[1] === 'tagAttribute' ){
@@ -71,44 +84,42 @@ var ElementNodeEditor = React.createClass({
           elementNode.setAttribute(  _eventData.name, changedData );
         }
 
+
+
+        // attribute를 실제 요소에 반영
+        elementNode.applyAttributesToRealDOM();
       } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
           switch( _eventData.name ){
             case "RefferenceType" :
               elementNode.setRefferenceType( changedData );
               break;
-            case "DocumentRefKey" :
-              elementNode.setRefferenceTarget( {documentRefKey: changedData} );
+            case "RefferenceTarget" :
+              elementNode.setRefferenceTarget( changedData );
               break;
           }
+        }
+
+        // 변경된 참조 정보를 요소로부터 갱신
+
+        var elementDocument = elementNode.document;
+        var contextController = elementDocument.getContextController();
+
+        if( elementNode.getParent() !== null ){
+          contextController.constructToRealElement( elementNode );
+          elementNode.getParent().linkRealDOMofChild();
+        } else {
+          contextController.rootRender();
         }
       }
 
 
-      var elementDocument = elementNode.document;
-      var contextController = elementDocument.getContextController();
-
-      if( elementNode.getParent() !== null ){
-        contextController.constructToRealElement( elementNode );
-        elementNode.getParent().growupRealDOMElementTree();
-      } else {
-        contextController.rootRender();
-      }
 
       this.setState({elementNode:elementNode});
     },
 
 
-    getElementProfileFieldSet(_elementNode){
-      return [
-        { "name": "DocumentName", title:"Document Name", "initialValue": _elementNode.document.documentName, type:"static" },
-        { "name": "ElementID",  title:"Element ID","initialValue": _elementNode.id, type:"static" },
-        { "name": "ElementType",  title:"Element Type","initialValue": _elementNode.getType().toUpperCase(), type:"static" }
-      ];
-    },
-
     renderEditParts(_elementNode){
-      var elementProfileFieldSet = this.getElementProfileFieldSet(_elementNode);
 
       var isEmptyType = false;
 
@@ -116,7 +127,7 @@ var ElementNodeEditor = React.createClass({
 
       return (
         <div className='edit-parts'>
-          <HorizonFieldSet title="Element Profile" theme='dark' nameWidth={130} fields={ elementProfileFieldSet } ref='profile-set'/>
+          <ElementProfile  elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ElementProfile'/>
 
           <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
 

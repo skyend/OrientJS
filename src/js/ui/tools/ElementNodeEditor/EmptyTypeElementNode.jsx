@@ -22,31 +22,58 @@ var EmptyTypeElementNode = React.createClass({
         var elementNode = this.props.elementNode;
 
         var refTypeOptions = [
-          { value:'react' },
-          { value:'document'},
-          { value: 'elementNode'},
+          { value:'react' , title:'React'},
+          { value:'document' , title:'Document'},
+          { value: 'html' , title:'HTML'},
+          { value: 'empty' , title:'Empty'},
           { value: 'none' }
         ];
 
         var emptyFieldSet = [
           { "name": "RefferenceType", title:"참조 타입", "initialValue": elementNode.getRefferenceType() || 'Refference nothing', enterable:true, type:'select', options:refTypeOptions },
-          { "name": "RefferenceKey", title:"참조 키", "initialValue": '준비중', enterable:true, type:'input'},
         ];
 
-        var refferenceTarget =  elementNode.getRefferenceTarget();
+        var tempArray;
+        if( elementNode.getRefferenceType() !== 'none' ){
+            if( elementNode.getRefferenceType() !== 'document' ){
 
-        if( elementNode.getRefferenceType() === 'react' ){
-          emptyFieldSet.push( { "name": "PackageKey",  title:"패키지 키","initialValue": refferenceTarget.packageKey || 'none', enterable:false, } );
-          emptyFieldSet.push( { "name": "ComponentKey", title:"컴포넌트 키", "initialValue": refferenceTarget.componentKey || 'none', enterable:false, } );
-        } else if ( elementNode.getRefferenceType() === 'document'  ){
-          emptyFieldSet.push( { "name": "DocumentRefKey",  title:"문서 참조 키","initialValue": refferenceTarget.documentRefKey || '', enterable:true, type:'input' } );
+              var options = [{value: elementNode.getRefferenceTarget(), 'title':'선택'}, {value:'none', 'title':'참조 안함'}];
+
+              var refferencingInfoArray = [];
+              elementNode.document.elementNodes.map(function(_elementNode){
+
+                  tempArray = [_elementNode.getName(), " [ "+_elementNode.getId()+" ] ", "( "+_elementNode.getType()+" )"];
+
+                  if( elementNode.getRefferenceTarget() == _elementNode.getId()){
+                    //options.push({ value:_elementNode.getId(), title:'selected'});
+
+                    refferencingInfoArray = tempArray;
+                  } else {
+                    if( ! _elementNode.isReferenced() ){
+
+
+                      options.push({value:_elementNode.getId(), title:tempArray.join("")});
+                    }
+                  }
+              });
+
+
+              emptyFieldSet.push( { "name": "Refferencing Id",  title:"참조중인 요소 ID","initialValue":refferencingInfoArray.join(" "), enterable:false } );
+              emptyFieldSet.push( { "name": "RefferenceTarget",  title:"참조 요소 변경","initialValue": elementNode.getRefferenceTarget() || 'none', enterable:true, type:'select', options:options } );
+            } else {
+              var options = [{value:'none', 'title':'참조 안함'}];
+              emptyFieldSet.push( { "name": "RefferenceTarget",  title:"참조 문서 키","initialValue": elementNode.getRefferenceTarget() || 'none', enterable:true, type:'select', options:options } );
+
+            }
+
         }
 
-        var tagAttributesFieldSet = [];
 
+        var tagAttributesFieldSet = [];
+        console.log('Empty render');
         return (
             <div className={rootClasses.join(' ')}>
-              <HorizonFieldSet title="Empty Type Properties" theme={ this.props.theme } nameWidth={130} fields={ emptyFieldSet } ref='emptyTypeProps'/>
+              <HorizonFieldSet title="Empty Type 속성" theme={ this.props.theme } nameWidth={130} fields={ emptyFieldSet } ref='emptyTypeProps'/>
 
             </div>
         );

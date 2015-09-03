@@ -17,7 +17,7 @@ var ContextContentsNavigation = React.createClass({
     },
 
     clickElementNode( _elementNode ){
-      this.emit("SelecteElementNode",{
+      this.emit("SelectElementNode",{
         elementNode: _elementNode
       });
     },
@@ -78,16 +78,7 @@ var ContextContentsNavigation = React.createClass({
 
     renderEmptyInfo(_elementNode, _indentBlocks){
       var refType =  _elementNode.getRefferenceType();
-      var refTarget;
-      switch( refType ){
-        case "react":
-          refTarget = _elementNode.getRefferenceTarget().componentKey;
-          break;
-        case "document":
-          refTarget = _elementNode.getRefferenceTarget().documentRefKey;
-          break;
-      }
-
+      var refTarget =_elementNode.getRefferenceTarget();
 
       return (
         <div>
@@ -148,15 +139,36 @@ var ContextContentsNavigation = React.createClass({
       );
     },
 
+    renderElementNodePool( _elementNodes ){
+      var self = this;
+      return (
+        <div>
+          <label> ElementNodes </label>
+          { _elementNodes.map(function(__elementNode){
+            return (
+              <div>
+                <label> ID: {__elementNode.getId() } </label>
+                <ul>
+                  {self.renderElementNode( __elementNode,0 )}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+      )
+    },
+
     renderTreeWrapper(){
 
       if( this.state.runningContext === null ) return <div/>;
       var runningContext = this.state.runningContext;
       var elementNode;
+      var elementNodes;
 
       //console.log(runningContext);
       if( runningContext.contextType === 'document' ){
         elementNode = runningContext.contextController.document.rootElementNode;
+        elementNodes = runningContext.contextController.document.elementNodes;
       }
 
 
@@ -169,6 +181,7 @@ var ContextContentsNavigation = React.createClass({
           <ul>
             { elementNode instanceof ElementNode ? this.renderElementNode( elementNode,0 ): <div/> }
           </ul>
+          { this.renderElementNodePool(elementNodes) }
         </div>
       );
     },

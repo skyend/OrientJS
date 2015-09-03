@@ -1,7 +1,12 @@
 var React = require('react');
+var EventEmitter = require('../lib/EventEmitter.js');
+var Extender = require('../lib/Extender.js');
+
 var _ = require('underscore');
 
 var ElementNode = function(_document, _elementNodeDataObject) {
+  Extender.extends(EventEmitter, this);
+
   //////////////
   // 필드 정의
   ////////////////////////
@@ -9,6 +14,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   // document profile
   this.id;
   this.type; // html / string / react / grid
+  this.name; // 참고용 이름
   this.attributes;
   this.componentName;
   this.comment;
@@ -18,7 +24,11 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
   this.refferenceTargetProps; // {...}
 
-  this.setRefferenceInstance;
+  this.refferenceInstance = null;
+
+  this.reactPackageKey;
+  this.reactComponentKey;
+  this.reactComponentProps;
 
   // date fields
   this.createDate;
@@ -41,14 +51,24 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   if (typeof _elementNodeDataObject === 'object') {
     this.id = _elementNodeDataObject.id;
     this.type = _elementNodeDataObject.type;
+    this.name = _elementNodeDataObject.name;
+
     this.attributes = _elementNodeDataObject.attributes;
+
     this.componentName = _elementNodeDataObject.componentName;
+
     this.refferenceType = _elementNodeDataObject.refferenceType;
     this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+
+    this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
+    this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
+    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
+
     this.comment = _elementNodeDataObject.comment || '';
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
+
     this.children = this.inspireChildren(_elementNodeDataObject.children);
 
   } else {
@@ -66,6 +86,10 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 ElementNode.prototype.setId = function(_id) {
   this.id = _id;
 };
+// name
+ElementNode.prototype.setName = function(_name) {
+  this.name = _name;
+};
 // Id Atrribute
 ElementNode.prototype.setIdAtrribute = function(_id) {
   this.attributes.id = _id;
@@ -81,6 +105,14 @@ ElementNode.prototype.setClasses = function(_classes) {
 // type
 ElementNode.prototype.setType = function(_type) {
   this.type = _type;
+};
+// packageKey
+ElementNode.prototype.setReactPackageKey = function(_reactPackageKey) {
+  this.reactPackageKey = _reactPackageKey;
+};
+// componentKey
+ElementNode.prototype.setReactComponentKey = function(_reactComponentKey) {
+  this.reactComponentKey = _reactComponentKey;
 };
 // componentName
 ElementNode.prototype.setComponentName = function(_componentName) {
@@ -101,10 +133,21 @@ ElementNode.prototype.setRefferenceTargetProps = function(_refferenceTargetProps
 // refferenceInstance
 ElementNode.prototype.setRefferenceInstance = function(_refferenceInstance) {
   this.refferenceInstance = _refferenceInstance;
+  if (this.refferenceInstance !== 'none' && this.refferenceInstance !== undefined) {
+    this.refferenceInstance.setParent(this);
+  }
+};
+// clear refferenceInstance
+ElementNode.prototype.clearRefferenceInstance = function() {
+  if (this.refferenceInstance !== null) this.refferenceInstance.unlinkParent();
+  else console.warn("참조중인 인스턴스가 없습니다.");
 };
 // parent
 ElementNode.prototype.setParent = function(_parentENode) {
   this.parent = _parentENode;
+};
+ElementNode.prototype.unlinkParent = function() {
+  this.parent = null;
 };
 // attribute
 ElementNode.prototype.setAttribute = function(_name, _value) {
@@ -166,6 +209,10 @@ ElementNode.prototype.setRealElement = function(_realElement) {
 ElementNode.prototype.getId = function() {
   return this.id;
 };
+// name
+ElementNode.prototype.getName = function() {
+  return this.name;
+};
 // element.tagName -> getTagName()
 ElementNode.prototype.getTagName = function() {
   return this.attributes.tagName;
@@ -185,6 +232,14 @@ ElementNode.prototype.getText = function() {
 // type
 ElementNode.prototype.getType = function() {
   return this.type;
+};
+// packageKey
+ElementNode.prototype.getReactPackageKey = function() {
+  return this.reactPackageKey;
+};
+// componentKey
+ElementNode.prototype.getReactComponentKey = function() {
+  return this.reactComponentKey;
 };
 // attribute
 ElementNode.prototype.getAttribute = function(_name) {
@@ -241,6 +296,18 @@ ElementNode.prototype.getComment = function() {
 // ReactTypeComponent
 ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
+};
+
+
+// isReferenced
+ElementNode.prototype.isReferenced = function() {
+  return this.getParent() !== null;
+};
+
+// getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
+ElementNode.prototype.getRefferencingElementNode = function() {
+  var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+  return refElNode;
 };
 
 ///////////
@@ -338,7 +405,7 @@ ElementNode.prototype.dettachChild = function(_child) {
 
   this.children = newChildList;
 
-  this.growupRealDOMElementTree();
+  this.linkRealDOMofChild();
 };
 
 
@@ -414,6 +481,7 @@ ElementNode.prototype.buildByComponent = function(_component) {
     }
 
   } else if (elementNodeType === 'empty') {
+
     // Todo
     this.buildEmptyTypeElement();
 
@@ -423,9 +491,12 @@ ElementNode.prototype.buildByComponent = function(_component) {
   } else if (elementNodeType === 'grid') {
     // Todo
   } else if (elementNodeType === 'react') {
-    // React타입은 ElementNode가 생성되지 않는다.
+    this.setTagName('div');
+    this.setReactPackageKey(_component.packageKey);
+    this.setReactComponentKey(_component.componentKey);
   }
 };
+
 /******************
  * buildByDomElement
  * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
@@ -440,11 +511,7 @@ ElementNode.prototype.buildEmptyTypeElement = function(_domElement) {
   });
 
   this.setRefferenceType('none');
-  this.setRefferenceTarget({
-    packageKey: undefined,
-    componentKey: undefined,
-    documentRefKey: undefined
-  });
+  this.setRefferenceTarget('none');
 };
 
 /******************
@@ -603,16 +670,16 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
 //////////////////////
 //
 /********************
- * growupRealDOMElementTree
+ * linkRealDOMofChild
  * 자신의 ElementNode에 생성된 RealDOMElement Tree를 갱신한다.
  * 자신의 자식 ElementNode의 구조가 변경되었고 자신의 하위 ElementNode중 RealElement를 가지지 않는 ElementNode가 없을 때 호출한다.
  * 자신의 자식 ElementNode에 구축된 realElement를 자신의 realElement에 자식으로 추가한다.
- * 그리고 자식의 growupRealElementTree 메소드를 호출하여 재귀로 동작한다.
+ * 그리고 자식의 linkRealDOMofChild 메소드를 호출하여 재귀로 동작한다.
  */
-ElementNode.prototype.growupRealDOMElementTree = function() {
+ElementNode.prototype.linkRealDOMofChild = function() {
   var self = this;
 
-  // Real Element 를 가지고 있으면 growupRealElementTree 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
+  // Real Element 를 가지고 있으면 linkRealDOMofChild 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
   if (this.hasRealDOMElement()) {
 
     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
@@ -625,7 +692,7 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
     if (this.getType() === 'empty') {
 
       // emptyType 구축
-      this.growupEmptyTypeRealDOMElement();
+      this.linkRealDOMofChild_empty_type();
     } else {
       // empty Type이 아닌 ElementNode만 자식 재귀호출
 
@@ -641,9 +708,10 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
             if (_child.hasRealDOMElement()) {
 
               // HTML DOM append
-              realDOMElement.appendChild(_child.growupRealDOMElementTree());
+              realDOMElement.appendChild(_child.linkRealDOMofChild());
             }
             break;
+
         }
       });
       // 자식 RealElement 처리 완료
@@ -656,41 +724,96 @@ ElementNode.prototype.growupRealDOMElementTree = function() {
   }
 };
 
-ElementNode.prototype.growupEmptyTypeRealDOMElement = function() {
+ElementNode.prototype.linkRealDOMofChild_empty_type = function() {
+
   var realElement = this.getRealDOMElement();
   // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
   // 그에따른 처리..
 
-  var refType = this.getRefferenceType();
 
-  if (refType === 'react') {
-    var refTarget = this.getRefferenceTarget();
+  this.clearRefferenceInstance();
+  var refTarget = this.getRefferenceTarget();
+  if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
 
-    if (!(refTarget.packageKey !== undefined && refTarget.componentKey !== undefined)) return;
-
-
-    var packageKey = refTarget.packageKey;
-    var componentKey = refTarget.componentKey;
-
-    // ReactComponent 를 얻어온다.
-    var component = this.document.getReactTypeComponent(packageKey, componentKey);
+    switch (this.getRefferenceType()) {
+      case "react":
+      case "html":
+      case "grid":
+      case "empty":
+        var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
 
 
-    var React = require('react');
-    var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+        this.setRefferenceInstance(refferenceElementNode);
 
-    this.setRefferenceInstance(refferenceInstance);
+        if (refferenceElementNode !== undefined) {
 
-    React.render(refferenceInstance, realElement);
+          realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
 
+          if (this.getRefferenceType() === 'react') {
+            refferenceElementNode.renderReact();
+          }
+        } else {
+          console.warn("참조중인 id의 노드가 존재하지 않습니다.");
+        }
 
-    if (typeof component.CSS !== 'undefined') {
-      this.setCSS(component.CSS);
-      this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+        break;
+      case "document":
+
+        break;
+      default:
     }
   }
 
 
+  return realElement;
+};
+
+ElementNode.prototype.linkRealDOMofChild_react_type = function() {
+  var realElement = this.getRealDOMElement();
+  console.log('react linked');
+  var packageKey = this.getReactPackageKey();
+  var componentKey = this.getReactComponentKey();
+
+  // ReactComponent 를 얻어온다.
+  var component = this.document.getReactTypeComponent(packageKey, componentKey);
+
+
+  var React = require('react');
+  var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+
+  this.setRefferenceInstance(refferenceInstance);
+
+  React.render(refferenceInstance, realElement);
+
+  if (typeof component.CSS !== 'undefined') {
+    this.setCSS(component.CSS);
+    this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+  }
+
+  return realElement;
+};
+
+ElementNode.prototype.renderReact = function() {
+  var realElement = this.getRealDOMElement();
+  console.log('react linked');
+  var packageKey = this.getReactPackageKey();
+  var componentKey = this.getReactComponentKey();
+
+  // ReactComponent 를 얻어온다.
+  var component = this.document.getReactTypeComponent(packageKey, componentKey);
+
+
+  var React = require('react');
+  var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+
+
+
+  React.render(refferenceInstance, realElement);
+
+  if (typeof component.CSS !== 'undefined') {
+    this.setCSS(component.CSS);
+    this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+  }
 };
 
 //////////////////////////
@@ -699,6 +822,7 @@ ElementNode.prototype.export = function(_withoutId) {
   var exportObject = {
     id: _withoutId ? undefined : this.id,
     type: this.getType(),
+    name: this.getName(),
     attributes: this.getAttributes(),
     comment: this.getComment(),
     componentName: this.getComponentName(),
@@ -714,6 +838,11 @@ ElementNode.prototype.export = function(_withoutId) {
     exportObject.refferenceType = this.getRefferenceType();
     exportObject.refferenceTarget = this.getRefferenceTarget();
     exportObject.refferenceTargetProps = this.getRefferenceTargetProps();
+  }
+
+  if (exportObject.type === 'react') {
+    exportObject.reactPackageKey = this.getReactPackageKey();
+    exportObject.reactComponentKey = this.getReactComponentKey();
   }
 
   return exportObject;

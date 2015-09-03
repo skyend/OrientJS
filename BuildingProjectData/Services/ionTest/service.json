@@ -16,6 +16,11 @@
     "name": "Bootstrap",
     "key": "bootstrap-test",
     "purpose": "layout"
+  }, {
+    "id": 4,
+    "name": "EmptyTest",
+    "key": "empty",
+    "purpose": "layout"
   }],
 
   "pages": [{
