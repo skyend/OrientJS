@@ -556,6 +556,8 @@ ElementNode.prototype.buildByDomElement = function(_domElement) {
     newChildElementNode.buildByDomElement(child_);
 
     children.push(newChildElementNode);
+
+    newChildElementNode.setParent(this);
   }
   // 재귀끝  //
   ////////////
@@ -588,10 +590,20 @@ ElementNode.prototype.applyAttributesToRealDOM = function() {
   var keys = Object.keys(elementAttributes);
 
   var realElement = this.getRealDOMElement();
+  if (this.getType() === 'string') {
+    realElement.nodeValue = this.getText();
+  } else {
+    for (var i = 0; i < keys.length; i++) {
 
-  for (var i = 0; i < keys.length; i++) {
-    realElement.setAttribute(keys[i], elementAttributes[keys[i]]);
+      if (keys[i] !== 'tagName') {
+        realElement.setAttribute(keys[i], elementAttributes[keys[i]]);
+      }
+
+
+    }
   }
+
+
 };
 
 ElementNode.prototype.appendChild = function(_elementNode) {

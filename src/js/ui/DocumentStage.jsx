@@ -892,10 +892,10 @@ var _ = require('underscore');
                 this.getCurrentRunningContext().setState({ stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
                 break;
               case "tablet":
-                this.getCurrentRunningContext().setState({ stageWidth: 480, stageHeight: 760});
+                this.getCurrentRunningContext().setState({ stageWidth: 768, stageHeight: 853});
                 break;
               case "mobile":
-                this.getCurrentRunningContext().setState({ stageWidth: 320, stageHeight: 480});
+                this.getCurrentRunningContext().setState({ stageWidth: 350, stageHeight: 568});
                 break;
             }
 

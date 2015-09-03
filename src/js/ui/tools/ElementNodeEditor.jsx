@@ -53,6 +53,8 @@ var ElementNodeEditor = React.createClass({
           switch( _eventData.name ){
             case "TagName" :
               elementNode.setTagName( changedData );
+              this.refreshElementNodeRendering( elementNode );
+              return;
               break;
             case "Id" :
               elementNode.setIdAtrribute( changedData );
@@ -102,20 +104,24 @@ var ElementNodeEditor = React.createClass({
 
         // 변경된 참조 정보를 요소로부터 갱신
 
-        var elementDocument = elementNode.document;
-        var contextController = elementDocument.getContextController();
-
-        if( elementNode.getParent() !== null ){
-          contextController.constructToRealElement( elementNode );
-          elementNode.getParent().linkRealDOMofChild();
-        } else {
-          contextController.rootRender();
-        }
+        this.refreshElementNodeRendering( elementNode );
       }
 
 
 
       this.setState({elementNode:elementNode});
+    },
+
+    refreshElementNodeRendering( _elementNode ){
+      var elementDocument = _elementNode.document;
+      var contextController = elementDocument.getContextController();
+
+      if( _elementNode.getParent() !== null ){
+        contextController.constructToRealElement( _elementNode );
+        _elementNode.getParent().linkRealDOMofChild();
+      } else {
+        contextController.rootRender();
+      }
     },
 
 

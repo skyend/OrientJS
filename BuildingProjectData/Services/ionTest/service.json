@@ -21,6 +21,11 @@
     "name": "EmptyTest",
     "key": "empty",
     "purpose": "layout"
+  }, {
+    "id": 5,
+    "name": "Demo 01",
+    "key": "Demo01",
+    "purpose": "contents"
   }],
 
   "pages": [{
