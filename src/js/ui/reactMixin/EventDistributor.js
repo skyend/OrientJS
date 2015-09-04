@@ -172,6 +172,9 @@
      */
     __fireChildrenRootMounted: function() {
       var children = this.__getComponentChildren();
+
+      if (children === null || children === undefined) return;
+
       var childKeys = Object.keys(children);
       for (var i = 0; i < childKeys.length; i++) {
         var childKey = childKeys[i];

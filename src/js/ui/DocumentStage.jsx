@@ -13,7 +13,7 @@ var _ = require('underscore');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var DirectContext = require('./DirectContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
-    var DropSupporter = require('./DropSupporter.jsx');
+    var ElementNodeDropSupporter = require('./ElementNodeDropSupporter.jsx');
 
     var React = require("react");
 
@@ -778,6 +778,19 @@ var _ = require('underscore');
           // 마우스커서가 있는 곳에 가이드박스를 표시하는 방식
           dropGuideBox.style.left = (_absoluteX -  (dropGuideBox.offsetWidth/2)) + 'px';
           dropGuideBox.style.top = (_absoluteY - (dropGuideBox.offsetHeight/2)) + 'px';
+
+
+          /*
+          /////////////
+          // ElementNode DropSupporter
+          var elementNodeDropSupporter = this.refs['ElementNodeDropSupporter'];
+
+          elementNodeDropSupporter.setState({
+            elementNode:_target.element.object.getElementNode(),
+            left: (_absoluteX -  (dropGuideBox.offsetWidth/2)),
+            top:(_absoluteY - (dropGuideBox.offsetHeight/2))
+          });*/
+
         },
 
 
@@ -931,7 +944,7 @@ var _ = require('underscore');
                             {this.state.directContexts.map(this.renderContextTabItem)}
                         </ul>
                     </div>
-                    <DropSupporter/>
+                    <ElementNodeDropSupporter ref="ElementNodeDropSupporter"/>
                     <div className='drop-guide-box' ref='drop-guide-box'>
                       <div className=''></div>
                       <div className='direction' data-direction='top' ref='drop-guide-box-top'> TOP </div>

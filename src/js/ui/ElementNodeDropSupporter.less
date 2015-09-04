@@ -1,0 +1,44 @@
+.ElementNodeDropSupporter
+{
+    position: fixed;
+    z-index: 99;
+    top: 100px;
+    left: 400px;
+
+    display: inline-block;
+    display: none;
+
+
+    .selection
+    {
+        transition: all .3s;
+
+        stroke: rgba(255,255,255,1);
+        fill: rgba(13, 139, 224, .51);
+        &.append-fore
+        {
+            //            fill: rgba(13, 139, 224, .51);
+        }
+
+        &.append-back
+        {
+            //            fill: rgba(13, 139, 224, .51);
+        }
+
+        &.append-left
+        {
+            //            fill: rgba(13, 139, 224, .51);
+        }
+
+        &.append-right
+        {
+            //            fill: rgba(13, 139, 224, .51);
+        }
+
+        &:hover
+        {
+            //fill: rgba(13, 139, 224, .91);
+            fill: rgba(255,255,255,.3);
+        }
+    }
+}
