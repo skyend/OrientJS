@@ -581,9 +581,9 @@ ElementNode.prototype.copyAllAtrributeFromDOMElement = function(_domElement) {
     elementSpec[attributes[i].name] = attributes[i].nodeValue;
   }
 
-
   this.setAttributes(elementSpec);
 };
+
 
 ElementNode.prototype.applyAttributesToRealDOM = function() {
   var elementAttributes = this.getAttributes();
@@ -591,12 +591,16 @@ ElementNode.prototype.applyAttributesToRealDOM = function() {
 
   var realElement = this.getRealDOMElement();
   if (this.getType() === 'string') {
-    realElement.nodeValue = this.getText();
+
+    // resolve String : data binding and i18n processing
+    realElement.nodeValue = this.resolveRenderText(this.getText());
   } else {
     for (var i = 0; i < keys.length; i++) {
 
       if (keys[i] !== 'tagName') {
-        realElement.setAttribute(keys[i], elementAttributes[keys[i]]);
+
+        // resolve String : data binding and i18n processing
+        realElement.setAttribute(keys[i], this.resolveRenderText(elementAttributes[keys[i]]));
       }
 
 
@@ -821,6 +825,12 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   }
 
   return realElement;
+};
+
+ElementNode.prototype.resolveRenderText = function(_seedText) {
+
+  // resolve String : data binding and i18n processing
+  return this.document.getServiceManager().resolveString(_seedText);
 };
 
 ElementNode.prototype.renderReact = function() {

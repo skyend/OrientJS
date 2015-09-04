@@ -41,18 +41,31 @@ ServiceManager.prototype.getDocumentMetaById = function(_id) {
 ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
   var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
 
-  var document = this.session.certifiedRequestJSON(documentURL);
+  var documentJSON = this.session.certifiedRequestJSON(documentURL);
 
-  return document;
+  return documentJSON;
 };
+
+/********
+ * resolveString
+ * 모든 String 을 바인딩 법칙에 따라 변환하여준다.
+ * ${url:...} / ${field:... } / ${title:...}
+ */
+ServiceManager.prototype.resolveString = function(_text) {
+  var resultString = _text.replace(/\${\w+:.+?}/g, '{{resolved}}');
+
+
+  return resultString;
+};
+
 
 ServiceManager.prototype.getDocumentContextController = function(_documentId) {
 
   if (this.docContextControllers[_documentId] === undefined) {
     var docMeta = this.getDocumentMetaById(_documentId);
-    var doc = this.loadDocumentByMeta(docMeta);
+    var docJSON = this.loadDocumentByMeta(docMeta);
 
-    var documentContextController = new DocumentContextController(doc, this.session);
+    var documentContextController = new DocumentContextController(docJSON, this.session, this);
 
     this.docContextControllers[_documentId] = documentContextController;
   }

@@ -1,11 +1,12 @@
 var Document = require('./Document.js');
 
-var DocumentContextController = function(_document, _session) {
+var DocumentContextController = function(_document, _session, _serviceManager) {
   this.attached = false;
   this.directContext = null;
   this.running = false;
 
   this.session = _session;
+  this.serviceManager = _serviceManager;
 
   this.superElement = null;
 
@@ -181,7 +182,10 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealTextElement = function(_nodeElement) {
-  var textNode = this.directContext.getDocument().createTextNode(_nodeElement.getText());
+
+
+  // resolve String : data binding and i18n processing
+  var textNode = this.directContext.getDocument().createTextNode(this.resolveRenderText(_nodeElement.getText()));
 
   _nodeElement.setRealElement(textNode);
 };
@@ -255,12 +259,19 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
       if (typeof __scriptObject.url !== 'undefined') {
         scriptE.setAttribute('src', __scriptObject.url);
       } else {
-        scriptE.innerHTML = __scriptObject.script;
+
+        // resolve String : data binding and i18n processing
+        scriptE.innerHTML = this.resolveRenderText(__scriptObject.script);
       }
 
       return scriptE;
     }
   });
+};
+
+DocumentContextController.prototype.resolveRenderText = function(_seedText) {
+  // resolve String : data binding and i18n processing
+  return this.serviceManager.resolveString(_seedText);
 };
 
 /********
