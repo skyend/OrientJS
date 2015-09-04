@@ -69,6 +69,11 @@
         "title": "Element Control",
         "icon": "magic",
         "equipToolKey": "."
+      }, {
+        "key": "element-node-event",
+        "title": "Element Event Control",
+        "icon": "magic",
+        "equipToolKey": "."
       }]
     }]
   },

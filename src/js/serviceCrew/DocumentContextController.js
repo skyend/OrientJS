@@ -182,10 +182,7 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealTextElement = function(_nodeElement) {
-
-
-  // resolve String : data binding and i18n processing
-  var textNode = this.directContext.getDocument().createTextNode(this.resolveRenderText(_nodeElement.getText()));
+  var textNode = this.directContext.getDocument().createTextNode('');
 
   _nodeElement.setRealElement(textNode);
 };

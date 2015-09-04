@@ -407,6 +407,12 @@ var _ = require('underscore');
         },
 
         onThrowCatcherSelectElementNode(_eventData, _pass){
+          this.refs['DocumentStage'].selectElementNode( _eventData.elementNode);
+        },
+
+        // 성공적으로 요소가 선택되었을 때
+        onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
+
           this.applyToolStates("ElementNodeEditor", {
             elementNode: _eventData.elementNode
           });
@@ -414,8 +420,6 @@ var _ = require('underscore');
           this.applyToolStates("ContextContentsNavigation", {
             selectedElementNode: _eventData.elementNode
           });
-
-          this.refs['DocumentStage'].selectedElementNode( _eventData.elementNode);
         },
 
         onThrowCatcherCancelSelectElementNode(_eventData, _pass){

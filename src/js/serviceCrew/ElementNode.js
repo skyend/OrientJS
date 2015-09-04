@@ -24,7 +24,8 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
   this.refferenceTargetProps; // {...}
 
-  this.refferenceInstance = null;
+  // Element Controls
+  this.controls;
 
   this.reactPackageKey;
   this.reactComponentKey;
@@ -41,6 +42,12 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   // parent refference
   this.parent = null;
   this.realElement = null;
+  this.refferenceInstance = null;
+
+  // Repeat by parent's Repeat Control
+  this.isGhost = false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
+  this.isRepeated = false; // repeat에 의해 반복된 ElementNode 플래그
+  this.repeatOrder = 0; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
 
   this.document = _document;
 
@@ -60,6 +67,8 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.refferenceType = _elementNodeDataObject.refferenceType;
     this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
 
+    this.controls = _elementNodeDataObject.controls;
+
     this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
     this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
     this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
@@ -75,6 +84,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     // 새 엘리먼트가 생성되었다.
     this.createDate = new Date();
     this.attributes = {};
+    this.controls = {};
     this.children = [];
     this.comment = '';
   }
@@ -94,6 +104,8 @@ ElementNode.prototype.setName = function(_name) {
 ElementNode.prototype.setIdAtrribute = function(_id) {
   this.attributes.id = _id;
 };
+
+
 // tagName
 ElementNode.prototype.setTagName = function(_tagName) {
   this.attributes.tagName = _tagName;
@@ -142,8 +154,15 @@ ElementNode.prototype.clearRefferenceInstance = function() {
   if (this.refferenceInstance !== null) this.refferenceInstance.unlinkParent();
   else console.warn("참조중인 인스턴스가 없습니다.");
 };
-// parent
+
+// parent // 상위노드로 부터 호출됨
 ElementNode.prototype.setParent = function(_parentENode) {
+
+  // 부모가 반복된자거나 고스트일 경우 자신도 고스트로 지정한다.
+  if (_parentENode.isGhost || _parentENode.isRepeated) {
+    this.isGhost = true;
+  }
+
   this.parent = _parentENode;
 };
 ElementNode.prototype.unlinkParent = function() {
@@ -157,6 +176,16 @@ ElementNode.prototype.setAttribute = function(_name, _value) {
 ElementNode.prototype.setAttributes = function(_attributes) {
   this.attributes = _attributes;
 };
+
+// control
+ElementNode.prototype.setControl = function(_controlName, _value) {
+  this.controls[_controlName] = _value;
+};
+// controls
+ElementNode.prototype.setControls = function(_controls) {
+  this.controls = _controls;
+};
+
 // css
 ElementNode.prototype.setCSS = function(_css) {
   this.css = _css;
@@ -245,10 +274,21 @@ ElementNode.prototype.getReactComponentKey = function() {
 ElementNode.prototype.getAttribute = function(_name) {
   return this.attributes[_name];
 };
+
 // attributes
 ElementNode.prototype.getAttributes = function() {
   return this.attributes;
 };
+
+// control
+ElementNode.prototype.getControl = function(_controlName) {
+  return this.controls[_controlName];
+};
+// controls
+ElementNode.prototype.getControls = function() {
+  return this.controls;
+};
+
 // componentName
 ElementNode.prototype.getComponentName = function() {
   return this.componentName;
@@ -736,8 +776,8 @@ ElementNode.prototype.linkRealDOMofChild = function() {
 
         // (HTML|STRING|EMPTY)TYPE 의 자식ElementNode만 RealElment를 자신에게 append한다.
         switch (_child.getType()) {
-          case "html":
           case "string":
+          case "html":
           case "empty":
             if (_child.hasRealDOMElement()) {
 
@@ -747,11 +787,20 @@ ElementNode.prototype.linkRealDOMofChild = function() {
             break;
 
         }
+
+
       });
       // 자식 RealElement 처리 완료
       ///////////////////
+
+
+
     }
 
+    if (this.getType() === 'string') {
+      // resolve String : data binding and i18n processing
+      realDOMElement.nodeValue = this.resolveRenderText(this.getText());
+    }
 
 
     return realDOMElement;
@@ -827,12 +876,6 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   return realElement;
 };
 
-ElementNode.prototype.resolveRenderText = function(_seedText) {
-
-  // resolve String : data binding and i18n processing
-  return this.document.getServiceManager().resolveString(_seedText);
-};
-
 ElementNode.prototype.renderReact = function() {
   var realElement = this.getRealDOMElement();
   console.log('react linked');
@@ -856,6 +899,75 @@ ElementNode.prototype.renderReact = function() {
   }
 };
 
+
+ElementNode.prototype.resolveRenderText = function(_seedText) {
+
+  // this.emitToParent("Test", {
+  //   text: _seedText
+  // });
+
+  // resolve String : data binding and i18n processing
+  return this.document.getServiceManager().resolveString(_seedText);
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* ------------------ Event Handing Methods ------------------------------------------------------------------------------------- */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 동기 이벤트 핸들링
+// Base Method
+ElementNode.prototype.onEventTernel = function(_eventName, _eventData) {
+  var eventName = _eventName;
+  var eventData = _eventData;
+  var origin = _eventData.origin;
+
+  var eventCatcherKey = "onEC" + eventName;
+
+  var result = this[eventCatcherKey](eventData, origin);
+
+  if (result === false) {
+
+    // 결과 타입이 boolean이고 값이 false 일 때 부모로 이벤트를 넘겨준다.
+    return this.emitToParent(eventName, eventData, origin);
+  } else {
+    // false 가 아니라면 이벤트 처리 결과를 반환한다.
+    return result;
+  }
+};
+// Base Method
+ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__) {
+  if (this.parent === null) {
+    console.warn('더 이상 이벤트를 들을 부모가 없습니다.');
+    return true;
+  }
+
+  return this.parent.onEventTernel(_eventName, {
+    eventName: _eventName,
+    eventData: _eventData,
+    origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
+  });
+};
+////
+// 이벤트 사용
+// var result = this.emitToParent("Test", {
+//   text: _seedText
+// });
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ElementNode.prototype.onECTest = function(_eventData, _origin) {
+
+  return false;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 //////////////////////////
 // export methods
 ElementNode.prototype.export = function(_withoutId) {
@@ -864,15 +976,21 @@ ElementNode.prototype.export = function(_withoutId) {
     type: this.getType(),
     name: this.getName(),
     attributes: _.clone(this.getAttributes()),
+    controls: this.getControls(),
     comment: this.getComment(),
     componentName: this.getComponentName(),
     createDate: new Date(this.createDate),
     updateDate: new Date(this.updateDate),
     inherentCSS: this.getType() !== 'empty' ? this.getCSS() : '', // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
-    children: this.children.map(function(_child) {
-      return _child.export(_withoutId);
-    })
+    children: []
   };
+
+  this.children.map(function(_child) {
+    // 반복된요소가 아닌 자식만 export한다.
+    if (!_child.isRepeated) {
+      exportObject.children.push(_child.export(_withoutId));
+    }
+  });
 
   if (exportObject.type === 'empty') {
     exportObject.refferenceType = this.getRefferenceType();

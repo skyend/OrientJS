@@ -794,7 +794,7 @@ var _ = require('underscore');
         },
 
 
-        selectedElementNode( _elementNode ){
+        selectElementNode( _elementNode ){
           this.getCurrentRunningContext().showElementNavigator( _elementNode);
         },
 

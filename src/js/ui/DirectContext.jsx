@@ -303,6 +303,13 @@ var DirectContext = React.createClass({
 
   showElementNavigator( _elementNode, _boundingRect ){
 
+    if( _elementNode.isGhost || _elementNode.isRepeated ){
+      this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
+      return;
+    } else {
+      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode});
+    }
+
     var target = _elementNode.getRealDOMElement();
 
     var boundingRect;
@@ -359,9 +366,15 @@ var DirectContext = React.createClass({
       return;
     }
 
+    var elementNode = targetNode.getElementNode();
+
+    if( elementNode.isGhost || elementNode.isRepeated ){
+      this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
+      return;
+    }
 
     this.emit("SelectElementNode",{
-      elementNode: targetNode.getElementNode()
+      elementNode: elementNode
     });
   },
 
