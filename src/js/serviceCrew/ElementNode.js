@@ -607,12 +607,22 @@ ElementNode.prototype.applyAttributesToRealDOM = function() {
 };
 
 ElementNode.prototype.appendChild = function(_elementNode) {
+  if (this.getType() === 'string') {
+    return false;
+  }
+
   _elementNode.setParent(this);
 
   this.children.push(_elementNode);
+
+  return true;
 };
 
 ElementNode.prototype.insertBefore = function(_elementNode) {
+  if (this.getType() === 'string') {
+    return false;
+  }
+
   var parent = this.getParent();
   // 부모의 자식 배열에서 나를 찾는다.
   var meIndex = _.findIndex(parent.children, this);
@@ -631,9 +641,15 @@ ElementNode.prototype.insertBefore = function(_elementNode) {
     parent.children = newParentChildren;
   }
   _elementNode.setParent(parent);
+
+  return true;
 };
 
 ElementNode.prototype.insertAfter = function(_elementNode) {
+  if (this.getType() === 'string') {
+    return false;
+  }
+
   var parent = this.getParent();
 
   var meIndex = _.findIndex(parent.children, this);
@@ -654,6 +670,8 @@ ElementNode.prototype.insertAfter = function(_elementNode) {
 
 
   _elementNode.setParent(parent);
+
+  return true;
 };
 
 //////////////////////////

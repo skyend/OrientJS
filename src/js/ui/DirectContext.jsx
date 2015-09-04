@@ -34,15 +34,8 @@ var DirectContext = React.createClass({
       var baseElementNode = dropTargetDOMElement.getElementNode();
       this.deployComponentToElementNode("appendChild", _component, baseElementNode);
     } else {
-
-      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
-      this.contextController.rootRender();
+      this.deployToRoot(_component);
     }
-
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
   },
 
   deployComponentToBefore( _vid, _component ){
@@ -53,14 +46,8 @@ var DirectContext = React.createClass({
       var baseElementNode = dropTargetDOMElement.getElementNode();
       this.deployComponentToElementNode("insertBefore", _component, baseElementNode);
     } else {
-
-      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
-      this.contextController.rootRender();
+      this.deployToRoot(_component);
     }
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
   },
 
   deployComponentToAfter( _vid, _component ){
@@ -71,14 +58,8 @@ var DirectContext = React.createClass({
       var baseElementNode = dropTargetDOMElement.getElementNode();
       this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
     } else {
-
-      this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
-      this.contextController.rootRender();
+      this.deployToRoot(_component);
     }
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
   },
 
   deployComponentToElementNode( _insertType, _component, _baseElementNode ){
@@ -87,12 +68,34 @@ var DirectContext = React.createClass({
 
       var newElementNode = baseDocument.newElementNodeFromComponent( _component );
 
-      var resultElementNode = baseDocument.insertElementNode( _insertType, newElementNode, _baseElementNode );
+      this.deployElementNode( _insertType, newElementNode, _baseElementNode );
+  },
+
+  deployElementNode(_insertType, _elementNode, _target ){
+      var baseDocument = _target.document;
+
+      var result = baseDocument.insertElementNode( _insertType, _elementNode, _target );
 
       var contextController = baseDocument.contextController;
 
-      contextController.rootRender();
+      if( result ){
+          contextController.rootRender();
+      }
 
+      this.emit('UpdatedContext', {
+        directContext: this
+      });
+
+      return result;
+  },
+
+  deployToRoot(_component){
+    this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
+    this.contextController.rootRender();
+
+    this.emit('UpdatedContext', {
+      directContext: this
+    });
   },
 
   /***********
@@ -206,6 +209,33 @@ var DirectContext = React.createClass({
       });
     }
 
+  },
+
+  copyElementJSON(){
+    var data = this.state.selectedElementNode.export(false);
+
+    this.copiedElementNodeData = data;
+
+    this.infoNotice("복사 성공", this.state.selectedElementNode.getId() + " ElementNode 가 성공적으로 복사되었습니다.")
+  },
+
+  pasteElementIn(){
+    if( this.copiedElementNodeData === undefined ) {
+      this.errorNotice('붙여넣기 실패', '이전에 복사된 내용이 없습니다.');
+      return;
+    }
+
+    var elementNode = this.state.selectedElementNode;
+
+    var baseDocument = elementNode.document;
+
+    var newElementNode = baseDocument.newElementNode( this.copiedElementNodeData );
+
+    if( this.deployElementNode('appendChild',newElementNode, elementNode) ){
+      this.infoNotice('붙여넣기 완료', 'OK.');
+    } else {
+      this.errorNotice('붙여넣기 실패', '해당요소에 ElementNode를 붙여넣을 수 없습니다.');
+    }
   },
 
   removeElement(){
@@ -353,6 +383,13 @@ var DirectContext = React.createClass({
     contextController.testSave();
   },
 
+  infoNotice( _title, _message){
+    this.emit('NoticeMessage',{
+      title:_title,
+      message:_message,
+      level : "info"
+    });
+  },
 
   errorNotice( _title, _message){
     this.emit('NoticeMessage',{
@@ -498,13 +535,13 @@ var DirectContext = React.createClass({
               </li>
 
               <li>
-                <button onClick={this.clipElement}>
-                  <i className='fa fa-clipboard'/> <span className='title'>Copy this</span>
+                <button onClick={this.copyElementJSON}>
+                  <i className='fa fa-clipboard'/> <span className='title'>Copy Data</span>
                 </button>
               </li>
 
               <li>
-                <button onClick={this.clipElement}>
+                <button onClick={this.pasteElementIn}>
                   <i className='fa fa-pencil-square'/> <span className='title'>Paste In</span>
                 </button>
               </li>
