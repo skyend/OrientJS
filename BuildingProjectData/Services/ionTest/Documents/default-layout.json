@@ -3,7 +3,7 @@
   "documentName": "DefaultLayout",
   "documentCreate": "2015-08-01T12:00:00+08",
   "documentUpdate": "2015-08-02T12:00:00+08",
-  "lastElementId": 14,
+  "lastElementId": 15,
   "rootElementNode": {
     "id": 1,
     "type": "html",
@@ -12,6 +12,8 @@
       "class": "wrapper"
     },
     "comment": "",
+    "createDate": null,
+    "updateDate": null,
     "children": [{
       "id": 2,
       "type": "html",
@@ -21,6 +23,8 @@
         "style": ""
       },
       "comment": "헤더",
+      "createDate": null,
+      "updateDate": null,
       "children": [{
         "id": 3,
         "type": "string",
@@ -29,6 +33,8 @@
           "text": "Test Service"
         },
         "comment": "",
+        "createDate": null,
+        "updateDate": null,
         "children": []
       }]
     }, {
@@ -40,6 +46,8 @@
         "style": ""
       },
       "comment": "바디",
+      "createDate": null,
+      "updateDate": null,
       "children": [{
         "id": 7,
         "type": "empty",
@@ -49,6 +57,7 @@
         },
         "comment": "테스트용 Empty 노드",
         "createDate": "2015-08-20T06:19:02.691Z",
+        "updateDate": null,
         "inherentCSS": "",
         "children": [],
         "refferenceType": "html",
@@ -62,10 +71,22 @@
         },
         "comment": "",
         "createDate": "2015-09-03T01:20:27.934Z",
+        "updateDate": null,
         "inherentCSS": "",
         "children": [],
         "refferenceType": "react",
         "refferenceTarget": 14
+      }, {
+        "id": 15,
+        "type": "html",
+        "attributes": {
+          "tagName": "img",
+          "src": "${url:image01}"
+        },
+        "comment": "",
+        "createDate": "2015-09-04T09:57:17.474Z",
+        "updateDate": null,
+        "children": []
       }]
     }, {
       "id": 5,
@@ -76,6 +97,8 @@
         "style": ""
       },
       "comment": "푸터",
+      "createDate": null,
+      "updateDate": null,
       "children": [{
         "id": 6,
         "type": "string",
@@ -84,6 +107,8 @@
           "text": "Copyright(c) 2015 I-ON SDP Present All right reserved."
         },
         "comment": "",
+        "createDate": null,
+        "updateDate": null,
         "children": []
       }]
     }]
@@ -97,6 +122,7 @@
     },
     "comment": "",
     "createDate": "2015-09-01T02:21:24.084Z",
+    "updateDate": null,
     "children": [{
       "id": 12,
       "type": "string",
@@ -106,6 +132,7 @@
       },
       "comment": "",
       "createDate": "2015-09-01T02:21:24.084Z",
+      "updateDate": null,
       "children": []
     }]
   }, {
@@ -116,6 +143,7 @@
     },
     "comment": "",
     "createDate": "2015-09-03T01:20:33.240Z",
+    "updateDate": null,
     "inherentCSS": ".noselect {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  -webkit-touch-callout: none;\n  -khtml-user-select: none;\n}\n.InputBoxWithSelector {\n  line-height: 1;\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n}\n.InputBoxWithSelector.red .input-wrapper input {\n  border: solid 1px #d9534f;\n}\n.InputBoxWithSelector.red .input-wrapper input + .spread-out {\n  color: #c12e2a;\n}\n.InputBoxWithSelector.red .input-wrapper .selector-wrapper ul.selector {\n  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);\n}\n.InputBoxWithSelector.red .input-wrapper .selector-wrapper ul.selector li {\n  color: #fff;\n  background-color: #d9534f;\n}\n.InputBoxWithSelector.red .input-wrapper .selector-wrapper ul.selector li:hover {\n  background-color: #c12e2a;\n}\n.InputBoxWithSelector.red .input-wrapper .selector-wrapper ul.selector li.cursor-here {\n  color: #333;\n  border: solid 1px #d9534f;\n  background-color: #fff;\n}\n.InputBoxWithSelector.white-gray .input-wrapper input {\n  border: solid 1px #545454;\n  border-radius: 3px;\n}\n.InputBoxWithSelector.white-gray .input-wrapper input + .spread-out {\n  color: #2a2a2a;\n}\n.InputBoxWithSelector.white-gray .input-wrapper .selector-wrapper ul.selector {\n  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);\n}\n.InputBoxWithSelector.white-gray .input-wrapper .selector-wrapper ul.selector li {\n  color: #fff;\n  background-color: #545454;\n}\n.InputBoxWithSelector.white-gray .input-wrapper .selector-wrapper ul.selector li:hover {\n  background-color: #333;\n}\n.InputBoxWithSelector.white-gray .input-wrapper .selector-wrapper ul.selector li.cursor-here {\n  color: #333;\n  border: solid 1px #545454;\n  background-color: #fff;\n}\n.InputBoxWithSelector.gray .input-wrapper input {\n  color: #eee;\n  border: solid 1px #545454;\n  border-radius: 3px;\n  background-color: #565656;\n}\n.InputBoxWithSelector.gray .input-wrapper input + .spread-out {\n  color: #222;\n}\n.InputBoxWithSelector.gray .input-wrapper .selector-wrapper ul.selector {\n  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.9);\n}\n.InputBoxWithSelector.gray .input-wrapper .selector-wrapper ul.selector li {\n  color: #fff;\n  background-color: #333;\n}\n.InputBoxWithSelector.gray .input-wrapper .selector-wrapper ul.selector li:hover {\n  background-color: #222;\n}\n.InputBoxWithSelector.gray .input-wrapper .selector-wrapper ul.selector li.cursor-here {\n  color: #eee;\n  border: solid 1px #545454;\n  background-color: #454545;\n}\n.InputBoxWithSelector .input-wrapper {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n}\n.InputBoxWithSelector .input-wrapper input {\n  font-size: 14px;\n  box-sizing: border-box;\n  width: 100%;\n  height: 24px;\n  padding: 3px 10px;\n  outline: none;\n}\n.InputBoxWithSelector .input-wrapper input + .spread-out {\n  font-size: 14px;\n  position: absolute;\n  top: 0;\n  right: 0;\n  box-sizing: border-box;\n  height: 24px;\n  padding: 3px 10px;\n  cursor: pointer;\n}\n.InputBoxWithSelector .input-wrapper input.clickable {\n  cursor: pointer;\n}\n.InputBoxWithSelector .input-wrapper .selector-wrapper {\n  position: relative;\n  width: 100%;\n}\n.InputBoxWithSelector .input-wrapper .selector-wrapper ul.selector {\n  position: absolute;\n  z-index: 1000;\n  width: 100%;\n  margin: 0;\n  padding: 0;\n}\n.InputBoxWithSelector .input-wrapper .selector-wrapper ul.selector li {\n  font-size: 12px;\n  box-sizing: border-box;\n  margin: 0;\n  padding: 5px 10px;\n  cursor: pointer;\n}\n.InputBoxWithSelector .input-wrapper[data-dontEnter=true] {\n  cursor: pointer;\n}\n",
     "children": [],
     "reactPackageKey": "TestPackage",

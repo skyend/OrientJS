@@ -52,8 +52,23 @@ ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
  * ${url:...} / ${field:... } / ${title:...}
  */
 ServiceManager.prototype.resolveString = function(_text) {
-  var resultString = _text.replace(/\${\w+:.+?}/g, '{{resolved}}');
+  var resultString = _text.replace(/\${\w+:.+?}/g, '{{Temporary Resolved}}');
 
+  var sampleUrlMap = {
+    image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
+    image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
+    image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
+    image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
+    image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
+    image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
+    image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
+  };
+
+  if (/\${url:.+?}/.test(_text)) {
+    var urlKey = _text.replace(/^\${url:(.+?)}$/, "$1");
+
+    resultString = sampleUrlMap[urlKey];
+  }
 
   return resultString;
 };

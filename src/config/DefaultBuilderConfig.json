@@ -64,6 +64,11 @@
         "title": "Element Tree",
         "icon": "tree",
         "equipToolKey": "ContextContentsNavigation"
+      }, {
+        "key": "element-node-behavior",
+        "title": "Element Control",
+        "icon": "magic",
+        "equipToolKey": "."
       }]
     }]
   },

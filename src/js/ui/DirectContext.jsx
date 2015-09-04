@@ -441,7 +441,7 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
-    console.log(stageX);
+
 
     var elementNavigatorStyle = {};
     var elementNavigatorClasses = ['element-navigator'];

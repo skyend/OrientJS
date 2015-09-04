@@ -94,7 +94,7 @@
             "type": "string",
             "attributes": {
               "tagName": "text",
-              "text": "A responsive HTML5 site template. Manufactured by HTML5 UP."
+              "text": "${text:subject} A responsive HTML5 site template. Manufactured by HTML5 UP. ${text:subject}"
             },
             "comment": "",
             "createDate": "2015-09-03T06:44:46.465Z",
@@ -146,7 +146,7 @@
                   "type": "string",
                   "attributes": {
                     "tagName": "text",
-                    "text": "introduction"
+                    "text": "introduction${text:subject}"
                   },
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
@@ -420,7 +420,7 @@
                   "type": "html",
                   "attributes": {
                     "tagName": "img",
-                    "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg",
+                    "src": "${url:image01}",
                     "style": ""
                   },
                   "comment": "",
@@ -605,7 +605,7 @@
                   "type": "html",
                   "attributes": {
                     "tagName": "img",
-                    "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg",
+                    "src": "${url:image02}",
                     "style": ""
                   },
                   "comment": "",
@@ -790,7 +790,7 @@
                   "type": "html",
                   "attributes": {
                     "tagName": "img",
-                    "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg",
+                    "src": "${url:image03}",
                     "style": ""
                   },
                   "comment": "",
@@ -1278,7 +1278,7 @@
                     "type": "html",
                     "attributes": {
                       "tagName": "img",
-                      "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg"
+                      "src": "${url:image04}"
                     },
                     "comment": "",
                     "createDate": "2015-09-03T07:57:14.727Z",
@@ -1495,7 +1495,7 @@
                     "type": "html",
                     "attributes": {
                       "tagName": "img",
-                      "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg"
+                      "src": "${url:image05}"
                     },
                     "comment": "",
                     "createDate": "2015-09-03T07:57:14.727Z",
@@ -2045,7 +2045,7 @@
                           "type": "html",
                           "attributes": {
                             "tagName": "img",
-                            "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg"
+                            "src": "${url:image06}"
                           },
                           "comment": "",
                           "createDate": "2015-09-03T08:22:10.807Z",
@@ -2195,7 +2195,7 @@
                           "type": "html",
                           "attributes": {
                             "tagName": "img",
-                            "src": "http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg"
+                            "src": "${url:image07}"
                           },
                           "comment": "",
                           "createDate": "2015-09-03T08:22:10.807Z",
