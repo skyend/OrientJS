@@ -13,6 +13,7 @@ var _ = require('underscore');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var DirectContext = require('./DirectContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
+    var DropSupporter = require('./DropSupporter.jsx');
 
     var React = require("react");
 
@@ -930,7 +931,7 @@ var _ = require('underscore');
                             {this.state.directContexts.map(this.renderContextTabItem)}
                         </ul>
                     </div>
-
+                    <DropSupporter/>
                     <div className='drop-guide-box' ref='drop-guide-box'>
                       <div className=''></div>
                       <div className='direction' data-direction='top' ref='drop-guide-box-top'> TOP </div>

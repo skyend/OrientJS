@@ -478,31 +478,49 @@ var DirectContext = React.createClass({
          <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
            <div className='box'>
              <ul>
+
               <li>
                 <button onClick={this.jumpToParentElement}>
-                  <i className='fa fa-bolt'/> <span className='title'>Parent</span>
+                  <i className='fa fa-bolt'/> <span className='title'><span>Jump to Parent</span></span>
                 </button>
               </li>
+
               <li>
                 <button onClick={this.editElement}>
                   <i className='fa fa-pencil-square-o'/> <span className='title'>Edit</span>
                 </button>
               </li>
+
               <li>
                 <button onClick={this.cloneElement}>
-                  <i className='fa fa-clone'/> <span className='title'>Clone</span>
+                  <i className='fa fa-clone'/> <span className='title'>Clone & insert Next</span>
                 </button>
               </li>
+
+              <li>
+                <button onClick={this.clipElement}>
+                  <i className='fa fa-clipboard'/> <span className='title'>Copy this</span>
+                </button>
+              </li>
+
+              <li>
+                <button onClick={this.clipElement}>
+                  <i className='fa fa-pencil-square'/> <span className='title'>Paste In</span>
+                </button>
+              </li>
+
               <li>
                 <button onClick={this.removeElement}>
                   <i className='fa fa-trash'/> <span className='title'>Remove</span>
                 </button>
               </li>
+
               <li>
                 <button onClick={this.closeElementNavigator}>
-                  <i className='fa fa-times'/>
+                  <i className='fa fa-times'/> <span className='title'>Close</span>
                 </button>
               </li>
+
              </ul>
            </div>
          </div>
