@@ -27,12 +27,21 @@ var DirectContext = React.createClass({
 
 
   deployComponentToInLast( _vid, _component ){
+    var returns;
+
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
     if( typeof dropTargetDOMElement.getElementNode === 'function' ){
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
-      this.deployComponentToElementNode("appendChild", _component, baseElementNode);
+
+      returns = baseElementNode.isDropableComponent("appendChild");
+
+      if( returns.result === true ){
+        this.deployComponentToElementNode("appendChild", _component, baseElementNode);
+      } else {
+        this.noticeFailureReturns(returns);
+      }
     } else {
       this.deployToRoot(_component);
     }
@@ -44,7 +53,14 @@ var DirectContext = React.createClass({
     if( typeof dropTargetDOMElement.getElementNode === 'function' ){
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
-      this.deployComponentToElementNode("insertBefore", _component, baseElementNode);
+
+      returns = baseElementNode.isDropableComponent("appendChild");
+
+      if( returns.result === true ){
+        this.deployComponentToElementNode("insertBefore", _component, baseElementNode);
+      } else {
+        this.noticeFailureReturns(returns);
+      }
     } else {
       this.deployToRoot(_component);
     }
@@ -56,7 +72,14 @@ var DirectContext = React.createClass({
     if( typeof dropTargetDOMElement.getElementNode === 'function' ){
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
-      this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
+
+      returns = baseElementNode.isDropableComponent("appendChild");
+
+      if( returns.result === true ){
+        this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
+      } else {
+        this.noticeFailureReturns(returns);
+      }
     } else {
       this.deployToRoot(_component);
     }
@@ -96,6 +119,18 @@ var DirectContext = React.createClass({
     this.emit('UpdatedContext', {
       directContext: this
     });
+  },
+
+  noticeFailureReturns( _returns ){
+    switch( _returns.reasonCode){
+      case "has_not_parent":
+        this.errorNotice("컴포넌트 배치 실패", "배치가능한 부모가 없습니다.");
+        break;
+
+      case "is_ghost":
+        this.errorNotice("컴포넌트 배치 실패", "Ghost 요소에는 컴포넌트 배치가 불가능 합니다. Ghost의 원본 요소에 배치하여 주세요.");
+        break;
+    }
   },
 
   /***********
@@ -303,8 +338,8 @@ var DirectContext = React.createClass({
 
   showElementNavigator( _elementNode, _boundingRect ){
 
-    if( _elementNode.isGhost || _elementNode.isRepeated ){
-      this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
+    if( _elementNode.isGhost ){
+      this.errorNotice("요소 선택 불가","고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
       return;
     } else {
       this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode});
@@ -368,10 +403,10 @@ var DirectContext = React.createClass({
 
     var elementNode = targetNode.getElementNode();
 
-    if( elementNode.isGhost || elementNode.isRepeated ){
-      this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
-      return;
-    }
+    // if( elementNode.isGhost ){
+    //   this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
+    //   return;
+    // }
 
     this.emit("SelectElementNode",{
       elementNode: elementNode

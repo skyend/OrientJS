@@ -252,6 +252,9 @@
           }, {
             "id": 20,
             "type": "html",
+            "controls": {
+              "repeat-n": 10
+            },
             "attributes": {
               "tagName": "fieldset",
               "style": ""
@@ -263,7 +266,7 @@
               "type": "string",
               "attributes": {
                 "tagName": "text",
-                "text": "fieldset"
+                "text": "fieldset*(repeat-n)"
               },
               "comment": "",
               "createDate": "2015-08-27T07:12:27.991Z",

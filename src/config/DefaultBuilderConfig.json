@@ -72,7 +72,7 @@
       }, {
         "key": "element-node-event",
         "title": "Element Event Control",
-        "icon": "magic",
+        "icon": "rocket",
         "equipToolKey": "."
       }]
     }]

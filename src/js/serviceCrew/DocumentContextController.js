@@ -140,6 +140,8 @@ DocumentContextController.prototype.clearSuperElement = function() {
 DocumentContextController.prototype.constructToRealElement = function(_nodeElement) {
   var self = this;
 
+  _nodeElement.preProcessingMeBeforeRender();
+
   if (_nodeElement.type === "html") {
     this.instillRealHTMLElement(_nodeElement);
 

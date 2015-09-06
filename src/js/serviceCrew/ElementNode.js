@@ -1,11 +1,10 @@
 var React = require('react');
-var EventEmitter = require('../lib/EventEmitter.js');
-var Extender = require('../lib/Extender.js');
+var Returns = require("../Returns.js");
 
 var _ = require('underscore');
 
 var ElementNode = function(_document, _elementNodeDataObject) {
-  Extender.extends(EventEmitter, this);
+
 
   //////////////
   // 필드 정의
@@ -26,6 +25,12 @@ var ElementNode = function(_document, _elementNodeDataObject) {
 
   // Element Controls
   this.controls;
+  /**
+  Controls {
+      repeat-n: number or ${...}
+  }
+
+   **/
 
   this.reactPackageKey;
   this.reactComponentKey;
@@ -67,7 +72,7 @@ var ElementNode = function(_document, _elementNodeDataObject) {
     this.refferenceType = _elementNodeDataObject.refferenceType;
     this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
 
-    this.controls = _elementNodeDataObject.controls;
+    this.controls = _elementNodeDataObject.controls || {};
 
     this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
     this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
@@ -650,6 +655,39 @@ ElementNode.prototype.applyAttributesToRealDOM = function() {
 
 };
 
+
+ElementNode.prototype.isDropableComponent = function(_dropType) {
+  var criterionElementNode;
+  var returns = new Returns();
+
+  switch (_dropType) {
+    case "appendChild":
+      criterionElementNode = this;
+      break;
+    case "insertBefore":
+    case "insertAfter":
+      if (this.getParent() === null) {
+
+        returns.setReasonCode('has_not_parent');
+        returns.setResult(false);
+        return returns;
+      } else {
+        criterionElementNode = this.getParent();
+      }
+      break;
+  }
+
+
+  if (criterionElementNode.isGhost) {
+    returns.setReasonCode("is_ghost");
+    returns.setResult(false);
+    return returns;
+  }
+
+  returns.setResult(true);
+  return returns;
+};
+
 ElementNode.prototype.appendChild = function(_elementNode) {
   if (this.getType() === 'string') {
     return false;
@@ -663,11 +701,13 @@ ElementNode.prototype.appendChild = function(_elementNode) {
 };
 
 ElementNode.prototype.insertBefore = function(_elementNode) {
-  if (this.getType() === 'string') {
+  var parent = this.getParent();
+
+  if (parent.getType() === 'string') {
     return false;
   }
 
-  var parent = this.getParent();
+
   // 부모의 자식 배열에서 나를 찾는다.
   var meIndex = _.findIndex(parent.children, this);
 
@@ -690,11 +730,11 @@ ElementNode.prototype.insertBefore = function(_elementNode) {
 };
 
 ElementNode.prototype.insertAfter = function(_elementNode) {
-  if (this.getType() === 'string') {
+  var parent = this.getParent();
+
+  if (parent.getType() === 'string') {
     return false;
   }
-
-  var parent = this.getParent();
 
   var meIndex = _.findIndex(parent.children, this);
 
@@ -740,6 +780,40 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
 };
 
 
+///////////
+// 랜더링 프로세스 전( 자신의 RealElement가 생성되기 전 )에 처리할 Controls 속성
+ElementNode.prototype.preProcessingMeBeforeRender = function() {
+  var self = this;
+  console.log('전', this.children);
+  this.children.map(function(_child) {
+    if (_child.isGhost) {
+      self.dettachChild(_child)
+    }
+  });
+
+  console.log('후', this.children);
+
+  this.children.map(function(_child) {
+
+    if (/^\d+$/.test(_child.controls['repeat-n'])) {
+      for (var i = _child.controls['repeat-n']; i > 0; i--) {
+        var exportMe = _child.export();
+        var mirrorElement = new ElementNode(_child.document, exportMe);
+        mirrorElement.repeatOrder = i;
+        mirrorElement.isRepeated = true;
+        mirrorElement.isGhost = true;
+
+        _child.insertAfter(mirrorElement);
+      }
+
+      _child.isRepeated = true;
+    }
+  });
+
+
+};
+
+
 
 //////////////////////
 //
@@ -758,7 +832,7 @@ ElementNode.prototype.linkRealDOMofChild = function() {
 
     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
     var realDOMElement = this.getRealDOMElement();
-
+    console.log(this);
     realDOMElement.innerHTML = '';
 
 
@@ -899,15 +973,29 @@ ElementNode.prototype.renderReact = function() {
   }
 };
 
-
+/////////////
+// String Resolve
 ElementNode.prototype.resolveRenderText = function(_seedText) {
+  var self = this;
+
+  var preResolvedText = _seedText.replace(/\*\(([\w\.-]+)\)/g, function(_tested, _firstMatch) {
+    return self.preResolving(_firstMatch);
+  });
 
   // this.emitToParent("Test", {
   //   text: _seedText
   // });
 
   // resolve String : data binding and i18n processing
-  return this.document.getServiceManager().resolveString(_seedText);
+  return this.document.getServiceManager().resolveString(preResolvedText);
+};
+
+ElementNode.prototype.preResolving = function(_resolveKey) {
+  switch (_resolveKey) {
+    case "repeat-n":
+      // 자신의 부모로부터 반복 순번을 얻음
+      return this.emitToParent("GetRepeatN");
+  }
 };
 
 
@@ -922,7 +1010,7 @@ ElementNode.prototype.onEventTernel = function(_eventName, _eventData) {
   var eventData = _eventData;
   var origin = _eventData.origin;
 
-  var eventCatcherKey = "onEC" + eventName;
+  var eventCatcherKey = "onEC_" + eventName;
 
   var result = this[eventCatcherKey](eventData, origin);
 
@@ -939,7 +1027,7 @@ ElementNode.prototype.onEventTernel = function(_eventName, _eventData) {
 ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__) {
   if (this.parent === null) {
     console.warn('더 이상 이벤트를 들을 부모가 없습니다.');
-    return true;
+    return null;
   }
 
   return this.parent.onEventTernel(_eventName, {
@@ -956,11 +1044,19 @@ ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ElementNode.prototype.onECTest = function(_eventData, _origin) {
+ElementNode.prototype.onEC_Test = function(_eventData, _origin) {
 
   return false;
 };
 
+ElementNode.prototype.onEC_GetRepeatN = function(_eventData, _origin) {
+  if (this.isRepeated) {
+    console.log(this.repeatOrder);
+    return this.repeatOrder;
+  } else {
+    return false;
+  }
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
@@ -986,8 +1082,8 @@ ElementNode.prototype.export = function(_withoutId) {
   };
 
   this.children.map(function(_child) {
-    // 반복된요소가 아닌 자식만 export한다.
-    if (!_child.isRepeated) {
+    // 고스트가 아닌 자식만 export한다.
+    if (!_child.isGhost) {
       exportObject.children.push(_child.export(_withoutId));
     }
   });

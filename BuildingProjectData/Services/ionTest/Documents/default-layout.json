@@ -33,6 +33,9 @@
           "text": "Test Service"
         },
         "comment": "",
+        "controls": {
+          "repeat-n": 10
+        },
         "createDate": null,
         "updateDate": null,
         "children": []
