@@ -3,8 +3,10 @@ var Returns = require("../Returns.js");
 
 var _ = require('underscore');
 
-var ElementNode = function(_document, _elementNodeDataObject) {
+var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
 
+  // 미리 삽입된 프로퍼티
+  var preInsectProps = _preInsectProps || {};
 
   //////////////
   // 필드 정의
@@ -50,9 +52,9 @@ var ElementNode = function(_document, _elementNodeDataObject) {
   this.refferenceInstance = null;
 
   // Repeat by parent's Repeat Control
-  this.isGhost = false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
-  this.isRepeated = false; // repeat에 의해 반복된 ElementNode 플래그
-  this.repeatOrder = 0; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
+  this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
+  this.isRepeated = preInsectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
+  this.repeatOrder = preInsectProps.repeatOrder || -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
 
   this.document = _document;
 
@@ -107,17 +109,15 @@ ElementNode.prototype.setName = function(_name) {
 };
 // Id Atrribute
 ElementNode.prototype.setIdAtrribute = function(_id) {
-  this.attributes.id = _id;
+  this.setAttribute('id', _id);
 };
-
-
 // tagName
 ElementNode.prototype.setTagName = function(_tagName) {
-  this.attributes.tagName = _tagName;
+  this.setAttribute('tagName', _tagName);
 };
 // classes
 ElementNode.prototype.setClasses = function(_classes) {
-  this.attributes.class = _classes;
+  this.setAttribute('class', _classes);
 };
 // type
 ElementNode.prototype.setType = function(_type) {
@@ -162,12 +162,6 @@ ElementNode.prototype.clearRefferenceInstance = function() {
 
 // parent // 상위노드로 부터 호출됨
 ElementNode.prototype.setParent = function(_parentENode) {
-
-  // 부모가 반복된자거나 고스트일 경우 자신도 고스트로 지정한다.
-  if (_parentENode.isGhost || _parentENode.isRepeated) {
-    this.isGhost = true;
-  }
-
   this.parent = _parentENode;
 };
 ElementNode.prototype.unlinkParent = function() {
@@ -176,6 +170,7 @@ ElementNode.prototype.unlinkParent = function() {
 // attribute
 ElementNode.prototype.setAttribute = function(_name, _value) {
   this.attributes[_name] = _value;
+  this.updatedAttribute(_name);
 };
 // attributes
 ElementNode.prototype.setAttributes = function(_attributes) {
@@ -197,11 +192,11 @@ ElementNode.prototype.setCSS = function(_css) {
 };
 // Inline Style
 ElementNode.prototype.setInlineStyle = function(_style) {
-  this.attributes.style = _style;
+  this.setAttribute('style', _style);
 };
 // text
 ElementNode.prototype.setText = function(_text) {
-  this.attributes.text = _text;
+  this.setAttribute('text', _text);
 };
 // comment : 주석
 ElementNode.prototype.setComment = function(_comment) {
@@ -249,19 +244,19 @@ ElementNode.prototype.getName = function() {
 };
 // element.tagName -> getTagName()
 ElementNode.prototype.getTagName = function() {
-  return this.attributes.tagName;
+  return this.getAttribute('tagName');
 };
-
+// id
 ElementNode.prototype.getIdAtrribute = function() {
-  return this.attributes.id;
+  return this.getAttribute('id');
 };
-
+// classes
 ElementNode.prototype.getClasses = function() {
-  return this.attributes.class;
+  return this.getAttribute('class');
 };
-// element.text -> getText()
+// text
 ElementNode.prototype.getText = function() {
-  return this.attributes.text;
+  return this.getAttribute('text');
 };
 // type
 ElementNode.prototype.getType = function() {
@@ -328,11 +323,7 @@ ElementNode.prototype.getCSS = function() {
 };
 // Inline Style
 ElementNode.prototype.getInlineStyle = function() {
-  return this.attributes.style;
-};
-// text
-ElementNode.prototype.getText = function() {
-  return this.attributes.text;
+  return this.getAttribute('style');
 };
 // comment : 주석
 ElementNode.prototype.getComment = function() {
@@ -770,8 +761,13 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
   if (typeof _childrenDataList.length !== 'number') throw new Error("element nodes is not Array.");
   var list = [];
 
+  var preInsectProps = {
+    //isRepeated: this.isRepeated,
+    isGhost: this.isGhost
+  };
+
   for (var i = 0; i < _childrenDataList.length; i++) {
-    var child = this.document.newElementNode(_childrenDataList[i]);
+    var child = this.document.newElementNode(_childrenDataList[i], preInsectProps);
     child.setParent(this);
     list.push(child);
   }
@@ -784,28 +780,38 @@ ElementNode.prototype.inspireChildren = function(_childrenDataList) {
 // 랜더링 프로세스 전( 자신의 RealElement가 생성되기 전 )에 처리할 Controls 속성
 ElementNode.prototype.preProcessingMeBeforeRender = function() {
   var self = this;
-  console.log('전', this.children);
-  this.children.map(function(_child) {
-    if (_child.isGhost) {
-      self.dettachChild(_child)
-    }
-  });
 
-  console.log('후', this.children);
+  if (!this.isGhost) {
+    var refreshChildren = [];
+    for (var i = 0; i < this.children.length; i++) {
+      if (!this.children[i].isGhost) {
+        refreshChildren.push(this.children[i]);
+      }
+    }
+
+    this.children = refreshChildren;
+  }
+
 
   this.children.map(function(_child) {
 
     if (/^\d+$/.test(_child.controls['repeat-n'])) {
       for (var i = _child.controls['repeat-n']; i > 0; i--) {
         var exportMe = _child.export();
-        var mirrorElement = new ElementNode(_child.document, exportMe);
-        mirrorElement.repeatOrder = i;
-        mirrorElement.isRepeated = true;
-        mirrorElement.isGhost = true;
+        var preInsectProps = {
+          isRepeated: true,
+          isGhost: true,
+          repeatOrder: i
+        };
+
+        exportMe.id = exportMe.id + "_" + i;
+
+        var mirrorElement = new ElementNode(_child.document, exportMe, preInsectProps);
 
         _child.insertAfter(mirrorElement);
       }
 
+      _child.repeatOrder = 0;
       _child.isRepeated = true;
     }
   });
@@ -973,12 +979,25 @@ ElementNode.prototype.renderReact = function() {
   }
 };
 
+
+////////////
+//
+ElementNode.prototype.updatedAttribute = function(_attrKey) {
+  if (this.isRepeated) {
+    this.emitToParent("RequestReRenderMe");
+  } else {
+    this.emitToParent("UpdatedAttribute", {
+      attrKey: _attrKey
+    });
+  }
+};
+
 /////////////
 // String Resolve
 ElementNode.prototype.resolveRenderText = function(_seedText) {
   var self = this;
 
-  var preResolvedText = _seedText.replace(/\*\(([\w\.-]+)\)/g, function(_tested, _firstMatch) {
+  var preResolvedText = _seedText.replace(/\*\(([\w\.\-\:]+)\)/g, function(_tested, _firstMatch) {
     return self.preResolving(_firstMatch);
   });
 
@@ -991,10 +1010,32 @@ ElementNode.prototype.resolveRenderText = function(_seedText) {
 };
 
 ElementNode.prototype.preResolving = function(_resolveKey) {
+  var self = this;
+  var WhatThings = /^(\w+):([\w-\.]+)$/;
+
+  if (WhatThings.test(_resolveKey)) {
+
+    return _resolveKey.replace(WhatThings, function(_tested, _namespace, _want) {
+      if (_namespace === 'attr') {
+        var attributeValue = self.getAttribute(_want);
+
+        return attributeValue !== undefined ? self.resolveRenderText(attributeValue) : self.emitToParent("GetResolvedAttribute", {
+          attr: _want
+        });
+      }
+    });
+  }
+
   switch (_resolveKey) {
     case "repeat-n":
-      // 자신의 부모로부터 반복 순번을 얻음
-      return this.emitToParent("GetRepeatN");
+      // 자신이 반복자이면 자신의 repeatOrder를 반환하고 자신이 반복자가 아니라면 부모로부터 얻는다.
+      if (this.isRepeated) {
+        return this.repeatOrder;
+      } else {
+        // 자신의 부모로부터 반복 순번을 얻음
+        return this.emitToParent("GetRepeatN");
+      }
+      break;
   }
 };
 
@@ -1005,19 +1046,20 @@ ElementNode.prototype.preResolving = function(_resolveKey) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 동기 이벤트 핸들링
 // Base Method
-ElementNode.prototype.onEventTernel = function(_eventName, _eventData) {
+ElementNode.prototype.onEventTernel = function(_eventName, _eventData, __ORIGIN__) {
   var eventName = _eventName;
   var eventData = _eventData;
-  var origin = _eventData.origin;
+  //var origin = _eventData.origin;
 
   var eventCatcherKey = "onEC_" + eventName;
 
-  var result = this[eventCatcherKey](eventData, origin);
+
+  var result = this[eventCatcherKey](eventData, __ORIGIN__);
 
   if (result === false) {
 
     // 결과 타입이 boolean이고 값이 false 일 때 부모로 이벤트를 넘겨준다.
-    return this.emitToParent(eventName, eventData, origin);
+    return this.emitToParent(eventName, eventData, __ORIGIN__);
   } else {
     // false 가 아니라면 이벤트 처리 결과를 반환한다.
     return result;
@@ -1026,15 +1068,19 @@ ElementNode.prototype.onEventTernel = function(_eventName, _eventData) {
 // Base Method
 ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__) {
   if (this.parent === null) {
-    console.warn('더 이상 이벤트를 들을 부모가 없습니다.');
-    return null;
+
+    // 이벤트를 듣는 부모가 없다면 이벤트를 document로 전송한다.
+    return this.document.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
   }
 
-  return this.parent.onEventTernel(_eventName, {
-    eventName: _eventName,
-    eventData: _eventData,
-    origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
-  });
+  return this.parent.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
+
+
+  // return this.parent.onEventTernel(_eventName, {
+  //   eventName: _eventName,
+  //   eventData: _eventData,
+  //   origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
+  // });
 };
 ////
 // 이벤트 사용
@@ -1044,18 +1090,61 @@ ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ElementNode.prototype.onEC_Test = function(_eventData, _origin) {
+// 자식의 attribute변경을 감시한다.
+ElementNode.prototype.onEC_UpdatedAttribute = function(_eventData, _origin) {
+  console.log(this.getControls(), '여길거쳐야지');
 
+  // 자신이 반복자로 지정되어있을 경우 자신을 다시 랜더링한다.
+  if (this.getControl('repeat-n') !== undefined) {
+    console.log('repeat');
+    // 자신을 다시 랜더링해달라고 요청
+    this.emitToParent("RequestReRenderMe");
+    return true;
+  }
+
+  if (this.getParent() === null) {
+    // 자신이 최상위 부모라면 더이상 이벤트 터널통과를 중단.
+    return true;
+  }
+
+
+  // 위의 해당사항이 없다면 이벤트터널을 계속 통과하도록 false반환.
+  return false;
+};
+
+// 자식이 자신을 다시 랜더링해달라고 요청했을 때
+// 자식의 요청을 받은 부모가 반복자로 지정되어 있으면 반복되어 랜더링된 요소들을 함께 갱신하기 위해 Event를 자신의 선에서 다시 발생시킨다.
+// 반복자의 자손중 반복자가 또 있는 경우
+ElementNode.prototype.onEC_RequestReRenderMe = function(_eventData, _origin) {
+
+  // 자신이 반복자로 지정되어있을 경우 자신을 다시 랜더링한다.
+  if (this.getControl('repeat-n') !== undefined) {
+
+    // 자신을 다시 랜더링해달라고 요청
+    this.emitToParent("RequestReRenderMe");
+    return true;
+  }
+
+  // 위의 해당사항이 없다면 이벤트터널을 계속 통과하도록 false반환.
   return false;
 };
 
 ElementNode.prototype.onEC_GetRepeatN = function(_eventData, _origin) {
   if (this.isRepeated) {
-    console.log(this.repeatOrder);
     return this.repeatOrder;
   } else {
     return false;
   }
+};
+
+ElementNode.prototype.onEC_GetResolvedAttribute = function(_eventData, _origin) {
+
+  var value = this.getAttribute(_eventData.attr);
+  if (value !== undefined) {
+    return this.resolveRenderText(value);
+  }
+
+  return false;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

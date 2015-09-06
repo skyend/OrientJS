@@ -48,10 +48,15 @@ var ContextContentsNavigation = React.createClass({
     },
 
     renderElementVisibility(_elementNode, _indentBlocks){
+      var ghost = '';
+      if( _elementNode.isGhost ){
+        ghost = 'ghost';
+      }
+
       return (
         <div>
           { _indentBlocks }
-          <label className='visibility'>
+          <label className={'visibility '+ ghost} >
             <span className='tag-name'>
               {_elementNode.getTagName()}
             </span>

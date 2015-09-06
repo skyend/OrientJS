@@ -264,6 +264,7 @@
             "children": [{
               "id": 21,
               "type": "string",
+
               "attributes": {
                 "tagName": "text",
                 "text": "fieldset*(repeat-n)"
@@ -274,6 +275,9 @@
             }, {
               "id": 22,
               "type": "html",
+              "controls": {
+                "repeat-n": 3
+              },
               "attributes": {
                 "tagName": "legend",
                 "style": ""

@@ -227,11 +227,11 @@ Document.prototype.getReactElementNodeCSSLines = function() {
  * newElementNode
  * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
  */
-Document.prototype.newElementNode = function(_elementNodeDataObject) {
+Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectProps) {
   var elementNode;
 
   if (typeof _elementNodeDataObject !== 'undefined') {
-    elementNode = new ElementNode(this, _elementNodeDataObject);
+    elementNode = new ElementNode(this, _elementNodeDataObject, _preInsectProps);
 
     // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
     if (!/^\d+$/.test(elementNode.getId())) {
@@ -316,6 +316,44 @@ Document.prototype.insertElementNode = function(_insertType, _elementNode, _base
 
   return _elementNode;
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* ------------------ Event Handing Methods ------------------------------------------------------------------------------------- */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 동기 이벤트 핸들링
+// Base Method
+Document.prototype.onEventTernel = function(_eventName, _eventData, __ORIGIN__) {
+  var eventName = _eventName;
+  var eventData = _eventData;
+
+  var eventCatcherKey = "onElementEvent_" + eventName;
+
+  if (typeof this[eventCatcherKey] !== 'function') {
+    console.warn("Document 는 " + eventName + " ElementNode 이벤트를 처리 할 수 없습니다. \n처리자(" + eventCatcherKey + ")가 존재하지 않음.");
+    return;
+  }
+
+  // 처리 시작
+  var result = this[eventCatcherKey](eventData, __ORIGIN__);
+
+  return result;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Document.prototype.onElementEvent_RequestReRenderMe = function(_eventData, _origin) {
+  this.contextController.rootRender();
+  //onsole.log("랜더링 다시해줘 ", _eventData, _origin);
+  return false;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //////////////////////////
