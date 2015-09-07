@@ -4,9 +4,7 @@ var Returns = require("../Returns.js");
 var _ = require('underscore');
 
 var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
-  if (_preInsectProps !== undefined) {
-    console.log(this, _elementNodeDataObject);
-  }
+
   // 미리 삽입된 프로퍼티
   var preInsectProps = _preInsectProps || {};
 
@@ -801,8 +799,13 @@ ElementNode.prototype.preProcessingMeBeforeRender = function() {
 
   this.children.map(function(_child) {
 
-    if (/^\d+$/.test(_child.controls['repeat-n'])) {
-      for (var i = _child.controls['repeat-n']; i > 0; i--) {
+    if (_child.controls['repeat-n'] === undefined || _child.controls['repeat-n'] === null) return;
+
+    var count = parseInt(_child.resolveRenderText(_child.controls['repeat-n']));
+
+    if (/^\d+$/.test(count)) {
+      console.log(_child.controls['repeat-n'], _child.resolveRenderText(_child.controls['repeat-n']), count);
+      for (var i = count; i > 0; i--) {
         var exportMe = _child.export();
         var preInsectProps = {
           isRepeated: true,
@@ -1098,11 +1101,10 @@ ElementNode.prototype.emitToParent = function(_eventName, _eventData, __ORIGIN__
 
 // 자식의 attribute변경을 감시한다.
 ElementNode.prototype.onEC_UpdatedAttribute = function(_eventData, _origin) {
-  console.log(this.getControls(), '여길거쳐야지');
 
   // 자신이 반복자로 지정되어있을 경우 자신을 다시 랜더링한다.
   if (this.getControl('repeat-n') !== undefined) {
-    console.log('repeat');
+
     // 자신을 다시 랜더링해달라고 요청
     this.emitToParent("RequestReRenderMe");
     return true;

@@ -6,12 +6,18 @@
 var _ = require('underscore');
 
 var DocumentContextController = require('./serviceCrew/DocumentContextController.js');
-
+var ObjectExplorer = require('./util/ObjectExplorer.js');
 
 var ServiceManager = function(_session, _serviceKey) {
   this.serviceKey = _serviceKey;
   this.session = _session;
   this.docContextControllers = {};
+  this.sampleDatas = {};
+
+  this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api&count=5");
+
+  console.log(ObjectExplorer.getValueByKeyPath(this.sampleDatas['broadcast_series'], 'items/0/nid'));
+
 
   this.init();
 };
@@ -52,8 +58,7 @@ ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
  * ${url:...} / ${field:... } / ${title:...}
  */
 ServiceManager.prototype.resolveString = function(_text) {
-  var resultString = _text.replace(/\${\w+:.+?}/g, '{{Temporary Resolved}}');
-
+  var self = this;
   var sampleUrlMap = {
     image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
     image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
@@ -64,13 +69,16 @@ ServiceManager.prototype.resolveString = function(_text) {
     image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
   };
 
-  if (/\${url:.+?}/.test(_text)) {
-    var urlKey = _text.replace(/^\${url:(.+?)}$/, "$1");
 
-    resultString = sampleUrlMap[urlKey];
-  }
-
-  return resultString;
+  return _text.replace(/\${(\w+):(.+?)}/g, function(_matched, _namespace, _want) {
+    if (_namespace === 'url') {
+      return sampleUrlMap[_want] || _matched;
+    } else if (_namespace === 'data') {
+      return ObjectExplorer.getValueByKeyPath(self.sampleDatas, _want) || _matched;
+    } else if (_namespace === 'text') {
+      return _want;
+    }
+  });
 };
 
 

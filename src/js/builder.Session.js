@@ -13,7 +13,9 @@
   //var ComponentSupporter = require('./builder.ComponentSupporter.js');
 
   var Session = function() {
+    this.locale = 'ko'; // 지역화 변수
     this.componentPool = new ComponentPool(this);
+
   };
 
   Session.prototype.ready = function() {

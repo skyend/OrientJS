@@ -26,6 +26,11 @@
     "name": "Demo 01",
     "key": "Demo01",
     "purpose": "contents"
+  }, {
+    "id": 6,
+    "name": "Bind Demo 01",
+    "key": "BindDemo01",
+    "purpose": "contents"
   }],
 
   "pages": [{
