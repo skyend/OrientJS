@@ -14,7 +14,7 @@ var ServiceManager = function(_session, _serviceKey) {
   this.docContextControllers = {};
   this.sampleDatas = {};
 
-  this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api&count=5");
+  this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api");
 
   console.log(ObjectExplorer.getValueByKeyPath(this.sampleDatas['broadcast_series'], 'items/0/nid'));
 

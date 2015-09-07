@@ -1316,46 +1316,11 @@
                         "type": "string",
                         "attributes": {
                           "tagName": "text",
-                          "text": "I don’t want to say "
+                          "text": "${data:broadcast_series/items/*(repeat-n)/title/display}"
                         },
                         "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:53:09.078Z",
-                        "updateDate": "1970-01-01T00:00:00.000Z",
-                        "children": []
-                      }, {
-                        "id": 148,
-                        "type": "html",
-                        "attributes": {
-                          "tagName": "strong"
-                        },
-                        "controls": {},
-                        "comment": "",
-                        "createDate": "2015-09-03T07:54:16.925Z",
-                        "updateDate": "1970-01-01T00:00:00.000Z",
-                        "children": [{
-                          "id": 149,
-                          "type": "string",
-                          "attributes": {
-                            "tagName": "text",
-                            "text": "it’s the aliens"
-                          },
-                          "controls": {},
-                          "comment": "",
-                          "createDate": "2015-09-03T07:54:16.925Z",
-                          "updateDate": "1970-01-01T00:00:00.000Z",
-                          "children": []
-                        }]
-                      }, {
-                        "id": 150,
-                        "type": "string",
-                        "attributes": {
-                          "text": " ...",
-                          "tagName": "text"
-                        },
-                        "controls": {},
-                        "comment": "",
-                        "createDate": "2015-09-03T07:54:29.114Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
                         "children": []
                       }, {
@@ -1367,18 +1332,6 @@
                         "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:55:02.566Z",
-                        "updateDate": "1970-01-01T00:00:00.000Z",
-                        "children": []
-                      }, {
-                        "id": 153,
-                        "type": "string",
-                        "attributes": {
-                          "text": "but it’s the aliens.",
-                          "tagName": "text"
-                        },
-                        "controls": {},
-                        "comment": "",
-                        "createDate": "2015-09-03T07:55:19.599Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
                         "children": []
                       }]
@@ -1423,7 +1376,7 @@
                     "type": "string",
                     "attributes": {
                       "tagName": "text",
-                      "text": "${data:broadcast_series/items/*(repeat-n)/title/display}"
+                      "text": "${data:broadcast_series/items/*(repeat-n)/genre/display}"
                     },
                     "controls": {},
                     "comment": "",
@@ -1440,7 +1393,7 @@
                     "controls": {},
                     "comment": "",
                     "createDate": "2015-09-07T06:02:34.089Z",
-                    "updateDate": null,
+                    "updateDate": "1970-01-01T00:00:00.000Z",
                     "children": [{
                       "id": 371,
                       "type": "string",
@@ -1451,7 +1404,7 @@
                       "controls": {},
                       "comment": "",
                       "createDate": "2015-09-07T06:02:34.089Z",
-                      "updateDate": null,
+                      "updateDate": "1970-01-01T00:00:00.000Z",
                       "children": []
                     }]
                   }]
