@@ -204,27 +204,29 @@ var _ = require('underscore');
            * WaterFall 을 이용하여 비동기로드를 동기화한다.
            */
           Async.waterFall(_toolSpec, [function (__toolSpec, __cb)  {
-
+            try{
               if (typeof __toolSpec !== 'object') {
-
-                //self.refs[_toEquipRef].equipTool();
                 throw new Error("Tool[" + _toolKey + "] Spec Object is not exists.");
               }
 
               if (typeof __toolSpec.jsxPath !== 'string') {
-                  //self.refs[_toEquipRef].equipTool();
+                  self.refs[_toEquipRef].equipFail();
                   throw new Error("Tool[" + _toolKey + "] JSXPath is not exists.");
               }
 
               loadTool(__toolSpec.jsxPath + ".jsx", function (___err, ___tool) {
                   if (___err !== null) {
-
-                      //self.refs[_toEquipRef].equipTool();
                       throw new Error("Fail to load tool[" + _toolKey + "].");
                   } else {
                       __cb(__toolSpec, ___tool);
                   }
               });
+            }catch(e){
+              self.refs[_toEquipRef].equipFail();
+              //console.error(e);
+              throw e;
+            }
+
           }, function (__toolSpec, __tool, __cb) {
 
               // config 파일이 없다면 지나간다.
@@ -414,6 +416,18 @@ var _ = require('underscore');
         onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
 
           this.applyToolStates("ElementNodeEditor", {
+            elementNode: _eventData.elementNode
+          });
+
+          this.applyToolStates("ElementNodeControl", {
+            elementNode: _eventData.elementNode
+          });
+
+          this.applyToolStates("ElementEventControl", {
+            elementNode: _eventData.elementNode
+          });
+
+          this.applyToolStates("ElementEffectControl", {
             elementNode: _eventData.elementNode
           });
 

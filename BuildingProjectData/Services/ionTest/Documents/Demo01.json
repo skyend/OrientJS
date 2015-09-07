@@ -10,6 +10,7 @@
       "style": "",
       "id": "page-wrapper"
     },
+    "controls": {},
     "comment": "",
     "createDate": "2015-09-03T05:06:41.961Z",
     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -21,6 +22,7 @@
         "style": "",
         "id": "header-wrapper"
       },
+      "controls": {},
       "comment": "",
       "createDate": "2015-09-03T06:42:28.618Z",
       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -33,6 +35,7 @@
           "id": "header",
           "class": "container"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T06:42:50.145Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -43,6 +46,7 @@
             "tagName": "h1",
             "style": ""
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T06:43:16.368Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -52,6 +56,7 @@
             "attributes": {
               "tagName": "a"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T06:44:13.118Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -62,6 +67,7 @@
                 "tagName": "text",
                 "text": "Strongly Typed ${text:subject}"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:44:13.119Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -72,6 +78,7 @@
               "attributes": {
                 "tagName": "div"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:52:14.902Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -86,6 +93,7 @@
           "attributes": {
             "tagName": "p"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T06:44:46.465Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -96,6 +104,7 @@
               "tagName": "text",
               "text": "${text:subject} A responsive HTML5 site template. Manufactured by HTML5 UP. ${text:subject}"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T06:44:46.465Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -109,6 +118,7 @@
             "style": "",
             "id": "nav"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T06:45:17.625Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -119,6 +129,7 @@
               "tagName": "ul",
               "style": ""
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T06:45:25.904Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -128,6 +139,7 @@
               "attributes": {
                 "tagName": "li"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:45:33.705Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -138,6 +150,7 @@
                   "tagName": "a",
                   "class": "icon fa-home"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T06:47:21.280Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -148,6 +161,7 @@
                     "tagName": "text",
                     "text": "introduction${text:subject}"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -160,6 +174,7 @@
               "attributes": {
                 "tagName": "li"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:45:33.705Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -170,6 +185,7 @@
                   "tagName": "a",
                   "class": "icon fa-bar-chart-o"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T06:47:21.280Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -180,6 +196,7 @@
                     "tagName": "text",
                     "text": "dropdown"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -192,6 +209,7 @@
               "attributes": {
                 "tagName": "li"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:45:33.705Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -202,6 +220,7 @@
                   "tagName": "a",
                   "class": "icon fa-cog"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T06:47:21.280Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -212,6 +231,7 @@
                     "tagName": "text",
                     "text": "left sidebar"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -224,6 +244,7 @@
               "attributes": {
                 "tagName": "li"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:45:33.705Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -234,6 +255,7 @@
                   "tagName": "a",
                   "class": "icon fa-retweet"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T06:47:21.280Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -244,6 +266,7 @@
                     "tagName": "text",
                     "text": "right sidebar"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -256,6 +279,7 @@
               "attributes": {
                 "tagName": "li"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T06:45:33.705Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -266,6 +290,7 @@
                   "tagName": "a",
                   "class": "icon fa-sitemap"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T06:47:21.280Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -276,6 +301,7 @@
                     "tagName": "text",
                     "text": "no sidebar"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T06:47:21.280Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -294,6 +320,7 @@
         "style": "",
         "id": "features-wrapper"
       },
+      "controls": {},
       "comment": "",
       "createDate": "2015-09-03T07:13:09.881Z",
       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -306,6 +333,7 @@
           "id": "features",
           "class": "container"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T07:13:40.295Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -316,6 +344,7 @@
             "tagName": "header",
             "style": ""
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T07:14:05.725Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -325,6 +354,7 @@
             "attributes": {
               "tagName": "h2"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:14:14.077Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -335,6 +365,7 @@
                 "tagName": "text",
                 "text": "Gentlemen, behold! This is "
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:14:14.077Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -345,6 +376,7 @@
               "attributes": {
                 "tagName": "strong"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:16:01.781Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -355,6 +387,7 @@
                   "tagName": "text",
                   "text": "Strongly Typed "
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:16:01.781Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -367,6 +400,7 @@
                 "text": "!",
                 "tagName": "text"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:16:20.492Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -381,6 +415,7 @@
             "style": "",
             "class": "row"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T07:17:22.424Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -392,6 +427,9 @@
               "style": "",
               "class": "4u 12u(mobile)"
             },
+            "controls": {
+              "repeat-n": "0"
+            },
             "comment": "",
             "createDate": "2015-09-03T07:17:37.487Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -402,6 +440,7 @@
                 "tagName": "section",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:18:00.714Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -412,6 +451,7 @@
                   "tagName": "a",
                   "class": "image featured"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:18:10.653Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -423,6 +463,7 @@
                     "src": "${url:image01}",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:18:16.924Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -435,6 +476,7 @@
                   "tagName": "header",
                   "style": ""
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:20:15.565Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -445,6 +487,7 @@
                     "tagName": "h3",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:20:25.092Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -455,6 +498,7 @@
                       "tagName": "text",
                       "text": "Okay, so what is this?"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:20:25.092Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -467,6 +511,7 @@
                 "attributes": {
                   "tagName": "p"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:21:17.002Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -477,6 +522,7 @@
                     "tagName": "text",
                     "text": "This is "
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:17.002Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -487,6 +533,7 @@
                   "attributes": {
                     "tagName": "strong"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:40.392Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -495,8 +542,9 @@
                     "type": "string",
                     "attributes": {
                       "tagName": "text",
-                      "text": "Strongly Typed"
+                      "text": "Strongly Typed *(repeat-n)"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:21:40.392Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -509,6 +557,7 @@
                     "text": ", a free, fully responsive site template by ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:22:18.614Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -519,6 +568,9 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {
+                    "repeat-n": "0"
+                  },
                   "comment": "",
                   "createDate": "2015-09-03T07:22:43.107Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -527,8 +579,9 @@
                     "type": "string",
                     "attributes": {
                       "tagName": "text",
-                      "text": "HTML5 UP"
+                      "text": "HTML*(repeat-n) UP"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:22:43.108Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -541,6 +594,7 @@
                     "text": ". Free for personal and commercial use under the ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:02.412Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -551,6 +605,7 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:28.377Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -561,6 +616,7 @@
                       "tagName": "text",
                       "text": "CC 3.0 license"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:23:28.377Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -577,6 +633,7 @@
               "style": "",
               "class": "4u 12u(mobile)"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:17:37.487Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -587,6 +644,7 @@
                 "tagName": "section",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:18:00.714Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -597,6 +655,7 @@
                   "tagName": "a",
                   "class": "image featured"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:18:10.653Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -608,6 +667,7 @@
                     "src": "${url:image02}",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:18:16.924Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -620,6 +680,7 @@
                   "tagName": "header",
                   "style": ""
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:20:15.565Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -630,6 +691,7 @@
                     "tagName": "h3",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:20:25.092Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -640,6 +702,7 @@
                       "tagName": "text",
                       "text": "Okay, so what is this?"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:20:25.092Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -652,6 +715,7 @@
                 "attributes": {
                   "tagName": "p"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:21:17.002Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -662,6 +726,7 @@
                     "tagName": "text",
                     "text": "This is "
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:17.002Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -672,6 +737,7 @@
                   "attributes": {
                     "tagName": "strong"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:40.392Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -682,6 +748,7 @@
                       "tagName": "text",
                       "text": "Strongly Typed"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:21:40.392Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -694,6 +761,7 @@
                     "text": ", a free, fully responsive site template by ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:22:18.614Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -704,6 +772,7 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:22:43.107Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -714,6 +783,7 @@
                       "tagName": "text",
                       "text": "HTML5 UP"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:22:43.108Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -726,6 +796,7 @@
                     "text": ". Free for personal and commercial use under the ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:02.412Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -736,6 +807,7 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:28.377Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -746,6 +818,7 @@
                       "tagName": "text",
                       "text": "CC 3.0 license"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:23:28.377Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -762,6 +835,7 @@
               "style": "",
               "class": "4u 12u(mobile)"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:17:37.487Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -772,6 +846,7 @@
                 "tagName": "section",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:18:00.714Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -782,6 +857,7 @@
                   "tagName": "a",
                   "class": "image featured"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:18:10.653Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -793,6 +869,7 @@
                     "src": "${url:image03}",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:18:16.924Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -805,6 +882,7 @@
                   "tagName": "header",
                   "style": ""
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:20:15.565Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -815,6 +893,7 @@
                     "tagName": "h3",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:20:25.092Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -825,6 +904,7 @@
                       "tagName": "text",
                       "text": "Okay, so what is this?"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:20:25.092Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -837,6 +917,7 @@
                 "attributes": {
                   "tagName": "p"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:21:17.002Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -847,6 +928,7 @@
                     "tagName": "text",
                     "text": "This is "
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:17.002Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -857,6 +939,7 @@
                   "attributes": {
                     "tagName": "strong"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:21:40.392Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -867,6 +950,7 @@
                       "tagName": "text",
                       "text": "Strongly Typed"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:21:40.392Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -879,6 +963,7 @@
                     "text": ", a free, fully responsive site template by ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:22:18.614Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -889,6 +974,7 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:22:43.107Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -899,6 +985,7 @@
                       "tagName": "text",
                       "text": "HTML5 UP"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:22:43.108Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -911,6 +998,7 @@
                     "text": ". Free for personal and commercial use under the ",
                     "tagName": "text"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:02.412Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -921,6 +1009,7 @@
                   "attributes": {
                     "tagName": "a"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:23:28.377Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -931,6 +1020,7 @@
                       "tagName": "text",
                       "text": "CC 3.0 license"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:23:28.377Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -948,6 +1038,7 @@
             "style": "",
             "class": "actions"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T07:26:18.911Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -957,6 +1048,7 @@
             "attributes": {
               "tagName": "li"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:26:33.654Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -967,6 +1059,7 @@
                 "tagName": "a",
                 "class": "button icon fa-file"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:26:48.795Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -977,6 +1070,7 @@
                   "tagName": "text",
                   "text": "Tell Me More"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:26:48.795Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -994,6 +1088,7 @@
         "style": "",
         "id": "banner-wrapper"
       },
+      "controls": {},
       "comment": "",
       "createDate": "2015-09-03T07:40:38.050Z",
       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1005,6 +1100,7 @@
           "style": "",
           "class": "inner"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T07:41:03.488Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1017,6 +1113,7 @@
             "id": "banner",
             "class": "container"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T07:41:35.062Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1027,6 +1124,7 @@
               "tagName": "p",
               "style": ""
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:41:53.639Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1037,6 +1135,7 @@
                 "tagName": "text",
                 "text": "Use this space for "
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:41:53.639Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1047,6 +1146,7 @@
               "attributes": {
                 "tagName": "strong"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:42:21.299Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1057,6 +1157,7 @@
                   "tagName": "text",
                   "text": "profound thoughts"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:42:21.299Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1069,6 +1170,7 @@
                 "text": ".",
                 "tagName": "text"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:43:39.414Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1080,6 +1182,7 @@
                 "tagName": "br",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:42:50.465Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1091,6 +1194,7 @@
                 "text": "Or an enormous ad. Whatever.",
                 "tagName": "text"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:46:26.052Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1107,6 +1211,7 @@
         "style": "",
         "id": "main-wrapper"
       },
+      "controls": {},
       "comment": "",
       "createDate": "2015-09-03T07:50:11.655Z",
       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1118,6 +1223,7 @@
           "style": "",
           "class": "inner"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T07:50:31.278Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1130,6 +1236,7 @@
             "id": "main",
             "class": "container"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T07:50:49.915Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1141,6 +1248,7 @@
               "style": "",
               "class": "row"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T07:51:27.704Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1153,6 +1261,7 @@
                 "id": "content",
                 "class": "8u 12u(mobile)"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T07:51:49.328Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1164,6 +1273,7 @@
                   "style": "padding:30px;",
                   "class": "box post"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:52:30.798Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1174,6 +1284,7 @@
                     "tagName": "header",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:52:44.982Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1183,6 +1294,7 @@
                     "attributes": {
                       "tagName": "h2"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:52:53.484Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1193,6 +1305,7 @@
                         "tagName": "a",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T07:53:09.077Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1203,6 +1316,7 @@
                           "tagName": "text",
                           "text": "I don’t want to say "
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:53:09.078Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1213,6 +1327,7 @@
                         "attributes": {
                           "tagName": "strong"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:54:16.925Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1223,6 +1338,7 @@
                             "tagName": "text",
                             "text": "it’s the aliens"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T07:54:16.925Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1235,6 +1351,7 @@
                           "text": " ...",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:54:29.114Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1245,6 +1362,7 @@
                         "attributes": {
                           "tagName": "br"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:55:02.566Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1256,6 +1374,7 @@
                           "text": "but it’s the aliens.",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:55:19.599Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1270,6 +1389,7 @@
                     "tagName": "a",
                     "class": "image featured"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:57:03.635Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1280,6 +1400,7 @@
                       "tagName": "img",
                       "src": "${url:image04}"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:57:14.727Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1291,6 +1412,7 @@
                   "attributes": {
                     "tagName": "h3"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:58:18.662Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1301,6 +1423,7 @@
                       "tagName": "text",
                       "text": "I mean isn't it possible?"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:58:18.663Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1313,6 +1436,7 @@
                     "tagName": "p",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:58:43.430Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1323,6 +1447,7 @@
                       "tagName": "text",
                       "text": "Phasellus laoreet massa id justo mattis pharetra. Fusce suscipit\n\t\t\t\t\t\t\t\t\t\t\tligula vel quam viverra sit amet mollis tortor congue. Sed quis mauris\n\t\t\t\t\t\t\t\t\t\t\tsit amet magna accumsan tristique. Curabitur leo nibh, rutrum eu malesuada\n\t\t\t\t\t\t\t\t\t\t\tin, tristique at erat lorem ipsum dolor sit amet lorem ipsum sed consequat\n\t\t\t\t\t\t\t\t\t\t\tmagna tempus veroeros lorem sed tempus aliquam lorem ipsum veroeros\n\t\t\t\t\t\t\t\t\t\t\tconsequat magna tempus lorem ipsum consequat Phasellus laoreet massa id\n\t\t\t\t\t\t\t\t\t\t\tjusto mattis pharetra. Fusce suscipit ligula vel quam viverra sit amet\n\t\t\t\t\t\t\t\t\t\t\tmollis tortor congue. Sed quis mauris sit amet magna accumsan tristique.\n\t\t\t\t\t\t\t\t\t\t\tCurabitur leo nibh, rutrum eu malesuada in, tristique at erat."
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:58:43.430Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1336,6 +1461,7 @@
                     "style": "",
                     "class": "actions"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:01:21.287Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1345,6 +1471,7 @@
                     "attributes": {
                       "tagName": "li"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:01:44.072Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1355,6 +1482,7 @@
                         "tagName": "a",
                         "class": "button icon fa-file"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:01:53.098Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1365,6 +1493,7 @@
                           "tagName": "text",
                           "text": "Continue Reading"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:01:53.098Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1381,6 +1510,7 @@
                   "style": "padding:30px;",
                   "class": "box post"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T07:52:30.798Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1391,6 +1521,7 @@
                     "tagName": "header",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:52:44.982Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1400,6 +1531,7 @@
                     "attributes": {
                       "tagName": "h2"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:52:53.484Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1410,6 +1542,7 @@
                         "tagName": "a",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T07:53:09.077Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1420,6 +1553,7 @@
                           "tagName": "text",
                           "text": "I don’t want to say "
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:53:09.078Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1430,6 +1564,7 @@
                         "attributes": {
                           "tagName": "strong"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:54:16.925Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1440,6 +1575,7 @@
                             "tagName": "text",
                             "text": "it’s the aliens"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T07:54:16.925Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1452,6 +1588,7 @@
                           "text": " ...",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:54:29.114Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1462,6 +1599,7 @@
                         "attributes": {
                           "tagName": "br"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:55:02.566Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1473,6 +1611,7 @@
                           "text": "but it’s the aliens.",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T07:55:19.599Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1487,6 +1626,7 @@
                     "tagName": "a",
                     "class": "image featured"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:57:03.635Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1497,6 +1637,7 @@
                       "tagName": "img",
                       "src": "${url:image05}"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:57:14.727Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1508,6 +1649,7 @@
                   "attributes": {
                     "tagName": "h3"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:58:18.662Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1518,6 +1660,7 @@
                       "tagName": "text",
                       "text": "I mean isn't it possible?"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:58:18.663Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1530,6 +1673,7 @@
                     "tagName": "p",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:58:43.430Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1540,6 +1684,7 @@
                       "tagName": "text",
                       "text": "Phasellus laoreet massa id justo mattis pharetra. Fusce suscipit\n\t\t\t\t\t\t\t\t\t\t\tligula vel quam viverra sit amet mollis tortor congue. Sed quis mauris\n\t\t\t\t\t\t\t\t\t\t\tsit amet magna accumsan tristique. Curabitur leo nibh, rutrum eu malesuada\n\t\t\t\t\t\t\t\t\t\t\tin, tristique at erat lorem ipsum dolor sit amet lorem ipsum sed consequat\n\t\t\t\t\t\t\t\t\t\t\tconsequat magna tempus lorem ipsum consequat Phasellus laoreet massa id\n\t\t\t\t\t\t\t\t\t\t\tin, tristique at erat lorem ipsum dolor sit amet lorem ipsum sed consequat\n\t\t\t\t\t\t\t\t\t\t\tmagna tempus veroeros lorem sed tempus aliquam lorem ipsum veroeros\n\t\t\t\t\t\t\t\t\t\t\tconsequat magna tempus lorem ipsum consequat Phasellus laoreet massa id\n\t\t\t\t\t\t\t\t\t\t\tjusto mattis pharetra. Fusce suscipit ligula vel quam viverra sit amet\n\t\t\t\t\t\t\t\t\t\t\tmollis tortor congue. Sed quis mauris sit amet magna accumsan tristique.\n\t\t\t\t\t\t\t\t\t\t\tCurabitur leo nibh, rutrum eu malesuada in, tristique at erat."
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:58:43.430Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1552,6 +1697,7 @@
                     "tagName": "p",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T07:58:43.430Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1562,6 +1708,7 @@
                       "tagName": "text",
                       "text": "Erat lorem ipsum veroeros consequat magna tempus lorem ipsum consequat\n\t\t\t\t\t\t\t\t\t\t\tPhasellus laoreet massa id justo mattis pharetra. Fusce suscipit ligula\n\t\t\t\t\t\t\t\t\t\t\tvel quam viverra sit amet mollis tortor congue. Sed quis mauris sit amet\n\t\t\t\t\t\t\t\t\t\t\tmagna accumsan tristique. Curabitur leo nibh, rutrum eu malesuada in,\n\t\t\t\t\t\t\t\t\t\t\ttristique at erat. Curabitur leo nibh, rutrum eu malesuada  in, tristique\n\t\t\t\t\t\t\t\t\t\t\tat erat lorem ipsum dolor sit amet lorem ipsum sed consequat magna\n\t\t\t\t\t\t\t\t\t\t\ttempus veroeros lorem sed tempus aliquam lorem ipsum veroeros consequat\n\t\t\t\t\t\t\t\t\t\t\tmagna tempus"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T07:58:43.430Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1575,6 +1722,7 @@
                     "style": "",
                     "class": "actions"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:01:21.287Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1584,6 +1732,7 @@
                     "attributes": {
                       "tagName": "li"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:01:44.072Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1594,6 +1743,7 @@
                         "tagName": "a",
                         "class": "button icon fa-file"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:01:53.098Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1604,6 +1754,7 @@
                           "tagName": "text",
                           "text": "Continue Reading"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:01:53.098Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1622,6 +1773,7 @@
                 "id": "sidebar",
                 "class": "4u 12u(mobile)"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:08:23.345Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1632,6 +1784,7 @@
                   "tagName": "section",
                   "style": "padding:30px;"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:09:18.183Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1642,6 +1795,7 @@
                     "tagName": "ul",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:14:05.439Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1651,6 +1805,7 @@
                     "attributes": {
                       "tagName": "li"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:14:09.950Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1662,6 +1817,7 @@
                         "style": "",
                         "class": "box excerpt"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:14:18.100Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1672,6 +1828,7 @@
                           "tagName": "header",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:14:42.210Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1682,6 +1839,7 @@
                             "tagName": "span",
                             "class": "date"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:14:48.178Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1692,6 +1850,7 @@
                               "tagName": "text",
                               "text": "July 30"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:14:48.178Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1703,6 +1862,7 @@
                           "attributes": {
                             "tagName": "h3"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:01.458Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1712,6 +1872,7 @@
                             "attributes": {
                               "tagName": "a"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:15:12.609Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1722,6 +1883,7 @@
                                 "tagName": "text",
                                 "text": "Just another post"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:15:12.610Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1735,6 +1897,7 @@
                         "attributes": {
                           "tagName": "p"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:15:42.497Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1745,6 +1908,7 @@
                             "tagName": "text",
                             "text": "Lorem ipsum dolor odio facilisis convallis. Etiam non nunc vel est\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tsuscipit convallis non id orci lorem ipsum sed magna consequat feugiat lorem dolore."
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:42.497Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1759,6 +1923,7 @@
                         "style": "",
                         "class": "box excerpt"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:14:18.100Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1769,6 +1934,7 @@
                           "tagName": "header",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:14:42.210Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1779,6 +1945,7 @@
                             "tagName": "span",
                             "class": "date"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:14:48.178Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1789,6 +1956,7 @@
                               "tagName": "text",
                               "text": "July 28"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:14:48.178Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1800,6 +1968,7 @@
                           "attributes": {
                             "tagName": "h3"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:01.458Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1809,6 +1978,7 @@
                             "attributes": {
                               "tagName": "a"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:15:12.609Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1819,6 +1989,7 @@
                                 "tagName": "text",
                                 "text": "And another post"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:15:12.610Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1833,6 +2004,7 @@
                           "tagName": "p",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:15:42.497Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1843,6 +2015,7 @@
                             "tagName": "text",
                             "text": "Lorem ipsum dolor odio facilisis convallis. Etiam non nunc vel est\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tsuscipit convallis non id orci lorem ipsum sed magna consequat feugiat lorem dolore."
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:42.497Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1857,6 +2030,7 @@
                         "style": "",
                         "class": "box excerpt"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:14:18.100Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1867,6 +2041,7 @@
                           "tagName": "header",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:14:42.210Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1877,6 +2052,7 @@
                             "tagName": "span",
                             "class": "date"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:14:48.178Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1887,6 +2063,7 @@
                               "tagName": "text",
                               "text": "July 24"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:14:48.178Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1898,6 +2075,7 @@
                           "attributes": {
                             "tagName": "h3"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:01.458Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1907,6 +2085,7 @@
                             "attributes": {
                               "tagName": "a"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:15:12.609Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1917,6 +2096,7 @@
                                 "tagName": "text",
                                 "text": "One more post"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:15:12.610Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1930,6 +2110,7 @@
                         "attributes": {
                           "tagName": "p"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:15:42.497Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1940,6 +2121,7 @@
                             "tagName": "text",
                             "text": "Lorem ipsum dolor odio facilisis convallis. Etiam non nunc vel est\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tsuscipit convallis non id orci lorem ipsum sed magna consequat feugiat lorem dolore."
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:15:42.497Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1956,6 +2138,7 @@
                   "tagName": "section",
                   "style": ""
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:19:48.632Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1966,6 +2149,7 @@
                     "tagName": "ul",
                     "style": ""
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:20:09.629Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1974,6 +2158,9 @@
                     "type": "html",
                     "attributes": {
                       "tagName": "li"
+                    },
+                    "controls": {
+                      "repeat-n": 3
                     },
                     "comment": "",
                     "createDate": "2015-09-03T08:20:14.823Z",
@@ -1985,6 +2172,7 @@
                         "tagName": "article",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:20:25.709Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -1995,6 +2183,7 @@
                           "tagName": "header",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:20:46.115Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2004,6 +2193,7 @@
                           "attributes": {
                             "tagName": "h3"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:20:58.123Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2013,6 +2203,7 @@
                             "attributes": {
                               "tagName": "a"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:21:12.689Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2023,6 +2214,7 @@
                                 "tagName": "text",
                                 "text": "Something of note"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:21:12.689Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2037,6 +2229,7 @@
                           "tagName": "a",
                           "class": "image left"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:21:43.495Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2047,6 +2240,7 @@
                             "tagName": "img",
                             "src": "${url:image06}"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:22:10.807Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2058,6 +2252,7 @@
                         "attributes": {
                           "tagName": "p"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:23:47.016Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2068,6 +2263,7 @@
                             "tagName": "text",
                             "text": "Phasellus  sed laoreet massa id justo mattis pharetra. Fusce suscipit ligula vel quam\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tviverra sit amet mollis tortor congue magna lorem ipsum dolor et quisque ut odio facilisis\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tconvallis. Etiam non nunc vel est suscipit convallis non id orci. Ut interdum tempus\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tfacilisis convallis. Etiam non nunc vel est suscipit convallis non id orci."
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:23:47.017Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2081,6 +2277,7 @@
                           "style": "",
                           "class": "actions"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:24:15.351Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2090,6 +2287,7 @@
                           "attributes": {
                             "tagName": "li"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:24:25.253Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2100,6 +2298,7 @@
                               "tagName": "a",
                               "class": "button icon fa-file"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:24:31.540Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2110,6 +2309,7 @@
                                 "tagName": "text",
                                 "text": "Learn More"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:24:31.540Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2125,6 +2325,7 @@
                     "attributes": {
                       "tagName": "li"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:20:14.823Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2135,6 +2336,7 @@
                         "tagName": "article",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:20:25.709Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2145,6 +2347,7 @@
                           "tagName": "header",
                           "style": ""
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:20:46.115Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2154,6 +2357,7 @@
                           "attributes": {
                             "tagName": "h3"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:20:58.123Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2163,6 +2367,7 @@
                             "attributes": {
                               "tagName": "a"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:21:12.689Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2173,6 +2378,7 @@
                                 "tagName": "text",
                                 "text": "Something of note"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:21:12.689Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2187,6 +2393,7 @@
                           "tagName": "a",
                           "class": "image left"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:21:43.495Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2197,6 +2404,7 @@
                             "tagName": "img",
                             "src": "${url:image07}"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:22:10.807Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2208,6 +2416,7 @@
                         "attributes": {
                           "tagName": "p"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:23:47.016Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2218,6 +2427,7 @@
                             "tagName": "text",
                             "text": "Phasellus  sed laoreet massa id justo mattis pharetra. Fusce suscipit ligula vel quam\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tviverra sit amet mollis tortor congue magna lorem ipsum dolor et quisque ut odio facilisis\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tconvallis. Etiam non nunc vel est suscipit convallis non id orci. Ut interdum tempus\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tfacilisis convallis. Etiam non nunc vel est suscipit convallis non id orci."
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:23:47.017Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2231,6 +2441,7 @@
                           "style": "",
                           "class": "actions"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:24:15.351Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2240,6 +2451,7 @@
                           "attributes": {
                             "tagName": "li"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:24:25.253Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2250,6 +2462,7 @@
                               "tagName": "a",
                               "class": "button icon fa-file"
                             },
+                            "controls": {},
                             "comment": "",
                             "createDate": "2015-09-03T08:24:31.540Z",
                             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2260,6 +2473,7 @@
                                 "tagName": "text",
                                 "text": "Learn More"
                               },
+                              "controls": {},
                               "comment": "",
                               "createDate": "2015-09-03T08:24:31.540Z",
                               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2285,6 +2499,7 @@
         "class": "",
         "id": "footer-wrapper"
       },
+      "controls": {},
       "comment": "",
       "createDate": "2015-09-03T08:26:44.109Z",
       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2297,6 +2512,7 @@
           "id": "footer",
           "class": "container"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T08:27:11.763Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2307,6 +2523,7 @@
             "tagName": "header",
             "style": ""
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T08:27:49.571Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2317,6 +2534,7 @@
               "tagName": "h2",
               "style": ""
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:27:55.464Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2327,6 +2545,7 @@
                 "tagName": "text",
                 "text": "Questions or comments? "
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:27:55.465Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2337,6 +2556,7 @@
               "attributes": {
                 "tagName": "strong"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:28:40.293Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2347,6 +2567,7 @@
                   "tagName": "text",
                   "text": "Get in touch:"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:28:40.293Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2362,6 +2583,7 @@
             "style": "",
             "class": "row"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T08:29:05.540Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2373,6 +2595,7 @@
               "style": "",
               "class": "6u 12u(mobile)"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:29:30.853Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2383,6 +2606,7 @@
                 "tagName": "section",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:30:00.193Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2395,6 +2619,7 @@
                   "method": "post",
                   "enctype": "application/x-www-form-urlencoded"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:30:07.617Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2406,6 +2631,7 @@
                     "style": "",
                     "class": "row 50%"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:34:59.629Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2417,6 +2643,7 @@
                       "style": "",
                       "class": "6u 12u(mobile)"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:35:17.830Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2427,6 +2654,7 @@
                         "tagName": "input",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:35:42.604Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2440,6 +2668,7 @@
                       "style": "",
                       "class": "6u 12u(mobile)"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:35:17.830Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2450,6 +2679,7 @@
                         "tagName": "input",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:35:42.604Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2464,6 +2694,7 @@
                     "style": "",
                     "class": "row 50%"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:34:59.629Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2475,6 +2706,7 @@
                       "style": "",
                       "class": "12u"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:38:16.108Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2485,6 +2717,7 @@
                         "tagName": "textarea",
                         "style": ""
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:38:25.612Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2499,6 +2732,7 @@
                     "style": "",
                     "class": "row 50%"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:34:59.629Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2510,6 +2744,7 @@
                       "style": "",
                       "class": "12u"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:38:54.153Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2520,6 +2755,7 @@
                         "tagName": "a",
                         "class": "form-button-submit button icon fa-envelope"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:39:04.662Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2530,6 +2766,7 @@
                           "tagName": "text",
                           "text": "link"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:39:04.663Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2548,6 +2785,7 @@
               "style": "",
               "class": "6u 12u(mobile)"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:40:22.748Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2558,6 +2796,7 @@
                 "tagName": "section",
                 "style": ""
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:41:48.014Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2568,6 +2807,7 @@
                   "tagName": "p",
                   "style": ""
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:41:52.698Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2578,6 +2818,7 @@
                     "tagName": "text",
                     "text": "Erat lorem ipsum veroeros consequat magna tempus lorem ipsum consequat Phaselamet\n\t\t\t\t\t\t\t\t\tmollis tortor congue. Sed quis mauris sit amet magna accumsan tristique. Curabitur\n\t\t\t\t\t\t\t\t\tleo nibh, rutrum eu malesuada."
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:41:52.698Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2591,6 +2832,7 @@
                   "style": "",
                   "class": "row"
                 },
+                "controls": {},
                 "comment": "",
                 "createDate": "2015-09-03T08:42:18.195Z",
                 "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2602,6 +2844,7 @@
                     "style": "",
                     "class": "6u 12u(mobile)"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:42:34.925Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2613,6 +2856,7 @@
                       "style": "",
                       "class": "icons"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:42:52.543Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2624,6 +2868,7 @@
                         "style": "",
                         "class": "icon fa-home"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2634,6 +2879,7 @@
                           "tagName": "text",
                           "text": "1234 Somewhere Road"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:43:01.226Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2644,6 +2890,7 @@
                         "attributes": {
                           "tagName": "br"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:44:51.387Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2655,6 +2902,7 @@
                           "text": "Nashville, TN 00000",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:45:17.217Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2665,6 +2913,7 @@
                         "attributes": {
                           "tagName": "br"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:45:38.360Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2676,6 +2925,7 @@
                           "text": "USA",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:45:55.447Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2689,6 +2939,7 @@
                         "style": "",
                         "class": "icon fa-phone"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2699,6 +2950,7 @@
                           "text": "(000) 000-0000",
                           "tagName": "text"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:45:55.447Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2712,6 +2964,7 @@
                         "style": "",
                         "class": "icon fa-envelope"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2721,6 +2974,7 @@
                         "attributes": {
                           "tagName": "a"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:47:59.423Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2731,6 +2985,7 @@
                             "tagName": "text",
                             "text": "info@untitled.tld"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:47:59.424Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2747,6 +3002,7 @@
                     "style": "",
                     "class": "6u 12u(mobile)"
                   },
+                  "controls": {},
                   "comment": "",
                   "createDate": "2015-09-03T08:42:34.925Z",
                   "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2758,6 +3014,7 @@
                       "style": "",
                       "class": "icons"
                     },
+                    "controls": {},
                     "comment": "",
                     "createDate": "2015-09-03T08:42:52.543Z",
                     "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2769,6 +3026,7 @@
                         "style": "",
                         "class": "icon fa-twitter"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2778,6 +3036,7 @@
                         "attributes": {
                           "tagName": "a"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:47:59.423Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2788,6 +3047,7 @@
                             "tagName": "text",
                             "text": "@untitled-tld"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:47:59.424Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2802,6 +3062,7 @@
                         "style": "",
                         "class": "icon fa-instagram"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2811,6 +3072,7 @@
                         "attributes": {
                           "tagName": "a"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:47:59.423Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2821,6 +3083,7 @@
                             "tagName": "text",
                             "text": "instagram.com/untitled-tld"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:47:59.424Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2835,6 +3098,7 @@
                         "style": "",
                         "class": "icon fa-dribbble"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2844,6 +3108,7 @@
                         "attributes": {
                           "tagName": "a"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:47:59.423Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2854,6 +3119,7 @@
                             "tagName": "text",
                             "text": "dribbble.com/untitled-tld"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:47:59.424Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2868,6 +3134,7 @@
                         "style": "",
                         "class": "icon fa-facebook"
                       },
+                      "controls": {},
                       "comment": "",
                       "createDate": "2015-09-03T08:43:01.226Z",
                       "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2877,6 +3144,7 @@
                         "attributes": {
                           "tagName": "a"
                         },
+                        "controls": {},
                         "comment": "",
                         "createDate": "2015-09-03T08:47:59.423Z",
                         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2887,6 +3155,7 @@
                             "tagName": "text",
                             "text": "facebook.com/untitled-tld"
                           },
+                          "controls": {},
                           "comment": "",
                           "createDate": "2015-09-03T08:47:59.424Z",
                           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2909,6 +3178,7 @@
           "id": "copyright",
           "class": "container"
         },
+        "controls": {},
         "comment": "",
         "createDate": "2015-09-03T08:51:35.373Z",
         "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2920,6 +3190,7 @@
             "style": "",
             "class": "links"
           },
+          "controls": {},
           "comment": "",
           "createDate": "2015-09-03T08:51:57.841Z",
           "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2929,6 +3200,7 @@
             "attributes": {
               "tagName": "li"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:52:16.598Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2939,6 +3211,7 @@
                 "tagName": "text",
                 "text": "(c) Untitled. All rights reserved."
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:52:16.598Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2950,6 +3223,7 @@
             "attributes": {
               "tagName": "li"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:52:16.598Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2960,6 +3234,7 @@
                 "tagName": "text",
                 "text": "Design:"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:52:16.598Z",
               "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2971,6 +3246,7 @@
             "attributes": {
               "tagName": "a"
             },
+            "controls": {},
             "comment": "",
             "createDate": "2015-09-03T08:53:07.985Z",
             "updateDate": "1970-01-01T00:00:00.000Z",
@@ -2981,6 +3257,7 @@
                 "tagName": "text",
                 "text": "HTML5 UP"
               },
+              "controls": {},
               "comment": "",
               "createDate": "2015-09-03T08:53:07.986Z",
               "updateDate": "1970-01-01T00:00:00.000Z",

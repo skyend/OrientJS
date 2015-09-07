@@ -99,6 +99,12 @@
             }, _e, "MouseClick");
         },
 
+        equipFail(){
+          this.setState({
+              equipTool: undefined
+          });
+        },
+
         equipTool(_toolClass, _toolConfig, _toolKey, _storedToolState) {
 
             if (typeof _toolClass === 'function') {

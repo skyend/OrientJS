@@ -67,13 +67,18 @@
       }, {
         "key": "element-node-behavior",
         "title": "Element Control",
-        "icon": "magic",
-        "equipToolKey": "."
+        "icon": "wrench",
+        "equipToolKey": "ElementNodeControl"
       }, {
         "key": "element-node-event",
-        "title": "Element Event Control",
+        "title": "Element Event",
         "icon": "rocket",
-        "equipToolKey": "."
+        "equipToolKey": "ElemenEventControl"
+      }, {
+        "key": "element-node-effect",
+        "title": "Element Effect",
+        "icon": "magic",
+        "equipToolKey": "ElemenEffectControl"
       }]
     }]
   },
@@ -122,6 +127,19 @@
     "ContextContentsNavigation": {
       "jsxPath": "ContextContentsNavigation",
       "configPath": "ContextContentsNavigation"
+    },
+    "ElementNodeControl": {
+      "jsxPath": "ElementNodeControl",
+      "configPath": "ElementNodeControl"
+    },
+    "ElemenEventControl": {
+      "jsxPath": "ElemenEventControl",
+      "configPath": "ElemenEventControl"
+    },
+
+    "ElemenEffectControl": {
+      "jsxPath": "ElemenEffectControl",
+      "configPath": "ElemenEffectControl"
     },
 
     "DocumentConfig": {

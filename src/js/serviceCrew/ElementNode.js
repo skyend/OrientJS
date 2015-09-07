@@ -4,7 +4,9 @@ var Returns = require("../Returns.js");
 var _ = require('underscore');
 
 var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
-
+  if (_preInsectProps !== undefined) {
+    console.log(this, _elementNodeDataObject);
+  }
   // 미리 삽입된 프로퍼티
   var preInsectProps = _preInsectProps || {};
 
@@ -180,6 +182,7 @@ ElementNode.prototype.setAttributes = function(_attributes) {
 // control
 ElementNode.prototype.setControl = function(_controlName, _value) {
   this.controls[_controlName] = _value;
+  this.emitToParent("RequestReRenderMe");
 };
 // controls
 ElementNode.prototype.setControls = function(_controls) {
@@ -793,6 +796,9 @@ ElementNode.prototype.preProcessingMeBeforeRender = function() {
   }
 
 
+
+
+
   this.children.map(function(_child) {
 
     if (/^\d+$/.test(_child.controls['repeat-n'])) {
@@ -838,7 +844,7 @@ ElementNode.prototype.linkRealDOMofChild = function() {
 
     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
     var realDOMElement = this.getRealDOMElement();
-    console.log(this);
+
     realDOMElement.innerHTML = '';
 
 
@@ -1171,10 +1177,19 @@ ElementNode.prototype.export = function(_withoutId) {
   };
 
   this.children.map(function(_child) {
-    // 고스트가 아닌 자식만 export한다.
+
+
     if (!_child.isGhost) {
+      // 자식이 고스트가 아닌경우만 export한다.
       exportObject.children.push(_child.export(_withoutId));
+    } else {
+
+      // 자식이 고스트이면서 반복된 요소일 떄는 export한다.
+      if (!_child.isRepeated) {
+        exportObject.children.push(_child.export(_withoutId));
+      }
     }
+
   });
 
   if (exportObject.type === 'empty') {
