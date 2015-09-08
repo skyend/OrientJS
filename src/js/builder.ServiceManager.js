@@ -6,17 +6,18 @@
 var _ = require('underscore');
 
 var DocumentContextController = require('./serviceCrew/DocumentContextController.js');
+var ApiSourceContextControllers = require('./serviceCrew/ApiSourceContextController.js');
+
 var ObjectExplorer = require('./util/ObjectExplorer.js');
 
 var ServiceManager = function(_session, _serviceKey) {
   this.serviceKey = _serviceKey;
   this.session = _session;
   this.docContextControllers = {};
+  this.apiSourceContextControllers = {};
   this.sampleDatas = {};
 
   this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api");
-
-  console.log(ObjectExplorer.getValueByKeyPath(this.sampleDatas['broadcast_series'], 'items/0/nid'));
 
 
   this.init();
@@ -24,6 +25,12 @@ var ServiceManager = function(_session, _serviceKey) {
 
 ServiceManager.prototype.init = function() {
   this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
+};
+
+//http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
+
+ServiceManager.prototype.getNodeTypeData = function(_nodeTypeId) {
+  return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/" + _nodeTypeId + "/list.json?t=api");
 };
 
 ServiceManager.prototype.getDocumentMetaList = function() {
@@ -34,6 +41,10 @@ ServiceManager.prototype.getPageMetaList = function() {
   return this.meta.pages;
 };
 
+ServiceManager.prototype.getAPISourceMetaList = function() {
+  return this.meta.apiSources;
+};
+
 ServiceManager.prototype.getDocumentMetaById = function(_id) {
   var metaList = this.getDocumentMetaList();
 
@@ -42,7 +53,17 @@ ServiceManager.prototype.getDocumentMetaById = function(_id) {
   });
 
   return metaList[index];
-}
+};
+
+ServiceManager.prototype.getAPISourceMetaById = function(_id) {
+  var metaList = this.getAPISourceMetaList();
+
+  var index = _.findIndex(metaList, {
+    id: _id
+  });
+
+  return metaList[index];
+};
 
 ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
   var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
@@ -96,5 +117,20 @@ ServiceManager.prototype.getDocumentContextController = function(_documentId) {
 
   return this.docContextControllers[_documentId];
 };
+
+ServiceManager.prototype.getApiSourceContextController = function(_apiSourceId) {
+
+  if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
+    var apiSourceMeta = this.getAPISourceMetaById(_apiSourceId);
+
+    var apiSourceContextController = new ApiSourceContextControllers(apiSourceMeta, this.session, this);
+
+    this.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
+  }
+
+  console.log(this.apiSourceContextControllers[_apiSourceId]);
+  return this.apiSourceContextControllers[_apiSourceId];
+};
+
 
 module.exports = ServiceManager;

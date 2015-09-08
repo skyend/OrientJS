@@ -279,7 +279,7 @@
     if (_eventData.refPath[0] === 'ComponentPalette') {
 
       _eventData.path[0].setState({
-        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey)
+        previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey, _eventData.syncWindowContext)
       });
     }
   };
@@ -312,6 +312,25 @@
     who.setState({
       pageMetaList: this.projectManager.serviceManager.getPageMetaList(),
       documentMetaList: this.projectManager.serviceManager.getDocumentMetaList(),
+      apiSourceMetaList: this.projectManager.serviceManager.getAPISourceMetaList()
+    });
+  };
+
+  UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
+    console.log('BringApiSourceContext', _eventData);
+
+    var apiSourceMeta = _eventData.apiSourceMeta;
+
+    // Document Meta 정보로 DocumentContextController를 얻는다
+    var apiSourceContextController = this.projectManager.serviceManager.getApiSourceContextController(apiSourceMeta.id);
+
+    this.uiServicer.openStageContext({
+      apiSourceID: apiSourceMeta.id,
+      contextID: 'apiSource#' + apiSourceMeta.id,
+      contextTitle: apiSourceMeta.title,
+      contextType: 'apiSource',
+      contextController: apiSourceContextController,
+      iconClass: _eventData.iconClass
     });
   };
 
@@ -323,10 +342,10 @@
     // Document Meta 정보로 DocumentContextController를 얻는다
     var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
 
-    this.uiServicer.openDirectContext({
+    this.uiServicer.openStageContext({
       documentID: documentMeta.id,
       contextID: 'document#' + documentMeta.id,
-      contextName: documentMeta.name,
+      contextTitle: documentMeta.title,
       contextType: 'document',
       contextController: documentContextController,
       iconClass: _eventData.iconClass

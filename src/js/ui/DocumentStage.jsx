@@ -12,6 +12,7 @@ var _ = require('underscore');
     require('./DocumentStage.less');
     var IFrameStage = require('./partComponents/IFrameStage.jsx');
     var DirectContext = require('./DirectContext.jsx');
+    var APISourceContext = require('./APISourceContext.jsx');
     var VDomController = require('../virtualdom/VDomController.js');
     var ElementNodeDropSupporter = require('./ElementNodeDropSupporter.jsx');
 
@@ -26,7 +27,7 @@ var _ = require('underscore');
             return {
               runningContextID: "TEST#1",
               stageMode:'desktop',
-              directContexts : [
+              contexts : [
                 //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
               ]
             }
@@ -53,22 +54,22 @@ var _ = require('underscore');
             }
         },
 
-        openContext( _contextItem ){
-          var alreadyContextIndex = _.findIndex( this.state.directContexts, { contextID: _contextItem.contextID } );
+        openContext( _contextSpec ){
+          var alreadyContextIndex = _.findIndex( this.state.contexts, { contextID: _contextSpec.contextID } );
 
           if( alreadyContextIndex != -1 ){
 
             // 컨텍스트를 앞으로 가져온다.
-            this.setState({runningContextID: _contextItem.contextID});
+            this.setState({runningContextID: _contextSpec.contextID});
           } else {
 
             // 새 컨텍스트를 추가한다.
-            this.state.directContexts.push( _contextItem );
-            this.setState({directContexts:this.state.directContexts, runningContextID: _contextItem.contextID});
+            this.state.contexts.push( _contextSpec );
+            this.setState({contexts:this.state.contexts, runningContextID: _contextSpec.contextID});
           }
 
 
-          this.emitOpenedDirectContextTab( _contextItem );
+          this.emitOpenedDirectContextTab( _contextSpec );
         },
 
         clickTabItem(_contextItem) {
@@ -134,26 +135,7 @@ var _ = require('underscore');
         },
 
 
-        renderContextTabItem(_contextItem) {
-            var self = this;
 
-            var running = false;
-            if( this.state.runningContextID === _contextItem.contextID ){
-              running = true;
-            }
-
-            var closure = function () {
-                self.clickTabItem(_contextItem);
-            };
-
-            var iconClass = _contextItem.iconClass;
-
-            return (
-                <li className={ running? 'forwarded':''} onClick={closure}>
-                  <i className={'fa '+ iconClass}/> {_contextItem.contextName} <span className='close'><i className='fa fa-times'/></span>
-                </li>
-            )
-        },
 
 
         deleteElement(_targetObject) {
@@ -176,10 +158,11 @@ var _ = require('underscore');
          */
         startDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey ){
           if( ! this.hasCurrentRunningContext() ) return;
-
+          var context = this.getCurrentRunningContext();
+          if( !context.isAcceptDropComponent() ) return;
 
           //console.log(arguments);
-          var iframeStageInnerDoc = this.getCurrentRunningContext().getDocument();
+          var iframeStageInnerDoc = context.getDocument();
 
           // VDomController Construct
           this.liveVDomController = new VDomController();
@@ -197,9 +180,11 @@ var _ = require('underscore');
          */
         dragDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey ){
           if( ! this.hasCurrentRunningContext() ) return;
+          var context = this.getCurrentRunningContext();
+          if( !context.isAcceptDropComponent() ) return;
 
           var self = this;
-          var selfClientRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
+          var selfClientRect = context.getIFrameStageBoundingRect();
           //console.log('drag');
 
           //****************************************/
@@ -233,7 +218,7 @@ var _ = require('underscore');
                   // 드롭기준 DOMElement에 ElementNode가 매핑되어 있는지 체크 후 매핑되어 있지 않다면 root로 들어가야 하므로
                   // root에 드랍이 가능한 상태인지 확인한다.
                   if( realDOMElement.___en === undefined ){
-                    if( self.getCurrentRunningContext().isDropableToRoot(realDOMElement) ){
+                    if( context.isDropableToRoot(realDOMElement) ){
                       self.changeElementHighlighterMode();
                     } else {
                       self.changeElementHighlighterMode('cantDrop');
@@ -333,6 +318,8 @@ var _ = require('underscore');
          */
         stopDeployComponentByPalette( _absoluteX, _absoluteY, _componentKey, _packageKey){
           if( ! this.hasCurrentRunningContext() ) return;
+          var context = this.getCurrentRunningContext();
+          if( !context.isAcceptDropComponent() ) return;
 
           var self = this;
 
@@ -375,14 +362,14 @@ var _ = require('underscore');
                   }
 
                   if( typeof _component.CSS === 'string'){
-                    self.getCurrentRunningContext().addStyle(_packageKey+'/'+_componentKey, _component.CSS);
+                    context.addStyle(_packageKey+'/'+_componentKey, _component.CSS);
                   }
 
                   // 드롭기준 DOMElement에 ElementNode가 매핑되어 있는지 체크 후 매핑되어 있지 않다면 root로 들어가야 하므로
                   // root에 드랍이 가능한 상태인지 확인한다.
                   var realDOMElement = self.aimedTarget.element.object;
                   if( realDOMElement.___en === undefined ){
-                    if( !self.getCurrentRunningContext().isDropableToRoot(realDOMElement) ){
+                    if( !context.isDropableToRoot(realDOMElement) ){
                       return;//throw new Error("error: ElementNode wasn't mapping.");
                     }
                   }
@@ -392,7 +379,7 @@ var _ = require('underscore');
                   //componentStaticElement.setAttribute('class', componentStaticElement.getAttribute('class').toLowerCase() );
                   if( dropDirection === 'in' ){
                     if( self.aimedTarget.name !== 'html' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToInLast(self.aimedTarget.vid, _component);
+                      deployResult = context.deployComponentToInLast(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                       return;
@@ -400,13 +387,13 @@ var _ = require('underscore');
 
                   } else if( dropDirection === 'left' || dropDirection === 'top' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToBefore(self.aimedTarget.vid, _component);
+                      deployResult = context.deployComponentToBefore(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
                   } else if( dropDirection === 'right' || dropDirection === 'bottom' ){
                     if( self.aimedTarget.name !== 'body' ){
-                      deployResult = self.getCurrentRunningContext().deployComponentToAfter(self.aimedTarget.vid, _component);
+                      deployResult = context.deployComponentToAfter(self.aimedTarget.vid, _component);
                     } else {
                       self.errorNoticeDontInsertTo("HTML");
                     }
@@ -878,40 +865,29 @@ var _ = require('underscore');
           this.setState({ stageMode: _mode });
         },
 
-        attachDirectContext( _directContext ){
 
-          var running = false;
-          if( this.state.runningContextID === _directContext.contextID ){
-            running = true;
-          }
-
-          var directContext = <DirectContext ref={_directContext.contextID}
-                                              width={this.state.width}
-                                              height={this.state.height - this.getTabContextOffsetTopByDS()}
-                                              contextId={_directContext.contextId}
-                                              contextType={_directContext.contextType}
-                                              runningState={running}
-                                              contextController={ _directContext.contextController } />;
-
-          return directContext;
-        },
 
         componentDidUpdate(_prevProps, _prevState) {
 
           if( this.getCurrentRunningContext() ){
-            this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
+            var context = this.getCurrentRunningContext();
 
-            switch( this.state.stageMode ){
-              case "desktop":
-                this.getCurrentRunningContext().setState({ stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
-                break;
-              case "tablet":
-                this.getCurrentRunningContext().setState({ stageWidth: 1040, stageHeight: 693});
-                break;
-              case "mobile":
-                this.getCurrentRunningContext().setState({ stageWidth: 360, stageHeight: 578});
-                break;
+            if( context.getContextType() === 'document' || context.getContextType() === 'page' ){
+                this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
+
+                switch( this.state.stageMode ){
+                  case "desktop":
+                    context.setState({ stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
+                    break;
+                  case "tablet":
+                    context.setState({ stageWidth: 1040, stageHeight: 693});
+                    break;
+                  case "mobile":
+                    context.setState({ stageWidth: 360, stageHeight: 578});
+                    break;
+                }
             }
+
 
           }
 
@@ -934,6 +910,51 @@ var _ = require('underscore');
             this.tabContextResize();
         },
 
+        renderContextTabItem(_contextItem) {
+            var self = this;
+
+            var running = false;
+            if( this.state.runningContextID === _contextItem.contextID ){
+              running = true;
+            }
+
+            var closure = function () {
+                self.clickTabItem(_contextItem);
+            };
+
+            var iconClass = _contextItem.iconClass;
+
+            return (
+                <li className={ running? 'forwarded':''} onClick={closure}>
+                  <i className={'fa '+ iconClass}/> {_contextItem.contextTitle} <span className='close'><i className='fa fa-times'/></span>
+                </li>
+            )
+        },
+
+
+        renderContext( _contextSpec ){
+
+          var running = false;
+          if( this.state.runningContextID === _contextSpec.contextID ){
+            running = true;
+          }
+
+          var ContextClass
+          if( _contextSpec.contextType === 'document' ||  _contextSpec.contextType === 'page'){
+            ContextClass = DirectContext;
+          } else if (_contextSpec.contextType === 'apiSource'){
+            ContextClass = APISourceContext;
+          }
+
+          return <ContextClass ref={_contextSpec.contextID}
+                              width={this.state.width}
+                              height={this.state.height - this.getTabContextOffsetTopByDS()}
+                              contextId={_contextSpec.contextId}
+                              contextType={_contextSpec.contextType}
+                              runningState={running}
+                              contextController={ _contextSpec.contextController } />;
+        },
+
         render: function () {
 
 
@@ -941,7 +962,7 @@ var _ = require('underscore');
                 <section className="DocumentStage tab-support black">
                     <div className='tab-switch-panel' ref='tab-area'>
                         <ul className='tab-list' ref='tab-list'>
-                            {this.state.directContexts.map(this.renderContextTabItem)}
+                            {this.state.contexts.map(this.renderContextTabItem)}
                         </ul>
                     </div>
                     <ElementNodeDropSupporter ref="ElementNodeDropSupporter"/>
@@ -961,8 +982,8 @@ var _ = require('underscore');
                     <div className='drop-position-placeholder' ref='drop-position-placeholder'/>
 
                     <div className='tab-context' ref='tab-context'>
-                        {this.state.directContexts.length > 0 ?
-                          this.state.directContexts.map( this.attachDirectContext ): (
+                        {this.state.contexts.length > 0 ?
+                          this.state.contexts.map( this.renderContext ): (
                             <div className='empty-holder'>
                               {"Open a tab context and Start your amazing Service!"}<br/><h1>{"For ICE CMS"}</h1>
                               <div className='ball'/>

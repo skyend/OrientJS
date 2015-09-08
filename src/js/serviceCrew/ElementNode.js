@@ -954,12 +954,13 @@ ElementNode.prototype.linkRealDOMofChild_empty_type = function() {
 
 ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   var realElement = this.getRealDOMElement();
-  console.log('react linked');
+
   var packageKey = this.getReactPackageKey();
   var componentKey = this.getReactComponentKey();
 
   // ReactComponent 를 얻어온다.
   var component = this.document.getReactTypeComponent(packageKey, componentKey, realElement.ownerDocument.defaultView);
+
   //console.log(realElement.ownerDocument.defaultView, realElement.ownerDocument, 'aa');
 
 

@@ -425,6 +425,19 @@ var DirectContext = React.createClass({
     _pass();
   },
 
+  getContextType(){
+    return this.props.contextType;
+  },
+
+  isAcceptDropComponent(){
+    var contextType = this.getContextType();
+    if( contextType === 'document' || contextType === 'page'){
+      return true;
+    }
+
+    return false;
+  },
+
   save(){
     var contextController = this.props.contextController;
 
@@ -524,7 +537,7 @@ var DirectContext = React.createClass({
       width:this.state.elementNavigatorWidth,
       height:3,
       display: this.state.showElementNavigator? 'inherit':'none'
-    }
+    };
 
     var selectedOutlineStyleBottom = {
       left:this.state.elementNavigatorX,
@@ -532,7 +545,7 @@ var DirectContext = React.createClass({
       width:this.state.elementNavigatorWidth,
       height:3,
       display: this.state.showElementNavigator? 'inherit':'none'
-    }
+    };
 
     var selectedOutlineStyleLeft = {
       left:this.state.elementNavigatorX-3,
@@ -540,7 +553,7 @@ var DirectContext = React.createClass({
       width:3,
       height:this.state.elementNavigatorHeight + 6,
       display: this.state.showElementNavigator? 'inherit':'none'
-    }
+    };
 
     var selectedOutlineStyleRight = {
       left:this.state.elementNavigatorX + this.state.elementNavigatorWidth,
@@ -548,7 +561,7 @@ var DirectContext = React.createClass({
       width:3,
       height:this.state.elementNavigatorHeight+6,
       display: this.state.showElementNavigator? 'inherit':'none'
-    }
+    };
 
 
 

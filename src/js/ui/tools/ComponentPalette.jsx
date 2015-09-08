@@ -18,10 +18,13 @@
         },
 
         mouseOverListItem( _componentKey, _packageKey){
+          var syncWindowContext = this.refs['ComponentPreviewer'].getIframeWindow();
+
 
           this.emit('IMustPreviewComponent', {
             componentKey:_componentKey,
-            packageKey: _packageKey
+            packageKey: _packageKey,
+            syncWindowContext:syncWindowContext
           });
         },
 

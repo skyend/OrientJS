@@ -402,11 +402,12 @@ var _ = require('underscore');
           documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
         },
 
-        openDirectContext( _directContextItem ){
+        openStageContext( _contextSpec ){
           var documentStage = this.refs['DocumentStage'];
 
-          documentStage.openContext( _directContextItem );
+          documentStage.openContext( _contextSpec );
         },
+
 
         onThrowCatcherSelectElementNode(_eventData, _pass){
           this.refs['DocumentStage'].selectElementNode( _eventData.elementNode);

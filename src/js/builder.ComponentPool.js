@@ -15,6 +15,7 @@
 
     this.metaData;
     this.cachedComponent = {}; // 한번로드된 컴포넌트를 캐싱
+    this.cachedSupporters = {};
     this.styleCache = {};
   }
 
@@ -101,8 +102,29 @@
     return this.metaData.host + this.metaData.temporaryNamespaceDir + _componentPath;
   };
 
+  ComponentPool.prototype.getSupporter = function(_supporterTarget) {
+    if (this.cachedSupporters[_supporterTarget] === undefined) {
+      var componentScript = this.session.certifiedRequest(_supporterTarget, 'get', {
+        t: 'api'
+      });
+
+      var executorBody;
+
+      executorBody = "\nvar module = { 'exports' : {} }; var exports = module.exports;\n" + componentScript + ";return module;";
+      //  console.log(_supporterUrl, executorBody);
+      var scriptExecutor = new Function(executorBody);
+
+      var moduleObject = scriptExecutor();
+
+      this.cachedSupporters[_supporterTarget] = moduleObject.exports;
+    }
+
+    return this.cachedSupporters[_supporterTarget];
+  };
+
 
   ComponentPool.prototype.getComponentFromRemote = function(_componentKey, _packageKey, _syncWindowContext) {
+
 
     var self = this;
     var contextWindow = _syncWindowContext || window;
@@ -156,15 +178,20 @@
       scriptExecutor = new contextWindow.Function("session", "React", "using", executorBody);
 
       var moduleObject;
-      contextWindow.eval(console.log(window.document, 'aaaaaaa'));
-      console.log('aaaasad');
+      var test;
+      contextWindow.eval(test = window);
+      console.log('window test', test, _syncWindowContext);
+
       contextWindow.eval(moduleObject = scriptExecutor({
           getComponent: function(__componentName) {
-            var recursionLoadedComponent = self.session.componentPool.getComponentFromRemote(__componentName);
+            var recursionLoadedComponent = self.getComponentFromRemote(__componentName);
 
             self.addCSS(componentName, recursionLoadedComponent.CSS);
 
             return recursionLoadedComponent;
+          },
+          getSupporter: function(__supporterKey) {
+            return self.getSupporter(__supporterKey);
           }
         }, React,
         function(_usingType) {

@@ -12,7 +12,37 @@
 
 
         getInitialState(){
-            return {pageMetaList:[], documentMetaList:[]};
+            return {pageMetaList:[], documentMetaList:[], apiSourceMetaList:[{name:"broadcast_series"}]};
+        },
+
+        renderAPISourceItem( _apiSourceMeta ){
+          var iconClass = 'fa-database';
+
+          var self = this;
+          var click = function(){
+            self.emit("BringApiSourceContext", {
+              apiSourceMeta : _apiSourceMeta,
+              iconClass: iconClass
+            });
+          };
+
+          var contextIsRunning = false;
+          console.log("API context ", this.state.runningContext, _apiSourceMeta);
+
+          if( typeof this.state.runningContext === 'object' ){
+            if( this.state.runningContext.contextType === "apiSource" ){
+              if( this.state.runningContext.apiSourceID ==  _apiSourceMeta.id ){
+                console.log('ooook');
+                contextIsRunning = true;
+              }
+            }
+          }
+
+          return (
+            <li onClick={click} className={contextIsRunning? 'running':''}>
+              <i className={'fa '+iconClass}></i> <span> { _apiSourceMeta.title } </span>
+            </li>
+          )
         },
 
         renderPageItem( _pageMeta ){
@@ -26,10 +56,19 @@
             });
           };
 
+          var contextIsRunning = false;
+          if( typeof this.state.runningContext === 'object' ){
+            if( this.state.runningContext.contextType === 'page' ){
+              if( this.state.runningContext.pageID ==  _pageMeta.id ){
+                contextIsRunning = true;
+              }
+            }
+          }
+
 
           return (
-            <li onClick={click}>
-              <i className={'fa '+iconClass}></i> <span> { _pageMeta.name } </span>
+            <li onClick={click} className={contextIsRunning? 'running':''}>
+              <i className={'fa '+iconClass}></i> <span> { _pageMeta.title } </span>
             </li>
           )
         },
@@ -63,7 +102,7 @@
 
           return (
             <li onClick={ click } className={contextIsRunning? 'running':''}>
-              <i className={'fa ' + iconClass}></i> <span> { _documentMeta.name } </span>
+              <i className={'fa ' + iconClass}></i> <span> { _documentMeta.title } </span>
             </li>
           )
         },
@@ -77,6 +116,20 @@
               </label>
               <ul>
                 { this.state.pageMetaList.map(this.renderPageItem) }
+              </ul>
+            </div>
+          )
+        },
+
+        renderAPISourceList(){
+
+          return (
+            <div className="resourceList">
+              <label className='listLabel'>
+                <i className='fa fa-database'></i> API Sources <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+              </label>
+              <ul>
+                { this.state.apiSourceMetaList.map(this.renderAPISourceItem) }
               </ul>
             </div>
           )
@@ -111,6 +164,7 @@
                     <div className='wrapper'>
                       { this.renderPageList() }
                       { this.renderDocumentList() }
+                      { this.renderAPISourceList() }
                     </div>
                 </div>
             );

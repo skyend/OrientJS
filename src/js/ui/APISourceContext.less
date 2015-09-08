@@ -1,0 +1,101 @@
+.okselect
+{
+    -webkit-user-select: all;
+       -moz-user-select: all;
+        -ms-user-select: all;
+            user-select: all;
+
+    -webkit-touch-callout: all;
+     -khtml-user-select: all;
+}
+
+
+.APISourceContext
+{
+    overflow: auto;
+
+    width: 100%;
+    height: 100%;
+
+    .okselect;
+
+    &.dark
+    {
+        color: #bbb;
+        background-color: #1e2127;
+
+        .state-bar
+        {
+            border-bottom-color: #555;
+            background-color: #333;
+            box-shadow: inset 0 0 5px rgba(0,0,0,.1);
+
+            > .bar
+            {
+                > ul
+                {
+                    > li
+                    {
+                        //
+                    }
+                }
+            }
+        }
+
+        .node-control
+        {
+            border-bottom-color: #555;
+            background-color: #212223;
+        }
+    }
+
+    .state-bar
+    {
+        width: 100%;
+        height: 25px;
+
+        border-bottom-width: 2px;
+        border-bottom-style: solid;
+        > .bar
+        {
+            height: 100%;
+            > ul
+            {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+
+                > li
+                {
+                    font-size: 15px;
+
+                    display: inline-block;
+
+                    height: 100%;
+                    padding: 5px;
+                }
+            }
+
+            &.left
+            {
+                float: left;
+            }
+
+            &.right
+            {
+                float: right;
+            }
+        }
+    }
+
+    .node-control
+    {
+        width: 100%;
+        height: 60px;
+
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+    }
+}

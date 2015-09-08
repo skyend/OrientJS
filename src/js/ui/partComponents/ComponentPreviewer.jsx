@@ -16,6 +16,10 @@ var ComponentPreviewer = React.createClass({
         }
     },
 
+    getIframeWindow(){
+      return this.refs['render-stage'].getIframeInnerWindow();
+    },
+
     displayComponent( _componentSource, _componentSourceType, _CSS ){
 
         this.setState({componentSource: _componentSource, componentSourceType: _componentSourceType, componentCSS: _CSS});

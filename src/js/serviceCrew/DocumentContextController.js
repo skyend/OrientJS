@@ -25,13 +25,12 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
  * Attach / Pause / Resume
  *
  */
-DocumentContextController.prototype.attach = function(_directContext, _superDOMElement) {
   this.attached = true;
   this.directContext = _directContext;
+  this.context = _context;
   this.setSuperElement(_superDOMElement);
   /* processing */
 
-  this.beginRender();
 
 };
 
@@ -96,9 +95,7 @@ DocumentContextController.prototype.beginRender = function() {
 
 };
 
-DocumentContextController.prototype.getReactComponentFromSession = function(_packageKey, _componentKey) {
 
-  return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey);
 };
 
 DocumentContextController.prototype.rootRender = function() {

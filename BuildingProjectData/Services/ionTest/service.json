@@ -3,40 +3,52 @@
 
   "documents": [{
     "id": 1,
-    "name": "DefaultLayout",
+    "title": "Default 레이아웃",
     "key": "default-layout",
     "purpose": "layout"
   }, {
     "id": 2,
-    "name": "IndexContents",
+    "title": "Index 컨텐츠",
     "key": "index-contents",
     "purpose": "contents"
   }, {
     "id": 3,
-    "name": "Bootstrap",
+    "title": "부트스트랩 테스트",
     "key": "bootstrap-test",
     "purpose": "layout"
   }, {
     "id": 4,
-    "name": "EmptyTest",
+    "title": "빈 문서",
     "key": "empty",
     "purpose": "layout"
   }, {
     "id": 5,
-    "name": "Demo 01",
+    "title": "데모 01",
     "key": "Demo01",
     "purpose": "contents"
   }, {
     "id": 6,
-    "name": "Bind Demo 01",
+    "title": "데이터 매핑 데모 01",
     "key": "BindDemo01",
     "purpose": "contents"
   }],
 
   "pages": [{
     "id": 1,
-    "name": "Index",
+    "title": "인덱스",
     "key": "index"
+  }],
+
+  "apiSources": [{
+    "id": 1,
+    "title": "방송 시리즈",
+    "key": "broadcast_series",
+    "nodeTypeId": "broadcast_series"
+  }, {
+    "id": 2,
+    "title": "cm 공지사항",
+    "key": "cm_notice",
+    "nodeTypeId": "cm_notice"
   }],
 
   "registeredResources": {

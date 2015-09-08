@@ -18,7 +18,7 @@ var EmptyTypeElementNode = React.createClass({
         var targetDocument = this.props.targetDocument;
 
         var documentInfo = [
-          { "name": "DocumentID", title:"문서 ID", "initialValue": targetDocument.getDocumentID(), enterable:false},          
+          { "name": "DocumentID", title:"문서 ID", "initialValue": targetDocument.getDocumentID(), enterable:false},
           { "name": "DocumentName", title:"문서 명", "initialValue": targetDocument.getDocumentName(), enterable:true, type:"input"},
           { "name": "DocumentTitle",  title:"문서 제목","initialValue": targetDocument.getDocumentTitle(), enterable:true, type:"input" },
           { "name": "DocumentType",  title:"문서 타입","initialValue": targetDocument.getType(), enterable:true, type:"select" , options:[{value:'layout'},{value: 'contents'}]}
@@ -31,7 +31,7 @@ var EmptyTypeElementNode = React.createClass({
         ];
 
         var cssEdit = [
-          { "name": "PageCSS", title:"CSS", "initialValue": targetDocument.getPageCSS(), enterable:true, 'type':'ace', height:200, lang:'css', editorId:"DocumentCSSEditor"},
+          { "name": "PageCSS", title:"CSS", "initialValue": targetDocument.getPageCSS(), enterable:true, 'type':'ace', height:500, lang:'css', editorId:"DocumentCSSEditor"},
         ];
 
         return (

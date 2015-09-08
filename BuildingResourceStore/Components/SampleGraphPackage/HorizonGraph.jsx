@@ -4,7 +4,7 @@ try{
   var nv = session.getSupporter('https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.js');
 
 }catch(e){
-  
+
 }
 
 module.exports =  {
@@ -26,9 +26,11 @@ module.exports =  {
         }
       },
 
-      // ReactJS 개발 가이드에 따라 컴포넌트를 구현합니다.
+      handleResize(){
+        //this.forceUpdate();
+      },
 
-      componentDidMount(){
+      drawGraph(){
         var self = this;
         var data = this.state.gdata;
 
@@ -69,12 +71,27 @@ module.exports =  {
         } catch(e){
           self.refs['box'].getDOMNode().innerHTML = "GRAPH";
         }
+      },
 
+      componentDidUpdate(){
+        //this.drawGraph();
+      },
+
+      // ReactJS 개발 가이드에 따라 컴포넌트를 구현합니다.
+      componentDidMount(){
+
+        this.drawGraph();
+
+        //window.addEventListener('resize', this.handleResize);
+      },
+
+      componentWillUnmount(){
+        //window.removeEventListener('resize', this.handleResize);
       },
       // 예시
       render: function () {
         return (
-          <div className='boxa' ref='box'>
+          <div className='horizon-graph' ref='box'>
             <svg ref='svg' style={{width:'100%', height:'100%'}}/>
           </div>
         )

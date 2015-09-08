@@ -102,6 +102,14 @@
       "path": "HTMLTags/Span.jsx"
     }]
   }, {
+    "key": "SampleGraphPackage",
+    "name": "샘플 그래프 패키지",
+    "components": [{
+      "key": "horizon-graph",
+      "name": "가로 막대 그래프",
+      "path": "SampleGraphPackage/HorizonGraph.jsx"
+    }]
+  }, {
     "key": "TestPackage",
     "name": "테스트",
     "components": [{

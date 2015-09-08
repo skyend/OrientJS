@@ -155,8 +155,8 @@ Document.prototype.removeRootElementNode = function() {
  * getReactTypeComponent
  *
  */
-Document.prototype.getReactTypeComponent = function(_packageKey, _componentKey) {
-  return this.contextController.getReactComponentFromSession(_packageKey, _componentKey);
+Document.prototype.getReactTypeComponent = function(_packageKey, _componentKey, _syncWindowContext) {
+  return this.contextController.getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext);
 };
 
 ////////////////////
