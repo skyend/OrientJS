@@ -959,7 +959,8 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
   var componentKey = this.getReactComponentKey();
 
   // ReactComponent 를 얻어온다.
-  var component = this.document.getReactTypeComponent(packageKey, componentKey);
+  var component = this.document.getReactTypeComponent(packageKey, componentKey, realElement.ownerDocument.defaultView);
+  //console.log(realElement.ownerDocument.defaultView, realElement.ownerDocument, 'aa');
 
 
   var React = require('react');

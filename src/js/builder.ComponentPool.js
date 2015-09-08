@@ -102,10 +102,10 @@
   };
 
 
-  ComponentPool.prototype.getComponentFromRemote = function(_componentKey, _packageKey) {
+  ComponentPool.prototype.getComponentFromRemote = function(_componentKey, _packageKey, _syncWindowContext) {
 
     var self = this;
-
+    var contextWindow = _syncWindowContext || window;
     var componentKey = _componentKey;
     var packageKey = _packageKey;
 
@@ -125,13 +125,16 @@
     var componentMeta = this.getAvailableComponentMetaByKey(componentKey, packageKey);
 
 
+
+
     // 제공중인 컴포넌트인지 확인한다.
     if (typeof componentMeta === 'undefined') {
       throw new Error('Component[' + componentName + '] is not provide');
     }
 
+
     // 캐시중인 컴포넌트가 있는지 확인한다.
-    if (typeof this.cachedComponent[componentName] === 'undefined') {
+    if (this.cachedComponent[componentName] === undefined || _syncWindowContext !== undefined) {
 
 
       var componentScript = this.loadComponentScriptFromRemote(componentMeta);
@@ -147,9 +150,15 @@
       // 스크립트 실행함수 생성
       // session 과 React 파라메터를 가진다.
       // 모듈내에서 글로벌 하게 사용됨
-      var scriptExecutor = new Function("session", "React", "using", executorBody);
+      var scriptExecutor;
 
-      var moduleObject = scriptExecutor({
+
+      scriptExecutor = new contextWindow.Function("session", "React", "using", executorBody);
+
+      var moduleObject;
+      contextWindow.eval(console.log(window.document, 'aaaaaaa'));
+      console.log('aaaasad');
+      contextWindow.eval(moduleObject = scriptExecutor({
           getComponent: function(__componentName) {
             var recursionLoadedComponent = self.session.componentPool.getComponentFromRemote(__componentName);
 
@@ -182,7 +191,7 @@
               break;
           }
 
-        });
+        }));
 
 
       this.cachedComponent[componentName] = moduleObject.exports;

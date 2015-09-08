@@ -46,6 +46,9 @@
     }, {
       "ext": "css",
       "url": "/BuildingProjectData/Services/ionTest/Resource/css/bs-guide.css"
+    }, {
+      "ext": "css",
+      "url": "/BuildingProjectData/Services/ionTest/Resource/css/chartlist.css"
     }],
     "js": [{
       "ext": "js",
@@ -53,6 +56,9 @@
     }, {
       "ext": "js",
       "url": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+    }, {
+      "ext": "js",
+      "url": "/BuildingProjectData/Services/ionTest/Resource/js/chartlist.js"
     }],
     "font": [],
     "image": [],
