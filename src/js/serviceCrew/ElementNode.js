@@ -131,6 +131,10 @@ ElementNode.prototype.setReactPackageKey = function(_reactPackageKey) {
 ElementNode.prototype.setReactComponentKey = function(_reactComponentKey) {
   this.reactComponentKey = _reactComponentKey;
 };
+// React Element
+ElementNode.prototype.setReactElement = function(_reactElement) {
+  this.reactElement = _reactElement;
+};
 // componentName
 ElementNode.prototype.setComponentName = function(_componentName) {
   this.componentName = _componentName;
@@ -150,6 +154,7 @@ ElementNode.prototype.setRefferenceTargetProps = function(_refferenceTargetProps
 // refferenceInstance
 ElementNode.prototype.setRefferenceInstance = function(_refferenceInstance) {
   this.refferenceInstance = _refferenceInstance;
+  console.log(this);
   if (this.refferenceInstance !== 'none' && this.refferenceInstance !== undefined) {
     this.refferenceInstance.setParent(this);
   }
@@ -270,6 +275,10 @@ ElementNode.prototype.getReactPackageKey = function() {
 // componentKey
 ElementNode.prototype.getReactComponentKey = function() {
   return this.reactComponentKey;
+};
+// React Element
+ElementNode.prototype.getReactElement = function() {
+  return this.reactElement;
 };
 // attribute
 ElementNode.prototype.getAttribute = function(_name) {
@@ -484,7 +493,7 @@ ElementNode.prototype.checkDropableComponentWithDirection = function(_component,
     case "react":
       // react type Component 는 empty type elementNode에만 드랍할 수 있다.
       // react type component 는 실제로 elementNode가 생성되지는 않기 때문에 배제한다.
-      if (targetElementNode.getType() !== 'empty') return false;
+      //if (targetElementNode.getType() !== 'empty') return false;
       break;
   }
 
@@ -804,7 +813,6 @@ ElementNode.prototype.preProcessingMeBeforeRender = function() {
     var count = parseInt(_child.resolveRenderText(_child.controls['repeat-n']));
 
     if (/^\d+$/.test(count)) {
-      console.log(_child.controls['repeat-n'], _child.resolveRenderText(_child.controls['repeat-n']), count);
       for (var i = count; i > 0; i--) {
         var exportMe = _child.export();
         var preInsectProps = {
@@ -849,16 +857,27 @@ ElementNode.prototype.linkRealDOMofChild = function() {
     var realDOMElement = this.getRealDOMElement();
 
     realDOMElement.innerHTML = '';
+    var elementNodeType = this.getType();
+
+    switch (elementNodeType) {
+      case "string":
+        realDOMElement.nodeValue = this.resolveRenderText(this.getText());
+        break;
+      case "html":
+        break;
+      case "react":
+        this.linkRealDOMofChild_react_type();
+        break;
+      case "empty":
+        // emptyType 구축
+        this.linkRealDOMofChild_empty_type();
+        break;
+      default:
+
+    }
 
 
-    // empty Type의 ElementNode는 RealElement의 내용을 다르게 갱신한다.
-    if (this.getType() === 'empty') {
-
-      // emptyType 구축
-      this.linkRealDOMofChild_empty_type();
-    } else {
-      // empty Type이 아닌 ElementNode만 자식 재귀호출
-
+    if (this.getType() !== 'empty') {
       ////////////////////////////
       // 자식 Real DOMElement Tree를 직접 갱신하여 결과를 자신에게 연결(append)한다.
       this.children.map(function(_child) {
@@ -867,6 +886,7 @@ ElementNode.prototype.linkRealDOMofChild = function() {
         switch (_child.getType()) {
           case "string":
           case "html":
+          case "react":
           case "empty":
             if (_child.hasRealDOMElement()) {
 
@@ -881,14 +901,6 @@ ElementNode.prototype.linkRealDOMofChild = function() {
       });
       // 자식 RealElement 처리 완료
       ///////////////////
-
-
-
-    }
-
-    if (this.getType() === 'string') {
-      // resolve String : data binding and i18n processing
-      realDOMElement.nodeValue = this.resolveRenderText(this.getText());
     }
 
 
@@ -951,11 +963,11 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
 
 
   var React = require('react');
-  var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+  var reactElementInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
 
-  this.setRefferenceInstance(refferenceInstance);
+  this.setReactElement(reactElementInstance);
 
-  React.render(refferenceInstance, realElement);
+  React.render(reactElementInstance, realElement);
 
   if (typeof component.CSS !== 'undefined') {
     this.setCSS(component.CSS);
@@ -967,7 +979,7 @@ ElementNode.prototype.linkRealDOMofChild_react_type = function() {
 
 ElementNode.prototype.renderReact = function() {
   var realElement = this.getRealDOMElement();
-  console.log('react linked');
+
   var packageKey = this.getReactPackageKey();
   var componentKey = this.getReactComponentKey();
 
@@ -977,7 +989,6 @@ ElementNode.prototype.renderReact = function() {
 
   var React = require('react');
   var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
-
 
 
   React.render(refferenceInstance, realElement);
@@ -1006,7 +1017,7 @@ ElementNode.prototype.updatedAttribute = function(_attrKey) {
 ElementNode.prototype.resolveRenderText = function(_seedText) {
   var self = this;
 
-  var preResolvedText = _seedText.replace(/\*\(([\w\.\-\:]+)\)/g, function(_tested, _firstMatch) {
+  var preResolvedText = (_seedText + "").replace(/\*\(([\w\.\-\:]+)\)/g, function(_tested, _firstMatch) {
     return self.preResolving(_firstMatch);
   });
 

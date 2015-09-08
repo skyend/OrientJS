@@ -98,7 +98,7 @@ var DirectContext = React.createClass({
       var baseDocument = _target.document;
 
       var result = baseDocument.insertElementNode( _insertType, _elementNode, _target );
-
+      console.log(result);
       var contextController = baseDocument.contextController;
 
       if( result ){
