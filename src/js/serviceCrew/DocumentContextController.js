@@ -2,7 +2,7 @@ var Document = require('./Document.js');
 
 var DocumentContextController = function(_document, _session, _serviceManager) {
   this.attached = false;
-  this.directContext = null;
+  this.context = null;
   this.running = false;
 
   this.session = _session;
@@ -25,13 +25,15 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
  * Attach / Pause / Resume
  *
  */
+DocumentContextController.prototype.attach = function(_context, _superDOMElement) {
   this.attached = true;
-  this.directContext = _directContext;
   this.context = _context;
   this.setSuperElement(_superDOMElement);
   /* processing */
 
 
+
+  this.beginRender();
 };
 
 DocumentContextController.prototype.pause = function() {
@@ -57,7 +59,7 @@ DocumentContextController.prototype.setSuperElement = function(_domElement) {
 
 /***************
  * beginRender
- * DirectContext 의 iframeStage에 현재 Document의 내용을 랜더링한다.
+ * context 의 iframeStage에 현재 Document의 내용을 랜더링한다.
  *
  */
 DocumentContextController.prototype.beginRender = function() {
@@ -75,17 +77,17 @@ DocumentContextController.prototype.beginRender = function() {
       _jsElement.onload = function() {
         console.log('loaded', _jsElement);
 
-        console.log(self.directContext.getWindow());
+        console.log(self.context.getWindow());
       }
     }*/
 
-    self.directContext.applyScriptElement(_jsElement);
+    self.context.applyScriptElement(_jsElement);
 
   });
 
   // style element block을 적용한다.
   styleElements.map(function(_styleElement) {
-    self.directContext.applyStyleElement(_styleElement);
+    self.context.applyStyleElement(_styleElement);
   });
 
   // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
@@ -95,7 +97,9 @@ DocumentContextController.prototype.beginRender = function() {
 
 };
 
+DocumentContextController.prototype.getReactComponentFromSession = function(_packageKey, _componentKey, _syncWindowContext) {
 
+  return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey, _syncWindowContext);
 };
 
 DocumentContextController.prototype.rootRender = function() {
@@ -169,7 +173,7 @@ DocumentContextController.prototype.constructToRealElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealHTMLElement = function(_nodeElement) {
-  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
+  var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
   _nodeElement.setRealElement(realElement);
   _nodeElement.applyAttributesToRealDOM();
@@ -181,7 +185,7 @@ DocumentContextController.prototype.instillRealHTMLElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealTextElement = function(_nodeElement) {
-  var textNode = this.directContext.getDocument().createTextNode('');
+  var textNode = this.context.getDocument().createTextNode('');
 
   _nodeElement.setRealElement(textNode);
 };
@@ -192,7 +196,7 @@ DocumentContextController.prototype.instillRealTextElement = function(_nodeEleme
  *
  */
 DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElement) {
-  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
+  var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
   _nodeElement.setRealElement(realElement);
   _nodeElement.applyAttributesToRealDOM();
@@ -204,7 +208,7 @@ DocumentContextController.prototype.instillRealEMPTYElement = function(_nodeElem
  *
  */
 DocumentContextController.prototype.instillRealReactElement = function(_nodeElement) {
-  var realElement = this.directContext.getDocument().createElement(_nodeElement.getTagName());
+  var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
   _nodeElement.setRealElement(realElement);
   _nodeElement.applyAttributesToRealDOM();
@@ -216,7 +220,7 @@ DocumentContextController.prototype.instillRealReactElement = function(_nodeElem
  *
  */
 DocumentContextController.prototype.convertToStyleElements = function(_styleObjects) {
-  var baseWindow = this.directContext.getWindow();
+  var baseWindow = this.context.getWindow();
 
   return _styleObjects.map(function(_styleObject) {
     if (_styleObject.ext === 'css') {
@@ -244,7 +248,7 @@ DocumentContextController.prototype.convertToStyleElements = function(_styleObje
  *
  */
 DocumentContextController.prototype.convertToScriptElement = function(_scriptObjects) {
-  var baseWindow = this.directContext.getWindow();
+  var baseWindow = this.context.getWindow();
 
   return _scriptObjects.map(function(__scriptObject) {
     if (__scriptObject.ext === 'js') {
@@ -279,9 +283,9 @@ DocumentContextController.prototype.updateHTMLTypeElementNodeCSS = function(_css
 
   // 현재 생성되어 있는 스타일블럭이 없다면 생성
   if (typeof this.htmlTypeElementNodeStyleBlock === 'undefined') {
-    var baseWindow = this.directContext.getWindow();
+    var baseWindow = this.context.getWindow();
     var styleBlock = baseWindow.document.createElement('style');
-    this.directContext.applyStyleElement(styleBlock);
+    this.context.applyStyleElement(styleBlock);
 
     this.htmlTypeElementNodeStyleBlock = styleBlock;
   }
@@ -299,9 +303,9 @@ DocumentContextController.prototype.updatePageCSS = function() {
 
   // 현재 생성되어 있는 스타일블럭이 없다면 생성
   if (typeof this.pageCSSBlock === 'undefined') {
-    var baseWindow = this.directContext.getWindow();
+    var baseWindow = this.context.getWindow();
     var styleBlock = baseWindow.document.createElement('style');
-    this.directContext.applyStyleElement(styleBlock);
+    this.context.applyStyleElement(styleBlock);
 
     this.pageCSSBlock = styleBlock;
   }

@@ -17,6 +17,8 @@ var ServiceManager = function(_session, _serviceKey) {
   this.apiSourceContextControllers = {};
   this.sampleDatas = {};
 
+  this.chechedApiResources = {};
+
   this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api");
 
 
@@ -30,6 +32,9 @@ ServiceManager.prototype.init = function() {
 //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
 
 ServiceManager.prototype.getNodeTypeData = function(_nodeTypeId) {
+
+
+
   return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/" + _nodeTypeId + "/list.json?t=api");
 };
 
@@ -73,6 +78,16 @@ ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
   return documentJSON;
 };
 
+ServiceManager.prototype.getICafeAPIDataOfField = function(_dataPath) {
+  var apiResourceKey = _dataPath.split('/')[0];
+
+  if (this.chechedApiResources[apiResourceKey] === undefined) {
+    this.chechedApiResources[apiResourceKey] = this.getNodeTypeData(apiResourceKey);
+  }
+
+  return ObjectExplorer.getValueByKeyPath(this.chechedApiResources, _dataPath);
+};
+
 /********
  * resolveString
  * 모든 String 을 바인딩 법칙에 따라 변환하여준다.
@@ -95,7 +110,7 @@ ServiceManager.prototype.resolveString = function(_text) {
     if (_namespace === 'url') {
       return sampleUrlMap[_want] || _matched;
     } else if (_namespace === 'data') {
-      return ObjectExplorer.getValueByKeyPath(self.sampleDatas, _want) || _matched;
+      return self.getICafeAPIDataOfField(_want) || _matched;
     } else if (_namespace === 'text') {
       return _want;
     }

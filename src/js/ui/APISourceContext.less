@@ -47,6 +47,68 @@
             border-bottom-color: #555;
             background-color: #212223;
         }
+
+        .node-render-zone
+        {
+            > .node-wrapper
+            {
+                > .json-renderer
+                {
+                    .child-list
+                    {
+                        > li
+                        {
+                            .node-display
+                            {
+                                .content
+                                {
+                                    > .key
+                                    {
+                                        color: #66a6ec;
+
+                                        &::after
+                                        {
+                                            content: ' : ';
+                                        }
+                                    }
+
+                                    > .node
+                                    {
+                                        display: inline-block;
+
+                                        > .string
+                                        {
+                                            color: #8ee874;
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #e5e6e3;
+                                            }
+                                        }
+
+                                        > .number
+                                        {
+                                            color: #fb22d3;
+                                        }
+
+                                        > .boolean
+                                        {
+                                            color: #b3f1f9;
+                                        }
+                                    }
+                                }
+
+                                &:hover
+                                {
+                                    color: #fff;
+                                    background-color: #000;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .state-bar
@@ -97,5 +159,102 @@
 
         border-bottom-width: 1px;
         border-bottom-style: solid;
+    }
+
+    .node-render-zone
+    {
+        > .node-wrapper
+        {
+            > .json-renderer
+            {
+                position: relative;
+
+                .child-list
+                {
+                    margin: 0;
+                    padding: 0;
+
+                    &.array
+                    {
+                        // &::before
+                        // {
+                        //     content: '[';
+                        // }
+                        // &::after
+                        // {
+                        //     content: ']';
+                        // }
+                    }
+
+                    &.map
+                    {
+                        // &::before
+                        // {
+                        //     content: '{';
+                        // }
+                        // &::after
+                        // {
+                        //     content: '}';
+                        // }
+                    }
+
+
+                    > li
+                    {
+                        margin: 0;
+                        padding: 0;
+
+                        .node-display
+                        {
+                            .indent-box
+                            {
+                                display: inline-block;
+
+                                width: 20px;
+                                height: 12px;
+                            }
+
+                            .content
+                            {
+                                line-height: 1;
+
+                                display: inline-block;
+
+                                box-sizing: border-box;
+                                padding: 3px ;
+                                > .key
+                                {
+                                    display: inline-block;
+
+                                    &::after
+                                    {
+                                        content: ' : ';
+                                    }
+                                }
+
+                                > .node
+                                {
+                                    display: inline-block;
+
+                                    > .string
+                                    {
+                                        &::before,
+                                        &::after
+                                        {
+                                            content: '"';
+                                        }
+                                    }
+                                }
+                            }
+
+                            &:hover
+                            {
+                                //
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
