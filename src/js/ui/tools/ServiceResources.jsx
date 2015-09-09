@@ -12,7 +12,12 @@
 
 
         getInitialState(){
-            return {pageMetaList:[], documentMetaList:[], apiSourceMetaList:[{name:"broadcast_series"}]};
+            return {pageMetaList:[], documentMetaList:[], apiSourceMetaList:[]};
+        },
+
+        addAPISource(){
+          // 클릭시에 모달을 뛰어 정보를 입력받고 ok를 누르면 APISource를 추가하는 과정을 처리한다.
+          //
         },
 
         renderAPISourceItem( _apiSourceMeta ){
@@ -126,7 +131,11 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-database'></i> API Sources <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-database'></i>
+                  API Sources
+                <span className='temp-button' onClick={this.addAPISource}>
+                  <i className='fa fa-plus'></i>
+                </span>
               </label>
               <ul>
                 { this.state.apiSourceMetaList.map(this.renderAPISourceItem) }
@@ -161,7 +170,7 @@
 
             return (
                 <div className={rootClasses.join(' ')}>
-                    <div className='wrapper'>
+                    <div className='list-wrapper'>
                       { this.renderPageList() }
                       { this.renderDocumentList() }
                       { this.renderAPISourceList() }
