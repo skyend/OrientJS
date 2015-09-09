@@ -85,6 +85,7 @@ ServiceManager.prototype.getICafeAPIDataOfField = function(_dataPath) {
     this.chechedApiResources[apiResourceKey] = this.getNodeTypeData(apiResourceKey);
   }
 
+
   return ObjectExplorer.getValueByKeyPath(this.chechedApiResources, _dataPath);
 };
 
@@ -109,7 +110,8 @@ ServiceManager.prototype.resolveString = function(_text) {
   return _text.replace(/\${(\w+):(.+?)}/g, function(_matched, _namespace, _want) {
     if (_namespace === 'url') {
       return sampleUrlMap[_want] || _matched;
-    } else if (_namespace === 'data') {
+    } else if (_namespace === 'api') {
+
       return self.getICafeAPIDataOfField(_want) || _matched;
     } else if (_namespace === 'text') {
       return _want;

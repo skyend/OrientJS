@@ -1261,7 +1261,7 @@
                   "class": "box post"
                 },
                 "controls": {
-                  "repeat-n": "${data:broadcast_series/count}"
+                  "repeat-n": "${api:broadcast_series/count}"
                 },
                 "comment": "",
                 "createDate": "2015-09-03T07:52:30.798Z",
@@ -1303,7 +1303,7 @@
                         "type": "string",
                         "attributes": {
                           "tagName": "text",
-                          "text": "${data:broadcast_series/items/*(repeat-n)/title/display}"
+                          "text": "${api:broadcast_series/items/*(repeat-n)/title/display}"
                         },
                         "controls": {},
                         "comment": "",
@@ -1340,7 +1340,7 @@
                     "type": "html",
                     "attributes": {
                       "tagName": "img",
-                      "src": "http://dcsf-dev03.i-on.net:8081/page/broadct_series/image.cm?fileid=${data:broadcast_series/items/*(repeat-n)/image/value}"
+                      "src": "http://dcsf-dev03.i-on.net:8081/page/broadct_series/image.cm?fileid=${api:broadcast_series/items/*(repeat-n)/image/value}"
                     },
                     "controls": {},
                     "comment": "",
@@ -1363,7 +1363,7 @@
                     "type": "string",
                     "attributes": {
                       "tagName": "text",
-                      "text": "${data:broadcast_series/items/*(repeat-n)/genre/display}"
+                      "text": "${api:broadcast_series/items/*(repeat-n)/genre/display}"
                     },
                     "controls": {},
                     "comment": "",
@@ -1386,7 +1386,7 @@
                       "type": "string",
                       "attributes": {
                         "tagName": "text",
-                        "text": "${data:broadcast_series/items/*(repeat-n)/writer}"
+                        "text": "${api:broadcast_series/items/*(repeat-n)/writer}"
                       },
                       "controls": {},
                       "comment": "",
@@ -1411,7 +1411,7 @@
                     "type": "string",
                     "attributes": {
                       "tagName": "text",
-                      "text": "${data:broadcast_series/items/*(repeat-n)/synopsis}"
+                      "text": "${api:broadcast_series/items/*(repeat-n)/synopsis}"
                     },
                     "controls": {},
                     "comment": "",
@@ -1457,7 +1457,7 @@
                         "type": "string",
                         "attributes": {
                           "tagName": "text",
-                          "text": "${data:broadcast_series/items/*(repeat-n)/title/display} 보러가기"
+                          "text": "${api:broadcast_series/items/*(repeat-n)/title/display} 보러가기"
                         },
                         "controls": {},
                         "comment": "",
