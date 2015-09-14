@@ -26,20 +26,26 @@ module.exports = {
         test: /\.less$/,
         loader: "style!css!less"
       }, {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loaders: ['react-hot', 'babel-loader']
+      }, {
         test: /\.jsx$/,
-        loader: 'jsx-loader?insertPragma=React.DOM&harmony'
+        //loaders: ['jsx-loader?insertPragma=React.DOM&harmony', 'react-hot', 'babel-loader']
+        loaders: ['react-hot', 'babel-loader']
       },
+
+
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "url-loader?limit=10000&minetype=application/font-woff"
-      },
-      {
+      }, {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "file-loader"
-      },
-      {
+      }, {
         test: /\.png$/,
-        loader: "url-loader?mimetype=image/png" }
+        loader: "url-loader?mimetype=image/png"
+      }
     ]
   },
   resolve: {

@@ -91,7 +91,7 @@ var _ = function() {
             break;
         }
 
-      for (var index = 0 in vnode.childs) {
+      for (var index = 0; i < vnode.childs.length; index++) {
         impactNode = this._exploreImpactNode(pointerX, pointerY, vnode.childs[index], stack, debugStack, debugStackType);
         if (impactNode !== null)
           break;
