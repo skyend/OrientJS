@@ -360,7 +360,7 @@ var DirectContext = React.createClass({
           );
       } else {
 
-        range = document.createRange();
+        var range = document.createRange();
         range.selectNodeContents(target);
         boundingRect = range.getClientRects()[0];
       }

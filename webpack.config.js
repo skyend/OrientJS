@@ -1,4 +1,6 @@
 var Clean = require('clean-webpack-plugin');
+var webpack = require('Webpack');
+
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: {
@@ -53,6 +55,8 @@ module.exports = {
   },
   plugins: [
     new Clean(['dist', 'build']),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
       title: 'Service Builder',
       inject: 'body',

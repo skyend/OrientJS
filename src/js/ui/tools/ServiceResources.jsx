@@ -158,6 +158,10 @@
           )
         },
 
+        componentDidUpdate(){
+          console.log('updated', this.state);
+        },
+
         componentDidMount(){
             this.emit("NeedServiceResourcesMeta",{});
         },
