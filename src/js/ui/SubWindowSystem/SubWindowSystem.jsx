@@ -80,7 +80,8 @@
         },
 
 
-        spawnSubWindow(_newSubWindowItem) {
+        spawnSubWindow(_subWindowKey, _allowDuplicate, _newSubWindowItem) {
+          //console.log(arguments);
             var emptyIndex = -1;
 
             var items = this.state.subWindowItems;
@@ -98,7 +99,7 @@
                 } else {
 
                     // 같은 키를 가진 window를 발견하면 duplicated를 true로 변경한다.
-                    if (_newSubWindowItem.key === item.key) {
+                    if (_subWindowKey === item.key) {
                         duplicated = true;
                         duplicatedCount++;
 
@@ -109,25 +110,25 @@
                 }
             }
 
-            _newSubWindowItem.ref = _newSubWindowItem.key;
+            _newSubWindowItem.ref = _subWindowKey;
 
             // 이미 생성되어 사용중인 window Key로 새 윈도우를 생성하려 한다면.
             if (duplicated) {
 
                 // 해당 windowKey가 중복생성을 허용하지 않는다면
                 // 이미 생성된 동일한 키의 윈도우로 focus한다.
-                if (!_newSubWindowItem.duplication) return this.refs[_newSubWindowItem.ref].focus();
+                if (!_allowDuplicate) return this.refs[_newSubWindowItem.ref].focus();
 
                 // 중복생성을 허용한다면
                 // ref를 중복된 key에서 중복생성으로 인해 만들어진 누적중복값에 +1을 한 후 새 ref를 만든다.
                 _newSubWindowItem.lastDuplicatedCount = lastDuplicatedCount + 1;
-                _newSubWindowItem.ref = _newSubWindowItem.key + "_" + _newSubWindowItem.lastDuplicatedCount;
+                _newSubWindowItem.ref = _newSubWindowItem + "_" + _newSubWindowItem.lastDuplicatedCount;
             }
 
+            _newSubWindowItem.key = _subWindowKey;
 
             // 중간에 비어있는 방을 찾았다면 그 방의 index에 새 윈도우를 삽입한다.
             if (emptyIndex > 0) {
-
                 _newSubWindowItem.empty = false;
                 _newSubWindowItem.zOrder = items.length;
                 items[emptyIndex] = _newSubWindowItem;
@@ -143,65 +144,27 @@
         },
 
 
-        mapWindowItem(_windowItem) {
+        mapWindowItem(_subWindowItem) {
 
-            if (_windowItem.empty) {
+            if (_subWindowItem.empty) {
                 return <div style={{display: 'none'}}/>
             } else {
 
-                return ( <SubWindow ref={ _windowItem.ref }
-                    title={_windowItem.title}
-                    text={_windowItem.desc}
+                return ( <SubWindow ref={ _subWindowItem.ref }
+                    title={_subWindowItem.title}
+                    descType={_subWindowItem.descType}
+                    toolEgg={_subWindowItem.toolEgg}
+                    text={_subWindowItem.text}
                     x={50}
                     y={50}
                     width={300}
                     height={200}
                     baseZOrder={ this.state.startZIndex }
-                    zOrder={_windowItem.zOrder}/> );
+                    zOrder={_subWindowItem.zOrder}/> );
             }
         },
 
         componentDidMount() {
-            var testWindowList = [{
-                title: "Test A",
-                empty: false,
-                key: "A",
-                desc: "A",
-                duplication: false,
-                zOrder: 1
-            }, {
-                title: "Test B",
-                empty: false,
-                key: "B",
-                desc: "B",
-                duplication: false,
-                zOrder: 2
-            }, {
-                title: "Test C",
-                empty: false,
-                key: "C",
-                desc: "C",
-                duplication: false,
-                zOrder: 3
-            }, {
-                title: "Test D",
-                empty: false,
-                key: "D",
-                desc: "D",
-                duplication: false,
-                zOrder: 4
-            }, {
-                title: "Test E",
-                empty: false,
-                key: "E",
-                desc: "E",
-                duplication: false,
-                zOrder: 5
-            }];
-            /*// Test
-             for( var i = 0; i < testWindowList.length; i++ ){
-             this.spawnSubWindow(testWindowList[i]);
-             }*/
 
         },
 

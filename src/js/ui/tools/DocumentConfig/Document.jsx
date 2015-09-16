@@ -30,15 +30,11 @@ var EmptyTypeElementNode = React.createClass({
           { "name": "updateDate",  title:"수정날짜","initialValue": targetDocument.getDocumentUpdate(), enterable:false}
         ];
 
-        var cssEdit = [
-          { "name": "PageCSS", title:"CSS", "initialValue": targetDocument.getPageCSS(), enterable:true, 'type':'ace', height:500, lang:'css', editorId:"DocumentCSSEditor"},
-        ];
 
         return (
             <div className={rootClasses.join(' ')}>
               <HorizonFieldSet title="Document Profile" theme='dark' nameWidth={80} fields={ documentInfo } ref='DocumentProfile'/>
               <HorizonFieldSet title="Document State" theme='dark' nameWidth={80} fields={ documentState } ref='DocumentState'/>
-              <HorizonFieldSet title="Page Style Sheet" theme='dark' nameWidth={0} fields={ cssEdit } ref='Style'/>
             </div>
         );
     }

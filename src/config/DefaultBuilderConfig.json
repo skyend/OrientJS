@@ -60,11 +60,6 @@
         "icon": "cube",
         "equipToolKey": "ElementNodeEditor"
       }, {
-        "key": "element-tree",
-        "title": "Element Tree",
-        "icon": "tree",
-        "equipToolKey": "ContextContentsNavigation"
-      }, {
         "key": "element-node-behavior",
         "title": "Element Control",
         "icon": "wrench",
@@ -79,6 +74,23 @@
         "title": "Element Effect",
         "icon": "magic",
         "equipToolKey": "ElemenEffectControl"
+      }]
+    }]
+  },
+
+  "BottomNavigation": {
+    "menuGroups": [{
+      "groupName": "DocumentTools",
+      "menuItems": [{
+        "key": "document-css-editor",
+        "title": "Document CSS",
+        "icon": "cube",
+        "equipToolKey": "DocumentCSSEditor"
+      }, {
+        "key": "element-tree",
+        "title": "Element Tree",
+        "icon": "tree",
+        "equipToolKey": "ContextContentsNavigation"
       }]
     }]
   },
@@ -145,6 +157,10 @@
     "DocumentConfig": {
       "jsxPath": "DocumentConfig",
       "configPath": "DocumentConfig"
+    },
+
+    "DocumentCSSEditor": {
+      "jsxPath": "DocumentCSSEditor"
     },
 
     "TestModal": {

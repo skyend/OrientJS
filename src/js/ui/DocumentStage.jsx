@@ -868,7 +868,8 @@ var _ = require('underscore');
 
 
         componentDidUpdate(_prevProps, _prevState) {
-
+          this.tabContextResize();
+          
           if( this.getCurrentRunningContext() ){
             var context = this.getCurrentRunningContext();
 
@@ -903,11 +904,10 @@ var _ = require('underscore');
           this.clearAim()
         },
 
-        resize( _width, _height){
-            this.props.width = _width;
-            this.props.height = _height;
-            this.setState( {width:_width, height:_height});
-            this.tabContextResize();
+        resize( _rect ){
+            // this.props.width = _rect._width;
+            // this.props.height = _rect._height;
+            this.setState( {width:_rect.width, height:_rect.height, x: _rect.left, y: _rect.top});
         },
 
         renderContextTabItem(_contextItem) {
@@ -956,10 +956,15 @@ var _ = require('underscore');
         },
 
         render: function () {
-
+            var rootStyle = {
+              width:this.state.width,
+              height:this.state.height,
+              left:this.state.x,
+              top:this.state.y
+            };
 
             return (
-                <section className="DocumentStage tab-support black">
+                <section className="DocumentStage tab-support black" style={rootStyle}>
                     <div className='tab-switch-panel' ref='tab-area'>
                         <ul className='tab-list' ref='tab-list'>
                             {this.state.contexts.map(this.renderContextTabItem)}

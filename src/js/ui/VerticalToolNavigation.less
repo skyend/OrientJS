@@ -24,10 +24,11 @@
     {
         position: absolute;
         z-index: 0;
+        //overflow: auto;
 
         height: 100%;
 
-        background-color: #333;
+        background-color: #171a20;
         box-shadow: 0 0 10px rgba(0, 0, 0, .3);
         > .resize-hook
         {
@@ -165,11 +166,17 @@
         position: absolute;
         z-index: 1;
 
-        overflow: hidden;
+        overflow: auto;
 
         height: 100%;
 
         background-color: #2c2c2c;
+
+        &::-webkit-scrollbar
+        {
+            display: none;
+        }
+
         .group
         {
             margin: 0;

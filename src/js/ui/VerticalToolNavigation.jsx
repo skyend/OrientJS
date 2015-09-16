@@ -178,7 +178,7 @@ var VerticalToolNavigation = React.createClass({
 
     toolRender(_toolEgg, _toolWidth){
       if( typeof _toolEgg === 'function' ){
-        return <ToolNest toolEgg={_toolEgg} width={_toolWidth}/>;
+        return <ToolNest toolEgg={_toolEgg} width={_toolWidth} height={this.state.height}/>;
       } else {
         return (
           <div className='error'>
@@ -202,6 +202,8 @@ var VerticalToolNavigation = React.createClass({
 
         /* Styles */
         var rootStyle = {};
+
+        rootStyle.height = this.state.height || '100%';
 
         var navigationAreaStyle = {};
         var toolAreaStyle = {};

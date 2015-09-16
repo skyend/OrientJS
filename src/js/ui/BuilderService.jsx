@@ -6,41 +6,40 @@
  * Requires(css) : Screen.less
  */
 
-var _ = require('underscore');
+import './BuilderService.less';
 
-require('./BuilderService.less');
+import _ from 'underscore';
+import Async from '../lib/Async.js';
+import HeadToolBar from'./HeadToolBar.jsx'; //상단 네비게이션 UI
+import VToolNavigation from'./VerticalToolNavigation.jsx';
+import ToolNavigation from './ToolNavigation.jsx';
 
-var Async = require('../lib/Async.js');
+import DocumentStage from './DocumentStage.jsx'; //중앙 컨텐츠 영역 UI
+import FootStatusBar from './FootStatusBar.jsx'; //하단 상태 표시줄 UI
+import Modal from './Modal.jsx'; //Modal UI
+import FloatingMenuBox from './FloatingMenuBox.jsx'; //StageContextMenu
+import NotificationSystem from './NotificationSystem.jsx'; //PushMessage
+import SubWindowSystem from './SubWindowSystem/SubWindowSystem.jsx';
+import ResourceUploadArea from './ResourceUploadArea.jsx';
 
-var HeadToolBar = require('./HeadToolBar.jsx'); //상단 네비게이션 UI
-
-var VToolNavigation = require('./VerticalToolNavigation.jsx');
-
-
-
-var DocumentStage = require('./DocumentStage.jsx'); //중앙 컨텐츠 영역 UI
-var FootStatusBar = require('./FootStatusBar.jsx'); //하단 상태 표시줄 UI
-var Modal = require('./Modal.jsx'); //Modal UI
-var FloatingMenuBox = require('./FloatingMenuBox.jsx'); //StageContextMenu
-var NotificationSystem = require('./NotificationSystem.jsx'); //PushMessage
-var SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
-var ResourceUploadArea = require('./ResourceUploadArea.jsx');
-
-var React = require('react');
-var cookie = require('js-cookie');
+import React from 'react';
+import cookie from 'js-cookie';
+import EventDistributor from './reactMixin/EventDistributor.js';
 
 /**
  * UIService
  *
  */
 var UIService = React.createClass({
+
     // Mixin EventDistributor
-    mixins: [require('./reactMixin/EventDistributor.js')],
+    mixins: [EventDistributor],
+
 
     getInitialState() {
         return { toolStatesStore : {} };
     },
-  
+
 
     onThrowCatcherCallContextMenu(_eventData, _pass) {
         this.emit("RootTest", _eventData);
@@ -55,26 +54,27 @@ var UIService = React.createClass({
                 target: _eventData.target,
 
                 memuItems: [
+                    // {
+                    //     title: "Delete",
+                    //     type: "button",
+                    //     key: "elementDelete",
+                    //     eventName: "StageElementDelete"
+                    // }, {
+                    //     title: "Clone",
+                    //     type: "button",
+                    //     key: "elementClone",
+                    //     eventName: "StageElementClone"
+                    // }, {
+                    //     title: "Edit",
+                    //     type: "button",
+                    //     key: "elementEdit",
+                    //     eventName: "StageElementEdit"
+                    // },
                     {
-                        title: "Delete",
+                        title: "Edit Document CSS",
                         type: "button",
-                        key: "elementDelete",
-                        eventName: "StageElementDelete"
-                    }, {
-                        title: "Clone",
-                        type: "button",
-                        key: "elementClone",
-                        eventName: "StageElementClone"
-                    }, {
-                        title: "Edit",
-                        type: "button",
-                        key: "elementEdit",
-                        eventName: "StageElementEdit"
-                    }, {
-                        title: "New SubWindow(Test)",
-                        type: "button",
-                        key: "newSubwindowTest",
-                        eventName: "NewSubWindow_Test"
+                        key: "editDocumentCSS",
+                        eventName: "EditDocumentCSS"
                     }, {
                         title: "Stage Fullscreen",
                         type: "button",
@@ -93,10 +93,10 @@ var UIService = React.createClass({
                     },
                     "spliter",
                     {
-                        title: "Select Parent",
+                        title: "Open Bottom Tools",
                         type: "button",
-                        key: "element-select-parent",
-                        eventName: "SelectParentElementByStageElement"
+                        key: "open-bot-tools",
+                        eventName: "OpenBottomTools"
                     }
                 ]
             });
@@ -129,9 +129,13 @@ var UIService = React.createClass({
         this.offContextMenu();
     },
 
-    onThrowCatcherNewSubWindow_Test(_eventData, _pass) {
+    onThrowCatcherEditDocumentCSS(_eventData, _pass) {
         this.offContextMenu();
-        this.newSubWindow();
+
+        this.emit('RequestAttachTool', {
+          where:"SubWindow",
+          toolKey:"DocumentConfig"
+        });
     },
 
     onThrowCatcherPopupModal_Test(_eventData, _pass){
@@ -142,9 +146,9 @@ var UIService = React.createClass({
         this.offContextMenu();
     },
 
-    onThrowCatcherSelectParentElementByStageElement(_eventData, _pass) {
-
-        this.offContextMenu();
+    onThrowCatcherOpenBottomTools(_eventData, _pass) {
+      this.offContextMenu();
+      this.refs['BottomNavigation'].setState({show:true});
     },
 
 
@@ -237,22 +241,25 @@ var UIService = React.createClass({
 
       switch( _position ){
         case "SubWindow":
+          this.attachToolSubWindow(_toolEgg);
+          break;
         case "LeftNavigation":
           this.refs['LeftNavigation'].setState({toolEgg: _toolEgg});
           break;
         case "RightNavigation":
           this.refs['RightNavigation'].setState({toolEgg: _toolEgg});
           break;
-        case "BottomArea":
+        case "BottomNavigation":
+          this.refs['BottomNavigation'].setState({toolEgg: _toolEgg});
         case "ModalWindow":
       }
 
-
+      this.resizeSelf();
 
     },
 
     applyToolStates( _toolEquipmentKey, _state ){
-      console.log('HIHIHIHIHI');
+      //console.log('HIHIHIHIHI',_toolEquipmentKey, _state);
       this.emit('StoreToolState', {
         toolKey : _toolEquipmentKey,
         state: _state
@@ -272,13 +279,24 @@ var UIService = React.createClass({
         this.refs['stage-context-menu'].setState({display: 'off'});
     },
 
+    attachToolSubWindow( _toolEgg ) {
+        var subWindowSystem = this.refs['SubWindowSystem'];
+
+        subWindowSystem.spawnSubWindow(_toolEgg.toolKey, false, {
+          title:_toolEgg.toolTitle,
+          descType: "toolEgg",
+          toolEgg: _toolEgg
+        });
+    },
+
     newSubWindow() {
         var subWindowSystem = this.refs['SubWindowSystem'];
 
-        subWindowSystem.spawnSubWindow({
-            key: "New",
-            desc: "New",
-            duplication: true
+        subWindowSystem.spawnSubWindow('New', false, {
+          title:'aae',
+          descType: "New",
+
+
         });
     },
 
@@ -363,6 +381,10 @@ var UIService = React.createClass({
       this.applyToolStates("DocumentConfig", {
         document: _eventData.document
       });
+
+      this.applyToolStates("DocumentCSSEditor", {
+        document: _eventData.document
+      });
     },
 
 
@@ -385,44 +407,62 @@ var UIService = React.createClass({
       this.refs['DocumentStage'].setStageMode( mode );
     },
 
+    onThrowCatcherResized(){
+      console.log('resized');
+      this.resizeSelf();
+    },
+
 
 
 
     // 컨텐츠 영역 화면 리사이즈
     resizeSelf() {
         var selfDom = this.getDOMNode();
+
+        var leftNavigation = this.refs['LeftNavigation'];
+        var rightNavigation = this.refs['RightNavigation'];
+        var bottomNavigation = this.refs['BottomNavigation'];
+        var documentStage = this.refs['DocumentStage'];
+        var headToolBar = this.refs['HeadToolBar'];
+        var footerStatusBar = this.refs['FootStatusBar'];
+
+        var bottomNavigationDOM = bottomNavigation.getDOMNode();
+
+
+
+
+
+
         var width = selfDom.offsetWidth;
         var height = selfDom.offsetHeight;
 
-
-        if (typeof this.refs['DocumentStage'] === 'undefined') return; // throw new Error("Not found DocumentStage");
-
-        var headerOffsetHeight = this.refs['HeadToolBar'].getDOMNode().offsetHeight;
-        var footerOffsetHeight = this.refs['FootStatusBar'].getDOMNode().offsetHeight;
+        var headerOffsetHeight = headToolBar.getDOMNode().offsetHeight;
 
 
         // middleArea 의 넓이와 높이
-        var middleAreaWidth = width - this.leftAreaWidth - this.rightAreaWidth;
-        var middleAreaHeight = height - headerOffsetHeight - footerOffsetHeight;
+        var documentStageWidth = width - this.leftAreaWidth - this.rightAreaWidth;
+        var documentStageHeight = height - headerOffsetHeight - bottomNavigationDOM.offsetHeight;
 
         // DocumentStage ReactClass
-        var middleAreaREle = this.refs['DocumentStage'];
+
 
         // DocumentStage Element
-        var middleAreaDom = middleAreaREle.getDOMNode();
+        var documentStageDom = documentStage.getDOMNode();
 
-        // DocumentStage positioning & resizing
-        middleAreaDom.style.width = middleAreaWidth + 'px';
-        middleAreaDom.style.left = this.leftAreaWidth + 'px';
-        middleAreaDom.style.top = headerOffsetHeight + "px";
+        var documentStageRect = {
+          width : documentStageWidth,
+          height: documentStageHeight,
+          left : this.leftAreaWidth,
+          top : headerOffsetHeight
+        };
 
         // documentStage에 resize 알림
-        middleAreaREle.resize(middleAreaWidth, middleAreaHeight);
+        documentStage.resize(documentStageRect);
 
 
         // ToolNavigation에 최대로 펼칠 수 있는 넓이를 알려줌
-        this.refs['LeftNavigation'].setState({maxWidth: this.leftAreaWidth + middleAreaWidth});
-        this.refs['RightNavigation'].setState({maxWidth: this.rightAreaWidth + middleAreaWidth});
+        leftNavigation.setState({maxWidth: this.leftAreaWidth + documentStageWidth, height:documentStageHeight });
+        rightNavigation.setState({maxWidth: this.rightAreaWidth + documentStageWidth, height:documentStageHeight });
     },
 
     resizeListener(_w, _h, _screenW, _screenH) {
@@ -468,13 +508,21 @@ var UIService = React.createClass({
                                  position='right'
                                  naviItemFontSize={16}/>
 
-
+               <ToolNavigation ref="BottomNavigation"
+                                config={this.props.BottomNavigationConfig}
+                                initialShow={false}
+                                showTitle={true}
+                                showIcon={true}
+                                theme='dark'
+                                verticalText={true}
+                                position='bottom'
+                                naviItemFontSize={16}/>
 
                 <DocumentStage ref='DocumentStage'
                                 aimingCount={100}
                                 aimingEscapeStepSize={10}
                                 boundaryBorderSize={5}  />
-                <FootStatusBar ref='FootStatusBar'/>
+
 
                 <FloatingMenuBox ref='stage-context-menu'/>
                 <Modal ref="Modal"/>
@@ -486,4 +534,4 @@ var UIService = React.createClass({
     }
 });
 
-module.exports = UIService;
+export default UIService;

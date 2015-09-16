@@ -1,0 +1,207 @@
+.ToolNavigation
+{
+    position: absolute;
+
+    &
+    {
+        > .navigator
+        {
+            position: absolute;
+
+            overflow: auto;
+
+            width: 100%;
+
+            // 스크롤바만 숨기기 / 스크롤은 동작함
+            &::-webkit-scrollbar
+            {
+                display: none;
+            }
+
+            ul,
+            li
+            {
+                display: inline-block;
+
+                box-sizing: border-box;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+                list-style-type: none;
+            }
+
+            li
+            {
+                &::before
+                {
+                    display: inline-block;
+
+                    width: 0;
+                    height: 100%;
+
+                    content: ' ';
+                    vertical-align: middle;
+                }
+            }
+
+            > ul.tool-groups
+            {
+                width: 100%;
+                > li.group
+                {
+                    > ul.group-items
+                    {
+                        > li
+                        {
+                            font-size: 12px;
+                            line-height: 1;
+
+                            padding: 0 10px;
+
+                            cursor: pointer;
+
+                            border-width: 1px;
+                            border-style: solid;
+                        }
+                    }
+                }
+
+                > li.single
+                {
+                    padding: 0 10px;
+
+                    cursor: pointer;
+                }
+
+                > li.left
+                {
+                    float: left;
+                }
+
+                > li.right
+                {
+                    float: right;
+                }
+            }
+        }
+
+        > .tool-zone
+        {
+            position: absolute;
+
+            display: block;
+        }
+    }
+
+
+    &.pos-bottom
+    {
+        bottom: 0;
+        > .navigator
+        {
+            top: 0;
+
+            width: 100%;
+            height: 27px;
+
+            > ul.tool-groups
+            {
+                > li.group
+                {
+                    > ul.group-items
+                    {
+                        > li
+                        {
+                            border-width: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        > .tool-zone
+        {
+            top: 27px;
+            bottom: 0;
+
+            display: block;
+
+            width: 100%;
+        }
+    }
+    &.pos-top
+    {
+        top: 0;
+    }
+    &.pos-left
+    {
+        left: 0;
+    }
+    &.pos-right
+    {
+        right: 0;
+    }
+
+    &.dark
+    {
+        background-color: #333;
+
+        > .navigator
+        {
+            border: 1px solid #444546;
+            border-right-width: 0;
+            border-left-width: 0;
+            background-color: #282829;
+
+            > ul.tool-groups
+            {
+                > li.group
+                {
+                    > ul.group-items
+                    {
+                        > li
+                        {
+                            transition: all .5s;
+
+                            color: #8b8c92;
+                            border-color: #444546;
+
+                            &:hover
+                            {
+                                color: #fff;
+                            }
+
+                            &.opend
+                            {
+                                background-color: #fff;
+                                &:hover
+                                {
+                                    color: #000;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                > li.single
+                {
+                    transition: all .5s;
+
+                    color: #5f5f5f;
+                    &:hover
+                    {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        > .tool-zone
+        {
+            position: absolute;
+
+            display: block;
+        }
+    }
+}

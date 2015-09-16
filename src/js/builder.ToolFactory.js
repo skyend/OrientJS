@@ -8,23 +8,48 @@ var ToolFactory = function(_session, _toolsMap) {
   this.livingBirds = {};
 
   this.storedProps = {};
-  this.storedState = {};
+  this.storedStates = {};
 
 };
 
+// 특정 Tool 의 State를 보존한다.
 ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
-  var toolState = this.storedState[_toolKey] || {};
+
+  // 저장된 State가져오기
+  var storedToolState = this.storedStates[_toolKey] || {};
+
+
+  // 이전에 저장된 State와 이번에 저장하려는 State의 값이 같다면 저장 요청은 무시한다.
+  var updateStateKeys = Object.keys(_state);
+  var changed = false;
+  var key;
+  for (var i = 0; i < updateStateKeys.length; i++) {
+    key = updateStateKeys[i];
+
+    if (_state[key] !== storedToolState[key]) {
+      changed = true;
+      break;
+    }
+  }
+  // 이전과 다른 State가 없다면 스킵
+  if (!changed) return;
+
+
 
   // State Merge
-  toolState = _.extend(toolState, _state);
+  storedToolState = _.extend(storedToolState, _state);
 
-  this.storedState[_toolKey] = toolState;
+  this.storedStates[_toolKey] = storedToolState;
 
   if (this.livingBirds[_toolKey] === undefined) return;
   if (this.livingBirds[_toolKey]._owner === null) return;
   if (this.livingBirds[_toolKey]._owner._instance === null) return;
 
 
+  // ToolBird의 Owner는 ToolNest일 것이다.
+  // ToolNest는 ToolBird를 랜더링하기 위해 제공받은 ToolEgg를 호출하게 된다.
+  // ToolEgg를 호출 하여 ToolBird Element를 얻는 후 StoredState 를 반영하므로
+  // ToolNest에게 forceUpdate 메시지를 보낸다.
   this.livingBirds[_toolKey]._owner._instance.forceUpdate()
 };
 
@@ -38,22 +63,26 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _givingEgg) {
 
   var result = this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
 
-
+    // ToolNest 에서 egg를 실행하여 Tool ReactElement를 얻는다.
     var egg = function(_props) {
       var props = _props || {};
       props = _.extend(props, self.storedProps[_toolKey]);
 
       props.ref = _toolKey;
       props.config = __toolConfig;
-      props.storedState = self.storedState[_toolKey];
+
+      // tool property에 storedState를 입력 해 둔다.
+      props.storedState = self.storedStates[_toolKey];
 
       var toolBird = React.createElement(__toolClass, props);
 
       self.addLivingBird(_toolKey, toolBird);
 
-      console.log('toolBird', toolBird);
       return toolBird;
     };
+
+    egg.toolKey = _toolKey;
+    egg.toolTitle = _toolKey;
 
     _givingEgg(egg);
   });

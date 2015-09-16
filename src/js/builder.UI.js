@@ -393,6 +393,7 @@ UI.prototype.builderRender = function() {
     observers: this.observers,
     LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
     RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
+    BottomNavigationConfig: DefaultBuilderConfig.BottomNavigation,
     Tools: DefaultBuilderConfig.tools,
     Modal: DefaultBuilderConfig.Modal,
     __keyName: 'uiServicer'

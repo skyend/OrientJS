@@ -10,7 +10,7 @@ var ToolNest = React.createClass({
   },
 
   renderToolEgg(){
-    var bird = this.props.toolEgg();
+    var bird = this.props.toolEgg({width:this.props.width,height:(this.props.height || '100%')});
 
     this.bird = bird;
 
@@ -39,7 +39,7 @@ var ToolNest = React.createClass({
   render(){
 
     return (
-      <div className='tool-nest' style={{height:'100%', width:this.props.width}}>
+      <div className='tool-nest' style={{height:(this.props.height || '100%'), width:this.props.width}}>
         { this.renderToolEgg() }
       </div>
     )
