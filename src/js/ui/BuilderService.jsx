@@ -509,14 +509,15 @@ var UIService = React.createClass({
                                  naviItemFontSize={16}/>
 
                <ToolNavigation ref="BottomNavigation"
+                                defaultToolSize={310}
+                                maxSize={700}
                                 config={this.props.BottomNavigationConfig}
-                                initialShow={false}
+                                initialShow={true}
                                 showTitle={true}
                                 showIcon={true}
                                 theme='dark'
                                 verticalText={true}
-                                position='bottom'
-                                naviItemFontSize={16}/>
+                                position='bottom' />
 
                 <DocumentStage ref='DocumentStage'
                                 aimingCount={100}
