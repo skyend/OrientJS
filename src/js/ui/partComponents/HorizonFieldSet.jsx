@@ -30,6 +30,7 @@ var HorizonFieldSet = React.createClass({
 
     resetAll(){
       var self = this;
+
       this.props.fields.map(function(_field){
         self.refs[_field.name].reset();
       });

@@ -86,9 +86,7 @@ var MenuItem = {
 
             return (
                 <div className='FloatingMenuBox black' style={styles}>
-                    <div className='header'>
-                        Stage Context Menu
-                    </div>
+                    
                     <div className='body'>
                         <ul>
                      {this.state.memuItems.map(this.menuItemRender)}

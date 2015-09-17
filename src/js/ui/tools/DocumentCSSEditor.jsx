@@ -25,6 +25,7 @@ var DocumentCSSEditor = React.createClass({
 
     onThrowCatcherChangedValue(_eventData, _pass){
       this.state.document.setPageCSS( _eventData.data );
+
     },
 
     renderEditor(){

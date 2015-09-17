@@ -100,6 +100,8 @@ var EnterableWrapperCodeEditor = React.createClass({
   },
 
   onChange(_value){
+    if( this.blockEmitChange ) return;
+
     var value = _value;
 
     this.setState({value:value});
@@ -107,6 +109,14 @@ var EnterableWrapperCodeEditor = React.createClass({
     this.emit("ChangedValue", {
       value: value
     });
+  },
+
+  componentDidUpdate(){
+    this.blockEmitChange = false;
+  },
+
+  componentWillUpdate(){
+    this.blockEmitChange = true;
   },
 
   componentWillReceiveProps( _props ){
@@ -189,6 +199,7 @@ var HorizonField = React.createClass({
 
     getInitialState(){
         return {
+          value:this.props.defaultValue,
           valueIsDiff : false,
           nameBoxSlideX: 0,
           fieldNameEditMode: false
@@ -197,7 +208,6 @@ var HorizonField = React.createClass({
 
     onThrowCatcherChangedValue( _eventData ){
       var value = _eventData.value;
-
 
       this.emit("ChangedValue", {
         name:this.props.fieldName,

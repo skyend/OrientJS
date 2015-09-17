@@ -29,6 +29,7 @@ var ElementNodeControl = React.createClass({
 
 
       this.setState({elementNode:elementNode});
+      elementNode.executeSnapshot();
     },
 
 

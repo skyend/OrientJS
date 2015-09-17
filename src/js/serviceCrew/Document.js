@@ -345,9 +345,15 @@ Document.prototype.onEventTernel = function(_eventName, _eventData, __ORIGIN__) 
 
 Document.prototype.onElementEvent_RequestReRenderMe = function(_eventData, _origin) {
   this.contextController.rootRender();
-  //onsole.log("랜더링 다시해줘 ", _eventData, _origin);
   return false;
 };
+
+Document.prototype.onElementEvent_Snapshot = function(_eventData, _origin) {
+  console.log('snapshot');
+  this.contextController.snapshot();
+  return false;
+};
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

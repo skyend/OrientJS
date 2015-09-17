@@ -41,7 +41,7 @@ var HeadToolBar = React.createClass({
         return (
             <header className='HeadToolBar'>
                 <ul className="navigation">
-                    <li>
+                    <li style={{width:100}}>
                         <OutlineButton icon='floppy-o' title='Save' color='white' iconSize='24' onClick={this.clickSave}/>
                     </li>
                     <li>
@@ -54,6 +54,9 @@ var HeadToolBar = React.createClass({
                     </li>
 
 
+                    <li className='right' style={{width:130}}>
+                      <OutlineButton icon='user' title='I-ON Guest' color='white' iconSize='24' onClick={this.modeChangeDesktop}/>
+                    </li>
                     <li className='right'>
                       <GridBox placements={[
                         [
@@ -64,6 +67,8 @@ var HeadToolBar = React.createClass({
                         ]
                       ]} width={140} height={80}/>
                     </li>
+
+
                 </ul>
             </header>
         )

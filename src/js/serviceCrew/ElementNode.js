@@ -1,7 +1,6 @@
-var React = require('react');
-var Returns = require("../Returns.js");
-
-var _ = require('underscore');
+import React from 'react';
+import Returns from "../Returns.js";
+import _ from 'underscore';
 
 var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
 
@@ -95,6 +94,8 @@ var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
     this.children = [];
     this.comment = '';
   }
+
+  this.savedSnapshot = JSON.stringify(this.export());
 };
 
 ////////////////////
@@ -1014,6 +1015,11 @@ ElementNode.prototype.updatedAttribute = function(_attrKey) {
   }
 };
 
+ElementNode.prototype.executeSnapshot = function() {
+  this.emitToParent("Snapshot");
+};
+
+
 /////////////
 // String Resolve
 ElementNode.prototype.resolveRenderText = function(_seedText) {
@@ -1168,6 +1174,10 @@ ElementNode.prototype.onEC_GetResolvedAttribute = function(_eventData, _origin) 
   return false;
 };
 
+ElementNode.prototype.onEC_Snapshot = function(_eventData, _origin) {
+  return false;
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1222,4 +1232,4 @@ ElementNode.prototype.export = function(_withoutId) {
 };
 
 
-module.exports = ElementNode;
+export default ElementNode;

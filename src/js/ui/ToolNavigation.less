@@ -1,3 +1,15 @@
+.noselect
+{
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+
+    -webkit-touch-callout: none;
+     -khtml-user-select: none;
+}
+
+
 .ToolNavigation
 {
     position: absolute;
@@ -12,6 +24,7 @@
 
             width: 100%;
 
+            .noselect;
             // 스크롤바만 숨기기 / 스크롤은 동작함
             &::-webkit-scrollbar
             {
@@ -91,6 +104,8 @@
             position: absolute;
 
             display: block;
+
+            .noselect;
         }
     }
 

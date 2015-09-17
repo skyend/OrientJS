@@ -54,7 +54,6 @@ var ElementNodeEditor = React.createClass({
             case "TagName" :
               elementNode.setTagName( changedData );
               this.refreshElementNodeRendering( elementNode );
-              return;
               break;
             case "Id" :
               elementNode.setIdAtrribute( changedData );
@@ -110,6 +109,8 @@ var ElementNodeEditor = React.createClass({
 
 
       this.setState({elementNode:elementNode});
+      elementNode.executeSnapshot();
+
     },
 
     refreshElementNodeRendering( _elementNode ){

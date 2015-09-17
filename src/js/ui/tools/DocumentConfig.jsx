@@ -42,7 +42,6 @@ var DocumentConfig = React.createClass({
 
       }
 
-
     },
 
     renderDocument(){
@@ -56,7 +55,7 @@ var DocumentConfig = React.createClass({
         var rootClasses = ['DocumentConfig', this.props.config.theme, this.getMySizeClass()];
 
         var targetDocument = this.state.document;
-  
+
 
         return (
             <div className={rootClasses.join(' ')}>
