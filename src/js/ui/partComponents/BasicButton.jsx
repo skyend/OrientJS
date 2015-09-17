@@ -13,6 +13,7 @@
             classes.push('BasicButton');
             classes.push( this.props.color );
             classes.push( this.props.size );
+            
             return (
                 <button className={classes.join(' ')} onClick={ this.props.onClick }>
                     { this.props.desc }

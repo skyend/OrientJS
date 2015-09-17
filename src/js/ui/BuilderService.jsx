@@ -201,11 +201,6 @@ var UIService = React.createClass({
     onThrowCatcherExpectedDropToVNodePath(_eventData, _pass) {
       //console.log('recieve', _eventData);
 
-      var footStatusBar = this.refs['FootStatusBar'];
-
-      footStatusBar.setState({
-        vnodePathArray:_eventData.nodeArrayPath
-      });
 
     },
 
@@ -512,7 +507,7 @@ var UIService = React.createClass({
                                 defaultToolSize={310}
                                 maxSize={700}
                                 config={this.props.BottomNavigationConfig}
-                                initialShow={true}
+                                initialShow={false}
                                 showTitle={true}
                                 showIcon={true}
                                 theme='dark'

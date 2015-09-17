@@ -17,16 +17,16 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
 
   // 저장된 State가져오기
   var storedToolState = this.storedStates[_toolKey] || {};
-
+  var state = _state || {};
 
   // 이전에 저장된 State와 이번에 저장하려는 State의 값이 같다면 저장 요청은 무시한다.
-  var updateStateKeys = Object.keys(_state);
+  var updateStateKeys = Object.keys(state);
   var changed = false;
   var key;
   for (var i = 0; i < updateStateKeys.length; i++) {
     key = updateStateKeys[i];
 
-    if (_state[key] !== storedToolState[key]) {
+    if (state[key] !== storedToolState[key]) {
       changed = true;
       break;
     }
@@ -37,7 +37,7 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
 
 
   // State Merge
-  storedToolState = _.extend(storedToolState, _state);
+  storedToolState = _.extend(storedToolState, state);
 
   this.storedStates[_toolKey] = storedToolState;
 

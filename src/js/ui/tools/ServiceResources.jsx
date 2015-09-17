@@ -32,12 +32,12 @@
           };
 
           var contextIsRunning = false;
-          console.log("API context ", this.state.runningContext, _apiSourceMeta);
+          //console.log("API context ", this.state.runningContext, _apiSourceMeta);
 
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === "apiSource" ){
               if( this.state.runningContext.apiSourceID ==  _apiSourceMeta.id ){
-                console.log('ooook');
+
                 contextIsRunning = true;
               }
             }
@@ -159,7 +159,7 @@
         },
 
         componentDidUpdate(){
-          console.log('updated', this.state);
+          //console.log('updated', this.state);
         },
 
         componentDidMount(){
