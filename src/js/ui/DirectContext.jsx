@@ -323,20 +323,13 @@ var DirectContext = React.createClass({
 
     this.setState({
       showElementNavigator:false,
-      elementNavigatorX:0,
-      elementNavigatorY:0,
-      prevElementNavigatorX: this.state.elementNavigatorX + this.getIFrameStage().props.left ,
-      prevElementNavigatorY: this.state.elementNavigatorY + this.getIFrameStage().props.top ,
-      elementNavigatorWidth:0,
-      elementNavigatorHeight:0,
-      selectedElement:null,
-      selectedElementPath:null});
+      selectedElement:null});
 
 
       this.emit("CancelSelectElementNode");
   },
 
-  showElementNavigator( _elementNode, _boundingRect ){
+  showElementNavigator( _elementNode ){
 
     if( _elementNode.isGhost ){
       this.errorNotice("요소 선택 불가","고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
@@ -370,11 +363,19 @@ var DirectContext = React.createClass({
 
     this.setState({
       showElementNavigator:true,
-      elementNavigatorX:boundingRect.left + this.getIFrameStage().props.left ,
-      elementNavigatorY:boundingRect.top + this.getIFrameStage().props.top ,
-      elementNavigatorWidth:boundingRect.width,
-      elementNavigatorHeight:boundingRect.height,
       selectedElementNode:_elementNode});
+  },
+
+  repositionElementNavigator(){
+    if( this.state.showElementNavigator ){
+      var elementNaviDOM = this.refs['element-navigator'].getDOMNode();
+
+      var elementNaviDOMRight = elementNaviDOM.offsetLeft + elementNaviDOM.offsetWidth;
+      if( this.props.width < elementNaviDOMRight ){
+          this.setState({elementNavigatorX: this.props.width - elementNaviDOM.offsetWidth});
+      }
+    }
+
   },
 
   selectElement( _targetNode  ){
@@ -414,7 +415,8 @@ var DirectContext = React.createClass({
   },
 
   onThrowCatcherScrollAtStage(_eventData, _pass){
-    this.closeElementNavigator();
+    this.forceUpdate();
+
   },
 
   onThrowCatcherClickElementInStage(_eventData, _pass) {
@@ -424,6 +426,13 @@ var DirectContext = React.createClass({
     // BuilderSService가 contextMenu를 닫을 수 있도록 pass 한다.
     _pass();
   },
+
+  // 더블클릭으로 요소 편집은 추후에 정책을 정확이 한 후 개발
+  // 리졸브동기화 문제가 있음
+  // onThrowCatcherDClickElementInStage(_eventData, _pass) {
+  //   _eventData.targetDOMNode.setAttribute('contenteditable', true);
+  //   this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
+  // },
 
   getContextType(){
     return this.props.contextType;
@@ -460,17 +469,38 @@ var DirectContext = React.createClass({
     });
   },
 
+  iframeStageTransitionEnd(){
+    // transition완료후의 달라진 요소의 Rect를 추적하기 위해 최종 업데이트
+    this.forceUpdate();
+  },
+
+  componentWillUpdate(_nextProps, _nextState){
+    this.state.prevStageWidth = this.state.stageWidth;
+    this.state.prevStageHeight = this.state.stageHeight;
+  },
+
   componentDidUpdate(){
+    this.scrollX = this.getIFrameStageScrollX();
+    this.scrollY = this.getIFrameStageScrollY();
+
+    //this.repositionElementNavigator();
+
     if( this.props.runningState === this.props.contextController.running ) return;
+
+
 
     if( this.props.runningState ){
       this.goingToContextRunning();
     } else {
       this.goingToContextStop();
     }
+
   },
 
   componentDidMount(){
+    this.scrollX = this.getIFrameStageScrollX();
+    this.scrollY = this.getIFrameStageScrollY();
+
     // contextController 연결
     this.contextController = this.props.contextController;
     this.contextController.attach(this, this.getDocument().body);
@@ -480,6 +510,9 @@ var DirectContext = React.createClass({
     } else {
       this.goingToContextStop();
     }
+
+    // iframe stage 의 Transition이 끝난 시점에 호출한다.
+    this.refs['iframe-stage'].getDOMNode().addEventListener("transitionend", this.iframeStageTransitionEnd, true);
   },
 
   render(){
@@ -505,6 +538,8 @@ var DirectContext = React.createClass({
 
 
     var elementNavigatorStyle = {};
+    var selectedWrapBoxStyle = {};
+
     var elementNavigatorClasses = ['element-navigator'];
     if(! this.state.showElementNavigator ){
       elementNavigatorClasses.push('off');
@@ -514,54 +549,48 @@ var DirectContext = React.createClass({
         elNavY = 0;
       }
 
-      elementNavigatorStyle = {
-        left:this.state.prevElementNavigatorX,
-        top: elNavY
-      };
+      elementNavigatorStyle = this.prevElNavStyle || {};
+      elementNavigatorStyle.top += 35;
+      selectedWrapBoxStyle = this.prevWrapBoxStyle || {};
+      selectedWrapBoxStyle.opacity = 0;
     } else {
-      var elNavY = this.state.elementNavigatorY - 35;
+      var elementNode = this.state.selectedElementNode;
+      var boundingBox = elementNode.getBoundingRect();
+
+      var elNavY = boundingBox.top - 35 + stageY;
       if( elNavY < 0 ){
         elNavY = 0;
       }
 
+      var elNavX = boundingBox.left + stageX;
+      if( elNavX + 250 > this.props.width ){
+        elNavX = this.props.width - 250;
+      }
+
       elementNavigatorStyle = {
-        left:this.state.elementNavigatorX,
+        left:elNavX,
         top: elNavY
       };
+
+      selectedWrapBoxStyle = {
+        width : boundingBox.width,
+        height:boundingBox.height,
+        left: boundingBox.left + stageX,
+        top: boundingBox.top + stageY
+      };
+
+      this.prevElNavStyle = elementNavigatorStyle;
+      this.prevWrapBoxStyle = selectedWrapBoxStyle;
+
+      if( this.state.prevStageWidth !== this.state.stageWidth || this.state.prevStageHeight !== this.state.stageHeight ){
+        selectedWrapBoxStyle.opacity = 0;
+      } else {
+        selectedWrapBoxStyle.opacity = 1;
+      }
     }
 
 
-    var selectedOutlineStyleTop = {
-      left:this.state.elementNavigatorX,
-      top: this.state.elementNavigatorY - 3,
-      width:this.state.elementNavigatorWidth,
-      height:3,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
 
-    var selectedOutlineStyleBottom = {
-      left:this.state.elementNavigatorX,
-      top: this.state.elementNavigatorY + this.state.elementNavigatorHeight,
-      width:this.state.elementNavigatorWidth,
-      height:3,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
-
-    var selectedOutlineStyleLeft = {
-      left:this.state.elementNavigatorX-3,
-      top: this.state.elementNavigatorY-3,
-      width:3,
-      height:this.state.elementNavigatorHeight + 6,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
-
-    var selectedOutlineStyleRight = {
-      left:this.state.elementNavigatorX + this.state.elementNavigatorWidth,
-      top: this.state.elementNavigatorY-3,
-      width:3,
-      height:this.state.elementNavigatorHeight+6,
-      display: this.state.showElementNavigator? 'inherit':'none'
-    };
 
 
 
@@ -622,11 +651,8 @@ var DirectContext = React.createClass({
              </ul>
            </div>
          </div>
+         <div className='selected-element-wrap-box' style={selectedWrapBoxStyle}/>
 
-         <div className='selected-element-outline' style={selectedOutlineStyleTop}/>
-         <div className='selected-element-outline' style={selectedOutlineStyleBottom}/>
-         <div className='selected-element-outline' style={selectedOutlineStyleLeft}/>
-         <div className='selected-element-outline' style={selectedOutlineStyleRight}/>
       </div>
 
     );

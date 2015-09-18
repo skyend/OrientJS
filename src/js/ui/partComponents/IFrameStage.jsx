@@ -168,6 +168,10 @@ var IFrameStage = React.createClass({
       self.onMouseClickAtStage(_ev);
     }, false);
 
+    innerDocument.addEventListener('dblclick', function(_ev) {
+      self.onMouseDoubleClickAtStage(_ev);
+    }, false);
+
     innerDocument.addEventListener('mousedown', function(_ev) {
       self.onMouseDownAtStage(_ev);
     }, false);
@@ -182,11 +186,15 @@ var IFrameStage = React.createClass({
      *
      */
   onMouseClickAtStage(_e) {
-
     this.elementClick(_e.target, _e);
   },
 
+  onMouseDoubleClickAtStage(_e){
+    this.elementDClick(_e.target, _e);
+  },
+
   onScrollAtStage(_e){
+
     this.emit("ScrollAtStage", {
 
     }, _e, "Scroll");
@@ -194,16 +202,19 @@ var IFrameStage = React.createClass({
 
 
   elementClick(_target, _e){
-    /*
-    var pathArray = [];
 
-    for( var i = 0; i < _path.length; i++ ){
-      pathArray[i] = _path[i];
-    }
+    this.emit("ClickElementInStage", {
+      targetDOMNode: this.searchClickedDOM(_target,_e.x, _e.y)
+    });
+  },
 
-*/
+  elementDClick(_target, _e){
+    this.emit("DClickElementInStage", {
+      targetDOMNode: this.searchClickedDOM(_target,_e.x, _e.y)
+    });
+  },
 
-
+  searchClickedDOM(_target, _mx, _my){
     var targetNode = _target;
     var childNodes = targetNode.childNodes;
 
@@ -211,6 +222,7 @@ var IFrameStage = React.createClass({
       var childNode;
       var range;
       var rects;
+      var found = false;
       for(var i = 0; i < childNodes.length ; i++){
         childNode = childNodes[i];
 
@@ -219,20 +231,23 @@ var IFrameStage = React.createClass({
         rects = range.getClientRects();
 
         if( rects.length == 0 ) break;
+        for( var j = 0; j < rects.length ; j++ ){
+          //console.log( childNode, range, rects);
+          if( ( rects[j].left < _mx && rects[j].right > _mx )&&
+              ( rects[j].top < _my && rects[j].bottom > _my )){
+            targetNode = childNode;
 
-        //console.log( childNode, range, rects);
-        if( ( rects[0].left < _e.x && rects[0].right > _e.x )&&
-            ( rects[0].top < _e.y && rects[0].bottom > _e.y )){
-          targetNode = childNode;
+            found = true;
+          }
+        }
 
+        if( found ){
           break;
         }
       }
     }
 
-    this.emit("ClickElementInStage", {
-      targetDOMNode: targetNode
-    });
+    return targetNode;
   },
 
 /**
@@ -283,8 +298,8 @@ var IFrameStage = React.createClass({
 
         for: "StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
         target: {
-          stageContextId: "", // 현재 편집중인 ContextID
-          elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
+          //stageContextId: "", // 현재 편집중인 ContextID
+          //elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
           element: targetElement
         }
       }, _e, "MouseEvent");

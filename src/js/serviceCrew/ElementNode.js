@@ -345,6 +345,33 @@ ElementNode.prototype.getReactTypeComponent = function() {
   return this.reactTypeComponent;
 };
 
+ElementNode.prototype.getBoundingRect = function() {
+
+  var boundingRect;
+  var realElement = this.getRealDOMElement();
+  if (realElement.nodeName === '#text') {
+
+    if (realElement.nodeValue === '') {
+
+      boundingRect = {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0
+      };
+    } else {
+
+      var range = document.createRange();
+      range.selectNodeContents(realElement);
+      boundingRect = range.getClientRects()[0];
+    }
+  } else {
+    boundingRect = realElement.getBoundingClientRect();
+  }
+
+  return boundingRect;
+};
+
 
 // isReferenced
 ElementNode.prototype.isReferenced = function() {

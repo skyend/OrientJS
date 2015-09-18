@@ -1,7 +1,8 @@
 .DirectContext
 {
-    margin: auto;
+    overflow: hidden;
 
+    margin: auto;
 
 
     &.theme-black
@@ -75,15 +76,16 @@
     {
         position: absolute;
         z-index: 5;
-        top: 50%;
-        left: 50%;
+        // top: 50%;
+        // left: 50%;
 
         display: inline-block;
         //overflow: hidden;
 
         height: 35px;
+        //transition: all .45s, height .1s, margin .1s;
 
-        transition: all .45s, height .1s, margin .1s;
+        transition: height .3s, opacity .3s;
         transition-timing-function: ease;
 
         > .box
@@ -99,6 +101,8 @@
                 padding: 0;
 
                 list-style-type: none;
+
+                white-space: nowrap;
                 > li
                 {
                     display: inline-block;
@@ -188,10 +192,14 @@
             overflow: hidden;
 
             height: 0;
-            margin-top: 15px;
-            margin-left: -50px;
 
-            background-color: #000;
+            transition: top .3s, height .3s, opacity .3s;
+
+            opacity: 0;
+            //margin-top: 15px;
+            //margin-left: -50px;
+
+            //background-color: #000;
         }
     }
 
@@ -200,12 +208,31 @@
         position: absolute;
         z-index: 4;
 
-        display: block;
+        display: none;
 
         transition: all .45s;
         transition-timing-function: ease;
 
         background-color: #fff;
+
+        mix-blend-mode: exclusion;
+    }
+
+    > .selected-element-wrap-box
+    {
+        position: absolute;
+        z-index: 4;
+
+        box-sizing: border-box;
+
+        transition: all .45s, opacity .2s;
+        transition-timing-function: ease;
+        pointer-events: none;
+        //        display: none;
+
+        opacity: 0;
+        outline: 9px solid #fff;
+        //background-color: #fff;
 
         mix-blend-mode: exclusion;
     }
