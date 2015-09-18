@@ -98,7 +98,7 @@ var DirectContext = React.createClass({
       var baseDocument = _target.document;
 
       var result = baseDocument.insertElementNode( _insertType, _elementNode, _target );
-      console.log(result);
+      //console.log(result);
       var contextController = baseDocument.contextController;
 
       if( result ){
@@ -108,6 +108,8 @@ var DirectContext = React.createClass({
       this.emit('UpdatedContext', {
         directContext: this
       });
+
+      _elementNode.getParent().executeSnapshot('all');
 
       return result;
   },
@@ -267,6 +269,9 @@ var DirectContext = React.createClass({
     var newElementNode = baseDocument.newElementNode( this.copiedElementNodeData );
 
     if( this.deployElementNode('appendChild',newElementNode, elementNode) ){
+
+      elementNode.executeSnapshot('all');
+
       this.infoNotice('붙여넣기 완료', 'OK.');
     } else {
       this.errorNotice('붙여넣기 실패', '해당요소에 ElementNode를 붙여넣을 수 없습니다.');
@@ -274,11 +279,13 @@ var DirectContext = React.createClass({
   },
 
   removeElement(){
+    var parent = this.state.selectedElementNode.getParent();
     this.state.selectedElementNode.dettachMeFromParent();
     this.emit('UpdatedContext', {
       directContext: this
     });
 
+    parent.executeSnapshot('all');
     this.closeElementNavigator();
   },
 
@@ -293,6 +300,8 @@ var DirectContext = React.createClass({
     elementNode.insertAfter( clonedElementNode );
 
     contextController.rootRender();
+
+    elementNode.executeSnapshot('all');
 
     this.emit('UpdatedContext', {
       directContext: this

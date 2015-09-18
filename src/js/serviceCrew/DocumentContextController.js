@@ -1,6 +1,7 @@
 var Document = require('./Document.js');
 var jsDiff = require('diff');
-
+import LZString from '../lib/lz-string.js';
+import DocumentRevisionManager from './DocumentRevisionManager.js';
 
 var DocumentContextController = function(_document, _session, _serviceManager) {
   this.attached = false;
@@ -23,9 +24,13 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
   }
 
 
-  this.currentDocumentSnapshot = JSON.stringify(this.document.export());
 
-  this.documentHistoryQueue = [];
+  this.revisionPointer = 0;
+  this.revisionHistoryQueue = [];
+  this.revisionManager = new DocumentRevisionManager();
+
+  // test
+  this.prev = LZString.compress(JSON.stringify(this.document.export()));
 };
 
 /*********
@@ -276,15 +281,90 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
   });
 };
 
-DocumentContextController.prototype.snapshot = function() {
-  // console.log('a');
-  var currentSnapshot = JSON.stringify(this.document.export());
-  // console.log('b');
-  var prevSnapshot = this.currentDocumentSnapshot;
+DocumentContextController.prototype.gotoPast = function() {
+
+};
+
+DocumentContextController.prototype.gotoFuture = function() {
+
+};
+
+DocumentContextController.prototype.snapshot = function(_elementNode, _present, _past, _type) {
+  // var compressedDoc = LZString.compress(JSON.stringify(this.document.export()));
+  // console.log(compressedDoc.length);
+  //
+  // var compressedDiff = jsDiff.diffChars(this.prev, compressedDoc);
+  // console.log(compressedDiff);
+  // // 압축결과 diff
+  // this.prev = compressedDoc;
+  //
+  // return;
 
 
+  var nodePresent = _present;
 
-  this.currentDocumentSnapshot = currentSnapshot;
+  var nextRevision;
+
+  if (_type === 'diff') {
+
+    var diff = jsDiff.diffChars(JSON.stringify(_past), JSON.stringify(_present));
+
+    // diff 결과배열의 제거됨과 추가됨을 나타내는 요소를 제외하고 value 필드를 제거한다.
+    // 나중에 사용되는 의미있는 필드는 removed 또는 added플래그가 켜져 있는 요소의 value와 플래그가 모두 꺼져있는 요소의 count 값이다.
+    diff = diff.map(function(_changeLog) {
+      var count = _changeLog.count;
+
+      if (_changeLog.removed || _changeLog.added) {
+
+      } else {
+        delete _changeLog.value;
+      }
+
+      _changeLog.c = count;
+      delete _changeLog.count;
+      return _changeLog;
+    });
+
+    nextRevision = {
+      e: _elementNode, // 실제 ElementNode 의 참조를 저장
+      d: diff
+    };
+
+    var prevRevision = this.revisionManager.present;
+
+    // 리비전 머지 이전리비전과 다음 리비전이 연결된 상황이라면 머지하고 종료한다.
+    // 필드에 텍스트를 연속해서 입력하는 경우 머지가 진행된다.
+    // 이전 리비전이 존재하고 이전리비전과 다음리비전의 ElementNode가 같은지 확인한다.
+    if (prevRevision !== null && nextRevision.e.id == prevRevision.e.id) {
+
+      // 이전리비전의 diff 와 다음 리비전의 diff의 요소수가 3개로 동일하다면
+      if (nextRevision.d.length == 3 && prevRevision.d.length == 3) {
+
+        // 이전리비전의 diff의 마지막요소의 길이가 다음리비전의 마지막 요소의 길이와 같다면 머지한다.
+        if (nextRevision.d[2].c == prevRevision.d[2].c) {
+          prevRevision.d[1].value += nextRevision.d[1].value;
+          prevRevision.d[1].c += nextRevision.d[1].c;
+          console.log('리비전이 이전과 머지되었습니다', prevRevision);
+
+          // 머지후 함수 종료
+          return;
+        }
+      }
+    }
+
+
+  } else if (_type === 'all') {
+    // type 이 all 인 경우는 현재스냅샷전체를 문자열로 변환 후 압축하여 저장한다.
+    var compressed = LZString.compress(JSON.stringify(_present));
+
+    nextRevision = {
+      e: _elementNode, // 실제 ElementNode 의 참조를 저장
+      d: compressed
+    };
+  }
+
+
+  this.revisionManager.appendRevision(nextRevision);
 };
 
 DocumentContextController.prototype.resolveRenderText = function(_seedText) {

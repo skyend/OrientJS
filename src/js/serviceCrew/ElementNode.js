@@ -95,7 +95,7 @@ var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
     this.comment = '';
   }
 
-  this.savedSnapshot = JSON.stringify(this.export());
+  this.pastRevision = this.export();
 };
 
 ////////////////////
@@ -1042,8 +1042,16 @@ ElementNode.prototype.updatedAttribute = function(_attrKey) {
   }
 };
 
-ElementNode.prototype.executeSnapshot = function() {
-  this.emitToParent("Snapshot");
+ElementNode.prototype.executeSnapshot = function(_type) {
+  var presentRevision = this.export();
+
+  this.emitToParent("Snapshot", {
+    present: presentRevision,
+    past: this.pastRevision,
+    type: _type || 'diff'
+  });
+
+  this.pastRevision = presentRevision;
 };
 
 
@@ -1222,8 +1230,8 @@ ElementNode.prototype.export = function(_withoutId) {
     controls: this.getControls(),
     comment: this.getComment(),
     componentName: this.getComponentName(),
-    createDate: new Date(this.createDate),
-    updateDate: new Date(this.updateDate),
+    createDate: (new Date(this.createDate)).toString(),
+    updateDate: (new Date(this.updateDate)).toString(),
     inherentCSS: this.getType() !== 'empty' ? this.getCSS() : '', // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
     children: []
   };

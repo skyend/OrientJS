@@ -350,7 +350,7 @@ Document.prototype.onElementEvent_RequestReRenderMe = function(_eventData, _orig
 
 Document.prototype.onElementEvent_Snapshot = function(_eventData, _origin) {
   console.log('snapshot');
-  this.contextController.snapshot();
+  this.contextController.snapshot(_origin, _eventData.present, _eventData.past, _eventData.type);
   return false;
 };
 
