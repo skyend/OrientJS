@@ -9,7 +9,7 @@
 
 
 var StageContext = require('./builder.EditorStageContext.js');
-var UI = require('./builder.UI.js');
+var UISupervisor = require('./builder.UISupervisor.js');
 
 var ProjectManager = require('./builder.ProjectManager.js');
 
@@ -21,28 +21,19 @@ var App = function() {
   this.session = new Session();
   this.session.ready();
 
-  this.ui = new UI(window, this.session);
+  // 글로벌 드래그를 사용하기 위해 ui라는 이름으로도 uiSupervisor에 접근할 수 있도록 한다.
+  this.ui = this.uiSupervisor = new UISupervisor(window, this.session);
 
 
-  /*
-   console.log('ready');
-   var contextOne = new StageContext({
-   stageLoadedCallback : function(){
-   console.log('loaded call')
-   }
-   });
-   contextOne.setIFrameStage(document.getElementById("iframeOne"));
-
-   */
 };
 
 App.prototype.initBuilder = function() {
-  this.ui.builderRender();
+  this.uiSupervisor.builderRender();
 
   this.projectManager = new ProjectManager(this.session, "IonTProject");
   this.projectManager.init();
 
-  this.ui.setProjectManager(this.projectManager);
+  this.uiSupervisor.setProjectManager(this.projectManager);
 };
 
 App.prototype.initLogin = function() {

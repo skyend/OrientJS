@@ -9,6 +9,14 @@ class Revision {
     this.n = null; // next
   }
 
+  get prev() {
+    return this.p;
+  }
+
+  get next() {
+    return this.n;
+  }
+
   set prev(_p) {
     this.p = _p;
   }
@@ -22,7 +30,6 @@ class Revision {
 
 class DocumentRevisionManager {
   constructor() {
-    console.log('created');
     this.rootRevision = null;
     this.cursor = null;
   }
@@ -35,26 +42,31 @@ class DocumentRevisionManager {
       this.cursor = this.rootRevision;
     } else {
       this.cursor.next = newRevision;
+      this.cursor = this.cursor.next;
     }
-
-    console.log(this.rootRevision);
   }
 
   moveToPrev() {
-    if (this.cursor.prev !== null) {
-      this.cursor = this.cursor.prev;
-      return true;
-    } else {
+    if (this.cursor === null) return false;
+
+    if (this.cursor.prev === null) {
       return false;
+      // this.cursor = null;
+      // this.rootRevision = null;
+    } else {
+      this.cursor = this.cursor.prev;
     }
+
+    return true;
   }
 
   moveToNext() {
-    if (this.cursor.next !== null) {
+    if (this.cursor === null) return false;
+    if (this.cursor.next === null) {
+      return false;
+    } else {
       this.cursor = this.cursor.next;
       return true;
-    } else {
-      return false;
     }
   }
 

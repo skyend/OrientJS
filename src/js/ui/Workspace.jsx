@@ -6,7 +6,7 @@
  * Requires(css) : Screen.less
  */
 
-import './BuilderService.less';
+import './Workspace.less';
 
 import _ from 'underscore';
 import Async from '../lib/Async.js';
@@ -30,7 +30,7 @@ import EventDistributor from './reactMixin/EventDistributor.js';
  * UIService
  *
  */
-var UIService = React.createClass({
+var Workspace = React.createClass({
 
     // Mixin EventDistributor
     mixins: [EventDistributor],
@@ -402,6 +402,47 @@ var UIService = React.createClass({
       this.refs['DocumentStage'].setStageMode( mode );
     },
 
+    onThrowCatcherDocumentRedo(){
+      var docStage = this.refs['DocumentStage'];
+      var currentContext = docStage.getCurrentRunningContext();
+
+      if( currentContext === undefined ){
+        this.notifyMessage('Undo할 수 없음.', 'Document가 포커싱되지 않았습니다.', 'info');
+        return;
+      } else {
+        if( currentContext.props.contextType !== 'document' ) {
+          this.notifyMessage('Undo할 수 없음.', '동작중인 Context가 document type이 아닙니다.', 'warning');
+          return;
+        }
+      }
+
+      var contextController = currentContext.props.contextController;
+      if(!contextController.gotoFuture()){
+        this.notifyMessage('Redo 할 수 없음.','더이상 기록된 변경사항이 없습니다.', 'warning');
+      }
+    },
+
+    onThrowCatcherDocumentUndo(){
+      var docStage = this.refs['DocumentStage'];
+      var currentContext = docStage.getCurrentRunningContext();
+
+      if( currentContext === undefined ){
+        this.notifyMessage('Undo할 수 없음.', 'Document가 포커싱되지 않았습니다.', 'info');
+        return;
+      } else {
+        if( currentContext.props.contextType !== 'document' ) {
+          this.notifyMessage('Undo할 수 없음.', '동작중인 Context가 document type이 아닙니다.', 'warning');
+          return;
+        }
+      }
+
+
+      var contextController = currentContext.props.contextController;
+      if( !contextController.gotoPast() ){
+        this.notifyMessage('Undo 할 수 없음.','더이상 기록된 변경사항이 없습니다.', 'warning');
+      }
+    },
+
     onThrowCatcherResized(){
       console.log('resized');
       this.resizeSelf();
@@ -530,4 +571,4 @@ var UIService = React.createClass({
     }
 });
 
-export default UIService;
+export default Workspace;

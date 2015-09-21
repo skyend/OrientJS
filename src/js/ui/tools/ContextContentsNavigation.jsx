@@ -49,9 +49,17 @@ var ContextContentsNavigation = React.createClass({
 
     renderElementVisibility(_elementNode, _indentBlocks){
       var ghost = '';
+      var repeatNumber = 0;
       if( _elementNode.isGhost ){
         ghost = 'ghost';
+      } else {
+        repeatNumber = _elementNode.getRealControl('repeat-n');
       }
+
+
+
+
+
 
       return (
         <div>
@@ -76,7 +84,11 @@ var ContextContentsNavigation = React.createClass({
               {_elementNode.attributes.class}
             </span>
           ) : '' }
+
           </label>
+          <span className='element-runes'>
+            { repeatNumber > 0 ? <span> <i className='fa fa-retweet'/> +{repeatNumber} </span>:''}
+          </span>
         </div>
       );
     },

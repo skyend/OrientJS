@@ -19,6 +19,14 @@ var HeadToolBar = React.createClass({
       this.emit('SaveCurrentContext');
     },
 
+    undo(){
+      this.emit('DocumentUndo');
+    },
+
+    redo(){
+      this.emit('DocumentRedo');
+    },
+
     modeChangeTablet(){
       this.emit('ChangeStageMode', {
         mode:'tablet'
@@ -47,8 +55,8 @@ var HeadToolBar = React.createClass({
                     <li>
                       <GridBox placements={[
                         [
-                          <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.modeChangeTablet}/>,
-                          <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.modeChangeMobile}/>
+                          <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.undo}/>,
+                          <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.redo}/>
                         ]
                       ]} width={140} height={80}/>
                     </li>

@@ -1,7 +1,8 @@
-var IFrameStage = require('./partComponents/IFrameStage.jsx');
-var _ = require('underscore');
-var React = require('react');
-require('./DirectContext.less');
+import IFrameStage from './partComponents/IFrameStage.jsx';
+import _ from 'underscore';
+import React from 'react';
+import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
+import './DirectContext.less';
 
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
@@ -610,6 +611,7 @@ var DirectContext = React.createClass({
      */
     return (
       <div className='DirectContext theme-black' style={style}>
+        <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
          <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
            <div className='box'>
@@ -669,4 +671,4 @@ var DirectContext = React.createClass({
 });
 
 
-module.exports = DirectContext;
+export default DirectContext;

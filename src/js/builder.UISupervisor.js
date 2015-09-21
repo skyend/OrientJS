@@ -14,7 +14,7 @@ var EventDistributor = require('./ui/reactMixin/EventDistributor.js');
 var ToolFactory = require('./builder.ToolFactory.js');
 
 // Sub UI Classes
-var BuilderWorkSpace = require('./ui/BuilderService.jsx');
+var BuilderWorkSpace = require('./ui/Workspace.jsx');
 var LoginService = require('./ui/LoginService.jsx');
 
 // Data

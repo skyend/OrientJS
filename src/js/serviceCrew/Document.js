@@ -383,7 +383,7 @@ Document.prototype.inspireElementNodes = function(_elementNodeDataList) {
 
 //////////////////////////
 // export methods
-Document.prototype.export = function() {
+Document.prototype.export = function(_withoutElementNodes) {
   return {
     documentID: this.getDocumentID(),
     documentName: this.getDocumentName(),
@@ -391,7 +391,7 @@ Document.prototype.export = function() {
     documentCreate: this.getDocumentCreate(),
     documentUpdate: this.getDocumentUpdate(),
     lastElementId: this.getLastElementId(),
-    rootElementNode: this.rootElementNode.export(),
+    rootElementNode: (this.rootElementNode !== null ? this.rootElementNode.export() : null),
     elementNodes: this.elementNodes.map(function(_elementNode) {
       return _elementNode.export();
     }),

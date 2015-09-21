@@ -180,7 +180,7 @@
       var moduleObject;
       var test;
       contextWindow.eval(test = window);
-      console.log('window test', test, _syncWindowContext);
+      //console.log('window test', test, _syncWindowContext);
 
       contextWindow.eval(moduleObject = scriptExecutor({
           getComponent: function(__componentName) {

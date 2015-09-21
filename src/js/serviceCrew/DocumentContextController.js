@@ -281,12 +281,40 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
   });
 };
 
+// Undo
 DocumentContextController.prototype.gotoPast = function() {
-
+  if (this.revisionManager.present === null) {
+    return false;
+  } else {
+    var present = this.revisionManager.present;
+    this.applyRevision(present, 'back');
+    this.revisionManager.moveToPrev();
+  }
+  return true;
 };
 
+// Redo
 DocumentContextController.prototype.gotoFuture = function() {
+  if (this.revisionManager.present === null) {
+    return false;
+  } else {
+    var present = this.revisionManager.present;
 
+    if (this.revisionManager.moveToNext()) {
+      return this.applyRevision(present, 'fore');
+    }
+
+  }
+  return false;
+};
+
+DocumentContextController.prototype.applyRevision = function(_revision, _direction) {
+  console.log(_revision);
+  if (_direction === 'fore') {
+    console.log('뒤로');
+  } else {
+    console.log('앞으로')
+  }
 };
 
 DocumentContextController.prototype.snapshot = function(_elementNode, _present, _past, _type) {
@@ -359,11 +387,14 @@ DocumentContextController.prototype.snapshot = function(_elementNode, _present, 
 
     nextRevision = {
       e: _elementNode, // 실제 ElementNode 의 참조를 저장
-      d: compressed
+      d: {
+        new: compressed,
+        past: _past
+      }
     };
   }
 
-
+  nextRevision.t = _type;
   this.revisionManager.appendRevision(nextRevision);
 };
 

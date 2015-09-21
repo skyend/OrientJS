@@ -295,6 +295,7 @@ ElementNode.prototype.getAttributes = function() {
 ElementNode.prototype.getControl = function(_controlName) {
   return this.controls[_controlName];
 };
+
 // controls
 ElementNode.prototype.getControls = function() {
   return this.controls;
@@ -372,6 +373,15 @@ ElementNode.prototype.getBoundingRect = function() {
   return boundingRect;
 };
 
+// realControl
+ElementNode.prototype.getRealControl = function(_controlName) {
+  return this.resolveRenderText(this.controls[_controlName]);
+};
+
+// realControl
+ElementNode.prototype.isUsingBind = function(_controlName) {
+  return this.resolveRenderText(this.controls[_controlName]);
+};
 
 // isReferenced
 ElementNode.prototype.isReferenced = function() {
