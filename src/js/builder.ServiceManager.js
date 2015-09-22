@@ -19,10 +19,7 @@ var ServiceManager = function(_session, _serviceKey) {
 
   this.chechedApiResources = {};
 
-  this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api");
-
-
-  this.init();
+  //this.sampleDatas['broadcast_series'] = this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api");
 };
 
 ServiceManager.prototype.init = function() {
@@ -35,7 +32,7 @@ ServiceManager.prototype.getNodeTypeData = function(_nodeTypeId) {
 
 
 
-  return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net:8081/api/" + _nodeTypeId + "/list.json?t=api");
+  return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net/api/" + _nodeTypeId + "/list.json?t=api");
 };
 
 ServiceManager.prototype.getDocumentMetaList = function() {

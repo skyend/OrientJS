@@ -14,6 +14,13 @@ import GridBox from "./partComponents/GridBox.jsx";
 
 var HeadToolBar = React.createClass({
     mixins: [require('./reactMixin/EventDistributor.js')],
+    getInitialState(){
+      return {
+        undoable:false,
+        redoable:false,
+        contextItem: null
+      }
+    },
 
     clickSave(){
       this.emit('SaveCurrentContext');
@@ -46,17 +53,38 @@ var HeadToolBar = React.createClass({
     },
 
     render: function () {
+        var saveDisabled = true;
+        var undoDisabled = true;
+        var redoDisabled = true;
+        var modeChangeDisabled = true;
+
+        if( this.state.contextItem !== null ){
+
+          if( this.state.contextItem.contextType === 'document' || this.state.contextItem.contextType === 'page'){
+            saveDisabled = false;
+            modeChangeDisabled = false;
+
+            if( this.state.contextItem.contextController.existsUndoHistory() ){
+              undoDisabled = false;
+            }
+
+            if( this.state.contextItem.contextController.existsRedoHistory() ){
+              redoDisabled = false;
+            }
+          }
+        }
+        console.log('rerender head');
         return (
             <header className='HeadToolBar'>
                 <ul className="navigation">
                     <li style={{width:100}}>
-                        <OutlineButton icon='floppy-o' title='Save' color='white' iconSize='24' onClick={this.clickSave}/>
+                        <OutlineButton icon='floppy-o' title='Save' color='white' iconSize='24' onClick={this.clickSave} disabled={saveDisabled}/>
                     </li>
                     <li>
                       <GridBox placements={[
                         [
-                          <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.undo}/>,
-                          <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.redo}/>
+                          <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.undo} disabled={undoDisabled}/>,
+                          <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.redo} disabled={redoDisabled}/>
                         ]
                       ]} width={140} height={80}/>
                     </li>
@@ -68,10 +96,10 @@ var HeadToolBar = React.createClass({
                     <li className='right'>
                       <GridBox placements={[
                         [
-                          <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop}/>
+                          <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop} disabled={modeChangeDisabled}/>
                         ],[
-                          <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet}/>,
-                          <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile}/>
+                          <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet} disabled={modeChangeDisabled}/>,
+                          <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile} disabled={modeChangeDisabled}/>
                         ]
                       ]} width={140} height={80}/>
                     </li>

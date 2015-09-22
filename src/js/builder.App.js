@@ -7,13 +7,8 @@
  * Requires(JS) : builder.StageContext.js, builder.UI.js
  */
 
-
-var StageContext = require('./builder.EditorStageContext.js');
 var UISupervisor = require('./builder.UISupervisor.js');
-
 var ProjectManager = require('./builder.ProjectManager.js');
-
-
 var Session = require('./builder.Session.js');
 
 var App = function() {
@@ -37,7 +32,7 @@ App.prototype.initBuilder = function() {
 };
 
 App.prototype.initLogin = function() {
-  this.ui.loginRender();
+  this.uiSupervisor.loginRender();
 };
 
 module.exports = App;

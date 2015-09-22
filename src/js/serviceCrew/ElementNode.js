@@ -62,30 +62,7 @@ var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
   //////////////////////////
   // 이미 있는 엘리먼트를 로드한 경우 데이터를 객체에 맵핑해준다.
   if (typeof _elementNodeDataObject === 'object') {
-    this.id = _elementNodeDataObject.id;
-    this.type = _elementNodeDataObject.type;
-    this.name = _elementNodeDataObject.name;
-
-    this.attributes = _elementNodeDataObject.attributes;
-
-    this.componentName = _elementNodeDataObject.componentName;
-
-    this.refferenceType = _elementNodeDataObject.refferenceType;
-    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
-
-    this.controls = _elementNodeDataObject.controls || {};
-
-    this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
-    this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
-    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
-
-    this.comment = _elementNodeDataObject.comment || '';
-
-    this.createDate = _elementNodeDataObject.createDate;
-    this.updateDate = _elementNodeDataObject.updateDate;
-
-    this.children = this.inspireChildren(_elementNodeDataObject.children);
-
+    this.import(_elementNodeDataObject);
   } else {
     // 새 엘리먼트가 생성되었다.
     this.createDate = new Date();
@@ -1228,6 +1205,31 @@ ElementNode.prototype.onEC_Snapshot = function(_eventData, _origin) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+ElementNode.prototype.import = function(_elementNodeDataObject) {
+  this.id = _elementNodeDataObject.id;
+  this.type = _elementNodeDataObject.type;
+  this.name = _elementNodeDataObject.name;
+
+  this.attributes = _elementNodeDataObject.attributes;
+
+  this.componentName = _elementNodeDataObject.componentName;
+
+  this.refferenceType = _elementNodeDataObject.refferenceType;
+  this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+
+  this.controls = _elementNodeDataObject.controls || {};
+
+  this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
+  this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
+  this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
+
+  this.comment = _elementNodeDataObject.comment || '';
+
+  this.createDate = _elementNodeDataObject.createDate;
+  this.updateDate = _elementNodeDataObject.updateDate;
+
+  this.children = this.inspireChildren(_elementNodeDataObject.children);
+};
 
 //////////////////////////
 // export methods
@@ -1237,7 +1239,7 @@ ElementNode.prototype.export = function(_withoutId) {
     type: this.getType(),
     name: this.getName(),
     attributes: _.clone(this.getAttributes()),
-    controls: this.getControls(),
+    controls: _.clone(this.getControls()),
     comment: this.getComment(),
     componentName: this.getComponentName(),
     createDate: (new Date(this.createDate)).toString(),

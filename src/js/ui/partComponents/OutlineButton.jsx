@@ -5,11 +5,14 @@ import React from "react";
 var OutlineButton = React.createClass({
     getDefaultProps(){
       return {
-        onClick:null
+        onClick:null,
+        disabled:false
       }
     },
 
     onClick(_e){
+      if( this.props.disabled ) return;
+
       if( typeof this.props.onClick === 'function' ){
         this.props.onClick(_e);
       } else {
@@ -47,6 +50,8 @@ var OutlineButton = React.createClass({
         classes.push('OutlineButton');
         classes.push( 'color-'+this.props.color );
         classes.push( this.props.size );
+        if( this.props.disabled )
+          classes.push('disabled');
 
         return (
           <div className={classes.join(' ')} >

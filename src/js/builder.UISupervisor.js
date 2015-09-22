@@ -23,18 +23,33 @@ var DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
 // UI Supervisor
 var UI = function(_window, _session) {
   var self = this;
+
+  /** Fields **/
   this.window = _window;
   this.session = _session;
   this.observers = {};
   this.dragHoldingElement = null;
   this.isDoingElementHold = false;
+  // Global Drag
+  this.mouseDawn = false;
+  this.mouseDragging = false;
+  this.enabledGlobalDrag = false;
+  // 글로벌 드래그를 점유중인 오브젝트
+  // 글로벌 드래그를 점유중인 오브젝트는 UI 로 부터 드래그 이벤트를 수신할 수 있다.
+  // 글로벌 드래그 이벤트를 수신 하기 위해서는 onGlobalDragFromUI, onGlobalDragStopFromUI, onGlobalDragStartFromUI 메소드를 구현하여야 한다.
+  this.globalDragOccupyObject = null;
+
+  // toolFactory
   this.toolFactory = new ToolFactory(_session, DefaultBuilderConfig.tools);
 
+  /** window Event Listening **/
   this.window.onresize = function(_e) {
     self.onResize(_e);
   };
-
-  /* Global Drag */
+  this.window.document.oncontextmenu = function(_e) {
+    self.onCallContextMenu();
+  };
+  // Global Drag
   this.window.document.onmousemove = function(_e) {
     self.onGlobalMouseMove(_e);
   };
@@ -44,18 +59,7 @@ var UI = function(_window, _session) {
   this.window.document.onmouseup = function(_e) {
     self.onGlobalMouseUp(_e);
   };
-  this.window.document.oncontextmenu = function(_e) {
-    self.onCallContextMenu();
-  };
 
-  this.mouseDawn = false;
-  this.mouseDragging = false;
-  this.enabledGlobalDrag = false;
-
-  // 글로벌 드래그를 점유중인 오브젝트
-  // 글로벌 드래그를 점유중인 오브젝트는 UI 로 부터 드래그 이벤트를 수신할 수 있다.
-  // 글로벌 드래그 이벤트를 수신 하기 위해서는 onGlobalDragFromUI, onGlobalDragStopFromUI, onGlobalDragStartFromUI 메소드를 구현하여야 한다.
-  this.globalDragOccupyObject = null;
 };
 
 UI.prototype.onResize = function(e) { //UI화면 리사이즈

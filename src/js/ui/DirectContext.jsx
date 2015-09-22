@@ -444,6 +444,15 @@ var DirectContext = React.createClass({
   //   this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
   // },
 
+
+  updatedHistory(){
+    this.emitRefreshDirectContext();
+  },
+
+  emitRefreshDirectContext(){
+    this.emit("RefreshedDirectContext");
+  },
+
   getContextType(){
     return this.props.contextType;
   },
@@ -456,6 +465,7 @@ var DirectContext = React.createClass({
 
     return false;
   },
+
 
   save(){
     var contextController = this.props.contextController;

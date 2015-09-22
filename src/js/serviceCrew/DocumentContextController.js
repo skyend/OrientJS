@@ -281,40 +281,110 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
   });
 };
 
-// Undo
-DocumentContextController.prototype.gotoPast = function() {
+DocumentContextController.prototype.existsUndoHistory = function() {
+  console.log(this.revisionManager);
+
   if (this.revisionManager.present === null) {
     return false;
   } else {
-    var present = this.revisionManager.present;
-    this.applyRevision(present, 'back');
-    this.revisionManager.moveToPrev();
+    if (this.revisionManager.present === this.revisionManager.rootRevision && !this.revisionManager.present.isExecuted) {
+      return false;
+    }
   }
+
+  return true;
+};
+
+DocumentContextController.prototype.existsRedoHistory = function() {
+  if (this.revisionManager.present === null) {
+    return false;
+  } else {
+    if (this.revisionManager.present === this.revisionManager.lastRevision && this.revisionManager.present.isExecuted) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Undo
+DocumentContextController.prototype.gotoPast = function() {
+  var present = this.revisionManager.present;
+
+  if (present === null) return false;
+
+  // 현재 리비전이 실행된 상태라면 이전으로 돌아가기 위해 before 필드를 사용하여 복구를 한다.
+  if (present.isExecuted) {
+    var targetElementNode = present.elementNode;
+    var before = present.before;
+
+    // 실제적인 복구 메소드 호출
+    this.applyRevision(present, "backward");
+    present.undo(); // 언두됨으로 상태를 변경한다.
+  } else {
+    // 현재 리비전이 언두 된 상태라면 이전 리비전이 있는지 확인 후 이전으로 리비전을 옮겨간 후
+    // 이 메소드(gotoPast)를 한번더 호출한다.
+    if (present.prev !== null) {
+      this.revisionManager.moveToBack();
+      return this.gotoPast();
+    } else {
+      return false;
+    }
+  }
+
   return true;
 };
 
 // Redo
 DocumentContextController.prototype.gotoFuture = function() {
-  if (this.revisionManager.present === null) {
-    return false;
-  } else {
-    var present = this.revisionManager.present;
+  var present = this.revisionManager.present;
 
-    if (this.revisionManager.moveToNext()) {
-      return this.applyRevision(present, 'fore');
+  if (present === null) return false;
+
+  if (present.isExecuted) {
+
+    if (present.next !== null) {
+      this.revisionManager.moveToFore();
+      return this.gotoFuture();
+    } else {
+      return false;
     }
+  } else {
+    var targetElementNode = present.elementNode;
+    var after = present.after;
 
+    this.applyRevision(present, 'forward');
+    present.executed(); // 실행됨으로 상태를 변경한다.
   }
-  return false;
+  return true;
 };
 
 DocumentContextController.prototype.applyRevision = function(_revision, _direction) {
-  console.log(_revision);
-  if (_direction === 'fore') {
-    console.log('뒤로');
+
+  if (_direction === 'forward') {
+    // forward 에는 after 필드를 사용하고
+    //console.log('앞으로');
+    //console.log(_revision);
+    var after = _revision.after;
+    var uncompressedAfter = LZString.decompress(after);
+    var afterElementNodeObject = JSON.parse(uncompressedAfter);
+
+    _revision.elementNode.import(afterElementNodeObject);
+    //console.log(afterElementNodeObject);
   } else {
-    console.log('앞으로')
+    // backward에는 before필드를 사용한다.
+    //console.log('뒤로');
+    //console.log(_revision);
+    var before = _revision.before;
+    var uncompressedBefore = LZString.decompress(before);
+    var beforeElementNodeObject = JSON.parse(uncompressedBefore);
+
+    _revision.elementNode.import(beforeElementNodeObject);
+
+    //console.log(beforeElementNodeObject);
   }
+  this.rootRender();
+  this.context.updatedHistory();
+  //console.log(this.revisionManager);
 };
 
 DocumentContextController.prototype.snapshot = function(_elementNode, _present, _past, _type) {
@@ -327,75 +397,61 @@ DocumentContextController.prototype.snapshot = function(_elementNode, _present, 
   // this.prev = compressedDoc;
   //
   // return;
-
-
   var nodePresent = _present;
+  var presentRevision;
 
-  var nextRevision;
+  // // 현재 리비전이 플러시된 상태라면
+  // // 이것은 리비전을 이동하여 플러시된 리비전으로 이동 했을 때 해당 리비전에 덮어씌어지는것을 방지하기 위함이다.
+  // if (this.revisionManager.present.isFlushed) {
+  //   // 한번더 플러시를 진행하여 새로운 리비전을 생성한다.
+  //   this.revisionManager.flushRevision();
+  // }
 
   if (_type === 'diff') {
-
+    var presentContinuationRevision;
     var diff = jsDiff.diffChars(JSON.stringify(_past), JSON.stringify(_present));
 
-    // diff 결과배열의 제거됨과 추가됨을 나타내는 요소를 제외하고 value 필드를 제거한다.
-    // 나중에 사용되는 의미있는 필드는 removed 또는 added플래그가 켜져 있는 요소의 value와 플래그가 모두 꺼져있는 요소의 count 값이다.
-    diff = diff.map(function(_changeLog) {
-      var count = _changeLog.count;
-
-      if (_changeLog.removed || _changeLog.added) {
-
-      } else {
-        delete _changeLog.value;
-      }
-
-      _changeLog.c = count;
-      delete _changeLog.count;
-      return _changeLog;
-    });
-
-    nextRevision = {
-      e: _elementNode, // 실제 ElementNode 의 참조를 저장
-      d: diff
+    presentRevision = {
+      elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
+      before: _past,
+      after: _present,
+      type: 'all'
     };
 
-    var prevRevision = this.revisionManager.present;
+    // //var presentRevision = this.revisionManager.present;
+    // // 현재에 연속되는중인 리비전
+    // presentContinuationRevision = this.revisionManager.present;
+    // //var presentContinuationChangeLog = presentContinuationRevision.changeLog;
+    //
+    // if (_elementNode.id == presentContinuationRevision.elementNode.id) {
+    //   var presentContinuationChangeLog = presentContinuationRevision.changeLog;
+    //   if ()
+    // }
 
-    // 리비전 머지 이전리비전과 다음 리비전이 연결된 상황이라면 머지하고 종료한다.
-    // 필드에 텍스트를 연속해서 입력하는 경우 머지가 진행된다.
-    // 이전 리비전이 존재하고 이전리비전과 다음리비전의 ElementNode가 같은지 확인한다.
-    if (prevRevision !== null && nextRevision.e.id == prevRevision.e.id) {
-
-      // 이전리비전의 diff 와 다음 리비전의 diff의 요소수가 3개로 동일하다면
-      if (nextRevision.d.length == 3 && prevRevision.d.length == 3) {
-
-        // 이전리비전의 diff의 마지막요소의 길이가 다음리비전의 마지막 요소의 길이와 같다면 머지한다.
-        if (nextRevision.d[2].c == prevRevision.d[2].c) {
-          prevRevision.d[1].value += nextRevision.d[1].value;
-          prevRevision.d[1].c += nextRevision.d[1].c;
-          console.log('리비전이 이전과 머지되었습니다', prevRevision);
-
-          // 머지후 함수 종료
-          return;
-        }
-      }
-    }
+    this.revisionManager.writeHistory(presentChangeLog);
+    this.revisionManager.flushRevision();
 
 
   } else if (_type === 'all') {
     // type 이 all 인 경우는 현재스냅샷전체를 문자열로 변환 후 압축하여 저장한다.
-    var compressed = LZString.compress(JSON.stringify(_present));
+    var compressedAfter = LZString.compress(JSON.stringify(_present));
+    var compressedBefore = LZString.compress(JSON.stringify(_past));
 
-    nextRevision = {
-      e: _elementNode, // 실제 ElementNode 의 참조를 저장
-      d: {
-        new: compressed,
-        past: _past
-      }
+    presentRevision = {
+      elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
+      before: compressedBefore,
+      after: compressedAfter,
+      type: 'all'
     };
+
+    this.revisionManager.appendNewRevision(presentRevision);
+
+    //
+    // this.revisionManager.writeHistory(presentChangeLog);
+    // this.revisionManager.flushRevision();
   }
 
-  nextRevision.t = _type;
-  this.revisionManager.appendRevision(nextRevision);
+  this.context.updatedHistory();
 };
 
 DocumentContextController.prototype.resolveRenderText = function(_seedText) {

@@ -229,6 +229,14 @@ var Workspace = React.createClass({
       this.applyToolStates("ContextContentsNavigation",{
         runningContext: _eventData.contextItem
       });
+
+      this.refs['HeadToolBar'].setState({
+        contextItem: _eventData.contextItem
+      });
+    },
+
+    onThrowCatcherRefreshedDirectContext(){
+      this.refs['HeadToolBar'].forceUpdate();
     },
 
     attachTool( _position, _toolEgg ){
@@ -512,6 +520,10 @@ var Workspace = React.createClass({
         this.screenHeight = _screenH;
 
         this.resizeSelf();
+    },
+
+    componentDidUpdate(){
+      console.log('workspace updated');
     },
 
     componentDidMount() {

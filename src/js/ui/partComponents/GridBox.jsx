@@ -39,7 +39,7 @@ var GridBox = React.createClass({
           </div>
         )
       }
-      console.log(_rows);
+
       return rowElements;
     },
 
