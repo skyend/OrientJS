@@ -30,7 +30,7 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
   this.revisionManager = new DocumentRevisionManager();
 
   // test
-  this.prev = LZString.compress(JSON.stringify(this.document.export()));
+  this.prev = this.document.export();
 };
 
 /*********
@@ -282,7 +282,6 @@ DocumentContextController.prototype.convertToScriptElement = function(_scriptObj
 };
 
 DocumentContextController.prototype.existsUndoHistory = function() {
-  console.log(this.revisionManager);
 
   if (this.revisionManager.present === null) {
     return false;
@@ -359,32 +358,29 @@ DocumentContextController.prototype.gotoFuture = function() {
 };
 
 DocumentContextController.prototype.applyRevision = function(_revision, _direction) {
+  var importSource;
 
   if (_direction === 'forward') {
+
     // forward 에는 after 필드를 사용하고
-    //console.log('앞으로');
-    //console.log(_revision);
-    var after = _revision.after;
-    var uncompressedAfter = LZString.decompress(after);
-    var afterElementNodeObject = JSON.parse(uncompressedAfter);
-
-    _revision.elementNode.import(afterElementNodeObject);
-    //console.log(afterElementNodeObject);
+    importSource = _revision.after;
+    console.log('redo', importSource, _revision);
   } else {
+
     // backward에는 before필드를 사용한다.
-    //console.log('뒤로');
-    //console.log(_revision);
-    var before = _revision.before;
-    var uncompressedBefore = LZString.decompress(before);
-    var beforeElementNodeObject = JSON.parse(uncompressedBefore);
-
-    _revision.elementNode.import(beforeElementNodeObject);
-
-    //console.log(beforeElementNodeObject);
+    importSource = _revision.before;
+    console.log('undo', importSource, _revision);
   }
+
+  var targetId = _revision.elementNode.id;
+  var baseDoc = _revision.elementNode.document;
+  var liveElementNode = baseDoc.findById(targetId);
+
+  if (liveElementNode === false) throw new Error("링크중인 ElementNode를 찾을 수 없음.");
+
+  liveElementNode.import(importSource);
   this.rootRender();
   this.context.updatedHistory();
-  //console.log(this.revisionManager);
 };
 
 DocumentContextController.prototype.snapshot = function(_elementNode, _present, _past, _type) {
@@ -433,14 +429,11 @@ DocumentContextController.prototype.snapshot = function(_elementNode, _present, 
 
 
   } else if (_type === 'all') {
-    // type 이 all 인 경우는 현재스냅샷전체를 문자열로 변환 후 압축하여 저장한다.
-    var compressedAfter = LZString.compress(JSON.stringify(_present));
-    var compressedBefore = LZString.compress(JSON.stringify(_past));
 
     presentRevision = {
       elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
-      before: compressedBefore,
-      after: compressedAfter,
+      before: _past,
+      after: _present,
       type: 'all'
     };
 

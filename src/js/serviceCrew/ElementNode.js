@@ -132,7 +132,7 @@ ElementNode.prototype.setRefferenceTargetProps = function(_refferenceTargetProps
 // refferenceInstance
 ElementNode.prototype.setRefferenceInstance = function(_refferenceInstance) {
   this.refferenceInstance = _refferenceInstance;
-  console.log(this);
+
   if (this.refferenceInstance !== 'none' && this.refferenceInstance !== undefined) {
     this.refferenceInstance.setParent(this);
   }
@@ -1030,15 +1030,16 @@ ElementNode.prototype.updatedAttribute = function(_attrKey) {
 };
 
 ElementNode.prototype.executeSnapshot = function(_type) {
-  var presentRevision = this.export();
-
+  //var presentRevision = this.export();
+  //  console.log(presentRevision);
   this.emitToParent("Snapshot", {
-    present: presentRevision,
+    present: this.export(),
     past: this.pastRevision,
     type: _type || 'diff'
   });
 
-  this.pastRevision = presentRevision;
+  this.pastRevision = this.export();
+
 };
 
 
@@ -1229,6 +1230,8 @@ ElementNode.prototype.import = function(_elementNodeDataObject) {
   this.updateDate = _elementNodeDataObject.updateDate;
 
   this.children = this.inspireChildren(_elementNodeDataObject.children);
+
+  this.pastRevision = this.export();
 };
 
 //////////////////////////

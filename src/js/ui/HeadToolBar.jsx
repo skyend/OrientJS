@@ -73,7 +73,7 @@ var HeadToolBar = React.createClass({
             }
           }
         }
-        console.log('rerender head');
+
         return (
             <header className='HeadToolBar'>
                 <ul className="navigation">

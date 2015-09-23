@@ -1,12 +1,17 @@
+import LZString from '../lib/lz-string.js';
+var revisionCounter = 0;
+
 class Revision {
   constructor(_elementNode, _before, _after, _type) {
 
     this._elementNode = _elementNode;
-    this._before = _before;
-    this._after = _after;
+    this.before = _before; // setter 이용
+    this.after = _after; // setter 이용
     this._type = _type;
     this._next = null;
     this._prev = null;
+    this._time = new Date();
+    this._counter = ++revisionCounter;
     this._isExecuted = false;
     //
     // this.e = _e; // ElementNode
@@ -28,11 +33,11 @@ class Revision {
   }
 
   get before() {
-    return this._before;
+    return JSON.parse(LZString.decompress(this._before));
   }
 
   get after() {
-    return this._after;
+    return JSON.parse(LZString.decompress(this._after));
   }
 
   get type() {
@@ -47,17 +52,25 @@ class Revision {
     return this._next;
   }
 
+  get time() {
+    return this._time;
+  }
+
+  get count() {
+    return this._counter;
+  }
+
   // Setters
   set elementNode(_elementNode) {
     this._elementNode = _elementNode;
   }
 
-  set before(_before) {
-    this._before = _before;
+  set before(_beforeObject) {
+    this._before = LZString.compress(JSON.stringify(_beforeObject));
   }
 
-  set after(_after) {
-    this._after = _after;
+  set after(_afterObject) {
+    this._after = LZString.compress(JSON.stringify(_afterObject));
   }
 
   set type(_type) {
@@ -118,6 +131,7 @@ class DocumentRevisionManager {
     var newRevision = new Revision(_revision.elementNode, _revision.before, _revision.after, _revision.type);
 
     if (this.cursor === null) {
+      console.log('cursor null');
       this.cursor = newRevision;
       if (this.reachRoof && this.lastRevision !== null) {
         this.lastRevision.next = newRevision;
@@ -131,7 +145,7 @@ class DocumentRevisionManager {
       this.reachRoof = false;
       this.reachFloor = false;
     } else {
-
+      console.log('cursor not null');
       this.cursor.next = newRevision;
       this.cursor.next.prev = this.cursor;
       this.cursor = newRevision;

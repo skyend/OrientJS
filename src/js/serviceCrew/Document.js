@@ -252,6 +252,41 @@ Document.prototype.newElementNodeFromComponent = function(_component) {
   return newElementNode;
 };
 
+Document.prototype.findById = function(_elementNodeId) {
+
+  var treeSearchResult = this.findRecursive(this.rootElementNode, function(__e) {
+    return __e.id == _elementNodeId;
+  });
+
+  if (treeSearchResult) return treeSearchResult;
+
+  for (var i = 0; i < this.elementNodes.length; i++) {
+    treeSearchResult = this.findRecursive(this.elementNodes[i], function(__e) {
+      return __e.id == _elementNodeId;
+    });
+
+    if (treeSearchResult) return treeSearchResult;
+  }
+
+  return false;
+};
+
+Document.prototype.findRecursive = function(_t, _finder) {
+  var result = _finder(_t);
+  if (result) {
+    return _t;
+  } else {
+    for (var i = 0; i < _t.children.length; i++) {
+      var recvResult = this.findRecursive(_t.children[i], _finder);
+      if (recvResult) {
+        return recvResult;
+      }
+    }
+  }
+
+  return false;
+};
+
 ///////////
 /********
  * cloneElement
