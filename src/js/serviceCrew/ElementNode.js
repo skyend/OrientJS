@@ -71,8 +71,6 @@ var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
     this.children = [];
     this.comment = '';
   }
-
-  this.pastRevision = this.export();
 };
 
 ////////////////////

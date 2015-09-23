@@ -74,7 +74,7 @@ var DirectContext = React.createClass({
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
 
-      returns = baseElementNode.isDropableComponent("appendChild");
+      var returns = baseElementNode.isDropableComponent("appendChild");
 
       if( returns.result === true ){
         this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
