@@ -353,6 +353,18 @@ ElementNode.prototype.getRealControl = function(_controlName) {
   return this.resolveRenderText(this.controls[_controlName]);
 };
 
+ElementNode.prototype.getRectangle = function() {
+  switch (this.document.contextController.getDisplayMode) {
+    case "desktop":
+
+      break;
+    case "tablet":
+      break;
+    case "mobile":
+      break;
+  }
+};
+
 // realControl
 ElementNode.prototype.isUsingBind = function(_controlName) {
   return this.resolveRenderText(this.controls[_controlName]);

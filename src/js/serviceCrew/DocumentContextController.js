@@ -13,6 +13,9 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
 
   this.superElement = null;
 
+  // screen Mode
+  this.displayMode = 'desktop'; // desktop, tablet, mobile
+
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
@@ -61,6 +64,14 @@ DocumentContextController.prototype.resume = function() {
   /* processing */
 
 };
+
+DocumentContextController.prototype.setDisplayMode = function(_mode) {
+  this.displayMode = _mode;
+};
+
+DocumentContextController.prototype.getDisplayMode = function() {
+  return this.displayMode;
+}
 
 // superElement
 // superElement는 RootElementNode가 랜더링되는 지점이다.
@@ -364,12 +375,12 @@ DocumentContextController.prototype.applyRevision = function(_revision, _directi
 
     // forward 에는 after 필드를 사용하고
     importSource = _revision.after;
-    console.log('redo', importSource, _revision);
+    //console.log('redo', importSource, _revision);
   } else {
 
     // backward에는 before필드를 사용한다.
     importSource = _revision.before;
-    console.log('undo', importSource, _revision);
+    //console.log('undo', importSource, _revision);
   }
 
   var targetId = _revision.elementNode.id;

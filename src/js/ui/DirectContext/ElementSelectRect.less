@@ -1,0 +1,148 @@
+@pointSize: 7px;
+
+.ElementSelectRect
+{
+    position: absolute;
+    z-index: 4;
+
+    box-sizing: border-box;
+
+    transition: all .45s, opacity .2s;
+    transition-timing-function: ease;
+    pointer-events: none;
+    //        display: none;
+
+    opacity: 0;
+    background-color: transparent;
+
+    //mix-blend-mode: exclusion;
+    &::before
+    {
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        display: block;
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+
+        content: ' ';
+
+        border: 1px dotted #2981da;
+
+        mix-blend-mode: exclusion;
+    }
+
+    > .eight-container
+    {
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+
+        pointer-events: none;
+
+        > .point
+        {
+            position: absolute;
+            z-index: 4;
+
+            width: 0;
+            height: 0;
+
+            transition: all .1s;
+
+            border-radius: 50%;
+            background-color: #fff;
+        }
+
+        > .left
+        {
+            top: 50%;
+            left: 0;
+
+            margin-top: @pointSize / -2 - 1;
+            margin-left: @pointSize / -2 - 1;
+        }
+
+        > .right
+        {
+            top: 50%;
+            right: 0;
+
+            margin-top: @pointSize / -2 - 1;
+            margin-right: @pointSize / -2 + 1;
+        }
+
+        > .top
+        {
+            top: 0;
+            left: 50%;
+
+            margin-top: @pointSize / -2 - 1;
+            margin-left: @pointSize / -2 - 1;
+        }
+
+        > .bottom
+        {
+            bottom: 0;
+            left: 50%;
+
+            margin-bottom: @pointSize / -2 + 1;
+            margin-left: @pointSize / -2 - 1;
+        }
+
+        > .left-top
+        {
+            top: 0;
+            left: 0;
+
+            margin-top: @pointSize / -2 - 1;
+            margin-left: @pointSize / -2 - 1;
+        }
+
+        > .left-bottom
+        {
+            bottom: 0;
+            left: 0;
+
+            margin-bottom: @pointSize / -2 + 1;
+            margin-left: @pointSize / -2 - 1;
+        }
+
+        > .right-top
+        {
+            top: 0;
+            right: 0;
+
+            margin-top: @pointSize / -2 - 1;
+            margin-right: @pointSize / -2 + 1;
+        }
+
+        > .right-bottom
+        {
+            right: 0;
+            bottom: 0;
+
+            margin-right: @pointSize / -2 + 1;
+            margin-bottom: @pointSize / -2 + 1;
+        }
+
+        &.active
+        {
+            > .point
+            {
+                width: @pointSize;
+                height: @pointSize;
+                //cursor: pointer;
+
+                pointer-events: fill;
+
+                border: 1px solid #2981da;
+                box-shadow: 0 0 3px #2981da;
+            }
+        }
+    }
+}

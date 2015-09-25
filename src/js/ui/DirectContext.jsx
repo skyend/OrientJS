@@ -2,7 +2,10 @@ import IFrameStage from './partComponents/IFrameStage.jsx';
 import _ from 'underscore';
 import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
+import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import './DirectContext.less';
+
+
 
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
@@ -12,7 +15,8 @@ var DirectContext = React.createClass({
       stageHeight:480,
       elementNavigatorX: 0,
       elementNavigatorY: 0,
-      showElementNavigator: false
+      showElementNavigator: false,
+      mode:'desktop'
     };
   },
 
@@ -282,12 +286,16 @@ var DirectContext = React.createClass({
   removeElement(){
     var parent = this.state.selectedElementNode.getParent();
     this.state.selectedElementNode.dettachMeFromParent();
+    var contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
+
     this.emit('UpdatedContext', {
       directContext: this
     });
 
-    parent.executeSnapshot('all');
+
     this.closeElementNavigator();
+    contextController.rootRender();
+    parent.executeSnapshot('all');
   },
 
   cloneElement(){
@@ -437,6 +445,21 @@ var DirectContext = React.createClass({
     _pass();
   },
 
+  onThrowCatcherElementResizingStart(_eventData){
+
+  },
+
+  onThrowCatcherElementResizing(_eventData){
+    console.log(this.state.selectedElementNode);
+    
+    console.log(_eventData);
+  },
+
+  onThrowCatcherElementResizingEnd(_eventData){
+
+  },
+
+
   // 더블클릭으로 요소 편집은 추후에 정책을 정확이 한 후 개발
   // 리졸브동기화 문제가 있음
   // onThrowCatcherDClickElementInStage(_eventData, _pass) {
@@ -555,36 +578,35 @@ var DirectContext = React.createClass({
       style.display = 'block';
     }
 
-
-
     var elementNavigatorStyle = {};
-    var selectedWrapBoxStyle = {};
-
+    var selectedSelectRect = {};
+    var selectedElementResizable = false;
     var elementNavigatorClasses = ['element-navigator'];
     if(! this.state.showElementNavigator ){
       elementNavigatorClasses.push('off');
 
-      var elNavY = this.state.prevElementNavigatorY - 35;
+      var elNavY = this.state.prevElementNavigatorY - 50;
       if( elNavY < 0 ){
         elNavY = 0;
       }
 
       elementNavigatorStyle = this.prevElNavStyle || {};
-      elementNavigatorStyle.top += 35;
-      selectedWrapBoxStyle = this.prevWrapBoxStyle || {};
-      selectedWrapBoxStyle.opacity = 0;
+      elementNavigatorStyle.top += 50;
+
+      selectedSelectRect = this.prevSelectedSelectRect || {};
+
     } else {
       var elementNode = this.state.selectedElementNode;
       var boundingBox = elementNode.getBoundingRect();
 
-      var elNavY = boundingBox.top - 35 + stageY;
+      var elNavY = boundingBox.top - 50 + stageY;
       if( elNavY < 0 ){
         elNavY = 0;
       }
 
       var elNavX = boundingBox.left + stageX;
-      if( elNavX + 250 > this.props.width ){
-        elNavX = this.props.width - 250;
+      if( elNavX + 300 > this.props.width ){
+        elNavX = this.props.width - 300;
       }
 
       elementNavigatorStyle = {
@@ -592,7 +614,7 @@ var DirectContext = React.createClass({
         top: elNavY
       };
 
-      selectedWrapBoxStyle = {
+      selectedSelectRect = {
         width : boundingBox.width,
         height:boundingBox.height,
         left: boundingBox.left + stageX,
@@ -600,17 +622,12 @@ var DirectContext = React.createClass({
       };
 
       this.prevElNavStyle = elementNavigatorStyle;
-      this.prevWrapBoxStyle = selectedWrapBoxStyle;
+      this.prevSelectedSelectRect = selectedSelectRect;
 
-      if( this.state.prevStageWidth !== this.state.stageWidth || this.state.prevStageHeight !== this.state.stageHeight ){
-        selectedWrapBoxStyle.opacity = 0;
-      } else {
-        selectedWrapBoxStyle.opacity = 1;
+      if( elementNode.getType() !== 'string' ){
+        selectedElementResizable = true;
       }
     }
-
-
-
 
 
 
@@ -620,7 +637,7 @@ var DirectContext = React.createClass({
      *
      */
     return (
-      <div className='DirectContext theme-black' style={style}>
+      <div className='DirectContext theme-white' style={style}>
         <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
          <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
@@ -672,8 +689,15 @@ var DirectContext = React.createClass({
              </ul>
            </div>
          </div>
-         <div className='selected-element-wrap-box' style={selectedWrapBoxStyle}/>
 
+
+
+         <ElementSelectRect left={selectedSelectRect.left}
+                            top={selectedSelectRect.top}
+                            width={selectedSelectRect.width}
+                            height={selectedSelectRect.height}
+                            active={this.state.showElementNavigator}
+                            resizable={selectedElementResizable}/>
       </div>
 
     );

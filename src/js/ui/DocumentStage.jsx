@@ -869,22 +869,22 @@ var _ = require('underscore');
 
         componentDidUpdate(_prevProps, _prevState) {
           this.tabContextResize();
-          
+
           if( this.getCurrentRunningContext() ){
             var context = this.getCurrentRunningContext();
 
             if( context.getContextType() === 'document' || context.getContextType() === 'page' ){
                 this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
-
+                
                 switch( this.state.stageMode ){
                   case "desktop":
-                    context.setState({ stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
+                    context.setState({mode:'desktop', stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
                     break;
                   case "tablet":
-                    context.setState({ stageWidth: 1040, stageHeight: 693});
+                    context.setState({mode:'tablet', stageWidth: 1040, stageHeight: 693});
                     break;
                   case "mobile":
-                    context.setState({ stageWidth: 360, stageHeight: 578});
+                    context.setState({mode:'mobile', stageWidth: 360, stageHeight: 578});
                     break;
                 }
             }
