@@ -1,0 +1,162 @@
+{
+  "documentID": 7,
+  "documentName": "Until Dawn",
+  "lastElementId": 15,
+  "rootElementNode": {
+    "id": 3,
+    "type": "html",
+    "attributes": {
+      "tagName": "div",
+      "class": "wrapper"
+    },
+    "controls": {},
+    "rectangle": {
+      "desktop": {},
+      "tablet": {},
+      "mobile": {}
+    },
+    "comment": "",
+    "createDate": "Wed Sep 30 2015 18:25:22 GMT+0900 (KST)",
+    "updateDate": "Invalid Date",
+    "children": [{
+      "id": 4,
+      "type": "html",
+      "attributes": {
+        "tagName": "div",
+        "style": "",
+        "class": "float-box"
+      },
+      "controls": {},
+      "rectangle": {
+        "desktop": {
+          "width": 573.390625,
+          "height": 233.8125
+        },
+        "tablet": {},
+        "mobile": {}
+      },
+      "comment": "",
+      "createDate": "Wed Sep 30 2015 18:28:58 GMT+0900 (KST)",
+      "updateDate": "Invalid Date",
+      "children": [{
+        "id": 8,
+        "type": "html",
+        "attributes": {
+          "tagName": "h1",
+          "style": ""
+        },
+        "controls": {},
+        "rectangle": {
+          "desktop": {
+            "top": 344,
+            "width": null,
+            "height": 32.375
+          },
+          "tablet": {},
+          "mobile": {}
+        },
+        "comment": "",
+        "createDate": "Wed Sep 30 2015 18:35:04 GMT+0900 (KST)",
+        "updateDate": "Invalid Date",
+        "children": [{
+          "id": 9,
+          "type": "string",
+          "attributes": {
+            "text": "Until Dawn",
+            "tagName": "text"
+          },
+          "controls": {},
+          "rectangle": {
+            "desktop": {},
+            "tablet": {},
+            "mobile": {}
+          },
+          "comment": "",
+          "createDate": "Wed Sep 30 2015 18:35:36 GMT+0900 (KST)",
+          "updateDate": "Invalid Date",
+          "children": []
+        }]
+      }, {
+        "id": 10,
+        "type": "html",
+        "attributes": {
+          "tagName": "button",
+          "class": "btn"
+        },
+        "controls": {},
+        "rectangle": {
+          "desktop": {
+            "width": 213.75,
+            "height": 44.21875
+          },
+          "tablet": {
+            "width": 369.84375,
+            "height": 47.4375
+          },
+          "mobile": {
+            "width": 258.515625
+          }
+        },
+        "comment": "",
+        "createDate": "Wed Sep 30 2015 18:36:18 GMT+0900 (KST)",
+        "updateDate": "Invalid Date",
+        "children": [{
+          "id": 11,
+          "type": "string",
+          "attributes": {
+            "tagName": "text",
+            "text": "Enter"
+          },
+          "controls": {},
+          "rectangle": {
+            "desktop": {},
+            "tablet": {},
+            "mobile": {}
+          },
+          "comment": "",
+          "createDate": "Wed Sep 30 2015 18:36:18 GMT+0900 (KST)",
+          "updateDate": "Invalid Date",
+          "children": []
+        }]
+      }, {
+        "id": 12,
+        "type": "html",
+        "attributes": {
+          "tagName": "div",
+          "style": "",
+          "class": "title-copy"
+        },
+        "controls": {},
+        "rectangle": {
+          "desktop": {},
+          "tablet": {},
+          "mobile": {}
+        },
+        "comment": "",
+        "createDate": "Wed Sep 30 2015 18:46:17 GMT+0900 (KST)",
+        "updateDate": "Invalid Date",
+        "children": [{
+          "id": 13,
+          "type": "string",
+          "attributes": {
+            "text": "SONY Entertainment Present.",
+            "tagName": "text"
+          },
+          "controls": {},
+          "rectangle": {
+            "desktop": {},
+            "tablet": {},
+            "mobile": {}
+          },
+          "comment": "",
+          "createDate": "Wed Sep 30 2015 18:46:22 GMT+0900 (KST)",
+          "updateDate": "Invalid Date",
+          "children": []
+        }]
+      }]
+    }]
+  },
+  "elementNodes": [],
+  "pageCSS": "body {\n    margin:0;\n}\n\n.wrapper {\n    position:relative;\n    background-image:url(http://www.seatheworldonline.com/wp-content/uploads/2015/09/games-until-dawn_Cool_seatheworldonline.com_.jpg);\n    background-size: 100% auto;\n    height:100%;\n    overflow:hidden;\n}\n\n.float-box {\n    position:relative;\n    margin:auto;\n    top:40%;\n    /*margin-top:-30px;*/\n    background-color:rgba(0,0,0,0.5);\n    color:#fff;\n    text-align:center;\n    padding:30px;\n    box-sizing:border-box;\n    font-family:serif;\n}\n\nh1 {\n    font-size:36px;\n}\n\n.btn {\n    transition:all .3s;\n    border:3px solid #fff;\n    background-color:transparent;\n    color:#fff;\n    font-size:24px;\n    font-family:Sans serif;\n    \n    outline:none;\n}\n\n.btn:hover {\n   text-shadow:0 0 15px #fff;\n}\n\n.title-copy {\n    margin-top:30px;\n    font-size:12px;\n    font-family:Sans serif;\n    color:rgba(255,255,255,0.6);\n}",
+  "usingResources": {}
+}
