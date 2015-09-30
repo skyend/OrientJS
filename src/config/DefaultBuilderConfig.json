@@ -90,12 +90,12 @@
         "key": "document-js-editor",
         "title": "Document Script",
         "icon": "fire",
-        "equipToolKey": "DocumentCSSEditor"
+        "equipToolKey": "DocumentScriptEditor"
       }, {
         "key": "document-body-editor",
         "title": "Document Body",
         "icon": "code",
-        "equipToolKey": "DocumentCSSEditor"
+        "equipToolKey": "DocumentBodyEditor"
       }]
     }, {
       "groupName": "DocumentGeneralTools",

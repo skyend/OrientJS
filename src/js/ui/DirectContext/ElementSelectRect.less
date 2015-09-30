@@ -55,7 +55,7 @@
             transition: all .1s;
 
             border-radius: 50%;
-            background-color: #fff;
+            background-color: transparent;
         }
 
         > .left
@@ -73,7 +73,7 @@
             right: 0;
 
             margin-top: @pointSize / -2 - 1;
-            margin-right: @pointSize / -2 + 1;
+            margin-right: @pointSize / -2 - 1;
         }
 
         > .top
@@ -118,7 +118,7 @@
             right: 0;
 
             margin-top: @pointSize / -2 - 1;
-            margin-right: @pointSize / -2 + 1;
+            margin-right: @pointSize / -2 - 1;
         }
 
         > .right-bottom
@@ -126,7 +126,7 @@
             right: 0;
             bottom: 0;
 
-            margin-right: @pointSize / -2 + 1;
+            margin-right: @pointSize / -2 - 1;
             margin-bottom: @pointSize / -2 + 1;
         }
 
@@ -141,8 +141,20 @@
                 pointer-events: fill;
 
                 border: 1px solid #2981da;
+                background-color: #fff;
                 box-shadow: 0 0 3px #2981da;
+
+                &:hover
+                {
+                    border-style: dashed;
+                    //background-color: #000;
+                }
             }
         }
+    }
+
+    &.no-animate
+    {
+        transition: none;
     }
 }

@@ -14,7 +14,7 @@ var DocumentContextController = function(_document, _session, _serviceManager) {
   this.superElement = null;
 
   // screen Mode
-  this.displayMode = 'desktop'; // desktop, tablet, mobile
+  this.screenSizing = 'desktop'; // desktop, tablet, mobile
 
   // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
   if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
@@ -65,12 +65,13 @@ DocumentContextController.prototype.resume = function() {
 
 };
 
-DocumentContextController.prototype.setDisplayMode = function(_mode) {
-  this.displayMode = _mode;
+DocumentContextController.prototype.setScreenSizing = function(_sizing) {
+  console.log(_sizing);
+  this.screenSizing = _sizing;
 };
 
-DocumentContextController.prototype.getDisplayMode = function() {
-  return this.displayMode;
+DocumentContextController.prototype.getScreenSizing = function() {
+  return this.screenSizing;
 }
 
 // superElement
@@ -435,8 +436,6 @@ DocumentContextController.prototype.snapshot = function(_elementNode, _present, 
     //   if ()
     // }
 
-    this.revisionManager.writeHistory(presentChangeLog);
-    this.revisionManager.flushRevision();
 
 
   } else if (_type === 'all') {
@@ -447,7 +446,7 @@ DocumentContextController.prototype.snapshot = function(_elementNode, _present, 
       after: _present,
       type: 'all'
     };
-
+    //console.log(_past, _present);
     this.revisionManager.appendNewRevision(presentRevision);
 
     //

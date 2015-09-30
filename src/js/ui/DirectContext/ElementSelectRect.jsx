@@ -3,6 +3,11 @@ import './ElementSelectRect.less';
 
 var ElementSelectRect = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+    return {
+      dragging:false
+    };
+  },
 
   getDefaultProps(){
     return {
@@ -20,32 +25,44 @@ var ElementSelectRect = React.createClass({
 
   mouseDownPoint(){
     this.dragReady = true;
+      console.log('down');
   },
 
-  mouseMovePoint(_e, _posInfo ){
+  mouseMovePoint(_e, _horizon, _vertical ){
+      console.log('move');
     if(this.dragReady){
       app.ui.occupyGlobalDrag(this, true);
       app.ui.enableGlobalDrag();
       app.ui.toMouseDawn();
+      app.ui.startGlobalDrag();
 
-      this.draggingPos = _posInfo;
+      this.draggingPosHor = _horizon;
+      this.draggingPosVer = _vertical;
 
       this.dragReady = false;
     }
   },
 
   mouseUpPoint(){
+      console.log('up');
+    this.dragReady = false;
+  },
+
+  mouseLeavePoint(){
+    console.log('leave');
     this.dragReady = false;
   },
 
   onGlobalDragStartFromUI(_e) {
-    var pageX = _e.pageX;
-    var pageY = _e.pageY;
-    this.emit("ElementResizingStart", {
-      pageX:pageX,
-      pageY:pageY,
-      pointInfo:this.draggingPos
-    });
+    // var pageX = _e.pageX;
+    // var pageY = _e.pageY;
+    // this.emit("ElementResizingStart", {
+    //   pageX:pageX,
+    //   pageY:pageY,
+    //   pointInfo:this.draggingPos
+    // });
+
+    this.setState({'dragging':true});
   },
 
   onGlobalDragFromUI(_e) {
@@ -55,7 +72,8 @@ var ElementSelectRect = React.createClass({
     this.emit("ElementResizing", {
       pageX:pageX,
       pageY:pageY,
-      pointInfo:this.draggingPos
+      pointHor:this.draggingPosHor,
+      pointVer: this.draggingPosVer
     });
   },
 
@@ -68,6 +86,8 @@ var ElementSelectRect = React.createClass({
       pageY:pageY,
       pointInfo:this.draggingPos
     });
+
+    this.setState({'dragging':false});
   },
   //
   // dragStartPoint(_e, _posList){
@@ -118,15 +138,20 @@ var ElementSelectRect = React.createClass({
   //   });
   // },
 
-  renderPoint( _pos ){
+  renderPoint( _horizon, _vertical ){
     var self = this;
-    var posList = _pos.split('-');
+
+    var twice = true;
+
+    if(_horizon === undefined) twice = !twice;
+    if( _vertical === undefined ) twice = !twice;
 
     return (
-      <div className={'point ' + _pos}
-        onMouseDown={function(_e){self.mouseDownPoint.apply(self, [_e, posList])}}
-        onMouseMove={function(_e){self.mouseMovePoint.apply(self, [_e, posList])}}
-        onMouseUp={function(_e){self.mouseUpPoint.apply(self, [_e, posList])}}/>
+      <div className={'point ' + (twice ? [_horizon, _vertical].join('-'):[_horizon, _vertical].join(''))}
+        onMouseDown={function(_e){self.mouseDownPoint.apply(self, [_e, _horizon, _vertical])}}
+        onMouseMove={function(_e){self.mouseMovePoint.apply(self, [_e, _horizon, _vertical])}}
+        onMouseLeave={function(_e){self.mouseLeavePoint.apply(self, [_e, _horizon, _vertical])}}
+        onMouseUp={function(_e){self.mouseUpPoint.apply(self, [_e, _horizon, _vertical])}}/>
     )
   },
 
@@ -144,19 +169,24 @@ var ElementSelectRect = React.createClass({
 
     return (
       <div className={classes.join(' ')}>
-        {this.renderPoint('left')}
-        {this.renderPoint('right')}
-        {this.renderPoint('top')}
-        {this.renderPoint('bottom')}
-        {this.renderPoint('left-top')}
-        {this.renderPoint('left-bottom')}
-        {this.renderPoint('right-top')}
-        {this.renderPoint('right-bottom')}
+        {this.renderPoint('left',undefined)}
+        {this.renderPoint('right',undefined)}
+        {this.renderPoint(undefined, 'top')}
+        {this.renderPoint(undefined, 'bottom')}
+        {this.renderPoint('left','top')}
+        {this.renderPoint('left','bottom')}
+        {this.renderPoint('right','top')}
+        {this.renderPoint('right','bottom')}
       </div>
     )
   },
 
   render(){
+    var classes = ['ElementSelectRect'];
+    if( this.state.dragging ){
+      classes.push('no-animate');
+    }
+
     var style = {
       width: this.props.width,
       height:this.props.height,
@@ -170,7 +200,7 @@ var ElementSelectRect = React.createClass({
     }
 
     return (
-      <div className='ElementSelectRect' style={style}>
+      <div className={classes.join(' ')} style={style}>
         {this.renderEightPoint()}
       </div>
     )

@@ -16,7 +16,7 @@ var DirectContext = React.createClass({
       elementNavigatorX: 0,
       elementNavigatorY: 0,
       showElementNavigator: false,
-      mode:'desktop'
+      sizing:'desktop'
     };
   },
 
@@ -450,13 +450,65 @@ var DirectContext = React.createClass({
   },
 
   onThrowCatcherElementResizing(_eventData){
-    console.log(this.state.selectedElementNode);
-    
-    console.log(_eventData);
+    var elNode = this.state.selectedElementNode;
+    var stageBound = this.getIFrameStageBoundingRect();
+    var elNodeBound = elNode.getBoundingRect();
+    var computedStyle = this.getWindow().getComputedStyle(elNode.getRealDOMElement());
+
+    var mouseXonStage = _eventData.pageX - stageBound.left;
+    var mouseYonStage = _eventData.pageY - stageBound.top;
+
+    var nextWidth = undefined;// = mouseXonStage - elNodeBound.left;
+    var nextHeight = undefined;// = mouseYonStage - elNodeBound.top;
+    var nextLeft = undefined;
+    var nextTop = undefined;
+
+    if( _eventData.pointHor === 'right'){
+      nextWidth = mouseXonStage - elNodeBound.left;
+    } else if( _eventData.pointHor === 'left' ){
+      nextLeft = mouseXonStage;
+      nextWidth = elNodeBound.right - nextLeft;
+    }
+
+    if( _eventData.pointVer === 'bottom'){
+      nextHeight = mouseYonStage - elNodeBound.top;
+    } else if( _eventData.pointVer === 'top' ){
+      nextTop = mouseYonStage;
+      nextHeight = elNodeBound.bottom - nextTop;
+    }
+
+
+
+    // boxSizing에 따라 padding과 border의 넓이를 제외한다.
+    switch(computedStyle.boxSizing){
+      case "content-box":
+        nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+        nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+
+      case "padding-box":
+        nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
+        nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
+      break;
+    }
+
+    // 0미만방지
+    if( nextWidth < 0 ) nextWidth = 0;
+    if( nextHeight < 0 ) nextHeight = 0;
+
+    //console.log(nextHeight);
+    elNode.transformRectByEditor(nextLeft, nextTop, nextWidth, nextHeight);
+
+    elNode.document.getContextController().rootRender();
+    this.forceUpdate();
   },
 
   onThrowCatcherElementResizingEnd(_eventData){
+    var elNode = this.state.selectedElementNode;
 
+    elNode.getParent().executeSnapshot('all');
+
+    // 랜더링
+    elNode.document.getContextController().rootRender();
   },
 
 
@@ -467,11 +519,12 @@ var DirectContext = React.createClass({
   //   this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
   // },
 
-
+  // 히스토리 변경알림
   updatedHistory(){
     this.emitRefreshDirectContext();
   },
 
+  // DirectContext에서 랜더링중인 Document와 ElementNode의 속성이 변경되었음을 알려 Tool의 필드를 갱신하게 한다.
   emitRefreshDirectContext(){
     this.emit("RefreshedDirectContext");
   },
@@ -520,11 +573,22 @@ var DirectContext = React.createClass({
   componentWillUpdate(_nextProps, _nextState){
     this.state.prevStageWidth = this.state.stageWidth;
     this.state.prevStageHeight = this.state.stageHeight;
+
+    if( _nextState.sizing !== this.props.contextController.getScreenSizing() ){
+      this.mustRedrawStage = true;
+    }
+    // contextController 의 디스플레이모드를 변경한다.
+    this.props.contextController.setScreenSizing(_nextState.sizing);
   },
 
   componentDidUpdate(){
     this.scrollX = this.getIFrameStageScrollX();
     this.scrollY = this.getIFrameStageScrollY();
+
+    if( this.mustRedrawStage ){
+      this.props.contextController.rootRender();
+      this.mustRedrawStage = false;
+    }
 
     //this.repositionElementNavigator();
 

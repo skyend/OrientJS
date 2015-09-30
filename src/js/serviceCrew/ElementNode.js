@@ -32,6 +32,11 @@ var ElementNode = function(_document, _elementNodeDataObject, _preInsectProps) {
   }
 
    **/
+  this.rectangle = {
+    desktop: {},
+    tablet: {},
+    mobile: {}
+  };
 
   this.reactPackageKey;
   this.reactComponentKey;
@@ -163,6 +168,11 @@ ElementNode.prototype.setControl = function(_controlName, _value) {
   this.controls[_controlName] = _value;
   this.emitToParent("RequestReRenderMe");
 };
+
+ElementNode.prototype.setRectangle = function(_rectangle) {
+  this.rectangle = _rectangle;
+};
+
 // controls
 ElementNode.prototype.setControls = function(_controls) {
   this.controls = _controls;
@@ -211,6 +221,31 @@ ElementNode.prototype.setRealElement = function(_realElement) {
   };
 
 };
+
+
+ElementNode.prototype.setRectanglePart = function(_partValue, _partName) {
+  var rectangleRef = this.getCurrentRectangle();
+
+  if (/^[\d\.]+$/.test(rectangleRef[_partName])) {
+    // 숫자로만 이루어져 있을 경우
+    rectangleRef[_partName] = _partValue;
+  } else if (/^[\d\.]+((\w+)|%)$/.test(rectangleRef[_partName])) {
+    // 숫자와 알파벳 또는 퍼센트로 이루어져 있을 경우
+    this.setRectanglePartWithKeepingUnit(_partValue, _partName);
+  } else {
+    // 아무것도 해당되지 않을 경우
+    rectangleRef[_partName] = _partValue;
+  }
+};
+
+ElementNode.prototype.setRectanglePartWithKeepingUnit = function(_partValue, _partName) {
+  console.log(valueWithUnitSeperator(_partValue));
+};
+
+
+function valueWithUnitSeperator(_value) {
+
+}
 
 
 
@@ -269,6 +304,10 @@ ElementNode.prototype.getAttributes = function() {
 // control
 ElementNode.prototype.getControl = function(_controlName) {
   return this.controls[_controlName];
+};
+
+ElementNode.prototype.getRectangle = function() {
+  return this.rectangle;
 };
 
 // controls
@@ -353,15 +392,14 @@ ElementNode.prototype.getRealControl = function(_controlName) {
   return this.resolveRenderText(this.controls[_controlName]);
 };
 
-ElementNode.prototype.getRectangle = function() {
-  switch (this.document.contextController.getDisplayMode) {
+ElementNode.prototype.getCurrentRectangle = function() {
+  switch (this.document.contextController.getScreenSizing()) {
     case "desktop":
-
-      break;
+      return this.rectangle['desktop'];
     case "tablet":
-      break;
+      return this.rectangle['tablet'];
     case "mobile":
-      break;
+      return this.rectangle['mobile'];
   }
 };
 
@@ -448,7 +486,7 @@ ElementNode.prototype.dettachMeFromParent = function() {
     if (this.document.getRootElementNode() === this) {
       this.document.removeRootElementNode();
     } else {
-      //  ElementNodes 리스트에 존재하는 노드
+      //  ElementNodes 리스트에 존재하는 노드(참조용노드)
       // 추후 구현
 
 
@@ -657,6 +695,8 @@ ElementNode.prototype.copyAllAtrributeFromDOMElement = function(_domElement) {
 
 
 ElementNode.prototype.applyAttributesToRealDOM = function() {
+  var currentRect = this.getCurrentRectangle();
+
   var elementAttributes = this.getAttributes();
   var keys = Object.keys(elementAttributes);
 
@@ -669,17 +709,30 @@ ElementNode.prototype.applyAttributesToRealDOM = function() {
     for (var i = 0; i < keys.length; i++) {
 
       if (keys[i] !== 'tagName') {
-
         // resolve String : data binding and i18n processing
         realElement.setAttribute(keys[i], this.resolveRenderText(elementAttributes[keys[i]]));
       }
-
-
     }
   }
 
+  if (/^\d+/.test(currentRect.left)) {
+    realElement.style.left = currentRect.left;
+  }
+
+  if (/^\d+/.test(currentRect.top)) {
+    realElement.style.top = currentRect.top;
+  }
+
+  if (/^\d+/.test(currentRect.width)) {
+    realElement.style.width = currentRect.width;
+  }
+
+  if (/^\d+/.test(currentRect.height)) {
+    realElement.style.height = currentRect.height;
+  }
 
 };
+
 
 
 ElementNode.prototype.isDropableComponent = function(_dropType) {
@@ -1039,6 +1092,31 @@ ElementNode.prototype.updatedAttribute = function(_attrKey) {
   }
 };
 
+// 편집자에 의해 Rect가 변경될 떄
+ElementNode.prototype.transformRectByEditor = function(_left, _top, _width, _height) {
+  // var screenSizing = this.document.getContextController().getScreenSizing();
+  //
+  var currentRectangleRef = this.getCurrentRectangle();
+
+  if (_left !== undefined) {
+    this.setRectanglePart(_left, 'left');
+  }
+
+  if (_top !== undefined) {
+    this.setRectanglePart(_top, 'top');
+  }
+
+  if (_width !== undefined) {
+    this.setRectanglePart(_width, 'width');
+  }
+
+  if (_height !== undefined) {
+    this.setRectanglePart(_height, 'height');
+  }
+
+  console.log(currentRectangleRef);
+};
+
 ElementNode.prototype.executeSnapshot = function(_type) {
   //var presentRevision = this.export();
   //  console.log(presentRevision);
@@ -1229,6 +1307,11 @@ ElementNode.prototype.import = function(_elementNodeDataObject) {
   this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
 
   this.controls = _elementNodeDataObject.controls || {};
+  this.rectangle = _elementNodeDataObject.rectangle || {
+    desktop: {},
+    tablet: {},
+    mobile: {}
+  };
 
   this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
   this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
@@ -1253,6 +1336,7 @@ ElementNode.prototype.export = function(_withoutId) {
     name: this.getName(),
     attributes: _.clone(this.getAttributes()),
     controls: _.clone(this.getControls()),
+    rectangle: _.clone(this.getRectangle()),
     comment: this.getComment(),
     componentName: this.getComponentName(),
     createDate: (new Date(this.createDate)).toString(),

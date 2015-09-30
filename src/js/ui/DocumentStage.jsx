@@ -875,16 +875,16 @@ var _ = require('underscore');
 
             if( context.getContextType() === 'document' || context.getContextType() === 'page' ){
                 this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
-                
+
                 switch( this.state.stageMode ){
                   case "desktop":
-                    context.setState({mode:'desktop', stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
+                    context.setState({sizing:'desktop', stageWidth: this.state.width, stageHeight: this.state.height - this.getTabContextOffsetTopByDS()});
                     break;
                   case "tablet":
-                    context.setState({mode:'tablet', stageWidth: 1040, stageHeight: 693});
+                    context.setState({sizing:'tablet', stageWidth: 1040, stageHeight: 693});
                     break;
                   case "mobile":
-                    context.setState({mode:'mobile', stageWidth: 360, stageHeight: 578});
+                    context.setState({sizing:'mobile', stageWidth: 360, stageHeight: 578});
                     break;
                 }
             }
