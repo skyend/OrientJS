@@ -990,7 +990,7 @@ var _ = require('underscore');
                         {this.state.contexts.length > 0 ?
                           this.state.contexts.map( this.renderContext ): (
                             <div className='empty-holder'>
-                              {"Open a tab context and Start your amazing Service!"}<br/><h1>{"For ICE CMS"}</h1>
+                              {"Open a tab context and Start your amazing Service!2"}<br/><h1>{"For ICE CMS"}</h1>
                               <div className='ball'/>
                             </div>
                           )
