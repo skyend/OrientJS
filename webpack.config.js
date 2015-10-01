@@ -1,5 +1,5 @@
 var Clean = require('clean-webpack-plugin');
-var webpack = require('Webpack');
+var webpack = require('webpack');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
