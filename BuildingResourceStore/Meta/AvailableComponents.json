@@ -1,5 +1,5 @@
 {
-  "host": "http://localhost:8080",
+  "host": "",
   "temporaryNamespaceDir": "/BuildingResourceStore/Components/",
   "availablePackages": [{
     "key": "BasicFramePackage",
