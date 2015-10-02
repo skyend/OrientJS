@@ -35,6 +35,60 @@
         mix-blend-mode: exclusion;
     }
 
+    > .unit-setting
+    {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+
+        height: 20px;
+        > ul
+        {
+            display: inline-block;
+
+            height: 20px;
+            margin: 0;
+            padding: 0;
+
+            > li
+            {
+                font-size: 10px;
+
+                display: inline-block;
+
+                box-sizing: border-box;
+                width: 20px;
+                height: 20px;
+                margin: 0;
+                margin-left: 5px;
+                padding: 5px 0;
+
+                cursor: pointer;
+                transition: all .3s;
+                text-align: center;
+                pointer-events: fill;
+
+                color: #2981da;
+                border-bottom-color: #fff;
+                border-radius: 50%;
+                background-color: rgba(255,255,255,.9);
+                box-shadow: 0 5px 10px rgba(0,0,0,.3), inset 0 -5px 5px rgba(0,0,0,.1);
+                &:hover
+                {
+                    color: #fff;
+                    background-color: rgba(110, 173, 239, .9);
+                }
+
+
+                &.selected
+                {
+                    color: #fff;
+                    background-color: rgba(0, 128, 255, .9);
+                }
+            }
+        }
+    }
+
     > .eight-container
     {
         position: relative;
@@ -65,6 +119,8 @@
 
             margin-top: @pointSize / -2 - 1;
             margin-left: @pointSize / -2 - 1;
+
+            cursor: ew-resize;
         }
 
         > .right
@@ -74,6 +130,8 @@
 
             margin-top: @pointSize / -2 - 1;
             margin-right: @pointSize / -2 - 1;
+
+            cursor: ew-resize;
         }
 
         > .top
@@ -83,6 +141,8 @@
 
             margin-top: @pointSize / -2 - 1;
             margin-left: @pointSize / -2 - 1;
+
+            cursor: ns-resize;
         }
 
         > .bottom
@@ -92,6 +152,8 @@
 
             margin-bottom: @pointSize / -2 + 1;
             margin-left: @pointSize / -2 - 1;
+
+            cursor: ns-resize;
         }
 
         > .left-top
@@ -101,6 +163,8 @@
 
             margin-top: @pointSize / -2 - 1;
             margin-left: @pointSize / -2 - 1;
+
+            cursor: nwse-resize;
         }
 
         > .left-bottom
@@ -110,6 +174,8 @@
 
             margin-bottom: @pointSize / -2 + 1;
             margin-left: @pointSize / -2 - 1;
+
+            cursor: nesw-resize;
         }
 
         > .right-top
@@ -119,6 +185,8 @@
 
             margin-top: @pointSize / -2 - 1;
             margin-right: @pointSize / -2 - 1;
+
+            cursor: nesw-resize;
         }
 
         > .right-bottom
@@ -128,6 +196,8 @@
 
             margin-right: @pointSize / -2 - 1;
             margin-bottom: @pointSize / -2 + 1;
+
+            cursor: nwse-resize;
         }
 
         &.active

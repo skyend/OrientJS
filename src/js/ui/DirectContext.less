@@ -80,6 +80,15 @@
     {
         > .element-navigator
         {
+            > .element-size-rect
+            {
+                > .size
+                {
+                    color: #fff;
+                    background-color: rgba(15, 71, 140, .77);
+                }
+            }
+
             > .box
             {
                 > ul
@@ -158,7 +167,26 @@
 
         transition: height .3s, opacity .3s;
         transition-timing-function: ease;
+        > .element-size-rect
+        {
+            position: absolute;
+            bottom: -40px;
+            left: 5px;
 
+            display: inline-block;
+            > .size
+            {
+                font-size: 12px;
+
+                display: inline-block;
+
+                box-sizing: border-box;
+                height: 20px;
+                padding: 4px;
+
+                border-radius: 4px;
+            }
+        }
         > .box
         {
             display: inline-block;

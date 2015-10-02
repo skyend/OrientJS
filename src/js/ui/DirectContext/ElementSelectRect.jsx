@@ -63,6 +63,7 @@ var ElementSelectRect = React.createClass({
     // });
 
     this.setState({'dragging':true});
+    this.emit("ElementResizingStart");
   },
 
   onGlobalDragFromUI(_e) {
@@ -158,6 +159,22 @@ var ElementSelectRect = React.createClass({
 // onDragStart={function(_e){ self.dragStartPoint.apply(self,[_e, posList]) }}
 // onDrag={function(_e){ self.dragPoint.apply(self,[_e, posList]) }}
 // onDragEnd={function(_e){ self.dragEndPoint.apply(self,[_e, posList ]) }}
+  renderUnitControl(){
+    if( !this.props.resizable){
+        return '';
+    }
+
+    return (
+      <div className='unit-setting'>
+        <ul>
+          <li> <i className="fa fa-eraser"></i> </li>
+          <li>EM</li>
+          <li>%</li>
+          <li className='selected'>PX</li>
+        </ul>
+      </div>
+    )
+  },
 
   renderEightPoint(){
     var self = this;
@@ -201,6 +218,7 @@ var ElementSelectRect = React.createClass({
 
     return (
       <div className={classes.join(' ')} style={style}>
+        {this.renderUnitControl()}
         {this.renderEightPoint()}
       </div>
     )

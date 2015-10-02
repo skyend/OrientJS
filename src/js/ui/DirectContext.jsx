@@ -446,7 +446,7 @@ var DirectContext = React.createClass({
   },
 
   onThrowCatcherElementResizingStart(_eventData){
-
+    this.setState({selectedElementResizg:true});
   },
 
   onThrowCatcherElementResizing(_eventData){
@@ -504,6 +504,7 @@ var DirectContext = React.createClass({
 
   onThrowCatcherElementResizingEnd(_eventData){
     var elNode = this.state.selectedElementNode;
+    this.setState({selectedElementResizg:false});
 
     elNode.getParent().executeSnapshot('all');
 
@@ -691,6 +692,19 @@ var DirectContext = React.createClass({
       if( elementNode.getType() !== 'string' ){
         selectedElementResizable = true;
       }
+
+      var elementSizeInfo;
+      if( this.state.selectedElementResizg ){
+        var rectangle = elementNode.getCurrentRectangle();
+
+        elementSizeInfo = (
+          <div className='element-size-rect'>
+            <div className='size'>
+              {(rectangle.width || 'auto') + ' x ' + (rectangle.height || 'auto')}
+            </div>
+          </div>
+        )
+      }
     }
 
 
@@ -705,6 +719,8 @@ var DirectContext = React.createClass({
         <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
          <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
+           {elementSizeInfo}
+
            <div className='box'>
              <ul>
 
@@ -767,6 +783,5 @@ var DirectContext = React.createClass({
     );
   }
 });
-
 
 export default DirectContext;
