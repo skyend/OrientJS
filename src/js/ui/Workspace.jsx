@@ -255,6 +255,7 @@ var Workspace = React.createClass({
         case "BottomNavigation":
           this.refs['BottomNavigation'].setState({toolEgg: _toolEgg});
         case "ModalWindow":
+          this.refs['Modal'].setState({toolEgg: _toolEgg});
       }
 
       this.resizeSelf();
@@ -537,47 +538,51 @@ var Workspace = React.createClass({
 
     render() {
         return (
-            <div>
-                <HeadToolBar ref='HeadToolBar'/>
+            <div className='workspace'>
+                <div className='editor-floor-supporters'>
+                    <HeadToolBar ref='HeadToolBar'/>
 
-                <VToolNavigation ref="LeftNavigation"
-                                config={this.props.LeftNavigationConfig}
-                                naviWidth={50}
-                                toolWidth={270}
-                                position='left'
-                                naviItemFontSize={20}/>
+                    <VToolNavigation ref="LeftNavigation"
+                                    config={this.props.LeftNavigationConfig}
+                                    naviWidth={50}
+                                    toolWidth={270}
+                                    position='left'
+                                    naviItemFontSize={20}/>
 
-                <VToolNavigation ref="RightNavigation"
-                                 config={this.props.RightNavigationConfig}
-                                 naviWidth={25}
-                                 toolWidth={420}
-                                 showTitle={true}
-                                 verticalText={true}
-                                 position='right'
-                                 naviItemFontSize={16}/>
+                    <VToolNavigation ref="RightNavigation"
+                                     config={this.props.RightNavigationConfig}
+                                     naviWidth={25}
+                                     toolWidth={420}
+                                     showTitle={true}
+                                     verticalText={true}
+                                     position='right'
+                                     naviItemFontSize={16}/>
 
-               <ToolNavigation ref="BottomNavigation"
-                                defaultToolSize={310}
-                                maxSize={700}
-                                config={this.props.BottomNavigationConfig}
-                                initialShow={false}
-                                showTitle={true}
-                                showIcon={true}
-                                theme='dark'
-                                verticalText={true}
-                                position='bottom' />
+                   <ToolNavigation ref="BottomNavigation"
+                                    defaultToolSize={310}
+                                    maxSize={700}
+                                    config={this.props.BottomNavigationConfig}
+                                    initialShow={false}
+                                    showTitle={true}
+                                    showIcon={true}
+                                    theme='dark'
+                                    verticalText={true}
+                                    position='bottom' />
 
-                <DocumentStage ref='DocumentStage'
-                                aimingCount={100}
-                                aimingEscapeStepSize={10}
-                                boundaryBorderSize={5}  />
+                    <DocumentStage ref='DocumentStage'
+                                    aimingCount={100}
+                                    aimingEscapeStepSize={10}
+                                    boundaryBorderSize={5}  />
 
 
-                <FloatingMenuBox ref='stage-context-menu'/>
+                    <FloatingMenuBox ref='stage-context-menu'/>
+
+
+                    <NotificationSystem ref='NotificationSystem'/>
+                    <SubWindowSystem ref='SubWindowSystem'/>
+                </div>
+
                 <Modal ref="Modal"/>
-
-                <NotificationSystem ref='NotificationSystem'/>
-                <SubWindowSystem ref='SubWindowSystem'/>
             </div>
         )
     }

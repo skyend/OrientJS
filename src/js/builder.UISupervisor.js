@@ -319,10 +319,12 @@ UI.prototype.setProjectManager = function(_projectManager) {
 UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
   var who = _eventData.path[0];
 
-  who.setState({
-    pageMetaList: this.projectManager.serviceManager.getPageMetaList(),
-    documentMetaList: this.projectManager.serviceManager.getDocumentMetaList(),
-    apiSourceMetaList: this.projectManager.serviceManager.getAPISourceMetaList()
+  this.projectManager.serviceManager.loadMetaData(function(__meta) {
+    who.setState({
+      pageMetaList: __meta.pages,
+      documentMetaList: __meta.documents,
+      apiSourceMetaList: __meta.apiSources
+    });
   });
 };
 
@@ -348,18 +350,22 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   console.log('BringDocumentContext', _eventData);
   //console.log('BringDocumentContext', _eventData.document);
   var documentMeta = _eventData.documentMeta;
-
+  var self = this;
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
+  this.projectManager.serviceManager
+    .getDocumentContextController(documentMeta.idx, function(_documentContextController) {
 
-  this.workspace.openStageContext({
-    documentID: documentMeta.id,
-    contextID: 'document#' + documentMeta.id,
-    contextTitle: documentMeta.title,
-    contextType: 'document',
-    contextController: documentContextController,
-    iconClass: _eventData.iconClass
-  });
+      self.workspace.openStageContext({
+        documentID: documentMeta.idx,
+        contextID: 'document#' + documentMeta.idx,
+        contextTitle: documentMeta.title,
+        contextType: 'document',
+        contextController: _documentContextController,
+        iconClass: _eventData.iconClass
+      });
+    });
+
+
 };
 
 
@@ -385,6 +391,12 @@ UI.prototype.onThrowCatcherRequestAttachTool = function(_eventData) {
 UI.prototype.onThrowCatcherStoreToolState = function(_eventData) {
 
   this.toolFactory.storeToolState(_eventData.toolKey, _eventData.state);
+};
+
+UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
+  this.projectManager.serviceManager.createDocument(_eventData.title, _eventData.type, function() {
+    console.log(_eventData);
+  });
 };
 
 

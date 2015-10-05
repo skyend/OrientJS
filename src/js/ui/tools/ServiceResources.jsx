@@ -20,6 +20,14 @@
           //
         },
 
+        clickNewDocument(){
+          console.log('why');
+          this.emit("RequestAttachTool", {
+            "toolKey": "DocumentCUForm",
+            "where":"ModalWindow"
+          });
+        },
+
         renderAPISourceItem( _apiSourceMeta ){
           var iconClass = 'fa-database';
 
@@ -99,7 +107,7 @@
 
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === 'document' ){
-              if( this.state.runningContext.documentID ==  _documentMeta.id ){
+              if( this.state.runningContext.documentID ==  _documentMeta.idx ){
                 contextIsRunning = true;
               }
             }
@@ -145,10 +153,12 @@
 
         renderDocumentList(){
 
+
+
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file-text-o'></i> Documents <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-file-text-o'></i> Documents <span className='temp-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
               </label>
               <ul>
                 { this.state.documentMetaList.map(this.renderDocumentItem) }

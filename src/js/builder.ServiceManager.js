@@ -4,13 +4,15 @@
  *
  */
 var _ = require('underscore');
+var request = require('superagent');
 
 var DocumentContextController = require('./serviceCrew/DocumentContextController.js');
 var ApiSourceContextControllers = require('./serviceCrew/ApiSourceContextController.js');
 
 var ObjectExplorer = require('./util/ObjectExplorer.js');
 
-var ServiceManager = function(_session, _serviceKey) {
+var ServiceManager = function(_app, _session, _serviceKey) {
+  this.app = _app;
   this.serviceKey = _serviceKey;
   this.session = _session;
   this.docContextControllers = {};
@@ -26,11 +28,18 @@ ServiceManager.prototype.init = function() {
   this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
 };
 
+ServiceManager.prototype.loadMetaData = function(_complete) {
+  var serviceIdx = 1;
+  var self = this;
+
+  this.app.gelateriaRequest.loadService(serviceIdx, function(_result) {
+    self.meta = _result;
+    _complete(_result);
+  });
+};
+
 //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
-
 ServiceManager.prototype.getNodeTypeData = function(_nodeTypeId) {
-
-
 
   return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net/api/" + _nodeTypeId + "/list.json?t=api");
 };
@@ -47,15 +56,26 @@ ServiceManager.prototype.getAPISourceMetaList = function() {
   return this.meta.apiSources;
 };
 
-ServiceManager.prototype.getDocumentMetaById = function(_id) {
-  var metaList = this.getDocumentMetaList();
+ServiceManager.prototype.createDocument = function(_title, _type, _complete) {
+  //console.log('create ', _title, _type);
 
-  var index = _.findIndex(metaList, {
-    id: _id
+  this.app.gelateriaRequest.createDocument(this.meta._id, _title, _type, function() {
+    _complete();
   });
-
-  return metaList[index];
 };
+
+// Deprecated
+// ServiceManager.prototype.getDocumentMetaById = function(_idx) {
+//   var metaList = this.getDocumentMetaList();
+//   console.log(_idx, metaList);
+//   var index = _.findIndex(metaList, {
+//     idx: _idx
+//   });
+//
+//
+//
+//   return metaList[index];
+// };
 
 ServiceManager.prototype.getAPISourceMetaById = function(_id) {
   var metaList = this.getAPISourceMetaList();
@@ -67,13 +87,14 @@ ServiceManager.prototype.getAPISourceMetaById = function(_id) {
   return metaList[index];
 };
 
-ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
-  var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
-
-  var documentJSON = this.session.certifiedRequestJSON(documentURL);
-
-  return documentJSON;
-};
+// Deprecated
+// ServiceManager.prototype.loadDocumentByMeta = function(_documentMeta) {
+//   var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
+//
+//   var documentJSON = this.session.certifiedRequestJSON(documentURL);
+//
+//   return documentJSON;
+// };
 
 ServiceManager.prototype.getICafeAPIDataOfField = function(_dataPath) {
   var apiResourceKey = _dataPath.split('/')[0];
@@ -117,19 +138,22 @@ ServiceManager.prototype.resolveString = function(_text) {
 };
 
 
-ServiceManager.prototype.getDocumentContextController = function(_documentId) {
+ServiceManager.prototype.getDocumentContextController = function(_documentIdx, _complete) {
+  var self = this;
 
-  if (this.docContextControllers[_documentId] === undefined) {
-    var docMeta = this.getDocumentMetaById(_documentId);
-    var docJSON = this.loadDocumentByMeta(docMeta);
+  if (this.docContextControllers[_documentIdx] === undefined) {
 
-    var documentContextController = new DocumentContextController(docJSON, this.session, this);
+    this.app.gelateriaRequest.loadDocument(this.meta.idx, _documentIdx, function(_docJSON) {
+      var documentContextController = new DocumentContextController(_docJSON, self.app.session, self);
 
-    this.docContextControllers[_documentId] = documentContextController;
+      self.docContextControllers[_documentIdx] = documentContextController;
+
+      _complete(self.docContextControllers[_documentIdx])
+    });
+
+  } else {
+    _complete(this.docContextControllers[_documentIdx]);
   }
-
-
-  return this.docContextControllers[_documentId];
 };
 
 ServiceManager.prototype.getApiSourceContextController = function(_apiSourceId) {

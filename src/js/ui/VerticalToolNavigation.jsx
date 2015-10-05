@@ -18,7 +18,7 @@ var VerticalToolNavigation = React.createClass({
     getInitialState() {
 
         return {
-
+            fold: true,
             // toolWidthMode
             //   auto :
             //     property 로 정해진 width에 따라 지정
@@ -81,7 +81,7 @@ var VerticalToolNavigation = React.createClass({
 
     clickNaviItem(_e, _naviItem) {
 
-        if (this.fold) {
+        if (this.state.fold) {
             this.unfoldTool();
         } else {
             // 한번더 클릭하면 패널을 닫는다.

@@ -7,99 +7,86 @@
  * Requires(css) :
  */
 
-(function () {
-    require('./Modal.less');
-    var React = require("react");
-    var Modal = React.createClass({
-        getInitialState() {
-            return {
-                Modal: <div/>,
-                equipTool: null
-            }
-        },
 
-        equipTool(_toolClass, _toolConfig, _toolKey, _storedToolState) {
+import './Modal.less';
+import React from "react";
+import ToolNest from './ToolNest.jsx';
 
-            if (typeof _toolClass === 'function') {
+var Modal = React.createClass({
+  mixins: [require('./reactMixin/EventDistributor.js')],
 
-                this.setState({
-                    equipTool: {class: _toolClass, config: _toolConfig, toolKey: _toolKey, storedToolState: _storedToolState}
-                });
+  getInitialState() {
+    return {
+      toolEgg:null
+    }
+  },
 
-            } else {
-                this.setState({
-                    equipTool: undefined
-                });
+  onThrowCatcherClose(){
+    this.removeAttachedTool();
+  },
 
-                this.emit("NoticeMessage", {
-                    title: "From PanelNavigation",
-                    message: "Could't equip tool",
-                    level: "error"
-                });
-            }
+  removeAttachedTool(){
+    this.setState({toolEgg:null});
+  },
 
-        },
+  componentDidUpdate(){
 
-        renderEquipTool(){
-            if (this.state.equipTool === null) return;
-            
-            return (
-                React.createElement(this.state.equipTool.class, {config: this.state.config, ref: this.state.equipTool.toolKey})
-            );
-        },
 
-        show(){
-            var selfDom = this.getDOMNode();
-            selfDom.style.pointerEvents = 'auto';
-            selfDom.style.opacity = 1;
+  },
 
-        },
+  renderToolNest(){
 
-        hide(){
-            var selfDom = this.getDOMNode();
-            selfDom.style.pointerEvents = 'none';
-            selfDom.style.opacity = 0;
-        },
 
-        onClose(){
-            this.setState({equipTool: null});
-        },
-        handleFileSelectDrop(evt){
-            evt.stopPropagation();
-            evt.preventDefault();
-        },
-        handleDragOver(evt) {
-            evt.stopPropagation();
-            evt.preventDefault();
-        },
-        componentDidUpdate(){
-            if (this.state.equipTool !== null) {
-                this.show();
-                var ui_modal = document.getElementById('ui-modal');
-                ui_modal.addEventListener('drop', this.handleFileSelectDrop, false);
-                ui_modal.addEventListener('dragover', this.handleDragOver, false);
-                this.refs[this.state.equipTool.toolKey].setState({storedToolState: this.state.equipTool.storedToolState});
+    return (
+      <ToolNest toolEgg={this.state.toolEgg}/>
+    );
+  },
 
-            } else {
-                this.hide();
-            }
-        },
-        render: function () {
-            return (
-                <div id="ui-modal">
-                    <div className="modal">
-                        <div className="modalHeader">
-                            <i className="close fa fa-times" onClick={ this.onClose }></i>
-                        </div>
-                        <div className="modalBody">
-                            {this.renderEquipTool()}
-                        </div>
-                    </div>
-                </div>
-            )
-        }
-    });
+  renderContent(){
+    if( this.state.toolEgg === null ){
+      return '';
+    }
 
-    module.exports = Modal;
+    return (
+      <div className='window-wrapper'>
+          <div className='window-header'>
+            <div className='title'>
+              {this.state.toolEgg.toolTitle}
+            </div>
+            <div className='close' onClick={this.removeAttachedTool}>
+              <i className='fa fa-times'/>
+            </div>
+          </div>
+          { this.renderToolNest() }
+      </div>
+    )
+  },
 
-})();
+  renderModalLayout(){
+
+    return (
+      <div className='modal-window-area'>
+        <div className='modal-window'>
+          { this.renderContent() }
+        </div>
+      </div>
+    )
+  },
+
+  render: function () {
+    var classes = ['ModalSpace'];
+    var modalLayout;
+
+    if( this.state.toolEgg !== null ){
+      classes.push('on');
+    }
+
+    return (
+      <div className={classes.join(' ')}>
+        {this.renderModalLayout()}
+      </div>
+    )
+  }
+});
+
+export default Modal;

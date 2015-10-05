@@ -10,11 +10,15 @@
 var UISupervisor = require('./builder.UISupervisor.js');
 var ProjectManager = require('./builder.ProjectManager.js');
 var Session = require('./builder.Session.js');
+var Cookie = require('js-cookie');
+var GelateriaRequest = require('./builder.GelateriaRequest.js');
 
 var App = function() {
   window.app = this;
   this.session = new Session();
   this.session.ready();
+  this.gelateriaRequest = new GelateriaRequest();
+  this.gelateriaRequest.getCertification();
 
   // 글로벌 드래그를 사용하기 위해 ui라는 이름으로도 uiSupervisor에 접근할 수 있도록 한다.
   this.ui = this.uiSupervisor = new UISupervisor(window, this.session);
@@ -25,7 +29,7 @@ var App = function() {
 App.prototype.initBuilder = function() {
   this.uiSupervisor.builderRender();
 
-  this.projectManager = new ProjectManager(this.session, "IonTProject");
+  this.projectManager = new ProjectManager(this, this.session, "IonTProject");
   this.projectManager.init();
 
   this.uiSupervisor.setProjectManager(this.projectManager);
