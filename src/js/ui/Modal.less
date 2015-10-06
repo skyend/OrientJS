@@ -2,6 +2,8 @@
 {
     position: fixed;
     z-index: 10;
+    top: 0;
+    left: 0;
 
     width: 100%;
     height: 100%;
@@ -79,9 +81,22 @@
                         margin-right: 13px;
                         padding: 4px 6px;
 
+                        cursor: pointer;
+                        transition: background .3s;
+
                         color: #fff;
                         border-radius: 50%;
                         background-color: #0e77d2;
+
+                        &:hover
+                        {
+                            background-color: #0a84ec;
+                        }
+
+                        &:active
+                        {
+                            background-color: #075394;
+                        }
                     }
 
                     &::before

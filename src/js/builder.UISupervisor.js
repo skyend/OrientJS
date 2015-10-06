@@ -68,10 +68,13 @@ UI.prototype.onResize = function(e) { //UI화면 리사이즈
   var screenWidth = this.window.outerWidth;
   var screenHeigt = this.window.outerHeight;
 
-  // resizeListener 이벤트 체크
-  if (typeof this.observers['resizeListener'] === 'function') {
-    this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
-  }
+  // // resizeListener 이벤트 체크
+  // if (typeof this.observers['resizeListener'] === 'function') {
+  //   this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
+  // }
+  console.log('resize');
+  if (this.workspace !== undefined)
+    this.workspace.screenResized();
 };
 
 /**
@@ -406,7 +409,7 @@ UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
 UI.prototype.builderRender = function() {
 
   var workspace = React.render(React.createElement(BuilderWorkSpace, {
-    observers: this.observers,
+    //observers: this.observers,
     LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
     RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
     BottomNavigationConfig: DefaultBuilderConfig.BottomNavigation,

@@ -956,12 +956,14 @@ var _ = require('underscore');
         },
 
         render: function () {
+
             var rootStyle = {
               width:this.state.width,
               height:this.state.height,
               left:this.state.x,
               top:this.state.y
             };
+
 
             return (
                 <section className="DocumentStage tab-support black" style={rootStyle}>

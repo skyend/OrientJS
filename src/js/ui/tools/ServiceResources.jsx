@@ -125,7 +125,7 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file-o'></i> Pages <span className='temp-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-file-o'></i> Pages <span className='add-button'> <i className='fa fa-plus'></i> </span>
               </label>
               <ul>
                 { this.state.pageMetaList.map(this.renderPageItem) }
@@ -140,7 +140,7 @@
             <div className="resourceList">
               <label className='listLabel'>
                 <i className='fa fa-database'></i> API Sources
-                <span className='temp-button' onClick={this.addAPISource}>
+                <span className='add-button' onClick={this.addAPISource}>
                   <i className='fa fa-plus'></i>
                 </span>
               </label>
@@ -158,7 +158,7 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file-text-o'></i> Documents <span className='temp-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+                <i className='fa fa-file-text-o'></i> Documents <span className='add-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
               </label>
               <ul>
                 { this.state.documentMetaList.map(this.renderDocumentItem) }

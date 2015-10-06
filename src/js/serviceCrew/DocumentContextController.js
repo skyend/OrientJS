@@ -66,7 +66,7 @@ DocumentContextController.prototype.resume = function() {
 };
 
 DocumentContextController.prototype.setScreenSizing = function(_sizing) {
-  console.log(_sizing);
+
   this.screenSizing = _sizing;
 };
 
