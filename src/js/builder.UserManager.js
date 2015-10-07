@@ -21,8 +21,8 @@ class UserManager {
     });
   }
 
-  getByAuthorityToken(_aToken, _complete) {
-    this.app.gelateriaRequest.loadUserData(_aToken, function(_result) {
+  getCurrent(_complete) {
+    this.app.gelateriaRequest.loadUserData(this.app.session.getAuthorityToken(), function(_result) {
       _complete(_result);
     });
   }

@@ -12,8 +12,45 @@ class GelateriaRequest {
     this.hasCertification = true;
   }
 
+  createProject(_token, _name, _complete) {
+    request.post("http://localhost:3000/projects/" + ["new"].join("/"))
+      .type('form')
+      .send({
+        authorityToken: _token,
+        projectName: _name
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("Project create fail");
+
+        //console.log(res);
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
   loadProject(_id) {
 
+  }
+
+  loadProjectListByAuthorityToken(_token, _complete) {
+    request.post("http://localhost:3000/projects/" + ["list-by-token"].join("/"))
+      .type('form')
+      .send({
+        authorityToken: _token
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("load Project list fail");
+
+        //console.log(res);
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
   }
 
   loadService(_idx, _complete) {

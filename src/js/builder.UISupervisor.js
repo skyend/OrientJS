@@ -443,7 +443,7 @@ UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
   for (var i = 0; i < fieldNames.length; i++) {
     switch (fieldNames[i]) {
       case "user-info":
-        this.app.userManager.getByAuthorityToken(this.app.session.getAuthorityToken(), function(_result) {
+        this.app.userManager.getCurrent(function(_result) {
           if (_result.result === 'success') {
             _eventData.path[0].setData('user-info', _result.user);
           } else {
@@ -452,9 +452,9 @@ UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
         });
         break;
       case "project-list":
-        this.app.projectManager.getListByAuthorityToken(this.app.session.getAuthorityToken(), function(_result) {
+        this.app.projectManager.getList(function(_result) {
           if (_result.result === 'success') {
-            _eventData.path[0].setData('project-list', _result.user);
+            _eventData.path[0].setData('project-list', _result.list);
           } else {
             alert("프로젝트 목록 로드 실패.");
           }
@@ -462,6 +462,14 @@ UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
         break;
     }
   }
+};
+
+UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+  this.app.projectManager.create(name, function(_result) {
+    console.log('created project', _result);
+  });
 };
 
 

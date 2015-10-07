@@ -23,8 +23,18 @@ class ProjectManager {
     this.serviceManager.init();
   }
 
-  getListByAuthorityToken(_aToken, _complete) {
-    console.log('load project list');
+  getList(_complete) {
+    this.app.gelateriaRequest.loadProjectListByAuthorityToken(this.app.session.getAuthorityToken(), function(_result) {
+      _complete(_result);
+    });
+  }
+
+  create(_name, _complete) {
+
+    this.app.gelateriaRequest.createProject(this.app.session.getAuthorityToken(), _name, function(_result) {
+      _complete(_result);
+    });
+
   }
 
   // 현재 사용중인 프로젝트
