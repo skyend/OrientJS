@@ -23,10 +23,18 @@ module.exports = {
         loader: "json"
       }, {
         test: /\.css$/,
-        loader: "style-loader!css-loader?root=../../"
+        exclude: /\.useable\.css$/,
+        loader: "style!css"
+      }, {
+        test: /\.useable\.css$/,
+        loader: "style/useable!css"
       }, {
         test: /\.less$/,
+        exclude: /\.useable\.less$/,
         loader: "style!css!less"
+      }, {
+        test: /\.useable\.less$/,
+        loader: "style/useable!css!less"
       }, {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -45,7 +53,7 @@ module.exports = {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: "file-loader"
       }, {
-        test: /\.png$/,
+        test: /\.(png|jpg)$/,
         loader: "url-loader?mimetype=image/png"
       }
     ]
@@ -60,7 +68,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Service Builder',
       inject: 'body',
-      chunks: ['config', 'venders', 'main']
+      chunks: ['config', 'venders', 'main'],
+      filename: 'index.html'
     })
   ]
 };

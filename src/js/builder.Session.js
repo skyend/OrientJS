@@ -7,65 +7,86 @@
  * Requires(JS) : builder.StageContext.js, builder.UI.js
  */
 
-(function() {
-  var RequestToServer = require('./util/RequestToServer.js');
-  var ComponentPool = require('./builder.ComponentPool.js');
-  //var ComponentSupporter = require('./builder.ComponentSupporter.js');
 
-  var Session = function() {
-    this.locale = 'ko'; // 지역화 변수
-    this.componentPool = new ComponentPool(this);
-  };
+var RequestToServer = require('./util/RequestToServer.js');
+var ComponentPool = require('./builder.ComponentPool.js');
+import Cookie from 'js-cookie';
 
-  Session.prototype.ready = function() {
-    this.componentPool.updateMeta('/BuildingResourceStore/Meta/AvailableComponents.json');
-  };
+//var ComponentSupporter = require('./builder.ComponentSupporter.js');
 
-  Session.prototype.signIn = function() {
-    this.username = "ion-sdp";
-    this.signedIn = true;
-    this.sessionKey = "a2sA6ASad1a23A2";
+var Session = function() {
+  this.signed = false;
+  this.locale = 'ko'; // 지역화 변수
+  this.componentPool = new ComponentPool(this);
 
-    return this.signedIn;
-  };
+  this.authorityToken = Cookie.get('at') || undefined;
+  this.authorizedDate = Cookie.get('ad') || undefined;
+};
 
-  Session.prototype.getUsername = function() {
-    return this.username; // 임시
-  };
+Session.prototype.ready = function() {
+  this.componentPool.updateMeta('/BuildingResourceStore/Meta/AvailableComponents.json');
+};
 
-  Session.prototype.isSign = function() {
-    return this.signedIn; // 임시
-  };
 
-  Session.prototype.getComponentPool = function() {
-    return this.componentPool;
-  };
+Session.prototype.getComponentPool = function() {
+  return this.componentPool;
+};
 
-  /**
-   * Certified Request
-   * 인증된 유저 세션을 이용하여 서버에 데이터를 요청한다.
-   *
-   */
-  Session.prototype.certifiedRequest = function(_url, _method, _data) {
-    var json = RequestToServer.sync(_url, _method || 'get', _data);
+/**
+ * Certified Request
+ * 인증된 유저 세션을 이용하여 서버에 데이터를 요청한다.
+ *
+ */
+Session.prototype.certifiedRequest = function(_url, _method, _data) {
+  var json = RequestToServer.sync(_url, _method || 'get', _data);
 
-    return json;
-  };
+  return json;
+};
 
-  Session.prototype.certifiedRequestJSON = function(_url, _method, _data) {
-    var jsonFormatText = RequestToServer.sync(_url, _method || 'get', _data);
-    var jsonObj;
+Session.prototype.certifiedRequestJSON = function(_url, _method, _data) {
+  var jsonFormatText = RequestToServer.sync(_url, _method || 'get', _data);
+  var jsonObj;
 
-    try {
+  try {
 
-      jsonObj = JSON.parse(jsonFormatText);
+    jsonObj = JSON.parse(jsonFormatText);
 
-    } catch (e) {
-      throw new Error(e);
-    }
+  } catch (e) {
+    throw new Error(e);
+  }
 
-    return jsonObj;
-  };
+  return jsonObj;
+};
 
-  module.exports = Session;
-})();
+
+
+Session.prototype.authorize = function(_token, _date) {
+  this.authorityToken = _token;
+  this.authorizedDate = _date;
+
+  Cookie.set('at', this.authorityToken);
+  Cookie.set('ad', this.authorizedDate);
+};
+
+
+Session.prototype.deauthorize = function(_token, _date) {
+  this.authorityToken = undefined;
+  this.authorizedDate = undefined;
+
+  Cookie.remove('at');
+  Cookie.remove('ad');
+};
+
+Session.prototype.isAuthorized = function() {
+  if (this.authorityToken !== undefined) {
+    return true;
+  }
+
+  return false;
+}
+
+Session.prototype.getAuthorityToken = function() {
+  return this.authorityToken;
+};
+
+module.exports = Session;

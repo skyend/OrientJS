@@ -11,7 +11,6 @@ import './Workspace.less';
 import _ from 'underscore';
 import Async from '../lib/Async.js';
 import HeadToolBar from'./HeadToolBar.jsx'; //상단 네비게이션 UI
-import VToolNavigation from'./VerticalToolNavigation.jsx';
 import ToolNavigation from './ToolNavigation.jsx';
 
 import DocumentStage from './DocumentStage.jsx'; //중앙 컨텐츠 영역 UI
@@ -587,20 +586,5 @@ console.log(_eventData);
     }
 });
 
-/*
-<VToolNavigation ref="LeftNavigation"
-                config={this.props.LeftNavigationConfig}
-                naviWidth={50}
-                toolWidth={270}
-                position='left'
-                naviItemFontSize={20}/>
-<VToolNavigation ref="RightNavigation"
-                 config={this.props.RightNavigationConfig}
-                 naviWidth={25}
-                 toolWidth={420}
-                 showTitle={true}
-                 verticalText={true}
-                 position='right'
-                 naviItemFontSize={16}/>
-                 */
+
 export default Workspace;

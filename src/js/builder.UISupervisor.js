@@ -10,19 +10,22 @@
 var React = require("react");
 
 // Supporters
-var EventDistributor = require('./ui/reactMixin/EventDistributor.js');
+var EventDistributor = require('./ui.workspace/reactMixin/EventDistributor.js');
 var ToolFactory = require('./builder.ToolFactory.js');
 
 // Sub UI Classes
-var BuilderWorkSpace = require('./ui/Workspace.jsx');
-var LoginService = require('./ui/LoginService.jsx');
+import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
+import LoginService from './ui.workspace/LoginService.jsx';
+import Enterance from './ui.enterance/Enterance.jsx';
 
 // Data
-var DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
+import DefaultBuilderConfig from "../config/DefaultBuilderConfig.json";
 
 // UI Supervisor
-var UI = function(_window, _session) {
+var UI = function(_window, _session, _app) {
   var self = this;
+
+  this.app = _app;
 
   /** Fields **/
   this.window = _window;
@@ -30,6 +33,7 @@ var UI = function(_window, _session) {
   this.observers = {};
   this.dragHoldingElement = null;
   this.isDoingElementHold = false;
+
   // Global Drag
   this.mouseDawn = false;
   this.mouseDragging = false;
@@ -72,9 +76,9 @@ UI.prototype.onResize = function(e) { //UI화면 리사이즈
   // if (typeof this.observers['resizeListener'] === 'function') {
   //   this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
   // }
-  console.log('resize');
-  if (this.workspace !== undefined)
-    this.workspace.screenResized();
+  //console.log('resize');
+  if (this.rootUIInstance !== undefined && typeof this.rootUIInstance.screenResized === 'function')
+    this.rootUIInstance.screenResized();
 };
 
 /**
@@ -314,7 +318,7 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
 UI.prototype.setProjectManager = function(_projectManager) {
   this.projectManager = _projectManager;
 
-  this.workspace.setState({
+  this.rootUIInstance.setState({
     'projectMeta': _projectManager.meta
   });
 };
@@ -339,7 +343,7 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
   // Document Meta 정보로 DocumentContextController를 얻는다
   var apiSourceContextController = this.projectManager.serviceManager.getApiSourceContextController(apiSourceMeta.id);
 
-  this.workspace.openStageContext({
+  this.rootUIInstance.openStageContext({
     apiSourceID: apiSourceMeta.id,
     contextID: 'apiSource#' + apiSourceMeta.id,
     contextTitle: apiSourceMeta.title,
@@ -358,7 +362,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   this.projectManager.serviceManager
     .getDocumentContextController(documentMeta.idx, function(_documentContextController) {
 
-      self.workspace.openStageContext({
+      self.rootUIInstance.openStageContext({
         documentID: documentMeta.idx,
         contextID: 'document#' + documentMeta.idx,
         contextTitle: documentMeta.title,
@@ -386,7 +390,7 @@ UI.prototype.onThrowCatcherRequestAttachTool = function(_eventData) {
 
   this.toolFactory.getToolEgg(_eventData.toolKey, function(__egg) {
 
-    self.workspace.attachTool(_eventData.where, __egg)
+    self.rootUIInstance.attachTool(_eventData.where, __egg)
   });
 };
 
@@ -402,9 +406,72 @@ UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
   });
 };
 
+/****************************************************************/
+/**************************** Enterance Logic *******************/
+/****************************************************************/
+UI.prototype.onThrowCatcherUserSignUp = function(_eventData) {
+
+  this.app.userManager.register(_eventData, function(_result) {
+    if (_result.result === 'success') {
+      _eventData.path[0].successSignUp();
+    } else {
+      _eventData.path[0].failSignUp(_result.reason);
+    }
+  });
+
+};
+
+UI.prototype.onThrowCatcherUserSignIn = function(_eventData) {
+
+  this.app.userManager.signin(_eventData.id, _eventData.password, function(_result) {
+    if (_result.result === 'success') {
+      _eventData.path[0].successSignIn(_result);
+    } else {
+      _eventData.path[0].failSignIn(_result.reason);
+    }
+  });
+
+};
+
+UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
+  this.app.userManager.signout();
+};
+
+UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
+  var fieldNames = _eventData.fieldNames || [];
+  console.log(_eventData);
+  for (var i = 0; i < fieldNames.length; i++) {
+    switch (fieldNames[i]) {
+      case "user-info":
+        this.app.userManager.getByAuthorityToken(this.app.session.getAuthorityToken(), function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('user-info', _result.user);
+          } else {
+            alert("유저 정보 로드 실패.");
+          }
+        });
+        break;
+      case "project-list":
+        this.app.projectManager.getListByAuthorityToken(this.app.session.getAuthorityToken(), function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('project-list', _result.user);
+          } else {
+            alert("프로젝트 목록 로드 실패.");
+          }
+        });
+        break;
+    }
+  }
+};
 
 
 
+
+
+UI.prototype.clearRender = function() {
+  React.render(React.createElement("DIV"), this.window.document.getElementsByTagName('BODY')[0]);
+  this.rootUIInstance = undefined;
+};
 
 UI.prototype.builderRender = function() {
 
@@ -420,9 +487,19 @@ UI.prototype.builderRender = function() {
 
   this.onResize();
 
-  this.workspace = workspace;
+  this.rootUIInstance = workspace;
 
-  EventDistributor.manualBindForNotReactClass(this, this.workspace);
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
+};
+
+UI.prototype.enteranceRender = function() {
+  var enterance = React.render(React.createElement(Enterance, {
+      defaultMainType: this.app.session.isAuthorized() ? 'lobby' : 'signin'
+    }),
+    this.window.document.getElementsByTagName('BODY')[0]);
+
+  this.rootUIInstance = enterance;
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };
 
 UI.prototype.loginRender = function() {
@@ -431,9 +508,9 @@ UI.prototype.loginRender = function() {
     this.window.document.getElementsByTagName('BODY')[0]);
   this.onResize();
 
-  this.workspace = rootUI;
+  this.rootUIInstance = rootUI;
 
-  EventDistributor.manualBindForNotReactClass(this, this.workspace);
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };
 
 module.exports = UI;

@@ -69,7 +69,7 @@
 
           this.__ownerInstance.__eventTernelFromChildren(_eventName, _eventData);
         } else {
-          console.warn("ThrowEvent 를 허락하지 않는 Component입니다. ThrowEvent를 허락하기 위해서 EventDistributor를 Mixin 하여 주세요.\n발생된 이벤트 [" + _eventName + "]는 소멸될 것입니다.");
+          console.warn("ThrowEvent 를 지원하지 않는 Component에 도달 하였습니다. ThrowEvent를 지원하기 위해서 EventDistributor를 Mixin 하여 주세요.\n발생된 이벤트 [" + _eventName + "]는 소멸될 것입니다.");
         }
       } else {
         console.warn("ThrowEvent가 최상위로 도달 하였습니다. \n발생된 이벤트 [" + _eventName + "]를 Catch하지 않음으로 소멸될 것입니다. \n이벤트를 Catch하려면 [" + _CATCHERPREFIX_ + _eventName + "]메서드를 구현 해 주세요.", _eventData);

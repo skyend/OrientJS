@@ -140,7 +140,7 @@ ToolFactory.prototype.toolClassLoad = function(_toolKey, _loadedCB) {
 
 function loadTool(toolPath, callback) {
   try {
-    var toolBundle = require("bundle!./ui/tools/" + toolPath);
+    var toolBundle = require("bundle!./ui.workspace/tools/" + toolPath);
   } catch (e) {
     return callback(e);
   }

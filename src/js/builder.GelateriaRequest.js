@@ -78,6 +78,47 @@ class GelateriaRequest {
   loadPage(_id) {
 
   }
+
+  registerUser(_userspec, _complete) {
+    request.post("http://localhost:3000/" + ["users", 'register'].join("/"))
+      .type('form')
+      .send({
+        userid: _userspec.id,
+        name: _userspec.name,
+        email: _userspec.email,
+        password: _userspec.password
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("Register Load fail");
+        _complete(JSON.parse(res.text));
+      });
+  }
+
+  signinUser(_id, _password, _complete) {
+    request.post("http://localhost:3000/" + ["users", 'signin'].join("/"))
+      .type('form')
+      .send({
+        userid: _id,
+        password: _password
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("Register Load fail");
+        _complete(JSON.parse(res.text));
+      });
+  }
+
+  loadUserData(_authorityToken, _complete) {
+    request.post("http://localhost:3000/" + ["users", 'read-by-token'].join("/"))
+      .type('form')
+      .send({
+        authorityToken: _authorityToken
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("UserData Load fail");
+
+        _complete(JSON.parse(res.text));
+      });
+  }
 }
 
 export default GelateriaRequest;
