@@ -34,8 +34,11 @@ var App = function() {
 };
 
 App.prototype.startServiceBuilding = function(_service_id) {
+
+  // 서비스 매니저 생성
   this.serviceManager = new ServiceManager(this, _service_id);
 
+  // 빌더 시작
   this.initBuilder();
 };
 

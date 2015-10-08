@@ -27,6 +27,10 @@ var HeadToolBar = React.createClass({
       this.emit('SaveCurrentContext');
     },
 
+    signout(){
+      this.emit("UserSignout");
+    },
+
     undo(){
       this.emit('DocumentUndo');
     },
@@ -109,7 +113,7 @@ var HeadToolBar = React.createClass({
 
 
                     <li className='right' style={{width:130}}>
-                      <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='24' onClick={this.modeChangeDesktop}/>
+                      <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='24' onClick={this.signout}/>
                     </li>
                     <li className='right'>
                       <GridBox placements={[

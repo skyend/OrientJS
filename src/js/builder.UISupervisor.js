@@ -287,9 +287,25 @@ UI.prototype.uncoverHelper = function() {
 
 };
 
-UI.prototype.onThrowCatcherRootTest = function(_eventData) {
-  console.log('Approached', _eventData);
+
+
+/**************
+ * Service Handling
+ *
+ *
+ *
+ */
+UI.prototype.setProjectManager = function(_projectManager) {
+  this.projectManager = _projectManager;
+
+  this.rootUIInstance.setState({
+    'projectMeta': _projectManager.meta
+  });
 };
+
+/****************************************************************/
+/**************************** Builder Logic *********************/
+/****************************************************************/
 
 UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
 
@@ -307,20 +323,6 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
   var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
 
   _eventData.return(null, loadedComponent)
-};
-
-/**************
- * Service Handling
- *
- *
- *
- */
-UI.prototype.setProjectManager = function(_projectManager) {
-  this.projectManager = _projectManager;
-
-  this.rootUIInstance.setState({
-    'projectMeta': _projectManager.meta
-  });
 };
 
 UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
@@ -372,7 +374,6 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
       });
     });
 
-
 };
 
 
@@ -401,11 +402,21 @@ UI.prototype.onThrowCatcherStoreToolState = function(_eventData) {
 };
 
 UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
-  this.projectManager.serviceManager.createDocument(_eventData.title, _eventData.type, function() {
+  this.app.serviceManager.createDocument(_eventData.title, _eventData.type, function() {
     console.log(_eventData);
   });
 };
 
+UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
+  this.app.serviceManager.getDocumentList(function() {
+
+  });
+};
+
+/****************************************************************/
+/**************************** Builder Logic End *****************/
+/****************************************************************/
+//----------
 /****************************************************************/
 /**************************** Enterance Logic *******************/
 /****************************************************************/
@@ -431,10 +442,6 @@ UI.prototype.onThrowCatcherUserSignIn = function(_eventData) {
     }
   });
 
-};
-
-UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
-  this.app.userManager.signout();
 };
 
 UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
@@ -469,11 +476,15 @@ UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
 /****************************************************************/
 /**************************** Enterance Logic End ***************/
 /****************************************************************/
-
-
+//----------------
 /****************************************************************/
-/**************************** Common Logic End ******************/
+/**************************** Common Logic **********************/
 /****************************************************************/
+
+UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
+  this.app.userManager.signout();
+};
+
 UI.prototype.onThrowCatcherNeedData = function(_eventData) {
   var field = _eventData.field || [];
 
@@ -511,7 +522,9 @@ UI.prototype.onThrowCatcherNeedData = function(_eventData) {
   }
 };
 
-
+/****************************************************************/
+/**************************** Common Logic End ******************/
+/****************************************************************/
 
 UI.prototype.clearRender = function() {
   React.render(React.createElement("DIV"), this.window.document.getElementsByTagName('BODY')[0]);

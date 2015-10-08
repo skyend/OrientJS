@@ -172,7 +172,8 @@
         },
 
         componentDidMount(){
-            this.emit("NeedServiceResourcesMeta",{});
+            //this.emit("NeedServiceResourcesMeta",{});
+            this.emit("NeedDocumentList");
         },
 
         render() {

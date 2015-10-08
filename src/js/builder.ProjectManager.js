@@ -14,7 +14,7 @@ class ProjectManager {
     this.useProjectId;
 
     // 임시
-    this.init();
+    //this.init();
   }
 
   init() {
@@ -23,7 +23,7 @@ class ProjectManager {
 
     // 서비스 매니저 시작
     this.serviceManager = new ServiceManager(this.app, this.app.session, this.meta.ServiceKey);
-    this.serviceManager.init();
+
   }
 
   getList(_complete) {
