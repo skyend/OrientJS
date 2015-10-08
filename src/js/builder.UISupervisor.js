@@ -437,6 +437,43 @@ UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
   this.app.userManager.signout();
 };
 
+UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+  this.app.projectManager.create(name, function(_result) {
+    console.log('created project', _result);
+  });
+};
+
+UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+
+  this.app.projectManager.createService(name, function(_result) {
+    console.log('created project', _result);
+  });
+};
+
+UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
+  console.log("Select project : ", _eventData.project_real_id);
+  this.app.projectManager.use(_eventData.project_real_id);
+};
+
+UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
+  var serviceId = _eventData.service_id;
+  console.log(serviceId, "Start building");
+
+  this.app.startServiceBuilding(serviceId);
+}
+
+/****************************************************************/
+/**************************** Enterance Logic End ***************/
+/****************************************************************/
+
+
+/****************************************************************/
+/**************************** Common Logic End ******************/
+/****************************************************************/
 UI.prototype.onThrowCatcherNeedData = function(_eventData) {
   var field = _eventData.field || [];
 
@@ -474,38 +511,6 @@ UI.prototype.onThrowCatcherNeedData = function(_eventData) {
   }
 };
 
-UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
-  var name = _eventData.name;
-  console.log(name);
-  this.app.projectManager.create(name, function(_result) {
-    console.log('created project', _result);
-  });
-};
-
-UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
-  var name = _eventData.name;
-  console.log(name);
-
-  this.app.projectManager.createService(name, function(_result) {
-    console.log('created project', _result);
-  });
-};
-
-UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
-  console.log("Select project : ", _eventData.project_real_id);
-  this.app.projectManager.use(_eventData.project_real_id);
-};
-
-UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
-  var serviceId = _eventData.service_id;
-  console.log(serviceId, "Start building");
-
-  this.app.startServiceBuilding(serviceId);
-}
-
-/****************************************************************/
-/**************************** Enterance Logic End ***************/
-/****************************************************************/
 
 
 UI.prototype.clearRender = function() {

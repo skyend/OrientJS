@@ -18,7 +18,8 @@ var HeadToolBar = React.createClass({
       return {
         undoable:false,
         redoable:false,
-        contextItem: null
+        contextItem: null,
+        'user-info':{}
       }
     },
 
@@ -50,6 +51,23 @@ var HeadToolBar = React.createClass({
       this.emit('ChangeStageMode', {
         mode:'desktop'
       });
+    },
+
+    setData(_fieldName, _data){
+      var addState = {};
+      addState[_fieldName] = _data;
+      this.setState(addState);
+    },
+
+    componentDidMount(){
+      var self = this;
+
+      setTimeout(function(){
+          self.emit("NeedData", {
+            field:['user-info']
+          });
+      },100);
+
     },
 
     render: function () {
@@ -91,7 +109,7 @@ var HeadToolBar = React.createClass({
 
 
                     <li className='right' style={{width:130}}>
-                      <OutlineButton icon='user' title='I-ON Guest' color='white' iconSize='24' onClick={this.modeChangeDesktop}/>
+                      <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='24' onClick={this.modeChangeDesktop}/>
                     </li>
                     <li className='right'>
                       <GridBox placements={[
