@@ -11,10 +11,10 @@ var ApiSourceContextControllers = require('./serviceCrew/ApiSourceContextControl
 
 var ObjectExplorer = require('./util/ObjectExplorer.js');
 
-var ServiceManager = function(_app, _session, _serviceKey) {
+var ServiceManager = function(_app, _service_id) {
   this.app = _app;
-  this.serviceKey = _serviceKey;
-  this.session = _session;
+  this.service_id = _service_id;
+  this.serviceKey = 'ionTest';
   this.docContextControllers = {};
   this.apiSourceContextControllers = {};
   this.sampleDatas = {};
@@ -25,7 +25,7 @@ var ServiceManager = function(_app, _session, _serviceKey) {
 };
 
 ServiceManager.prototype.init = function() {
-  this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
+  this.meta = this.app.session.certifiedRequestJSON("/BuildingProjectData/Services/" + this.serviceKey + "/service.json");
 };
 
 ServiceManager.prototype.loadMetaData = function(_complete) {
@@ -33,6 +33,7 @@ ServiceManager.prototype.loadMetaData = function(_complete) {
   var self = this;
 
   this.app.gelateriaRequest.loadService(serviceIdx, function(_result) {
+    console.log(_result);
     self.meta = _result;
     _complete(_result);
   });
@@ -41,7 +42,7 @@ ServiceManager.prototype.loadMetaData = function(_complete) {
 //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
 ServiceManager.prototype.getNodeTypeData = function(_nodeTypeId) {
 
-  return this.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net/api/" + _nodeTypeId + "/list.json?t=api");
+  return this.app.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net/api/" + _nodeTypeId + "/list.json?t=api");
 };
 
 ServiceManager.prototype.getDocumentMetaList = function() {
@@ -161,7 +162,7 @@ ServiceManager.prototype.getApiSourceContextController = function(_apiSourceId) 
   if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
     var apiSourceMeta = this.getAPISourceMetaById(_apiSourceId);
 
-    var apiSourceContextController = new ApiSourceContextControllers(apiSourceMeta, this.session, this);
+    var apiSourceContextController = new ApiSourceContextControllers(apiSourceMeta, this.app.session, this);
 
     this.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
   }

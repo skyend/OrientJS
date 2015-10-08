@@ -325,8 +325,8 @@ UI.prototype.setProjectManager = function(_projectManager) {
 
 UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
   var who = _eventData.path[0];
-
-  this.projectManager.serviceManager.loadMetaData(function(__meta) {
+  console.log(this.projectManager);
+  this.app.serviceManager.loadMetaData(function(__meta) {
     who.setState({
       pageMetaList: __meta.pages,
       documentMetaList: __meta.documents,
@@ -496,8 +496,16 @@ UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
   this.app.projectManager.use(_eventData.project_real_id);
 };
 
+UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
+  var serviceId = _eventData.service_id;
+  console.log(serviceId, "Start building");
 
+  this.app.startServiceBuilding(serviceId);
+}
 
+/****************************************************************/
+/**************************** Enterance Logic End ***************/
+/****************************************************************/
 
 
 UI.prototype.clearRender = function() {
@@ -517,9 +525,8 @@ UI.prototype.builderRender = function() {
     __keyName: 'uiServicer'
   }), this.window.document.getElementsByTagName('BODY')[0]);
 
-  this.onResize();
-
   this.rootUIInstance = workspace;
+  this.onResize();
 
   EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };
@@ -538,9 +545,9 @@ UI.prototype.loginRender = function() {
 
   var rootUI = React.render(React.createElement(LoginService),
     this.window.document.getElementsByTagName('BODY')[0]);
-  this.onResize();
 
   this.rootUIInstance = rootUI;
+  this.onResize();
 
   EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };

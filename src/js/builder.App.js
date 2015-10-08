@@ -9,6 +9,7 @@
 
 import UISupervisor from './builder.UISupervisor.js';
 import ProjectManager from './builder.ProjectManager.js';
+import ServiceManager from './builder.ServiceManager.js';
 import UserManager from './builder.UserManager.js';
 import Session from './builder.Session.js';
 import Cookie from 'js-cookie';
@@ -16,7 +17,7 @@ import GelateriaRequest from './builder.GelateriaRequest.js';
 
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 0.65;
+  window.gelateriaVersion = 0.68;
 
   this.session = new Session();
   this.session.ready();
@@ -30,6 +31,12 @@ var App = function() {
 
 
   this.initEnterance();
+};
+
+App.prototype.startServiceBuilding = function(_service_id) {
+  this.serviceManager = new ServiceManager(this, _service_id);
+
+  this.initBuilder();
 };
 
 App.prototype.initBuilder = function() {

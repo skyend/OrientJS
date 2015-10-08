@@ -12,14 +12,17 @@ class ProjectManager {
   constructor(_app) {
     this.app = _app;
     this.useProjectId;
+
+    // 임시
+    this.init();
   }
 
   init() {
     var projectKey = 'IonTProject';
-    this.meta = this.session.certifiedRequestJSON("/BuildingProjectData/Projects/" + projectKey + ".json");
+    this.meta = this.app.session.certifiedRequestJSON("/BuildingProjectData/Projects/" + projectKey + ".json");
 
     // 서비스 매니저 시작
-    this.serviceManager = new ServiceManager(this.app, this.session, this.meta.ServiceKey);
+    this.serviceManager = new ServiceManager(this.app, this.app.session, this.meta.ServiceKey);
     this.serviceManager.init();
   }
 

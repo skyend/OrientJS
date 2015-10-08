@@ -23,6 +23,12 @@ var Lobby = React.createClass({
       this.emit("UserSignout");
     },
 
+    startServiceBuilding(_serviceId){
+      this.emit("ServiceBuilderRun", {
+        service_id: _serviceId
+      });
+    },
+
     newProject(){
       var name = this.refs['field-new-project-name'].getDOMNode().value;
       if(! /^[\w\s]+$/.test(name) ) return this.setState({message:'프로젝트명을 입력해 주세요.'});
@@ -84,7 +90,7 @@ var Lobby = React.createClass({
     componentWillUnmount(){
       CSS.unuse();
     },
-    
+
     renderProjectItem(_project){
       var self = this;
       var selected = false;
@@ -103,7 +109,7 @@ var Lobby = React.createClass({
       var self = this;
 
       return (
-        <li>
+        <li onClick={function(){ self.startServiceBuilding(_service._id)}}>
           { _service.name || '{UNDEFINED NAME}'}
           <i className='fa fa-cog'/>
           <i className='fa fa-caret-square-o-right'/>
