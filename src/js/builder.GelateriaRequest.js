@@ -12,11 +12,11 @@ class GelateriaRequest {
     this.hasCertification = true;
   }
 
-  createProject(_token, _name, _complete) {
+  createProject(_name, _complete) {
     request.post("http://localhost:3000/projects/" + ["new"].join("/"))
       .type('form')
+      .withCredentials()
       .send({
-        authorityToken: _token,
         projectName: _name
       })
       .end(function(err, res) {
@@ -35,17 +35,53 @@ class GelateriaRequest {
 
   }
 
-  loadProjectListByAuthorityToken(_token, _complete) {
-    request.post("http://localhost:3000/projects/" + ["list-by-token"].join("/"))
+  loadProjectList(_complete) {
+    request.post("http://localhost:3000/projects/" + ["list"].join("/"))
       .type('form')
-      .send({
-        authorityToken: _token
-      })
+      .withCredentials()
+      .send()
       .end(function(err, res) {
 
 
         if (err !== null) throw new Error("load Project list fail");
 
+        //console.log(res);
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  createService(_project_real_id, _name, _complete) {
+
+
+    request.post("http://localhost:3000/services/" + ["create"].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        'project_real_id': _project_real_id,
+        name: _name
+      })
+      .end(function(err, res) {
+
+        if (err !== null) throw new Error("Service create fail");
+        //console.log(res);
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  loadServiceList(_project_real_id, _complete) {
+    request.post("http://localhost:3000/projects/" + ["service-list"].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        'project_real_id': _project_real_id
+      })
+      .end(function(err, res) {
+
+        if (err !== null) throw new Error("Service list Load fail");
         //console.log(res);
         var dataObject = JSON.parse(res.text);
 
@@ -96,6 +132,7 @@ class GelateriaRequest {
     console.log('create');
     request.post("http://localhost:3000/" + ["documents", 'new'].join("/"))
       .type('form')
+      .withCredentials()
       .send({
         serviceId: _serviceId,
         title: _title,
@@ -119,6 +156,7 @@ class GelateriaRequest {
   registerUser(_userspec, _complete) {
     request.post("http://localhost:3000/" + ["users", 'register'].join("/"))
       .type('form')
+      .withCredentials()
       .send({
         userid: _userspec.id,
         name: _userspec.name,
@@ -134,6 +172,7 @@ class GelateriaRequest {
   signinUser(_id, _password, _complete) {
     request.post("http://localhost:3000/" + ["users", 'signin'].join("/"))
       .type('form')
+      .withCredentials()
       .send({
         userid: _id,
         password: _password
@@ -144,12 +183,11 @@ class GelateriaRequest {
       });
   }
 
-  loadUserData(_authorityToken, _complete) {
-    request.post("http://localhost:3000/" + ["users", 'read-by-token'].join("/"))
+  loadUserData(_complete) {
+    request.post("http://localhost:3000/" + ["users", 'read'].join("/"))
       .type('form')
-      .send({
-        authorityToken: _authorityToken
-      })
+      .withCredentials()
+      .send()
       .end(function(err, res) {
         if (err !== null) throw new Error("UserData Load fail");
 

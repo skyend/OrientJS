@@ -22,7 +22,7 @@ class UserManager {
   }
 
   getCurrent(_complete) {
-    this.app.gelateriaRequest.loadUserData(this.app.session.getAuthorityToken(), function(_result) {
+    this.app.gelateriaRequest.loadUserData(function(_result) {
       _complete(_result);
     });
   }

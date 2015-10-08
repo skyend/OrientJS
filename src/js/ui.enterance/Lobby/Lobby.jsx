@@ -9,6 +9,7 @@ var Lobby = React.createClass({
       return {
         'user-info':{},
         'project-list':[],
+        'service-list':[],
         'message':undefined,
         selectedProject:null
       };
@@ -31,7 +32,18 @@ var Lobby = React.createClass({
         name: name
       });
 
-      this.requestGiveMeData(['project-list']);
+      this.requestNeedData(['project-list']);
+    },
+
+    newService(){
+      var name = this.refs['field-new-service-name'].getDOMNode().value;
+      if(! /^[\w\s]+$/.test(name) ) return this.setState({message:'서비스명을 입력해 주세요.'});
+
+      this.emit("CreateNewService", {
+        name: name
+      });
+
+      this.requestNeedData(['service-list']);
     },
 
     setData(_fieldName, _data){
@@ -42,23 +54,25 @@ var Lobby = React.createClass({
       this.setState(state);
     },
 
-    requestGiveMeData(_dataFieldNames){
-      this.emit('GiveMeData',{
-        fieldNames:_dataFieldNames,
+    requestNeedData(_dataFieldNames){
+      this.emit('NeedData',{
+        field:_dataFieldNames,
       });
     },
 
     selectProject( _project ){
       this.setState({selectedProject:_project});
-      this.emit("NeedServiceListOfProject", {
+      this.emit("SelectProject", {
         project_real_id:_project._id
       });
+
+      this.requestNeedData(['service-list']);
     },
 
     componentDidMount(){
       var self = this;
       setTimeout(function(){
-        self.requestGiveMeData(['user-info', 'project-list'])
+        self.requestNeedData(['user-info', 'project-list'])
       }, 200);
     },
 
@@ -70,9 +84,7 @@ var Lobby = React.createClass({
     componentWillUnmount(){
       CSS.unuse();
     },
-
-
-
+    
     renderProjectItem(_project){
       var self = this;
       var selected = false;
@@ -82,7 +94,19 @@ var Lobby = React.createClass({
 
       return (
         <li className={selected? "selected":''} onClick={function(){self.selectProject(_project)}}>
-          { _project.name }
+          { _project.name || '{UNDEFINED NAME}'}
+        </li>
+      )
+    },
+
+    renderServiceItem(_service){
+      var self = this;
+
+      return (
+        <li>
+          { _service.name || '{UNDEFINED NAME}'}
+          <i className='fa fa-cog'/>
+          <i className='fa fa-caret-square-o-right'/>
         </li>
       )
     },
@@ -128,12 +152,7 @@ var Lobby = React.createClass({
           </div>
           <div className='row-division'>
             <ul>
-              <li>
-                Test
-              </li>
-              <li>
-                Test2
-              </li>
+              {this.state['service-list'].map(this.renderServiceItem)}
             </ul>
           </div>
         </div>

@@ -437,11 +437,12 @@ UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
   this.app.userManager.signout();
 };
 
-UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
-  var fieldNames = _eventData.fieldNames || [];
-  console.log(_eventData);
-  for (var i = 0; i < fieldNames.length; i++) {
-    switch (fieldNames[i]) {
+UI.prototype.onThrowCatcherNeedData = function(_eventData) {
+  var field = _eventData.field || [];
+
+  for (var i = 0; i < field.length; i++) {
+
+    switch (field[i]) {
       case "user-info":
         this.app.userManager.getCurrent(function(_result) {
           if (_result.result === 'success') {
@@ -460,6 +461,15 @@ UI.prototype.onThrowCatcherGiveMeData = function(_eventData) {
           }
         });
         break;
+      case "service-list":
+        this.app.projectManager.getServiceList(function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('service-list', _result.list);
+          } else {
+            alert("서비스 목록 로드 실패.");
+          }
+        });
+        break;
     }
   }
 };
@@ -470,6 +480,20 @@ UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
   this.app.projectManager.create(name, function(_result) {
     console.log('created project', _result);
   });
+};
+
+UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+
+  this.app.projectManager.createService(name, function(_result) {
+    console.log('created project', _result);
+  });
+};
+
+UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
+  console.log("Select project : ", _eventData.project_real_id);
+  this.app.projectManager.use(_eventData.project_real_id);
 };
 
 
