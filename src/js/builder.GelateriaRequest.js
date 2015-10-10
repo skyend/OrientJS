@@ -115,22 +115,39 @@ class GelateriaRequest {
       });
   }
 
-  loadDocument(_serviceIdx, _docIdx, _complete) {
-    request.get("http://localhost:3000/" + ["documents", _serviceIdx, _docIdx, "retrieve"].join("/"))
+  loadDocument(_service_real_id, _docId, _complete) {
+
+    request.post("http://localhost:3000/documents/" + ["retrieve"].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        'service_real_id': _service_real_id,
+        'document_id': _docId
+      })
       .end(function(err, res) {
 
+        if (err !== null) throw new Error("document load fail");
 
-        if (err !== null) throw new Error("ServiceMeta Load fail");
-        //console.log(res);
         var dataObject = JSON.parse(res.text);
 
         _complete(dataObject);
       });
+
+    // request.get("http://localhost:3000/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
+    //   .end(function(err, res) {
+    //
+    //
+    //     if (err !== null) throw new Error("ServiceMeta Load fail");
+    //     //console.log(res);
+    //     var dataObject = JSON.parse(res.text);
+    //
+    //     _complete(dataObject);
+    //   });
   }
 
   createDocument(_serviceId, _title, _type, _complete) {
     console.log('create');
-    request.post("http://localhost:3000/" + ["documents", 'new'].join("/"))
+    request.post("http://localhost:3000/" + ["documents", 'create'].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -141,11 +158,26 @@ class GelateriaRequest {
       .end(function(err, res) {
 
 
-        if (err !== null) throw new Error("ServiceMeta Load fail");
-        //console.log(res);
-        //var dataObject = JSON.parse(res.text);
+        if (err !== null) throw new Error("create document fail");
 
-        //_complete(dataObject);
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getDocumentList(_serviceId, _complete) {
+    request.post('http://localhost:3000/' + ['documents', 'list'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get document list");
+
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
       });
   }
 

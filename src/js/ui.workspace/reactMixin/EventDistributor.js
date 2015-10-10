@@ -174,19 +174,22 @@
       var children = this.__getComponentChildren();
 
       if (children === null || children === undefined) return;
-
+      console.log("B", this);
       var childKeys = Object.keys(children);
       for (var i = 0; i < childKeys.length; i++) {
         var childKey = childKeys[i];
-
+        console.log("C");
         var childComponent = children[childKey];
 
+        console.log(childComponent);
 
         if (typeof childComponent._instance.__fireChildrenRootMounted === 'function') {
+          console.log("D");
           childComponent._instance.__fireChildrenRootMounted();
         }
 
         if (typeof this.componentDidMountByRoot === 'function') {
+          console.log("E");
           this.componentDidMountByRoot();
         }
       }

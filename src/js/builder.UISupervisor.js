@@ -303,6 +303,17 @@ UI.prototype.setProjectManager = function(_projectManager) {
   });
 };
 
+UI.prototype.loadDocumentList = function(_complete) {
+  self.app.serviceManager.getDocumentList(function(_result) {
+    if (_result.result === 'success') {
+      console.log('load document list', _result);
+      _complete(_result);
+
+
+    }
+  });
+};
+
 /****************************************************************/
 /**************************** Builder Logic *********************/
 /****************************************************************/
@@ -358,15 +369,15 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
 UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   console.log('BringDocumentContext', _eventData);
   //console.log('BringDocumentContext', _eventData.document);
-  var documentMeta = _eventData.documentMeta;
+  var documentMeta = _eventData.document;
   var self = this;
   // Document Meta 정보로 DocumentContextController를 얻는다
   this.projectManager.serviceManager
-    .getDocumentContextController(documentMeta.idx, function(_documentContextController) {
+    .getDocumentContextController(documentMeta._id, function(_documentContextController) {
 
       self.rootUIInstance.openStageContext({
-        documentID: documentMeta.idx,
-        contextID: 'document#' + documentMeta.idx,
+        documentID: documentMeta._id,
+        contextID: 'document#' + documentMeta._id,
         contextTitle: documentMeta.title,
         contextType: 'document',
         contextController: _documentContextController,
@@ -402,14 +413,35 @@ UI.prototype.onThrowCatcherStoreToolState = function(_eventData) {
 };
 
 UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
-  this.app.serviceManager.createDocument(_eventData.title, _eventData.type, function() {
-    console.log(_eventData);
+  var self = this;
+  this.app.serviceManager.createDocument(_eventData.title, _eventData.type, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successDocumentCreate();
+
+      self.loadDocumentList(function(_result) {
+        console.log('loaded', _result);
+
+        self.toolFactory.storeToolState("ServiceResources", {
+          documentList: _result.list
+        });
+      });
+    } else {
+      _eventData.path[0].failDocumentCreate();
+    }
   });
 };
 
-UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
-  this.app.serviceManager.getDocumentList(function() {
 
+
+UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
+  var self = this;
+  this.loadDocumentList(function(_result) {
+    console.log('loaded', _result);
+
+    self.toolFactory.storeToolState("ServiceResources", {
+      documentList: _result.list
+    });
   });
 };
 

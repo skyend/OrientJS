@@ -18,6 +18,7 @@ var DocumentCUForm = React.createClass({
   create(){
     var title = this.refs['title'].getValue();
     var type = this.refs['type'].getValue();
+
     if( title === '' ){
       this.setState({message:"Title을 입력해 주세요."});
       return ;
@@ -35,8 +36,13 @@ var DocumentCUForm = React.createClass({
     this.emit("Close");
   },
 
-  successCreate(){
+  successDocumentCreate(){
     this.emit("Close");
+    this.emit("NeedDocument");
+  },
+
+  failDocumentCreate(){
+    alert("Fail create document");
   },
 
   onChange(){

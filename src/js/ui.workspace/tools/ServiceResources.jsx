@@ -12,7 +12,13 @@
 
 
         getInitialState(){
-            return {pageMetaList:[], documentMetaList:[], apiSourceMetaList:[]};
+            return {
+              documentList:[],
+
+              pageMetaList:[], // x
+              documentMetaList:[], // x
+              apiSourceMetaList:[] // x
+            };
         },
 
         addAPISource(){
@@ -22,6 +28,7 @@
 
         clickNewDocument(){
           console.log('why');
+
           this.emit("RequestAttachTool", {
             "toolKey": "DocumentCUForm",
             "where":"ModalWindow"
@@ -86,19 +93,19 @@
           )
         },
 
-        renderDocumentItem( _documentMeta ){
+        renderDocumentItem( _document ){
           var iconClass;
 
-          if( _documentMeta.purpose === 'layout' ){
+          if( _document.type === 'layout' ){
             iconClass = 'fa-file-pdf-o'
-          } else if ( _documentMeta.purpose === 'contents' ){
+          } else if ( _document.type === 'contents' ){
             iconClass = "fa-file-text-o"
           }
 
           var self = this;
           var click = function(){
             self.emit("BringDocumentContext", {
-              documentMeta : _documentMeta,
+              document : _document,
               iconClass: iconClass
             });
           };
@@ -107,7 +114,7 @@
 
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === 'document' ){
-              if( this.state.runningContext.documentID ==  _documentMeta.idx ){
+              if( this.state.runningContext.documentID ==  _document._id ){
                 contextIsRunning = true;
               }
             }
@@ -115,7 +122,7 @@
 
           return (
             <li onClick={ click } className={contextIsRunning? 'running':''}>
-              <i className={'fa ' + iconClass}></i> <span> { _documentMeta.title } </span>
+              <i className={'fa ' + iconClass}></i> <span> { _document.title } </span>
             </li>
           )
         },
@@ -161,7 +168,7 @@
                 <i className='fa fa-file-text-o'></i> Documents <span className='add-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
               </label>
               <ul>
-                { this.state.documentMetaList.map(this.renderDocumentItem) }
+                { this.state.documentList.map(this.renderDocumentItem) }
               </ul>
             </div>
           )
@@ -172,11 +179,15 @@
         },
 
         componentDidMount(){
-            //this.emit("NeedServiceResourcesMeta",{});
-            this.emit("NeedDocumentList");
+          var self = this;
+          //this.emit("NeedServiceResourcesMeta",{});
+          setTimeout(function(){
+            self.emit("NeedDocumentList");
+          },100);
         },
 
         render() {
+          console.log(this.state);
             var wide = false;
             var rootClasses = ['ServiceResources', this.props.config.theme,  this.getMySizeClass()];
 

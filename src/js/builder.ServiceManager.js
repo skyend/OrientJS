@@ -46,13 +46,15 @@ class ServiceManager {
   createDocument(_title, _type, _complete) {
     //console.log('create ', _title, _type);
 
-    this.app.gelateriaRequest.createDocument(this.service_id, _title, _type, function() {
-      _complete();
+    this.app.gelateriaRequest.createDocument(this.service_id, _title, _type, function(_result) {
+      _complete(_result);
     });
   }
 
-  getDocumentList() {
-
+  getDocumentList(_complete) {
+    this.app.gelateriaRequest.getDocumentList(this.service_id, function(_result) {
+      _complete(_result);
+    });
   }
 
   // Deprecated
@@ -129,21 +131,21 @@ class ServiceManager {
   }
 
 
-  getDocumentContextController(_documentIdx, _complete) {
+  getDocumentContextController(_documentId, _complete) {
     var self = this;
 
-    if (this.docContextControllers[_documentIdx] === undefined) {
+    if (this.docContextControllers[_documentId] === undefined) {
 
-      this.app.gelateriaRequest.loadDocument(this.meta.idx, _documentIdx, function(_docJSON) {
+      this.app.gelateriaRequest.loadDocument(this.service_id, _documentId, function(_docJSON) {
         var documentContextController = new DocumentContextController(_docJSON, self.app.session, self);
 
-        self.docContextControllers[_documentIdx] = documentContextController;
+        self.docContextControllers[_documentId] = documentContextController;
 
-        _complete(self.docContextControllers[_documentIdx])
+        _complete(self.docContextControllers[_documentId])
       });
 
     } else {
-      _complete(this.docContextControllers[_documentIdx]);
+      _complete(this.docContextControllers[_documentId]);
     }
   }
 
