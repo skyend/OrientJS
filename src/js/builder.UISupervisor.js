@@ -374,7 +374,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   // Document Meta 정보로 DocumentContextController를 얻는다
   this.projectManager.serviceManager
     .getDocumentContextController(documentMeta._id, function(_documentContextController) {
-
+      console.log(documentMeta);
       self.rootUIInstance.openStageContext({
         documentID: documentMeta._id,
         contextID: 'document#' + documentMeta._id,

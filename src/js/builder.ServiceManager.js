@@ -137,6 +137,7 @@ class ServiceManager {
     if (this.docContextControllers[_documentId] === undefined) {
 
       this.app.gelateriaRequest.loadDocument(this.service_id, _documentId, function(_docJSON) {
+        console.log(_docJSON);
         var documentContextController = new DocumentContextController(_docJSON, self.app.session, self);
 
         self.docContextControllers[_documentId] = documentContextController;

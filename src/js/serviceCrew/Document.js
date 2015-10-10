@@ -37,7 +37,7 @@ var Document = function(_contextController, _documentDataObject) {
   //////////////////////////
   // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
   if (typeof _documentDataObject !== 'undefined') {
-    this.documentID = _documentDataObject.documentID;
+    this.documentID = _documentDataObject._id;
     this.documentName = _documentDataObject.documentName;
     this.documentTitle = _documentDataObject.documentTitle;
     this.documentCreate = _documentDataObject.documentCreate;
