@@ -18,12 +18,17 @@ var HeadToolBar = React.createClass({
       return {
         undoable:false,
         redoable:false,
-        contextItem: null
+        contextItem: null,
+        'user-info':{}
       }
     },
 
     clickSave(){
       this.emit('SaveCurrentContext');
+    },
+
+    signout(){
+      this.emit("UserSignout");
     },
 
     undo(){
@@ -52,6 +57,23 @@ var HeadToolBar = React.createClass({
       });
     },
 
+    setData(_fieldName, _data){
+      var addState = {};
+      addState[_fieldName] = _data;
+      this.setState(addState);
+    },
+
+    componentDidMount(){
+      var self = this;
+
+      setTimeout(function(){
+          self.emit("NeedData", {
+            field:['user-info']
+          });
+      },100);
+
+    },
+
     render: function () {
         var saveDisabled = true;
         var undoDisabled = true;
@@ -60,7 +82,7 @@ var HeadToolBar = React.createClass({
 
         if( this.state.contextItem !== null ){
 
-          if( this.state.contextItem.contextType === 'document' || this.state.contextItem.contextType === 'page'){
+          if( this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/){
             saveDisabled = false;
             modeChangeDisabled = false;
 
@@ -91,7 +113,7 @@ var HeadToolBar = React.createClass({
 
 
                     <li className='right' style={{width:130}}>
-                      <OutlineButton icon='user' title='I-ON Guest' color='white' iconSize='24' onClick={this.modeChangeDesktop}/>
+                      <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='24' onClick={this.signout}/>
                     </li>
                     <li className='right'>
                       <GridBox placements={[

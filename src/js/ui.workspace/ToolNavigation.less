@@ -13,11 +13,13 @@
 .ToolNavigation
 {
     position: absolute;
-
+    z-index: 3;
     &
     {
         > .navigator
         {
+            font-size: 12px;
+
             position: absolute;
 
             overflow: auto;
@@ -67,12 +69,13 @@
                     {
                         > li
                         {
-                            font-size: 12px;
+                            font-size: inherit;
                             line-height: 1;
 
-                            padding: 0 10px;
+                            padding: .3em 10px;
 
                             cursor: pointer;
+                            text-align: center;
 
                             border-width: 1px;
                             border-style: solid;
@@ -107,6 +110,14 @@
 
             .noselect;
         }
+
+        > .resize-bar
+        {
+            position: absolute;
+
+            width: 100%;
+            height: 100%;
+        }
     }
 
 
@@ -120,6 +131,8 @@
             width: 100%;
             height: 27px;
 
+            border-top: 1px solid #444546;
+            border-bottom: 1px solid #444546;
             > ul.tool-groups
             {
                 > li.group
@@ -144,18 +157,140 @@
 
             width: 100%;
         }
+
+        > .resize-bar
+        {
+            top: 0;
+
+            height: 5px;
+
+            cursor: ns-resize;
+        }
     }
     &.pos-top
     {
         top: 0;
     }
+
     &.pos-left
     {
         left: 0;
+
+        > .navigator
+        {
+            left: 0;
+
+            width: 45px;
+            height: 100%;
+
+            border-right: 1px solid #444546;
+
+
+            > ul.tool-groups
+            {
+                > li.group
+                {
+                    height: auto;
+                    margin-top: 10px;
+                    > ul.group-items
+                    {
+                        > li
+                        {
+                            width: 100%;
+                            height: auto;
+
+                            border-width: 0;
+                        }
+                    }
+
+                    &:first-child
+                    {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+
+        > .tool-zone
+        {
+            right: 0;
+            left: 45px;
+
+            display: block;
+
+            height: 100%;
+
+            border-right: 1px solid #333;
+        }
+
+        > .resize-bar
+        {
+            right: 0;
+
+            width: 5px;
+
+            cursor: ew-resize;
+        }
     }
+
     &.pos-right
     {
         right: 0;
+
+        > .navigator
+        {
+            right: 0;
+
+            width: 27px;
+            height: 100%;
+
+            border-left: 1px solid #444546;
+
+            > ul.tool-groups
+            {
+                > li.group
+                {
+                    height: auto;
+                    margin-top: 10px;
+                    > ul.group-items
+                    {
+                        > li
+                        {
+                            width: 100%;
+                            height: auto;
+
+                            border-width: 0;
+                        }
+                    }
+
+                    &:first-child
+                    {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+
+        > .tool-zone
+        {
+            right: 27px;
+            left: 0;
+
+            display: block;
+
+            height: 100%;
+
+            border-left: 1px solid #333;
+        }
+
+        > .resize-bar
+        {
+            left: 0;
+
+            width: 5px;
+
+            cursor: ew-resize;
+        }
     }
 
     &.dark
@@ -164,9 +299,7 @@
 
         > .navigator
         {
-            border: 1px solid #444546;
-            border-right-width: 0;
-            border-left-width: 0;
+            // border: 1px solid #444546;
             background-color: #282829;
 
             > ul.tool-groups
@@ -190,6 +323,7 @@
                             &.opend
                             {
                                 background-color: #fff;
+
                                 &:hover
                                 {
                                     color: #000;
@@ -217,6 +351,11 @@
             position: absolute;
 
             display: block;
+        }
+
+        > .resize-bar
+        {
+            background-color: rgba(72, 73, 74, .21);
         }
     }
 }

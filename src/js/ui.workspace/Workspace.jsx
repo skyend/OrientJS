@@ -11,7 +11,6 @@ import './Workspace.less';
 import _ from 'underscore';
 import Async from '../lib/Async.js';
 import HeadToolBar from'./HeadToolBar.jsx'; //상단 네비게이션 UI
-import VToolNavigation from'./VerticalToolNavigation.jsx';
 import ToolNavigation from './ToolNavigation.jsx';
 
 import DocumentStage from './DocumentStage.jsx'; //중앙 컨텐츠 영역 UI
@@ -153,7 +152,7 @@ var Workspace = React.createClass({
 
 
     onThrowCatcherFoldTool(_eventData, _pass) {
-
+console.log(_eventData);
         if (_eventData.refPath[0] === 'RightNavigation') {
             this.rightAreaWidth = _eventData.width;
 
@@ -165,7 +164,7 @@ var Workspace = React.createClass({
     },
 
     onThrowCatcherUnfoldTool(_eventData, _pass) {
-
+      console.log(_eventData);
         if (_eventData.refPath[0] === 'RightNavigation') {
             this.rightAreaWidth = _eventData.width;
         } else if (_eventData.refPath[0] === 'LeftNavigation') {
@@ -254,15 +253,15 @@ var Workspace = React.createClass({
           break;
         case "BottomNavigation":
           this.refs['BottomNavigation'].setState({toolEgg: _toolEgg});
+          break;
         case "ModalWindow":
+          this.refs['Modal'].setState({toolEgg: _toolEgg});
+          break;
       }
-
-      this.resizeSelf();
-
     },
 
     applyToolStates( _toolEquipmentKey, _state ){
-      //console.log('HIHIHIHIHI',_toolEquipmentKey, _state);
+
       this.emit('StoreToolState', {
         toolKey : _toolEquipmentKey,
         state: _state
@@ -451,76 +450,61 @@ var Workspace = React.createClass({
       }
     },
 
-    onThrowCatcherResized(){
-      console.log('resized');
-      this.resizeSelf();
+    onThrowCatcherResized(_eventData){
+
+      if( _eventData.refPath[0] === 'LeftNavigation'){
+        this.resizeDocumentStage();
+      } else if( _eventData.refPath[0] === 'RightNavigation'){
+        this.resizeDocumentStage();
+      } else if( _eventData.refPath[0] === 'BottomNavigation'){
+        this.resizeSideNavigation();
+      }
+
+    },
+
+    resizeDocumentStage(){
+      var documentStage = this.refs['DocumentStage'];
+      var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
+      var leftNavigationDOM = this.refs['LeftNavigation'].getDOMNode();
+      var rightNavigationDOM = this.refs['RightNavigation'].getDOMNode();
+      var bottomNavigationDOM = this.refs['BottomNavigation'].getDOMNode();
+
+
+      documentStage.setState({
+        width : this.getDOMNode().offsetWidth - leftNavigationDOM.offsetWidth - rightNavigationDOM.offsetWidth,
+        height: this.getDOMNode().offsetHeight - headToolBarDOM.offsetHeight - bottomNavigationDOM.offsetHeight,
+        x : leftNavigationDOM.offsetWidth,
+        y : headToolBarDOM.offsetHeight
+      });
+
+    },
+
+    resizeSideNavigation(){
+      var documentStage = this.refs['DocumentStage'];
+      var leftNavigation = this.refs['LeftNavigation'];
+      var rightNavigation = this.refs['RightNavigation'];
+      var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
+      var bottomNavigationDOM = this.refs['BottomNavigation'].getDOMNode();
+
+      leftNavigation.setState({
+        top: headToolBarDOM.offsetHeight,
+        bottom:bottomNavigationDOM.offsetHeight
+      });
+
+      rightNavigation.setState({
+        top: headToolBarDOM.offsetHeight,
+        bottom:bottomNavigationDOM.offsetHeight
+      });
+    },
+
+    screenResized(){
+
+      this.resizeSideNavigation();
+      this.resizeDocumentStage();
     },
 
 
 
-
-    // 컨텐츠 영역 화면 리사이즈
-    resizeSelf() {
-        var selfDom = this.getDOMNode();
-
-        var leftNavigation = this.refs['LeftNavigation'];
-        var rightNavigation = this.refs['RightNavigation'];
-        var bottomNavigation = this.refs['BottomNavigation'];
-        var documentStage = this.refs['DocumentStage'];
-        var headToolBar = this.refs['HeadToolBar'];
-        var footerStatusBar = this.refs['FootStatusBar'];
-
-        var bottomNavigationDOM = bottomNavigation.getDOMNode();
-
-
-
-
-
-
-        var width = selfDom.offsetWidth;
-        var height = selfDom.offsetHeight;
-
-        var headerOffsetHeight = headToolBar.getDOMNode().offsetHeight;
-
-
-        // middleArea 의 넓이와 높이
-        var documentStageWidth = width - this.leftAreaWidth - this.rightAreaWidth;
-        var documentStageHeight = height - headerOffsetHeight - bottomNavigationDOM.offsetHeight;
-
-        // DocumentStage ReactClass
-
-
-        // DocumentStage Element
-        var documentStageDom = documentStage.getDOMNode();
-
-        var documentStageRect = {
-          width : documentStageWidth,
-          height: documentStageHeight,
-          left : this.leftAreaWidth,
-          top : headerOffsetHeight
-        };
-
-        // documentStage에 resize 알림
-        documentStage.resize(documentStageRect);
-
-
-        // ToolNavigation에 최대로 펼칠 수 있는 넓이를 알려줌
-        leftNavigation.setState({maxWidth: this.leftAreaWidth + documentStageWidth, height:documentStageHeight });
-        rightNavigation.setState({maxWidth: this.rightAreaWidth + documentStageWidth, height:documentStageHeight });
-    },
-
-    resizeListener(_w, _h, _screenW, _screenH) {
-        var selfDom = this.getDOMNode();
-        selfDom.style.width = _w + 'px';
-        selfDom.style.height = _h + 'px';
-
-        this.width = _w;
-        this.height = _h;
-        this.screenWidth = _screenW;
-        this.screenHeight = _screenH;
-
-        this.resizeSelf();
-    },
 
     componentDidUpdate(){
       console.log('workspace updated');
@@ -530,57 +514,77 @@ var Workspace = React.createClass({
         var self = this;
         this.leftAreaWidth = this.leftAreaWidth || 0;
         this.rightAreaWidth = this.rightAreaWidth || 0;
-        this.props.observers.resizeListener = function (_w, _h, _screenW, _screenH) {
-            self.resizeListener(_w, _h, _screenW, _screenH);
-        };
+        // this.props.observers.resizeListener = function (_w, _h, _screenW, _screenH) {
+        //     self.resizeListener(_w, _h, _screenW, _screenH);
+        // };
     },
 
     render() {
         return (
-            <div>
-                <HeadToolBar ref='HeadToolBar'/>
-
-                <VToolNavigation ref="LeftNavigation"
-                                config={this.props.LeftNavigationConfig}
-                                naviWidth={50}
-                                toolWidth={270}
-                                position='left'
-                                naviItemFontSize={20}/>
-
-                <VToolNavigation ref="RightNavigation"
-                                 config={this.props.RightNavigationConfig}
-                                 naviWidth={25}
-                                 toolWidth={420}
-                                 showTitle={true}
-                                 verticalText={true}
-                                 position='right'
-                                 naviItemFontSize={16}/>
-
-               <ToolNavigation ref="BottomNavigation"
-                                defaultToolSize={310}
-                                maxSize={700}
-                                config={this.props.BottomNavigationConfig}
-                                initialShow={false}
-                                showTitle={true}
-                                showIcon={true}
-                                theme='dark'
-                                verticalText={true}
-                                position='bottom' />
-
-                <DocumentStage ref='DocumentStage'
-                                aimingCount={100}
-                                aimingEscapeStepSize={10}
-                                boundaryBorderSize={5}  />
+            <div className='workspace'>
+                <div className='editor-floor-supporters'>
+                    <HeadToolBar ref='HeadToolBar'/>
 
 
-                <FloatingMenuBox ref='stage-context-menu'/>
+
+                    <ToolNavigation ref="LeftNavigation"
+                                     defaultToolSize={310}
+                                     maxSize={700}
+                                     naviSize={45}
+                                     fontSize={22}
+                                     config={this.props.LeftNavigationConfig}
+                                     initialShow={true}
+                                     showTitle={false}
+                                     showIcon={true}
+                                     theme='dark'
+                                     verticalText={true}
+                                     position='left'/>
+
+
+                   <ToolNavigation ref="RightNavigation"
+                                    defaultToolSize={410}
+                                    maxSize={700}
+                                    naviSize={45}
+                                    fontSize={22}
+                                    config={this.props.RightNavigationConfig}
+                                    initialShow={true}
+                                    showTitle={false}
+                                    showIcon={true}
+                                    theme='dark'
+                                    verticalText={true}
+                                    position='right'/>
+
+                   <ToolNavigation ref="BottomNavigation"
+                                    defaultToolSize={310}
+                                    maxSize={700}
+                                    naviSize={27}
+                                    config={this.props.BottomNavigationConfig}
+                                    initialShow={false}
+                                    showTitle={true}
+                                    showIcon={true}
+                                    closeable={true}
+                                    theme='dark'
+                                    verticalText={true}
+                                    position='bottom' />
+
+                    <DocumentStage ref='DocumentStage'
+                                    aimingCount={100}
+                                    aimingEscapeStepSize={10}
+                                    boundaryBorderSize={5}  />
+
+
+                    <FloatingMenuBox ref='stage-context-menu'/>
+
+
+                    <NotificationSystem ref='NotificationSystem'/>
+                    <SubWindowSystem ref='SubWindowSystem'/>
+                </div>
+
                 <Modal ref="Modal"/>
-
-                <NotificationSystem ref='NotificationSystem'/>
-                <SubWindowSystem ref='SubWindowSystem'/>
             </div>
         )
     }
 });
+
 
 export default Workspace;

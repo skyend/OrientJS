@@ -1,0 +1,96 @@
+#main
+{
+    .horizon-parts
+    {
+        position: relative;
+
+        overflow-x: auto;
+
+        word-break: keep-all;
+
+
+
+        .column
+        {
+            display: inline-block;
+            float: left;
+
+            box-sizing: border-box;
+            min-width: 300px;
+            max-width: 500px;
+            min-height: 500px;
+            margin-top: 30px;
+
+            border-right: 1px solid #d4d4d4;
+
+            &:last-child
+            {
+                border: 0;
+            }
+
+            .profile
+            {
+                width: 100%;
+
+                .user-avatar
+                {
+                    overflow: hidden;
+
+                    width: 100px;
+                    height: 100px;
+                    margin: auto;
+
+                    border-radius: 50%;
+                }
+            }
+
+            .row-division
+            {
+                min-width: 100%;
+
+                border-bottom: 1px solid #ddd;
+
+                > form
+                {
+                    margin: 0;
+                    padding: 10px 35px;
+                }
+
+                > ul
+                {
+                    margin: 0;
+                    padding: 0;
+
+                    > li
+                    {
+                        cursor: pointer;
+                        transition: all .2s;
+
+                        border-bottom: 1px solid #cacaca;
+                        background-color: #f5f5f5;
+                        &:last-child
+                        {
+                            border: 0;
+                        }
+
+                        &:hover
+                        {
+                            background-color: #eee;
+                        }
+
+                        &.selected
+                        {
+                            color: #f8f9fa;
+                            background-color: #b78a92;
+                        }
+                    }
+                }
+
+                &:last-child
+                {
+                    border: 0;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,117 @@
+/*
+ * Base variable
+ */
+@font-family-sans-serif: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+@font-family-serif: Georgia, 'Times New Roman', Times, serif;
+@font-family-monospace: Menlo, Monaco, Consolas, 'Courier New', monospace;
+@font-family-base: @font-family-sans-serif;
+@menuHoverColor: #fff;
+@menuFontHoverColor: #6f6f6f;
+@fontColor: #6f6f6f;
+@titleBgColor: #bbb;
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 300;
+    font-style: normal;
+
+    src: local('Open Sans Light'), local('OpenSans-Light'), url('http://fonts.gstatic.com/s/opensans/v13/DXI1ORHCpsQm3Vp6mXoaTZS3E-kSBmtLoNJPDtbj2Pk.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 400;
+    font-style: normal;
+
+    src: local('Open Sans'), local('OpenSans'), url('http://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3SZ2oysoEQEeKwjgmXLRnTc.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 600;
+    font-style: normal;
+
+    src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url('http://fonts.gstatic.com/s/opensans/v13/MTP_ySUJH_bn48VBG8sNSpS3E-kSBmtLoNJPDtbj2Pk.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 700;
+    font-style: normal;
+
+    src: local('Open Sans Bold'), local('OpenSans-Bold'), url('http://fonts.gstatic.com/s/opensans/v13/k3k702ZOKiLJc3WVjuplzJS3E-kSBmtLoNJPDtbj2Pk.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 300;
+    font-style: italic;
+
+    src: local('Open Sans Light Italic'), local('OpenSansLight-Italic'), url('http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxt6Naowg1QhaIq8kLGtQSos.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 400;
+    font-style: italic;
+
+    src: local('Open Sans Italic'), local('OpenSans-Italic'), url('http://fonts.gstatic.com/s/opensans/v13/xjAJXh38I15wypJXxuGMBiwlidHJgAgmTjOEEzwu1L8.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 600;
+    font-style: italic;
+
+    src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), url('http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxs1QGe9x6ME_FQCWJB3n6z8.ttf') format('truetype');
+}
+
+@font-face
+{
+    font-family: 'Open Sans';
+    font-weight: 700;
+    font-style: italic;
+
+    src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'), url('http://fonts.gstatic.com/s/opensans/v13/PRmiXeptR36kaC0GEAetxjdGNerWpg2Hn6A-BxWgZ_I.ttf') format('truetype');
+}
+
+body
+{
+    font-family: @font-family-sans-serif;
+
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    .workspace
+    {
+        width: 100%;
+        height: 100%;
+        .editor-floor-supporters
+        {
+            width: 100%;
+            height: 100%;
+            // -webkit-filter: blur(5px);
+            //    -moz-filter: blur(5px);
+            //      -o-filter: blur(5px);
+            //     -ms-filter: blur(5px);
+            //         filter: blur(5px);
+        }
+    }
+}
+
+li
+{
+    list-style-type: none;
+}
+
+a
+{
+    cursor: pointer;
+    text-decoration: none;
+}

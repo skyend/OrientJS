@@ -19,7 +19,9 @@ var  ToolNavigation = React.createClass({
       position:'bottom', // left, top, bottom, right
       theme:'dark', // dark
       defaultToolSize:300,
+      naviSize:27,
       maxSize:500,
+      fontSize:12,
       initialShow:false
     };
   },
@@ -47,7 +49,7 @@ var  ToolNavigation = React.createClass({
       app.ui.occupyGlobalDrag(this, true);
       app.ui.enableGlobalDrag();
       app.ui.toMouseDawn();
-
+      app.ui.startGlobalDrag();
 
       this.mouseDown = false;
     }
@@ -62,10 +64,21 @@ var  ToolNavigation = React.createClass({
 
     var changedSize;
     if( this.naviType === 'vertical' ){
-      changedSize = this.state.toolSize - _e.movementY;
+      var moveY = _e.movementY;
+      if( this.props.position === 'top' ){
+        moveY *= -1;
+      }
+      changedSize = this.state.toolSize - moveY;
     } else if( this.naviType === 'horizontal' ){
-      changedSize = this.state.toolSize - _e.movementX;
+      var moveX = _e.movementX;
+      if( this.props.position === 'left' ){
+        moveX *= -1;
+      }
+
+      changedSize = this.state.toolSize - moveX
     }
+
+
 
     if( changedSize < 100 ) changedSize = 100;
     if( changedSize > this.props.maxSize ) changedSize = this.props.maxSize;
@@ -102,9 +115,25 @@ var  ToolNavigation = React.createClass({
   },
 
   componentDidMount(){
+    // switch(this.props.position){
+    //   case "left":
+    //   case "right":
+    //   this.naviType = 'horizontal';
+    //   break;
+    //   case "top":
+    //   case "bottom":
+    //   this.naviType = 'vertical';
+    //   break;
+    // }
+  },
+
+  componentWillMount(){
+    console.log(this.props);
+
     switch(this.props.position){
       case "left":
       case "right":
+      console.log('heere');
       this.naviType = 'horizontal';
       break;
       case "top":
@@ -155,14 +184,20 @@ var  ToolNavigation = React.createClass({
       </li>
     );
   },
-  renderToolGroupNavigation(){
-    return (
-      <ul className='tool-groups'>
-        { this.props.config.menuGroups.map(this.renderToolGroup) }
 
+  renderToolGroupNavigation(){
+    var closeableElement;
+    if( this.props.closeable ){
+      closeableElement = (
         <li className='single right' onClick={this.toggleShow}>
           <i className='fa fa-times'/>
         </li>
+      );
+    }
+    return (
+      <ul className='tool-groups'>
+        { this.props.config.menuGroups.map(this.renderToolGroup) }
+        {closeableElement}
       </ul>
     );
   },
@@ -170,6 +205,8 @@ var  ToolNavigation = React.createClass({
   render(){
     var classes = [];
     var styles = {};
+    var navigatorStyle = {};
+    var toolZoneStyle = {};
 
     classes.push('ToolNavigation');
     classes.push('pos-'+this.props.position);
@@ -177,16 +214,35 @@ var  ToolNavigation = React.createClass({
 
     var toolSize = this.state.toolSize;
     if( this.state.toolEgg === null ){
-      toolSize = 27;
+      toolSize = this.props.naviSize;
     }
 
     if( this.naviType === 'vertical' ){
-      styles['width'] = '100%';
+      
       styles['height'] = toolSize;
+      // positioning
+      styles['left'] = this.state.left;
+      styles['right'] = this.state.right;
+      if( styles['top'] === undefined && styles['bottom'] === undefined ) styles['width'] = '100%';
+
+      navigatorStyle['height'] = this.props.naviSize;
+
+      toolZoneStyle[this.props.position === 'bottom'? 'top':'bottom'] = this.props.naviSize;
     } else if( this.naviType === 'horizontal' ){
       styles['width'] = toolSize;
-      styles['height'] = '100%';
+
+      // positioning
+      styles['top'] = this.state.top;
+      styles['bottom'] = this.state.bottom;
+
+      if( styles['top'] === undefined && styles['bottom'] === undefined ) styles['height'] = '100%';
+
+      navigatorStyle['width'] = this.props.naviSize;
+
+      toolZoneStyle[this.props.position] = this.props.naviSize;
     }
+
+    navigatorStyle['fontSize'] = this.props.fontSize;
 
 
     if( this.state.show ){
@@ -196,15 +252,24 @@ var  ToolNavigation = React.createClass({
       styles['height'] = 0;
     }
 
+
+
+
+    var resizebar;
+    if( this.state.toolEgg !== null ){
+      resizebar = <div className='resize-bar' onMouseMove={this.mouseMoveOver} onMouseDown={this.mouseDownNavi} onMouseUp={this.mouseUpNavi}/>;
+    }
+
     return (
-      <div className={classes.join(' ')} style={{}} style={styles}>
-        <div className='navigator' onMouseMove={this.mouseMoveOver} onMouseDown={this.mouseDownNavi} onMouseUp={this.mouseUpNavi}>
+      <div className={classes.join(' ')} style={styles}>
+        <div className='navigator' style={navigatorStyle}>
           { this.renderToolGroupNavigation() }
         </div>
 
-        <div className='tool-zone'>
+        <div className='tool-zone' style={toolZoneStyle}>
           { this.renderToolNest() }
         </div>
+        { resizebar }
       </div>
     )
   }

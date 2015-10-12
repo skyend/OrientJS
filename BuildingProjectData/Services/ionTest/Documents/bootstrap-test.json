@@ -1,6 +1,8 @@
 {
   "documentID": 3,
+  "idx": 3,
   "documentName": "BootStrapTest",
+  "serviceId": "560e48a9f792dbc9f7d15d70",
   "lastElementId": 12,
   "rootElementNode": {
     "id": 1,

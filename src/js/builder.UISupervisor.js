@@ -10,19 +10,22 @@
 var React = require("react");
 
 // Supporters
-var EventDistributor = require('./ui/reactMixin/EventDistributor.js');
+var EventDistributor = require('./ui.workspace/reactMixin/EventDistributor.js');
 var ToolFactory = require('./builder.ToolFactory.js');
 
 // Sub UI Classes
-var BuilderWorkSpace = require('./ui/Workspace.jsx');
-var LoginService = require('./ui/LoginService.jsx');
+import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
+import LoginService from './ui.workspace/LoginService.jsx';
+import Enterance from './ui.enterance/Enterance.jsx';
 
 // Data
-var DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
+import DefaultBuilderConfig from "../config/DefaultBuilderConfig.json";
 
 // UI Supervisor
-var UI = function(_window, _session) {
+var UI = function(_window, _session, _app) {
   var self = this;
+
+  this.app = _app;
 
   /** Fields **/
   this.window = _window;
@@ -30,6 +33,7 @@ var UI = function(_window, _session) {
   this.observers = {};
   this.dragHoldingElement = null;
   this.isDoingElementHold = false;
+
   // Global Drag
   this.mouseDawn = false;
   this.mouseDragging = false;
@@ -68,10 +72,13 @@ UI.prototype.onResize = function(e) { //UI화면 리사이즈
   var screenWidth = this.window.outerWidth;
   var screenHeigt = this.window.outerHeight;
 
-  // resizeListener 이벤트 체크
-  if (typeof this.observers['resizeListener'] === 'function') {
-    this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
-  }
+  // // resizeListener 이벤트 체크
+  // if (typeof this.observers['resizeListener'] === 'function') {
+  //   this.observers['resizeListener'](width, height, screenWidth, screenHeigt);
+  // }
+  //console.log('resize');
+  if (this.rootUIInstance !== undefined && typeof this.rootUIInstance.screenResized === 'function')
+    this.rootUIInstance.screenResized();
 };
 
 /**
@@ -280,9 +287,45 @@ UI.prototype.uncoverHelper = function() {
 
 };
 
-UI.prototype.onThrowCatcherRootTest = function(_eventData) {
-  console.log('Approached', _eventData);
+
+
+/**************
+ * Service Handling
+ *
+ *
+ *
+ */
+UI.prototype.setProjectManager = function(_projectManager) {
+  this.projectManager = _projectManager;
+
+  this.rootUIInstance.setState({
+    'projectMeta': _projectManager.meta
+  });
 };
+
+UI.prototype.loadDocumentList = function(_complete) {
+  self.app.serviceManager.getDocumentList(function(_result) {
+    if (_result.result === 'success') {
+      console.log('load document list', _result);
+      _complete(_result);
+
+
+    }
+  });
+};
+
+UI.prototype.loadPageList = function(_complete) {
+  self.app.serviceManager.getPageList(function(_result) {
+    if (_result.result === 'success') {
+      console.log('load page list', _result);
+      _complete(_result);
+    }
+  });
+};
+
+/****************************************************************/
+/**************************** Builder Logic *********************/
+/****************************************************************/
 
 UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
 
@@ -302,27 +345,15 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
   _eventData.return(null, loadedComponent)
 };
 
-/**************
- * Service Handling
- *
- *
- *
- */
-UI.prototype.setProjectManager = function(_projectManager) {
-  this.projectManager = _projectManager;
-
-  this.workspace.setState({
-    'projectMeta': _projectManager.meta
-  });
-};
-
 UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
   var who = _eventData.path[0];
-
-  who.setState({
-    pageMetaList: this.projectManager.serviceManager.getPageMetaList(),
-    documentMetaList: this.projectManager.serviceManager.getDocumentMetaList(),
-    apiSourceMetaList: this.projectManager.serviceManager.getAPISourceMetaList()
+  console.log(this.projectManager);
+  this.app.serviceManager.loadMetaData(function(__meta) {
+    who.setState({
+      pageMetaList: __meta.pages,
+      documentMetaList: __meta.documents,
+      apiSourceMetaList: __meta.apiSources
+    });
   });
 };
 
@@ -332,9 +363,9 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
   var apiSourceMeta = _eventData.apiSourceMeta;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var apiSourceContextController = this.projectManager.serviceManager.getApiSourceContextController(apiSourceMeta.id);
+  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSourceMeta.id);
 
-  this.workspace.openStageContext({
+  this.rootUIInstance.openStageContext({
     apiSourceID: apiSourceMeta.id,
     contextID: 'apiSource#' + apiSourceMeta.id,
     contextTitle: apiSourceMeta.title,
@@ -347,20 +378,44 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
 UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   console.log('BringDocumentContext', _eventData);
   //console.log('BringDocumentContext', _eventData.document);
-  var documentMeta = _eventData.documentMeta;
-
+  var documentMeta = _eventData.document;
+  var self = this;
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var documentContextController = this.projectManager.serviceManager.getDocumentContextController(documentMeta.id);
+  this.app.serviceManager
+    .getDocumentContextController(documentMeta._id, function(_documentContextController) {
+      console.log(documentMeta);
+      self.rootUIInstance.openStageContext({
+        documentID: documentMeta._id,
+        contextID: 'document#' + documentMeta._id,
+        contextTitle: documentMeta.title,
+        contextType: 'document',
+        contextController: _documentContextController,
+        iconClass: _eventData.iconClass
+      });
+    });
 
-  this.workspace.openStageContext({
-    documentID: documentMeta.id,
-    contextID: 'document#' + documentMeta.id,
-    contextTitle: documentMeta.title,
-    contextType: 'document',
-    contextController: documentContextController,
-    iconClass: _eventData.iconClass
-  });
 };
+
+UI.prototype.onThrowCatcherBringPageContext = function(_eventData) {
+
+  //console.log('BringDocumentContext', _eventData.document);
+  var page = _eventData.page;
+  var self = this;
+  // Document Meta 정보로 DocumentContextController를 얻는다
+  this.app.serviceManager
+    .getPageContextController(page._id, function(_pageContextController) {
+      console.log(page);
+      self.rootUIInstance.openStageContext({
+        pageID: page._id,
+        contextID: 'page#' + page._id,
+        contextTitle: page.title,
+        contextType: 'page',
+        contextController: _pageContextController,
+        iconClass: _eventData.iconClass
+      });
+    });
+};
+
 
 
 UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData) {
@@ -377,7 +432,7 @@ UI.prototype.onThrowCatcherRequestAttachTool = function(_eventData) {
 
   this.toolFactory.getToolEgg(_eventData.toolKey, function(__egg) {
 
-    self.workspace.attachTool(_eventData.where, __egg)
+    self.rootUIInstance.attachTool(_eventData.where, __egg)
   });
 };
 
@@ -387,38 +442,225 @@ UI.prototype.onThrowCatcherStoreToolState = function(_eventData) {
   this.toolFactory.storeToolState(_eventData.toolKey, _eventData.state);
 };
 
+UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.createDocument(_eventData.title, _eventData.type, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successDocumentCreate();
+
+      self.loadDocumentList(function(_result) {
+        console.log('loaded', _result);
+
+        self.toolFactory.storeToolState("ServiceResources", {
+          documentList: _result.list
+        });
+      });
+    } else {
+      _eventData.path[0].failDocumentCreate();
+    }
+  });
+};
+
+UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.createPage(_eventData.title, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successPageCreate();
+
+      self.loadPageList(function(_result) {
+        console.log('loaded', _result);
+
+        self.toolFactory.storeToolState("ServiceResources", {
+          pageList: _result.list
+        });
+      });
+    } else {
+      _eventData.path[0].failPageCreate();
+    }
+  });
+};
 
 
+UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
+  var self = this;
+  this.loadDocumentList(function(_result) {
+    console.log('loaded', _result);
 
+    self.toolFactory.storeToolState("ServiceResources", {
+      documentList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedPageList = function(_eventData) {
+  var self = this;
+  this.loadPageList(function(_result) {
+    console.log('loaded', _result);
+
+    self.toolFactory.storeToolState("ServiceResources", {
+      pageList: _result.list
+    });
+  });
+};
+
+/****************************************************************/
+/**************************** Builder Logic End *****************/
+/****************************************************************/
+//----------
+/****************************************************************/
+/**************************** Enterance Logic *******************/
+/****************************************************************/
+UI.prototype.onThrowCatcherUserSignUp = function(_eventData) {
+
+  this.app.userManager.register(_eventData, function(_result) {
+    if (_result.result === 'success') {
+      _eventData.path[0].successSignUp();
+    } else {
+      _eventData.path[0].failSignUp(_result.reason);
+    }
+  });
+
+};
+
+UI.prototype.onThrowCatcherUserSignIn = function(_eventData) {
+
+  this.app.userManager.signin(_eventData.id, _eventData.password, function(_result) {
+    if (_result.result === 'success') {
+      _eventData.path[0].successSignIn(_result);
+    } else {
+      _eventData.path[0].failSignIn(_result.reason);
+    }
+  });
+
+};
+
+UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+  this.app.projectManager.create(name, function(_result) {
+    console.log('created project', _result);
+  });
+};
+
+UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
+  var name = _eventData.name;
+  console.log(name);
+
+  this.app.projectManager.createService(name, function(_result) {
+    console.log('created project', _result);
+  });
+};
+
+UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
+  console.log("Select project : ", _eventData.project_real_id);
+  this.app.projectManager.use(_eventData.project_real_id);
+};
+
+UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
+  var serviceId = _eventData.service_id;
+  console.log(serviceId, "Start building");
+
+  this.app.startServiceBuilding(serviceId);
+}
+
+/****************************************************************/
+/**************************** Enterance Logic End ***************/
+/****************************************************************/
+//----------------
+/****************************************************************/
+/**************************** Common Logic **********************/
+/****************************************************************/
+
+UI.prototype.onThrowCatcherUserSignout = function(_eventData) {
+  this.app.userManager.signout();
+};
+
+UI.prototype.onThrowCatcherNeedData = function(_eventData) {
+  var field = _eventData.field || [];
+
+  for (var i = 0; i < field.length; i++) {
+
+    switch (field[i]) {
+      case "user-info":
+        this.app.userManager.getCurrent(function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('user-info', _result.user);
+          } else {
+            alert("유저 정보 로드 실패.");
+          }
+        });
+        break;
+      case "project-list":
+        this.app.projectManager.getList(function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('project-list', _result.list);
+          } else {
+            alert("프로젝트 목록 로드 실패.");
+          }
+        });
+        break;
+      case "service-list":
+        this.app.projectManager.getServiceList(function(_result) {
+          if (_result.result === 'success') {
+            _eventData.path[0].setData('service-list', _result.list);
+          } else {
+            alert("서비스 목록 로드 실패.");
+          }
+        });
+        break;
+    }
+  }
+};
+
+/****************************************************************/
+/**************************** Common Logic End ******************/
+/****************************************************************/
+
+UI.prototype.clearRender = function() {
+  React.render(React.createElement("DIV"), this.window.document.getElementsByTagName('BODY')[0]);
+  this.rootUIInstance = undefined;
+};
 
 UI.prototype.builderRender = function() {
 
   var workspace = React.render(React.createElement(BuilderWorkSpace, {
-    observers: this.observers,
+    //observers: this.observers,
     LeftNavigationConfig: DefaultBuilderConfig.LeftNavigation,
     RightNavigationConfig: DefaultBuilderConfig.RightNavigation,
     BottomNavigationConfig: DefaultBuilderConfig.BottomNavigation,
     Tools: DefaultBuilderConfig.tools,
     Modal: DefaultBuilderConfig.Modal,
+    isRoot: true,
     __keyName: 'uiServicer'
   }), this.window.document.getElementsByTagName('BODY')[0]);
 
+  this.rootUIInstance = workspace;
   this.onResize();
 
-  this.workspace = workspace;
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
+};
 
-  EventDistributor.manualBindForNotReactClass(this, this.workspace);
+UI.prototype.enteranceRender = function() {
+  var enterance = React.render(React.createElement(Enterance, {
+      defaultMainType: this.app.session.isAuthorized() ? 'lobby' : 'signin'
+    }),
+    this.window.document.getElementsByTagName('BODY')[0]);
+
+  this.rootUIInstance = enterance;
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };
 
 UI.prototype.loginRender = function() {
 
   var rootUI = React.render(React.createElement(LoginService),
     this.window.document.getElementsByTagName('BODY')[0]);
+
+  this.rootUIInstance = rootUI;
   this.onResize();
 
-  this.workspace = rootUI;
-
-  EventDistributor.manualBindForNotReactClass(this, this.workspace);
+  EventDistributor.manualBindForNotReactClass(this, this.rootUIInstance);
 };
 
 module.exports = UI;

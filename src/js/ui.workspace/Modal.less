@@ -1,0 +1,159 @@
+.ModalSpace
+{
+    position: fixed;
+    z-index: 10;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transition: background .3s;
+    pointer-events: none;
+
+    background-color: rgba(0,0,0,0);
+
+
+
+    > .modal-window-area
+    {
+        position: relative;
+
+        display: inline-block;
+
+        width: 100%;
+
+        text-align: center;
+        vertical-align: middle;
+
+        > .modal-window
+        {
+            display: inline-block;
+            overflow: auto;
+
+            min-width: 200px;
+            max-width: 100%;
+            min-height: 100px;
+            max-height: 100%;
+
+            border-radius: 10px;
+            background-color: #fff;
+
+            > .window-wrapper
+            {
+                > .window-header
+                {
+                    font-family: sans-serif;
+                    font-size: 16px;
+
+                    position: relative;
+
+                    box-sizing: border-box;
+                    width: 100%;
+                    min-width: 100px;
+                    height: 50px;
+
+                    text-align: left;
+
+                    color: #fff;
+                    background-color: #0a9df3;
+
+                    > .title
+                    {
+                        font-size: 16px;
+
+                        display: inline-block;
+                        float: left;
+
+                        padding-top: 17px;
+                        padding-left: 10px;
+                    }
+
+                    > .close
+                    {
+                        display: inline-block;
+                        float: right;
+
+                        box-sizing: border-box;
+                        width: 24px;
+                        height: 24px;
+                        margin-top: 13px;
+                        margin-right: 13px;
+                        padding: 4px 6px;
+
+                        cursor: pointer;
+                        transition: background .3s;
+
+                        color: #fff;
+                        border-radius: 50%;
+                        background-color: #0e77d2;
+
+                        &:hover
+                        {
+                            background-color: #0a84ec;
+                        }
+
+                        &:active
+                        {
+                            background-color: #075394;
+                        }
+                    }
+
+                    &::before
+                    {
+                        display: inline-block;
+
+                        width: 0;
+                        height: 100%;
+
+                        content: ' ';
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
+    }
+
+    &::before
+    {
+        display: inline-block;
+
+        width: 0;
+        height: 100%;
+
+        content: ' ';
+        vertical-align: middle;
+    }
+
+    > .modal-window-area
+    {
+        > .modal-window
+        {
+            position: relative;
+            top: -50px;
+            //transition: all .001s;
+
+            opacity: 0;
+        }
+    }
+
+    &.on
+    {
+        transition: all .3s;
+        pointer-events: fill;
+
+        background-color: rgba(0,0,0,.6);
+
+        > .modal-window-area
+        {
+            > .modal-window
+            {
+                top: 0;
+
+                transition: all .5s;
+
+                opacity: 1;
+            }
+        }
+    }
+}

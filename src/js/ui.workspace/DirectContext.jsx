@@ -234,10 +234,13 @@ var DirectContext = React.createClass({
   },
 
   goingToContextStop(){
-    this.closeElementNavigator();
+    if( this.state.showElementNavigator){
+      this.closeElementNavigator();
+    }
+
 
     this.contextController.pause();
-    //console.log('changed context state to stop!');
+
   },
 
   goingToContextRunning(){
@@ -285,16 +288,25 @@ var DirectContext = React.createClass({
 
   removeElement(){
     var parent = this.state.selectedElementNode.getParent();
+    var contextController;
+
+    if( parent !== null ){
+      contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
+    } else {
+      contextController = this.props.contextController;
+    }
+
+
     this.state.selectedElementNode.dettachMeFromParent();
-    var contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
 
     this.emit('UpdatedContext', {
       directContext: this
     });
 
-
     this.closeElementNavigator();
+
     contextController.rootRender();
+
     parent.executeSnapshot('all');
   },
 
@@ -547,7 +559,7 @@ var DirectContext = React.createClass({
   save(){
     var contextController = this.props.contextController;
 
-    contextController.testSave();
+    contextController.save();
   },
 
   infoNotice( _title, _message){
@@ -578,6 +590,7 @@ var DirectContext = React.createClass({
     if( _nextState.sizing !== this.props.contextController.getScreenSizing() ){
       this.mustRedrawStage = true;
     }
+
     // contextController 의 디스플레이모드를 변경한다.
     this.props.contextController.setScreenSizing(_nextState.sizing);
   },

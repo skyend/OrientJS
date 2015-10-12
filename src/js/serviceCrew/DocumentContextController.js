@@ -66,7 +66,7 @@ DocumentContextController.prototype.resume = function() {
 };
 
 DocumentContextController.prototype.setScreenSizing = function(_sizing) {
-  console.log(_sizing);
+
   this.screenSizing = _sizing;
 };
 
@@ -518,6 +518,14 @@ DocumentContextController.prototype.isDropableToRoot = function() {
 DocumentContextController.prototype.testSave = function() {
   console.log(JSON.stringify(this.document.export()));
 };
+
+DocumentContextController.prototype.save = function() {
+  var docjson = this.document.export();
+  this.serviceManager.saveDocument(this.document.getDocumentID(), docjson, function(_result) {
+
+  });
+};
+
 
 
 module.exports = DocumentContextController;

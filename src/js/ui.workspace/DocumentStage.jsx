@@ -836,6 +836,7 @@ var _ = require('underscore');
           highligher.style.opacity = 0;
         },
 
+  
         changeElementHighlighterMode( _mode ){
 
           if( _mode !== undefined ){
@@ -956,12 +957,14 @@ var _ = require('underscore');
         },
 
         render: function () {
+
             var rootStyle = {
               width:this.state.width,
               height:this.state.height,
               left:this.state.x,
               top:this.state.y
             };
+
 
             return (
                 <section className="DocumentStage tab-support black" style={rootStyle}>

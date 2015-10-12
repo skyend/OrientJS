@@ -182,6 +182,14 @@
 
     "ResourceUploadModal": {
       "jsxPath": "ResourceUploadModal"
+    },
+
+    "DocumentCUForm": {
+      "jsxPath": "DocumentCUForm"
+    },
+
+    "PageCUForm": {
+      "jsxPath": "PageCUForm"
     }
 
 

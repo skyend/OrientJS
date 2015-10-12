@@ -14,7 +14,7 @@ var ToolFactory = function(_session, _toolsMap) {
 
 // 특정 Tool 의 State를 보존한다.
 ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
-
+  //if (_toolKey === 'ContextContentsNavigation') throw new Error('a');
   // 저장된 State가져오기
   var storedToolState = this.storedStates[_toolKey] || {};
   var state = _state || {};
@@ -140,7 +140,7 @@ ToolFactory.prototype.toolClassLoad = function(_toolKey, _loadedCB) {
 
 function loadTool(toolPath, callback) {
   try {
-    var toolBundle = require("bundle!./ui/tools/" + toolPath);
+    var toolBundle = require("bundle!./ui.workspace/tools/" + toolPath);
   } catch (e) {
     return callback(e);
   }
