@@ -82,7 +82,7 @@ var HeadToolBar = React.createClass({
 
         if( this.state.contextItem !== null ){
 
-          if( this.state.contextItem.contextType === 'document' || this.state.contextItem.contextType === 'page'){
+          if( this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/){
             saveDisabled = false;
             modeChangeDisabled = false;
 

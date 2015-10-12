@@ -14,7 +14,7 @@
         getInitialState(){
             return {
               documentList:[],
-
+              pageList:[],
               pageMetaList:[], // x
               documentMetaList:[], // x
               apiSourceMetaList:[] // x
@@ -26,8 +26,22 @@
           //
         },
 
+        documentDragEnd( _e){
+          console.log( 'drag end document', _e.nativeEvent);
+        },
+        documentDragOver( _e){
+          console.log( 'drag over document', _e.nativeEvent);
+        },
+
+        clickNewPage(){
+
+          this.emit("RequestAttachTool", {
+            "toolKey": "PageCUForm",
+            "where":"ModalWindow"
+          });
+        },
+
         clickNewDocument(){
-          console.log('why');
 
           this.emit("RequestAttachTool", {
             "toolKey": "DocumentCUForm",
@@ -65,13 +79,13 @@
           )
         },
 
-        renderPageItem( _pageMeta ){
-          var iconClass = 'fa-file-o';
+        renderPageItem( _page ){
+          var iconClass = 'fa-newspaper-o';
 
           var self = this;
           var click = function(){
             self.emit("BringPageContext", {
-              pageMeta : _pageMeta,
+              page : _page,
               iconClass: iconClass
             });
           };
@@ -79,7 +93,7 @@
           var contextIsRunning = false;
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === 'page' ){
-              if( this.state.runningContext.pageID ==  _pageMeta.id ){
+              if( this.state.runningContext.pageID ==  _page._id ){
                 contextIsRunning = true;
               }
             }
@@ -88,7 +102,7 @@
 
           return (
             <li onClick={click} className={contextIsRunning? 'running':''}>
-              <i className={'fa '+iconClass}></i> <span> { _pageMeta.title } </span>
+              <i className={'fa '+iconClass}></i> <span> { _page.title } </span>
             </li>
           )
         },
@@ -121,7 +135,7 @@
           }
 
           return (
-            <li onClick={ click } className={contextIsRunning? 'running':''}>
+            <li onClick={ click } className={contextIsRunning? 'running':''} draggable={true} onDragEnd={this.documentDragEnd}  onDragOver={this.documentDragOver}>
               <i className={'fa ' + iconClass}></i> <span> { _document.title } </span>
             </li>
           )
@@ -132,10 +146,26 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-file-o'></i> Pages <span className='add-button'> <i className='fa fa-plus'></i> </span>
+                <i className='fa fa-file-o'></i> Pages <span className='add-button'> <i className='fa fa-plus'  onClick={this.clickNewPage}></i> </span>
               </label>
               <ul>
-                { this.state.pageMetaList.map(this.renderPageItem) }
+                { this.state.pageList.map(this.renderPageItem) }
+              </ul>
+            </div>
+          )
+        },
+
+        renderDocumentList(){
+
+
+
+          return (
+            <div className="resourceList">
+              <label className='listLabel'>
+                <i className='fa fa-file-text-o'></i> Documents <span className='add-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+              </label>
+              <ul>
+                { this.state.documentList.map(this.renderDocumentItem) }
               </ul>
             </div>
           )
@@ -158,32 +188,21 @@
           )
         },
 
-        renderDocumentList(){
-
-
-
-          return (
-            <div className="resourceList">
-              <label className='listLabel'>
-                <i className='fa fa-file-text-o'></i> Documents <span className='add-button'> <i className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
-              </label>
-              <ul>
-                { this.state.documentList.map(this.renderDocumentItem) }
-              </ul>
-            </div>
-          )
-        },
-
         componentDidUpdate(){
           //console.log('updated', this.state);
+        },
+
+        componentDidMountByRoot(){
+          console.log("ROOT Mounted");
         },
 
         componentDidMount(){
           var self = this;
           //this.emit("NeedServiceResourcesMeta",{});
-          setTimeout(function(){
+          //setTimeout(function(){
             self.emit("NeedDocumentList");
-          },100);
+            self.emit("NeedPageList");
+          //},100);
         },
 
         render() {

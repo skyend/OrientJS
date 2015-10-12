@@ -22,7 +22,7 @@ class ProjectManager {
     this.meta = this.app.session.certifiedRequestJSON("/BuildingProjectData/Projects/" + projectKey + ".json");
 
     // 서비스 매니저 시작
-    this.serviceManager = new ServiceManager(this.app, this.app.session, this.meta.ServiceKey);
+    //this.serviceManager = new ServiceManager(this.app, this.app.session, this.meta.ServiceKey);
 
   }
 

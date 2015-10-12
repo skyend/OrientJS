@@ -836,6 +836,7 @@ var _ = require('underscore');
           highligher.style.opacity = 0;
         },
 
+  
         changeElementHighlighterMode( _mode ){
 
           if( _mode !== undefined ){

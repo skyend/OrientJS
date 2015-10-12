@@ -39,13 +39,16 @@ var DocumentConfig = React.createClass({
           targetDoc.setPageCSS( changedData );
         }
       } else if ( _eventData.refPath[1] === 'DocumentProfile'){
-
+        if( _eventData.refPath[0] === 'DocumentTitle' ){
+          targetDoc.setDocumentTitle(changedData);
+        } else if( _eventData.refPath[0] === 'DocumentName' ){
+          targetDoc.setDocumentName(changedData);
+        }
       }
 
     },
 
     renderDocument(){
-
       var targetDocument = this.state.document;
 
       return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/> ;

@@ -6,6 +6,7 @@
 import _ from 'underscore';
 import request from 'superagent';
 
+import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ApiSourceContextControllers from './serviceCrew/ApiSourceContextController.js';
 
@@ -17,6 +18,7 @@ class ServiceManager {
     this.app = _app;
     this.service_id = _service_id;
 
+    this.pageContextControllers = {};
     this.docContextControllers = {};
     this.apiSourceContextControllers = {};
 
@@ -53,6 +55,28 @@ class ServiceManager {
 
   getDocumentList(_complete) {
     this.app.gelateriaRequest.getDocumentList(this.service_id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  saveDocument(_document_id, _documentDataObject, _complete) {
+    console.log("Save Document", _document_id, _documentDataObject);
+
+    this.app.gelateriaRequest.saveDocument(this.service_id, _document_id, _documentDataObject, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  createPage(_title, _complete) {
+    //console.log('create ', _title, _type);
+
+    this.app.gelateriaRequest.createPage(this.service_id, _title, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getPageList(_complete) {
+    this.app.gelateriaRequest.getPageList(this.service_id, function(_result) {
       _complete(_result);
     });
   }
@@ -135,18 +159,49 @@ class ServiceManager {
     var self = this;
 
     if (this.docContextControllers[_documentId] === undefined) {
+      console.log('서비스 매니저의 서비스아이디', this.service_id);
+      this.app.gelateriaRequest.loadDocument(this.service_id, _documentId, function(_result) {
 
-      this.app.gelateriaRequest.loadDocument(this.service_id, _documentId, function(_docJSON) {
-        console.log(_docJSON);
-        var documentContextController = new DocumentContextController(_docJSON, self.app.session, self);
 
-        self.docContextControllers[_documentId] = documentContextController;
+        if (_result.result === 'success') {
+          var documentContextController = new DocumentContextController(_result.document, self.app.session, self);
 
-        _complete(self.docContextControllers[_documentId])
+          self.docContextControllers[_documentId] = documentContextController;
+
+          _complete(self.docContextControllers[_documentId])
+        } else {
+          alert("도큐먼트 로드 실패. " + _result.reason);
+        }
+
       });
 
     } else {
       _complete(this.docContextControllers[_documentId]);
+    }
+  }
+
+  getPageContextController(_pageId, _complete) {
+    var self = this;
+
+    if (this.pageContextControllers[_pageId] === undefined) {
+      console.log('서비스 매니저의 서비스아이디', this.service_id);
+      this.app.gelateriaRequest.loadPage(this.service_id, _pageId, function(_result) {
+
+
+        if (_result.result === 'success') {
+          var pageContextController = new PageContextController(_result.page, self.app.session, self);
+
+          self.pageContextControllers[_pageId] = pageContextController;
+
+          _complete(self.pageContextControllers[_pageId])
+        } else {
+          alert("페이지 로드 실패. " + _result.reason);
+        }
+
+      });
+
+    } else {
+      _complete(this.docContextControllers[_pageId]);
     }
   }
 

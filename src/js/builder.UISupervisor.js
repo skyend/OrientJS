@@ -314,6 +314,15 @@ UI.prototype.loadDocumentList = function(_complete) {
   });
 };
 
+UI.prototype.loadPageList = function(_complete) {
+  self.app.serviceManager.getPageList(function(_result) {
+    if (_result.result === 'success') {
+      console.log('load page list', _result);
+      _complete(_result);
+    }
+  });
+};
+
 /****************************************************************/
 /**************************** Builder Logic *********************/
 /****************************************************************/
@@ -354,7 +363,7 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
   var apiSourceMeta = _eventData.apiSourceMeta;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var apiSourceContextController = this.projectManager.serviceManager.getApiSourceContextController(apiSourceMeta.id);
+  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSourceMeta.id);
 
   this.rootUIInstance.openStageContext({
     apiSourceID: apiSourceMeta.id,
@@ -372,7 +381,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   var documentMeta = _eventData.document;
   var self = this;
   // Document Meta 정보로 DocumentContextController를 얻는다
-  this.projectManager.serviceManager
+  this.app.serviceManager
     .getDocumentContextController(documentMeta._id, function(_documentContextController) {
       console.log(documentMeta);
       self.rootUIInstance.openStageContext({
@@ -386,6 +395,27 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
     });
 
 };
+
+UI.prototype.onThrowCatcherBringPageContext = function(_eventData) {
+
+  //console.log('BringDocumentContext', _eventData.document);
+  var page = _eventData.page;
+  var self = this;
+  // Document Meta 정보로 DocumentContextController를 얻는다
+  this.app.serviceManager
+    .getPageContextController(page._id, function(_pageContextController) {
+      console.log(page);
+      self.rootUIInstance.openStageContext({
+        pageID: page._id,
+        contextID: 'page#' + page._id,
+        contextTitle: page.title,
+        contextType: 'page',
+        contextController: _pageContextController,
+        iconClass: _eventData.iconClass
+      });
+    });
+};
+
 
 
 UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData) {
@@ -432,6 +462,25 @@ UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.createPage(_eventData.title, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successPageCreate();
+
+      self.loadPageList(function(_result) {
+        console.log('loaded', _result);
+
+        self.toolFactory.storeToolState("ServiceResources", {
+          pageList: _result.list
+        });
+      });
+    } else {
+      _eventData.path[0].failPageCreate();
+    }
+  });
+};
 
 
 UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
@@ -441,6 +490,17 @@ UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
 
     self.toolFactory.storeToolState("ServiceResources", {
       documentList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedPageList = function(_eventData) {
+  var self = this;
+  this.loadPageList(function(_result) {
+    console.log('loaded', _result);
+
+    self.toolFactory.storeToolState("ServiceResources", {
+      pageList: _result.list
     });
   });
 };
@@ -572,6 +632,7 @@ UI.prototype.builderRender = function() {
     BottomNavigationConfig: DefaultBuilderConfig.BottomNavigation,
     Tools: DefaultBuilderConfig.tools,
     Modal: DefaultBuilderConfig.Modal,
+    isRoot: true,
     __keyName: 'uiServicer'
   }), this.window.document.getElementsByTagName('BODY')[0]);
 

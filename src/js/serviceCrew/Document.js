@@ -31,17 +31,17 @@ var Document = function(_contextController, _documentDataObject) {
   this.contextController = _contextController;
 
 
-
+  console.log('Document Map', _documentDataObject);
   //////////////////////////
   // 처리로직
   //////////////////////////
   // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
   if (typeof _documentDataObject !== 'undefined') {
     this.documentID = _documentDataObject._id;
-    this.documentName = _documentDataObject.documentName;
-    this.documentTitle = _documentDataObject.documentTitle;
-    this.documentCreate = _documentDataObject.documentCreate;
-    this.documentUpdate = _documentDataObject.documentUpdate;
+    this.documentName = _documentDataObject.name;
+    this.documentTitle = _documentDataObject.title;
+    this.documentCreate = _documentDataObject.created;
+    this.documentUpdate = _documentDataObject.updated;
     this.lastElementId = _documentDataObject.lastElementId || 0;
 
     this.rootElementNode = typeof _documentDataObject.rootElementNode === 'object' ?
@@ -422,11 +422,11 @@ Document.prototype.inspireElementNodes = function(_elementNodeDataList) {
 // export methods
 Document.prototype.export = function(_withoutElementNodes) {
   return {
-    documentID: this.getDocumentID(),
-    documentName: this.getDocumentName(),
-    documentTitle: this.getDocumentTitle(),
-    documentCreate: this.getDocumentCreate(),
-    documentUpdate: this.getDocumentUpdate(),
+    //_id: this.getDocumentID(),
+    name: this.getDocumentName(),
+    title: this.getDocumentTitle(),
+    //created: this.getDocumentCreate(),
+    updated: this.getDocumentUpdate(),
     lastElementId: this.getLastElementId(),
     rootElementNode: (this.rootElementNode !== null ? this.rootElementNode.export() : null),
     elementNodes: this.elementNodes.map(function(_elementNode) {

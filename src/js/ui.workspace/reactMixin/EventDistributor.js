@@ -160,7 +160,7 @@
 
       // 자신의 상위 Component 가 존재하지 않는경우
       // 자신이 최상위 RootComponent 로써 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키는 메소드를 호출한다.
-      if (ownerComponent === null) {
+      if (ownerComponent === null || this.props.isRoot) {
         this.__fireChildrenRootMounted();
       }
     },
@@ -174,22 +174,20 @@
       var children = this.__getComponentChildren();
 
       if (children === null || children === undefined) return;
-      console.log("B", this);
       var childKeys = Object.keys(children);
       for (var i = 0; i < childKeys.length; i++) {
         var childKey = childKeys[i];
-        console.log("C");
+
         var childComponent = children[childKey];
 
-        console.log(childComponent);
 
         if (typeof childComponent._instance.__fireChildrenRootMounted === 'function') {
-          console.log("D");
+
           childComponent._instance.__fireChildrenRootMounted();
         }
 
         if (typeof this.componentDidMountByRoot === 'function') {
-          console.log("E");
+
           this.componentDidMountByRoot();
         }
       }

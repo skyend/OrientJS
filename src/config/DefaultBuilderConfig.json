@@ -186,6 +186,10 @@
 
     "DocumentCUForm": {
       "jsxPath": "DocumentCUForm"
+    },
+
+    "PageCUForm": {
+      "jsxPath": "PageCUForm"
     }
 
 

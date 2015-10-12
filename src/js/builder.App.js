@@ -22,7 +22,6 @@ var App = function() {
   this.session = new Session();
   this.session.ready();
   this.gelateriaRequest = new GelateriaRequest();
-  this.gelateriaRequest.getCertification();
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);
 

@@ -7,11 +7,6 @@ class GelateriaRequest {
 
   }
 
-  getCertification(_userid, _userpw) {
-
-    this.hasCertification = true;
-  }
-
   createProject(_name, _complete) {
     request.post("http://localhost:3000/projects/" + ["new"].join("/"))
       .type('form')
@@ -31,9 +26,7 @@ class GelateriaRequest {
       });
   }
 
-  loadProject(_id) {
 
-  }
 
   loadProjectList(_complete) {
     request.post("http://localhost:3000/projects/" + ["list"].join("/"))
@@ -116,7 +109,7 @@ class GelateriaRequest {
   }
 
   loadDocument(_service_real_id, _docId, _complete) {
-
+    console.log("Service REAL ID", _service_real_id);
     request.post("http://localhost:3000/documents/" + ["retrieve"].join("/"))
       .type('form')
       .withCredentials()
@@ -125,7 +118,7 @@ class GelateriaRequest {
         'document_id': _docId
       })
       .end(function(err, res) {
-
+        console.log(err, res);
         if (err !== null) throw new Error("document load fail");
 
         var dataObject = JSON.parse(res.text);
@@ -143,6 +136,27 @@ class GelateriaRequest {
     //
     //     _complete(dataObject);
     //   });
+  }
+
+
+  saveDocument(_serviceId, _document_id, _documentDataObject, _complete) {
+    request.post("http://localhost:3000/" + ["documents", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        service_real_id: _serviceId,
+        document_id: _document_id,
+        document: JSON.stringify(_documentDataObject)
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("save document fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
   }
 
   createDocument(_serviceId, _title, _type, _complete) {
@@ -166,6 +180,25 @@ class GelateriaRequest {
       });
   }
 
+  createPage(_serviceId, _title, _complete) {
+    console.log('create');
+    request.post("http://localhost:3000/" + ["pages", 'create'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        title: _title
+      })
+      .end(function(err, res) {
+
+        if (err !== null) throw new Error("create page fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
   getDocumentList(_serviceId, _complete) {
     request.post('http://localhost:3000/' + ['documents', 'list'].join('/'))
       .type('form')
@@ -181,9 +214,52 @@ class GelateriaRequest {
       });
   }
 
-  loadPage(_id) {
+  getPageList(_serviceId, _complete) {
+    request.post('http://localhost:3000/' + ['pages', 'list'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get page list");
 
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
+      });
   }
+
+  loadPage(_service_real_id, _pageId, _complete) {
+    console.log("Service REAL ID", _service_real_id);
+    request.post("http://localhost:3000/pages/" + ["retrieve"].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        'service_real_id': _service_real_id,
+        'page_id': _pageId
+      })
+      .end(function(err, res) {
+        console.log(err, res);
+        if (err !== null) throw new Error("page load fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+
+    // request.get("http://localhost:3000/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
+    //   .end(function(err, res) {
+    //
+    //
+    //     if (err !== null) throw new Error("ServiceMeta Load fail");
+    //     //console.log(res);
+    //     var dataObject = JSON.parse(res.text);
+    //
+    //     _complete(dataObject);
+    //   });
+  }
+
+
 
   registerUser(_userspec, _complete) {
     request.post("http://localhost:3000/" + ["users", 'register'].join("/"))
