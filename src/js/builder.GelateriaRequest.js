@@ -264,7 +264,6 @@ class GelateriaRequest {
   registerUser(_userspec, _complete) {
     request.post("http://125.131.88.146:8080/" + ["users", 'register'].join("/"))
       .type('form')
-      .withCredentials()
       .send({
         userid: _userspec.id,
         name: _userspec.name,
@@ -280,7 +279,6 @@ class GelateriaRequest {
   signinUser(_id, _password, _complete) {
     request.post("http://125.131.88.146:8080/" + ["users", 'signin'].join("/"))
       .type('form')
-      .withCredentials()
       .send({
         userid: _id,
         password: _password
