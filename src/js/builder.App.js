@@ -41,6 +41,10 @@ App.prototype.startServiceBuilding = function(_service_id) {
   this.initBuilder();
 };
 
+App.prototype.finishServiceBuilding = function() {
+  this.initEnterance();
+};
+
 App.prototype.initBuilder = function() {
   this.uiSupervisor.clearRender();
   this.uiSupervisor.builderRender();

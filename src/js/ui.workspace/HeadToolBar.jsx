@@ -31,6 +31,10 @@ var HeadToolBar = React.createClass({
       this.emit("UserSignout");
     },
 
+    exitbuilder(){
+      this.emit("ExitBuilder");
+    },
+
     undo(){
       this.emit('DocumentUndo');
     },
@@ -112,9 +116,17 @@ var HeadToolBar = React.createClass({
                     </li>
 
 
-                    <li className='right' style={{width:130}}>
-                      <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='24' onClick={this.signout}/>
-                    </li>
+                    <li className='right'>
+
+                      <GridBox placements={[
+                        [
+                          <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='12'/>
+                        ],[
+                          <OutlineButton icon='sign-out'  color='white' iconSize='22' onClick={this.signout} />,
+                          <OutlineButton icon='power-off'  color='white' iconSize='22' onClick={this.exitbuilder} />
+                        ]
+                      ]} width={130} height={80}/>
+                  </li>
                     <li className='right'>
                       <GridBox placements={[
                         [
