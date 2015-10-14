@@ -44,6 +44,11 @@
         "icon": "cubes",
         "equipToolKey": "ComponentPalette"
       }, {
+        "key": "service-resources-api",
+        "title": "API Resources",
+        "icon": "database",
+        "equipToolKey": "APIResource"
+      }, {
         "key": "resource-upload",
         "title": "Resource Upload",
         "icon": "file-image-o",
@@ -121,75 +126,97 @@
 
   "tools": {
     "UserAccount": {
-      "jsxPath": "UserAccount"
+      "jsxPath": "UserAccount",
+      "title": "ICafe Node Type Explorer"
     },
     "ProjectSetting": {
-      "jsxPath": "ProjectSetting"
+      "jsxPath": "ProjectSetting",
+      "title": "ICafe Node Type Explorer"
     },
     "BuilderSetting": {
-      "jsxPath": "BuilderSetting"
+      "jsxPath": "BuilderSetting",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ComponentPalette": {
-      "jsxPath": "ComponentPalette"
+      "jsxPath": "ComponentPalette",
+      "title": "ICafe Node Type Explorer"
     },
 
     "DocumentsNavigation": {
       "jsxPath": "DocumentsNavigation",
-      "configPath": "DeviceMenuConfig"
+      "configPath": "DeviceMenuConfig",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ServiceResources": {
       "jsxPath": "ServiceResources",
-      "configPath": "ServiceResources"
+      "configPath": "ServiceResources",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ElementNodeEditor": {
       "jsxPath": "ElementNodeEditor",
-      "configPath": "ElementNodeEditor"
+      "configPath": "ElementNodeEditor",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ContextContentsNavigation": {
       "jsxPath": "ContextContentsNavigation",
-      "configPath": "ContextContentsNavigation"
+      "configPath": "ContextContentsNavigation",
+      "title": "ICafe Node Type Explorer"
     },
     "ElementNodeControl": {
       "jsxPath": "ElementNodeControl",
-      "configPath": "ElementNodeControl"
+      "configPath": "ElementNodeControl",
+      "title": "ICafe Node Type Explorer"
     },
     "ElemenEventControl": {
       "jsxPath": "ElemenEventControl",
-      "configPath": "ElemenEventControl"
+      "configPath": "ElemenEventControl",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ElemenEffectControl": {
       "jsxPath": "ElemenEffectControl",
-      "configPath": "ElemenEffectControl"
+      "configPath": "ElemenEffectControl",
+      "title": "ICafe Node Type Explorer"
     },
 
     "DocumentConfig": {
       "jsxPath": "DocumentConfig",
-      "configPath": "DocumentConfig"
+      "configPath": "DocumentConfig",
+      "title": "ICafe Node Type Explorer"
     },
 
     "DocumentCSSEditor": {
-      "jsxPath": "DocumentCSSEditor"
+      "jsxPath": "DocumentCSSEditor",
+      "title": "ICafe Node Type Explorer"
     },
 
     "TestModal": {
-      "jsxPath": "TestModal"
+      "jsxPath": "TestModal",
+      "title": "ICafe Node Type Explorer"
     },
 
     "ResourceUploadModal": {
-      "jsxPath": "ResourceUploadModal"
+      "jsxPath": "ResourceUploadModal",
+      "title": "ICafe Node Type Explorer"
     },
 
     "DocumentCUForm": {
-      "jsxPath": "DocumentCUForm"
+      "jsxPath": "DocumentCUForm",
+      "title": "Create a Document"
     },
 
     "PageCUForm": {
-      "jsxPath": "PageCUForm"
+      "jsxPath": "PageCUForm",
+      "title": "Create a Page"
+    },
+
+    "ICafeNodeExplorer": {
+      "jsxPath": "ICafeNodeExplorer",
+      "title": "ICafe NodeTypes Explorer"
     }
 
 

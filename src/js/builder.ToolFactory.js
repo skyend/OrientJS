@@ -82,7 +82,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _givingEgg) {
     };
 
     egg.toolKey = _toolKey;
-    egg.toolTitle = _toolKey;
+    egg.toolTitle = self.toolsMap[_toolKey].title;
 
     _givingEgg(egg);
   });

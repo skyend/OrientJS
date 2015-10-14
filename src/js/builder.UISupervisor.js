@@ -510,6 +510,17 @@ UI.prototype.onThrowCatcherExitBuilder = function(_eventData) {
   this.app.finishServiceBuilding();
 };
 
+UI.prototype.onThrowCatcherNeedICafeNodeTypes = function(_eventData) {
+  //console.log("A");
+
+  this.app.ICEStatic.getNodeAllTypes(function(_err, _result) {
+    //console.log(_err, _result);
+    _eventData.path[0].setState({
+      nodetypes: _result.items
+    });
+  });
+};
+
 
 /****************************************************************/
 /**************************** Builder Logic End *****************/

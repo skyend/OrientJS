@@ -1,6 +1,10 @@
 [{
   "tagName": "a",
-  "attributes": [],
+  "attributes": [{
+    "n": "href",
+    "title": "링크주소",
+    "type": "input"
+  }],
   "title": "a"
 }, {
   "tagName": "abbr",
