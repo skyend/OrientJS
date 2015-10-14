@@ -505,6 +505,12 @@ UI.prototype.onThrowCatcherNeedPageList = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherExitBuilder = function(_eventData) {
+
+  this.app.finishServiceBuilding();
+};
+
+
 /****************************************************************/
 /**************************** Builder Logic End *****************/
 /****************************************************************/
