@@ -24,6 +24,11 @@
         addAPISource(){
           // 클릭시에 모달을 뛰어 정보를 입력받고 ok를 누르면 APISource를 추가하는 과정을 처리한다.
           //
+
+          this.emit("RequestAttachTool", {
+            "toolKey": "ICafeNodeExplorer",
+            "where":"ModalWindow"
+          });
         },
 
         documentDragEnd( _e){

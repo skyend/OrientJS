@@ -482,6 +482,11 @@ UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
+  var self = this;
+  console.log(_eventData);
+};
+
 
 UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
   var self = this;
@@ -508,6 +513,17 @@ UI.prototype.onThrowCatcherNeedPageList = function(_eventData) {
 UI.prototype.onThrowCatcherExitBuilder = function(_eventData) {
 
   this.app.finishServiceBuilding();
+};
+
+UI.prototype.onThrowCatcherNeedICafeNodeTypes = function(_eventData) {
+  //console.log("A");
+
+  this.app.ICEStatic.getNodeAllTypes(function(_err, _result) {
+    //console.log(_err, _result);
+    _eventData.path[0].setState({
+      nodetypes: _result
+    });
+  });
 };
 
 

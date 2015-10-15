@@ -14,6 +14,7 @@ import UserManager from './builder.UserManager.js';
 import Session from './builder.Session.js';
 import Cookie from 'js-cookie';
 import GelateriaRequest from './builder.GelateriaRequest.js';
+import ICE from './builder.ICEServer.js';
 
 var App = function() {
   window.app = this;
@@ -24,6 +25,8 @@ var App = function() {
   this.gelateriaRequest = new GelateriaRequest();
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);
+  this.ICEStatic = ICE;
+  //this.ice = new ICE(); 
 
   // 글로벌 드래그를 사용하기 위해 ui라는 이름으로도 uiSupervisor에 접근할 수 있도록 한다.
   this.ui = this.uiSupervisor = new UISupervisor(window, this.session, this);
