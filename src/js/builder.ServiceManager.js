@@ -22,6 +22,8 @@ class ServiceManager {
     this.docContextControllers = {};
     this.apiSourceContextControllers = {};
 
+    this.iceHost = "http://icedev.i-on.net";
+
     this.sampleDatas = {};
 
     this.chechedApiResources = {};
@@ -77,6 +79,20 @@ class ServiceManager {
 
   getPageList(_complete) {
     this.app.gelateriaRequest.getPageList(this.service_id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  createApisource(_title, _nt_tid, _icon, _complete) {
+    //console.log('create ', _title, _type);
+
+    this.app.gelateriaRequest.createApisource(this.service_id, _title, _nt_tid, _icon, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getApisourceList(_complete) {
+    this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
       _complete(_result);
     });
   }
@@ -205,18 +221,25 @@ class ServiceManager {
     }
   }
 
-  getApiSourceContextController(_apiSourceId) {
-
+  getApiSourceContextController(_apiSourceId, _complete) {
+    var self = this;
     if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
-      var apiSourceMeta = this.getAPISourceMetaById(_apiSourceId);
+      this.app.gelateriaRequest.loadApisource(this.service_id, _apiSourceId, function(_result) {
 
-      var apiSourceContextController = new ApiSourceContextControllers(apiSourceMeta, this.app.session, this);
+        if (_result.result === 'success') {
+          var apiSourceContextController = new ApiSourceContextControllers(_result.apisource, self.app.session, self);
 
-      this.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
+          self.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
+
+          _complete(self.apiSourceContextControllers[_apiSourceId]);
+        } else {
+          alert("apisource 로드 실패. " + _result.reason);
+        }
+
+      });
+    } else {
+      _complete(this.apiSourceContextControllers[_apiSourceId]);
     }
-
-    console.log(this.apiSourceContextControllers[_apiSourceId]);
-    return this.apiSourceContextControllers[_apiSourceId];
   }
 }
 

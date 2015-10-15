@@ -359,20 +359,23 @@ UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
 
 UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
-
-  var apiSourceMeta = _eventData.apiSourceMeta;
+  var self = this;
+  var apiSource = _eventData.apiSource;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSourceMeta.id);
+  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSource._id, function(_apisourceContextController) {
 
-  this.rootUIInstance.openStageContext({
-    apiSourceID: apiSourceMeta.id,
-    contextID: 'apiSource#' + apiSourceMeta.id,
-    contextTitle: apiSourceMeta.title,
-    contextType: 'apiSource',
-    contextController: apiSourceContextController,
-    iconClass: _eventData.iconClass
+    self.rootUIInstance.openStageContext({
+      apiSourceID: apiSource._id,
+      contextID: 'apiSource#' + apiSource._id,
+      contextTitle: apiSource.title,
+      contextType: 'apiSource',
+      contextController: _apisourceContextController,
+      iconClass: _eventData.iconClass
+    });
   });
+
+
 };
 
 UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
@@ -383,7 +386,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   // Document Meta 정보로 DocumentContextController를 얻는다
   this.app.serviceManager
     .getDocumentContextController(documentMeta._id, function(_documentContextController) {
-      console.log(documentMeta);
+
       self.rootUIInstance.openStageContext({
         documentID: documentMeta._id,
         contextID: 'document#' + documentMeta._id,
@@ -430,7 +433,7 @@ UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData) 
 UI.prototype.onThrowCatcherRequestAttachTool = function(_eventData) {
   var self = this;
 
-  this.toolFactory.getToolEgg(_eventData.toolKey, function(__egg) {
+  this.toolFactory.getToolEgg(_eventData.toolKey, _eventData.params, function(__egg) {
 
     self.rootUIInstance.attachTool(_eventData.where, __egg)
   });
@@ -484,7 +487,39 @@ UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
 
 UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
   var self = this;
-  console.log(_eventData);
+
+  _eventData.nodetypes.map(function(_nodetype) {
+
+
+    self.app.serviceManager.createApisource(_nodetype.nt_ntypenm.display, _nodetype.nt_tid, _nodetype.icon, function(_result) {
+
+      if (_result.result === 'success') {
+        _eventData.path[0].successApiSourceCreate(_nodetype.nt_tid);
+      } else {
+        _eventData.path[0].failPageCreate(_nodetype.nt_tid);
+      }
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedICEHost = function(_eventData) {
+  var self = this;
+
+  var iceHost = this.app.serviceManager.iceHost;
+
+  self.toolFactory.storeToolState("ServiceResources", {
+    iceHost: iceHost
+  });
+};
+
+UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApisourceList(function(_result) {
+    self.toolFactory.storeToolState("ServiceResources", {
+      apisourceList: _result.list
+    });
+  });
 };
 
 

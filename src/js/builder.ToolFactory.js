@@ -58,7 +58,7 @@ ToolFactory.prototype.addLivingBird = function(_toolKey, _bird) {
   this.livingBirds[_toolKey] = _bird;
 };
 
-ToolFactory.prototype.getToolEgg = function(_toolKey, _givingEgg) {
+ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   var self = this;
 
   var result = this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
@@ -70,7 +70,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _givingEgg) {
 
       props.ref = _toolKey;
       props.config = __toolConfig;
-
+      props.params = _params;
       // tool property에 storedState를 입력 해 둔다.
       props.storedState = self.storedStates[_toolKey];
 

@@ -180,6 +180,8 @@ class GelateriaRequest {
       });
   }
 
+
+
   createPage(_serviceId, _title, _complete) {
     console.log('create');
     request.post("http://125.131.88.146:8080/" + ["pages", 'create'].join("/"))
@@ -259,6 +261,61 @@ class GelateriaRequest {
     //   });
   }
 
+  createApisource(_serviceId, _title, _nt_tid, _icon, _complete) {
+
+    request.post("http://125.131.88.146:8080/" + ["apisources", 'create'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        title: _title,
+        nt_tid: _nt_tid,
+        icon: _icon
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("create apisource fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getApisourceList(_serviceId, _complete) {
+    request.post('http://125.131.88.146:8080/' + ['apisources', 'list'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get apisources list");
+
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
+      });
+  }
+
+  loadApisource(_service_real_id, _apisourceId, _complete) {
+    console.log("Service REAL ID", _service_real_id);
+    request.post("http://125.131.88.146:8080/apisources/" + ["retrieve"].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        'service_real_id': _service_real_id,
+        'apisource_id': _apisourceId
+      })
+      .end(function(err, res) {
+        console.log(err, res);
+        if (err !== null) throw new Error("apisource load fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
 
 
   registerUser(_userspec, _complete) {

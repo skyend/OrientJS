@@ -13,8 +13,10 @@
 
         getInitialState(){
             return {
+              iceHost:'',
               documentList:[],
               pageList:[],
+              apisourceList:[],
               pageMetaList:[], // x
               documentMetaList:[], // x
               apiSourceMetaList:[] // x
@@ -27,7 +29,8 @@
 
           this.emit("RequestAttachTool", {
             "toolKey": "ICafeNodeExplorer",
-            "where":"ModalWindow"
+            "where":"ModalWindow",
+            "params":{ "holdnodetypes": this.state.apisourceList}
           });
         },
 
@@ -54,13 +57,13 @@
           });
         },
 
-        renderAPISourceItem( _apiSourceMeta ){
+        renderAPISourceItem( _apiSource ){
           var iconClass = 'fa-database';
 
           var self = this;
           var click = function(){
             self.emit("BringApiSourceContext", {
-              apiSourceMeta : _apiSourceMeta,
+              apiSource : _apiSource,
               iconClass: iconClass
             });
           };
@@ -70,7 +73,7 @@
 
           if( typeof this.state.runningContext === 'object' ){
             if( this.state.runningContext.contextType === "apiSource" ){
-              if( this.state.runningContext.apiSourceID ==  _apiSourceMeta.id ){
+              if( this.state.runningContext.apiSourceID ==  _apiSource._id ){
 
                 contextIsRunning = true;
               }
@@ -79,7 +82,7 @@
 
           return (
             <li onClick={click} className={contextIsRunning? 'running':''}>
-              <i className={'fa '+iconClass}></i> <span> { _apiSourceMeta.title } </span>
+              { _apiSource.icon !== ''? <img src={this.state.iceHost+'/icon/'+_apiSource.icon}/>:<i className={'fa '+iconClass}></i>} <span> { _apiSource.title } </span>
             </li>
           )
         },
@@ -187,7 +190,7 @@
                 </span>
               </label>
               <ul>
-                { this.state.apiSourceMetaList.map(this.renderAPISourceItem) }
+                { this.state.apisourceList.map(this.renderAPISourceItem) }
               </ul>
             </div>
           )
@@ -205,8 +208,10 @@
           var self = this;
           //this.emit("NeedServiceResourcesMeta",{});
           //setTimeout(function(){
+            self.emit("NeedICEHost");
             self.emit("NeedDocumentList");
             self.emit("NeedPageList");
+            self.emit("UpdateAPISourceList");
           //},100);
         },
 
