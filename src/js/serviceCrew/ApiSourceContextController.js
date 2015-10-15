@@ -1,8 +1,9 @@
-var ApiSourceContextController = function(_apiMeta, _session, _serviceManager) {
+var ApiSourceContextController = function(_apisource, _session, _serviceManager) {
   this.attached = false;
   this.apiSourceContext = null;
   this.running = false;
-  this.nodeTypeId = _apiMeta.nodeTypeId;
+  this.nodeTypeId = _apisource.nt_tid;
+
   console.log('Node Type Id', this.nodeTypeId);
 
   this.session = _session;

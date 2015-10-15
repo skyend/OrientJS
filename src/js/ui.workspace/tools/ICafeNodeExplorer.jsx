@@ -2,10 +2,15 @@ import React from "react";
 import "./ICafeNodeExplorer.less";
 import OutlineButton from '../partComponents/OutlineButton.jsx';
 import GridBox from "../partComponents/GridBox.jsx";
-
+import _ from 'underscore';
 
 var ICafeNodeExplorer = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
+  getDefaultProps(){
+    return {
+      params:{holdnodetypes:[]}
+    }
+  },
 
   getInitialState(){
 
@@ -157,9 +162,16 @@ var ICafeNodeExplorer = React.createClass({
     for(var i = 0; i < _indentCount; i++ ){
         idents.push(<span className='indent'/>);
     }
+    var nt_tid = _nodetype.nt_tid;
+
+
+    var hold = false;
+    this.props.params.holdnodetypes.map(function(_nodetype){
+      if( _nodetype.nt_tid === nt_tid ) hold = true;
+    });
 
     return (
-      <li className='nodetype' onClick={function(){self.toggleSelect(_nodetype)}}>
+      <li className='nodetype' onClick={!hold? function(){self.toggleSelect(_nodetype)}:''}>
         {idents}
         { _nodetype.children !== undefined && _nodetype.children.length > 0 ?
           <span className='node-show-sub' onClick={function(_e){_e.stopPropagation(); self.toggleSub(_nodetype)}}>
@@ -177,7 +189,7 @@ var ICafeNodeExplorer = React.createClass({
 
         <span className='node-option'>
           <span className='select'>
-            { _nodetype.__select? <i className='fa fa-check'/>:''}
+            { _nodetype.__select || hold? <i className='fa fa-check'/>:''}
           </span>
         </span>
 
@@ -206,7 +218,8 @@ var ICafeNodeExplorer = React.createClass({
   },
 
   render(){
-    var self =this;
+
+    var self = this;
     return (
       <div className='ICafeNodeExplorer'>
         <div className='options'>

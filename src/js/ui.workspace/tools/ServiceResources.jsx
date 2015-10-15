@@ -13,6 +13,7 @@
 
         getInitialState(){
             return {
+              iceHost:'',
               documentList:[],
               pageList:[],
               apisourceList:[],
@@ -28,7 +29,8 @@
 
           this.emit("RequestAttachTool", {
             "toolKey": "ICafeNodeExplorer",
-            "where":"ModalWindow"
+            "where":"ModalWindow",
+            "params":{ "holdnodetypes": this.state.apisourceList}
           });
         },
 
@@ -80,7 +82,7 @@
 
           return (
             <li onClick={click} className={contextIsRunning? 'running':''}>
-              <i className={'fa '+iconClass}></i> <span> { _apiSource.title } </span>
+              { _apiSource.icon !== ''? <img src={this.state.iceHost+'/icon/'+_apiSource.icon}/>:<i className={'fa '+iconClass}></i>} <span> { _apiSource.title } </span>
             </li>
           )
         },
@@ -206,6 +208,7 @@
           var self = this;
           //this.emit("NeedServiceResourcesMeta",{});
           //setTimeout(function(){
+            self.emit("NeedICEHost");
             self.emit("NeedDocumentList");
             self.emit("NeedPageList");
             self.emit("UpdateAPISourceList");
