@@ -360,14 +360,14 @@ UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
 UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
 
-  var apiSourceMeta = _eventData.apiSourceMeta;
+  var apiSourceMeta = _eventData.apiSource;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
   var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSourceMeta.id);
 
   this.rootUIInstance.openStageContext({
-    apiSourceID: apiSourceMeta.id,
-    contextID: 'apiSource#' + apiSourceMeta.id,
+    apiSourceID: apiSourceMeta._id,
+    contextID: 'apiSource#' + apiSourceMeta._id,
     contextTitle: apiSourceMeta.title,
     contextType: 'apiSource',
     contextController: apiSourceContextController,
@@ -484,7 +484,29 @@ UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
 
 UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
   var self = this;
-  console.log(_eventData);
+
+  _eventData.nodetypes.map(function(_nodetype) {
+
+
+    self.app.serviceManager.createApisource(_nodetype.nt_ntypenm.display, _nodetype.nt_tid, function(_result) {
+
+      if (_result.result === 'success') {
+        _eventData.path[0].successApiSourceCreate(_nodetype.nt_tid);
+      } else {
+        _eventData.path[0].failPageCreate(_nodetype.nt_tid);
+      }
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApisourceList(function(_result) {
+    self.toolFactory.storeToolState("ServiceResources", {
+      apisourceList: _result.list
+    });
+  });
 };
 
 

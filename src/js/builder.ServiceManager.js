@@ -81,6 +81,20 @@ class ServiceManager {
     });
   }
 
+  createApisource(_title, _nt_tid, _complete) {
+    //console.log('create ', _title, _type);
+
+    this.app.gelateriaRequest.createApisource(this.service_id, _title, _nt_tid, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getApisourceList(_complete) {
+    this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
+      _complete(_result);
+    });
+  }
+
   // Deprecated
   // getDocumentMetaById(_idx) {
   //   var metaList = this.getDocumentMetaList();

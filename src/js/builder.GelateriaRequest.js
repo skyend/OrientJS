@@ -8,7 +8,7 @@ class GelateriaRequest {
   }
 
   createProject(_name, _complete) {
-    request.post("http://125.131.88.146:8080/projects/" + ["new"].join("/"))
+    request.post("http://localhost:8080/projects/" + ["new"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -29,7 +29,7 @@ class GelateriaRequest {
 
 
   loadProjectList(_complete) {
-    request.post("http://125.131.88.146:8080/projects/" + ["list"].join("/"))
+    request.post("http://localhost:8080/projects/" + ["list"].join("/"))
       .type('form')
       .withCredentials()
       .send()
@@ -48,7 +48,7 @@ class GelateriaRequest {
   createService(_project_real_id, _name, _complete) {
 
 
-    request.post("http://125.131.88.146:8080/services/" + ["create"].join("/"))
+    request.post("http://localhost:8080/services/" + ["create"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -66,7 +66,7 @@ class GelateriaRequest {
   }
 
   loadServiceList(_project_real_id, _complete) {
-    request.post("http://125.131.88.146:8080/projects/" + ["service-list"].join("/"))
+    request.post("http://localhost:8080/projects/" + ["service-list"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -83,7 +83,7 @@ class GelateriaRequest {
   }
 
   loadService(_idx, _complete) {
-    request.get("http://125.131.88.146:8080/services/" + [_idx, "retrieve"].join("/"))
+    request.get("http://localhost:8080/services/" + [_idx, "retrieve"].join("/"))
       .end(function(err, res) {
 
 
@@ -96,7 +96,7 @@ class GelateriaRequest {
   }
 
   loadDocumentMetas(_serviceIdx, _complete) {
-    request.get("http://125.131.88.146:8080/documents/" + [_serviceIdx, "listInService"].join("/"))
+    request.get("http://localhost:8080/documents/" + [_serviceIdx, "listInService"].join("/"))
       .end(function(err, res) {
 
 
@@ -110,7 +110,7 @@ class GelateriaRequest {
 
   loadDocument(_service_real_id, _docId, _complete) {
     console.log("Service REAL ID", _service_real_id);
-    request.post("http://125.131.88.146:8080/documents/" + ["retrieve"].join("/"))
+    request.post("http://localhost:8080/documents/" + ["retrieve"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -126,7 +126,7 @@ class GelateriaRequest {
         _complete(dataObject);
       });
 
-    // request.get("http://125.131.88.146:8080/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
+    // request.get("http://localhost:8080/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
     //   .end(function(err, res) {
     //
     //
@@ -140,7 +140,7 @@ class GelateriaRequest {
 
 
   saveDocument(_serviceId, _document_id, _documentDataObject, _complete) {
-    request.post("http://125.131.88.146:8080/" + ["documents", 'save'].join("/"))
+    request.post("http://localhost:8080/" + ["documents", 'save'].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -161,7 +161,7 @@ class GelateriaRequest {
 
   createDocument(_serviceId, _title, _type, _complete) {
     console.log('create');
-    request.post("http://125.131.88.146:8080/" + ["documents", 'create'].join("/"))
+    request.post("http://localhost:8080/" + ["documents", 'create'].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -180,9 +180,11 @@ class GelateriaRequest {
       });
   }
 
+
+
   createPage(_serviceId, _title, _complete) {
     console.log('create');
-    request.post("http://125.131.88.146:8080/" + ["pages", 'create'].join("/"))
+    request.post("http://localhost:8080/" + ["pages", 'create'].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -200,7 +202,7 @@ class GelateriaRequest {
   }
 
   getDocumentList(_serviceId, _complete) {
-    request.post('http://125.131.88.146:8080/' + ['documents', 'list'].join('/'))
+    request.post('http://localhost:8080/' + ['documents', 'list'].join('/'))
       .type('form')
       .withCredentials()
       .send({
@@ -215,7 +217,7 @@ class GelateriaRequest {
   }
 
   getPageList(_serviceId, _complete) {
-    request.post('http://125.131.88.146:8080/' + ['pages', 'list'].join('/'))
+    request.post('http://localhost:8080/' + ['pages', 'list'].join('/'))
       .type('form')
       .withCredentials()
       .send({
@@ -231,7 +233,7 @@ class GelateriaRequest {
 
   loadPage(_service_real_id, _pageId, _complete) {
     console.log("Service REAL ID", _service_real_id);
-    request.post("http://125.131.88.146:8080/pages/" + ["retrieve"].join("/"))
+    request.post("http://localhost:8080/pages/" + ["retrieve"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -247,7 +249,7 @@ class GelateriaRequest {
         _complete(dataObject);
       });
 
-    // request.get("http://125.131.88.146:8080/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
+    // request.get("http://localhost:8080/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
     //   .end(function(err, res) {
     //
     //
@@ -259,10 +261,45 @@ class GelateriaRequest {
     //   });
   }
 
+  createApisource(_serviceId, _title, _nt_tid, _complete) {
+
+    request.post("http://localhost:8080/" + ["apisources", 'create'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        title: _title,
+        nt_tid: _nt_tid
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("create apisource fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getApisourceList(_serviceId, _complete) {
+    request.post('http://localhost:8080/' + ['apisources', 'list'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get apisources list");
+
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
+      });
+  }
 
 
   registerUser(_userspec, _complete) {
-    request.post("http://125.131.88.146:8080/" + ["users", 'register'].join("/"))
+    request.post("http://localhost:8080/" + ["users", 'register'].join("/"))
       .type('form')
       .send({
         userid: _userspec.id,
@@ -277,7 +314,7 @@ class GelateriaRequest {
   }
 
   signinUser(_id, _password, _complete) {
-    request.post("http://125.131.88.146:8080/" + ["users", 'signin'].join("/"))
+    request.post("http://localhost:8080/" + ["users", 'signin'].join("/"))
       .type('form')
       .send({
         userid: _id,
@@ -290,7 +327,7 @@ class GelateriaRequest {
   }
 
   loadUserData(_complete) {
-    request.post("http://125.131.88.146:8080/" + ["users", 'read'].join("/"))
+    request.post("http://localhost:8080/" + ["users", 'read'].join("/"))
       .type('form')
       .withCredentials()
       .send()
