@@ -516,7 +516,7 @@ UI.prototype.onThrowCatcherNeedICafeNodeTypes = function(_eventData) {
   this.app.ICEStatic.getNodeAllTypes(function(_err, _result) {
     //console.log(_err, _result);
     _eventData.path[0].setState({
-      nodetypes: _result.items
+      nodetypes: _result
     });
   });
 };

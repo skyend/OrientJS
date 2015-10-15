@@ -21,31 +21,31 @@ class ICEServer {
         //   return _item.tree.nid;
         // });
 
-        var result2 = {};
+        var result2 = [];
         var map = {};
-        console.log(list.items);
+        //console.log(list.items);
         for (var i = 0; i < list.items.length; i++) {
           map[list.items[i].nt_tid] = list.items[i];
-          console.log(list.items[i].nt_tid);
+          //console.log(list.items[i].nt_tid);
         }
 
 
-        console.log("Tids---------------end");
-        console.log(map);
+        //console.log("Tids---------------end");
+        //console.log(map);
 
         var item;
-        for (var i = 0; i < list.count.length; i++) {
+        for (var i = 0; i < list.items.length; i++) {
           item = list.items[i];
-          console.log(item);
+          //console.log(item);
           var tid = item.nt_tid;
           var parentTid = item.tree.value;
-          console.log(parentTid);
+          //console.log(parentTid);
 
           if (parentTid == '*') {
-            console.log('------- PPP --------');
-            result2[tid] = item;
+            //console.log('------- PPP --------');
+            result2.push(item);
           } else {
-            console.log('parent', map[parentTid]);
+            //console.log('parent', map[parentTid]);
             if (map[parentTid] === undefined) continue;
 
             if (map[parentTid].children === undefined) {
@@ -57,9 +57,9 @@ class ICEServer {
           }
         }
 
-        console.log(result2);
+        //console.log(result2);
 
-        _complete(err, list);
+        _complete(err, result2);
       });
   }
 }

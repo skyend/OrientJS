@@ -6,7 +6,7 @@ var ICafeNodeExplorer = React.createClass({
 
   getInitialState(){
     return {
-      nodetypes:[]
+      nodetypes:null
     };
   },
 
@@ -28,35 +28,28 @@ var ICafeNodeExplorer = React.createClass({
   },
 
   renderNodeTypeList(_nodetype){
-
+      //console.log(_nodetype);
       return (
         <ul>
           { this.renderNodeType(_nodetype)}
-          <li className='has-children'>
-            <ul>
-              <li className='nodetype'>
-                <span className='node-name'>
-                  notice
-                </span>
-                <span className='node-option'>
-                  <input type='checkbox'/>
-                </span>
-              </li>
-            </ul>
-          </li>
+
+          { _nodetype.children !== undefined ? <li className='has-children'>
+              {_nodetype.children.map( this.renderNodeTypeList )}
+            </li>:''}
+
         </ul>
       );
   },
 
   render(){
-    console.log()
+
     return (
       <div className='ICafeNodeExplorer'>
         <div className='options'>
 
         </div>
         <div className='nodetype-list'>
-          { this.state.nodetypes.map(this.renderNodeTypeList)}
+          { this.state.nodetypes === null ? <i className="fa fa-spinner fa-pulse loading"/>:this.state.nodetypes.map(this.renderNodeTypeList) }
         </div>
         <div className='foot'>
 
