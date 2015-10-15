@@ -51,6 +51,7 @@ var Modal = React.createClass({
       <div className='window-wrapper'>
           <div className='window-header'>
             <div className='title'>
+              <i className='fa fa-paw icon'/> 
               {this.state.toolEgg.toolTitle}
             </div>
             <div className='close' onClick={this.removeAttachedTool}>

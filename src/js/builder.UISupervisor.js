@@ -482,6 +482,11 @@ UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
+  var self = this;
+  console.log(_eventData);
+};
+
 
 UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
   var self = this;
