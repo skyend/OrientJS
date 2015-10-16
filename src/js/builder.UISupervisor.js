@@ -491,7 +491,7 @@ UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
   _eventData.nodetypes.map(function(_nodetype) {
 
 
-    self.app.serviceManager.createApisource(_nodetype.nt_ntypenm.display, _nodetype.nt_tid, _nodetype.icon, function(_result) {
+    self.app.serviceManager.createApisource(_nodetype.nt_ntypenm.display, _nodetype.nt_tid, _nodetype.icon, _nodetype.nid, function(_result) {
 
       if (_result.result === 'success') {
         _eventData.path[0].successApiSourceCreate(_nodetype.nt_tid);
@@ -550,10 +550,11 @@ UI.prototype.onThrowCatcherExitBuilder = function(_eventData) {
   this.app.finishServiceBuilding();
 };
 
+
 UI.prototype.onThrowCatcherNeedICafeNodeTypes = function(_eventData) {
   //console.log("A");
 
-  this.app.ICEStatic.getNodeAllTypes(function(_err, _result) {
+  this.app.serviceManager.iceDriver.getNodeAllTypes(function(_err, _result) {
     //console.log(_err, _result);
     _eventData.path[0].setState({
       nodetypes: _result

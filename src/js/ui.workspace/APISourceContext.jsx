@@ -19,20 +19,13 @@ var APISourceContext = React.createClass({
   goingToContextRunning(){
     this.contextController.resume();
 
-
   },
 
   getContextType(){
     return this.props.contextType;
   },
 
-  toggleModeJSON(){
-    this.setState({mode:'json'});
-  },
 
-  toggleModeTable(){
-    this.setState({mode:'table'});
-  },
 
 
   componentDidUpdate(){
@@ -217,30 +210,21 @@ var APISourceContext = React.createClass({
 
     return (
       <div className='APISourceContext dark' style={style}>
-        <div className='state-bar'>
-          <div className='bar left'>
-            <ul>
-              <li> { this.props.contextController.nodeTypeId } </li>
-            </ul>
-          </div>
-          <div className='bar right'>
-            <ul>
-              <li>
-                {this.state.mode === 'json'? <input type='radio' name='mode' checked/> : <input type='radio' onClick={ this.toggleModeJSON } name='mode'/>}
-                JSON
-                {this.state.mode === 'table'? <input type='radio' name='mode' checked/> : <input type='radio' onClick={ this.toggleModeTable } name='mode'/>}
-                Table
-              </li>
-            </ul>
+        <div className='nodetype-spec-info'>
+          <h1>
+            { this.props.contextController.iconURL !== undefined ? <img src={this.props.contextController.iconURL}/>:<i className='fa fa-database'/>}
+            {this.props.contextController.title}
+            <small>
+               {this.props.contextController.nodeTypeId}
+            </small>
+          </h1>
+          <div className='detail'>
+            a
           </div>
         </div>
 
-        <div className='node-control'>
-
-        </div>
-
-        <div className='node-render-zone'>
-          { this.state.nodeTypeData !== null ? this.renderDataZone():''}
+        <div className='node-render-zone' style={{display:'none'}}>
+          { this.state.nodeTypeData !== null ? 'this.renderDataZone()':''}
         </div>
       </div>
     )

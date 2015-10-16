@@ -1,16 +1,18 @@
 import request from 'superagent';
 import _ from "underscore";
 
-class driver {
-
-  getNodeAllTypes() {
-
-  }
-}
 
 class ICEServer {
-  static getNodeAllTypes(_complete) {
-    request.get("http://icedev.i-on.net/api/nodetype/list.json")
+  constructor(_host) {
+    this.host = _host;
+  }
+
+  getNodeType(_nt_tid, _complete) {
+
+  }
+
+  getNodeAllTypes(_complete) {
+    request.get(this.host + "/api/nodetype/list.json")
       .query({
         t: 'api'
       })

@@ -1,34 +1,50 @@
-var ApiSourceContextController = function(_apisource, _session, _serviceManager) {
-  this.attached = false;
-  this.apiSourceContext = null;
-  this.running = false;
-  this.nodeTypeId = _apisource.nt_tid;
+class ApiSourceContextController {
+  constructor(_apisource, _session, _serviceManager) {
+    this.attached = false;
+    this.apiSourceContext = null;
+    this.running = false;
+    this.nodeTypeId = _apisource.nt_tid;
+    this.nodetypeIcon = _apisource.icon;
+    this.title = _apisource.title;
 
-  console.log('Node Type Id', this.nodeTypeId);
+    console.log('Node Type Id', this.nodeTypeId);
 
-  this.session = _session;
-  this.serviceManager = _serviceManager;
-};
+    this.session = _session;
+    this.serviceManager = _serviceManager;
+  }
 
-ApiSourceContextController.prototype.attach = function(_context) {
-  this.attached = true;
-  this.context = _context;
+  attach(_context) {
+    this.attached = true;
+    this.context = _context;
 
-  var nodeTypeData = this.serviceManager.getNodeTypeData(this.nodeTypeId);
-  console.log(nodeTypeData);
+    var nodeTypeData = this.serviceManager.getNodeTypeData(this.nodeTypeId);
+    console.log(nodeTypeData);
 
-  this.context.setState({
-    nodeTypeData: nodeTypeData
-  });
-};
+    this.context.setState({
+      nodeTypeData: nodeTypeData
+    });
+  }
 
-ApiSourceContextController.prototype.pause = function() {
+  get iconURL() {
+    if (this.nodetypeIcon !== '') {
+      return this.serviceManager.iceHost + '/icon/' + this.nodetypeIcon;
+    }
 
-};
+    return undefined;
+  }
 
-ApiSourceContextController.prototype.resume = function() {
+  get nodetypeData() {
 
-};
+  }
+
+  pause() {
+
+  }
+
+  resume() {
+
+  }
+}
 
 
 module.exports = ApiSourceContextController;

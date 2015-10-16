@@ -1,3 +1,4 @@
+
 .okselect
 {
     -webkit-user-select: all;
@@ -12,6 +13,8 @@
 
 .APISourceContext
 {
+    font-family: sans-serif;
+
     overflow: auto;
 
     width: 100%;
@@ -24,29 +27,6 @@
         color: #bbb;
         background-color: #1e2127;
 
-        .state-bar
-        {
-            border-bottom-color: #555;
-            background-color: #333;
-            box-shadow: inset 0 0 5px rgba(0,0,0,.1);
-
-            > .bar
-            {
-                > ul
-                {
-                    > li
-                    {
-                        //
-                    }
-                }
-            }
-        }
-
-        .node-control
-        {
-            border-bottom-color: #555;
-            background-color: #212223;
-        }
 
         .node-render-zone
         {
@@ -111,55 +91,58 @@
         }
     }
 
-    .state-bar
+    .nodetype-spec-info
     {
         width: 100%;
-        height: 25px;
-
-        border-bottom-width: 2px;
-        border-bottom-style: solid;
-        > .bar
+        > h1
         {
-            height: 100%;
-            > ul
+            font-size: 37px;
+
+            margin: 0;
+            padding: 20px;
+
+            border-bottom: 1px solid #2d3442;
+            background-color: #26292f;
+            box-shadow: 0 0 20px rgb(38, 41, 47);
+            > img,
+            i
             {
-                height: 100%;
-                margin: 0;
-                padding: 0;
+                font-size: .8em;
 
-                list-style-type: none;
+                height: 1em;
+                margin-right: 5px;
+            }
+            &:before
+            {
+                content: 'Nodetype: ';
 
-                > li
+                color: #595e69;
+            }
+
+            > small
+            {
+                margin-left: 20px;
+
+                color: #4d6698;
+
+                &:before
                 {
-                    font-size: 15px;
+                    content: 'Tid: ';
 
-                    display: inline-block;
-
-                    height: 100%;
-                    padding: 5px;
+                    color: #3c475f;
                 }
             }
+        }
 
-            &.left
-            {
-                float: left;
-            }
+        .detail
+        {
+            padding: 20px;
 
-            &.right
-            {
-                float: right;
-            }
+            border-bottom: 1px solid #3b404c;
+            background-color: #292c33;
         }
     }
 
-    .node-control
-    {
-        width: 100%;
-        height: 60px;
-
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-    }
 
     .node-render-zone
     {

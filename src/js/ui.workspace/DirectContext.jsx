@@ -4,7 +4,7 @@ import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
 import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import './DirectContext.less';
-
+import Returns from "../Returns.js";
 
 
 var DirectContext = React.createClass({
@@ -59,7 +59,7 @@ var DirectContext = React.createClass({
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
 
-      returns = baseElementNode.isDropableComponent("appendChild");
+      var returns = baseElementNode.isDropableComponent("appendChild");
 
       if( returns.result === true ){
         this.deployComponentToElementNode("insertBefore", _component, baseElementNode);

@@ -9,7 +9,7 @@ import request from 'superagent';
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ApiSourceContextControllers from './serviceCrew/ApiSourceContextController.js';
-
+import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
 
 class ServiceManager {
@@ -24,6 +24,8 @@ class ServiceManager {
 
     this.iceHost = "http://icedev.i-on.net";
 
+    this.iceDriver = new ICEServerDriver(this.iceHost);
+
     this.sampleDatas = {};
 
     this.chechedApiResources = {};
@@ -32,19 +34,7 @@ class ServiceManager {
   //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
   getNodeTypeData(_nodeTypeId) {
 
-    return this.app.session.certifiedRequestJSON("http://dcsf-dev03.i-on.net/api/" + _nodeTypeId + "/list.json?t=api");
-  }
-
-  getDocumentMetaList() {
-    return this.meta.documents;
-  }
-
-  getPageMetaList() {
-    return this.meta.pages;
-  }
-
-  getAPISourceMetaList() {
-    return this.meta.apiSources;
+    return this.app.session.certifiedRequestJSON(this.iceHost + "/api/" + _nodeTypeId + "/list.json?t=api");
   }
 
   createDocument(_title, _type, _complete) {
@@ -83,10 +73,10 @@ class ServiceManager {
     });
   }
 
-  createApisource(_title, _nt_tid, _icon, _complete) {
+  createApisource(_title, _nt_tid, _icon, _nid, _complete) {
     //console.log('create ', _title, _type);
 
-    this.app.gelateriaRequest.createApisource(this.service_id, _title, _nt_tid, _icon, function(_result) {
+    this.app.gelateriaRequest.createApisource(this.service_id, _title, _nt_tid, _icon, _nid, function(_result) {
       _complete(_result);
     });
   }

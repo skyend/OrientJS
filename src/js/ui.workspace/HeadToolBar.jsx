@@ -85,11 +85,21 @@ var HeadToolBar = React.createClass({
         var modeChangeDisabled = true;
 
         if( this.state.contextItem !== null ){
-
-          if( this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/){
+          switch(this.state.contextItem.contextType ){
+            case "document":
             saveDisabled = false;
             modeChangeDisabled = false;
+            break;
+            case "page":
+            saveDisabled = false;
+            modeChangeDisabled = false;
+            break;
+            case "apiSource":
+            saveDisabled = false;
+            break;
+          }
 
+          if( this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/){
             if( this.state.contextItem.contextController.existsUndoHistory() ){
               undoDisabled = false;
             }

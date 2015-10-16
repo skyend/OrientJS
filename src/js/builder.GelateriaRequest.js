@@ -261,7 +261,7 @@ class GelateriaRequest {
     //   });
   }
 
-  createApisource(_serviceId, _title, _nt_tid, _icon, _complete) {
+  createApisource(_serviceId, _title, _nt_tid, _icon, _nid, _complete) {
 
     request.post("http://125.131.88.146:8080/" + ["apisources", 'create'].join("/"))
       .type('form')
@@ -270,7 +270,8 @@ class GelateriaRequest {
         serviceId: _serviceId,
         title: _title,
         nt_tid: _nt_tid,
-        icon: _icon
+        icon: _icon,
+        nid: _nid
       })
       .end(function(err, res) {
 

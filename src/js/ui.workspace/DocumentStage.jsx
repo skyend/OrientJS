@@ -836,7 +836,7 @@ var _ = require('underscore');
           highligher.style.opacity = 0;
         },
 
-  
+
         changeElementHighlighterMode( _mode ){
 
           if( _mode !== undefined ){
@@ -927,7 +927,12 @@ var _ = require('underscore');
 
             return (
                 <li className={ running? 'forwarded':''} onClick={closure}>
-                  <i className={'fa '+ iconClass}/> {_contextItem.contextTitle} <span className='close'><i className='fa fa-times'/></span>
+                  <i className="fa fa-circle unsaved-feedback"/>
+                  <i className={'fa '+ iconClass+ ' type-icon'}/>
+                  {_contextItem.contextTitle}
+                  <span className='close'>
+                    <i className='fa fa-times'/>
+                  </span>
                 </li>
             )
         },
