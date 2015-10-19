@@ -202,6 +202,33 @@ var APISourceContext = React.createClass({
     )
   },
 
+  renderRequestEditor(){
+    return [
+      <div className='new-form'>
+
+        <span className='field-name'>
+          Request Name
+        </span>
+        <input />
+        <span className='field-name'>
+          Main CRUD
+        </span>
+        <select>
+          {this.state.nodeTypeData === null ? <option>loading....</option>: this.state.nodeTypeData.crud.map(function(_crud){
+            return <option value={_crud.type}>{_crud.name}</option>
+          })}
+        </select>
+
+        <button>
+          <i className='fa fa-plus'/> Add Request
+        </button>
+      </div>
+    , <div className='request-list'>
+        list
+
+      </div>]
+  },
+
   renderNodeTypeDetail(){
     var self = this;
     console.log( this.state.nodeTypeData);
@@ -265,6 +292,17 @@ var APISourceContext = React.createClass({
             })}
           </td>
         </tr>
+
+        <tr className='item'>
+          <td className='item-title' width='150px'>
+            <span className='title'>API Interface</span>
+          </td>
+          <td className='item-description'>
+            <span className='block-merge'>
+              <span className='block display-field'>Standard</span>
+            </span>
+          </td>
+        </tr>
       </table>
     )
   },
@@ -298,6 +336,9 @@ var APISourceContext = React.createClass({
             { this.state.nodeTypeData === null ?
               <i className="fa fa-spinner fa-pulse loading"/> : this.renderNodeTypeDetail() }
           </div>
+        </div>
+        <div className='requests-editor'>
+          { this.renderRequestEditor() }
         </div>
 
         <div className='node-render-zone' style={{display:'none'}}>

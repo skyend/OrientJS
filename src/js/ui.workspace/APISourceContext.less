@@ -153,6 +153,7 @@
         {
             position: relative;
 
+            min-height: 50px;
             padding: 10px;
 
             border-bottom: 1px solid #3b404c;
@@ -260,6 +261,100 @@
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    .requests-editor
+    {
+        width: 100%;
+
+        .new-form
+        {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 20px;
+
+            > *
+            {
+                margin-right: 10px;
+            }
+
+            .field-name
+            {
+                font-size: 18px;
+
+                display: inline-block;
+
+                height: 18px;
+                margin-right: 5px;
+
+                vertical-align: middle;
+
+                color: #fff;
+            }
+
+            input,
+            select
+            {
+                font-size: 18px;
+                line-height: 1;
+
+                box-sizing: border-box;
+                width: 300px;
+                height: 38px;
+                padding: 10px;
+
+                vertical-align: middle;
+
+                color: #fff;
+                border: 1px solid #131417;
+                border-radius: 5px;
+                outline: none;
+                background-color: #3b404a;
+            }
+
+            button
+            {
+                font-size: 18px;
+                line-height: 1;
+
+                position: relative;
+
+                box-sizing: border-box;
+                height: 38px;
+                padding: 10px 20px;
+
+                cursor: pointer;
+                transition: all .2s;
+                vertical-align: middle;
+
+                color: #fff;
+                border: 1px solid #131417;
+                outline: none;
+                background-color: #272e3c;
+                box-shadow: inset 0 0 1px #546382;
+                text-shadow: 0 0 10px rgba(0,0,0,1);
+                &:hover
+                {
+                    box-shadow: inset 0 0 3px rgb(36, 101, 230);
+                }
+
+                &:active
+                {
+                    text-shadow: 0 0 10px rgb(251, 251, 251);
+                }
+
+                &:before
+                {
+                    display: inline-block;
+
+                    width: 0;
+                    height: 100%;
+
+                    content: ' ';
+                    vertical-align: middle;
                 }
             }
         }
