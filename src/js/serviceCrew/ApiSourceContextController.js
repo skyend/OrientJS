@@ -6,6 +6,7 @@ class ApiSourceContextController {
     this.nodeTypeId = _apisource.nt_tid;
     this.nodetypeIcon = _apisource.icon;
     this.title = _apisource.title;
+    this.nid = _apisource.nid;
 
     console.log('Node Type Id', this.nodeTypeId);
 
@@ -17,12 +18,12 @@ class ApiSourceContextController {
     this.attached = true;
     this.context = _context;
 
-    var nodeTypeData = this.serviceManager.getNodeTypeData(this.nodeTypeId);
-    console.log(nodeTypeData);
-
-    this.context.setState({
-      nodeTypeData: nodeTypeData
-    });
+    // var nodeTypeData = this.serviceManager.getNodeTypeData(this.nodeTypeId);
+    // console.log(nodeTypeData);
+    //
+    // this.context.setState({
+    //   nodeTypeData: nodeTypeData
+    // });
   }
 
   get iconURL() {
@@ -33,8 +34,10 @@ class ApiSourceContextController {
     return undefined;
   }
 
-  get nodetypeData() {
-
+  getNodetypeData(_complete) {
+    this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
+      _complete(_result);
+    });
   }
 
   pause() {

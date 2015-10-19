@@ -40,9 +40,14 @@ var APISourceContext = React.createClass({
   },
 
   componentDidMount(){
+    var self =this;
     // contextController 연결
     this.contextController = this.props.contextController;
     this.contextController.attach(this);
+
+    this.contextController.getNodetypeData(function(_result){
+      self.setState({nodeTypeData: _result})
+    });
 
     if( this.props.runningState ){
       this.goingToContextRunning();
@@ -197,6 +202,73 @@ var APISourceContext = React.createClass({
     )
   },
 
+  renderNodeTypeDetail(){
+    var self = this;
+    console.log( this.state.nodeTypeData);
+    return (
+      <table className='nodetype-list'>
+
+        <tr className='item'>
+          <td className='item-title' width='150px'>
+            <span className='title'>Parent Nodetype</span>
+          </td>
+          <td className='item-description'>
+            <span className='block-merge'>
+              {function(){
+                  var items = [];
+                  if( this.state.nodeTypeData.tree.display !== undefined ){
+                    items.push(<span className='block display-field'>{this.state.nodeTypeData.tree.display}</span>);
+                  }
+                  if( this.state.nodeTypeData.tree.value !== undefined ){
+                    items.push(<span className='block value-field'>{this.state.nodeTypeData.tree.value}</span>);
+                  }
+                  if( this.state.nodeTypeData.tree.nid !== undefined ){
+                    items.push(<span className='block nid-field'>{this.state.nodeTypeData.tree.nid}</span>);
+                  }
+                  return items;
+              }.apply(this)}
+            </span>
+          </td>
+        </tr>
+
+        <tr className='item'>
+          <td className='item-title' width='150px'>
+            <span className='title'>Properties</span>
+          </td>
+          <td className='item-description'>
+            {Object.keys(this.state.nodeTypeData.propertytype).map(function(_key){
+              var property = self.state.nodeTypeData.propertytype[_key];
+
+              return <span className='block-merge'>
+                <span className='block display-field'>{property.name}</span>
+                <span className='block value-field'>{property.pid}</span>
+                <span className='block type-field'>{property.valuetype}</span>
+              </span>;
+
+            })}
+          </td>
+        </tr>
+
+        <tr className='item'>
+          <td className='item-title' width='150px'>
+            <span className='title'>CRUD</span>
+          </td>
+          <td className='item-description'>
+            {this.state.nodeTypeData.crud.map(function(_crud){
+
+              return <span className='block-merge'>
+                <span className='block display-field'>{_crud.name}</span>
+                <span className='block type-field'>{_crud.type}</span>
+                <span className='block value-field'>{_crud.extractor}</span>
+              </span>;
+
+            })}
+          </td>
+        </tr>
+      </table>
+    )
+  },
+
   render(){
     var style = {
       display:'none',
@@ -209,17 +281,22 @@ var APISourceContext = React.createClass({
     }
 
     return (
+
       <div className='APISourceContext dark' style={style}>
         <div className='nodetype-spec-info'>
           <h1>
             { this.props.contextController.iconURL !== undefined ? <img src={this.props.contextController.iconURL}/>:<i className='fa fa-database'/>}
             {this.props.contextController.title}
-            <small>
+            <small className='tid'>
                {this.props.contextController.nodeTypeId}
+            </small>
+            <small className='nid'>
+               {this.props.contextController.nid}
             </small>
           </h1>
           <div className='detail'>
-            a
+            { this.state.nodeTypeData === null ?
+              <i className="fa fa-spinner fa-pulse loading"/> : this.renderNodeTypeDetail() }
           </div>
         </div>
 

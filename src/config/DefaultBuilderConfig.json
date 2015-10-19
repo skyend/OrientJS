@@ -49,10 +49,15 @@
         "icon": "database",
         "equipToolKey": "APIResource"
       }, {
-        "key": "resource-upload",
-        "title": "Resource Upload",
+        "key": "service-resources-color-scheme",
+        "title": "Color Scheme",
+        "icon": "flask",
+        "equipToolKey": "ColorScheme"
+      }, {
+        "key": "service-resource-image",
+        "title": "Image Resource",
         "icon": "file-image-o",
-        "equipToolKey": "ResourceUpload"
+        "equipToolKey": "ImageResource"
       }]
     }]
   },
@@ -196,11 +201,6 @@
 
     "TestModal": {
       "jsxPath": "TestModal",
-      "title": "ICafe Node Type Explorer"
-    },
-
-    "ResourceUploadModal": {
-      "jsxPath": "ResourceUploadModal",
       "title": "ICafe Node Type Explorer"
     },
 

@@ -7,8 +7,79 @@ class ICEServer {
     this.host = _host;
   }
 
-  getNodeType(_nt_tid, _complete) {
+  // getPropertytypesByNid(_nid, _complete) {
+  //   request.post(this.host + "/json.do")
+  //     .type('form')
+  //     .send({
+  //       tid: 'nodetype',
+  //       reltype: 'children',
+  //       reftid: 'propertytype',
+  //       pid: 'propertytype',
+  //       method: 'select',
+  //       uppernid: _nid,
+  //       nid: _nid,
+  //       t: 'api'
+  //     })
+  //     .end(function(err, res) {
+  //       console.log(res);
+  //       _complete(JSON.parse(res.text));
+  //     });
+  // }
 
+
+  getCRUDByTid(_tid, _complete) {
+
+    request.get(this.host + "/api/crud/list.json")
+      .query({
+        parent_equals: _tid,
+        t: 'api',
+      })
+      .end(function(err, res) {
+        var result = res.body;
+
+        _complete(result);
+      });
+  }
+
+
+
+  getPropertytypesByTid(_tid, _complete) {
+
+    request.get(this.host + "/api/" + _tid + "/type.json")
+      .query({
+        t: 'api',
+      })
+      .end(function(err, res) {
+        var result = res.body;
+
+        _complete(result);
+      });
+  }
+
+  getNodeType(_nid, _complete) {
+    var self = this;
+    request.get(this.host + "/api/nodetype/read.json")
+      .query({
+        t: 'api',
+        nid: _nid
+      })
+      .end(function(err, res) {
+        var result = res.body;
+
+
+        self.getPropertytypesByTid(result.nt_tid, function(pt_res) {
+
+          result.propertytype = pt_res.propertytypes;
+
+          self.getCRUDByTid(result.nt_tid, function(pt_res) {
+
+            result.crud = pt_res.items;
+
+            _complete(result);
+          });
+        });
+
+      });
   }
 
   getNodeAllTypes(_complete) {
@@ -17,7 +88,7 @@ class ICEServer {
         t: 'api'
       })
       .end(function(err, res) {
-        var list = JSON.parse(res.text);
+        var list = res.body; //JSON.parse(res.text);
 
         // var result = _.sortBy(list.items, function(_item) {
         //   return _item.tree.nid;

@@ -167,7 +167,7 @@ var  ToolNavigation = React.createClass({
 
 
     return (
-      <li className={classes.join(' ')} onClick={closure}>
+      <li className={classes.join(' ')} onClick={closure} title={_item.title}>
         { this.props.showIcon? <i className={'fa fa-'+_item.icon}/>:'' }
         <span> </span>
         { this.props.showTitle? _item.title:'' }
@@ -218,7 +218,7 @@ var  ToolNavigation = React.createClass({
     }
 
     if( this.naviType === 'vertical' ){
-      
+
       styles['height'] = toolSize;
       // positioning
       styles['left'] = this.state.left;
