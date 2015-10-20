@@ -20,19 +20,7 @@ var ICafeNodeExplorer = React.createClass({
       _selectedItems:{}
     };
   },
-
-  createInterface(){
-    var nameInput = this.refs['interface-name'].getDOMNode();
-    if( nameInput.value === ''){
-      this.setState({message:"Interface Name 을 입력해주세요."});
-      return;
-    }
-
-    this.emit("CreateAPIInterface", {
-      name: nameInput
-    });
-  },
-
+  
   checkCreateAllResult(){
     var self = this;
     var existsFail = false;
@@ -242,18 +230,6 @@ var ICafeNodeExplorer = React.createClass({
           { this.renderSelectedList() }
         </div>
         <div className='nodetype-list'>
-          <ul>
-            <li className='nodetype'>
-              <span className='node-icon'>
-                <i className='fa fa-pie-chart'/>
-              </span>
-              <span className='node-name'>
-                API Common Interface
-              </span>
-              <input placeholder='Input Interface Name' ref='interface-name'/>
-              <button onClick={this.createInterface}> Create Interface </button>
-            </li>
-          </ul>
           { this.state.nodetypes === null ?
             <i className="fa fa-spinner fa-pulse loading"/>:
               this.state.nodetypes.map(function(_child){ return self.renderNodeTypeList(_child, 0)} ) }

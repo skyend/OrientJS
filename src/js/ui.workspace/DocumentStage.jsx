@@ -73,18 +73,44 @@ var _ = require('underscore');
         },
 
         closeContext( _targetContext ){
-          var index = _.findIndex(this.state.contexts, function(_context){
+          let index = _.findIndex(this.state.contexts, function(_context){
             return _context !== null && _context.contextID === _targetContext.contextID;
           });
 
           this.state.contexts[index] = null;
 
-          if( _targetContext.contextID === this.state.runningContextID )
-            this.setState({runningContextID:null});
-          else
-            this.forceUpdate();
 
-          this.emitClosedDirectContextTab(_targetContext)
+          let nextContext = null;
+
+          // 현재 닫힌 컨텍스트의 인덱스에서 왼쪽의 open가능한 context를 찾는다.
+          for( let i = index-1; 0 <= i; i-- ){
+            if( this.state.contexts[i] !== null ){
+              nextContext = this.state.contexts[i];
+              break;
+            }
+          }
+
+          if( nextContext === null ){
+            // 현재 닫힌 컨텍스트의 인덱스에서 오른쪽의 open가능한 context를 찾는다.
+            for( let i = index+1; i < this.state.contexts.length; i++ ){
+              if( this.state.contexts[i] !== null ){
+                nextContext = this.state.contexts[i];
+                break;
+              }
+            }
+          }
+
+
+
+          this.emitClosedDirectContextTab(_targetContext);
+
+          if( nextContext !== null ){
+            this.setState({runningContextID:nextContext.contextID});
+            this.emitOpenedDirectContextTab(nextContext);
+          } else {
+            // 컨텍스트가 모두 닫힌 상태이므로 contexts 배열을 빈 배열로 초기화한다.
+            this.setState({runningContextID:null, contexts:[]});
+          }
         },
 
         clickTabItem(_contextItem) {

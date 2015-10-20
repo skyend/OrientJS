@@ -66,7 +66,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Service Builder',
+      title: 'Gelateria ICE Gelato Builder',
       inject: 'body',
       chunks: ['config', 'venders', 'main'],
       filename: 'index.html'
