@@ -46,6 +46,7 @@
         documentDragEnd( _e){
           console.log( 'drag end document', _e.nativeEvent);
         },
+        
         documentDragOver( _e){
           console.log( 'drag over document', _e.nativeEvent);
         },
@@ -223,7 +224,7 @@
           return (
             <div className="resourceList">
               <label className='listLabel'>
-                <i className='fa fa-plug'></i> API Interface
+                <i className='fa fa-plug'></i> API Interfaces
                 <span className='add-button' onClick={this.clickAddAPIInterface}>
                   <i className='fa fa-plus'></i>
                 </span>
