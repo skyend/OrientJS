@@ -4,7 +4,7 @@ class ApiInterfaceContextController {
     this.context = null;
     this.running = false;
     this.title = _apiinterface.title;
-
+    this.apiInterface = _apiinterface;
 
     console.log('Node Type Id', this.nodeTypeId);
 
@@ -31,6 +31,8 @@ class ApiInterfaceContextController {
   resume() {
 
   }
+
+
 }
 
 

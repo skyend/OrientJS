@@ -91,6 +91,29 @@
         }
     }
 
+    .interface-info
+    {
+        width: 100%;
+        > h1
+        {
+            font-size: 37px;
+
+            margin: 0;
+            padding: 20px;
+
+            border-bottom: 1px solid #2d3442;
+            background-color: #26292f;
+            box-shadow: 0 0 20px rgb(38, 41, 47);
+
+            &:before
+            {
+                content: 'Interface: ';
+
+                color: #595e69;
+            }
+        }
+    }
+
     .nodetype-spec-info
     {
         width: 100%;
@@ -205,6 +228,7 @@
                             margin-right: 5px;
                             padding: 5px;
 
+                            transition: all .4s;
                             text-align: center;
 
                             border-radius: 7px;
@@ -213,28 +237,76 @@
                             &.display-field
                             {
                                 color: #3d76e8;
+                                &:hover
+                                {
+                                    color: #3d76e8 + 111;
+                                }
                             }
 
                             &.value-field
                             {
                                 color: #8a8989;
+                                &:hover
+                                {
+                                    color: #8a8989 + 111;
+                                }
                             }
 
                             &.nid-field
                             {
                                 color: #ff9553;
+                                &:hover
+                                {
+                                    color: #ff9553 + 111;
+                                }
                             }
 
                             &.type-field
                             {
                                 color: #30af59;
+
+                                &:hover
+                                {
+                                    color: #30af59 + 111;
+                                }
                             }
 
                             &:last-child
                             {
                                 margin: 0;
                             }
+
+                            &.plus-button
+                            {
+                                width: 20px;
+
+                                cursor: pointer;
+                            }
+
+                            &.select-box-width-plus
+                            {
+                                width: 200px;
+
+                                > select
+                                {
+                                    width: 80%;
+                                }
+
+                                > button
+                                {
+                                    width: 20%;
+
+                                    cursor: pointer;
+
+                                    color: inherit;
+                                    border: 0;
+                                    outline: none;
+                                    background-color: transparent;
+                                }
+                            }
                         }
+
+
 
                         .block-merge
                         {

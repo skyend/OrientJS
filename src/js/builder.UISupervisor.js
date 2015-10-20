@@ -578,6 +578,16 @@ UI.prototype.onThrowCatcherUpdateAPIInterfaceList = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherNeedAPIInterfaceList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApiinterfaceList(function(_result) {
+    _eventData.path[0].setState({
+      apiInterfaceList: _result.list
+    });
+  });
+};
+
 
 UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
   var self = this;

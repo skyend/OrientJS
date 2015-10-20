@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 class ApiSourceContextController {
   constructor(_apisource, _session, _serviceManager) {
     this.attached = false;
@@ -7,6 +9,7 @@ class ApiSourceContextController {
     this.nodetypeIcon = _apisource.icon;
     this.title = _apisource.title;
     this.nid = _apisource.nid;
+    this.apiSource = _apisource;
 
     console.log('Node Type Id', this.nodeTypeId);
 
@@ -46,6 +49,28 @@ class ApiSourceContextController {
 
   resume() {
 
+  }
+
+
+  addInterface(_interfaceId) {
+
+    this.apiSource['interface'] = this.apiSource['interface'] || [];
+
+    let foundIndex = _.findIndex(this.apiSource['interface'], function(_id) {
+      return _id === _interfaceId;
+    });
+
+    if (foundIndex > -1) {
+      return false;
+    }
+
+    this.apiSource['interface'].push(_interfaceId);
+
+    return true;
+  }
+
+  get followedInterfaceList() {
+    return this.apiSource['interface'] || [];
   }
 }
 
