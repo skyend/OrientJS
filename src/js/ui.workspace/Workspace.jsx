@@ -223,14 +223,35 @@ console.log(_eventData);
         runningContext: _eventData.contextItem
       });
 
-
-      console.log("con", _eventData );
       this.applyToolStates("ContextContentsNavigation",{
         runningContext: _eventData.contextItem
       });
 
       this.refs['HeadToolBar'].setState({
         contextItem: _eventData.contextItem
+      });
+    },
+
+
+
+    onThrowCatcherClosedDirectContextTab( _eventData, _pass ){
+      //console.log(_eventData);
+      console.log('컨텍스트가 닫혔습니다.');
+
+      this.applyToolStates("ServiceResources",{
+        runningContext: null
+      });
+
+      this.applyToolStates("ContextContentsNavigation",{
+        runningContext: null
+      });
+
+      this.refs['HeadToolBar'].setState({
+        contextItem: null
+      });
+
+      this.emit("DestroyContext", {
+        context: _eventData.contextItem
       });
     },
 

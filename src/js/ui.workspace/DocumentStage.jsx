@@ -72,10 +72,31 @@ var _ = require('underscore');
           this.emitOpenedDirectContextTab( _contextSpec );
         },
 
+        closeContext( _targetContext ){
+          var index = _.findIndex(this.state.contexts, function(_context){
+            return _context !== null && _context.contextID === _targetContext.contextID;
+          });
+
+          this.state.contexts[index] = null;
+
+          if( _targetContext.contextID === this.state.runningContextID )
+            this.setState({runningContextID:null});
+          else
+            this.forceUpdate();
+
+          this.emitClosedDirectContextTab(_targetContext)
+        },
+
         clickTabItem(_contextItem) {
           this.setState({runningContextID: _contextItem.contextID});
 
           this.emitOpenedDirectContextTab( _contextItem );
+        },
+
+        emitClosedDirectContextTab( _contextItem ){
+          this.emit('ClosedDirectContextTab', {
+            contextItem:_contextItem
+          });
         },
 
         emitOpenedDirectContextTab( _contextItem ){
@@ -912,6 +933,8 @@ var _ = require('underscore');
         },
 
         renderContextTabItem(_contextItem) {
+            if( _contextItem === null ) return '';
+
             var self = this;
 
             var running = false;
@@ -930,7 +953,7 @@ var _ = require('underscore');
                   <i className="fa fa-circle unsaved-feedback"/>
                   <i className={'fa '+ iconClass+ ' type-icon'}/>
                   {_contextItem.contextTitle}
-                  <span className='close'>
+                  <span className='close' onClick={function(_e){  _e.stopPropagation(); self.closeContext(_contextItem); }}>
                     <i className='fa fa-times'/>
                   </span>
                 </li>
@@ -939,6 +962,7 @@ var _ = require('underscore');
 
 
         renderContext( _contextSpec ){
+          if( _contextSpec === null ) return '';
 
           var running = false;
           if( this.state.runningContextID === _contextSpec.contextID ){
@@ -948,7 +972,7 @@ var _ = require('underscore');
           var ContextClass
           if( _contextSpec.contextType === 'document' ||  _contextSpec.contextType === 'page'){
             ContextClass = DirectContext;
-          } else if (_contextSpec.contextType === 'apiSource'){
+          } else if (_contextSpec.contextType === 'apiSource' || _contextSpec.contextType === 'apiInterface'){
             ContextClass = APISourceContext;
           }
 

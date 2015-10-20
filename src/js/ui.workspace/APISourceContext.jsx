@@ -283,7 +283,7 @@ var APISourceContext = React.createClass({
           <td className='item-description'>
             {this.state.nodeTypeData.crud.map(function(_crud){
 
-              return <span className='block-merge'>
+              return <span className='block-merge' title={"/api/"+self.props.contextController.nodeTypeId+"/"+ _crud.type+".json"}>
                 <span className='block display-field'>{_crud.name}</span>
                 <span className='block type-field'>{_crud.type}</span>
                 <span className='block value-field'>{_crud.extractor}</span>

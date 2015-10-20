@@ -378,6 +378,29 @@ UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
 
 };
 
+
+
+
+UI.prototype.onThrowCatcherBringApiInterfaceContext = function(_eventData) {
+  console.log('BringApiSourceContext', _eventData);
+  var self = this;
+  var apiInterface = _eventData.apiInterface;
+
+  // Document Meta 정보로 DocumentContextController를 얻는다
+  var apiSourceContextController = this.app.serviceManager.getApiInterfaceContextController(apiInterface._id, function(_apiInterfaceContextController) {
+
+    self.rootUIInstance.openStageContext({
+      apiInterfaceID: apiInterface._id,
+      contextID: 'apiInterface#' + apiInterface._id,
+      contextTitle: apiInterface.title,
+      contextType: 'apiInterface',
+      contextController: _apiInterfaceContextController,
+      iconClass: _eventData.iconClass
+    });
+  });
+};
+
+
 UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
   console.log('BringDocumentContext', _eventData);
   //console.log('BringDocumentContext', _eventData.document);
@@ -419,6 +442,10 @@ UI.prototype.onThrowCatcherBringPageContext = function(_eventData) {
     });
 };
 
+UI.prototype.onThrowCatcherDestroyContext = function(_eventData) {
+  var context = _eventData.context;
+  this.app.serviceManager.removeCachedContext(context);
+};
 
 
 UI.prototype.onThrowCatcherNeedStateComponentPackageMeta = function(_eventData) {
@@ -502,6 +529,25 @@ UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherCreateNewAPIInterface = function(_eventData) {
+  this.app.serviceManager.createAPIInterface(_eventData.title, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successInterfaceCreate();
+      //
+      // self.loadPageList(function(_result) {
+      //   console.log('loaded', _result);
+      //
+      //   self.toolFactory.storeToolState("ServiceResources", {
+      //     apiinterfaceList: _result.list
+      //   });
+      // });
+    } else {
+      _eventData.path[0].failInterfaceCreate();
+    }
+  });
+};
+
 UI.prototype.onThrowCatcherNeedICEHost = function(_eventData) {
   var self = this;
 
@@ -518,6 +564,16 @@ UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
   this.app.serviceManager.getApisourceList(function(_result) {
     self.toolFactory.storeToolState("ServiceResources", {
       apisourceList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherUpdateAPIInterfaceList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApiinterfaceList(function(_result) {
+    self.toolFactory.storeToolState("ServiceResources", {
+      apiinterfaceList: _result.list
     });
   });
 };

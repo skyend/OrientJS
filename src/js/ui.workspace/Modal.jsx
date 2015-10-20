@@ -17,7 +17,8 @@ var Modal = React.createClass({
 
   getInitialState() {
     return {
-      toolEgg:null
+      toolEgg:null,
+      helperShow: false
     }
   },
 
@@ -29,9 +30,26 @@ var Modal = React.createClass({
     this.setState({toolEgg:null});
   },
 
+  toggleHelper(){
+    this.setState({helperShow: !this.state.helperShow});
+  },
+
   componentDidUpdate(){
 
 
+  },
+
+  renderHelper(){
+    if( ! this.state.helperShow ) return;
+
+    return <div className='info-popover'>
+      <div className='info-title'>
+        aa
+      </div>
+      <div className='info-body'>
+        {this.state.toolEgg.toolHelperText}
+      </div>
+    </div>;
   },
 
   renderToolNest(){
@@ -49,14 +67,23 @@ var Modal = React.createClass({
 
     return (
       <div className='window-wrapper'>
+
+          { this.renderHelper() }
+
           <div className='window-header'>
             <div className='title'>
-              <i className='fa fa-paw icon'/> 
+              <i className='fa fa-paw icon'/>
               {this.state.toolEgg.toolTitle}
             </div>
+
             <div className='close' onClick={this.removeAttachedTool}>
               <i className='fa fa-times'/>
             </div>
+
+            <div className='helper' onClick={this.toggleHelper}>
+              <i className='fa fa-exclamation'/>
+            </div>
+
           </div>
           { this.renderToolNest() }
       </div>
@@ -84,6 +111,7 @@ var Modal = React.createClass({
 
     return (
       <div className={classes.join(' ')}>
+
         {this.renderModalLayout()}
       </div>
     )

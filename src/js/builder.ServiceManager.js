@@ -8,7 +8,8 @@ import request from 'superagent';
 
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
-import ApiSourceContextControllers from './serviceCrew/ApiSourceContextController.js';
+import ApiSourceContextController from './serviceCrew/ApiSourceContextController.js';
+import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
 
@@ -21,6 +22,7 @@ class ServiceManager {
     this.pageContextControllers = {};
     this.docContextControllers = {};
     this.apiSourceContextControllers = {};
+    this.apiInterfaceContextControllers = {};
 
     this.iceHost = "http://icedev.i-on.net";
 
@@ -87,6 +89,22 @@ class ServiceManager {
     });
   }
 
+  createAPIInterface(_title, _complete) {
+    //console.log('create ', _title, _type);
+
+    this.app.gelateriaRequest.createAPIInterface(this.service_id, _title, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getApiinterfaceList(_complete) {
+    this.app.gelateriaRequest.getAPIInterfaceList(this.service_id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+
+
   // Deprecated
   // getDocumentMetaById(_idx) {
   //   var metaList = this.getDocumentMetaList();
@@ -108,6 +126,27 @@ class ServiceManager {
     });
 
     return metaList[index];
+  }
+
+  removeCachedContext(_context) {
+
+    if (_context.contextType === 'page') {
+      return delete this.pageContextControllers[_context.pageID];
+    }
+
+    if (_context.contextType === 'document') {
+      return delete this.docContextControllers[_context.documentID];
+    }
+
+    if (_context.contextType === 'apiSource') {
+      return delete this.apiSourceContextControllers[_context.apiSourceID];
+    }
+
+    if (_context.contextType === 'apiInterface') {
+      return delete this.apiInterfaceContextControllers[_context.apiInterfaceID];
+    }
+
+    throw new Error("Not found context Controller");
   }
 
   // Deprecated
@@ -217,7 +256,7 @@ class ServiceManager {
       this.app.gelateriaRequest.loadApisource(this.service_id, _apiSourceId, function(_result) {
 
         if (_result.result === 'success') {
-          var apiSourceContextController = new ApiSourceContextControllers(_result.apisource, self.app.session, self);
+          var apiSourceContextController = new ApiSourceContextController(_result.apisource, self.app.session, self);
 
           self.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
 
@@ -229,6 +268,27 @@ class ServiceManager {
       });
     } else {
       _complete(this.apiSourceContextControllers[_apiSourceId]);
+    }
+  }
+
+  getApiInterfaceContextController(_apiInterfaceId, _complete) {
+    var self = this;
+    if (this.apiInterfaceContextControllers[_apiInterfaceId] === undefined) {
+      this.app.gelateriaRequest.loadApiinterface(this.service_id, _apiInterfaceId, function(_result) {
+
+        if (_result.result === 'success') {
+          var apiInterfaceContextController = new ApiInterfaceContextController(_result.apiinterface, self.app.session, self);
+
+          self.apiInterfaceContextControllers[_apiInterfaceId] = apiInterfaceContextController;
+
+          _complete(self.apiInterfaceContextControllers[_apiInterfaceId]);
+        } else {
+          alert("apiinterface 로드 실패. " + _result.reason);
+        }
+
+      });
+    } else {
+      _complete(this.apiInterfaceContextControllers[_apiInterfaceId]);
     }
   }
 }

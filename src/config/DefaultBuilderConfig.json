@@ -216,8 +216,17 @@
 
     "ICafeNodeExplorer": {
       "jsxPath": "ICafeNodeExplorer",
-      "title": "ICafe NodeTypes Explorer"
+      "title": "ICafe NodeTypes Explorer",
+      "toolHelperText": "서비스 페이지 데이터 바인딩 : 서비스에서 사용할 ICafe노드타입들을 선택하신후에 Add selected Nodetypes버튼을 눌러주세요."
+    },
+
+    "APIInterfaceCreateForm": {
+      "jsxPath": "APIInterfaceCreateForm",
+      "title": "Create a API Interface",
+      "toolHelperText": "API Interface 생성 폼 : API Interface를 정의해 APISource의 공통 요청을 효율적으로 관리합니다."
     }
+
+
 
 
   }
