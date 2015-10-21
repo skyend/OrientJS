@@ -1,7 +1,9 @@
 import _ from 'underscore';
+import RequestManager from './RequestManager.js';
 
-class ApiSourceContextController {
+class ApiSourceContextController extends RequestManager {
   constructor(_apisource, _session, _serviceManager) {
+    super();
     this.attached = false;
     this.apiSourceContext = null;
     this.running = false;
@@ -72,6 +74,7 @@ class ApiSourceContextController {
   get followedInterfaceList() {
     return this.apiSource['interface'] || [];
   }
+
 }
 
 

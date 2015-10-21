@@ -2,6 +2,101 @@ import React from 'react';
 import _ from 'underscore';
 require('./APISourceContext.less');
 
+
+var Request = React.createClass({
+  mixins: [require('./reactMixin/EventDistributor.js')],
+
+  getDefaultProps(){
+    return {
+      request:null,
+      nodeTypeData: null
+    }
+  },
+
+  changeCRUD(){
+    var value = this.refs['crud-selector'].getDOMNode().value;
+
+    this.props.request.crud = value;
+
+
+
+    this.emit("UpdatedRequest",{
+      request: this.props.request
+    });
+  },
+
+  renderURLPatternInput(){
+    let contextController = this.props.contextController;
+    let urlPattern;
+
+    if( this.props.request.crud !== "*" ){
+      urlPattern = contextController.serviceManager.iceHost +
+        "/api/"+
+        (contextController.nodeTypeId !== undefined? contextController.nodeTypeId:"{tid}") +
+        "/" +
+        this.props.request.crud +
+        ".json";
+
+        return <input value={urlPattern} disabled/>
+    } else {
+      urlPattern = this.props.request.urlPattern || '';
+
+      return <input defaultValue={urlPattern}/>
+    }
+
+
+  },
+
+  render(){
+
+
+    return <div className='request'>
+      <div className='row'>
+        <div className='request-name'>
+          { this.props.request.name}
+        </div>
+        <button> Delete </button>
+      </div>
+      <div className='row'>
+        <label> URL Pattern </label>
+        <div className='request-pattern'>
+          {this.renderURLPatternInput()}
+        </div>
+        <select onChange={this.changeCRUD} value={this.props.request.crud} ref='crud-selector'>
+          { this.props.crudOptions }
+        </select>
+      </div>
+      <div className='row'>
+        <label> Method </label>
+        <select onChange={this.changeCRUD} value={this.props.request.method} ref='method-selector'>
+          <option value='get'>GET</option>
+          <option value='post'>POST</option>
+          <option value='put'>PUT</option>
+          <option value='delete'>DELETE</option>
+        </select>
+      </div>
+      <div className='row'>
+        <label> Fields </label>
+        <div className='request-field-set'>
+          <div className='field'>
+            <input placeholder="field name (a-z,_,-)"/>
+            <i className='fa fa-long-arrow-right'/>
+            <input placeholder="field value or resolver"/>
+            <i className='fa fa-ellipsis-v'/>
+            <input/>
+          </div>
+          <button> <i className='fa fa-plus'/> </button>
+        </div>
+      </div>
+      <div className='row'>
+        <label> Chains </label>
+        <button> <i className='fa fa-plus'/> </button>
+      </div>
+
+    </div>
+  }
+});
+
 var APISourceContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
 
@@ -47,7 +142,47 @@ var APISourceContext = React.createClass({
     this.setState({showInterfaceAdder: !this.state.showInterfaceAdder});
   },
 
+  createRequest(_e){
+    let name = this.refs['request-name'].getDOMNode().value;
+    let crud = this.refs['crud-selector'].getDOMNode().value;
 
+    if( name === '' ) {
+      this.emit('NoticeMessage', {
+        title:"요청 추가 실패",
+        message:"요청 이름을 입력해주세요.",
+        level : "error"
+      });
+      return;
+    }
+
+    if( crud === '' ){
+        this.emit('NoticeMessage', {
+          title:"요청 추가 실패",
+          message:"부적절한 CRUD",
+          level : "error"
+        });
+        return;
+    }
+
+    if( this.props.contextController.existsRequest(name) ){
+        this.emit('NoticeMessage', {
+          title:"요청 추가 실패",
+          message:"동일한 요청이름이 존재합니다.",
+          level : "error"
+        });
+        return;
+    }
+
+    this.props.contextController.addRequest(name, crud);
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherUpdatedRequest(_eventData){
+    this.props.contextController.updateRequest(_eventData.request);
+
+    this.forceUpdate();
+  },
 
 
   componentDidUpdate(){
@@ -228,29 +363,54 @@ var APISourceContext = React.createClass({
   //   )
   // },
 
+  renderCRUDList(){
+    if( this.props.contextType === 'apiSource'){
+      return [this.state.nodeTypeData === null ? <option value=''>loading....</option>: this.state.nodeTypeData.crud.map(function(_crud){
+          return <option value={_crud.type}>{_crud.name}</option>
+        }),
+        <option value="*">CRUD Free</option>]
+
+    } else {
+      return [
+        <option value="create">Create</option>,
+        <option value="retrieve">Retrieve</option>,
+        <option value="delete">Delete</option>,
+        <option value="update">Update</option>,
+        <option value="*">CRUD Free</option>
+      ]
+    }
+  },
+
+  renderCRUDPicker(){
+    return <select ref='crud-selector'>
+      { this.renderCRUDList()}
+    </select>;
+  },
+
   renderRequestEditor(){
+    var self =this;
+    console.log('requestRender', this.props.contextController.requestsList);
     return [
       <div className='new-form'>
 
         <span className='field-name'>
           Request Name
         </span>
-        <input />
+        <input ref='request-name'/>
         <span className='field-name'>
           Main CRUD
         </span>
-        <select>
-          {this.state.nodeTypeData === null ? <option>loading....</option>: this.state.nodeTypeData.crud.map(function(_crud){
-            return <option value={_crud.type}>{_crud.name}</option>
-          })}
-        </select>
+        { this.renderCRUDPicker() }
 
-        <button>
+        <button onClick={this.createRequest}>
           <i className='fa fa-plus'/> Add Request
         </button>
       </div>
     , <div className='request-list'>
-        list
+        { this.props.contextController.requestsList.map(function(_request){
+
+          return <Request request={_request} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}/>
+        })}
 
       </div>]
   },
@@ -262,7 +422,12 @@ var APISourceContext = React.createClass({
         return <option value={_apiInterface._id}> {_apiInterface.title} </option>
       })}
     </select>,
-    <button onClick={function(_e){ _e.stopPropagation(); self.addInterface(self.refs['interface-selector'].getDOMNode().value); }}>+</button>];
+    <button onClick={function(_e){ _e.stopPropagation(); self.addInterface(self.refs['interface-selector'].getDOMNode().value); }}>
+      <i className='fa fa-plus'/>
+    </button>,
+    <button>
+      <i className='fa fa-times'/>
+    </button>];
   },
 
   renderNodeTypeDetail(){
@@ -363,7 +528,7 @@ var APISourceContext = React.createClass({
             })}
 
             <span className={'block display-field plus-button '+(this.state.showInterfaceAdder? 'select-box-width-plus':'')} onClick={this.toggleInterfaceAdder}>
-              { this.state.showInterfaceAdder? this.renderInterfaceAdder():'+'}
+              { this.state.showInterfaceAdder? this.renderInterfaceAdder():<i className='fa fa-plus'/>}
             </span>
           </td>
         </tr>

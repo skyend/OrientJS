@@ -1,5 +1,8 @@
-class ApiInterfaceContextController {
+import RequestManager from './RequestManager.js';
+
+class ApiInterfaceContextController extends RequestManager {
   constructor(_apiinterface, _session, _serviceManager) {
+    super();
     this.attached = false;
     this.context = null;
     this.running = false;
