@@ -26,6 +26,7 @@ class PageContextController {
 
   save() {
     this.unsaved = false;
+    this.context.feedSaveStateChange();
   }
 
   changedContent() {

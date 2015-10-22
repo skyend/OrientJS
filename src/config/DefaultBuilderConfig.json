@@ -224,10 +224,11 @@
       "jsxPath": "APIInterfaceCreateForm",
       "title": "Create a API Interface",
       "toolHelperText": "API Interface 생성 폼 : API Interface를 정의해 APISource의 공통 요청을 효율적으로 관리합니다."
+    },
+
+    "ConfirmBox": {
+      "jsxPath": "GeneralConfirm",
+      "title": "Confirm"
     }
-
-
-
-
   }
 }

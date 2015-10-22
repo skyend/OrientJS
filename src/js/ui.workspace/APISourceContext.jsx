@@ -13,6 +13,12 @@ var Request = React.createClass({
     }
   },
 
+  deleteRequest(){
+    this.emit("DeleteRequest", {
+      request: this.props.request
+    });
+  },
+
   changeCRUD(){
     var value = this.refs['crud-selector'].getDOMNode().value;
 
@@ -55,7 +61,7 @@ var Request = React.createClass({
         <div className='request-name'>
           { this.props.request.name}
         </div>
-        <button> Delete </button>
+        <button onClick={this.deleteRequest}> Delete </button>
       </div>
       <div className='row'>
         <label> URL Pattern </label>
@@ -180,6 +186,12 @@ var APISourceContext = React.createClass({
 
   onThrowCatcherUpdatedRequest(_eventData){
     this.props.contextController.updateRequest(_eventData.request);
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherDeleteRequest(_eventData){
+    this.props.contextController.deleteRequest(_eventData.request);
 
     this.forceUpdate();
   },

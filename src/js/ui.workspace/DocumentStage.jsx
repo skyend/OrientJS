@@ -72,7 +72,26 @@ var _ = require('underscore');
           this.emitOpenedDirectContextTab( _contextSpec );
         },
 
-        closeContext( _targetContext ){
+        closeContext( _targetContext, _force ){
+          var self = this;
+
+          // 저장여부체크
+          // _force 인자가 true로 입력되면 저장여부와 상관없이 컨텍스트를 닫는다.
+          if(_targetContext.contextController.isUnsaved && !_force){
+
+            this.emit("RequestAttachTool", {
+              "toolKey": "ConfirmBox",
+              "where":"ModalWindow",
+              "params":{
+                "confirm-message": "컨텍스트가 저장되지 않았습니다 그래도 닫으시겠습니까?",
+                "positive-action": function(){
+                  self.closeContext(_targetContext, true);
+                }
+              }
+            });
+            return;
+          }
+
           let index = _.findIndex(this.state.contexts, function(_context){
             return _context !== null && _context.contextID === _targetContext.contextID;
           });
@@ -973,7 +992,8 @@ var _ = require('underscore');
             };
 
             var iconClass = _contextItem.iconClass;
-            console.log('tab render', _contextItem.contextController);
+
+
             return (
                 <li className={ running? 'forwarded':''} onClick={closure}>
                   { _contextItem.contextController.isUnsaved? <i className="unsaved-feedback"/>:''}

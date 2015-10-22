@@ -281,6 +281,7 @@ console.log(_eventData);
       }
     },
 
+
     applyToolStates( _toolEquipmentKey, _state ){
 
       this.emit('StoreToolState', {

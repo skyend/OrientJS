@@ -32,6 +32,13 @@ class RequestManager {
 
     this.changedContent();
   }
+
+  deleteRequest(_request) {
+    let reqName = _request.name;
+    delete this.requests[reqName];
+
+    this.changedContent();
+  }
 }
 
 export default RequestManager;

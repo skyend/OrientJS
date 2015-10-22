@@ -34,6 +34,7 @@ class ApiSourceContextController extends RequestManager {
 
   save() {
     this.unsaved = false;
+    this.context.feedSaveStateChange();
   }
 
   changedContent() {
