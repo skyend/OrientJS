@@ -18,7 +18,7 @@ import GelateriaRequest from './builder.GelateriaRequest.js';
 
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 0.73;
+  window.gelateriaVersion = 0.75;
 
   this.session = new Session();
   this.session.ready();

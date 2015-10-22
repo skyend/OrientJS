@@ -83,7 +83,7 @@ var _ = require('underscore');
               "toolKey": "ConfirmBox",
               "where":"ModalWindow",
               "params":{
-                "confirm-message": "컨텍스트가 저장되지 않았습니다 그래도 닫으시겠습니까?",
+                "confirm-message": "[ "+_targetContext.contextTitle+" ] 컨텍스트가 저장되지 않았습니다 그래도 닫으시겠습니까?",
                 "positive-action": function(){
                   self.closeContext(_targetContext, true);
                 }

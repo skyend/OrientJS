@@ -11,7 +11,11 @@ class ApiSourceContextController extends RequestManager {
     this.nodetypeIcon = _apisource.icon;
     this.title = _apisource.title;
     this.nid = _apisource.nid;
+
     this.apiSource = _apisource;
+    this.requests = this.apiSource.requests = this.apiSource.requests || {};
+    this.apiSource.interfaces = this.apiSource.interfaces || [];
+
     this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
 
@@ -33,8 +37,13 @@ class ApiSourceContextController extends RequestManager {
   }
 
   save() {
-    this.unsaved = false;
-    this.context.feedSaveStateChange();
+    var self = this;
+    console.log(this.apiSource);
+    this.serviceManager.saveAPISource(this.apiSource._id, this.apiSource, function(_result) {
+
+      self.unsaved = false;
+      self.context.feedSaveStateChange();
+    });
   }
 
   changedContent() {
@@ -54,19 +63,19 @@ class ApiSourceContextController extends RequestManager {
   }
 
   pause() {
-
+    this.running = false;
   }
 
   resume() {
-
+    this.running = true;
   }
 
 
   addInterface(_interfaceId) {
 
-    this.apiSource['interface'] = this.apiSource['interface'] || [];
+    this.apiSource['interfaces'] = this.apiSource['interfaces'] || [];
 
-    let foundIndex = _.findIndex(this.apiSource['interface'], function(_id) {
+    let foundIndex = _.findIndex(this.apiSource['interfaces'], function(_id) {
       return _id === _interfaceId;
     });
 
@@ -74,13 +83,31 @@ class ApiSourceContextController extends RequestManager {
       return false;
     }
 
-    this.apiSource['interface'].push(_interfaceId);
+    this.apiSource['interfaces'].push(_interfaceId);
+
+    this.changedContent();
 
     return true;
   }
 
+  needFollowInterfacesState() {
+    var self = this;
+    this.context.state.followInterfaces = [];
+
+    for (var i = 0; i < this.apiSource['interfaces'].length; i++) {
+      this.serviceManager.getAPIInterface(this.apiSource['interfaces'][i], function(_interface) {
+        console.log(_interface, 'loaded interface');
+        self.context.state.followInterfaces.push(_interface);
+
+        self.context.setState({
+          followInterfaces: self.context.state.followInterfaces
+        });
+      });
+    }
+  }
+
   get followedInterfaceList() {
-    return this.apiSource['interface'] || [];
+    return this.apiSource['interfaces'] || [];
   }
 
 

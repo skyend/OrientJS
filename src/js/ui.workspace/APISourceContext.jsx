@@ -13,30 +13,147 @@ var Request = React.createClass({
     }
   },
 
-  deleteRequest(){
+  getInitialState(){
+    return {
+      showDataPreviewer:false,
+      interfaces:[],
+      fold:true
+    }
+  },
+
+  interfaceCheck(){
+    if( this.props.interface !== undefined ){
+
+      return true;
+    }
+
+    return false;
+  },
+
+  toggleFold(){
+    this.setState({fold:!this.state.fold});
+  },
+
+  deleteRequest(_e, _force){
+    if( this.interfaceCheck() ) return;
+
+    if( _force != true ){
+      var self = this;
+
+      this.emit("RequestAttachTool", {
+        "toolKey": "ConfirmBox",
+        "where":"ModalWindow",
+        "params":{
+          "confirm-message": "[ "+this.props.request.name+" ] 요청을 제거 하시겠습니까?",
+          "positive-action": function(){
+            self.deleteRequest(_e, true);
+          }
+        }
+      });
+
+      return;
+    }
+
     this.emit("DeleteRequest", {
       request: this.props.request
     });
   },
 
+  addNewField(){
+    if( this.interfaceCheck() ) return;
+
+    this.props.request.fieldList.push({
+      name:'',
+      value:'',
+      testValue:''
+    });
+
+    this.updateEmit();
+  },
+
+  testRequest(){
+    this.setState({loadingData:true, fold:false});
+
+    //this.setState({showDataPreviewer:true, loadingData: false});
+  },
+
+  testRequestWithChain(){
+    this.setState({loadingDataWithChain:true, fold:false});
+
+    //this.setState({showDataPreviewer:true, loadingDataWithChain: false});
+  },
+
+  changeURLPattern(){
+    if( this.interfaceCheck() ) return;
+
+    this.props.request.customUrlPattern = this.refs['url-pattern'].getDOMNode().value;
+
+    this.updateEmit();
+  },
+
   changeCRUD(){
+    if( this.interfaceCheck() ) return;
+
     var value = this.refs['crud-selector'].getDOMNode().value;
 
     this.props.request.crud = value;
 
+    this.updateEmit();
+  },
 
+  changeMethod(){
+    if( this.interfaceCheck() ) return;
 
+    var value = this.refs['method-selector'].getDOMNode().value;
+
+    this.props.request.method = value;
+
+    this.updateEmit();
+  },
+
+  changeFieldName(_index, _e){
+    if( this.interfaceCheck() ) return;
+
+    this.props.request.fieldList[_index].name = _e.target.value;
+
+    this.updateEmit();
+  },
+
+  changeFieldValue(_index, _e){
+    if( this.interfaceCheck() ) return;
+
+    this.props.request.fieldList[_index].value = _e.target.value;
+
+    this.updateEmit();
+  },
+
+  changeFieldTestValue(_index, _e){
+    this.props.request.fieldList[_index].testValue = _e.target.value;
+
+    this.updateEmit();
+  },
+
+  updateEmit(){
     this.emit("UpdatedRequest",{
       request: this.props.request
     });
   },
 
+  renderDataZone(){
+    if( !this.state.showDataPreviewer ){
+      return <div className='data-render-zone'/>
+    }
+
+    return <div className='data-render-zone open'>
+      aa
+    </div>;
+  },
+
   renderURLPatternInput(){
     let contextController = this.props.contextController;
-    let urlPattern;
 
     if( this.props.request.crud !== "*" ){
-      urlPattern = contextController.serviceManager.iceHost +
+      let urlPattern = contextController.serviceManager.iceHost +
         "/api/"+
         (contextController.nodeTypeId !== undefined? contextController.nodeTypeId:"{tid}") +
         "/" +
@@ -45,60 +162,86 @@ var Request = React.createClass({
 
         return <input value={urlPattern} disabled/>
     } else {
-      urlPattern = this.props.request.urlPattern || '';
+      let customUrlPattern = this.props.request.customUrlPattern || '';
 
-      return <input defaultValue={urlPattern}/>
+      return <input defaultValue={customUrlPattern} onChange={this.changeURLPattern} ref='url-pattern'/>
     }
 
 
   },
 
+  renderRows(){
+    if( this.state.fold ) return '';
+
+    return [<div className='row'>
+      <label> URL Pattern </label>
+      <div className='request-pattern'>
+        {this.renderURLPatternInput()}
+      </div>
+      <select onChange={this.changeCRUD} value={this.props.request.crud} ref='crud-selector'>
+        { this.props.crudOptions }
+      </select>
+    </div>,
+    <div className='row'>
+      <label> Method </label>
+      <select onChange={this.changeMethod} value={this.props.request.method} ref='method-selector'>
+        <option value='get'>GET</option>
+        <option value='post'>POST</option>
+        <option value='put'>PUT</option>
+        <option value='delete'>DELETE</option>
+      </select>
+    </div>,
+    <div className='row'>
+      <label> Fields </label>
+      <div className='request-field-set'>
+
+        { this.props.request.fieldList.map( function(_field, _i){
+          return <div className='field'>
+            <input placeholder="Field name (a-z,_,-)" value={_field.name} onChange={function(_e){ self.changeFieldName(_i,_e); }}/>
+            <i className='fa fa-long-arrow-right'/>
+            <input placeholder="Field value or resolver" value={_field.value} onChange={function(_e){ self.changeFieldValue(_i,_e); }}/>
+            <i className='fa fa-ellipsis-v'/>
+            <input placeholder="Test value" value={_field.testValue} onChange={function(_e){ self.changeFieldTestValue(_i,_e); }}/>
+          </div>
+        })}
+
+      </div>
+      <button onClick={this.addNewField}> <i className='fa fa-plus'/> </button>
+
+    </div>,
+    <div className='row'>
+      <label> Chains </label>
+      <button> <i className='fa fa-plus'/> </button>
+    </div>,
+
+    <div className='row'>
+      { this.renderDataZone() }
+    </div>];
+  },
+
   render(){
+    var self = this;
+    this.isFromInterface = false;
 
+    if( this.props.interface !== undefined )
+      this.isFromInterface = true;
 
-    return <div className='request'>
+    return <div className={'request '+ (this.isFromInterface? "smaller from-interface":'')}>
       <div className='row'>
+        <button onClick={this.toggleFold} className=''> { this.state.fold? <i className='fa fa-chevron-down'/>:<i className='fa fa-chevron-up'/>} </button>
         <div className='request-name'>
           { this.props.request.name}
         </div>
-        <button onClick={this.deleteRequest}> Delete </button>
-      </div>
-      <div className='row'>
-        <label> URL Pattern </label>
-        <div className='request-pattern'>
-          {this.renderURLPatternInput()}
-        </div>
-        <select onChange={this.changeCRUD} value={this.props.request.crud} ref='crud-selector'>
-          { this.props.crudOptions }
-        </select>
-      </div>
-      <div className='row'>
-        <label> Method </label>
-        <select onChange={this.changeCRUD} value={this.props.request.method} ref='method-selector'>
-          <option value='get'>GET</option>
-          <option value='post'>POST</option>
-          <option value='put'>PUT</option>
-          <option value='delete'>DELETE</option>
-        </select>
-      </div>
-      <div className='row'>
-        <label> Fields </label>
-        <div className='request-field-set'>
-          <div className='field'>
-            <input placeholder="field name (a-z,_,-)"/>
-            <i className='fa fa-long-arrow-right'/>
-            <input placeholder="field value or resolver"/>
-            <i className='fa fa-ellipsis-v'/>
-            <input/>
-          </div>
-          <button> <i className='fa fa-plus'/> </button>
-        </div>
-      </div>
-      <div className='row'>
-        <label> Chains </label>
-        <button> <i className='fa fa-plus'/> </button>
-      </div>
+        { this.isFromInterface? <div className='interface-name'>
+          <i className='fa fa-plug'/> { this.props.interface.title }
+        </div>:''}
 
+        <button onClick={this.deleteRequest}> Delete </button>
+        <button onClick={this.testRequest}> <i className={'fa fa-refresh '+ (this.state.loadingData? "fa-spin":'')}/> Test </button>
+        <button onClick={this.testRequestWithChain}> <i className={'fa fa-refresh '+ (this.state.loadingDataWithChain? "fa-spin":'')}/> Test With Chain</button>
+
+      </div>
+      { this.renderRows()}
     </div>
   }
 });
@@ -111,12 +254,12 @@ var APISourceContext = React.createClass({
       mode:'json',
       showInterfaceAdder: false,
       nodeTypeData:null,
-      apiInterfaceList:null
+      apiInterfaceList:[],
+      followInterfaces:[]
     };
   },
 
   goingToContextStop(){
-    this.closeElementNavigator();
 
     this.contextController.pause();
     //console.log('changed context state to stop!');
@@ -124,7 +267,8 @@ var APISourceContext = React.createClass({
 
   goingToContextRunning(){
     this.contextController.resume();
-
+    if( this.props.contextType === 'apiSource')
+      this.contextController.needFollowInterfacesState();
   },
 
   getContextType(){
@@ -144,6 +288,8 @@ var APISourceContext = React.createClass({
         level : "error"
       });
     }
+
+    this.contextController.needFollowInterfacesState();
 
     this.setState({showInterfaceAdder: !this.state.showInterfaceAdder});
   },
@@ -203,7 +349,6 @@ var APISourceContext = React.createClass({
 
 
   componentDidUpdate(){
-    console.log(this.state);
     if( this.props.runningState === this.props.contextController.running ) return;
 
     if( this.props.runningState ){
@@ -223,6 +368,8 @@ var APISourceContext = React.createClass({
       this.contextController.getNodetypeData(function(_result){
         self.setState({nodeTypeData: _result});
       });
+
+
 
       this.emit("NeedAPIInterfaceList");
     }
@@ -410,7 +557,8 @@ var APISourceContext = React.createClass({
 
   renderRequestEditor(){
     var self =this;
-    console.log('requestRender', this.props.contextController.requestsList);
+
+
     return [
       <div className='new-form'>
 
@@ -426,14 +574,23 @@ var APISourceContext = React.createClass({
         <button onClick={this.createRequest}>
           <i className='fa fa-plus'/> Add Request
         </button>
-      </div>
-    , <div className='request-list'>
-        { this.props.contextController.requestsList.map(function(_request){
+      </div> ,
+      <div className='request-list'>
+          { this.state.followInterfaces.map(function(_interface){
+            return Object.keys(_interface.requests||{}).map(function(_requestKey){
+                var request = _interface.requests[_requestKey];
 
-          return <Request request={_request} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}/>
-        })}
+                return <Request request={request} interface={_interface} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}/>
+            });
+          })}
+      </div> ,
+      <div className='request-list'>
+      { this.props.contextController.requestsList.map(function(_request){
 
-      </div>]
+        return <Request request={_request} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}/>
+      })}
+
+    </div>];
   },
 
   renderInterfaceAdder(){

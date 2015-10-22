@@ -426,6 +426,11 @@
                 content: ' ';
                 vertical-align: middle;
             }
+
+            &.right
+            {
+                float: right;
+            }
         }
 
 
@@ -489,46 +494,8 @@
 
                     vertical-align: middle;
                 }
-                //
-                // input
-                // {
-                //     font-size: 22px;
-                //
-                //     width: 600px;
-                //     margin-right: 10px;
-                //     padding: 10px 10px;
-                //
-                //     vertical-align: middle;
-                //     letter-spacing: 2px;
-                //
-                //     color: #fff;
-                //     border: 1px solid #1e2127;
-                //     outline: none;
-                //     background-color: #42464e;
-                // }
-                //
-                // button
-                // {
-                //     font-size: 18px;
-                //     line-height: 1;
-                //
-                //     position: relative;
-                //
-                //     box-sizing: border-box;
-                //     height: 38px;
-                //     padding: 10px 20px;
-                //
-                //     cursor: pointer;
-                //     transition: all .2s;
-                //     vertical-align: middle;
-                //
-                //     color: #fff;
-                //     border: 1px solid #131417;
-                //     outline: none;
-                //     background-color: #272e3c;
-                //     box-shadow: inset 0 0 1px #546382;
-                //     text-shadow: 0 0 10px #000;
-                // }
+
+
 
                 > .row
                 {
@@ -543,7 +510,8 @@
                     }
                 }
 
-                .request-name
+                .request-name,
+                .interface-name
                 {
                     font-size: 36px;
                     line-height: 33px;
@@ -558,6 +526,16 @@
                     &:before
                     {
                         content: ' Request : ';
+
+                        color: #464a52;
+                    }
+                }
+
+                .interface-name
+                {
+                    &:before
+                    {
+                        content: ' From : ';
 
                         color: #464a52;
                     }
@@ -580,9 +558,13 @@
                 .request-field-set
                 {
                     display: inline-block;
+
+                    margin-right: 10px;
+
+                    vertical-align: middle;
                     > .field
                     {
-                        display: inline-block;
+                        //display: inline-block;
 
                         > input
                         {
@@ -596,6 +578,24 @@
 
                             vertical-align: middle;
                         }
+                    }
+                }
+
+
+                .data-render-zone
+                {
+                    overflow: auto;
+
+                    width: 100%;
+                    height: 0;
+
+                    transition: all .3s;
+
+                    background-color: #2b2c2f;
+                    box-shadow: inset 0 10px 40px rgba(30, 33, 39, .62);
+                    &.open
+                    {
+                        height: 500px;
                     }
                 }
             }

@@ -1,6 +1,6 @@
 class RequestManager {
   constructor() {
-    this['requests'] = this['requests'] || {};
+    //this['requests'] = this['requests'] || {};
   }
 
   existsRequest(_name) {
@@ -9,7 +9,8 @@ class RequestManager {
 
   addRequest(_name, _crud) {
     this.requests[_name] = {
-      crud: _crud
+      crud: _crud,
+      fieldList: []
     };
 
     this.changedContent();
@@ -17,6 +18,7 @@ class RequestManager {
 
   get requestsList() {
     var self = this;
+    console.log(this, 'here');
 
     return Object.keys(this.requests).map(function(_key) {
       self.requests[_key].name = _key;

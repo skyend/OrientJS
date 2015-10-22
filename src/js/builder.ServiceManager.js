@@ -89,6 +89,12 @@ class ServiceManager {
     });
   }
 
+  saveAPISource(_apisource_id, _apisourceDataObject, _complete) {
+    this.app.gelateriaRequest.saveAPISource(this.service_id, _apisource_id, _apisourceDataObject, function(_result) {
+      _complete(_result);
+    });
+  }
+
   createAPIInterface(_title, _complete) {
     //console.log('create ', _title, _type);
 
@@ -100,6 +106,24 @@ class ServiceManager {
   getApiinterfaceList(_complete) {
     this.app.gelateriaRequest.getAPIInterfaceList(this.service_id, function(_result) {
       _complete(_result);
+    });
+  }
+  saveAPIInterface(_apiinterface_id, _apiinterfaceDataObject, _complete) {
+    this.app.gelateriaRequest.saveAPIInterface(this.service_id, _apiinterface_id, _apiinterfaceDataObject, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getAPIInterface(_apiInterfaceId, _complete) {
+
+    this.app.gelateriaRequest.loadApiinterface(this.service_id, _apiInterfaceId, function(_result) {
+
+      if (_result.result === 'success') {
+        _complete(_result.apiinterface);
+      } else {
+        alert("apisource 로드 실패. " + _result.reason);
+      }
+
     });
   }
 

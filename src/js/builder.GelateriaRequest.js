@@ -319,9 +319,28 @@ class GelateriaRequest {
       });
   }
 
+  saveAPISource(_service_real_id, _apisource_id, _apisourceDataObject, _complete) {
+    request.post("http://125.131.88.146:8080/" + ["apisources", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        service_real_id: _service_real_id,
+        apisource_id: _apisource_id,
+        apisource: JSON.stringify(_apisourceDataObject)
+      })
+      .end(function(err, res) {
+
+        if (err !== null) throw new Error("save apiSource fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
   createAPIInterface(_serviceId, _title, _complete) {
     console.log('create');
-    request.post("http://125.131.88.146:8080/" + ["apiinterface", 'create'].join("/"))
+    request.post("http://125.131.88.146:8080/" + ["apiinterfaces", 'create'].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -339,7 +358,7 @@ class GelateriaRequest {
   }
 
   getAPIInterfaceList(_serviceId, _complete) {
-    request.post('http://125.131.88.146:8080/' + ['apiinterface', 'list'].join('/'))
+    request.post('http://125.131.88.146:8080/' + ['apiinterfaces', 'list'].join('/'))
       .type('form')
       .withCredentials()
       .send({
@@ -356,7 +375,7 @@ class GelateriaRequest {
 
   loadApiinterface(_service_real_id, _apiinterfaceId, _complete) {
     console.log("Service REAL ID", _service_real_id);
-    request.post("http://125.131.88.146:8080/apiinterface/" + ["retrieve"].join("/"))
+    request.post("http://125.131.88.146:8080/apiinterfaces/" + ["retrieve"].join("/"))
       .type('form')
       .withCredentials()
       .send({
@@ -366,6 +385,26 @@ class GelateriaRequest {
       .end(function(err, res) {
         console.log(err, res);
         if (err !== null) throw new Error("apiinterface load fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  saveAPIInterface(_service_real_id, _apiinterface_id, _apiinterfaceDataObject, _complete) {
+    request.post("http://125.131.88.146:8080/" + ["apiinterfaces", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        service_real_id: _service_real_id,
+        apiinterface_id: _apiinterface_id,
+        apiinterface: JSON.stringify(_apiinterfaceDataObject)
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("save apiinterface fail");
 
         var dataObject = JSON.parse(res.text);
 

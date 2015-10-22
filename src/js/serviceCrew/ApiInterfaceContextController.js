@@ -8,6 +8,8 @@ class ApiInterfaceContextController extends RequestManager {
     this.running = false;
     this.title = _apiinterface.title;
     this.apiInterface = _apiinterface;
+    this.requests = this.apiInterface.requests = this.apiInterface.requests || {};
+
     this.unsaved = false;
 
     console.log('Node Type Id', this.nodeTypeId);
@@ -22,16 +24,22 @@ class ApiInterfaceContextController extends RequestManager {
   }
 
   pause() {
-
+    this.running = false;
   }
 
   resume() {
-
+    this.running = true;
   }
 
   save() {
-    this.unsaved = false;
-    this.context.feedSaveStateChange();
+    var self = this;
+
+
+    this.serviceManager.saveAPIInterface(this.apiInterface._id, this.apiInterface, function(_result) {
+
+      self.unsaved = false;
+      self.context.feedSaveStateChange();
+    });
   }
 
   changedContent() {
