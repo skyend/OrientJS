@@ -87,16 +87,21 @@ var HeadToolBar = React.createClass({
         if( this.state.contextItem !== null ){
           switch(this.state.contextItem.contextType ){
             case "document":
-            saveDisabled = false;
+            //saveDisabled = false;
             modeChangeDisabled = false;
             break;
             case "page":
-            saveDisabled = false;
+            //saveDisabled = false;
             modeChangeDisabled = false;
             break;
+            case "apiInterface":
             case "apiSource":
-            saveDisabled = false;
+            //saveDisabled = false;
             break;
+          }
+
+          if( this.state.contextItem.contextController.isUnsaved ){
+            saveDisabled = false;
           }
 
           if( this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/){

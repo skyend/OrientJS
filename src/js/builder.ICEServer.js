@@ -36,6 +36,14 @@ class ICEServer {
       })
       .end(function(err, res) {
         var result = res.body;
+        console.log(result);
+
+        // 실행자가 FUNCTION인 경우 API로써 호출 할 수가 있으므로 필터링한다.
+        result.items = result.items.filter(function(_crud) {
+          if (_crud.executor === 'FUNCTION') {
+            return true;
+          }
+        });
 
         _complete(result);
       });

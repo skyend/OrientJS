@@ -973,10 +973,10 @@ var _ = require('underscore');
             };
 
             var iconClass = _contextItem.iconClass;
-
+            console.log('tab render', _contextItem.contextController);
             return (
                 <li className={ running? 'forwarded':''} onClick={closure}>
-                  <i className="fa fa-circle unsaved-feedback"/>
+                  { _contextItem.contextController.isUnsaved? <i className="unsaved-feedback"/>:''}
                   <i className={'fa '+ iconClass+ ' type-icon'}/>
                   {_contextItem.contextTitle}
                   <span className='close' onClick={function(_e){  _e.stopPropagation(); self.closeContext(_contextItem); }}>

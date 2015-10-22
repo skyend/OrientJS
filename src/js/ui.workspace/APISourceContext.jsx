@@ -185,6 +185,11 @@ var APISourceContext = React.createClass({
   },
 
 
+  save(){
+    this.props.contextController.save();
+  },
+
+
   componentDidUpdate(){
     console.log(this.state);
     if( this.props.runningState === this.props.contextController.running ) return;
@@ -215,6 +220,10 @@ var APISourceContext = React.createClass({
     } else {
       this.goingToContextStop();
     }
+  },
+
+  feedSaveStateChange(){
+    this.emit("ChangedSaveState");
   },
 
   // renderJSONIndentBox( _count ){
@@ -483,7 +492,12 @@ var APISourceContext = React.createClass({
           </td>
           <td className='item-description'>
             {this.state.nodeTypeData.crud.map(function(_crud){
-
+              // console.log(_crud);
+              // var api_useable = false;
+              // if( _crud.executor === 'FUNCTION' ){
+              //   api_useable = true;
+              // }
+              //
               return <span className='block-merge' title={"/api/"+self.props.contextController.nodeTypeId+"/"+ _crud.type+".json"}>
                 <span className='block display-field'>{_crud.name}</span>
                 <span className='block type-field'>{_crud.type}</span>

@@ -11,6 +11,8 @@ class RequestManager {
     this.requests[_name] = {
       crud: _crud
     };
+
+    this.changedContent();
   }
 
   get requestsList() {
@@ -27,6 +29,8 @@ class RequestManager {
     let reqName = _request.name;
     this.requests[reqName] = _request;
     delete this.requests[reqName].name;
+
+    this.changedContent();
   }
 }
 

@@ -583,6 +583,10 @@ var DirectContext = React.createClass({
     this.forceUpdate();
   },
 
+  feedSaveStateChange(){
+    this.emit("ChangedSaveState");
+  },
+
   componentWillUpdate(_nextProps, _nextState){
     this.state.prevStageWidth = this.state.stageWidth;
     this.state.prevStageHeight = this.state.stageHeight;

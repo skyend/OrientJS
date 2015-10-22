@@ -12,7 +12,7 @@ class ApiSourceContextController extends RequestManager {
     this.title = _apisource.title;
     this.nid = _apisource.nid;
     this.apiSource = _apisource;
-
+    this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
 
     this.session = _session;
@@ -22,13 +22,6 @@ class ApiSourceContextController extends RequestManager {
   attach(_context) {
     this.attached = true;
     this.context = _context;
-
-    // var nodeTypeData = this.serviceManager.getNodeTypeData(this.nodeTypeId);
-    // console.log(nodeTypeData);
-    //
-    // this.context.setState({
-    //   nodeTypeData: nodeTypeData
-    // });
   }
 
   get iconURL() {
@@ -37,6 +30,20 @@ class ApiSourceContextController extends RequestManager {
     }
 
     return undefined;
+  }
+
+  save() {
+    this.unsaved = false;
+  }
+
+  changedContent() {
+    if (this.unsaved) return;
+    this.unsaved = true;
+    this.context.feedSaveStateChange();
+  }
+
+  get isUnsaved() {
+    return this.unsaved;
   }
 
   getNodetypeData(_complete) {
@@ -74,6 +81,8 @@ class ApiSourceContextController extends RequestManager {
   get followedInterfaceList() {
     return this.apiSource['interface'] || [];
   }
+
+
 
 }
 

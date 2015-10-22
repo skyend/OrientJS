@@ -6,15 +6,13 @@ class PageContextController {
   attach(_context, _superDOMElement) {
     this.attached = true;
     this.context = _context;
+    this.unsaved = false;
     this._superDOMElement = _superDOMElement;
     this.screenSizing = 'desktop';
     /* processing */
 
     this._superDOMElement.setAttribute('draggable', true);
     console.log(this._superDOMElement);
-
-
-
 
   }
 
@@ -26,6 +24,21 @@ class PageContextController {
 
   }
 
+  save() {
+    this.unsaved = false;
+  }
+
+  changedContent() {
+    if (this.unsaved) return;
+    this.unsaved = true;
+    this.context.feedSaveStateChange();
+  }
+
+  get isUnsaved() {
+    return this.unsaved;
+  }
+
+
   setScreenSizing(_sizing) {
 
     this.screenSizing = _sizing;
@@ -34,6 +47,7 @@ class PageContextController {
   getScreenSizing() {
     return this.screenSizing;
   }
+
 
 };
 

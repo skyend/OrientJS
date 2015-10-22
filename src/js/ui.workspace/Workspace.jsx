@@ -410,6 +410,11 @@ console.log(_eventData);
       });
     },
 
+    onThrowCatcherChangedSaveState(_eventData){
+      this.refs['HeadToolBar'].forceUpdate();
+      this.refs['DocumentStage'].forceUpdate();
+    },
+
 
     // 저장
     onThrowCatcherSaveCurrentContext( _eventData, _pass ){
