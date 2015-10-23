@@ -85,6 +85,10 @@ class ServiceManager {
 
   getApisourceList(_complete) {
     this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_item) {
+        return _item.title;
+      });
+
       _complete(_result);
     });
   }
@@ -105,9 +109,11 @@ class ServiceManager {
 
   getApiinterfaceList(_complete) {
     this.app.gelateriaRequest.getAPIInterfaceList(this.service_id, function(_result) {
+
       _complete(_result);
     });
   }
+
   saveAPIInterface(_apiinterface_id, _apiinterfaceDataObject, _complete) {
     this.app.gelateriaRequest.saveAPIInterface(this.service_id, _apiinterface_id, _apiinterfaceDataObject, function(_result) {
       _complete(_result);

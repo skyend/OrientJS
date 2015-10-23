@@ -15,6 +15,7 @@ class ApiSourceContextController extends RequestManager {
     this.apiSource = _apisource;
     this.requests = this.apiSource.requests = this.apiSource.requests || {};
     this.apiSource.interfaces = this.apiSource.interfaces || [];
+    this.apiSource.placeholders = this.apiSource.placeholders || {};
 
     this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
@@ -88,6 +89,16 @@ class ApiSourceContextController extends RequestManager {
     this.changedContent();
 
     return true;
+  }
+
+  setRequestTestFieldPlaceholder(_requestName, _name, _value) {
+    this.apiSource.placeholders[_requestName] = this.apiSource.placeholders[_requestName] || {};
+    this.apiSource.placeholders[_requestName]['testFields'] = this.apiSource.placeholders[_requestName]['testFields'] || {};
+    this.apiSource.placeholders[_requestName]['testFields'][_name] = _value;
+  }
+
+  getRequestTestFieldPlaceholder(_requestName) {
+    return ((this.apiSource.placeholders[_requestName] || {})['testFields'] || {});
   }
 
   needFollowInterfacesState() {

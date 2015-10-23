@@ -357,6 +357,28 @@
     .requests-editor
     {
         width: 100%;
+        > .loading
+        {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 30px;
+
+            text-align: center;
+            vertical-align: middle;
+
+            .loading-text
+            {
+                //
+                vertical-align: middle;
+            }
+
+            i
+            {
+                font-size: 32px;
+
+                vertical-align: middle;
+            }
+        }
 
         input,
         select
@@ -596,6 +618,23 @@
                     &.open
                     {
                         height: 500px;
+                    }
+                }
+
+                .configs
+                {
+                    .config
+                    {
+                        display: inline-block;
+
+                        padding: 5px;
+
+                        .title
+                        {
+                            display: inline-block;
+
+                            margin-right: 5px;
+                        }
                     }
                 }
             }
