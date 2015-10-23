@@ -49,6 +49,14 @@ class ServiceManager {
 
   getDocumentList(_complete) {
     this.app.gelateriaRequest.getDocumentList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.title.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
       _complete(_result);
     });
   }
@@ -71,6 +79,14 @@ class ServiceManager {
 
   getPageList(_complete) {
     this.app.gelateriaRequest.getPageList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.title.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
       _complete(_result);
     });
   }
@@ -85,8 +101,12 @@ class ServiceManager {
 
   getApisourceList(_complete) {
     this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
-      _result.list = _result.list.sort(function(_item) {
-        return _item.title;
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.title.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
       });
 
       _complete(_result);
@@ -109,6 +129,14 @@ class ServiceManager {
 
   getApiinterfaceList(_complete) {
     this.app.gelateriaRequest.getAPIInterfaceList(this.service_id, function(_result) {
+
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.title.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
 
       _complete(_result);
     });
