@@ -46,6 +46,7 @@ var Request = React.createClass({
         "toolKey": "ConfirmBox",
         "where":"ModalWindow",
         "params":{
+          "title":"요청 제거",
           "confirm-message": "[ "+this.props.request.name+" ] 요청을 제거 하시겠습니까?",
           "positive-action": function(){
             self.deleteRequest(_e, true);
@@ -111,6 +112,32 @@ var Request = React.createClass({
       value:'',
       testValue:''
     });
+
+    this.updateEmit();
+  },
+
+  deleteField(_fieldIndex){
+    var newFieldList = [];
+    this.props.request.fieldList.map(function(_field, _i){
+      if( _i != _fieldIndex ){
+        newFieldList.push(_field);
+      }
+    });
+
+    this.props.request.fieldList = newFieldList;
+
+    this.updateEmit();
+  },
+
+  deleteHeader(_headerIndex){
+    var newHeaderList = [];
+    this.props.request.headerList.map(function(_header, _i){
+      if( _i != _headerIndex ){
+        newHeaderList.push(_header);
+      }
+    });
+
+    this.props.request.headerList = newHeaderList;
 
     this.updateEmit();
   },
@@ -297,6 +324,11 @@ var Request = React.createClass({
     <div className='row'>
       <label> Headers </label>
       <div className='request-field-set'>
+        <div className='configs'>
+          <div className='config'>
+            <button onClick={this.addNewHeader}> Header <i className='fa fa-plus'/> </button>
+          </div>
+        </div>
         { this.props.request.headerList.map( function(_header, _i){
           return <div className='field'>
             <input placeholder="Header name (a-z,_,-)" value={_header.name} onChange={function(_e){ self.changeHeaderName(_i,_e); }}/>
@@ -304,11 +336,12 @@ var Request = React.createClass({
             <input placeholder="Header value or resolver" value={_header.value} onChange={function(_e){ self.changeHeaderValue(_i,_e); }}/>
             <i className='fa fa-ellipsis-v'/>
             <input placeholder="Test value" value={_header.testValue} onChange={function(_e){ self.changeHeaderTestValue(_i,_e); }}/>
+            <button onClick={function(){self.deleteHeader(_i)}}>Delete</button>
           </div>
         })}
 
       </div>
-      <button onClick={this.addNewHeader}> <i className='fa fa-plus'/> </button>
+
 
     </div>,
     <div className='row'>
@@ -322,7 +355,7 @@ var Request = React.createClass({
             <CheckBox value={this.props.request.fieldFillFromNodeType||false} onToggle={this.fillFromPropertytypesToggle}/>
           </div>
           <div className='config'>
-            <button onClick={this.addNewField}> <i className='fa fa-plus'/> </button>
+            <button onClick={this.addNewField}> Field <i className='fa fa-plus'/> </button>
           </div>
         </div>
         { this.renderFillFieldsFromNodeType() }
@@ -333,6 +366,7 @@ var Request = React.createClass({
             <input placeholder="Field value or resolver" value={_field.value} onChange={function(_e){ self.changeFieldValue(_i,_e); }}/>
             <i className='fa fa-ellipsis-v'/>
             <input placeholder="Test value" value={_field.testValue} onChange={function(_e){ self.changeFieldTestValue(_i,_e); }}/>
+            <button onClick={function(){self.deleteField(_i)}}>Delete</button>
           </div>
         })}
 

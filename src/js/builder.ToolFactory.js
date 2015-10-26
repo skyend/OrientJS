@@ -81,9 +81,16 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
       return toolBird;
     };
 
+
+
     egg.toolKey = _toolKey;
     egg.toolTitle = self.toolsMap[_toolKey].title;
     egg.toolHelperText = self.toolsMap[_toolKey].toolHelperText;
+
+    // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
+    if (_params !== undefined && _params.title !== undefined) {
+      egg.toolTitle = _params.title;
+    }
 
     _givingEgg(egg);
   });

@@ -90,6 +90,15 @@ class DocumentContextController {
     return this.unsaved;
   }
 
+  modifyElementProperty(_elementId, _propKey, _propValue) {
+    var targetElementNode = this.document.findById(_elementId);
+
+  }
+
+  modifyElementAttribute(_elementId, _attrKey, _attrValue) {
+    var targetElementNode = this.document.findById(_elementId);
+
+  }
 
   setScreenSizing(_sizing) {
 
@@ -114,7 +123,8 @@ class DocumentContextController {
    */
   beginRender() {
     var self = this;
-    console.log(this.document);
+
+
     // resource convert
     var jsElements = this.convertToScriptElement(this.document.getScriptResources() || []);
     var styleElements = this.convertToStyleElements(this.document.getStyleResources() || []);
