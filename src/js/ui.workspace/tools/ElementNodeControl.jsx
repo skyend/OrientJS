@@ -10,7 +10,8 @@ var ElementNodeControl = React.createClass({
 
     getInitialState(){
         return {
-          elementNode:null
+          elementNode:null,
+          contextController:null
         };
     },
 
@@ -21,12 +22,10 @@ var ElementNodeControl = React.createClass({
       if( _eventData.refPath[1] === 'RepeatControl'){
         switch( _eventData.refPath[0] ){
           case "RepeatN":
-          if( changedData === '' ) changedData = undefined;
-          elementNode.setControl('repeat-n', changedData);
+            if( changedData === '' ) changedData = undefined;
+            this.state.contextController.modifyElementControl( elementNode.id, 'repeat-n', changedData);
         }
       }
-
-
 
       this.setState({elementNode:elementNode});
       elementNode.executeSnapshot();

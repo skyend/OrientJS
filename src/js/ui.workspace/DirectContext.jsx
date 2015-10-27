@@ -20,6 +20,33 @@ var DirectContext = React.createClass({
     };
   },
 
+  goingToContextStop(){
+    if( this.state.showElementNavigator){
+      this.closeElementNavigator();
+    }
+
+
+    this.contextController.pause();
+
+  },
+
+  goingToContextRunning(){
+    this.contextController.resume();
+
+    if( this.props.contextType ===  "document" ){
+      console.log(this.contextController.document);
+
+      this.emit("DocumentFocused", {
+        document:this.contextController.document
+      });
+    }
+
+  },
+
+  feedSaveStateChange(){
+    this.emit("ChangedSaveState");
+  },
+
   appendElementToBody( _element ){
     return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
   },
@@ -43,12 +70,14 @@ var DirectContext = React.createClass({
       returns = baseElementNode.isDropableComponent("appendChild");
 
       if( returns.result === true ){
-        this.deployComponentToElementNode("appendChild", _component, baseElementNode);
+
+        this.props.contextController.modifyElementTree(baseElementNode, "appendComponent", _component);
+
       } else {
         this.noticeFailureReturns(returns);
       }
     } else {
-      this.deployToRoot(_component);
+      this.props.contextController.modifyElementTree(null, "appendComponent", _component);
     }
   },
 
@@ -62,12 +91,13 @@ var DirectContext = React.createClass({
       var returns = baseElementNode.isDropableComponent("appendChild");
 
       if( returns.result === true ){
-        this.deployComponentToElementNode("insertBefore", _component, baseElementNode);
+
+        this.props.contextController.modifyElementTree(baseElementNode, "insertBeforeComponent", _component);
       } else {
         this.noticeFailureReturns(returns);
       }
     } else {
-      this.deployToRoot(_component);
+      console.error("배치할 수 없습니다.");
     }
   },
 
@@ -81,51 +111,13 @@ var DirectContext = React.createClass({
       var returns = baseElementNode.isDropableComponent("appendChild");
 
       if( returns.result === true ){
-        this.deployComponentToElementNode("insertAfter", _component, baseElementNode);
+        this.props.contextController.modifyElementTree(baseElementNode, "insertAfterComponent", _component);
       } else {
         this.noticeFailureReturns(returns);
       }
     } else {
-      this.deployToRoot(_component);
+      console.error("배치할 수 없습니다.");
     }
-  },
-
-  deployComponentToElementNode( _insertType, _component, _baseElementNode ){
-
-      var baseDocument = _baseElementNode.document;
-
-      var newElementNode = baseDocument.newElementNodeFromComponent( _component );
-
-      this.deployElementNode( _insertType, newElementNode, _baseElementNode );
-  },
-
-  deployElementNode(_insertType, _elementNode, _target ){
-      var baseDocument = _target.document;
-
-      var result = baseDocument.insertElementNode( _insertType, _elementNode, _target );
-      //console.log(result);
-      var contextController = baseDocument.contextController;
-
-      if( result ){
-          contextController.rootRender();
-      }
-
-      this.emit('UpdatedContext', {
-        directContext: this
-      });
-
-      _elementNode.getParent().executeSnapshot('all');
-
-      return result;
-  },
-
-  deployToRoot(_component){
-    this.contextController.document.setRootElementNode(this.contextController.document.newElementNodeFromComponent( _component ));
-    this.contextController.rootRender();
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
   },
 
   noticeFailureReturns( _returns ){
@@ -197,64 +189,9 @@ var DirectContext = React.createClass({
 
   },
 
-  addStyle( _key, _css ){
-    //this.getIFrameStage().addStyle( _key, _css );
-  },
-
-  applyStyleElement( _element ){
-    this.getIFrameStage().appendStyleElement( _element );
-  },
-
-  applyScriptElement( _element ){
-    this.getIFrameStage().appendScriptElementToHead( _element );
-  },
-
-  getWindow(){
-    return this.getIFrameStage().getIframeInnerWindow();
-  },
-
-  getDocument(){
-    return this.getIFrameStage().getIFrameInnerDoc();
-  },
-
-  getIFrameStageBoundingRect(){
-    return this.getIFrameStage().getDOMNode().getBoundingClientRect();
-  },
-
-  getIFrameStageScrollX(){
-    return this.getIFrameStage().getScrollX();
-  },
-
-  getIFrameStageScrollY(){
-    return this.getIFrameStage().getScrollY();
-  },
-
-  getIFrameStage(){
-    return this.refs['iframe-stage'];
-  },
-
-  goingToContextStop(){
-    if( this.state.showElementNavigator){
-      this.closeElementNavigator();
-    }
 
 
-    this.contextController.pause();
 
-  },
-
-  goingToContextRunning(){
-    this.contextController.resume();
-
-    if( this.props.contextType ===  "document" ){
-      console.log(this.contextController.document);
-
-      this.emit("DocumentFocused", {
-        document:this.contextController.document
-      });
-    }
-
-  },
 
   copyElementJSON(){
     var data = this.state.selectedElementNode.export(false);
@@ -272,61 +209,22 @@ var DirectContext = React.createClass({
 
     var elementNode = this.state.selectedElementNode;
 
-    var baseDocument = elementNode.document;
-
-    var newElementNode = baseDocument.newElementNode( this.copiedElementNodeData );
-
-    if( this.deployElementNode('appendChild',newElementNode, elementNode) ){
-
-      elementNode.executeSnapshot('all');
-
-      this.infoNotice('붙여넣기 완료', 'OK.');
-    } else {
-      this.errorNotice('붙여넣기 실패', '해당요소에 ElementNode를 붙여넣을 수 없습니다.');
-    }
+    this.props.contextController.modifyElementTree(elementNode.id, 'pasteIn', this.copiedElementNodeData);
   },
 
   removeElement(){
-    var parent = this.state.selectedElementNode.getParent();
-    var contextController;
+    let elementNode = this.state.selectedElementNode;
 
-    if( parent !== null ){
-      contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
-    } else {
-      contextController = this.props.contextController;
-    }
+    this.props.contextController.modifyElementTree(elementNode.id, 'remove');
 
-
-    this.state.selectedElementNode.dettachMeFromParent();
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
-
-    this.closeElementNavigator();
-
-    contextController.rootRender();
-
-    parent.executeSnapshot('all');
+    this.setState({showElementNavigator:false});
   },
 
   cloneElement(){
     var elementNode = this.state.selectedElementNode;
     var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
 
-    var elementNodeDoc = elementNode.document;
-
-    var clonedElementNode = elementNodeDoc.cloneElement( elementNode );
-
-    elementNode.insertAfter( clonedElementNode );
-
-    contextController.rootRender();
-
-    elementNode.executeSnapshot('all');
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
+    contextController.modifyElementTree(elementNode, "cloneAndInsertAfter" );
   },
 
   editElement(){
@@ -344,7 +242,7 @@ var DirectContext = React.createClass({
       return;
     }
 
-    var parentRealDOMElement =  parent.getRealDOMElement();
+    var parentRealDOMElement = parent.getRealDOMElement();
 
     this.selectElement( parentRealDOMElement,  parentRealDOMElement.getBoundingClientRect() );
   },
@@ -365,7 +263,7 @@ var DirectContext = React.createClass({
       this.errorNotice("요소 선택 불가","고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
       return;
     } else {
-      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode});
+      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode, contextController: this.props.contextController});
     }
 
     var target = _elementNode.getRealDOMElement();
@@ -444,6 +342,42 @@ var DirectContext = React.createClass({
     });
   },
 
+  addStyle( _key, _css ){
+    //this.getIFrameStage().addStyle( _key, _css );
+  },
+
+  applyStyleElement( _element ){
+    this.getIFrameStage().appendStyleElement( _element );
+  },
+
+  applyScriptElement( _element ){
+    this.getIFrameStage().appendScriptElementToHead( _element );
+  },
+
+  getWindow(){
+    return this.getIFrameStage().getIframeInnerWindow();
+  },
+
+  getDocument(){
+    return this.getIFrameStage().getIFrameInnerDoc();
+  },
+
+  getIFrameStageBoundingRect(){
+    return this.getIFrameStage().getDOMNode().getBoundingClientRect();
+  },
+
+  getIFrameStageScrollX(){
+    return this.getIFrameStage().getScrollX();
+  },
+
+  getIFrameStageScrollY(){
+    return this.getIFrameStage().getScrollY();
+  },
+
+  getIFrameStage(){
+    return this.refs['iframe-stage'];
+  },
+
   onThrowCatcherScrollAtStage(_eventData, _pass){
     this.forceUpdate();
 
@@ -507,10 +441,10 @@ var DirectContext = React.createClass({
     if( nextWidth < 0 ) nextWidth = 0;
     if( nextHeight < 0 ) nextHeight = 0;
 
-    //console.log(nextHeight);
-    elNode.transformRectByEditor(nextLeft, nextTop, nextWidth, nextHeight);
 
-    elNode.document.getContextController().rootRender();
+    this.props.contextController.modifyElementProperty(elNode, "rectangle" , {left:nextLeft, top:nextTop, width:nextWidth, height:nextHeight});
+
+    //elNode.document.getContextController().rootRender();
     this.forceUpdate();
   },
 
@@ -521,7 +455,7 @@ var DirectContext = React.createClass({
     elNode.getParent().executeSnapshot('all');
 
     // 랜더링
-    elNode.document.getContextController().rootRender();
+    //elNode.document.getContextController().rootRender();
   },
 
 
@@ -583,9 +517,7 @@ var DirectContext = React.createClass({
     this.forceUpdate();
   },
 
-  feedSaveStateChange(){
-    this.emit("ChangedSaveState");
-  },
+
 
   componentWillUpdate(_nextProps, _nextState){
     this.state.prevStageWidth = this.state.stageWidth;
@@ -641,6 +573,7 @@ var DirectContext = React.createClass({
   },
 
   render(){
+    console.log('Rendering DirectContext');
     var iframeStageWidth = (this.state.stageWidth > this.props.width)? this.props.width:this.state.stageWidth;
     var iframeStageHeight= (this.state.stageHeight > this.props.height)? this.props.height:this.state.stageHeight;
     iframeStageWidth -= 10;

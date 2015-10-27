@@ -87,17 +87,264 @@ class DocumentContextController {
   }
 
   get isUnsaved() {
-    return this.unsaved;
+      return this.unsaved;
+    }
+    /*
+    this.id = _elementNodeDataObject.id;
+    this.type = _elementNodeDataObject.type;
+    this.name = _elementNodeDataObject.name;
+
+    this.attributes = _elementNodeDataObject.attributes;
+
+    this.componentName = _elementNodeDataObject.componentName;
+
+    this.refferenceType = _elementNodeDataObject.refferenceType;
+    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+
+    this.controls = _elementNodeDataObject.controls || {};
+    this.rectangle = _elementNodeDataObject.rectangle || {
+      desktop: {},
+      tablet: {},
+      mobile: {}
+    }
+
+
+    this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
+    this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
+    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
+
+    this.comment = _elementNodeDataObject.comment || '';
+
+    this.createDate = _elementNodeDataObject.createDate;
+    this.updateDate = _elementNodeDataObject.updateDate;
+
+    this.children = this.inspireChildren(_elementNodeDataObject.children);
+
+    this.pastRevision = this.export();
+    */
+
+  modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
+    let targetElementNode = null;
+    let parentElementNode = null;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    switch (_propKey) {
+      case "Name":
+        targetElementNode.setName(_propValue);
+        break;
+      case "Comment":
+        targetElementNode.setComment(_propValue);
+        break;
+      case "refferenceType":
+        targetElementNode.setRefferenceType(_propValue);
+        break;
+      case "refferenceTarget":
+        targetElementNode.setRefferenceTarget(_propValue);
+        break;
+      case "reactPackageKey":
+        targetElementNode.setReactPackageKey(_propValue);
+        break;
+      case "reactComponentKey":
+        targetElementNode.setReactComponentKey(_propValue);
+        break;
+      case "reactComponentProps":
+        targetElementNode.setReactComponentProps(_propValue);
+        break;
+      case "rectangle":
+        targetElementNode.transformRectByEditor(_propValue.left, _propValue.top, _propValue.width, _propValue.height);
+        break;
+      default:
+        console.error("No matched property key");
+    }
+
+    if (parentElementNode !== null) {
+      this.constructToRealElement(targetElementNode);
+
+      parentElementNode.linkRealDOMofChild();
+    } else {
+      this.rootRender();
+    }
+
+    this.changedContent();
   }
 
-  modifyElementProperty(_elementId, _propKey, _propValue) {
-    var targetElementNode = this.document.findById(_elementId);
+  modifyElementAttribute(_elementIdorElement, _attrKey, _attrValue) {
+    let targetElementNode = null;
+    let parentElementNode = null;
 
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    let treeRefresh = false;
+
+    switch (_attrKey) {
+      case "tagName":
+        targetElementNode.setAttribute("tagName", _attrValue);
+        treeRefresh = true;
+        break;
+      case "class":
+        targetElementNode.setAttribute("class", _attrValue);
+        break;
+      case "id":
+        targetElementNode.setAttribute("id", _attrValue);
+        break;
+      default:
+        targetElementNode.setAttribute(_attrKey, _attrValue);
+    }
+
+    if (!treeRefresh) {
+      targetElementNode.applyAttributesToRealDOM();
+    } else {
+      if (parentElementNode !== null) {
+        this.constructToRealElement(targetElementNode);
+
+        parentElementNode.linkRealDOMofChild();
+      } else {
+        this.rootRender();
+      }
+    }
+
+    this.changedContent();
   }
 
-  modifyElementAttribute(_elementId, _attrKey, _attrValue) {
-    var targetElementNode = this.document.findById(_elementId);
+  modifyElementControl(_elementIdorElement, _controlKey, _controlValue) {
+    let targetElementNode = null;
+    let parentElementNode = null;
 
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    switch (_controlKey) {
+      case "repeat-n":
+        targetElementNode.setControl("repeat-n", _controlValue);
+        break;
+      default:
+
+    }
+
+    if (parentElementNode !== null) {
+      this.constructToRealElement(parentElementNode);
+
+      if (parentElementNode.getParent() !== null) {
+        parentElementNode.getParent().linkRealDOMofChild();
+      } else {
+        this.rootRender();
+      }
+    } else {
+      this.rootRender();
+    }
+
+    this.changedContent();
+  }
+
+  modifyElementTree(_elementIdorElement, _action, _object) {
+    let targetElementNode = null;
+    let parentElementNode = null;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+
+    let returns;
+
+    switch (_action) {
+      case "remove":
+        returns = parentElementNode.detachChild(targetElementNode);
+        break;
+      case "appendComponent":
+        returns = () => {
+          let newElementNode = this.convertToElementNodeFromComponent(_object);
+          if (targetElementNode === null) {
+            this.document.setRootElementNode(newElementNode);
+          } else {
+            this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+          }
+        }.apply(this);
+        break;
+      case "insertBeforeComponent":
+        returns = () => {
+          let newElementNode = this.convertToElementNodeFromComponent(_object);
+          this.document.insertElementNode("insertBefore", newElementNode, targetElementNode);
+        }.apply(this);
+        break;
+      case "insertAfterComponent":
+        returns = () => {
+          let newElementNode = this.convertToElementNodeFromComponent(_object);
+          this.document.insertElementNode("insertAfter", newElementNode, targetElementNode);
+        }.apply(this);
+        break;
+      case "cloneAndInsertAfter":
+        returns = () => {
+          let clonedElementNode = this.document.cloneElement(targetElementNode);
+          this.document.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
+        }.apply(this);
+        break;
+      case "pasteIn":
+        returns = () => {
+          var newElementNode = this.document.newElementNode(_object);
+          this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+        }.apply(this);
+        break;
+      case "default":
+        console.err('What the');
+    }
+
+    console.log('modified Tree', returns);
+
+    if (returns) {
+
+    }
+
+    if (parentElementNode !== null) {
+
+      parentElementNode.children.map((_childElementNode) => {
+        this.constructToRealElement(_childElementNode);
+      });
+
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkRealDOMofChild();
+
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender();
+    }
+
+    this.changedContent();
+  }
+
+
+  convertToElementNodeFromComponent(_component) {
+    return this.document.newElementNodeFromComponent(_component);
   }
 
   setScreenSizing(_sizing) {
