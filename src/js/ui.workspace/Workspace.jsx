@@ -358,33 +358,55 @@ console.log(_eventData);
     onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
 
       this.applyToolStates("ElementNodeEditor", {
-        elementNode: _eventData.elementNode
+        elementNode: _eventData.elementNode,
+        contextController: _eventData.contextController
       });
 
       this.applyToolStates("ElementNodeControl", {
-        elementNode: _eventData.elementNode
+        elementNode: _eventData.elementNode,
+        contextController: _eventData.contextController
       });
 
       this.applyToolStates("ElementEventControl", {
-        elementNode: _eventData.elementNode
+        elementNode: _eventData.elementNode,
+        contextController: _eventData.contextController
       });
 
       this.applyToolStates("ElementEffectControl", {
-        elementNode: _eventData.elementNode
+        elementNode: _eventData.elementNode,
+        contextController: _eventData.contextController
       });
 
       this.applyToolStates("ContextContentsNavigation", {
-        selectedElementNode: _eventData.elementNode
+        selectedElementNode: _eventData.elementNode,
+        contextController: _eventData.contextController
       });
     },
 
     onThrowCatcherCancelSelectElementNode(_eventData, _pass){
       this.applyToolStates("ElementNodeEditor", {
-        elementNode: null
+        elementNode: null,
+        contextController: null
+      });
+
+      this.applyToolStates("ElementNodeControl", {
+        elementNode: null,
+        contextController: null
+      });
+
+      this.applyToolStates("ElementEventControl", {
+        elementNode: null,
+        contextController: null
+      });
+
+      this.applyToolStates("ElementEffectControl", {
+        elementNode: null,
+        contextController: null
       });
 
       this.applyToolStates("ContextContentsNavigation", {
-        selectedElementNode: null
+        selectedElementNode: null,
+        contextController: null
       });
     },
 

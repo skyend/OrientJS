@@ -19,7 +19,8 @@ var ElementNodeEditor = React.createClass({
 
     getInitialState(){
         return {
-          elementNode:null
+          elementNode:null,
+          contextController:null
         };
     },
 
@@ -36,6 +37,8 @@ var ElementNodeEditor = React.createClass({
     // 변경되는 값에따라 바로바로 ElementNode에 반영하고 랜더링을 진행한다.
     onThrowCatcherChangedValue( _eventData, _pass ){
       var elementNode = this.state.elementNode;
+      console.log("Changed ID", elementNode.id);
+
       var changedData = _eventData.data;
 
       if( _eventData.refPath[2] === 'ElementProfile'){
@@ -43,7 +46,7 @@ var ElementNodeEditor = React.createClass({
         if( _eventData.refPath[1] === 'profile-set' ){
           switch( _eventData.name ){
             case "Name" :
-              elementNode.setName( changedData );
+              this.state.contextController.modifyElementProperty( elementNode.id, 'Name', changedData);
               break;
           }
         }
@@ -52,20 +55,20 @@ var ElementNodeEditor = React.createClass({
         if( _eventData.refPath[1] === 'elementDOMSpec' ){
           switch( _eventData.name ){
             case "TagName" :
-              elementNode.setTagName( changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, 'tagName', changedData);
               this.refreshElementNodeRendering( elementNode );
               break;
             case "Id" :
-              elementNode.setIdAtrribute( changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, 'id', changedData);
               break;
             case "Classes" :
-              elementNode.setClasses( changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, 'class', changedData);
               break;
             case "Text" :
-              elementNode.setText( changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, 'text', changedData);
               break;
             case "Comment" :
-              elementNode.setComment( changedData );
+              this.state.contextController.modifyElementProperty( elementNode.id, 'Comment', changedData);
               break;
           }
 
@@ -74,15 +77,15 @@ var ElementNodeEditor = React.createClass({
         if( _eventData.refPath[1] === 'tagAttribute' ){
           switch( _eventData.name ){
             case "InlineStyle" :
-              elementNode.setInlineStyle( changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, 'style', changedData);
               break;
             default:
-              elementNode.setAttribute(  _eventData.name, changedData );
+              this.state.contextController.modifyElementAttribute( elementNode.id, _eventData.name, changedData);
           }
         }
 
         if( _eventData.refPath[1] === 'dataAttribute' ){
-          elementNode.setAttribute(  _eventData.name, changedData );
+          this.state.contextController.modifyElementAttribute( elementNode.id, _eventData.name, changedData);
         }
 
 
@@ -93,14 +96,13 @@ var ElementNodeEditor = React.createClass({
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
           switch( _eventData.name ){
             case "RefferenceType" :
-              elementNode.setRefferenceType( changedData );
+              this.state.contextController.modifyElementProperty( elementNode.id, 'refferenceType', changedData);
               break;
             case "RefferenceTarget" :
-              elementNode.setRefferenceTarget( changedData );
+              this.state.contextController.modifyElementProperty( elementNode.id, 'refferenceTarget', changedData);
               break;
           }
         }
-
         // 변경된 참조 정보를 요소로부터 갱신
 
         this.refreshElementNodeRendering( elementNode );

@@ -231,6 +231,12 @@ var Request = React.createClass({
     });
   },
 
+  renderWithCheckEditable( _buttonElement ){
+    if( this.props.interface !== undefined ) return '';
+
+    return _buttonElement;
+  },
+
   renderDataZone(){
     if( !this.state.showDataPreviewer ){
       return <div className='data-render-zone'/>
@@ -326,7 +332,7 @@ var Request = React.createClass({
       <div className='request-field-set'>
         <div className='configs'>
           <div className='config'>
-            <button onClick={this.addNewHeader}> Header <i className='fa fa-plus'/> </button>
+            {this.renderWithCheckEditable(<button onClick={this.addNewHeader}> Header <i className='fa fa-plus'/> </button>)}
           </div>
         </div>
         { this.props.request.headerList.map( function(_header, _i){
@@ -336,7 +342,7 @@ var Request = React.createClass({
             <input placeholder="Header value or resolver" value={_header.value} onChange={function(_e){ self.changeHeaderValue(_i,_e); }}/>
             <i className='fa fa-ellipsis-v'/>
             <input placeholder="Test value" value={_header.testValue} onChange={function(_e){ self.changeHeaderTestValue(_i,_e); }}/>
-            <button onClick={function(){self.deleteHeader(_i)}}>Delete</button>
+            { self.renderWithCheckEditable(<button onClick={function(){self.deleteHeader(_i)}}>Delete</button>) }
           </div>
         })}
 
@@ -355,7 +361,7 @@ var Request = React.createClass({
             <CheckBox value={this.props.request.fieldFillFromNodeType||false} onToggle={this.fillFromPropertytypesToggle}/>
           </div>
           <div className='config'>
-            <button onClick={this.addNewField}> Field <i className='fa fa-plus'/> </button>
+            {this.renderWithCheckEditable(<button onClick={this.addNewField}> Field <i className='fa fa-plus'/> </button>)}
           </div>
         </div>
         { this.renderFillFieldsFromNodeType() }
@@ -366,7 +372,7 @@ var Request = React.createClass({
             <input placeholder="Field value or resolver" value={_field.value} onChange={function(_e){ self.changeFieldValue(_i,_e); }}/>
             <i className='fa fa-ellipsis-v'/>
             <input placeholder="Test value" value={_field.testValue} onChange={function(_e){ self.changeFieldTestValue(_i,_e); }}/>
-            <button onClick={function(){self.deleteField(_i)}}>Delete</button>
+            {self.renderWithCheckEditable(<button onClick={function(){self.deleteField(_i)}}>Delete</button>)}
           </div>
         })}
 
@@ -376,7 +382,7 @@ var Request = React.createClass({
     </div>,
     <div className='row'>
       <label> Chains </label>
-      <button> <i className='fa fa-plus'/> </button>
+      {self.renderWithCheckEditable(<button> new Chain </button>)}
     </div>,
 
     <div className='row'>

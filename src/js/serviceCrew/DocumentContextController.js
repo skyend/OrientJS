@@ -87,17 +87,130 @@ class DocumentContextController {
   }
 
   get isUnsaved() {
-    return this.unsaved;
-  }
+      return this.unsaved;
+    }
+    /*
+    this.id = _elementNodeDataObject.id;
+    this.type = _elementNodeDataObject.type;
+    this.name = _elementNodeDataObject.name;
+
+    this.attributes = _elementNodeDataObject.attributes;
+
+    this.componentName = _elementNodeDataObject.componentName;
+
+    this.refferenceType = _elementNodeDataObject.refferenceType;
+    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+
+    this.controls = _elementNodeDataObject.controls || {};
+    this.rectangle = _elementNodeDataObject.rectangle || {
+      desktop: {},
+      tablet: {},
+      mobile: {}
+    }
+
+
+    this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
+    this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
+    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
+
+    this.comment = _elementNodeDataObject.comment || '';
+
+    this.createDate = _elementNodeDataObject.createDate;
+    this.updateDate = _elementNodeDataObject.updateDate;
+
+    this.children = this.inspireChildren(_elementNodeDataObject.children);
+
+    this.pastRevision = this.export();
+    */
 
   modifyElementProperty(_elementId, _propKey, _propValue) {
     var targetElementNode = this.document.findById(_elementId);
 
+    switch (_propKey) {
+      case "Name":
+        targetElementNode.setName(_propValue);
+        break;
+      case "Comment":
+        targetElementNode.setComment(_propValue);
+        break;
+      case "refferenceType":
+        targetElementNode.setRefferenceType(_propValue);
+        break;
+      case "refferenceTarget":
+        targetElementNode.setRefferenceTarget(_propValue);
+        break;
+      case "reactPackageKey":
+        targetElementNode.setReactPackageKey(_propValue);
+        break;
+      case "reactComponentKey":
+        targetElementNode.setReactComponentKey(_propValue);
+        break;
+      case "reactComponentProps":
+        targetElementNode.setReactComponentProps(_propValue);
+        break;
+      default:
+        console.error("No matched property key");
+    }
+
+    this.changedContent();
   }
 
   modifyElementAttribute(_elementId, _attrKey, _attrValue) {
     var targetElementNode = this.document.findById(_elementId);
 
+    switch (_attrKey) {
+      case "tagName":
+        targetElementNode.setAttribute("tagName", _attrValue);
+        break;
+      case "class":
+        targetElementNode.setAttribute("class", _attrValue);
+        break;
+      case "id":
+        targetElementNode.setAttribute("id", _attrValue);
+        break;
+      default:
+        targetElementNode.setAttribute(_attrKey, _attrValue);
+    }
+
+    this.changedContent();
+  }
+
+  modifyElementControl(_elementId, _controlKey, _controlValue) {
+    var targetElementNode = this.document.findById(_elementId);
+
+    switch (_controlKey) {
+      case "repeat-n":
+        console.log()
+        targetElementNode.setControl("repeat-n", _controlValue);
+        break;
+      default:
+
+    }
+
+    this.changedContent();
+  }
+
+  modifyElementChildren(_elementId, _action, _target) {
+    var targetElementNode = this.document.findById(_elementId);
+
+    switch (_action) {
+      case "remove":
+        break;
+      case "append":
+        break;
+      case "insertBefore":
+        break;
+      case "insertAfter":
+        break;
+      case "clone":
+        break;
+      case "paste":
+        break;
+      case "default":
+        "?";
+    }
+
+    this.changedContent();
   }
 
   setScreenSizing(_sizing) {

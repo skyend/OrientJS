@@ -287,27 +287,27 @@ var DirectContext = React.createClass({
   },
 
   removeElement(){
-    var parent = this.state.selectedElementNode.getParent();
-    var contextController;
-
-    if( parent !== null ){
-      contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
-    } else {
-      contextController = this.props.contextController;
-    }
-
-
-    this.state.selectedElementNode.dettachMeFromParent();
-
-    this.emit('UpdatedContext', {
-      directContext: this
-    });
-
-    this.closeElementNavigator();
-
-    contextController.rootRender();
-
-    parent.executeSnapshot('all');
+    // var parent = this.state.selectedElementNode.getParent();
+    // var contextController;
+    //
+    // if( parent !== null ){
+    //   contextController = this.getContextControllerFromDOMElement( parent.getRealDOMElement());
+    // } else {
+    //   contextController = this.props.contextController;
+    // }
+    //
+    //
+    // this.state.selectedElementNode.dettachMeFromParent();
+    //
+    // this.emit('UpdatedContext', {
+    //   directContext: this
+    // });
+    //
+    // this.closeElementNavigator();
+    //
+    // contextController.rootRender();
+    //
+    // parent.executeSnapshot('all');
   },
 
   cloneElement(){
@@ -365,7 +365,7 @@ var DirectContext = React.createClass({
       this.errorNotice("요소 선택 불가","고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
       return;
     } else {
-      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode});
+      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode, contextController: this.props.contextController});
     }
 
     var target = _elementNode.getRealDOMElement();
