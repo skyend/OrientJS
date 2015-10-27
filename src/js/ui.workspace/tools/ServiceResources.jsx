@@ -46,7 +46,7 @@
         documentDragEnd( _e){
           console.log( 'drag end document', _e.nativeEvent);
         },
-        
+
         documentDragOver( _e){
           console.log( 'drag over document', _e.nativeEvent);
         },
@@ -253,7 +253,6 @@
           )
         },
 
-
         componentDidUpdate(){
           //console.log('updated', this.state);
         },
@@ -264,18 +263,15 @@
 
         componentDidMount(){
           var self = this;
-          //this.emit("NeedServiceResourcesMeta",{});
-          //setTimeout(function(){
-            self.emit("NeedICEHost");
-            self.emit("NeedDocumentList");
-            self.emit("NeedPageList");
-            self.emit("UpdateAPISourceList");
-            self.emit("UpdateAPIInterfaceList");
-          //},100);
+
+          self.emit("NeedICEHost");
+          self.emit("NeedDocumentList");
+          self.emit("NeedPageList");
+          self.emit("UpdateAPISourceList");
+          self.emit("UpdateAPIInterfaceList");
         },
 
         render() {
-          console.log(this.state);
             var wide = false;
             var rootClasses = ['ServiceResources', this.props.config.theme,  this.getMySizeClass()];
 

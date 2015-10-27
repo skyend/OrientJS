@@ -194,7 +194,7 @@ class ElementNode {
   // control
   setControl(_controlName, _value) {
     this.controls[_controlName] = _value;
-    this.emitToParent("RequestReRenderMe");
+    //this.emitToParent("RequestReRenderMe");
   }
 
 
@@ -555,7 +555,7 @@ class ElementNode {
     // 부모 ElementNode가 존재한다면.
     if (parent !== null) {
       // 부모에게 detach요청
-      parent.dettachChild(this);
+      parent.detachChild(this);
     } else {
       // 부모 ElementNode가 존재하지 않는다면 자신이 Document의 RootElementNode이거나 ElementNodes 리스트에 존재하는 노드이므로
       // 다르게 처리해준다.
@@ -579,7 +579,7 @@ class ElementNode {
    * dettachChild
    * 자신의 Children에서 하나의 child를 제거한다.
    */
-  dettachChild(_child) {
+  detachChild(_child) {
     var children = this.children;
     var newChildList = [];
 
@@ -1194,8 +1194,7 @@ class ElementNode {
 
   // 편집자에 의해 Rect가 변경될 떄
   transformRectByEditor(_left, _top, _width, _height) {
-    // var screenSizing = this.document.getContextController().getScreenSizing();
-    //
+
     var currentRectangleRef = this.getCurrentRectangle();
 
     if (_left !== undefined) {
@@ -1214,7 +1213,6 @@ class ElementNode {
       this.setRectanglePart(_height, 'height');
     }
 
-    console.log(currentRectangleRef);
   }
 
 

@@ -56,7 +56,6 @@ var ElementNodeEditor = React.createClass({
           switch( _eventData.name ){
             case "TagName" :
               this.state.contextController.modifyElementAttribute( elementNode.id, 'tagName', changedData);
-              this.refreshElementNodeRendering( elementNode );
               break;
             case "Id" :
               this.state.contextController.modifyElementAttribute( elementNode.id, 'id', changedData);
@@ -88,10 +87,6 @@ var ElementNodeEditor = React.createClass({
           this.state.contextController.modifyElementAttribute( elementNode.id, _eventData.name, changedData);
         }
 
-
-
-        // attribute를 실제 요소에 반영
-        elementNode.applyAttributesToRealDOM();
       } else if ( _eventData.refPath[2] === 'EmptyTypeElementNode' ){
         if( _eventData.refPath[1] === 'emptyTypeProps' ){
           switch( _eventData.name ){
@@ -103,16 +98,12 @@ var ElementNodeEditor = React.createClass({
               break;
           }
         }
-        // 변경된 참조 정보를 요소로부터 갱신
-
-        this.refreshElementNodeRendering( elementNode );
       }
 
 
 
       this.setState({elementNode:elementNode});
       elementNode.executeSnapshot();
-
     },
 
     refreshElementNodeRendering( _elementNode ){
