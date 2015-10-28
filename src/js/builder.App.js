@@ -21,7 +21,6 @@ var App = function() {
   window.gelateriaVersion = 0.75;
 
   this.session = new Session();
-  this.session.ready();
   this.gelateriaRequest = new GelateriaRequest();
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);

@@ -17,14 +17,12 @@ import Cookie from 'js-cookie';
 var Session = function() {
   this.signed = false;
   this.locale = 'ko'; // 지역화 변수
+
+  // 컴포넌트풀을 Session에서 분리예정 다이어그램에서 제외
   this.componentPool = new ComponentPool(this);
-
-  this.authorityToken = Cookie.get('at') || undefined;
-  this.authorizedDate = Cookie.get('ad') || undefined;
-};
-
-Session.prototype.ready = function() {
   this.componentPool.updateMeta('/BuildingResourceStore/Meta/AvailableComponents.json');
+
+  this.readCookie();
 };
 
 
@@ -58,7 +56,10 @@ Session.prototype.certifiedRequestJSON = function(_url, _method, _data) {
   return jsonObj;
 };
 
-
+Session.prototype.readCookie = function() {
+  this.authorityToken = Cookie.get('at') || undefined;
+  this.authorizedDate = Cookie.get('ad') || undefined;
+};
 
 Session.prototype.authorize = function(_token, _date) {
   this.authorityToken = _token;

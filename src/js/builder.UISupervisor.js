@@ -23,7 +23,6 @@ import DefaultBuilderConfig from "../config/DefaultBuilderConfig.json";
 
 // UI Supervisor
 var UI = function(_window, _session, _app) {
-  var self = this;
 
   this.app = _app;
 
@@ -45,7 +44,10 @@ var UI = function(_window, _session, _app) {
 
   // toolFactory
   this.toolFactory = new ToolFactory(_session, DefaultBuilderConfig.tools);
+};
 
+UI.prototype.eventMapping = function() {
+  let self = this;
   /** window Event Listening **/
   this.window.onresize = function(_e) {
     self.onResize(_e);
@@ -63,8 +65,7 @@ var UI = function(_window, _session, _app) {
   this.window.document.onmouseup = function(_e) {
     self.onGlobalMouseUp(_e);
   };
-
-};
+}
 
 UI.prototype.onResize = function(e) { //UI화면 리사이즈
   var width = this.window.innerWidth;

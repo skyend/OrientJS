@@ -79,7 +79,7 @@ var Lobby = React.createClass({
       var self = this;
       setTimeout(function(){
         self.requestNeedData(['user-info', 'project-list'])
-      }, 200);
+      },1);
     },
 
     componentWillMount(){

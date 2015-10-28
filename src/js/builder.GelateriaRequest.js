@@ -3,7 +3,7 @@ import request from 'superagent';
 
 class GelateriaRequest {
   constructor() {
-    this.hasCertification = false;
+
 
   }
 
