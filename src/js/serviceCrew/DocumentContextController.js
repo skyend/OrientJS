@@ -87,41 +87,8 @@ class DocumentContextController {
   }
 
   get isUnsaved() {
-      return this.unsaved;
-    }
-    /*
-    this.id = _elementNodeDataObject.id;
-    this.type = _elementNodeDataObject.type;
-    this.name = _elementNodeDataObject.name;
-
-    this.attributes = _elementNodeDataObject.attributes;
-
-    this.componentName = _elementNodeDataObject.componentName;
-
-    this.refferenceType = _elementNodeDataObject.refferenceType;
-    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
-
-    this.controls = _elementNodeDataObject.controls || {};
-    this.rectangle = _elementNodeDataObject.rectangle || {
-      desktop: {},
-      tablet: {},
-      mobile: {}
-    }
-
-
-    this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
-    this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
-    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
-
-    this.comment = _elementNodeDataObject.comment || '';
-
-    this.createDate = _elementNodeDataObject.createDate;
-    this.updateDate = _elementNodeDataObject.updateDate;
-
-    this.children = this.inspireChildren(_elementNodeDataObject.children);
-
-    this.pastRevision = this.export();
-    */
+    return this.unsaved;
+  }
 
   modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
     let targetElementNode = null;
