@@ -42,8 +42,12 @@ var UI = function(_window, _session, _app) {
   // 글로벌 드래그 이벤트를 수신 하기 위해서는 onGlobalDragFromUI, onGlobalDragStopFromUI, onGlobalDragStartFromUI 메소드를 구현하여야 한다.
   this.globalDragOccupyObject = null;
 
+  this.eventMapping();
+
   // toolFactory
   this.toolFactory = new ToolFactory(_session, DefaultBuilderConfig.tools);
+
+
 };
 
 UI.prototype.eventMapping = function() {

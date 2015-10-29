@@ -68,14 +68,13 @@ var HeadToolBar = React.createClass({
     },
 
     componentDidMount(){
-      var self = this;
 
-      setTimeout(function(){
-          self.emit("NeedData", {
-            field:['user-info']
-          });
-      },100);
+    },
 
+    componentDidMountByRoot(){
+      this.emit("NeedData", {
+        field:['user-info']
+      });
     },
 
     render: function () {

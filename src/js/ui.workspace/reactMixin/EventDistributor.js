@@ -161,37 +161,70 @@
       // 자신의 상위 Component 가 존재하지 않는경우
       // 자신이 최상위 RootComponent 로써 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키는 메소드를 호출한다.
       if (ownerComponent === null || this.props.isRoot) {
+        console.log('root fire mount', this.getDOMNode(), this);
         this.__fireChildrenRootMounted();
       }
     },
 
     /**
      * __fireChildrenRootMounted
-     * 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키며
-     * 하위컴포넌트에 fireChildrenRootMounted 메소드가 존재 하는경우 하위컴포넌트에게도 자신의 하위컴포넌트에 componentDidMountByRoot이벤트를 발생시키도록 한다.
+     * 자신의 하위 컴포넌트의 componentDidMountByRoot 이벤트를 하위의 하위까지 재귀적으로 발생시킨다.
+     * 순서는 상위가 먼저 발생되고 하위발생 순서이다.
+     * - 하위컴포넌트에 componentDidMountByRoot 메소드가 존재 하는경우 하위컴포넌트에게도 자신의 하위컴포넌트에 componentDidMountByRoot이벤트를 발생시키도록 한다.
      */
     __fireChildrenRootMounted: function() {
       var children = this.__getComponentChildren();
 
       if (children === null || children === undefined) return;
+
       var childKeys = Object.keys(children);
-      for (var i = 0; i < childKeys.length; i++) {
-        var childKey = childKeys[i];
-
-        var childComponent = children[childKey];
 
 
-        if (typeof childComponent._instance.__fireChildrenRootMounted === 'function') {
+      let recursive = function(_renderedComponent) {
 
-          childComponent._instance.__fireChildrenRootMounted();
+        if (typeof _renderedComponent._renderedChildren === 'object') {
+          let childKeys = Object.keys(_renderedComponent._renderedChildren || {});
+          let child;
+          for (let i = 0; i < childKeys.length; i++) {
+            child = _renderedComponent._renderedChildren[childKeys[i]];
+            //console.log(child);
+
+            if (child._instance !== undefined) {
+              if (typeof child._instance.componentDidMountByRoot === 'function') {
+                child._instance.componentDidMountByRoot();
+              }
+
+              recursive(child._renderedComponent);
+            }
+
+
+          }
         }
+      };
 
-        if (typeof this.componentDidMountByRoot === 'function') {
+      recursive(this._reactInternalInstance._renderedComponent._renderedComponent);
+      //
+      // for (var i = 0; i < childKeys.length; i++) {
+      //   var childKey = childKeys[i];
+      //
+      //   var childComponent = children[childKey];
+      //   console.log(childComponent);
+      //
+      //   if (typeof childComponent._instance.__fireChildrenRootMounted === 'function') {
+      //
+      //     childComponent._instance.__fireChildrenRootMounted();
+      //   }
+      //
+      //   if (typeof this.componentDidMountByRoot === 'function') {
+      //
+      //     this.componentDidMountByRoot();
+      //   }
+      // }
 
-          this.componentDidMountByRoot();
-        }
-      }
+
     },
+
+
 
     /**
      * __getComponentChildren
