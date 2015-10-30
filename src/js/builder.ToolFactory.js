@@ -61,7 +61,7 @@ ToolFactory.prototype.addLivingBird = function(_toolKey, _bird) {
 ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   var self = this;
 
-  var result = this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
+  this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
 
     // ToolNest 에서 egg를 실행하여 Tool ReactElement를 얻는다.
     var egg = function(_props) {

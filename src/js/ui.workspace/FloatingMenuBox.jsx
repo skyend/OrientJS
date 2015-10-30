@@ -52,8 +52,7 @@ var MenuItem = {
             };
         },
 
-
-        menuItemRender(_item) {
+        renderMenuItem(_item) {
 
             if (typeof _item === "object") {
                 return (<MenuItem ref={ _item.key }
@@ -65,9 +64,6 @@ var MenuItem = {
             } else if (_item === 'spliter') {
                 return <hr/>
             }
-        },
-
-        componentDidMount() {
         },
 
         render() {
@@ -86,10 +82,10 @@ var MenuItem = {
 
             return (
                 <div className='FloatingMenuBox black' style={styles}>
-                    
+
                     <div className='body'>
                         <ul>
-                     {this.state.memuItems.map(this.menuItemRender)}
+                     {this.state.memuItems.map(this.renderMenuItem)}
                         </ul>
                     </div>
                 </div>

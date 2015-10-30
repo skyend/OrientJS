@@ -956,12 +956,7 @@ var _ = require('underscore');
                     break;
                 }
             }
-
-
           }
-
-
-
         },
 
         componentDidMount() {
@@ -969,7 +964,7 @@ var _ = require('underscore');
             this.iframeStageBoundingRect = this.getCurrentRunningContext().getIFrameStageBoundingRect();
           }
 
-          this.clearAim()
+          this.clearAim();
         },
 
         resize( _rect ){
@@ -1075,9 +1070,6 @@ var _ = require('underscore');
                           )
                         }
                     </div>
-
-
-
 
                     <div className='unboxing-zone' ref='unboxing-zone'>
 

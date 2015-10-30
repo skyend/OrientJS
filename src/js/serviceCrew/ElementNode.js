@@ -962,6 +962,8 @@ class ElementNode {
   preProcessingMeBeforeRender() {
     var self = this;
 
+    // 다시 repeat-n 컨트롤을 처리하기 위해
+    // 반복되어 삽입된 고스트 요소를 필터링하여 자신의 자식 트리를 초기화한다.
     if (!this.isGhost) {
       var refreshChildren = [];
       for (var i = 0; i < this.children.length; i++) {

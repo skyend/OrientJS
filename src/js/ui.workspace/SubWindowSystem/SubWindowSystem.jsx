@@ -144,7 +144,7 @@
         },
 
 
-        mapWindowItem(_subWindowItem) {
+        renderWindowItem(_subWindowItem) {
 
             if (_subWindowItem.empty) {
                 return <div style={{display: 'none'}}/>
@@ -171,7 +171,7 @@
         render() {
             return (
                 <div className='SubWindowSystem'>
-               { this.state.subWindowItems.map(this.mapWindowItem) }
+               { this.state.subWindowItems.map(this.renderWindowItem) }
                 </div>
             );
         }
