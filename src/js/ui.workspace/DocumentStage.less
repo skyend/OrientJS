@@ -34,7 +34,9 @@
     overflow: hidden;
     //    -webkit-transition: width .5s, height .5s, left .5s;
 
-    .noselect;
+    // Safari에서 클릭시 모두 선택되는 버그로 제외함
+    //.noselect;
+
     &.tab-support
     {
         > .tab-switch-panel
