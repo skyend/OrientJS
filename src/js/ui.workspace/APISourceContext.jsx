@@ -304,7 +304,7 @@ var Request = React.createClass({
     }
 
     return <div className='data-render-zone open'>
-      <ICafeResultTable result={this.state.icafeResult}/>
+      <ICafeResultTable result={this.state.icafeResult} propertytypes={ this.props.nodeTypeData.propertytype}/>
     </div>;
   },
 
@@ -794,13 +794,15 @@ var APISourceContext = React.createClass({
       return [this.state.nodeTypeData === null ? <option value=''>loading....</option>: this.state.nodeTypeData.crud.map(function(_crud){
           return <option value={_crud.type}>{_crud.name}</option>
         }),
-        <option value="LIST">List</option>,
+        <option value="LIST">Default List</option>,
+        <option value="READ">Default READ</option>,
         <option value="*">CRUD Free</option>]
 
     } else {
       return [
         <option value="CREATE">Create</option>,
-        <option value="RETRIEVE">Retrieve</option>,
+        <option value="READ">READ</option>,
+        <option value="RETRIEVE">READ</option>,
         <option value="LIST">List</option>,
         <option value="DELETE">Delete</option>,
         <option value="UPDATE">Update</option>,
