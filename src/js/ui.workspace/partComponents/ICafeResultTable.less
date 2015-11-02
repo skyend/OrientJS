@@ -1,0 +1,80 @@
+.ICafeResultTable
+{
+    //
+    width: 100%;
+
+    table
+    {
+        width: 100%;
+
+        border-spacing: 0;
+
+        border: 2px solid transparent;
+
+        > thead
+        {
+            > tr
+            {
+                th
+                {
+                    font-size: 13px;
+
+                    padding: 5px;
+                    //
+
+                    color: #d6d6d6;
+                    border-right: 1px solid #707d8c;
+                    border-bottom: 2px solid #2196f3;
+                    background-color: #1d1f21;
+                    &:last-child
+                    {
+                        border-right: 0;
+                    }
+                    small
+                    {
+                        color: #90bddd;
+                    }
+                }
+            }
+        }
+
+        > tbody
+        {
+            > tr
+            {
+                color: #d6d6d6;
+                background-color: #1d1f21;
+                td
+                {
+                    font-size: 13px;
+
+                    padding: 5px;
+                    //
+
+                    border-right: 1px solid #525b65;
+
+
+
+                    &:last-child
+                    {
+                        border-right: 0;
+                    }
+                }
+
+                &:hover
+                {
+                    background-color: #2f3133;
+                }
+
+                &:nth-child(even)
+                {
+                    background-color: #101317;
+                    &:hover
+                    {
+                        background-color: #2a2f35;
+                    }
+                }
+            }
+        }
+    }
+}

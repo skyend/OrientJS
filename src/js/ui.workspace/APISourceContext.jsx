@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import CheckBox from './partComponents/CheckBox.jsx';
+import ICafeResultTable from './partComponents/ICafeResultTable.jsx';
 
 require('./APISourceContext.less');
 
@@ -11,7 +12,9 @@ var Request = React.createClass({
   getDefaultProps(){
     return {
       request:null,
-      nodeTypeData: null
+      nodeTypeData: null,
+      isInterface: false,
+      isImplemented: false
     }
   },
 
@@ -65,15 +68,59 @@ var Request = React.createClass({
 
 
   testRequest(){
+    let self = this;
     this.setState({loadingData:true, fold:false});
 
     //this.setState({showDataPreviewer:true, loadingData: false});
+    console.log( this.getFields() );
+
+    this.props.contextController.executeRequestTest( this.props.request, this.getFields(),this.getHeaders(), function(_result){
+      console.log( _result);
+
+      self.setState({icafeResult: _result, showDataPreviewer:true, loadingData:false});
+    });
   },
 
   testRequestWithChain(){
     this.setState({loadingDataWithChain:true, fold:false});
 
     //this.setState({showDataPreviewer:true, loadingDataWithChain: false});
+  },
+
+  getHeaders(){
+    return [];
+  },
+
+  getFields(){
+
+    var fields = [];
+    for(let i = 0; i < this.props.request.fieldList.length; i++ ){
+      fields.push( this.props.request.fieldList[i]);
+    }
+
+    if( this.props.request.fieldFillFromNodeType ){
+      if( this.props.nodeTypeData === null ) throw new Error("노드타입데이터가 로드되지 않았습니다.");
+
+      let self = this;
+
+      let propertyTypes = Object.keys(this.props.nodeTypeData.propertytype).map(function(_key){
+        var pt = self.props.nodeTypeData.propertytype[_key];
+
+        switch(pt.pid){
+          case "created":
+          case "changed":
+          case "owner":
+          case "modifier":
+          return false;
+        }
+
+        self.props.nodeTypeData.propertytype[_key].name = pt.pid;
+
+        fields.push( self.props.nodeTypeData.propertytype[_key] );
+      });
+    }
+
+    return fields;
   },
 
   changeURLPattern(){
@@ -158,11 +205,33 @@ var Request = React.createClass({
     this.updateEmit();
   },
 
-  changeFieldTestValue(_index, _e){
-    this.props.request.fieldList[_index].testValue = _e.target.value;
+  changeFieldTestValue(_fieldName, _e){
+    let value = _e.target.value;
 
-    this.updateEmit();
+    this.updateInterfacePlaceholders(this.props.request.name,{
+      target:'testField',
+      name: _fieldName,
+      value:value
+    });
+
+    console.log(_fieldName);
+
+    // this.props.request.fieldList[_index].testValue = _e.target.value;
+    // console.log('here', this);
+    //this.updateEmit();
   },
+
+  // changeTestValueOfField(_fieldName, _value){
+  //   //this.props.request.fieldTestValues[_fieldName] = _value;
+  //
+  //   this.updateInterfacePlaceholders(this.props.request.name,{
+  //     target:'testField',
+  //     name: _fieldName,
+  //     value:_value
+  //   });
+  //
+  //   this.updateEmit();
+  // },
 
   addNewHeader(){
     if( this.interfaceCheck() ) return;
@@ -198,17 +267,7 @@ var Request = React.createClass({
     this.updateEmit();
   },
 
-  changeTestValueOfField(_fieldName, _value){
-    //this.props.request.fieldTestValues[_fieldName] = _value;
 
-    this.updateInterfacePlaceholders(this.props.request.name,{
-      target:'testField',
-      name: _fieldName,
-      value:_value
-    });
-
-    this.updateEmit();
-  },
 
   fillFromPropertytypesToggle(_value){
     if( this.interfaceCheck() ) return false;
@@ -226,13 +285,15 @@ var Request = React.createClass({
   },
 
   updateEmit(){
+
     this.emit("UpdatedRequest",{
-      request: this.props.request
+      request: this.props.request,
+      isInterface: this.props.isImplemented
     });
   },
 
   renderWithCheckEditable( _buttonElement ){
-    if( this.props.interface !== undefined ) return '';
+    if( this.props.isImplemented ) return '';
 
     return _buttonElement;
   },
@@ -243,7 +304,7 @@ var Request = React.createClass({
     }
 
     return <div className='data-render-zone open'>
-      aa
+      <ICafeResultTable result={this.state.icafeResult}/>
     </div>;
   },
 
@@ -279,7 +340,7 @@ var Request = React.createClass({
         <i className='fa fa-long-arrow-right'/>
         <input placeholder="Field value or resolver" value={"${"+_pt.pid+"}"}/>
         <i className='fa fa-ellipsis-v'/>
-        <input placeholder="Test value" value={testFieldPlaceHolders[_pt.pid]} onChange={function(_e){ self.changeTestValueOfField(_pt.pid, _e.target.value) }}/>
+        <input placeholder="Test value" value={testFieldPlaceHolders[_pt.pid]} onChange={function(_e){  self.changeFieldTestValue(_pt.pid,_e); }}/>
       </div>
     })
   },
@@ -307,16 +368,20 @@ var Request = React.createClass({
 
   renderRows(){
     if( this.state.fold ) return '';
-    var self = this;
+    let self = this;
+    let testFieldPlaceHolders;
+
+    if( !this.props.isInterface ) testFieldPlaceHolders = this.props.contextController.getRequestTestFieldPlaceholder( this.props.request.name );
 
     return [<div className='row'>
       <label> URL Pattern </label>
       <div className='request-pattern'>
         {this.renderURLPatternInput()}
       </div>
-      <select onChange={this.changeCRUD} value={this.props.request.crud} ref='crud-selector'>
+      {this.renderWithCheckEditable(<select onChange={this.changeCRUD} value={this.props.request.crud.toUpperCase()} ref='crud-selector'>
         { this.props.crudOptions }
-      </select>
+      </select>)}
+
     </div>,
     <div className='row'>
       <label> Method </label>
@@ -336,6 +401,7 @@ var Request = React.createClass({
           </div>
         </div>
         { this.props.request.headerList.map( function(_header, _i){
+
           return <div className='field'>
             <input placeholder="Header name (a-z,_,-)" value={_header.name} onChange={function(_e){ self.changeHeaderName(_i,_e); }}/>
             <i className='fa fa-long-arrow-right'/>
@@ -370,8 +436,8 @@ var Request = React.createClass({
             <input placeholder="Field name (a-z,_,-)" value={_field.name} onChange={function(_e){ self.changeFieldName(_i,_e); }}/>
             <i className='fa fa-long-arrow-right'/>
             <input placeholder="Field value or resolver" value={_field.value} onChange={function(_e){ self.changeFieldValue(_i,_e); }}/>
-            <i className='fa fa-ellipsis-v'/>
-            <input placeholder="Test value" value={_field.testValue} onChange={function(_e){ self.changeFieldTestValue(_i,_e); }}/>
+
+            {self.props.isInterface? '':[<i className='fa fa-ellipsis-v'/>,<input placeholder="Test value" value={testFieldPlaceHolders[_field.name]} onChange={function(_e){ self.changeFieldTestValue(_field.name,_e); }}/>]}
             {self.renderWithCheckEditable(<button onClick={function(){self.deleteField(_i)}}>Delete</button>)}
           </div>
         })}
@@ -407,7 +473,7 @@ var Request = React.createClass({
           <i className='fa fa-plug'/> { this.props.interface.title }
         </div>:''}
 
-        <button onClick={this.deleteRequest}> Delete </button>
+        {this.renderWithCheckEditable(<button onClick={this.deleteRequest}> Delete </button>)}
         <button onClick={this.testRequest}> <i className={'fa fa-refresh '+ (this.state.loadingData? "fa-spin":'')}/> Test </button>
         <button onClick={this.testRequestWithChain}> <i className={'fa fa-refresh '+ (this.state.loadingDataWithChain? "fa-spin":'')}/> Test With Chain</button>
 
@@ -502,6 +568,8 @@ var APISourceContext = React.createClass({
   },
 
   onThrowCatcherUpdatedRequest(_eventData){
+    if( _eventData.isImplemented ) return; // implemented 의 request 는 저장할 수 없다.
+
     this.props.contextController.updateRequest(_eventData.request);
 
     this.forceUpdate();
@@ -520,6 +588,10 @@ var APISourceContext = React.createClass({
       default:
 
     }
+
+    // this.props.contextController.changedContent();
+
+    this.forceUpdate();
   },
 
   onThrowCatcherDeleteRequest(_eventData){
@@ -722,16 +794,16 @@ var APISourceContext = React.createClass({
       return [this.state.nodeTypeData === null ? <option value=''>loading....</option>: this.state.nodeTypeData.crud.map(function(_crud){
           return <option value={_crud.type}>{_crud.name}</option>
         }),
-        <option value="list">List</option>,
+        <option value="LIST">List</option>,
         <option value="*">CRUD Free</option>]
 
     } else {
       return [
-        <option value="create">Create</option>,
-        <option value="retrieve">Retrieve</option>,
-        <option value="list">List</option>,
-        <option value="delete">Delete</option>,
-        <option value="update">Update</option>,
+        <option value="CREATE">Create</option>,
+        <option value="RETRIEVE">Retrieve</option>,
+        <option value="LIST">List</option>,
+        <option value="DELETE">Delete</option>,
+        <option value="UPDATE">Update</option>,
         <option value="*">CRUD Free</option>
       ]
     }
@@ -778,14 +850,14 @@ var APISourceContext = React.createClass({
             return Object.keys(_interface.requests||{}).map(function(_requestKey){
                 var request = _interface.requests[_requestKey];
 
-                return <Request request={request} interface={_interface} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}/>
+                return <Request request={request} interface={_interface} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}} isImplemented={true}/>
             });
           })}
       </div> ,
       <div className='request-list'>
       { this.props.contextController.requestsList.map(function(_request){
 
-        return <Request request={_request} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData}/>
+        return <Request request={_request} contextController={self.props.contextController} crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData} isInterface={self.props.contextType === 'apiInterface'}/>
       })}
 
     </div>];

@@ -251,6 +251,11 @@ class ElementNode {
     // RealElement의 ___en속성에 this(ElementNode) 매핑
     this.realElement.___en = this;
 
+    if (typeof this.realElement.setAttribute === 'function') {
+      this.realElement.setAttribute('___id___', this.id);
+    }
+
+
     // RealElement에 ElementNode를 가져올 수 있는 메소드 매핑
     this.realElement.getElementNode = function() {
       return this.___en;
@@ -1109,9 +1114,9 @@ class ElementNode {
 
             realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
 
-            if (this.getRefferenceType() === 'react') {
-              refferenceElementNode.renderReact();
-            }
+            // if (this.getRefferenceType() === 'react') {
+            //   refferenceElementNode.renderReact();
+            // }
           } else {
             console.warn("참조중인 id의 노드가 존재하지 않습니다.");
           }

@@ -72,12 +72,14 @@ var HeadToolBar = React.createClass({
     },
 
     componentDidMountByRoot(){
+      console.log('Fire!!!');
       this.emit("NeedData", {
         field:['user-info']
       });
     },
 
     render: function () {
+      console.log( this.state);
         var saveDisabled = true;
         var undoDisabled = true;
         var redoDisabled = true;

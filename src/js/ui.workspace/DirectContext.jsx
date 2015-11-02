@@ -573,7 +573,6 @@ var DirectContext = React.createClass({
   },
 
   render(){
-    console.log('Rendering DirectContext');
     var iframeStageWidth = (this.state.stageWidth > this.props.width)? this.props.width:this.state.stageWidth;
     var iframeStageHeight= (this.state.stageHeight > this.props.height)? this.props.height:this.state.stageHeight;
     iframeStageWidth -= 10;

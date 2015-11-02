@@ -1,10 +1,20 @@
 import request from 'superagent';
 import _ from "underscore";
 
+let instance = null;
 
 class ICEServer {
+
+  static getInstance() {
+    if (instance !== null) {
+      return instance;
+    }
+    console.error("ICEServer 인스턴스가 생성되지 않은 상태입니다. 잘못된 위치에서 호출 하였습니다.");
+  }
+
   constructor(_host) {
     this.host = _host;
+    instance = this;
   }
 
   // getPropertytypesByNid(_nid, _complete) {
@@ -133,15 +143,39 @@ class ICEServer {
               map[parentTid].children = [];
             }
 
-
             map[parentTid].children.push(item);
           }
         }
 
-        //console.log(result2);
 
         _complete(err, result2);
       });
+  }
+
+  requestNodeType(_method, _nt_tid, _crud, _headerData, _fieldsData, _end) {
+    var fields = {};
+    console.log('field Datas', _fieldsData);
+
+    _fieldsData.map(function(_field) {
+      fields[_field.name] = _field.testValue || _field.value;
+    });
+
+
+    if (_method === 'get' || _method == undefined) {
+      request.get(this.host + "/api/" + _nt_tid + "/" + _crud + ".json")
+        .query(fields)
+        .end(function(err, res) {
+          if (res === undefined) {
+            _end({
+              result: 'fail'
+            })
+          } else {
+            _end(res.body);
+          }
+        });
+    }
+
+
   }
 }
 

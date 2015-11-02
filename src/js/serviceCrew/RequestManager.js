@@ -40,7 +40,7 @@ class RequestManager {
   deleteRequest(_request) {
     let reqName = _request.name;
     delete this.requests[reqName];
-
+    console.log(this.requests);
     this.changedContent();
   }
 }

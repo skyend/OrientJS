@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import RequestManager from './RequestManager.js';
+import ICEServer from '../builder.ICEServer.js';
 
 class ApiSourceContextController extends RequestManager {
   constructor(_apisource, _session, _serviceManager) {
@@ -95,10 +96,16 @@ class ApiSourceContextController extends RequestManager {
     this.apiSource.placeholders[_requestName] = this.apiSource.placeholders[_requestName] || {};
     this.apiSource.placeholders[_requestName]['testFields'] = this.apiSource.placeholders[_requestName]['testFields'] || {};
     this.apiSource.placeholders[_requestName]['testFields'][_name] = _value;
+
+    this.changedContent();
   }
 
   getRequestTestFieldPlaceholder(_requestName) {
     return ((this.apiSource.placeholders[_requestName] || {})['testFields'] || {});
+  }
+
+  getRequestHeaderPlaceholder(_requestName) {
+    return ((this.apiSource.placeholders[_requestName] || {})['testHeaders'] || {});
   }
 
   needFollowInterfacesState() {
@@ -121,6 +128,36 @@ class ApiSourceContextController extends RequestManager {
     return this.apiSource['interfaces'] || [];
   }
 
+  executeRequestTest(_request, _fields, _headers, _end) {
+    console.log("Request ", _request);
+
+    let fields = _fields || [];
+    let headers = _headers || [];
+    let testValueSet = this.getRequestTestFieldPlaceholder(_request.name);
+    let testHeaderValueSet = this.getRequestHeaderPlaceholder(_request.name);
+    console.log(testValueSet);
+    fields = fields.map(function(_field) {
+
+      let cloneField = _.clone(_field);
+
+      if (cloneField.testValue === undefined || cloneField.testValue === '') {
+        cloneField.testValue = testValueSet[_field.name] || '';
+      }
+
+      return cloneField;
+    });
+
+    console.log(_request);
+
+
+    ICEServer.getInstance().requestNodeType(_request.method, this.nodeTypeId, _request.crud, headers, fields, function(_result) {
+      console.log(_result);
+      _end(_result);
+    });
+
+
+
+  }
 
 
 }

@@ -161,8 +161,12 @@
       // 자신의 상위 Component 가 존재하지 않는경우
       // 자신이 최상위 RootComponent 로써 자신의 하위 컴포넌트에 componentDidMountByRoot이벤트를 발생시키는 메소드를 호출한다.
       if (ownerComponent === null || this.props.isRoot) {
-        console.log('root fire mount', this.getDOMNode(), this);
-        this.__fireChildrenRootMounted();
+        let self = this;
+
+        setTimeout(function() {
+          self.__fireChildrenRootMounted();
+        }, 1);
+
       }
     },
 
