@@ -554,11 +554,13 @@ UI.prototype.onThrowCatcherCreateNewAPIInterface = function(_eventData) {
 };
 
 UI.prototype.onThrowCatcherNeedICEHost = function(_eventData) {
-  var self = this;
-
   var iceHost = this.app.serviceManager.iceHost;
 
-  self.toolFactory.storeToolState("ServiceResources", {
+  this.toolFactory.storeToolState("ServiceResources", {
+    iceHost: iceHost
+  });
+
+  this.toolFactory.storeToolState("APISourcePalette", {
     iceHost: iceHost
   });
 };
@@ -570,6 +572,10 @@ UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
     self.toolFactory.storeToolState("ServiceResources", {
       apisourceList: _result.list
     });
+
+    self.toolFactory.storeToolState("APISourcePalette", {
+      apisourceList: _result.list
+    });
   });
 };
 
@@ -578,6 +584,10 @@ UI.prototype.onThrowCatcherUpdateAPIInterfaceList = function(_eventData) {
 
   this.app.serviceManager.getApiinterfaceList(function(_result) {
     self.toolFactory.storeToolState("ServiceResources", {
+      apiinterfaceList: _result.list
+    });
+
+    self.toolFactory.storeToolState("APISourcePalette", {
       apiinterfaceList: _result.list
     });
   });
