@@ -1,21 +1,18 @@
-
 require('./ElementPathNavigator.less');
 var React = require("react");
 
 var ElementPathNavigator = React.createClass({
 
-
-    render() {
-
-        return (
-            <div className='ElementPathNavigator theme-default' style={{height:this.props.height}}>
-                <ul>
-
-                </ul>
-            </div>
-        )
-    }
+  render () {
+    let style = {
+      height: this.props.height
+    };
+    return (
+      <div className='ElementPathNavigator theme-default' style={style}>
+        <ul></ul>
+      </div>
+    )
+  }
 });
-
 
 module.exports = ElementPathNavigator;

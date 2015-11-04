@@ -4,30 +4,34 @@
 
   var ToolContainer = React.createClass({
     mixins: [require('./reactMixin/EventDistributor.js')],
-    getInitialState() {
+    getInitialState () {
       return {}
     },
 
-    onMouseDownToHeader() {
+    onMouseDownToHeader () {
 
-// GlobalDrag 자원 획득
-// 글로벌 드래그 자동 반환 활성화
-      app.ui.occupyGlobalDrag(this, true);
-      app.ui.enableGlobalDrag();
-      app.ui.toMouseDawn();
+      // GlobalDrag 자원 획득
+      // 글로벌 드래그 자동 반환 활성화
+      app.ui
+        .occupyGlobalDrag(this, true);
+      app.ui
+        .enableGlobalDrag();
+      app.ui
+        .toMouseDawn();
     },
 
-    onGlobalDragStartFromUI(_e) {
-//console.log('panelContainer drag start');
+    onGlobalDragStartFromUI (_e) {
+      //console.log('panelContainer drag start');
     },
 
-    onGlobalDragFromUI(_e) {
+    onGlobalDragFromUI (_e) {
       if (typeof this.prevMouseY !== 'undefined') {
         var selfDom = this.getDOMNode();
         var ymoveStep = this.prevMouseY - _e.clientY;
         selfDom.style.height = (parseInt(selfDom.offsetHeight) + ymoveStep) + 'px';
 
-        this.props.resizeMe();
+        this.props
+          .resizeMe();
 
       } else {
         this.prevMouseY = _e.clientY;
@@ -36,10 +40,10 @@
       this.prevMouseY = _e.clientY;
     },
 
-    onGlobalDragStopFromUI(_e) {
+    onGlobalDragStopFromUI (_e) {
 
-/* Global Drag 자원 자동 반환 */
-//this.emit('StoppedDrag', {}, _e, "MouseEvent");
+      /* Global Drag 자원 자동 반환 */
+      //this.emit('StoppedDrag', {}, _e, "MouseEvent");
     },
 
     render: function() {
@@ -78,4 +82,5 @@
 
   module.exports = ToolContainer;
 
-})();
+})
+();

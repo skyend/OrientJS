@@ -1,40 +1,41 @@
-(function () {
-    require('./VNodePathNavigator.less');
-    var React = require("react");
+import './VNodePathNavigator.less';
+import React from "react";
 
-    var VNodePathNavigator = React.createClass({
-  
+var VNodePathNavigator = React.createClass({
 
-        renderVNodePathItem( _vnode ){
+  renderVNodePathItem (_vnode) {
 
-            var classElement;
-            if( typeof _vnode.classes === 'string' ){
-              classElement = <span className='class'> {_vnode.classes} </span>
-            }
+    var classElement;
+    if (typeof _vnode.classes === 'string') {
+      classElement = <span className='class'>
+        {_vnode.classes}
+      </span>
+    }
 
+    return (
+      <li>
+        <span className='tag'>{_vnode.name}</span>
+        {classElement}
+      </li>
+    )
+  },
 
+  render () {
+    let style = {
+      height: this.props.height
+    };
 
-            return (
-              <li>
-                <span className='tag'>{_vnode.name}</span>
-                { classElement }
-              </li>
-            )
-        },
+    return (
+      <div className='VNodePathNavigator theme-default' style={style}>
+        <ul>
+          {this
+            .props
+            .vnodePathArray
+            .map(this.renderVNodePathItem)}
+        </ul>
+      </div>
+    )
+  }
+});
 
-        render() {
-
-            return (
-                <div className='VNodePathNavigator theme-default' style={{height:this.props.height}}>
-                    <ul>
-                        { this.props.vnodePathArray.map(this.renderVNodePathItem) }
-                    </ul>
-                </div>
-            )
-        }
-    });
-
-
-    module.exports = VNodePathNavigator;
-
-})();
+export default VNodePathNavigator;

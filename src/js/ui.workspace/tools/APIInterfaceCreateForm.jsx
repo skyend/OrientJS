@@ -7,19 +7,22 @@ import GridBox from "../partComponents/GridBox.jsx";
 var APIInterfaceCreateForm = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
 
-  getInitialState(){
+  getInitialState () {
     return {
-      message:'생성할 API Interface 의 이름을 정해주세요.',
-      savedTitle:''
+      message: '생성할 API Interface 의 이름을 정해주세요.',
+      savedTitle: ''
     }
   },
 
-  create(){
-    var title = this.refs['title'].getValue();
+  create () {
+    var title = this.refs['title']
+      .getValue();
 
-    if( title === '' ){
-      this.setState({message:"Title을 입력해 주세요."});
-      return ;
+    if (title === '') {
+      this.setState({
+        message: "Title을 입력해 주세요."
+      });
+      return;
     }
 
     this.emit("CreateNewAPIInterface", {
@@ -27,32 +30,29 @@ var APIInterfaceCreateForm = React.createClass({
     });
   },
 
-  onThrowCatcherChangedValue(){},
+  onThrowCatcherChangedValue () {},
 
-  cancel(){
+  cancel () {
     this.emit("Close");
   },
 
-  successInterfaceCreate(){
+  successInterfaceCreate () {
     this.emit("Close");
     this.emit("UpdateAPIInterfaceList");
   },
 
-  failInterfaceCreate(){
+  failInterfaceCreate () {
     alert("Fail create interface");
   },
 
-
-  render(){
+  render () {
     var classes = ['APIInterfaceCreateForm'];
 
     return (
       <div className={classes.join(' ')}>
 
         <div className='fields'>
-          <HorizonField fieldName='title' title='Interface Title' theme="dark" enterable={true} type='input' onChange={ this.onChange }
-                       defaultValue={this.state.savedTitle} height={40} ref='title'
-                       nameWidth={150}/>
+          <HorizonField fieldName='title' title='Interface Title' theme="dark" enterable={true} type='input' onChange={this.onChange} defaultValue={this.state.savedTitle} height={40} ref='title' nameWidth={150}/>
 
         </div>
 
@@ -63,8 +63,11 @@ var APIInterfaceCreateForm = React.createClass({
         <div className='buttons'>
           <GridBox placements={[
             [
-              <OutlineButton color='white' title='Cancel' onClick={this.cancel}/>,
-              <OutlineButton color='white' title='Create' onClick={this.create}/>,
+              < OutlineButton color = 'white' title = 'Cancel' onClick = {
+                this.cancel
+              } />, < OutlineButton color = 'white' title = 'Create' onClick = {
+                this.create
+              } />
             ]
           ]} width={150} height={50}/>
 

@@ -9,99 +9,114 @@ import SignIn from './SignIn/SignIn.jsx';
 //console.log(avatarImage);
 
 var Enterance = React.createClass({
-    mixins:[EventDistributor],
+  mixins: [EventDistributor],
 
-    /** Initial **/
-    getDefaultProps(){
-        return {
-          defaultMainType:'signIn'
-        };
-    },
+  /** Initial **/
+  getDefaultProps () {
+    return {
+      defaultMainType: 'signIn'
+    };
+  },
 
-    getInitialState(){
+  getInitialState () {
 
-        return {
-          mainType:this.props.defaultMainType
-        };
-    },
+    return {
+      mainType: this.props.defaultMainType
+    };
+  },
 
-    /** Event Catch **/
-    onThrowCatcherReturnSignIn(){
-      this.loadingMain();
-      this.setState({'mainType':'signin'});
-    },
+  /** Event Catch **/
+  onThrowCatcherReturnSignIn () {
+    this.loadingMain();
+    this.setState({
+      'mainType': 'signin'
+    });
+  },
 
-    onThrowCatcherGotoSignUp(){
-      this.loadingMain();
-      this.setState({'mainType':'signup'});
-    },
+  onThrowCatcherGotoSignUp () {
+    this.loadingMain();
+    this.setState({
+      'mainType': 'signup'
+    });
+  },
 
-    onThrowCatcherReturnSignInWithAccountInfo(){
-      this.loadingMain();
-      this.setState({'mainType':'signin'});
-    },
+  onThrowCatcherReturnSignInWithAccountInfo () {
+    this.loadingMain();
+    this.setState({
+      'mainType': 'signin'
+    });
+  },
 
-    onThrowCatcherSuccessSignIn(){
-      this.loadingMain();
-      this.setState({'mainType':'lobby'});
-    },
+  onThrowCatcherSuccessSignIn () {
+    this.loadingMain();
+    this.setState({
+      'mainType': 'lobby'
+    });
+  },
 
-    /** Effect **/
-    loadingMain(){
-      document.body.setAttribute('class', 'is-loading');
-    },
+  /** Effect **/
+  loadingMain () {
+    document.body
+      .setAttribute('class', 'is-loading');
+  },
 
-    showMain(){
-      setTimeout(function(){document.body.setAttribute('class', '');}, 500);
-    },
+  showMain () {
+    setTimeout(function() {
+      document.body
+        .setAttribute('class', '');
+    }, 500);
+  },
 
-    /** over Life cycle **/
-    componentDidUpdate(){
-      this.showMain();
-    },
+  /** over Life cycle **/
+  componentDidUpdate () {
+    this.showMain();
+  },
 
-    componentWillMount(){
-      CSS.use();
-      this.loadingMain();
-    },
+  componentWillMount () {
+    CSS.use();
+    this.loadingMain();
+  },
 
-    componentDidMount(){
-      this.showMain();
-    },
+  componentDidMount () {
+    this.showMain();
+  },
 
-    componentWillUnmount(){
-      CSS.unuse();
-    },
+  componentWillUnmount () {
+    CSS.unuse();
+  },
 
-    /** Renders **/
-    renderMain(){
+  /** Renders **/
+  renderMain () {
 
-      switch(this.state.mainType.toLowerCase()){
-        case "signin":
-          return <SignIn/>
-        case "signup":
-          return <SignUp/>
-        case "lobby":
-          return <Lobby/>
-      }
-    },
-
-    render(){
-      return (
-
-        <div id="wrapper">
-  					{ this.renderMain()}
-  					<footer id="footer">
-  						<ul className="copyright">
-  							<li>&copy; I-ON Communications SDP headquarters.</li>
-                <li>version {window.gelateriaVersion}</li>
-  							<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-  						</ul>
-  					</footer>
-  			</div>
-
-      )
+    switch (this.state.mainType.toLowerCase()) {
+      case "signin":
+        return <SignIn/>
+      case "signup":
+        return <SignUp/>
+      case "lobby":
+        return <Lobby/>
     }
+  },
+
+  render () {
+    return (
+
+      <div id="wrapper">
+        {this.renderMain()}
+        <footer id="footer">
+          <ul className="copyright">
+            <li>&copy; I-ON Communications SDP headquarters.</li>
+            <li>version
+              {window.gelateriaVersion}</li>
+            <li>Design:
+              <a href="http://html5up.net">HTML5 UP</a>
+            </li>
+          </ul>
+        </footer>
+      </div>
+
+    )
+  }
 });
 
 /*

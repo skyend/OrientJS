@@ -262,13 +262,12 @@
         },
 
         componentDidMount(){
-          var self = this;
 
-          self.emit("NeedICEHost");
-          self.emit("NeedDocumentList");
-          self.emit("NeedPageList");
-          self.emit("UpdateAPISourceList");
-          self.emit("UpdateAPIInterfaceList");
+          this.emit("NeedICEHost");
+          this.emit("NeedDocumentList");
+          this.emit("NeedPageList");
+          this.emit("UpdateAPISourceList");
+          this.emit("UpdateAPIInterfaceList");
         },
 
         render() {

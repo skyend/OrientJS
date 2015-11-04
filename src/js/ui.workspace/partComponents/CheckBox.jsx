@@ -2,33 +2,39 @@ import React from "react";
 import "./CheckBox.less";
 
 var CheckBox = React.createClass({
-  getDefaultProps(){
-      return {
-        value:false,
-      }
+  getDefaultProps () {
+    return {
+      value: false
+    }
   },
 
-  getInitialState(){
+  getInitialState () {
     return {
       value: this.props.value
     }
   },
 
-  toggle(){
+  toggle () {
     var nextValue = !this.state.value;
-    this.setState({value:nextValue});
+    this.setState({
+      value: nextValue
+    });
 
-    if( typeof this.props.onToggle === 'function' ){
-        if(this.props.onToggle(nextValue) === false ){
-          this.setState({value:!nextValue});
-        }
+    if (typeof this.props.onToggle === 'function') {
+      if (this.props.onToggle(nextValue) === false) {
+        this.setState({
+          value: !nextValue
+        });
+      }
     }
   },
 
-  render(){
+  render () {
     return <div className='CheckBox' onClick={this.toggle}>
-      { this.state.value? <i className='fa fa-check'/>:''}
-    </div>
+        {this.state.value
+          ? <i className='fa fa-check'/>
+          : ''}
+      </div>
   }
 })
 

@@ -6,93 +6,102 @@ import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import './DirectContext.less';
 import Returns from "../Returns.js";
 
-
 var DirectContext = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],
-  getInitialState(){
+  getInitialState () {
     return {
-      stageWidth:720,
-      stageHeight:480,
+      stageWidth: 720,
+      stageHeight: 480,
       elementNavigatorX: 0,
       elementNavigatorY: 0,
       showElementNavigator: false,
-      sizing:'desktop'
+      sizing: 'desktop'
     };
   },
 
-  goingToContextStop(){
-    if( this.state.showElementNavigator){
+  goingToContextStop () {
+    if (this.state.showElementNavigator) {
       this.closeElementNavigator();
     }
 
-
-    this.contextController.pause();
+    this.contextController
+      .pause();
 
   },
 
-  goingToContextRunning(){
-    this.contextController.resume();
+  goingToContextRunning () {
+    this.contextController
+      .resume();
 
-    if( this.props.contextType ===  "document" ){
+    if (this.props.contextType === "document") {
       console.log(this.contextController.document);
 
       this.emit("DocumentFocused", {
-        document:this.contextController.document
+        document: this.contextController.document
       });
     }
 
   },
 
-  feedSaveStateChange(){
+  feedSaveStateChange () {
     this.emit("ChangedSaveState");
   },
 
-  appendElementToBody( _element ){
-    return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
+  appendElementToBody (_element) {
+    return this.getIFrameStage()
+      .insertElementToInLastBySelector('body', _element);
   },
 
-  isDropableToRoot( _domElement ){
+  isDropableToRoot (_domElement) {
 
     // 해당 ContextController에 메소드로 확인.
-    return this.getContextControllerFromDOMElement(_domElement).isDropableToRoot();
+    return this.getContextControllerFromDOMElement(_domElement)
+      .isDropableToRoot();
   },
 
-
-  deployComponentToInLast( _vid, _component ){
+  deployComponentToInLast (_vid, _component) {
     var returns;
 
-    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
+    var dropTargetDOMElement = this.getIFrameStage()
+      .getElementByVid(_vid);
 
-    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
+    if (typeof dropTargetDOMElement.getElementNode === 'function') {
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
 
       returns = baseElementNode.isDropableComponent("appendChild");
 
-      if( returns.result === true ){
+      if (returns.result === true) {
 
-        this.props.contextController.modifyElementTree(baseElementNode, "appendComponent", _component);
+        this.props
+          .contextController
+          .modifyElementTree(baseElementNode, "appendComponent", _component);
 
       } else {
         this.noticeFailureReturns(returns);
       }
     } else {
-      this.props.contextController.modifyElementTree(null, "appendComponent", _component);
+      this.props
+        .contextController
+        .modifyElementTree(null, "appendComponent", _component);
     }
   },
 
-  deployComponentToBefore( _vid, _component ){
-    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
+  deployComponentToBefore (_vid, _component) {
+    var dropTargetDOMElement = this.getIFrameStage()
+      .getElementByVid(_vid);
 
-    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
+    if (typeof dropTargetDOMElement.getElementNode === 'function') {
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
 
       var returns = baseElementNode.isDropableComponent("appendChild");
 
-      if( returns.result === true ){
+      if (returns.result === true) {
 
-        this.props.contextController.modifyElementTree(baseElementNode, "insertBeforeComponent", _component);
+        this.props
+          .contextController
+          .modifyElementTree(baseElementNode, "insertBeforeComponent", _component);
       } else {
         this.noticeFailureReturns(returns);
       }
@@ -101,17 +110,20 @@ var DirectContext = React.createClass({
     }
   },
 
-  deployComponentToAfter( _vid, _component ){
-    var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
+  deployComponentToAfter (_vid, _component) {
+    var dropTargetDOMElement = this.getIFrameStage()
+      .getElementByVid(_vid);
 
-    if( typeof dropTargetDOMElement.getElementNode === 'function' ){
+    if (typeof dropTargetDOMElement.getElementNode === 'function') {
 
       var baseElementNode = dropTargetDOMElement.getElementNode();
 
       var returns = baseElementNode.isDropableComponent("appendChild");
 
-      if( returns.result === true ){
-        this.props.contextController.modifyElementTree(baseElementNode, "insertAfterComponent", _component);
+      if (returns.result === true) {
+        this.props
+          .contextController
+          .modifyElementTree(baseElementNode, "insertAfterComponent", _component);
       } else {
         this.noticeFailureReturns(returns);
       }
@@ -120,8 +132,8 @@ var DirectContext = React.createClass({
     }
   },
 
-  noticeFailureReturns( _returns ){
-    switch( _returns.reasonCode){
+  noticeFailureReturns (_returns) {
+    switch (_returns.reasonCode) {
       case "has_not_parent":
         this.errorNotice("컴포넌트 배치 실패", "배치가능한 부모가 없습니다.");
         break;
@@ -143,7 +155,7 @@ var DirectContext = React.createClass({
    * @Param _elementNode : ElementNode // 찾고자 하는 ContextController에서 사용되는 ElementNode
    * @Return DocumentContextController : DocumentContextController
    */
-  getContextControllerByElementNode( _elementNode ){
+  getContextControllerByElementNode (_elementNode) {
     return _elementNode.getMyContextControllerOfDocument();
   },
 
@@ -152,13 +164,13 @@ var DirectContext = React.createClass({
    * DOMElement를 이용하여 ContextController를 찾는다 하지만 지정된 DOMElement로 찾지 못할 경우 부모노드로 내려가 찾고
    * 그래도 찾지 못할 경우에는 directContext에 지정된 ContextController를 반환한다.
    */
-  getContextControllerFromDOMElement(_sourceDOMElement){
+  getContextControllerFromDOMElement (_sourceDOMElement) {
     var funcFind = false;
     var dropTarget = _sourceDOMElement;
 
     // function을 찾으면 루프탈출
-    while( dropTarget !== null ){
-      if( typeof dropTarget.getElementNode === 'function' ){
+    while (dropTarget !== null) {
+      if (typeof dropTarget.getElementNode === 'function') {
         funcFind = true;
         break;
       }
@@ -166,119 +178,120 @@ var DirectContext = React.createClass({
       dropTarget = dropTarget.parentNode;
     }
 
-
     // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
     // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
-    if( funcFind ){
+    if (funcFind) {
       return this.getContextControllerByElementNode(dropTarget.getElementNode());
     }
 
     return this.contextController;
   },
 
-  failToDrop(){
-    this.errorNotice(
-      "해당 컴포넌트를 삽입 할 수 없습니다.",
-      "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다."
-    );
+  failToDrop () {
+    this.errorNotice("해당 컴포넌트를 삽입 할 수 없습니다.", "드랍하고자 하는 ElementNode에는 해당 컴포넌트를 허용하지 않습니다.");
 
-    this.errorNotice(
-      "component 삽입실패",
-      "영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다."
-    );
+    this.errorNotice("component 삽입실패", "영역을 확인하여 주세요. 최초에 RootWrapper를 삽입하시는것을 권장합니다.");
 
   },
 
-
-
-
-
-  copyElementJSON(){
-    var data = this.state.selectedElementNode.export(false);
+  copyElementJSON () {
+    var data = this.state
+      .selectedElementNode
+      .export(false);
 
     this.copiedElementNodeData = data;
 
     this.infoNotice("복사 성공", this.state.selectedElementNode.getId() + " ElementNode 가 성공적으로 복사되었습니다.")
   },
 
-  pasteElementIn(){
-    if( this.copiedElementNodeData === undefined ) {
+  pasteElementIn () {
+    if (this.copiedElementNodeData === undefined) {
       this.errorNotice('붙여넣기 실패', '이전에 복사된 내용이 없습니다.');
       return;
     }
 
     var elementNode = this.state.selectedElementNode;
 
-    this.props.contextController.modifyElementTree(elementNode.id, 'pasteIn', this.copiedElementNodeData);
+    this.props
+      .contextController
+      .modifyElementTree(elementNode.id, 'pasteIn', this.copiedElementNodeData);
   },
 
-  removeElement(){
+  removeElement () {
     let elementNode = this.state.selectedElementNode;
 
-    this.props.contextController.modifyElementTree(elementNode.id, 'remove');
+    this.props
+      .contextController
+      .modifyElementTree(elementNode.id, 'remove');
 
-    this.setState({showElementNavigator:false});
+    this.setState({
+      showElementNavigator: false
+    });
   },
 
-  cloneElement(){
+  cloneElement () {
     var elementNode = this.state.selectedElementNode;
-    var contextController = this.getContextControllerFromDOMElement( elementNode.getRealDOMElement());
+    var contextController = this.getContextControllerFromDOMElement(elementNode.getRealDOMElement());
 
-    contextController.modifyElementTree(elementNode, "cloneAndInsertAfter" );
+    contextController.modifyElementTree(elementNode, "cloneAndInsertAfter");
   },
 
-  editElement(){
+  editElement () {
     this.emit('OpenElementEditTool');
   },
 
-  jumpToParentElement(){
-    var parent = this.state.selectedElementNode.getParent();
+  jumpToParentElement () {
+    var parent = this.state
+      .selectedElementNode
+      .getParent();
 
-    if( parent === null ){
-      this.errorNotice(
-        "상위 노드로 점프 실패.",
-        "더이상 상위노드가 존재하지 않습니다."
-      );
+    if (parent === null) {
+      this.errorNotice("상위 노드로 점프 실패.", "더이상 상위노드가 존재하지 않습니다.");
       return;
     }
 
     var parentRealDOMElement = parent.getRealDOMElement();
 
-    this.selectElement( parentRealDOMElement,  parentRealDOMElement.getBoundingClientRect() );
+    this.selectElement(parentRealDOMElement, parentRealDOMElement.getBoundingClientRect());
   },
 
-  closeElementNavigator(){
+  closeElementNavigator () {
 
     this.setState({
-      showElementNavigator:false,
-      selectedElement:null});
+      showElementNavigator: false,
+      selectedElement: null
+    });
 
-
-      this.emit("CancelSelectElementNode");
+    this.emit("CancelSelectElementNode");
   },
 
-  showElementNavigator( _elementNode ){
+  showElementNavigator (_elementNode) {
 
-    if( _elementNode.isGhost ){
-      this.errorNotice("요소 선택 불가","고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
+    if (_elementNode.isGhost) {
+      this.errorNotice("요소 선택 불가", "고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
       return;
     } else {
-      this.emit("SuccessfullyElementNodeSelected", { elementNode: _elementNode, contextController: this.props.contextController});
+      this.emit("SuccessfullyElementNodeSelected", {
+        elementNode: _elementNode,
+        contextController: this.props.contextController
+      });
     }
 
     var target = _elementNode.getRealDOMElement();
 
     var boundingRect;
-    if( target.nodeName === '#text' ){
+    if (target.nodeName === '#text') {
 
-      if( target.nodeValue === '' ){
+      if (target.nodeValue === '') {
 
-          boundingRect = { left:0, top:0, width:0, height:0};
+        boundingRect = {
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0
+        };
 
-          this.errorNotice(
-            "영역을 확인할 수 없습니다.",
-            "String Type Element의 영역을 확인하기 위해서는 하나이상의 문자를 가지고 있어야합니다."
-          );
+        this.errorNotice("영역을 확인할 수 없습니다.", "String Type Element의 영역을 확인하기 위해서는 하나이상의 문자를 가지고 있어야합니다.");
       } else {
 
         var range = document.createRange();
@@ -290,42 +303,43 @@ var DirectContext = React.createClass({
     }
 
     this.setState({
-      showElementNavigator:true,
-      selectedElementNode:_elementNode});
+      showElementNavigator: true,
+      selectedElementNode: _elementNode
+    });
   },
 
-  repositionElementNavigator(){
-    if( this.state.showElementNavigator ){
-      var elementNaviDOM = this.refs['element-navigator'].getDOMNode();
+  repositionElementNavigator () {
+    if (this.state.showElementNavigator) {
+      var elementNaviDOM = this.refs['element-navigator']
+        .getDOMNode();
 
       var elementNaviDOMRight = elementNaviDOM.offsetLeft + elementNaviDOM.offsetWidth;
-      if( this.props.width < elementNaviDOMRight ){
-          this.setState({elementNavigatorX: this.props.width - elementNaviDOM.offsetWidth});
+      if (this.props.width < elementNaviDOMRight) {
+        this.setState({
+          elementNavigatorX: this.props.width - elementNaviDOM.offsetWidth
+        });
       }
     }
 
   },
 
-  selectElement( _targetNode  ){
+  selectElement (_targetNode) {
 
     // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
     // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
     var targetNode = _targetNode;
 
-
     // target 에 getElementNode 메소드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
-    while( typeof targetNode.getElementNode !== 'function' ){
-      if( targetNode.parentElement === null ) break;
+    while (typeof targetNode.getElementNode !== 'function') {
+      if (targetNode.parentElement === null) 
+        break;
       targetNode = targetNode.parentElement;
     }
 
     // target 변수가 가르키는 element에 getElementNode 메소드가 존재하지 않는다면.
-    if( typeof targetNode.getElementNode !== 'function' ){
+    if (typeof targetNode.getElementNode !== 'function') {
 
-      this.errorNotice(
-        "매핑된 ElementNode 를 얻을 수 없습니다.",
-        "ElementNode를 배치하여 주세요."
-      );
+      this.errorNotice("매핑된 ElementNode 를 얻을 수 없습니다.", "ElementNode를 배치하여 주세요.");
 
       return;
     }
@@ -337,96 +351,105 @@ var DirectContext = React.createClass({
     //   return;
     // }
 
-    this.emit("SelectElementNode",{
+    this.emit("SelectElementNode", {
       elementNode: elementNode
     });
   },
 
-  addStyle( _key, _css ){
+  addStyle (_key, _css) {
     //this.getIFrameStage().addStyle( _key, _css );
   },
 
-  applyStyleElement( _element ){
-    this.getIFrameStage().appendStyleElement( _element );
+  applyStyleElement (_element) {
+    this.getIFrameStage()
+      .appendStyleElement(_element);
   },
 
-  applyScriptElement( _element ){
-    this.getIFrameStage().appendScriptElementToHead( _element );
+  applyScriptElement (_element) {
+    this.getIFrameStage()
+      .appendScriptElementToHead(_element);
   },
 
-  getWindow(){
-    return this.getIFrameStage().getIframeInnerWindow();
+  getWindow () {
+    return this.getIFrameStage()
+      .getIframeInnerWindow();
   },
 
-  getDocument(){
-    return this.getIFrameStage().getIFrameInnerDoc();
+  getDocument () {
+    return this.getIFrameStage()
+      .getIFrameInnerDoc();
   },
 
-  getIFrameStageBoundingRect(){
-    return this.getIFrameStage().getDOMNode().getBoundingClientRect();
+  getIFrameStageBoundingRect () {
+    return this.getIFrameStage()
+      .getDOMNode()
+      .getBoundingClientRect();
   },
 
-  getIFrameStageScrollX(){
-    return this.getIFrameStage().getScrollX();
+  getIFrameStageScrollX () {
+    return this.getIFrameStage()
+      .getScrollX();
   },
 
-  getIFrameStageScrollY(){
-    return this.getIFrameStage().getScrollY();
+  getIFrameStageScrollY () {
+    return this.getIFrameStage()
+      .getScrollY();
   },
 
-  getIFrameStage(){
+  getIFrameStage () {
     return this.refs['iframe-stage'];
   },
 
-  onThrowCatcherScrollAtStage(_eventData, _pass){
+  onThrowCatcherScrollAtStage (_eventData, _pass) {
     this.forceUpdate();
 
   },
 
-  onThrowCatcherClickElementInStage(_eventData, _pass) {
+  onThrowCatcherClickElementInStage (_eventData, _pass) {
 
-    this.selectElement( _eventData.targetDOMNode, _eventData.boundingRect );
+    this.selectElement(_eventData.targetDOMNode, _eventData.boundingRect);
 
     // BuilderSService가 contextMenu를 닫을 수 있도록 pass 한다.
     _pass();
   },
 
-  onThrowCatcherElementResizingStart(_eventData){
-    this.setState({selectedElementResizg:true});
+  onThrowCatcherElementResizingStart (_eventData) {
+    this.setState({
+      selectedElementResizg: true
+    });
   },
 
-  onThrowCatcherElementResizing(_eventData){
+  onThrowCatcherElementResizing (_eventData) {
     var elNode = this.state.selectedElementNode;
     var stageBound = this.getIFrameStageBoundingRect();
     var elNodeBound = elNode.getBoundingRect();
-    var computedStyle = this.getWindow().getComputedStyle(elNode.getRealDOMElement());
+    var computedStyle = this.getWindow()
+      .getComputedStyle(elNode.getRealDOMElement());
 
     var mouseXonStage = _eventData.pageX - stageBound.left;
     var mouseYonStage = _eventData.pageY - stageBound.top;
 
-    var nextWidth = undefined;// = mouseXonStage - elNodeBound.left;
-    var nextHeight = undefined;// = mouseYonStage - elNodeBound.top;
+    var nextWidth = undefined; // = mouseXonStage - elNodeBound.left;
+    var nextHeight = undefined; // = mouseYonStage - elNodeBound.top;
     var nextLeft = undefined;
     var nextTop = undefined;
 
-    if( _eventData.pointHor === 'right'){
+    if (_eventData.pointHor === 'right') {
       nextWidth = mouseXonStage - elNodeBound.left;
-    } else if( _eventData.pointHor === 'left' ){
+    } else if (_eventData.pointHor === 'left') {
       nextLeft = mouseXonStage;
       nextWidth = elNodeBound.right - nextLeft;
     }
 
-    if( _eventData.pointVer === 'bottom'){
+    if (_eventData.pointVer === 'bottom') {
       nextHeight = mouseYonStage - elNodeBound.top;
-    } else if( _eventData.pointVer === 'top' ){
+    } else if (_eventData.pointVer === 'top') {
       nextTop = mouseYonStage;
       nextHeight = elNodeBound.bottom - nextTop;
     }
 
-
-
     // boxSizing에 따라 padding과 border의 넓이를 제외한다.
-    switch(computedStyle.boxSizing){
+    switch (computedStyle.boxSizing) {
       case "content-box":
         nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
         nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
@@ -434,30 +457,40 @@ var DirectContext = React.createClass({
       case "padding-box":
         nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
         nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
-      break;
+        break;
     }
 
     // 0미만방지
-    if( nextWidth < 0 ) nextWidth = 0;
-    if( nextHeight < 0 ) nextHeight = 0;
-
-
-    this.props.contextController.modifyElementProperty(elNode, "rectangle" , {left:nextLeft, top:nextTop, width:nextWidth, height:nextHeight});
+    if (nextWidth < 0) 
+      nextWidth = 0;
+    if (nextHeight < 0) 
+      nextHeight = 0;
+    
+    this.props
+      .contextController
+      .modifyElementProperty(elNode, "rectangle", {
+        left: nextLeft,
+        top: nextTop,
+        width: nextWidth,
+        height: nextHeight
+      });
 
     //elNode.document.getContextController().rootRender();
     this.forceUpdate();
   },
 
-  onThrowCatcherElementResizingEnd(_eventData){
+  onThrowCatcherElementResizingEnd (_eventData) {
     var elNode = this.state.selectedElementNode;
-    this.setState({selectedElementResizg:false});
+    this.setState({
+      selectedElementResizg: false
+    });
 
-    elNode.getParent().executeSnapshot('all');
+    elNode.getParent()
+      .executeSnapshot('all');
 
     // 랜더링
     //elNode.document.getContextController().rootRender();
   },
-
 
   // 더블클릭으로 요소 편집은 추후에 정책을 정확이 한 후 개발
   // 리졸브동기화 문제가 있음
@@ -467,86 +500,86 @@ var DirectContext = React.createClass({
   // },
 
   // 히스토리 변경알림
-  updatedHistory(){
+  updatedHistory () {
     this.emitRefreshDirectContext();
   },
 
   // DirectContext에서 랜더링중인 Document와 ElementNode의 속성이 변경되었음을 알려 Tool의 필드를 갱신하게 한다.
-  emitRefreshDirectContext(){
+  emitRefreshDirectContext () {
     this.emit("RefreshedDirectContext");
   },
 
-  getContextType(){
+  getContextType () {
     return this.props.contextType;
   },
 
-  isAcceptDropComponent(){
+  isAcceptDropComponent () {
     var contextType = this.getContextType();
-    if( contextType === 'document' || contextType === 'page'){
+    if (contextType === 'document' || contextType === 'page') {
       return true;
     }
 
     return false;
   },
 
-
-  save(){
+  save () {
     var contextController = this.props.contextController;
 
     contextController.save();
   },
 
-  infoNotice( _title, _message){
-    this.emit('NoticeMessage',{
-      title:_title,
-      message:_message,
-      level : "info"
+  infoNotice (_title, _message) {
+    this.emit('NoticeMessage', {
+      title: _title,
+      message: _message,
+      level: "info"
     });
   },
 
-  errorNotice( _title, _message){
-    this.emit('NoticeMessage',{
-      title:_title,
-      message:_message,
-      level : "error"
+  errorNotice (_title, _message) {
+    this.emit('NoticeMessage', {
+      title: _title,
+      message: _message,
+      level: "error"
     });
   },
 
-  iframeStageTransitionEnd(){
+  iframeStageTransitionEnd () {
     // transition완료후의 달라진 요소의 Rect를 추적하기 위해 최종 업데이트
     this.forceUpdate();
   },
 
-
-
-  componentWillUpdate(_nextProps, _nextState){
+  componentWillUpdate (_nextProps, _nextState) {
     this.state.prevStageWidth = this.state.stageWidth;
     this.state.prevStageHeight = this.state.stageHeight;
 
-    if( _nextState.sizing !== this.props.contextController.getScreenSizing() ){
+    if (_nextState.sizing !== this.props.contextController.getScreenSizing()) {
       this.mustRedrawStage = true;
     }
 
     // contextController 의 디스플레이모드를 변경한다.
-    this.props.contextController.setScreenSizing(_nextState.sizing);
+    this.props
+      .contextController
+      .setScreenSizing(_nextState.sizing);
   },
 
-  componentDidUpdate(){
+  componentDidUpdate () {
     this.scrollX = this.getIFrameStageScrollX();
     this.scrollY = this.getIFrameStageScrollY();
 
-    if( this.mustRedrawStage ){
-      this.props.contextController.rootRender();
+    if (this.mustRedrawStage) {
+      this.props
+        .contextController
+        .rootRender();
       this.mustRedrawStage = false;
     }
 
     //this.repositionElementNavigator();
 
-    if( this.props.runningState === this.props.contextController.running ) return;
-
-
-
-    if( this.props.runningState ){
+    if (this.props.runningState === this.props.contextController.running) 
+      return;
+    
+    if (this.props.runningState) {
       this.goingToContextRunning();
     } else {
       this.goingToContextStop();
@@ -554,41 +587,48 @@ var DirectContext = React.createClass({
 
   },
 
-  componentDidMount(){
+  componentDidMount () {
     this.scrollX = this.getIFrameStageScrollX();
     this.scrollY = this.getIFrameStageScrollY();
 
     // contextController 연결
     this.contextController = this.props.contextController;
-    this.contextController.attach(this, this.getDocument().body);
+    this.contextController
+      .attach(this, this.getDocument().body);
 
-    if( this.props.runningState ){
+    if (this.props.runningState) {
       this.goingToContextRunning();
     } else {
       this.goingToContextStop();
     }
 
     // iframe stage 의 Transition이 끝난 시점에 호출한다.
-    this.refs['iframe-stage'].getDOMNode().addEventListener("transitionend", this.iframeStageTransitionEnd, true);
+    this.refs['iframe-stage']
+      .getDOMNode()
+      .addEventListener("transitionend", this.iframeStageTransitionEnd, true);
   },
 
-  render(){
-    var iframeStageWidth = (this.state.stageWidth > this.props.width)? this.props.width:this.state.stageWidth;
-    var iframeStageHeight= (this.state.stageHeight > this.props.height)? this.props.height:this.state.stageHeight;
+  render () {
+    var iframeStageWidth = (this.state.stageWidth > this.props.width)
+      ? this.props.width
+      : this.state.stageWidth;
+    var iframeStageHeight = (this.state.stageHeight > this.props.height)
+      ? this.props.height
+      : this.state.stageHeight;
     iframeStageWidth -= 10;
     iframeStageHeight -= 10;
-    var stageX = ( this.props.width - iframeStageWidth ) / 2;
-    var stageY = ( this.props.height - iframeStageHeight ) / 2;
+    var stageX = (this.props.width - iframeStageWidth) / 2;
+    var stageY = (this.props.height - iframeStageHeight) / 2;
     this.stageX = stageX;
     this.stageY = stageY;
 
     var style = {
-      display:'none',
+      display: 'none',
       width: this.props.width,
       height: this.props.height
     };
 
-    if( this.props.runningState ){
+    if (this.props.runningState) {
       style.display = 'block';
     }
 
@@ -596,11 +636,11 @@ var DirectContext = React.createClass({
     var selectedSelectRect = {};
     var selectedElementResizable = false;
     var elementNavigatorClasses = ['element-navigator'];
-    if(! this.state.showElementNavigator ){
+    if (!this.state.showElementNavigator) {
       elementNavigatorClasses.push('off');
 
       var elNavY = this.state.prevElementNavigatorY - 50;
-      if( elNavY < 0 ){
+      if (elNavY < 0) {
         elNavY = 0;
       }
 
@@ -614,23 +654,23 @@ var DirectContext = React.createClass({
       var boundingBox = elementNode.getBoundingRect();
 
       var elNavY = boundingBox.top - 50 + stageY;
-      if( elNavY < 0 ){
+      if (elNavY < 0) {
         elNavY = 0;
       }
 
       var elNavX = boundingBox.left + stageX;
-      if( elNavX + 300 > this.props.width ){
+      if (elNavX + 300 > this.props.width) {
         elNavX = this.props.width - 300;
       }
 
       elementNavigatorStyle = {
-        left:elNavX,
+        left: elNavX,
         top: elNavY
       };
 
       selectedSelectRect = {
-        width : boundingBox.width,
-        height:boundingBox.height,
+        width: boundingBox.width,
+        height: boundingBox.height,
         left: boundingBox.left + stageX,
         top: boundingBox.top + stageY
       };
@@ -638,12 +678,12 @@ var DirectContext = React.createClass({
       this.prevElNavStyle = elementNavigatorStyle;
       this.prevSelectedSelectRect = selectedSelectRect;
 
-      if( elementNode.getType() !== 'string' ){
+      if (elementNode.getType() !== 'string') {
         selectedElementResizable = true;
       }
 
       var elementSizeInfo;
-      if( this.state.selectedElementResizg ){
+      if (this.state.selectedElementResizg) {
         var rectangle = elementNode.getCurrentRectangle();
 
         elementSizeInfo = (
@@ -656,8 +696,6 @@ var DirectContext = React.createClass({
       }
     }
 
-
-
     /******
      * DirectContext와 Iframe-stage의 ContentBox 는 일치하여야 한다.
      *
@@ -665,68 +703,70 @@ var DirectContext = React.createClass({
      */
     return (
       <div className='DirectContext theme-white' style={style}>
-        <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
-        <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
-         <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
-           {elementSizeInfo}
+        <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={stageX} top={stageY}/>
+        <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={stageX} top={stageY}/>
+        <div className={elementNavigatorClasses.join(' ')} ref='element-navigator' style={elementNavigatorStyle}>
+          {elementSizeInfo}
 
-           <div className='box'>
-             <ul>
+          <div className='box'>
+            <ul>
 
               <li>
                 <button onClick={this.jumpToParentElement}>
-                  <i className='fa fa-bolt'/> <span className='title'><span>Jump to Parent</span></span>
+                  <i className='fa fa-bolt'/>
+                  <span className='title'>
+                    <span>Jump to Parent</span>
+                  </span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.editElement}>
-                  <i className='fa fa-pencil-square-o'/> <span className='title'>Edit</span>
+                  <i className='fa fa-pencil-square-o'/>
+                  <span className='title'>Edit</span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.cloneElement}>
-                  <i className='fa fa-clone'/> <span className='title'>Clone & insert Next</span>
+                  <i className='fa fa-clone'/>
+                  <span className='title'>Clone & insert Next</span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.copyElementJSON}>
-                  <i className='fa fa-clipboard'/> <span className='title'>Copy Data</span>
+                  <i className='fa fa-clipboard'/>
+                  <span className='title'>Copy Data</span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.pasteElementIn}>
-                  <i className='fa fa-pencil-square'/> <span className='title'>Paste In</span>
+                  <i className='fa fa-pencil-square'/>
+                  <span className='title'>Paste In</span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.removeElement}>
-                  <i className='fa fa-trash'/> <span className='title'>Remove</span>
+                  <i className='fa fa-trash'/>
+                  <span className='title'>Remove</span>
                 </button>
               </li>
 
               <li>
                 <button onClick={this.closeElementNavigator}>
-                  <i className='fa fa-times'/> <span className='title'>Close</span>
+                  <i className='fa fa-times'/>
+                  <span className='title'>Close</span>
                 </button>
               </li>
 
-             </ul>
-           </div>
-         </div>
+            </ul>
+          </div>
+        </div>
 
-
-
-         <ElementSelectRect left={selectedSelectRect.left}
-                            top={selectedSelectRect.top}
-                            width={selectedSelectRect.width}
-                            height={selectedSelectRect.height}
-                            active={this.state.showElementNavigator}
-                            resizable={selectedElementResizable}/>
+        <ElementSelectRect left={selectedSelectRect.left} top={selectedSelectRect.top} width={selectedSelectRect.width} height={selectedSelectRect.height} active={this.state.showElementNavigator} resizable={selectedElementResizable}/>
       </div>
 
     );

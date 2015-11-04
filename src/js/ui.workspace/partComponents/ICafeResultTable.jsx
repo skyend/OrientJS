@@ -96,15 +96,19 @@ var ICafeResultTable = React.createClass({
     renderMultiPagenation(){
       if( this.props.result.page === undefined ) return "";
       let current = this.props.result.page.current;
-      let pages_count = this.props.result.page.pages.length;
+      let pages_count = this.props.result.page.total / this.props.result.page.count;
 
       let start_point = Math.max(current-3, 1);
-      let end_point = Math.min(pages_count-1, current+4);
+      let end_point = Math.min(pages_count, current+4);
 
 
       var pagerButtonList = [];
 
-      for(var i = start_point; i < end_point; i++ ){
+      if( start_point != 1 ){
+        pagerButtonList.push( <button data-pagenum={1} onClick={this.onClickPager}>{1}</button> );
+      }
+
+      for(var i = start_point; i <= end_point; i++ ){
         var classes = [];
 
         if( current == i ){
@@ -113,6 +117,12 @@ var ICafeResultTable = React.createClass({
 
         pagerButtonList.push( <button className={classes.join(' ')} data-pagenum={i} onClick={this.onClickPager}>{i}</button> );
       }
+
+      if( end_point !== pages_count ){
+        pagerButtonList.push( <button data-pagenum={pages_count} onClick={this.onClickPager}>{pages_count}</button> );
+      }
+
+
 
       return (
         <div className='pagenation'>
@@ -146,7 +156,7 @@ var ICafeResultTable = React.createClass({
 
     renderMultiRow(_item, _i){
 
-      let order = _i+1;
+      let order = _i-1;
 
       if( this.props.result.page !== undefined ){
         order += this.props.result.page.count * this.props.result.page.current;

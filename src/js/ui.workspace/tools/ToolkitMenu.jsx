@@ -7,34 +7,40 @@
  * Requires(css) :
  */
 
-(function () {
-    var React = require("react");
-    require('./ToolkitMenu.less');
+(function() {
+  var React = require("react");
+  require('./ToolkitMenu.less');
 
-    var ToolkitMode = React.createClass({
-        renderItems(_group) {
-            return (
-                <div className="item">
-                    <div className="title">{_group.itemTitle}</div>
-                    <ul className="inventory">
-                        {_group.items.map(function (item) {
-                            return (
-                                <li draggable="true">
-                                    <span>{item}</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </div>
-            )
-        },
-        render() {
-            return (
-                <div className='ToolkitMenu white'>
-                    { this.props.items.map(this.renderItems)}
-                </div>
-            );
-        }
-    });
-    module.exports = ToolkitMode;
-})();
+  var ToolkitMode = React.createClass({
+    renderItems (_group) {
+      return (
+        <div className="item">
+          <div className="title">{_group.itemTitle}</div>
+          <ul className="inventory">
+            {_group
+              .items
+              .map(function(item) {
+                return (
+                  <li draggable="true">
+                    <span>{item}</span>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      )
+    },
+    render () {
+      return (
+        <div className='ToolkitMenu white'>
+          {this
+            .props
+            .items
+            .map(this.renderItems)}
+        </div>
+      );
+    }
+  });
+  module.exports = ToolkitMode;
+})
+();

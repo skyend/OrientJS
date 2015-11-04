@@ -3,8 +3,7 @@ import './FeedbackLayer.less';
 
 var FeedbackLayer = React.createClass({
 
-
-  render(){
+  render () {
     var style = {};
     style.left = this.props.left;
     style.top = this.props.top;
