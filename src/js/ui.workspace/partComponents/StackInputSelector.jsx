@@ -16,25 +16,25 @@
  *     필드의 선택가능한 입력 문자열의 배열
  */
 
-(function() {
-  require('./StackInputSelector.less');
-  var InputBoxWithSelector = require('./InputBoxWithSelector.jsx');
-  var React = require("react");
+(function () {
+    require('./StackInputSelector.less');
+    var InputBoxWithSelector = require('./InputBoxWithSelector.jsx');
+    var React = require("react");
 
-  var StackInputSelector = React.createClass({
+    var StackInputSelector = React.createClass({
 
-    render () {
-      var classes = [
-        'StackInputSelector', this.props.color
-      ];
+        render(){
+            var classes = ['StackInputSelector', this.props.color];
 
-      return (
-        <div className={classes.join(' ')}></div>
-      )
-    }
-  });
+            return (
+                <div className={classes.join(' ')}>
 
-  module.exports = StackInputSelector;
+                </div>
+            )
+        }
+    });
 
-})
-();
+
+    module.exports = StackInputSelector;
+
+})();

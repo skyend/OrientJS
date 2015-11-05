@@ -1,163 +1,146 @@
-(function() {
-  var React = require("react");
-  require('./ComponentPalette.less');
+(function () {
+    var React = require("react");
+    require('./ComponentPalette.less');
 
-  var BasicButton = require('../partComponents/BasicButton.jsx');
-  var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
-  var ComponentPreviewer = require('../partComponents/ComponentPreviewer.jsx');
+    var BasicButton = require('../partComponents/BasicButton.jsx');
+    var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
+    var ComponentPreviewer = require('../partComponents/ComponentPreviewer.jsx');
 
-  var ComponentPalette = React.createClass({
-    mixins: [
-      require('../reactMixin/EventDistributor.js'), require('./mixins/WidthRuler.js')
-    ],
+    var ComponentPalette = React.createClass({
+        mixins: [
+            require('../reactMixin/EventDistributor.js'),
+            require('./mixins/WidthRuler.js')],
 
-    getInitialState () {
-      return {
-        availableComponentPackageMeta: []
-      }
-    },
+        getInitialState(){
+            return {
+                availableComponentPackageMeta: []
+            }
+        },
 
-    mouseOverListItem (_componentKey, _packageKey) {
-      var syncWindowContext = this.refs['ComponentPreviewer']
-        .getIframeWindow();
+        mouseOverListItem(_componentKey, _packageKey){
+            var syncWindowContext = this.refs['ComponentPreviewer'].getIframeWindow();
 
-      this.emit('IMustPreviewComponent', {
-        componentKey: _componentKey,
-        packageKey: _packageKey,
-        syncWindowContext: syncWindowContext
-      });
-    },
 
-    mouseDownTo (_componentKey, _packageKey) {
-      app.ui
-        .occupyGlobalDrag(this, true);
-      app.ui
-        .enableGlobalDrag();
-      app.ui
-        .toMouseDawn();
+            this.emit('IMustPreviewComponent', {
+                componentKey: _componentKey,
+                packageKey: _packageKey,
+                syncWindowContext: syncWindowContext
+            });
+        },
 
-      var holderHTML = "<div class='componentDragHolder' style='pointer-events:none;' ></div>";
-      app.ui
-        .holdingElementWhileDrag(holderHTML);
+        mouseDownTo(_componentKey, _packageKey){
+            app.ui.occupyGlobalDrag(this, true);
+            app.ui.enableGlobalDrag();
+            app.ui.toMouseDawn();
 
-      this.willDeployComponentKey = _componentKey;
-      this.willDeployPackageKey = _packageKey;
-    },
+            var holderHTML = "<div class='componentDragHolder' style='pointer-events:none;' ></div>";
+            app.ui.holdingElementWhileDrag(holderHTML);
 
-    onGlobalDragStartFromUI (_e) {
-      this.emit("BeginDeployComponent", {
-        absoluteX: _e.clientX,
-        absoluteY: _e.clientY,
-        componentKey: this.willDeployComponentKey,
-        packageKey: this.willDeployPackageKey
-      });
-    },
+            this.willDeployComponentKey = _componentKey;
+            this.willDeployPackageKey = _packageKey;
+        },
 
-    onGlobalDragFromUI (_e) {
-      this.emit("DragDeployComponent", {
-        absoluteX: _e.clientX,
-        absoluteY: _e.clientY,
-        componentKey: this.willDeployComponentKey,
-        packageKey: this.willDeployPackageKey
-      });
-    },
 
-    onGlobalDragStopFromUI (_e) {
-      this.emit("DropDeployComponent", {
-        absoluteX: _e.clientX,
-        absoluteY: _e.clientY,
-        componentKey: this.willDeployComponentKey,
-        packageKey: this.willDeployPackageKey
-      });
+        onGlobalDragStartFromUI(_e){
+            this.emit("BeginDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey: this.willDeployComponentKey,
+                packageKey: this.willDeployPackageKey
+            });
+        },
 
-      this.willDeployComponentKey = undefined;
-      this.willDeployPackageKey = undefined;
-    },
+        onGlobalDragFromUI(_e){
+            this.emit("DragDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey: this.willDeployComponentKey,
+                packageKey: this.willDeployPackageKey
+            });
+        },
 
-    componentDidMount () {
-      this.refs['ComponentPreviewer']
-        .displayComponent(InputBoxWithSelector, "reactClass");
+        onGlobalDragStopFromUI(_e){
+            this.emit("DropDeployComponent", {
+                absoluteX: _e.clientX,
+                absoluteY: _e.clientY,
+                componentKey: this.willDeployComponentKey,
+                packageKey: this.willDeployPackageKey
+            });
 
-      this.emit('NeedStateComponentPackageMeta');
-    },
+            this.willDeployComponentKey = undefined;
+            this.willDeployPackageKey = undefined;
+        },
 
-    componentDidUpdate (_prevProps, _prevState) {
+        componentDidMount(){
+            this.refs['ComponentPreviewer'].displayComponent(InputBoxWithSelector, "reactClass");
 
-      if (typeof this.state.previewComponent === 'object') {
+            this.emit('NeedStateComponentPackageMeta');
+        },
 
-        this.refs['ComponentPreviewer']
-          .displayComponent(this.state.previewComponent.class, 'reactClass', this.state.previewComponent.CSS);
-      }
-    },
+        componentDidUpdate(_prevProps, _prevState){
 
-    renderComponentMeta (_componentMeta, _packageKey) {
-      var self = this;
+            if (typeof this.state.previewComponent === 'object') {
 
-      return (
-        <li onMouseOver={function() {
-          self.mouseOverListItem(_componentMeta.key, _packageKey)
-        }} onMouseDown={function() {
-          self.mouseDownTo(_componentMeta.key, _packageKey)
-        }}>
-          <i className='fa fa-cube'></i>
-          {_componentMeta.name}
-        </li>
-      )
-    },
+                this.refs['ComponentPreviewer'].displayComponent(this.state.previewComponent.class, 'reactClass', this.state.previewComponent.CSS);
+            }
+        },
 
-    renderPackageMeta (_packageMeta) {
-      var self = this;
+        renderComponentMeta(_componentMeta, _packageKey){
+            var self = this;
 
-      return (
-        <li className='package'>
-          <label>
-            <i className='fa fa-gift'></i>
-            {_packageMeta.name}
-          </label>
-          <ul>
-            {_packageMeta
-              .components
-              .map(function(__component) {
-                return self.renderComponentMeta(__component, _packageMeta.key)
-              })}
-          </ul>
-        </li>
-      );
+            return (
+                <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} }
+                    onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
+                    <i className='fa fa-cube'></i> { _componentMeta.name }
+                </li>
+            )
+        },
 
-    },
+        renderPackageMeta(_packageMeta){
+            var self = this;
 
-    render () {
-      var wide = false;
-      var rootClasses = [
-        'ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()
-      ];
+            return (
+                <li className='package'>
+                    <label> <i className='fa fa-gift'></i> {_packageMeta.name} </label>
+                    <ul>
+                        { _packageMeta.components.map(function (__component) {
+                            return self.renderComponentMeta(__component, _packageMeta.key)
+                        }) }
+                    </ul>
+                </li>
+            );
 
-      return (
-        <div className={rootClasses.join(' ')}>
-          <div className='wrapper'>
-            <div className='head'>
-              ComponentPalette
-            </div>
-            <div className='body'>
-              <div className='previewer-area'>
-                <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
-              </div>
-              <div className='package-list-area'>
-                <ul className='package-list'>
-                  {this
-                    .state
-                    .availableComponentPackageMeta
-                    .map(this.renderPackageMeta)}
-                </ul>
-              </div>
-            </div>
-            <div className='foot'></div>
-          </div>
-        </div>
-      );
-    }
-  });
 
-  module.exports = ComponentPalette;
-})
-();
+        },
+
+        render() {
+            var wide = false;
+            var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
+
+            return (
+                <div className={rootClasses.join(' ')}>
+                    <div className='wrapper'>
+                        <div className='head'>
+                            ComponentPalette
+                        </div>
+                        <div className='body'>
+                            <div className='previewer-area'>
+                                <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
+                            </div>
+                            <div className='package-list-area'>
+                                <ul className='package-list'>
+                                    {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
+                                </ul>
+                            </div>
+                        </div>
+                        <div className='foot'>
+
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    });
+
+    module.exports = ComponentPalette;
+})();

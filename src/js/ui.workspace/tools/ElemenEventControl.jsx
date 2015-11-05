@@ -2,52 +2,56 @@ var React = require("react");
 require('./ElemenEventControl.less');
 
 var ElemenEventControl = React.createClass({
-  mixins: [
-    require('../reactMixin/EventDistributor.js'), require('./mixins/WidthRuler.js')
-  ],
+    mixins: [
+        require('../reactMixin/EventDistributor.js'),
+        require('./mixins/WidthRuler.js')],
 
-  getInitialState () {
-    return {
-      elementNode: null
-    };
-  },
+    getInitialState(){
+        return {
+            elementNode: null
+        };
+    },
 
-  renderEditParts (_elementNode) {
 
-    var isEmptyType = false;
+    renderEditParts(_elementNode){
 
-    if (_elementNode.getType() === 'empty') 
-      isEmptyType = true;
-    
-    return (
-      <div className='edit-parts'>
-        <ElementProfile elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ElementProfile'/>
+        var isEmptyType = false;
 
-        <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
+        if (_elementNode.getType() === 'empty') isEmptyType = true;
 
-        {isEmptyType
-          ? <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='EmptyTypeElementNode'/>
-          : ''}
-      </div>
-    );
-  },
+        return (
+            <div className='edit-parts'>
+                <ElementProfile elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme}
+                                ref='ElementProfile'/>
 
-  render () {
-    var rootClasses = [
-      'ElemenEventControl', this.props.config.theme, this.getMySizeClass()
-    ];
+                <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme}
+                             ref='HTMLDOMSpec'/>
 
-    var elementNode = this.state.elementNode;
+                {isEmptyType ? <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width}
+                                                     theme={this.props.config.theme} ref='EmptyTypeElementNode'/> : ''}
+            </div>
+        );
+    },
 
-    return (
-      <div className={rootClasses.join(' ')}>
-        <div className='wrapper'>
-          <div className='body'></div>
-          <div className="footer"></div>
-        </div>
-      </div>
-    );
-  }
+    render() {
+        var rootClasses = ['ElemenEventControl', this.props.config.theme, this.getMySizeClass()];
+
+        var elementNode = this.state.elementNode;
+
+        return (
+            <div className={rootClasses.join(' ')}>
+                <div className='wrapper'>
+                    <div className='body'>
+
+                    </div>
+                    <div className="footer">
+
+
+                    </div>
+                </div>
+            </div>
+        );
+    }
 });
 
 module.exports = ElemenEventControl;

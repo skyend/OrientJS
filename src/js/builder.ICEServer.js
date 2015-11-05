@@ -157,14 +157,9 @@ class ICEServer {
     console.log('field Datas', _fieldsData);
 
     _fieldsData.map(function(_field) {
-      let value = _field.testValue || _field.value;
-
-      if (value !== '' && value !== undefined) {
-        fields[_field.name] = value;
-      }
+      fields[_field.name] = _field.testValue || _field.value;
     });
 
-    console.log(fields);
 
     if (_method === 'get' || _method == undefined) {
       request.get(this.host + "/api/" + _nt_tid + "/" + _crud + ".json")

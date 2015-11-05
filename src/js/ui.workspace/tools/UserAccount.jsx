@@ -1,35 +1,33 @@
-(function() {
-  var React = require("react");
-  require('./UserAccount.less');
+(function () {
+    var React = require("react");
+    require('./UserAccount.less');
 
-  var ProfileCard = require('../partComponents/ProfileCard.jsx');
+    var ProfileCard = require('../partComponents/ProfileCard.jsx');
 
-  var User = React.createClass({
-    mixins: [require('../reactMixin/EventDistributor.js')],
+    var User = React.createClass({
+        mixins: [require('../reactMixin/EventDistributor.js')],
 
-    render () {
-      console.log('tool width', this.props.width);
-      var wide = false;
-      var rootClasses = [
-        'UserAccount', 'white'
-      ];
 
-      if (this.props.width > 210) {
-        rootClasses.push('wide');
-      }
+        render() {
+            console.log('tool width', this.props.width);
+            var wide = false;
+            var rootClasses = ['UserAccount', 'white'];
 
-      return (
-        <div className={rootClasses.join(' ')}>
-          <div className='wrapper'>
-            <div className='user-profile'>
-              <ProfileCard/>
-            </div>
-          </div>
-        </div>
-      );
-    }
-  });
+            if (this.props.width > 210) {
+                rootClasses.push('wide');
+            }
 
-  module.exports = User;
-})
-();
+            return (
+                <div className={rootClasses.join(' ')}>
+                    <div className='wrapper'>
+                        <div className='user-profile'>
+                            <ProfileCard />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    });
+
+    module.exports = User;
+})();

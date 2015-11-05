@@ -13,84 +13,86 @@ var MenuItem = {
     action: {}
 };
 
+(function () {
+    var React = require("react");
+    require('./FloatingMenuBox.less');
 
-import React from "react";
-import './FloatingMenuBox.less';
+    var MenuItem = React.createClass({
+        mixins: [require('./reactMixin/EventDistributor.js')],
 
-var MenuItem = React.createClass({
-    mixins: [require('./reactMixin/EventDistributor.js')],
+        onClick(_e) {
+            // 기본 이벤트 데이터 필드를 베이스로 eventData 객체를 구축한다.
+            var eventData = this.props.addEventDataFields;
 
-    onClick(_e) {
-        // 기본 이벤트 데이터 필드를 베이스로 eventData 객체를 구축한다.
-        var eventData = this.props.addEventDataFields;
+            this.emit(this.props.eventName, eventData, _e, "ReactMouseClick");
+        },
 
-        this.emit(this.props.eventName, eventData, _e, "ReactMouseClick");
-    },
+        render() {
 
-    render() {
-
-        return (
-            <li className={this.props.type} onClick={this.onClick}>  {this.props.title} </li>
-        );
-    }
-});
-
-var FloatingMenuBox = React.createClass({
-    mixins: [require('./reactMixin/EventDistributor.js')],
-
-    getInitialState() {
-
-        return {
-            display: "off", // on , off
-            x: 0,
-            y: 0,
-            memuItems: [],
-
-            // Floating Menu 의 존재의 이유
-            for: "",
-            target: {}
-        };
-    },
-
-    renderMenuItem(_item) {
-
-        if (typeof _item === "object") {
-            return (<MenuItem ref={ _item.key }
-                title={_item.title}
-                type={_item.type}
-                eventName={_item.eventName}
-                addEventDataFields={ {for: this.state.for, target: this.state.target} }/>);
-
-        } else if (_item === 'spliter') {
-            return <hr/>
+            return (
+                <li className={this.props.type} onClick={this.onClick}>  {this.props.title} </li>
+            );
         }
-    },
+    });
 
-    render() {
-        var styles = {
-            display: "none"
-        };
+    var FloatingMenuBox = React.createClass({
+        mixins: [require('./reactMixin/EventDistributor.js')],
 
-        if (this.state.display === 'off') {
-            styles.display = "none";
-        } else if (this.state.display === "on") {
-            styles.display = "block";
-        }
+        getInitialState() {
 
-        styles.left = this.state.x + "px";
-        styles.top = this.state.y + "px";
+            return {
+                display: "off", // on , off
+                x: 0,
+                y: 0,
+                memuItems: [],
 
-        return (
-            <div className='FloatingMenuBox black' style={styles}>
+                // Floating Menu 의 존재의 이유
+                for: "",
+                target: {}
+            };
+        },
 
-                <div className='body'>
-                    <ul>
-                 {this.state.memuItems.map(this.renderMenuItem)}
-                    </ul>
+        renderMenuItem(_item) {
+
+            if (typeof _item === "object") {
+                return (<MenuItem ref={ _item.key }
+                                  title={_item.title}
+                                  type={_item.type}
+                                  eventName={_item.eventName}
+                                  addEventDataFields={ {for: this.state.for, target: this.state.target} }/>);
+
+            } else if (_item === 'spliter') {
+                return <hr/>
+            }
+        },
+
+        render() {
+            var styles = {
+                display: "none"
+            };
+
+            if (this.state.display === 'off') {
+                styles.display = "none";
+            } else if (this.state.display === "on") {
+                styles.display = "block";
+            }
+
+            styles.left = this.state.x + "px";
+            styles.top = this.state.y + "px";
+
+            return (
+                <div className='FloatingMenuBox black' style={styles}>
+
+                    <div className='body'>
+                        <ul>
+                            {this.state.memuItems.map(this.renderMenuItem)}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        );
-    }
-});
+            );
+        }
+    });
 
-export default FloatingMenuBox;
+    module.exports = FloatingMenuBox;
+
+})();
