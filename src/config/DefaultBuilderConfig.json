@@ -45,9 +45,9 @@
         "equipToolKey": "ComponentPalette"
       }, {
         "key": "service-resources-api",
-        "title": "API Resources",
+        "title": "API Source Palette",
         "icon": "database",
-        "equipToolKey": "APIResource"
+        "equipToolKey": "APISourcePalette"
       }, {
         "key": "service-resources-color-scheme",
         "title": "Color Scheme",
@@ -229,6 +229,10 @@
     "ConfirmBox": {
       "jsxPath": "GeneralConfirm",
       "title": "Confirm"
+    },
+
+    "APISourcePalette": {
+      "jsxPath": "APISourcePalette"
     }
   }
 }
