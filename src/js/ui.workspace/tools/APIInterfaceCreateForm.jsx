@@ -5,75 +5,75 @@ import OutlineButton from '../partComponents/OutlineButton.jsx';
 import GridBox from "../partComponents/GridBox.jsx";
 
 var APIInterfaceCreateForm = React.createClass({
-    mixins: [require('../reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
 
-    getInitialState(){
-        return {
-            message: '생성할 API Interface 의 이름을 정해주세요.',
-            savedTitle: ''
-        }
-    },
+  getInitialState(){
+    return {
+      message: '생성할 API Interface 의 이름을 정해주세요.',
+      savedTitle: ''
+    }
+  },
 
-    create(){
-        var title = this.refs['title'].getValue();
+  create(){
+    var title = this.refs['title'].getValue();
 
-        if (title === '') {
-            this.setState({message: "Title을 입력해 주세요."});
-            return;
-        }
+    if (title === '') {
+      this.setState({message: "Title을 입력해 주세요."});
+      return;
+    }
 
-        this.emit("CreateNewAPIInterface", {
-            title: title
-        });
-    },
+    this.emit("CreateNewAPIInterface", {
+      title: title
+    });
+  },
 
-    onThrowCatcherChangedValue(){
-    },
+  onThrowCatcherChangedValue(){
+  },
 
-    cancel(){
-        this.emit("Close");
-    },
+  cancel(){
+    this.emit("Close");
+  },
 
-    successInterfaceCreate(){
-        this.emit("Close");
-        this.emit("UpdateAPIInterfaceList");
-    },
+  successInterfaceCreate(){
+    this.emit("Close");
+    this.emit("UpdateAPIInterfaceList");
+  },
 
-    failInterfaceCreate(){
-        alert("Fail create interface");
-    },
+  failInterfaceCreate(){
+    alert("Fail create interface");
+  },
 
 
-    render(){
-        var classes = ['APIInterfaceCreateForm'];
+  render(){
+    var classes = ['APIInterfaceCreateForm'];
 
-        return (
-            <div className={classes.join(' ')}>
+    return (
+      <div className={classes.join(' ')}>
 
-                <div className='fields'>
-                    <HorizonField fieldName='title' title='Interface Title' theme="dark" enterable={true} type='input'
-                                  onChange={ this.onChange }
-                                  defaultValue={this.state.savedTitle} height={40} ref='title'
-                                  nameWidth={150}/>
+        <div className='fields'>
+          <HorizonField fieldName='title' title='Interface Title' theme="dark" enterable={true} type='input'
+                        onChange={ this.onChange }
+                        defaultValue={this.state.savedTitle} height={40} ref='title'
+                        nameWidth={150}/>
 
-                </div>
+        </div>
 
-                <div className='message'>
-                    {this.state.message}
-                </div>
+        <div className='message'>
+          {this.state.message}
+        </div>
 
-                <div className='buttons'>
-                    <GridBox placements={[
+        <div className='buttons'>
+          <GridBox placements={[
             [
               <OutlineButton color='white' title='Cancel' onClick={this.cancel}/>,
               <OutlineButton color='white' title='Create' onClick={this.create}/>,
             ]
           ]} width={150} height={50}/>
 
-                </div>
-            </div>
-        )
-    }
+        </div>
+      </div>
+    )
+  }
 });
 
 export default APIInterfaceCreateForm;

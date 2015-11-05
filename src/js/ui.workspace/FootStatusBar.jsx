@@ -12,37 +12,37 @@
  */
 
 (function () {
-    require('./FootStatusBar.less');
-    var React = require("react");
+  require('./FootStatusBar.less');
+  var React = require("react");
 
-    var VNodePathNavigator = require('./partComponents/VNodePathNavigator.jsx');
+  var VNodePathNavigator = require('./partComponents/VNodePathNavigator.jsx');
 
-    var FootStatusBar = React.createClass({
-        getInitialState(){
-            return {
-                vnodePathArray: []
-            }
-        },
-        render: function () {
-            return (
-                <footer id="ui-footer">
-                    <ul className="inventory">
-                        <li className="item-left">
-                            <a>
-                                <i className="fa fa-info-circle"></i>
-                            </a>
-                        </li>
+  var FootStatusBar = React.createClass({
+    getInitialState(){
+      return {
+        vnodePathArray: []
+      }
+    },
+    render: function () {
+      return (
+        <footer id="ui-footer">
+          <ul className="inventory">
+            <li className="item-left">
+              <a>
+                <i className="fa fa-info-circle"></i>
+              </a>
+            </li>
 
-                        <li className="item-right">
-                            <VNodePathNavigator vnodePathArray={this.state.vnodePathArray} height="100%"/>
-                        </li>
-                    </ul>
-                </footer>
-            )
-        }
-    });
+            <li className="item-right">
+              <VNodePathNavigator vnodePathArray={this.state.vnodePathArray} height="100%"/>
+            </li>
+          </ul>
+        </footer>
+      )
+    }
+  });
 
 
-    module.exports = FootStatusBar;
+  module.exports = FootStatusBar;
 
 })();

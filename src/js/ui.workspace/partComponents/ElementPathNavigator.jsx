@@ -4,16 +4,16 @@ var React = require("react");
 var ElementPathNavigator = React.createClass({
 
 
-    render() {
+  render() {
 
-        return (
-            <div className='ElementPathNavigator theme-default' style={{height:this.props.height}}>
-                <ul>
+    return (
+      <div className='ElementPathNavigator theme-default' style={{height:this.props.height}}>
+        <ul>
 
-                </ul>
-            </div>
-        )
-    }
+        </ul>
+      </div>
+    )
+  }
 });
 
 

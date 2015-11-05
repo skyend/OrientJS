@@ -1,22 +1,22 @@
 (function () {
-    require('./ProfileCard.less');
-    var React = require("react");
+  require('./ProfileCard.less');
+  var React = require("react");
 
-    var ProfileCard = React.createClass({
+  var ProfileCard = React.createClass({
 
-        render() {
+    render() {
 
-            return (
-                <div className="ProfileCard">
-                    <div className='picture'>
+      return (
+        <div className="ProfileCard">
+          <div className='picture'>
 
-                    </div>
-                </div>
-            );
-        }
-    });
+          </div>
+        </div>
+      );
+    }
+  });
 
 
-    module.exports = ProfileCard;
+  module.exports = ProfileCard;
 
 })();

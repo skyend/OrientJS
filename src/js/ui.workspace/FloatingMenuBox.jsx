@@ -8,91 +8,91 @@
  */
 
 var MenuItem = {
-    title: "",
-    type: "button | input | select | ...",
-    action: {}
+  title: "",
+  type: "button | input | select | ...",
+  action: {}
 };
 
 (function () {
-    var React = require("react");
-    require('./FloatingMenuBox.less');
+  var React = require("react");
+  require('./FloatingMenuBox.less');
 
-    var MenuItem = React.createClass({
-        mixins: [require('./reactMixin/EventDistributor.js')],
+  var MenuItem = React.createClass({
+    mixins: [require('./reactMixin/EventDistributor.js')],
 
-        onClick(_e) {
-            // 기본 이벤트 데이터 필드를 베이스로 eventData 객체를 구축한다.
-            var eventData = this.props.addEventDataFields;
+    onClick(_e) {
+      // 기본 이벤트 데이터 필드를 베이스로 eventData 객체를 구축한다.
+      var eventData = this.props.addEventDataFields;
 
-            this.emit(this.props.eventName, eventData, _e, "ReactMouseClick");
-        },
+      this.emit(this.props.eventName, eventData, _e, "ReactMouseClick");
+    },
 
-        render() {
+    render() {
 
-            return (
-                <li className={this.props.type} onClick={this.onClick}>  {this.props.title} </li>
-            );
-        }
-    });
+      return (
+        <li className={this.props.type} onClick={this.onClick}>  {this.props.title} </li>
+      );
+    }
+  });
 
-    var FloatingMenuBox = React.createClass({
-        mixins: [require('./reactMixin/EventDistributor.js')],
+  var FloatingMenuBox = React.createClass({
+    mixins: [require('./reactMixin/EventDistributor.js')],
 
-        getInitialState() {
+    getInitialState() {
 
-            return {
-                display: "off", // on , off
-                x: 0,
-                y: 0,
-                memuItems: [],
+      return {
+        display: "off", // on , off
+        x: 0,
+        y: 0,
+        memuItems: [],
 
-                // Floating Menu 의 존재의 이유
-                for: "",
-                target: {}
-            };
-        },
+        // Floating Menu 의 존재의 이유
+        for: "",
+        target: {}
+      };
+    },
 
-        renderMenuItem(_item) {
+    renderMenuItem(_item) {
 
-            if (typeof _item === "object") {
-                return (<MenuItem ref={ _item.key }
-                                  title={_item.title}
-                                  type={_item.type}
-                                  eventName={_item.eventName}
-                                  addEventDataFields={ {for: this.state.for, target: this.state.target} }/>);
+      if (typeof _item === "object") {
+        return (<MenuItem ref={ _item.key }
+                          title={_item.title}
+                          type={_item.type}
+                          eventName={_item.eventName}
+                          addEventDataFields={ {for: this.state.for, target: this.state.target} }/>);
 
-            } else if (_item === 'spliter') {
-                return <hr/>
-            }
-        },
+      } else if (_item === 'spliter') {
+        return <hr/>
+      }
+    },
 
-        render() {
-            var styles = {
-                display: "none"
-            };
+    render() {
+      var styles = {
+        display: "none"
+      };
 
-            if (this.state.display === 'off') {
-                styles.display = "none";
-            } else if (this.state.display === "on") {
-                styles.display = "block";
-            }
+      if (this.state.display === 'off') {
+        styles.display = "none";
+      } else if (this.state.display === "on") {
+        styles.display = "block";
+      }
 
-            styles.left = this.state.x + "px";
-            styles.top = this.state.y + "px";
+      styles.left = this.state.x + "px";
+      styles.top = this.state.y + "px";
 
-            return (
-                <div className='FloatingMenuBox black' style={styles}>
+      return (
+        <div className='FloatingMenuBox black' style={styles}>
 
-                    <div className='body'>
-                        <ul>
-                            {this.state.memuItems.map(this.renderMenuItem)}
-                        </ul>
-                    </div>
-                </div>
-            );
-        }
-    });
+          <div className='body'>
+            <ul>
+              {this.state.memuItems.map(this.renderMenuItem)}
+            </ul>
+          </div>
+        </div>
+      );
+    }
+  });
 
-    module.exports = FloatingMenuBox;
+  module.exports = FloatingMenuBox;
 
 })();

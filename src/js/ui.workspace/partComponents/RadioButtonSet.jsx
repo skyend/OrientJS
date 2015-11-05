@@ -3,14 +3,14 @@ var React = require("react");
 
 var RadioButtonSet = React.createClass({
 
-    render() {
+  render() {
 
-        return (
-            <div className="RadioButtonSet">
+    return (
+      <div className="RadioButtonSet">
 
-            </div>
-        );
-    }
+      </div>
+    );
+  }
 });
 
 

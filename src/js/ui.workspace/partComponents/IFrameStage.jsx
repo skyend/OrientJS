@@ -9,343 +9,343 @@ var React = require("react");
 require('./IFrameStage.less');
 
 var IFrameStage = React.createClass({
-    mixins: [require('../reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
 
-    getInitialState() {
-        return {
-            src: "about:blank"
-        };
-    },
+  getInitialState() {
+    return {
+      src: "about:blank"
+    };
+  },
 
-    getIframeInnerWindow() {
-        var iframeDom = this.refs['iframe'].getDOMNode();
+  getIframeInnerWindow() {
+    var iframeDom = this.refs['iframe'].getDOMNode();
 
-        return iframeDom.contentWindow || iframeDom;
-    },
+    return iframeDom.contentWindow || iframeDom;
+  },
 
-    getIFrameInnerDoc() {
-        var innerWindow = this.getIframeInnerWindow();
-        return innerWindow.contentDocument || innerWindow.document;
-    },
+  getIFrameInnerDoc() {
+    var innerWindow = this.getIframeInnerWindow();
+    return innerWindow.contentDocument || innerWindow.document;
+  },
 
-    getInnerBody() {
-        return this.getIFrameInnerDoc().querySelector('body');
-    },
+  getInnerBody() {
+    return this.getIFrameInnerDoc().querySelector('body');
+  },
 
-    getInnerHead() {
-        return this.getIFrameInnerDoc().querySelector('head');
-    },
+  getInnerHead() {
+    return this.getIFrameInnerDoc().querySelector('head');
+  },
 
-    getScrollX() {
-        return this.getIFrameInnerDoc().body.scrollLeft;
-    },
+  getScrollX() {
+    return this.getIFrameInnerDoc().body.scrollLeft;
+  },
 
-    getScrollY() {
-        return this.getIFrameInnerDoc().body.scrollTop;
-    },
+  getScrollY() {
+    return this.getIFrameInnerDoc().body.scrollTop;
+  },
 
-    writeContentsToBody(_html, _styles) {
-        this.getInnerBody().innerHTML = _html;
-        this.getInnerHead().innerHTML = '<style>' + _styles + '</style>';
-    },
+  writeContentsToBody(_html, _styles) {
+    this.getInnerBody().innerHTML = _html;
+    this.getInnerHead().innerHTML = '<style>' + _styles + '</style>';
+  },
 
-    addStyle(_key, _style) {
-        if (typeof this.styles === 'undefined')
-            this.styles = {};
+  addStyle(_key, _style) {
+    if (typeof this.styles === 'undefined')
+      this.styles = {};
 
-        this.styles[_key] = _style;
-        var styleLines = '';
-        var styleKeys = Object.keys(this.styles);
+    this.styles[_key] = _style;
+    var styleLines = '';
+    var styleKeys = Object.keys(this.styles);
 
-        for (var i = 0; i < styleKeys.length; i++) {
-            styleLines += this.styles[styleKeys[i]];
-        }
+    for (var i = 0; i < styleKeys.length; i++) {
+      styleLines += this.styles[styleKeys[i]];
+    }
 
-        if (typeof this.componentStyleElement === 'undefined') {
-            var styleTag = this.getIFrameInnerDoc().createElement('style');
-            styleTag.type = 'text/css';
-            this.getInnerHead().appendChild(styleTag);
+    if (typeof this.componentStyleElement === 'undefined') {
+      var styleTag = this.getIFrameInnerDoc().createElement('style');
+      styleTag.type = 'text/css';
+      this.getInnerHead().appendChild(styleTag);
 
-            this.componentStyleElement = styleTag;
-        }
+      this.componentStyleElement = styleTag;
+    }
 
-        this.componentStyleElement.innerHTML = styleLines;
-    },
+    this.componentStyleElement.innerHTML = styleLines;
+  },
 
-    removeStyle(_key) {
-        if (typeof this.styles !== 'object')
-            throw new Error("Styles collection is not declared.");
-        if (typeof this.styles[_key] !== 'string')
-            throw new Error("Style[" + _key + "] is not exists.");
+  removeStyle(_key) {
+    if (typeof this.styles !== 'object')
+      throw new Error("Styles collection is not declared.");
+    if (typeof this.styles[_key] !== 'string')
+      throw new Error("Style[" + _key + "] is not exists.");
 
-        delete this.styles[_key];
-    },
+    delete this.styles[_key];
+  },
 
-    getElementByVid(_vid){
-        return this.getIFrameInnerDoc().querySelector('[__vid__="' + _vid + '"]');
-    },
+  getElementByVid(_vid){
+    return this.getIFrameInnerDoc().querySelector('[__vid__="' + _vid + '"]');
+  },
 
-    appendStyleElement(_element){
-        this.getIFrameInnerDoc().head.appendChild(_element);
-    },
+  appendStyleElement(_element){
+    this.getIFrameInnerDoc().head.appendChild(_element);
+  },
 
-    appendScriptElementToHead(_element){
-        this.getIFrameInnerDoc().head.appendChild(_element);
-    },
+  appendScriptElementToHead(_element){
+    this.getIFrameInnerDoc().head.appendChild(_element);
+  },
 
-    appendScriptElementToHTML(_element){
-        this.getIFrameInnerDoc().head.parentElement.appendChild(_element);
-    },
+  appendScriptElementToHTML(_element){
+    this.getIFrameInnerDoc().head.parentElement.appendChild(_element);
+  },
 
-    insertElementToInLastBySelector(_selector, _element){
-        var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
+  insertElementToInLastBySelector(_selector, _element){
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
 
-        return baseTarget.appendChild(_element);
-    },
+    return baseTarget.appendChild(_element);
+  },
 
-    insertElementToInLastByVid(_baseTargetVid, _element) {
+  insertElementToInLastByVid(_baseTargetVid, _element) {
 
-        return this.insertElementToInLastBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
-    },
+    return this.insertElementToInLastBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
+  },
 
-    insertElementToBeforeBySelector(_selector, _element) {
-        var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
+  insertElementToBeforeBySelector(_selector, _element) {
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
 
-        var parentElement = baseTarget.parentElement;
+    var parentElement = baseTarget.parentElement;
 
-        if (parentElement === null) {
-            this.emit('NoticeMessage', {
-                title: "컴포넌트 삽입 실패",
-                message: "해당영역에 삽입할 수 없습니다.",
-                level: "error"
-            });
-            return;
-        }
+    if (parentElement === null) {
+      this.emit('NoticeMessage', {
+        title: "컴포넌트 삽입 실패",
+        message: "해당영역에 삽입할 수 없습니다.",
+        level: "error"
+      });
+      return;
+    }
 
-        return parentElement.insertBefore(_element, baseTarget);
-    },
+    return parentElement.insertBefore(_element, baseTarget);
+  },
 
-    insertElementToBeforeByVid(_baseTargetVid, _element) {
-        return this.insertElementToBeforeBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
-    },
+  insertElementToBeforeByVid(_baseTargetVid, _element) {
+    return this.insertElementToBeforeBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
+  },
 
-    insertElementToAfterBySelector(_selector, _element) {
-        var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
-        var parentElement = baseTarget.parentElement;
+  insertElementToAfterBySelector(_selector, _element) {
+    var baseTarget = this.getIFrameInnerDoc().querySelector(_selector);
+    var parentElement = baseTarget.parentElement;
 
-        if (parentElement === null) {
-            this.emit('NoticeMessage', {
-                title: "컴포넌트 삽입 실패",
-                message: "해당영역에 삽입할 수 없습니다.",
-                level: "error"
-            });
-            return;
-        }
+    if (parentElement === null) {
+      this.emit('NoticeMessage', {
+        title: "컴포넌트 삽입 실패",
+        message: "해당영역에 삽입할 수 없습니다.",
+        level: "error"
+      });
+      return;
+    }
 
-        // 기준이 되는 요소의 다음요소가 없을 경우 appendChild로 삽입한다.
-        if (baseTarget.nextElementSibling === null) {
-            return parentElement.appendChild(_element);
-        } else {
-            // 다음요소가 있으면 다음요소의 이전에 요소를 삽입한다.
-            return parentElement.insertBefore(_element, baseTarget.nextElementSibling);
-        }
-    },
+    // 기준이 되는 요소의 다음요소가 없을 경우 appendChild로 삽입한다.
+    if (baseTarget.nextElementSibling === null) {
+      return parentElement.appendChild(_element);
+    } else {
+      // 다음요소가 있으면 다음요소의 이전에 요소를 삽입한다.
+      return parentElement.insertBefore(_element, baseTarget.nextElementSibling);
+    }
+  },
 
-    insertElementToAfterByVid(_baseTargetVid, _element) {
-        return this.insertElementToAfterBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
-    },
+  insertElementToAfterByVid(_baseTargetVid, _element) {
+    return this.insertElementToAfterBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
+  },
 
-    onIframeLoaded(_iframe) {
-        var self = this;
+  onIframeLoaded(_iframe) {
+    var self = this;
 // 임시 차후에 EditorStageContext 에서 처리되어야 함
-        var iwindow = _iframe.contentWindow || _iframe.contentDocument;
-        var innerDocument = iwindow.document;
-        this.currentIframeDocument = innerDocument;
+    var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+    var innerDocument = iwindow.document;
+    this.currentIframeDocument = innerDocument;
 
-        this.bindContextMenuTrigger(_iframe);
+    this.bindContextMenuTrigger(_iframe);
 
-        innerDocument.addEventListener('click', function (_ev) {
-            self.onMouseClickAtStage(_ev);
-        }, false);
+    innerDocument.addEventListener('click', function (_ev) {
+      self.onMouseClickAtStage(_ev);
+    }, false);
 
-        innerDocument.addEventListener('dblclick', function (_ev) {
-            self.onMouseDoubleClickAtStage(_ev);
-        }, false);
+    innerDocument.addEventListener('dblclick', function (_ev) {
+      self.onMouseDoubleClickAtStage(_ev);
+    }, false);
 
-        innerDocument.addEventListener('mousedown', function (_ev) {
-            self.onMouseDownAtStage(_ev);
-        }, false);
+    innerDocument.addEventListener('mousedown', function (_ev) {
+      self.onMouseDownAtStage(_ev);
+    }, false);
 
-        innerDocument.addEventListener('scroll', function (_ev) {
-            self.onScrollAtStage(_ev);
-        }, false);
-    },
+    innerDocument.addEventListener('scroll', function (_ev) {
+      self.onScrollAtStage(_ev);
+    }, false);
+  },
 
-    /**
-     * onMouseClickAtStage
-     *
-     */
-        onMouseClickAtStage(_e) {
-        this.elementClick(_e.target, _e);
-    },
+  /**
+   * onMouseClickAtStage
+   *
+   */
+    onMouseClickAtStage(_e) {
+    this.elementClick(_e.target, _e);
+  },
 
-    onMouseDoubleClickAtStage(_e){
-        this.elementDClick(_e.target, _e);
-    },
+  onMouseDoubleClickAtStage(_e){
+    this.elementDClick(_e.target, _e);
+  },
 
-    onScrollAtStage(_e){
+  onScrollAtStage(_e){
 
-        this.emit("ScrollAtStage", {}, _e, "Scroll");
-    },
+    this.emit("ScrollAtStage", {}, _e, "Scroll");
+  },
 
 
-    elementClick(_target, _e){
+  elementClick(_target, _e){
 
-        this.emit("ClickElementInStage", {
-            targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
-        });
-    },
+    this.emit("ClickElementInStage", {
+      targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
+    });
+  },
 
-    elementDClick(_target, _e){
-        this.emit("DClickElementInStage", {
-            targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
-        });
-    },
+  elementDClick(_target, _e){
+    this.emit("DClickElementInStage", {
+      targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
+    });
+  },
 
-    searchClickedDOM(_target, _mx, _my){
-        var targetNode = _target;
-        var childNodes = targetNode.childNodes;
+  searchClickedDOM(_target, _mx, _my){
+    var targetNode = _target;
+    var childNodes = targetNode.childNodes;
 
-        if (childNodes.length > 0) {
-            var childNode;
-            var range;
-            var rects;
-            var found = false;
-            for (var i = 0; i < childNodes.length; i++) {
-                childNode = childNodes[i];
+    if (childNodes.length > 0) {
+      var childNode;
+      var range;
+      var rects;
+      var found = false;
+      for (var i = 0; i < childNodes.length; i++) {
+        childNode = childNodes[i];
 
-                range = document.createRange();
-                range.selectNodeContents(childNode);
-                rects = range.getClientRects();
+        range = document.createRange();
+        range.selectNodeContents(childNode);
+        rects = range.getClientRects();
 
-                if (rects.length == 0) break;
-                for (var j = 0; j < rects.length; j++) {
-                    //console.log( childNode, range, rects);
-                    if (( rects[j].left < _mx && rects[j].right > _mx ) &&
-                        ( rects[j].top < _my && rects[j].bottom > _my )) {
-                        targetNode = childNode;
+        if (rects.length == 0) break;
+        for (var j = 0; j < rects.length; j++) {
+          //console.log( childNode, range, rects);
+          if (( rects[j].left < _mx && rects[j].right > _mx ) &&
+            ( rects[j].top < _my && rects[j].bottom > _my )) {
+            targetNode = childNode;
 
-                        found = true;
-                    }
-                }
-
-                if (found) {
-                    break;
-                }
-            }
+            found = true;
+          }
         }
 
-        return targetNode;
-    },
+        if (found) {
+          break;
+        }
+      }
+    }
 
-    /**
-     * onMouseDownAtStage
-     *
-     */
-        onMouseDownAtStage(_e) {
-    },
+    return targetNode;
+  },
 
-    /**
-     * bindContextMenuTrigger
-     *
-     * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
-     *
-     * @param _iframe
-     */
-        bindContextMenuTrigger(_iframe) {
-        var self = this;
+  /**
+   * onMouseDownAtStage
+   *
+   */
+    onMouseDownAtStage(_e) {
+  },
 
-        var iwindow = _iframe.contentWindow || _iframe.contentDocument;
-        var innerDocument = iwindow.document;
+  /**
+   * bindContextMenuTrigger
+   *
+   * Stage의 IFrame 내부를 클릭 했을 때 기존의 ContextMenu호출을 블럭하고 Builder자체의 Stage용 ContextMenu를 호출 하도록 이벤트를 입력한다.
+   *
+   * @param _iframe
+   */
+    bindContextMenuTrigger(_iframe) {
+    var self = this;
 
-        innerDocument.addEventListener('contextmenu', function (_e) {
-            return self.onCallContextMenu(_e);
-        }, false);
-    },
+    var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+    var innerDocument = iwindow.document;
 
-    onCallContextMenu(_e) {
+    innerDocument.addEventListener('contextmenu', function (_e) {
+      return self.onCallContextMenu(_e);
+    }, false);
+  },
 
-        _e.preventDefault();
-        var selfDom = this.getDOMNode();
-        //console.log("call contextmenu", _e);
-        var x,
-            y;
+  onCallContextMenu(_e) {
+
+    _e.preventDefault();
+    var selfDom = this.getDOMNode();
+    //console.log("call contextmenu", _e);
+    var x,
+      y;
 
 // client Rect of iframe
-        var clientRect = selfDom.getBoundingClientRect();
+    var clientRect = selfDom.getBoundingClientRect();
 
-        x = _e.clientX + clientRect.left;
-        y = _e.clientY + clientRect.top;
+    x = _e.clientX + clientRect.left;
+    y = _e.clientY + clientRect.top;
 //console.log(_e.clientX, _e.clientY, editorStageWrapperY, editorStageWrapperX);
-        var targetElement = _e.toElement;
+    var targetElement = _e.toElement;
 
-        this.emit("CallContextMenu", {
-            mouseX: x,
-            mouseY: y,
+    this.emit("CallContextMenu", {
+      mouseX: x,
+      mouseY: y,
 
 // for 필드는 이 컨텍스트 메뉴가 무엇을 위한 컨텍스트 메뉴인지 의미한다.
 
-            for: "StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
-            target: {
-                //stageContextId: "", // 현재 편집중인 ContextID
-                //elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
-                element: targetElement
-            }
-        }, _e, "MouseEvent");
+      for: "StageElement", // 에디팅중인 도큐먼트의 Stage의 Element
+      target: {
+        //stageContextId: "", // 현재 편집중인 ContextID
+        //elementId: "", // 컨텍스트 메뉴가 바라보는 ElementID / ID는 Dom 의 Attribute 중의 id 가 아니라 빌더에서만 사용되는 DOM요소의 특별한 ID이다. 예) --eid
+        element: targetElement
+      }
+    }, _e, "MouseEvent");
 
-        return false;
-    },
+    return false;
+  },
 
-    componentDidUpdate() {
-        var self = this;
-        var iframe = this.refs['iframe'].getDOMNode();
+  componentDidUpdate() {
+    var self = this;
+    var iframe = this.refs['iframe'].getDOMNode();
 
-        iframe.onload = function (_e) {
-            self.onIframeLoaded(iframe);
-        };
+    iframe.onload = function (_e) {
+      self.onIframeLoaded(iframe);
+    };
 
-    },
+  },
 
-    componentDidMount() {
-        var iframe = this.refs['iframe'].getDOMNode();
-        this.onIframeLoaded(iframe);
+  componentDidMount() {
+    var iframe = this.refs['iframe'].getDOMNode();
+    this.onIframeLoaded(iframe);
 
-        if (this.state.src === 'undefined') {
-            this.setState({
-                src: this.props.src
-            });
-        }
-    },
+    if (this.state.src === 'undefined') {
+      this.setState({
+        src: this.props.src
+      });
+    }
+  },
 
-    render() {
-        var classes = [];
-        classes.push('IFrameStage');
-        classes.push('theme-default');
-        classes.push(this.props.color);
-        classes.push(this.props.size);
+  render() {
+    var classes = [];
+    classes.push('IFrameStage');
+    classes.push('theme-default');
+    classes.push(this.props.color);
+    classes.push(this.props.size);
 
-        return (
-            <div className={classes.join(' ')}
-                 style={{
+    return (
+      <div className={classes.join(' ')}
+           style={{
         width: this.props.width,
         height: this.props.height,
         left: this.props.left || 'auto',
         top: this.props.top || 'auto'
       }}>
-                <iframe ref='iframe' src={this.state.src}/>
-            </div>
-        );
-    }
+        <iframe ref='iframe' src={this.state.src}/>
+      </div>
+    );
+  }
 });
 
 module.exports = IFrameStage;
