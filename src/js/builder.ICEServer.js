@@ -155,7 +155,6 @@ class ICEServer {
 
   requestNodeType(_method, _nt_tid, _crud, _headerData, _fieldsData, _end) {
     var fields = {};
-    console.log('field Datas', _fieldsData);
 
     _fieldsData.map(function(_field) {
       fields[_field.name] = _field.testValue || _field.value;
@@ -175,16 +174,6 @@ class ICEServer {
           }
         });
     }
-
-  }
-
-  requestWithRequestObject(_requestData, _nodeTypeData, _complete) {
-    let request = new Request(_requestData);
-    request.nodeTypeData = _nodeTypeData;
-
-    request.execute(this, function(_result) {
-      _complete(_result);
-    });
   }
 }
 

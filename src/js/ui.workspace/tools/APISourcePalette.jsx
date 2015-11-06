@@ -1,6 +1,7 @@
 import "./APISourcePalette.less"
 import React from 'react';
 import _ from 'underscore';
+import APISource from '../../serviceCrew/APISource.js';
 
 let Request = React.createClass({
   mixins: [ require('../reactMixin/EventDistributor.js') ],
@@ -9,38 +10,44 @@ let Request = React.createClass({
     return {
       request:null,
       name:'',
-      nodeTypeData:null
+      nodeTypeData:null,
+      apiSource:null
     }
   },
 
   getInitialState(){
     return {
       showItemTree:false,
-      sourceData:null
+      dataFrame:null
     }
   },
 
   click(){
+    let self = this;
     let nextValue = !this.state.showItemTree;
     this.setState({showItemTree: nextValue });
 
-    if( nextValue && this.state.sourceData === null ){
-      this.emit("NeedRequestResult", {
-        request: this.props.request,
-        nodeTypeData: this.props.nodeTypeData
+    if( nextValue && this.state.dataFrame === null ){
+      this.props.apiSource.executeTestRequest(this.props.request.name, function(_result){
+        self.setState({dataFrame: self.props.request.testDataFrame});
       });
     }
   },
 
-  renderSourceDataTree(){
-    if( this.state.sourceData === null ){
+
+
+  renderDataFrame(){
+    if( this.state.dataFrame === null ){
       return (
         <div className='loading'>
-          <i className="fa fa-spinner fa-pulse"/> Source Loading...
+          <i className="fa fa-spinner fa-pulse"/> Loading Data frame...
         </div>
       )
     }
+    console.log("DATA FRAME", this.state.dataFrame);
 
+
+    
     return (
       <div>
 
@@ -53,12 +60,13 @@ let Request = React.createClass({
 
     return (
       <div className='binding-item-tree'>
-        { this.renderSourceDataTree() }
+        { this.renderDataFrame() }
       </div>
     )
   },
 
   render(){
+    console.log(this.props.request);
     let headClasses = ['head'];
     if(this.state.showItemTree) headClasses.push('active');
 
@@ -66,7 +74,7 @@ let Request = React.createClass({
       <div className='request'>
         <div className={headClasses.join(' ')} onClick={this.click}>
           {this.props.name}
-          <small> {this.state.sourceData !== null? <i className="fa fa-inbox"/>:''}</small>
+          <small> {this.state.dataFrame !== null? <i className="fa fa-inbox"/>:''}</small>
         </div>
         { this.state.showItemTree? this.renderBindingItemTree():''}
       </div>
@@ -80,7 +88,7 @@ let APISourceItem = React.createClass({
 
   getDefaultProps(){
     return {
-      source: null,
+      apiSource: null,
       interfaces: null
     }
   },
@@ -93,25 +101,31 @@ let APISourceItem = React.createClass({
   },
 
   click(){
+    let self = this;
     let nextValue = !this.state.active;
     this.setState({active: nextValue});
 
-    if( nextValue && this.state.nodeTypeData === null ){
-      this.emit("NeedNodeTypeData", {
-        nodeTypeNID: this.props.source.nid
+    if( nextValue && !this.props.apiSource.hasNodeTypeData ){
+
+      this.props.apiSource.prepareNodeTypeData(function(_result){
+        if( _result ){
+          self.forceUpdate();
+        }
       });
     }
   },
 
   renderRequest(_name, _request){
+
     return (
-      <Request request={_request} name={_name} nodeTypeData={this.state.nodeTypeData}/>
+      <Request request={_request} name={_name} apiSource={this.props.apiSource}/>
     );
   },
 
   renderRequests(){
     let self = this;
-    if( this.state.nodeTypeData === null ){
+
+    if( !this.props.apiSource.hasNodeTypeData ){
       return <div className='loading'>
         <i className="fa fa-spinner fa-pulse"/> Node type Loading...
       </div>
@@ -119,34 +133,34 @@ let APISourceItem = React.createClass({
 
     let requestElements = [];
 
-    let requestKeys = Object.keys(this.props.source.requests || {});
-
-    // source 의 request
+    let requestKeys = Object.keys(this.props.apiSource.requests || {});
+    console.log( this.props.apiSource.requests);
+    // ~source 의 request~
     if( requestKeys.length > 0 ){
       requestKeys.map(function (_requestKey) {
-        requestElements.push( self.renderRequest(_requestKey, self.props.source.requests[_requestKey]) );
+        requestElements.push( self.renderRequest(_requestKey, self.props.apiSource.requests[_requestKey]) );
       });
     }
 
-    // interface 의 request
-    if( (this.props.source.interfaces || 0).length > 0){
-      if( this.props.interfaces !== null ){
-        this.props.source.interfaces.map(function(_interfaceId){
-
-          let index = _.findIndex(self.props.interfaces, function(_interface){
-            return _interface._id === _interfaceId;
-          });
-
-          let interfaceObj = self.props.interfaces[index];
-
-          Object.keys(interfaceObj.requests || {}).map(function(_key){
-            let request = interfaceObj.requests[_key];
-
-            requestElements.push( self.renderRequest(_key, request) );
-          });
-        });
-      }
-    }
+    // // interface 의 request
+    // if( (this.props.apiSource.interfaces || 0).length > 0){
+    //   if( this.props.interfaces !== null ){
+    //     this.props.apiSource.interfaces.map(function(_interfaceId){
+    //
+    //       let index = _.findIndex(self.props.interfaces, function(_interface){
+    //         return _interface._id === _interfaceId;
+    //       });
+    //
+    //       let interfaceObj = self.props.interfaces[index];
+    //
+    //       Object.keys(interfaceObj.requests || {}).map(function(_key){
+    //         let request = interfaceObj.requests[_key];
+    //
+    //         requestElements.push( self.renderRequest(_key, request) );
+    //       });
+    //     });
+    //   }
+    // }
 
 
     if (requestElements.length > 0) {
@@ -159,9 +173,9 @@ let APISourceItem = React.createClass({
   render(){
     let self = this;
     let iconElement;
-    if (this.props.source.icon !== '') {
+    if (this.props.apiSource.icon !== '') {
 
-      iconElement = <img src={this.props.iceHost + "/icon/"+ this.props.source.icon}/>;
+      iconElement = <img src={this.props.iceHost + "/icon/"+ this.props.apiSource.icon}/>;
     } else {
 
       iconElement = <i className='fa fa-database'/>;
@@ -170,7 +184,7 @@ let APISourceItem = React.createClass({
     return (
       <li>
         <div className={'source-title ' + ( this.state.active? 'active':'')} onClick={this.click}>
-          <span>{iconElement} { this.props.source.title }</span>
+          <span>{iconElement} { this.props.apiSource.title }</span>
           <small> {this.state.nodeTypeData !== null? <i className="fa fa-inbox"/>:''}</small>
         </div>
         { this.state.active ? (<div className='source-requests-display'>{this.renderRequests()}</div>) : '' }
@@ -200,14 +214,14 @@ export default React.createClass({
 
   componentDidMount(){
     this.emit("NeedICEHost");
-    this.emit("UpdateAPISourceList");
+    this.emit("NeedAPISourceList");
     this.emit("UpdateAPIInterfaceList");
   },
 
   renderAPISource(_apiSource){
 
     return (
-      <APISourceItem source={_apiSource} iceHost={this.state.iceHost} interfaces={this.state.apiinterfaceList}/>
+      <APISourceItem apiSource={_apiSource} iceHost={this.state.iceHost} interfaces={this.state.apiinterfaceList}/>
     );
   },
 
