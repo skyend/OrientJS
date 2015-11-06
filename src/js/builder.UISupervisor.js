@@ -643,6 +643,32 @@ UI.prototype.onThrowCatcherNeedICafeNodeTypes = function(_eventData) {
   });
 };
 
+UI.prototype.onThrowCatcherNeedRequestResult = function(_eventData) {
+  let request = _eventData.request;
+  let nodeTypeData = _eventData.nodeTypeData;
+
+  console.log(request);
+
+  this.app.serviceManager.iceDriver.requestWithRequestObject(request, nodeTypeData, function(_result) {
+    console.log(_result);
+    // _eventData.path[0].setState({
+    //   requestData: request,
+    //   node
+    // });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
+  let nid = _eventData.nodeTypeNID;
+
+
+  this.app.serviceManager.iceDriver.getNodeType(nid, function(_result) {
+    _eventData.path[0].setState({
+      nodeTypeData: _result
+    });
+  });
+}
+
 
 /****************************************************************/
 /**************************** Builder Logic End *****************/

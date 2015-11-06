@@ -1,5 +1,6 @@
 import request from 'superagent';
 import _ from "underscore";
+import Request from './serviceCrew/Request.js';
 
 let instance = null;
 
@@ -168,14 +169,22 @@ class ICEServer {
           if (res === undefined) {
             _end({
               result: 'fail'
-            })
+            });
           } else {
             _end(res.body);
           }
         });
     }
 
+  }
 
+  requestWithRequestObject(_requestData, _nodeTypeData, _complete) {
+    let request = new Request(_requestData);
+    request.nodeTypeData = _nodeTypeData;
+
+    request.execute(this, function(_result) {
+      _complete(_result);
+    });
   }
 }
 

@@ -1063,7 +1063,7 @@ var _ = require('underscore');
               <div className='empty-holder'>
                 {"Open a tab context and Start your amazing Service!"}<br/>
 
-                <h1>{"For ICE CMS"}</h1>
+                <h1>{"Gelateria For ICE Package"}</h1>
 
                 <div className='ball'/>
               </div>
