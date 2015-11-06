@@ -35,8 +35,45 @@ let Request = React.createClass({
   },
 
 
+  renderDataFrameUnit(_key, _object){
+    let self = this;
+    let type = typeof _object;
+
+    switch(type){
+      case "boolean":
+      case "string":
+      case "number":
+        return <li className={type}>
+          <div className='item' draggable={true}>
+            <span className='key'>{_key}</span>
+            <span className='value'>
+              <span className='wrapper' title={_object}>
+                {_object}
+              </span>
+            </span>
+          </div>
+        </li>;
+
+      case "object":
+        let typeDetail = typeof _object.length === 'number'? "array":"object";
+        return (
+          <li className={typeDetail}>
+            <div className='item' draggable={true}>
+              <span className='key'>{_key}</span>
+              <span className='value'> </span>
+            </div>
+            <ul>
+              {Object.keys(_object).map(function(_key) {
+                return self.renderDataFrameUnit(_key, _object[_key])
+              })}
+            </ul>
+          </li>
+        )
+    }
+  },
 
   renderDataFrame(){
+    let self = this;
     if( this.state.dataFrame === null ){
       return (
         <div className='loading'>
@@ -44,23 +81,24 @@ let Request = React.createClass({
         </div>
       )
     }
+
     console.log("DATA FRAME", this.state.dataFrame);
 
 
-    
-    return (
-      <div>
 
-      </div>
-    );
+    return Object.keys(this.state.dataFrame).map(function(_key) {
+      return self.renderDataFrameUnit(_key, self.state.dataFrame[_key])
+    });
   },
 
   renderBindingItemTree(){
 
 
     return (
-      <div className='binding-item-tree'>
-        { this.renderDataFrame() }
+      <div className='data-frame'>
+        <ul>
+          { this.renderDataFrame() }
+        </ul>
       </div>
     )
   },
@@ -185,7 +223,7 @@ let APISourceItem = React.createClass({
       <li>
         <div className={'source-title ' + ( this.state.active? 'active':'')} onClick={this.click}>
           <span>{iconElement} { this.props.apiSource.title }</span>
-          <small> {this.state.nodeTypeData !== null? <i className="fa fa-inbox"/>:''}</small>
+          <small> {this.props.apiSource.hasNodeTypeData? <i className="fa fa-inbox"/>:''}</small>
         </div>
         { this.state.active ? (<div className='source-requests-display'>{this.renderRequests()}</div>) : '' }
       </li>

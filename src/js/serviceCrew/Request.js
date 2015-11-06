@@ -48,7 +48,7 @@ export default class Request {
 
     if (_resultData.read == 1) {
       Object.keys(_propertytpye).map(function(_ptkey) {
-        dataFrame[_ptkey] = _resultData[_ptkey];
+        dataFrame[_ptkey] = _resultData[_ptkey] || _ptkey;
       });
     }
 

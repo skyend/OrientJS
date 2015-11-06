@@ -110,12 +110,168 @@
                             }
                         }
 
-                        .binding-item-tree
+                        .data-frame
                         {
                             padding: 10px 0 0 10px;
                             .loading
                             {
                                 font-family: fantasy;
+                            }
+
+                            ul
+                            {
+                                box-sizing: border-box;
+                                //
+                                padding-left: 15px;
+
+                                li
+                                {
+                                    //
+                                    .item
+                                    {
+                                        display: inline-block;
+
+                                        max-width: 100%;
+                                        margin: 3px;
+
+                                        > .key
+                                        {
+                                            display: table-cell;
+
+                                            box-sizing: border-box;
+                                            height: 25px;
+                                            padding: 5px;
+
+                                            vertical-align: middle;
+
+                                            color: #fff;
+                                            background-color: #20457d;
+                                        }
+
+                                        > .value
+                                        {
+                                            display: table-cell;
+                                            overflow: hidden;
+
+                                            box-sizing: border-box;
+                                            height: 25px;
+                                            padding: 5px;
+
+                                            vertical-align: middle;
+                                            word-break: break-all;
+
+                                            color: #6b5112;
+                                            background-color: #eae3d2;
+                                            > .wrapper
+                                            {
+                                                display: inline-block;
+                                                overflow: hidden;
+
+                                                height: 15px;
+
+                                                vertical-align: middle;
+                                            }
+                                        }
+
+
+
+
+                                        > :first-child
+                                        {
+                                            border-top-left-radius: 10px;
+                                            border-bottom-left-radius: 10px;
+                                        }
+
+                                        > :last-child
+                                        {
+                                            border-top-right-radius: 10px;
+                                            border-bottom-right-radius: 10px;
+                                        }
+                                    }
+
+                                    &.number
+                                    {
+                                        > .item
+                                        {
+                                            > .value
+                                            {
+                                                color: #6b5112;
+                                            }
+                                        }
+                                    }
+
+                                    &.string
+                                    {
+                                        > .item
+                                        {
+                                            > .value
+                                            {
+                                                color: #6b5112;
+                                                > .wrapper
+                                                {
+                                                    &:before
+                                                    {
+                                                        content: '"';
+                                                    }
+                                                    &:after
+                                                    {
+                                                        content: '"';
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    &.boolean
+                                    {
+                                        > .item
+                                        {
+                                            > .value
+                                            {
+                                                color: #6b5112;
+                                            }
+                                        }
+                                    }
+
+                                    &.array
+                                    {
+                                        > .item
+                                        {
+                                            > .value
+                                            {
+                                                color: #6b5112;
+                                                &:before
+                                                {
+                                                    content: '[';
+                                                }
+                                                &:after
+                                                {
+                                                    content: ']';
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    &.object
+                                    {
+                                        > .item
+                                        {
+                                            > .value
+                                            {
+                                                color: #6b5112;
+
+                                                &:before
+                                                {
+                                                    content: '{';
+                                                }
+                                                &:after
+                                                {
+                                                    content: '}';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 
