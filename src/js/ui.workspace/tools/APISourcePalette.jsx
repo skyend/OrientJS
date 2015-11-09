@@ -26,8 +26,11 @@ let Request = React.createClass({
     let self = this;
     let nextValue = !this.state.showItemTree;
     this.setState({showItemTree: nextValue });
+  },
 
-    if( nextValue && this.state.dataFrame === null ){
+  componentDidUpdate(){
+    let self = this;
+    if( this.state.showItemTree && this.state.dataFrame === null ){
       this.props.apiSource.executeTestRequest(this.props.request.name, function(_result){
         self.setState({dataFrame: self.props.request.testDataFrame});
       });
@@ -104,7 +107,6 @@ let Request = React.createClass({
   },
 
   render(){
-    console.log(this.props.request);
     let headClasses = ['head'];
     if(this.state.showItemTree) headClasses.push('active');
 
@@ -143,7 +145,20 @@ let APISourceItem = React.createClass({
     let nextValue = !this.state.active;
     this.setState({active: nextValue});
 
-    if( nextValue && !this.props.apiSource.hasNodeTypeData ){
+    // if( nextValue && !this.props.apiSource.hasNodeTypeData ){
+    //   console.log(this.props.apiSource);
+    //   this.props.apiSource.prepareNodeTypeData(function(_result){
+    //     if( _result ){
+    //       self.forceUpdate();
+    //     }
+    //   });
+    // }
+  },
+
+  componentDidUpdate(){
+    let self = this;
+    if( this.state.active && !this.props.apiSource.hasNodeTypeData ){
+      console.log(this.props.apiSource);
 
       this.props.apiSource.prepareNodeTypeData(function(_result){
         if( _result ){
@@ -257,6 +272,7 @@ export default React.createClass({
   },
 
   renderAPISource(_apiSource){
+    console.log(_apiSource);
 
     return (
       <APISourceItem apiSource={_apiSource} iceHost={this.state.iceHost} interfaces={this.state.apiinterfaceList}/>
