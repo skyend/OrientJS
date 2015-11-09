@@ -16,6 +16,8 @@ var DirectContext = React.createClass({
       elementNavigatorX: 0,
       elementNavigatorY: 0,
       showElementNavigator: false,
+      fixSelected: false,
+      editModeElementNode: null,
       sizing: 'desktop'
     };
   },
@@ -59,6 +61,8 @@ var DirectContext = React.createClass({
 
 
   deployComponentToInLast(_vid, _component){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('컴포넌트 드롭 실패', '요소 Text를 편집중입니다.');
+
     var returns;
 
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
@@ -82,6 +86,8 @@ var DirectContext = React.createClass({
   },
 
   deployComponentToBefore(_vid, _component){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('컴포넌트 드롭 실패', '요소 Text를 편집중입니다.');
+
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
     if (typeof dropTargetDOMElement.getElementNode === 'function') {
@@ -102,6 +108,8 @@ var DirectContext = React.createClass({
   },
 
   deployComponentToAfter(_vid, _component){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('컴포넌트 드롭 실패', '요소 Text를 편집중입니다.');
+
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
     if (typeof dropTargetDOMElement.getElementNode === 'function') {
@@ -152,7 +160,7 @@ var DirectContext = React.createClass({
    * DOMElement를 이용하여 ContextController를 찾는다 하지만 지정된 DOMElement로 찾지 못할 경우 부모노드로 내려가 찾고
    * 그래도 찾지 못할 경우에는 directContext에 지정된 ContextController를 반환한다.
    */
-    getContextControllerFromDOMElement(_sourceDOMElement){
+  getContextControllerFromDOMElement(_sourceDOMElement){
     var funcFind = false;
     var dropTarget = _sourceDOMElement;
 
@@ -199,6 +207,8 @@ var DirectContext = React.createClass({
   },
 
   pasteElementIn(){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('붙여넣기 실패', '요소 Text를 편집중입니다.');
+
     if (this.copiedElementNodeData === undefined) {
       this.errorNotice('붙여넣기 실패', '이전에 복사된 내용이 없습니다.');
       return;
@@ -210,6 +220,8 @@ var DirectContext = React.createClass({
   },
 
   removeElement(){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('요소 제거 실패', '요소 Text를 편집중입니다.');
+
     let elementNode = this.state.selectedElementNode;
 
     this.props.contextController.modifyElementTree(elementNode.id, 'remove');
@@ -218,6 +230,8 @@ var DirectContext = React.createClass({
   },
 
   cloneElement(){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('복제 실패', '요소 Text를 편집중입니다.');
+
     var elementNode = this.state.selectedElementNode;
     var contextController = this.getContextControllerFromDOMElement(elementNode.getRealDOMElement());
 
@@ -229,6 +243,8 @@ var DirectContext = React.createClass({
   },
 
   jumpToParentElement(){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('부모 점프 실패', '요소 Text를 편집중입니다.');
+
     var parent = this.state.selectedElementNode.getParent();
 
     if (parent === null) {
@@ -245,6 +261,7 @@ var DirectContext = React.createClass({
   },
 
   closeElementNavigator(){
+    if( this.state.editModeElementNode !== null ) return this.errorNotice('네비게이터를 닫을 수 없음', '요소 Text를 편집중입니다.');
 
     this.setState({
       showElementNavigator: false,
@@ -309,6 +326,7 @@ var DirectContext = React.createClass({
   },
 
   selectElement(_targetNode){
+    if( this.state.editModeElementNode !== null ) return ;
 
     // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
     // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
@@ -380,9 +398,40 @@ var DirectContext = React.createClass({
     return this.refs['iframe-stage'];
   },
 
+  toggleTextEditMode(_elementNode){
+
+    if( this.state.editModeElementNode !== null ){
+
+      this.props.contextController.leaveTextEditMode(this.state.editModeElementNode);
+
+      this.setState({fixSelected: false, editModeElementNode:null});
+
+      this.emit("ChangeContextControllerState");
+    } else {
+      this.setState({fixSelected: true, editModeElementNode:_elementNode});
+
+      this.props.contextController.enterTextEditMode(_elementNode);
+
+      this.emit("ChangeContextControllerState");
+    }
+  },
+
   onThrowCatcherScrollAtStage(_eventData, _pass){
     this.forceUpdate();
 
+  },
+
+  onThrowCatcherDClickElementInStage(_eventData){
+    console.log('double click element', _eventData, _eventData.targetDOMNode, _eventData.targetDOMNode.___en);
+    let elementNode = _eventData.targetDOMNode.___en;
+
+    // string Type 은 요소의 부모를 editMode로 전환한다.
+    if( elementNode.type === 'string') {
+      this.selectElement(_eventData.targetDOMNode.parentNode);
+      this.toggleTextEditMode(this.state.selectedElementNode);
+    } else {
+      this.toggleTextEditMode(this.state.selectedElementNode);
+    }
   },
 
   onThrowCatcherClickElementInStage(_eventData, _pass) {
@@ -732,7 +781,8 @@ var DirectContext = React.createClass({
                            width={selectedSelectRect.width}
                            height={selectedSelectRect.height}
                            active={this.state.showElementNavigator}
-                           resizable={selectedElementResizable}/>
+                           resizable={selectedElementResizable}
+                           editModeHighlight={this.state.editModeElementNode !== null }/>
       </div>
 
     );

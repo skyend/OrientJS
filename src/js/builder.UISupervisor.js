@@ -70,6 +70,10 @@ UI.prototype.eventMapping = function() {
   this.window.document.onmouseup = function(_e) {
     self.onGlobalMouseUp(_e);
   };
+
+  this.window.document.ondrop = function(_e) {
+    console.log(_e, 'drop in builder');
+  }
 }
 
 UI.prototype.onResize = function(e) { //UI화면 리사이즈
@@ -348,7 +352,7 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
   //console.log(_eventData, 'get');
   var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
 
-  _eventData.return(null, loadedComponent)
+  _eventData.return(null, loadedComponent);
 };
 
 UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
@@ -681,6 +685,9 @@ UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
   });
 }
 
+UI.prototype.onThrowCatcherChangeContextControllerState = function(_eventData) {
+  this.rootUIInstance.forceUpdate();
+}
 
 /****************************************************************/
 /**************************** Builder Logic End *****************/

@@ -9,6 +9,7 @@ class DocumentContextController {
     this.context = null;
     this.running = false;
     this.unsaved = false;
+    this.editMode = false;
 
     this.session = _session;
     this.serviceManager = _serviceManager;
@@ -309,6 +310,40 @@ class DocumentContextController {
     this.changedContent();
   }
 
+  leaveTextEditMode(_elementNode) {
+    this.editMode = false;
+    _elementNode.changeNormalMode();
+    this.rerenderingElementNode(_elementNode);
+    this.changedContent();
+  }
+
+  enterTextEditMode(_elementNode) {
+    this.editMode = true;
+    _elementNode.changeTextEditMode();
+    this.rerenderingElementNode(_elementNode);
+  }
+
+  isTextEditMode() {
+    return this.editMode;
+  }
+
+  rerenderingElementNode(_elementNode) {
+    let parentElementNode = _elementNode.getParent();
+    if (parentElementNode !== null) {
+
+      parentElementNode.children.map((_childElementNode) => {
+        this.constructToRealElement(_childElementNode);
+      });
+
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkRealDOMofChild();
+
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender();
+    }
+  }
+
 
   convertToElementNodeFromComponent(_component) {
     return this.document.newElementNodeFromComponent(_component);
@@ -412,32 +447,39 @@ class DocumentContextController {
    * ElementNode에 RealElement를 재귀로 세팅한다.
    *
    */
-  constructToRealElement(_nodeElement) {
+  constructToRealElement(_nodeElement, _globalOptions) {
     var self = this;
+    let globalOptions = _globalOptions || {};
+    let escapeResolve = globalOptions.escapeResolve;
+
+    if (_nodeElement.isTextEditMode()) {
+      escapeResolve = true;
+      globalOptions.escapeResolve = escapeResolve;
+    }
 
     _nodeElement.preProcessingMeBeforeRender();
 
     if (_nodeElement.type === "html") {
-      this.instillRealHTMLElement(_nodeElement);
+      this.instillRealHTMLElement(_nodeElement, escapeResolve);
 
       // 자식도 재귀호출로 처리
       if (typeof _nodeElement.children === 'object') {
         _nodeElement.children.map(function(__childNodeElement) {
-          self.constructToRealElement(__childNodeElement);
+          self.constructToRealElement(__childNodeElement, globalOptions);
         });
       }
     } else if (_nodeElement.type === 'string') {
-      this.instillRealTextElement(_nodeElement);
+      this.instillRealTextElement(_nodeElement, escapeResolve);
     } else if (_nodeElement.type === 'empty') {
-      this.instillRealEMPTYElement(_nodeElement);
+      this.instillRealEMPTYElement(_nodeElement, escapeResolve);
 
       // 참조중인 ElementNode도 함께 생성
       var refEleNode = _nodeElement.getRefferencingElementNode();
       if (refEleNode !== undefined) {
-        this.constructToRealElement(refEleNode);
+        this.constructToRealElement(refEleNode, globalOptions);
       }
     } else if (_nodeElement.type === 'react') {
-      this.instillRealReactElement(_nodeElement);
+      this.instillRealReactElement(_nodeElement, escapeResolve);
     }
   }
 
@@ -446,11 +488,11 @@ class DocumentContextController {
    * ElementNode에 HTML 타입의 RealElement를 주입한다.
    *
    */
-  instillRealHTMLElement(_nodeElement) {
+  instillRealHTMLElement(_nodeElement, _escapeResolve) {
     var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
     _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM();
+    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
   }
 
   /**
@@ -458,10 +500,11 @@ class DocumentContextController {
    * ElementNode에 TextNode 타입의 RealElement를 주입한다.
    *
    */
-  instillRealTextElement(_nodeElement) {
+  instillRealTextElement(_nodeElement, _escapeResolve) {
     var textNode = this.context.getDocument().createTextNode('');
 
     _nodeElement.setRealElement(textNode);
+    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
   }
 
   /**
@@ -469,11 +512,11 @@ class DocumentContextController {
    * ElementNode에 TextNode 타입의 RealElement를 주입한다.
    *
    */
-  instillRealEMPTYElement(_nodeElement) {
+  instillRealEMPTYElement(_nodeElement, _escapeResolve) {
     var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
     _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM();
+    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
   }
 
   /**
@@ -481,11 +524,11 @@ class DocumentContextController {
    * ElementNode에 React 타입의 RealElement를 주입한다.
    *
    */
-  instillRealReactElement(_nodeElement) {
+  instillRealReactElement(_nodeElement, _escapeResolve) {
     var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
 
     _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM();
+    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
   }
 
   /**

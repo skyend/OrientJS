@@ -63,6 +63,7 @@ class ElementNode {
     this.repeatOrder = preInsectProps.repeatOrder || -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
 
     this.document = _document;
+    this.mode = 'normal';
 
     //////////////////////////
     // 처리로직
@@ -518,6 +519,77 @@ class ElementNode {
     this.applyAttributesToRealDOM();
   }
 
+  changeTextEditMode(_changeCallback) {
+    this.mode = 'textEdit';
+
+    this.getRealDOMElement().setAttribute("contenteditable", 'true');
+
+    this.getRealDOMElement().onkeyup = function(_e) {
+      console.log('key up', _e, this);
+      _changeCallback(this.innerHTML);
+    }
+
+    this.getRealDOMElement().onpaste = function(_e) {
+      console.log('paste', _e, this);
+      _changeCallback(this.innerHTML);
+    }
+
+    this.getRealDOMElement().ondrop = function(_e) {
+      console.log('drop', _e, this);
+      _changeCallback(this.innerHTML);
+    }
+  }
+
+  changeNormalMode() {
+    if (this.mode === 'textEdit') {
+      this.updateSyncDOMChanged();
+    }
+
+    this.mode = 'normal';
+    this.getRealDOMElement().removeAttribute("contenteditable");
+
+    this.getRealDOMElement().onkeyup = undefined;
+    this.getRealDOMElement().onpaste = undefined;
+    this.getRealDOMElement().ondrop = undefined;
+  }
+
+  isTextEditMode() {
+    return this.mode === 'textEdit';
+  }
+
+  // Real DOM의 내용과 자신의 내용의 변경사항을 파악하여 자신의 내용을 업데이트 한다.
+  updateSyncDOMChanged() {
+    console.log(this.getRealDOMElement(), this);
+
+    let realDOMElement = this.getRealDOMElement();
+
+    console.log(realDOMElement.childNodes);
+    console.log(realDOMElement.childNodes.__proto__);
+
+    let childNodes = realDOMElement.childNodes;
+
+    let newChildList = [];
+
+    for (let i = 0; i < childNodes.length; i++) {
+      let realChild = childNodes[i];
+      let ElementNodeOfRealChild = realChild.___en;
+      let symmetryElementNode = this.children[i];
+
+      // realDOMNode에 대응하는 ElementNode 존재여부
+      if (ElementNodeOfRealChild !== undefined) {
+        // 존재하는 경우에는 변경된 속성을 파악하여 반영한다.
+        newChildList.push(ElementNodeOfRealChild);
+      } else {
+        // 존재하지 않는 경우 새로운 ElementNode를 만들어 추가 한다.
+
+      }
+    }
+
+    // 1. 자식 비교
+    this.children.map(function() {
+
+    });
+  }
 
 
   ////////////////////
@@ -785,43 +857,50 @@ class ElementNode {
 
 
 
-  applyAttributesToRealDOM() {
-    var currentRect = this.getCurrentRectangle();
+  applyAttributesToRealDOM(_escapeResolve) {
 
-    var elementAttributes = this.getAttributes();
-    var keys = Object.keys(elementAttributes);
+    //console.log("Do you think i must escape resolving?", _escapeResolve);
 
     var realElement = this.getRealDOMElement();
     if (this.getType() === 'string') {
-
       // resolve String : data binding and i18n processing
-      realElement.nodeValue = this.resolveRenderText(this.getText());
+      //console.log(this.getText());
+      realElement.nodeValue = _escapeResolve ? this.getText() : this.resolveRenderText(this.getText());
+
     } else {
+      var currentRect = this.getCurrentRectangle();
+      var elementAttributes = this.getAttributes();
+      var keys = Object.keys(elementAttributes);
+
       for (var i = 0; i < keys.length; i++) {
 
         if (keys[i] !== 'tagName') {
           // resolve String : data binding and i18n processing
-          realElement.setAttribute(keys[i], this.resolveRenderText(elementAttributes[keys[i]]));
+          realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.resolveRenderText(elementAttributes[keys[i]]));
         }
       }
-    }
 
-    if (/^\d+/.test(currentRect.left)) {
-      realElement.style.left = currentRect.left;
-    }
 
-    if (/^\d+/.test(currentRect.top)) {
-      realElement.style.top = currentRect.top;
-    }
+      if (/^\d+/.test(currentRect.left)) {
+        realElement.style.left = currentRect.left;
+      }
 
-    if (/^\d+/.test(currentRect.width)) {
-      realElement.style.width = currentRect.width;
-    }
+      if (/^\d+/.test(currentRect.top)) {
+        realElement.style.top = currentRect.top;
+      }
 
-    if (/^\d+/.test(currentRect.height)) {
-      realElement.style.height = currentRect.height;
-    }
+      if (/^\d+/.test(currentRect.width)) {
+        realElement.style.width = currentRect.width;
+      }
 
+      if (/^\d+/.test(currentRect.height)) {
+        realElement.style.height = currentRect.height;
+      }
+
+      if (this.isTextEditMode()) {
+        realElement.setAttribute('contenteditable', true);
+      }
+    }
   }
 
 
@@ -1041,7 +1120,7 @@ class ElementNode {
 
       switch (elementNodeType) {
         case "string":
-          realDOMElement.nodeValue = this.resolveRenderText(this.getText());
+          //realDOMElement.nodeValue = this.resolveRenderText(this.getText());
           break;
         case "html":
           break;

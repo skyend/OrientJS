@@ -28,6 +28,13 @@ let Request = React.createClass({
     this.setState({showItemTree: nextValue });
   },
 
+  onDragStart(_e, _path){
+    console.log(_e.nativeEvent,_path);
+    let dragEvent = _e.nativeEvent;
+
+    dragEvent.dataTransfer.setData("text/plain", "${"+_path+"}");
+  },
+
   componentDidUpdate(){
     let self = this;
     if( this.state.showItemTree && this.state.dataFrame === null ){
@@ -38,7 +45,7 @@ let Request = React.createClass({
   },
 
 
-  renderDataFrameUnit(_key, _object){
+  renderDataFrameUnit(_key, _object, _parentPath){
     let self = this;
     let type = typeof _object;
 
@@ -47,7 +54,7 @@ let Request = React.createClass({
       case "string":
       case "number":
         return <li className={type}>
-          <div className='item' draggable={true}>
+          <div className='item' draggable={true} onDragStart={function(_e){self.onDragStart(_e, (_parentPath+"/"+_key));}}>
             <span className='key'>{_key}</span>
             <span className='value'>
               <span className='wrapper' title={_object}>
@@ -66,8 +73,8 @@ let Request = React.createClass({
               <span className='value'> </span>
             </div>
             <ul>
-              {Object.keys(_object).map(function(_key) {
-                return self.renderDataFrameUnit(_key, _object[_key])
+              {Object.keys(_object).map(function(__key) {
+                return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+_key)
               })}
             </ul>
           </li>
@@ -85,12 +92,8 @@ let Request = React.createClass({
       )
     }
 
-    console.log("DATA FRAME", this.state.dataFrame);
-
-
-
     return Object.keys(this.state.dataFrame).map(function(_key) {
-      return self.renderDataFrameUnit(_key, self.state.dataFrame[_key])
+      return self.renderDataFrameUnit(_key, self.state.dataFrame[_key], '');
     });
   },
 

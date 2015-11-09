@@ -250,7 +250,7 @@ class ServiceManager {
         return sampleUrlMap[_want] || _matched;
       } else if (_namespace === 'api') {
 
-        return self.getICafeAPIDataOfField(_want) || _matched;
+        return self.getICafeAPIDataOfField(_want) || 'resolve error:' + _want;
       } else if (_namespace === 'text') {
         return _want;
       }

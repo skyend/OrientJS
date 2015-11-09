@@ -180,6 +180,10 @@ var ElementSelectRect = React.createClass({
     var self = this;
     var classes = ['eight-container'];
 
+    if(this.props.editModeHighlight){
+      return;
+    }
+
     if (this.props.resizable) {
       classes.push('active');
     }
@@ -202,6 +206,10 @@ var ElementSelectRect = React.createClass({
     var classes = ['ElementSelectRect'];
     if (this.state.dragging) {
       classes.push('no-animate');
+    }
+
+    if( this.props.editModeHighlight ){
+      classes.push('edit-mode');
     }
 
     var style = {

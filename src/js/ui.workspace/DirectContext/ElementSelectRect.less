@@ -16,6 +16,7 @@
     background-color: transparent;
 
     //mix-blend-mode: exclusion;
+
     &::before
     {
         position: absolute;
@@ -33,6 +34,12 @@
         border: 1px dotted #2981da;
 
         mix-blend-mode: exclusion;
+    }
+
+    &.edit-mode
+    {
+        background-color: rgba(6, 210, 243, .16);
+        box-shadow: inset 0 0 5px #0544f5, 0 0 10px #0470f7;
     }
 
     > .unit-setting

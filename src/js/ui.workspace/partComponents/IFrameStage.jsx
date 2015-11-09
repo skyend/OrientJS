@@ -179,6 +179,10 @@ var IFrameStage = React.createClass({
     innerDocument.addEventListener('scroll', function (_ev) {
       self.onScrollAtStage(_ev);
     }, false);
+
+    innerDocument.addEventListener('drop', function (_ev) {
+      console.log(_ev, 'drop in iframeStage');
+    }, false);
   },
 
   /**
@@ -274,7 +278,7 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-
+    return;
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     //console.log("call contextmenu", _e);

@@ -33,7 +33,7 @@
       app.ui.enableGlobalDrag();
       app.ui.toMouseDawn();
 
-      var holderHTML = "<div class='componentDragHolder' style='pointer-events:none;' ></div>";
+      var holderHTML = "<div class='componentDragHolder' style='pointer-events:none;'>"+_componentKey+"</div>";
       app.ui.holdingElementWhileDrag(holderHTML);
 
       this.willDeployComponentKey = _componentKey;
