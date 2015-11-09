@@ -110,10 +110,10 @@
 
       var contextIsRunning = false;
       //console.log("API context ", this.state.runningContext, _apiSourceMeta);
-
+        console.log(_apiSource, '히어');
       if (this.state.runningContext !== null) {
         if (this.state.runningContext.contextType === "apiSource") {
-          if (this.state.runningContext.apiSourceID == _apiSource._id) {
+          if (this.state.runningContext.apiSourceID == _apiSource.id) {
 
             contextIsRunning = true;
           }
@@ -270,8 +270,8 @@
       self.emit("NeedICEHost");
       self.emit("NeedDocumentList");
       self.emit("NeedPageList");
-      self.emit("UpdateAPISourceList");
-      self.emit("UpdateAPIInterfaceList");
+      self.emit("NeedAPISourceList");
+      self.emit("NeedAPIInterfaceList");
     },
 
     render() {

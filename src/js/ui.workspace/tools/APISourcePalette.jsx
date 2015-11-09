@@ -268,7 +268,7 @@ export default React.createClass({
   componentDidMount(){
     this.emit("NeedICEHost");
     this.emit("NeedAPISourceList");
-    this.emit("UpdateAPIInterfaceList");
+    this.emit("NeedAPIInterfaceList");
   },
 
   renderAPISource(_apiSource){
