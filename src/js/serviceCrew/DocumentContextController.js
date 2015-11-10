@@ -465,11 +465,11 @@ class DocumentContextController {
       globalOptions.escapeResolve = escapeResolve;
     }
 
-    _nodeElement.removeRepeatChildren();
-
-    if (!escapeResolve) {
-      _nodeElement.preProcessingMeBeforeRender();
-    }
+    //_nodeElement.removeRepeatChildren();
+    //
+    // if (!escapeResolve) {
+    //   _nodeElement.preProcessingMeBeforeRender();
+    // }
 
     if (_nodeElement.type === "html") {
       this.instillRealHTMLElement(_nodeElement, escapeResolve);
