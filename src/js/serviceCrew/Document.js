@@ -281,7 +281,7 @@ Document.prototype.extractAndRealizeElementNode = function(_realElement) {
 
 
       let afterRealize = this.extractAndRealizeElementNode(_realElement.childNodes[i]);
-
+      afterRealize.setParent(elementNode);
 
       //console.log(_realElement.childNodes[i]);
 
