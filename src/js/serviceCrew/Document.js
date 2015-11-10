@@ -254,6 +254,87 @@ Document.prototype.newElementNodeFromComponent = function(_component) {
   return newElementNode;
 };
 
+
+Document.prototype.extractAndRealizeElementNode = function(_realElement) {
+  //console.log(_realElement, _realElement.___en, _realElement.nodeName, _realElement.nodeValue);
+
+  let elementNode = _realElement.___en;
+
+  if (_realElement.nodeName === '#text') {
+    if (elementNode === null) {
+      elementNode = this.newElementNode();
+      elementNode.setType('string');
+    }
+
+    elementNode.setText(_realElement.nodeValue);
+  } else {
+    if (elementNode === null) {
+      elementNode = this.newElementNode();
+      elementNode.setType('html');
+      elementNode.setTagName(_realElement.nodeName);
+    }
+
+    let newChildren = [];
+    //  console.log(_realElement.childNodes, 'here');
+
+    for (var i = 0; i < _realElement.childNodes.length; i++) {
+
+
+      let afterRealize = this.extractAndRealizeElementNode(_realElement.childNodes[i]);
+
+
+      //console.log(_realElement.childNodes[i]);
+
+      if (afterRealize !== null) {
+        newChildren.push(afterRealize);
+      }
+    }
+
+    elementNode.children = newChildren;
+  }
+
+  return elementNode;
+  //
+  //
+  // if (_realElement.___en !== undefined) {
+  //   if (_realElement.nodeName === '#text') {
+  //
+  //     _realElement.___en.setText(_realElement.nodeValue);
+  //   } else {
+  //     let newChildren = [];
+  //
+  //     for (let i = 0; i < _realElement.childNodes.length; i++) {
+  //       newChildren.push(this.extractAndRealizeElementNode(_realElement.childNodes[i]));
+  //     }
+  //
+  //     _realElement.___en.children = newChildren;
+  //   }
+  //
+  //   return _realElement.___en;
+  // } else {
+  //   let newElementNode = this.newElementNode();
+  //
+  //   if (_realElement.nodeName === '#text') {
+  //     newElementNode.setType('string');
+  //     newElementNode.setText(_realElement.nodeValue);
+  //
+  //     return newElementNode;
+  //   } else {
+  //     newElementNode.setType('html');
+  //
+  //     let newChildren = [];
+  //
+  //     for (let i = 0; i < _realElement.childNodes.length; i++) {
+  //       newChildren.push(this.extractAndRealizeElementNode(_realElement.childNodes[i]));
+  //     }
+  //
+  //     newElementNode.children = newChildren;
+  //   }
+  //
+  //   return newElementNode;
+  // }
+};
+
 Document.prototype.findById = function(_elementNodeId) {
 
   var treeSearchResult = this.findRecursive(this.rootElementNode, function(__e) {

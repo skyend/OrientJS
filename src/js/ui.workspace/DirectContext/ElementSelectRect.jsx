@@ -160,6 +160,7 @@ var ElementSelectRect = React.createClass({
 // onDrag={function(_e){ self.dragPoint.apply(self,[_e, posList]) }}
 // onDragEnd={function(_e){ self.dragEndPoint.apply(self,[_e, posList ]) }}
   renderUnitControl(){
+    return;
     if (!this.props.resizable) {
       return '';
     }

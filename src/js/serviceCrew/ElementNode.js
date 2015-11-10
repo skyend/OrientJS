@@ -519,38 +519,37 @@ class ElementNode {
     this.applyAttributesToRealDOM();
   }
 
-  changeTextEditMode(_changeCallback) {
+  changeTextEditMode( /*_changeCallback*/ ) {
     this.mode = 'textEdit';
 
     this.getRealDOMElement().setAttribute("contenteditable", 'true');
 
-    this.getRealDOMElement().onkeyup = function(_e) {
-      console.log('key up', _e, this);
-      _changeCallback(this.innerHTML);
-    }
-
-    this.getRealDOMElement().onpaste = function(_e) {
-      console.log('paste', _e, this);
-      _changeCallback(this.innerHTML);
-    }
-
-    this.getRealDOMElement().ondrop = function(_e) {
-      console.log('drop', _e, this);
-      _changeCallback(this.innerHTML);
-    }
+    // this.getRealDOMElement().onkeyup = function(_e) {
+    //   console.log('key up', _e, this);
+    //   _changeCallback(this.innerHTML);
+    // }
+    //
+    // this.getRealDOMElement().onpaste = function(_e) {
+    //   console.log('paste', _e, this);
+    //   _changeCallback(this.innerHTML);
+    // }
+    //
+    // this.getRealDOMElement().ondrop = function(_e) {
+    //   console.log('drop', _e, this);
+    //   _changeCallback(this.innerHTML);
+    // }
   }
 
   changeNormalMode() {
     if (this.mode === 'textEdit') {
       this.updateSyncDOMChanged();
     }
-
     this.mode = 'normal';
     this.getRealDOMElement().removeAttribute("contenteditable");
-
-    this.getRealDOMElement().onkeyup = undefined;
-    this.getRealDOMElement().onpaste = undefined;
-    this.getRealDOMElement().ondrop = undefined;
+    //
+    // this.getRealDOMElement().onkeyup = undefined;
+    // this.getRealDOMElement().onpaste = undefined;
+    // this.getRealDOMElement().ondrop = undefined;
   }
 
   isTextEditMode() {
@@ -559,38 +558,23 @@ class ElementNode {
 
   // Real DOM의 내용과 자신의 내용의 변경사항을 파악하여 자신의 내용을 업데이트 한다.
   updateSyncDOMChanged() {
-    console.log(this.getRealDOMElement(), this);
 
     let realDOMElement = this.getRealDOMElement();
 
-    console.log(realDOMElement.childNodes);
-    console.log(realDOMElement.childNodes.__proto__);
-
     let childNodes = realDOMElement.childNodes;
 
-    let newChildList = [];
+    let newChildren = [];
 
     for (let i = 0; i < childNodes.length; i++) {
       let realChild = childNodes[i];
-      let ElementNodeOfRealChild = realChild.___en;
-      let symmetryElementNode = this.children[i];
+      let newChildElementNode = this.document.extractAndRealizeElementNode(realChild);
 
-      // realDOMNode에 대응하는 ElementNode 존재여부
-      if (ElementNodeOfRealChild !== undefined) {
-        // 존재하는 경우에는 변경된 속성을 파악하여 반영한다.
-        newChildList.push(ElementNodeOfRealChild);
-      } else {
-        // 존재하지 않는 경우 새로운 ElementNode를 만들어 추가 한다.
+      newChildElementNode.setParent(this);
 
-      }
+      newChildren.push(newChildElementNode);
     }
-
-    // 1. 자식 비교
-    this.children.map(function() {
-
-    });
+    this.children = newChildren;
   }
-
 
   ////////////////////
   // Exists
@@ -1040,28 +1024,25 @@ class ElementNode {
   }
 
 
-
-  ///////////
-  // 랜더링 프로세스 전( 자신의 RealElement가 생성되기 전 )에 처리할 Controls 속성
-  preProcessingMeBeforeRender() {
-    var self = this;
-
+  removeRepeatChildren() {
     // 다시 repeat-n 컨트롤을 처리하기 위해
     // 반복되어 삽입된 고스트 요소를 필터링하여 자신의 자식 트리를 초기화한다.
-    if (!this.isGhost) {
+    if (this.isGhost !== true) {
       var refreshChildren = [];
       for (var i = 0; i < this.children.length; i++) {
-        if (!this.children[i].isGhost) {
+        if (this.children[i].isGhost !== true) {
           refreshChildren.push(this.children[i]);
         }
       }
 
       this.children = refreshChildren;
     }
+  }
 
-
-
-
+  ///////////
+  // 랜더링 프로세스 전( 자신의 RealElement가 생성되기 전 )에 처리할 Controls 속성
+  preProcessingMeBeforeRender() {
+    var self = this;
 
     this.children.map(function(_child) {
 

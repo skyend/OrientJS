@@ -399,8 +399,9 @@ var DirectContext = React.createClass({
   },
 
   toggleTextEditMode(_elementNode){
-
+    let self = this;
     if( this.state.editModeElementNode !== null ){
+      // 편집모드 종료
 
       this.props.contextController.leaveTextEditMode(this.state.editModeElementNode);
 
@@ -408,12 +409,22 @@ var DirectContext = React.createClass({
 
       this.emit("ChangeContextControllerState");
     } else {
+      // 편집모드 시작
+
+      this.props.contextController.enterTextEditMode(_elementNode/*, function(_data){
+          self.forceUpdate();
+      }*/);
+
       this.setState({fixSelected: true, editModeElementNode:_elementNode});
 
-      this.props.contextController.enterTextEditMode(_elementNode);
-
       this.emit("ChangeContextControllerState");
+
     }
+    
+    // 다시 랜더링된 직후는 선택된 요소의 Size가 제대로 가져와지지 않아 0.1초후에 다시 업데이트를 하여 Size를 반영하기 위해
+    setTimeout(function(){
+      self.forceUpdate();
+    }, 100);
   },
 
   onThrowCatcherScrollAtStage(_eventData, _pass){

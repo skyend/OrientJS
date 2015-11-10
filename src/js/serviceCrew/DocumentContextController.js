@@ -317,9 +317,13 @@ class DocumentContextController {
     this.changedContent();
   }
 
-  enterTextEditMode(_elementNode) {
+  enterTextEditMode(_elementNode /*, _changeNotice*/ ) {
     this.editMode = true;
-    _elementNode.changeTextEditMode();
+    _elementNode.changeTextEditMode(
+      /*function(_text) {
+            _changeNotice(_text);
+          }*/
+    );
     this.rerenderingElementNode(_elementNode);
   }
 
@@ -328,12 +332,16 @@ class DocumentContextController {
   }
 
   rerenderingElementNode(_elementNode) {
+    console.log('--rerenderingElementNode--');
     let parentElementNode = _elementNode.getParent();
+
     if (parentElementNode !== null) {
 
-      parentElementNode.children.map((_childElementNode) => {
-        this.constructToRealElement(_childElementNode);
-      });
+      // parentElementNode.children.map((_childElementNode) => {
+      //   this.constructToRealElement(_childElementNode);
+      // });
+
+      this.constructToRealElement(_elementNode);
 
       // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
       parentElementNode.linkRealDOMofChild();
@@ -450,14 +458,18 @@ class DocumentContextController {
   constructToRealElement(_nodeElement, _globalOptions) {
     var self = this;
     let globalOptions = _globalOptions || {};
-    let escapeResolve = globalOptions.escapeResolve;
+    let escapeResolve = globalOptions.escapeResolve || false;
 
     if (_nodeElement.isTextEditMode()) {
       escapeResolve = true;
       globalOptions.escapeResolve = escapeResolve;
     }
 
-    _nodeElement.preProcessingMeBeforeRender();
+    _nodeElement.removeRepeatChildren();
+
+    if (!escapeResolve) {
+      _nodeElement.preProcessingMeBeforeRender();
+    }
 
     if (_nodeElement.type === "html") {
       this.instillRealHTMLElement(_nodeElement, escapeResolve);
