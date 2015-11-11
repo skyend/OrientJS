@@ -94,6 +94,7 @@ class DocumentContextController {
   modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
     let targetElementNode = null;
     let parentElementNode = null;
+    let treeRefresh = false;
 
     if (typeof _elementIdorElement === 'number') {
       targetElementNode = this.document.findById(_elementIdorElement);
@@ -105,27 +106,36 @@ class DocumentContextController {
       parentElementNode = targetElementNode.getParent();
     }
 
+
+
     switch (_propKey) {
       case "Name":
         targetElementNode.setName(_propValue);
+        treeRefresh = true;
         break;
       case "Comment":
         targetElementNode.setComment(_propValue);
+        treeRefresh = true;
         break;
       case "refferenceType":
         targetElementNode.setRefferenceType(_propValue);
+        treeRefresh = true;
         break;
       case "refferenceTarget":
         targetElementNode.setRefferenceTarget(_propValue);
+        treeRefresh = true;
         break;
       case "reactPackageKey":
         targetElementNode.setReactPackageKey(_propValue);
+        treeRefresh = true;
         break;
       case "reactComponentKey":
         targetElementNode.setReactComponentKey(_propValue);
+        treeRefresh = true;
         break;
       case "reactComponentProps":
         targetElementNode.setReactComponentProps(_propValue);
+        treeRefresh = true;
         break;
       case "rectangle":
         targetElementNode.transformRectByEditor(_propValue.left, _propValue.top, _propValue.width, _propValue.height);
@@ -134,11 +144,13 @@ class DocumentContextController {
         console.error("No matched property key");
     }
 
-    if (parentElementNode !== null) {
-      this.constructToRealElement(targetElementNode);
 
-      parentElementNode.linkRealDOMofChild();
+    if (parentElementNode !== null) {
+      targetElementNode.realize();
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkHierarchyRealizaion();
     } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
       this.rootRender();
     }
 
@@ -177,13 +189,14 @@ class DocumentContextController {
     }
 
     if (!treeRefresh) {
-      targetElementNode.applyAttributesToRealDOM();
+      targetElementNode.mappingAttributes();
     } else {
       if (parentElementNode !== null) {
-        this.constructToRealElement(targetElementNode);
-
-        parentElementNode.linkRealDOMofChild();
+        targetElementNode.realize();
+        // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+        parentElementNode.linkHierarchyRealizaion();
       } else {
+        // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
         this.rootRender();
       }
     }
@@ -210,21 +223,20 @@ class DocumentContextController {
         targetElementNode.setControl("repeat-n", _controlValue);
         break;
       default:
-
     }
 
-    if (parentElementNode !== null) {
-      this.constructToRealElement(parentElementNode);
-
-      if (parentElementNode.getParent() !== null) {
-        parentElementNode.getParent().linkRealDOMofChild();
-      } else {
-        this.rootRender();
-      }
-    } else {
-      this.rootRender();
-    }
-
+    // if (parentElementNode !== null) {
+    //
+    //   parentElementNode.realize();
+    //
+    //   // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+    //   parentElementNode.linkHierarchyRealizaion();
+    //
+    // } else {
+    //   // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+    //   this.rootRender();
+    // }
+    this.rootRender();
     this.changedContent();
   }
 
@@ -247,7 +259,12 @@ class DocumentContextController {
 
     switch (_action) {
       case "remove":
-        returns = parentElementNode.detachChild(targetElementNode);
+        if (parentElementNode !== null) {
+          returns = parentElementNode.detachChild(targetElementNode);
+        } else {
+          this.document.rootElementNode = null;
+        }
+
         break;
       case "appendComponent":
         returns = () => {
@@ -284,7 +301,7 @@ class DocumentContextController {
         }.apply(this);
         break;
       case "default":
-        console.err('What the');
+        console.error('What the');
     }
 
     console.log('modified Tree', returns);
@@ -296,11 +313,11 @@ class DocumentContextController {
     if (parentElementNode !== null) {
 
       parentElementNode.children.map((_childElementNode) => {
-        this.constructToRealElement(_childElementNode);
+        _childElementNode.realize();
       });
 
       // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkRealDOMofChild();
+      parentElementNode.linkHierarchyRealizaion();
 
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
@@ -324,33 +341,16 @@ class DocumentContextController {
             _changeNotice(_text);
           }*/
     );
-    this.rerenderingElementNode(_elementNode);
+    this.rerenderingElementNode(_elementNode, {
+      skipControl: true
+    });
   }
 
   isTextEditMode() {
     return this.editMode;
   }
 
-  rerenderingElementNode(_elementNode) {
-    console.log('--rerenderingElementNode--');
-    let parentElementNode = _elementNode.getParent();
 
-    if (parentElementNode !== null) {
-
-      // parentElementNode.children.map((_childElementNode) => {
-      //   this.constructToRealElement(_childElementNode);
-      // });
-
-      this.constructToRealElement(_elementNode);
-
-      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkRealDOMofChild();
-
-    } else {
-      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
-    }
-  }
 
 
   convertToElementNodeFromComponent(_component) {
@@ -378,7 +378,7 @@ class DocumentContextController {
    * context 의 iframeStage에 현재 Document의 내용을 랜더링한다.
    *
    */
-  beginRender() {
+  beginRender(_realizeOptions) {
     var self = this;
 
 
@@ -409,9 +409,87 @@ class DocumentContextController {
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.document.rootElementNode !== null) {
-      this.rootRender();
+      this.rootRender(_realizeOptions);
     }
 
+    //console.log(this.document.rootElementNode);
+  }
+
+  rerenderingElementNode(_elementNode, _realizeOptions) {
+    let parentElementNode = _elementNode.getParent();
+
+    if (parentElementNode !== null) {
+
+      // parentElementNode.children.map((_childElementNode) => {
+      //   this.constructToRealElement(_childElementNode);
+      // });
+
+      _elementNode.realize(_realizeOptions);
+      parentElementNode.linkHierarchyRealizaion();
+
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender(_realizeOptions);
+    }
+  }
+
+  rootRender(_realizeOptions) {
+
+    this.updateRenderCSS();
+    this.document.rootElementNode.realize(_realizeOptions);
+    this.document.rootElementNode.linkHierarchyRealizaion();
+
+    this.clearSuperElement();
+
+    this.superElement.appendChild(this.document.rootElementNode.realization);
+
+
+
+    //
+    // if (this.document.rootElementNode !== null) {
+    //
+    //   // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
+    //   this.constructToRealElement(this.document.rootElementNode);
+    //
+    //   // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+    //   var rootRealElement = this.document.rootElementNode.linkRealDOMofChild();
+    //
+    //   // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
+    //   this.attachRootRealElementToSuperElement();
+    //
+    //   this.updateRenderCSS();
+    // } else {
+    //   this.clearSuperElement();
+    // }
+
+  }
+
+
+  /********
+   * updateHTMLTypeElementNodeCSS
+   * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
+   *
+   */
+  updatePageCSS() {
+
+    // 현재 생성되어 있는 스타일블럭이 없다면 생성
+    if (typeof this.pageCSSBlock === 'undefined') {
+      var baseWindow = this.context.getWindow();
+      var styleBlock = baseWindow.document.createElement('style');
+      this.context.applyStyleElement(styleBlock);
+
+      this.pageCSSBlock = styleBlock;
+    }
+
+    // 변경된 css반영
+    this.pageCSSBlock.innerHTML = this.document.getPageCSS();
+
+  }
+
+  updateRenderCSS() {
+    // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
+    //this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+    this.updatePageCSS();
   }
 
   getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext) {
@@ -419,35 +497,17 @@ class DocumentContextController {
     return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey, _syncWindowContext);
   }
 
-  rootRender() {
-
-    if (this.document.rootElementNode !== null) {
-
-      // rootElementNode부터 시작하여 Tree구조의 자식노드들의 RealElement를 생성한다.
-      this.constructToRealElement(this.document.rootElementNode);
-
-      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      var rootRealElement = this.document.rootElementNode.linkRealDOMofChild();
-
-      // rootRealElement 를 superElement로 지정된 DOMElement에 랜더링한다.
-      this.attachRootRealElementToSuperElement();
-
-      this.updateRenderCSS();
-    } else {
-      this.clearSuperElement();
-    }
-
-  }
-
   attachRootRealElementToSuperElement() {
 
     // rootRealElement 를 지정된 superElement에 랜더링한다.
-    this.superElement.appendChild(this.document.rootElementNode.getRealDOMElement());
+    this.superElement.appendChild(this.document.rootElementNode.getRealization());
   }
 
   clearSuperElement() {
-
-    this.superElement.innerHTML = '';
+    // new
+    while (this.superElement.childNodes.length > 0) {
+      this.superElement.removeChild(this.superElement.childNodes[0]);
+    }
   }
 
   /**
@@ -787,33 +847,7 @@ class DocumentContextController {
 
   }
 
-  /********
-   * updateHTMLTypeElementNodeCSS
-   * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
-   *
-   */
-  updatePageCSS() {
 
-    // 현재 생성되어 있는 스타일블럭이 없다면 생성
-    if (typeof this.pageCSSBlock === 'undefined') {
-      var baseWindow = this.context.getWindow();
-      var styleBlock = baseWindow.document.createElement('style');
-      this.context.applyStyleElement(styleBlock);
-
-      this.pageCSSBlock = styleBlock;
-    }
-
-    // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.document.getPageCSS();
-
-  }
-
-
-  updateRenderCSS() {
-    // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
-    this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
-    this.updatePageCSS();
-  }
 
   isDropableToRoot() {
     return this.document.rootElementNode === null;

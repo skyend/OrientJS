@@ -844,7 +844,7 @@ var _ = require('underscore');
     },
 
     mouseEnterElement(_elementNode){
-      this.showElementHighlight(_elementNode.getRealDOMElement());
+      this.showElementHighlight(_elementNode.getRealization());
     },
 
     mouseLeaveElement(_elementNode){

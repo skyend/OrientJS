@@ -67,9 +67,9 @@ var DirectContext = React.createClass({
 
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
-    if (typeof dropTargetDOMElement.getElementNode === 'function') {
+    if ( dropTargetDOMElement.___en !== undefined) {
 
-      var baseElementNode = dropTargetDOMElement.getElementNode();
+      var baseElementNode = dropTargetDOMElement.___en;
 
       returns = baseElementNode.isDropableComponent("appendChild");
 
@@ -90,9 +90,9 @@ var DirectContext = React.createClass({
 
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
-    if (typeof dropTargetDOMElement.getElementNode === 'function') {
+    if ( dropTargetDOMElement.___en !== undefined) {
 
-      var baseElementNode = dropTargetDOMElement.getElementNode();
+      var baseElementNode = dropTargetDOMElement.___en;
 
       var returns = baseElementNode.isDropableComponent("appendChild");
 
@@ -112,9 +112,9 @@ var DirectContext = React.createClass({
 
     var dropTargetDOMElement = this.getIFrameStage().getElementByVid(_vid);
 
-    if (typeof dropTargetDOMElement.getElementNode === 'function') {
+    if ( dropTargetDOMElement.___en !== undefined) {
 
-      var baseElementNode = dropTargetDOMElement.getElementNode();
+      var baseElementNode = dropTargetDOMElement.___en;
 
       var returns = baseElementNode.isDropableComponent("appendChild");
 
@@ -161,13 +161,13 @@ var DirectContext = React.createClass({
    * 그래도 찾지 못할 경우에는 directContext에 지정된 ContextController를 반환한다.
    */
   getContextControllerFromDOMElement(_sourceDOMElement){
-    var funcFind = false;
+    var fountElementNode = false;
     var dropTarget = _sourceDOMElement;
 
     // function을 찾으면 루프탈출
     while (dropTarget !== null) {
-      if (typeof dropTarget.getElementNode === 'function') {
-        funcFind = true;
+      if (dropTarget.___en !== undefined) {
+        fountElementNode = true;
         break;
       }
 
@@ -175,10 +175,10 @@ var DirectContext = React.createClass({
     }
 
 
-    // getElementNode 메소드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
+    // ___en 필드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
     // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
-    if (funcFind) {
-      return this.getContextControllerByElementNode(dropTarget.getElementNode());
+    if (fountElementNode) {
+      return this.getContextControllerByElementNode(dropTarget.___en);
     }
 
     return this.contextController;
@@ -233,7 +233,7 @@ var DirectContext = React.createClass({
     if( this.state.editModeElementNode !== null ) return this.errorNotice('복제 실패', '요소 Text를 편집중입니다.');
 
     var elementNode = this.state.selectedElementNode;
-    var contextController = this.getContextControllerFromDOMElement(elementNode.getRealDOMElement());
+    var contextController = this.getContextControllerFromDOMElement(elementNode.getRealization());
 
     contextController.modifyElementTree(elementNode, "cloneAndInsertAfter");
   },
@@ -255,7 +255,7 @@ var DirectContext = React.createClass({
       return;
     }
 
-    var parentRealDOMElement = parent.getRealDOMElement();
+    var parentRealDOMElement = parent.getRealization();
 
     this.selectElement(parentRealDOMElement, parentRealDOMElement.getBoundingClientRect());
   },
@@ -284,7 +284,7 @@ var DirectContext = React.createClass({
       });
     }
 
-    var target = _elementNode.getRealDOMElement();
+    var target = _elementNode.getRealization();
 
     var boundingRect;
     if (target.nodeName === '#text') {
@@ -328,19 +328,19 @@ var DirectContext = React.createClass({
   selectElement(_targetNode){
     if( this.state.editModeElementNode !== null ) return ;
 
-    // 현재 선택된 Element에 getElementNode메소드가 있는지 확인한 후 없으면 path를 타고 getElementNode메소드가 있는 Element를 찾는다.
+    // 현재 선택된 Element에 ___en 필드가 있는지 확인한 후 없으면 path를 타고 ___en 필드가 있는 Element를 찾는다.
     // 찾은 후 해당 Element로 selectElement메소드를 다시 호출한다.
     var targetNode = _targetNode;
 
 
-    // target 에 getElementNode 메소드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
-    while (typeof targetNode.getElementNode !== 'function') {
+    // target 에 ___en 필드가 존재하는지 확인하고 없다면 target을 이전의 target의 부모로 상승시킨다.
+    while ( targetNode.___en === undefined ) {
       if (targetNode.parentElement === null) break;
       targetNode = targetNode.parentElement;
     }
 
-    // target 변수가 가르키는 element에 getElementNode 메소드가 존재하지 않는다면.
-    if (typeof targetNode.getElementNode !== 'function') {
+    // target 변수가 가르키는 element에 ___en 필드가 존재하지 않는다면.
+    if (targetNode.___en === undefined) {
 
       this.errorNotice(
         "매핑된 ElementNode 를 얻을 수 없습니다.",
@@ -350,7 +350,7 @@ var DirectContext = React.createClass({
       return;
     }
 
-    var elementNode = targetNode.getElementNode();
+    var elementNode = targetNode.___en;
 
     // if( elementNode.isGhost ){
     //   this.errorNotice("요소 선택 불가","반복되거나 고스트 요소는 선택이 불가능합니다. 반복자로 지정된 요소를 이용하세요.");
@@ -420,7 +420,7 @@ var DirectContext = React.createClass({
       this.emit("ChangeContextControllerState");
 
     }
-    
+
     // 다시 랜더링된 직후는 선택된 요소의 Size가 제대로 가져와지지 않아 0.1초후에 다시 업데이트를 하여 Size를 반영하기 위해
     setTimeout(function(){
       self.forceUpdate();
@@ -461,7 +461,7 @@ var DirectContext = React.createClass({
     var elNode = this.state.selectedElementNode;
     var stageBound = this.getIFrameStageBoundingRect();
     var elNodeBound = elNode.getBoundingRect();
-    var computedStyle = this.getWindow().getComputedStyle(elNode.getRealDOMElement());
+    var computedStyle = this.getWindow().getComputedStyle(elNode.getRealization());
 
     var mouseXonStage = _eventData.pageX - stageBound.left;
     var mouseYonStage = _eventData.pageY - stageBound.top;

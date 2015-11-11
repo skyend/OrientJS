@@ -139,6 +139,11 @@ Document.prototype.getPageCSS = function() {
 Document.prototype.getType = function() {
   return this.type;
 };
+
+Document.prototype.getHTMLDocument = function() {
+  return this.contextController.context.getDocument();
+};
+
 ///////////////////////
 // documentUpdate
 Document.prototype.documentUpdated = function() {
@@ -255,32 +260,32 @@ Document.prototype.newElementNodeFromComponent = function(_component) {
 };
 
 
-Document.prototype.extractAndRealizeElementNode = function(_realElement) {
+Document.prototype.extractAndRealizeElementNode = function(_realization) {
   //console.log(_realElement, _realElement.___en, _realElement.nodeName, _realElement.nodeValue);
 
-  let elementNode = _realElement.___en;
+  let elementNode = _realization.___en || null;
 
-  if (_realElement.nodeName === '#text') {
+  if (_realization.nodeName === '#text') {
     if (elementNode === null) {
       elementNode = this.newElementNode();
       elementNode.setType('string');
     }
 
-    elementNode.setText(_realElement.nodeValue);
+    elementNode.setText(_realization.nodeValue);
   } else {
     if (elementNode === null) {
       elementNode = this.newElementNode();
       elementNode.setType('html');
-      elementNode.setTagName(_realElement.nodeName);
+      elementNode.setTagName(_realization.nodeName);
     }
 
     let newChildren = [];
     //  console.log(_realElement.childNodes, 'here');
 
-    for (var i = 0; i < _realElement.childNodes.length; i++) {
+    for (var i = 0; i < _realization.childNodes.length; i++) {
 
 
-      let afterRealize = this.extractAndRealizeElementNode(_realElement.childNodes[i]);
+      let afterRealize = this.extractAndRealizeElementNode(_realization.childNodes[i]);
       afterRealize.setParent(elementNode);
 
       //console.log(_realElement.childNodes[i]);

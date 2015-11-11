@@ -31,7 +31,6 @@ class ElementNode {
     Controls {
         repeat-n: number or ${...}
     }
-
      **/
     this.rectangle = {
       desktop: {},
@@ -54,7 +53,16 @@ class ElementNode {
 
     // parent refference
     this.parent = null;
-    this.realElement = null;
+
+    () => {
+      // will deprecate
+      this.realElement = null;
+      // next Use
+      this.realization = null;
+      this.clonePool = []; // repeated
+    }()
+
+
     this.refferenceInstance = null;
 
     // Repeat by parent's Repeat Control
@@ -402,7 +410,7 @@ class ElementNode {
   }
 
   // realElement
-  getRealDOMElement() {
+  getRealization() {
     return this.realElement;
   }
 
@@ -435,7 +443,7 @@ class ElementNode {
   getBoundingRect() {
 
     var boundingRect;
-    var realElement = this.getRealDOMElement();
+    var realElement = this.getRealization();
     if (realElement.nodeName === '#text') {
 
       if (realElement.nodeValue === '') {
@@ -460,10 +468,18 @@ class ElementNode {
     return boundingRect;
   }
 
-
+  // will deprecate
   // realControl
   getRealControl(_controlName) {
     return this.resolveRenderText(this.controls[_controlName]);
+  }
+
+  getControlWithResolve(_controlName) {
+    return this.resolveRenderText(this.controls[_controlName]);
+  }
+
+  getAttributeWithResolve(_attrName) {
+    return this.resolveRenderText(this.attributes[_attrName]);
   }
 
 
@@ -491,6 +507,165 @@ class ElementNode {
   }
 
 
+  realize(_realizeOptions) {
+    let realizeOptions = _realizeOptions || {};
+
+    // _ghostOrder 인자 에 값을 입력함으로써 GhostPoint임을 간접적으로 전달한다.
+    let isGhostizePoint = realizeOptions.ghostOrder !== undefined;
+    let ghostOrder = realizeOptions.ghostOrder;
+
+    let htmlDoc = this.document.getHTMLDocument();
+    let ghostRealizations = [];
+    let repeatOption = 0;
+
+    // type에 따른 DOM 생성
+    if (this.getType() === 'string') {
+
+      this.realization = htmlDoc.createTextNode('');
+      this.realization.___en = this;
+    } else {
+
+      this.realization = htmlDoc.createElement(this.getTagName());
+      this.realization.___en = this;
+      this.realization.setAttribute('___id___', this.id);
+
+      switch (this.type) {
+        case "html":
+
+          this.children.map(function(_child) {
+            _child.realize({
+              skipControl: realizeOptions.skipControl
+            });
+          });
+          break;
+        case "empty":
+
+
+          break;
+        case "react":
+
+          break;
+      }
+    }
+
+    // attribute 매핑
+    this.mappingAttributes();
+
+    // 이벤트 매핑
+    this.mappingEvent();
+
+    this.clonePool = [];
+
+    if (!realizeOptions.skipControl) {
+      // rendering 사이클에 개입되는 control 처리
+      // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
+      if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !isGhostizePoint) {
+
+        for (let i = 0; i < repeatOption; i++) {
+          // clone ElementNode 생성
+          let cloned = new ElementNode(this.document, this.export(), {
+            isGhost: true,
+            repeatOrder: i + 1
+          });
+
+          // clone ElementNode realize
+          cloned.realize({
+            ghostOrder: i + 1,
+            skipControl: realizeOptions.skipControl
+          });
+
+          this.clonePool.push(cloned);
+        }
+      } else {
+        if (this.clonePool.length > 0) {
+          this.clonePool = [];
+        }
+      }
+
+    }
+  }
+
+  mappingAttributes() {
+    let attributes = this.getAttributes();
+
+    let attributeKeys = Object.keys(attributes);
+    let key;
+
+    for (let i = 0; i < attributeKeys.length; i++) {
+      key = attributeKeys[i];
+      switch (key) {
+        case "tagName":
+          break;
+        case "text":
+          this.realization.nodeValue = this.getAttributeWithResolve(key);
+          break;
+        default:
+          this.mappingAttribute(key);
+      }
+    }
+
+    var currentRect = this.getCurrentRectangle();
+    let rectKeys = Object.keys(currentRect);
+    let rectKey;
+    for (let i = 0; i < rectKeys.length; i++) {
+      rectKey = rectKeys[i];
+      if (/^\d+/.test(currentRect[rectKey])) {
+        this.realization.style[rectKey] = currentRect[rectKey];
+      }
+    }
+
+    if (this.isTextEditMode()) {
+      this.realization.setAttribute('contenteditable', true);
+    }
+  }
+
+  mappingAttribute(_attrName) {
+    this.realization.setAttribute(_attrName, this.getAttributeWithResolve(_attrName));
+  }
+
+  mappingEvent() {
+    // Todo.....
+
+  }
+
+  getRealization() {
+    return this.realization;
+  }
+
+  linkHierarchyRealizaion() {
+    let self = this;
+
+    this.clearRealizationChildren();
+
+    this.children.map(function(_child) {
+
+      self.realization.appendChild(_child.realization);
+      _child.linkHierarchyRealizaion();
+
+      if (_child.clonePool.length > 0) {
+        _child.clonePool.map(function(_cloneChild) {
+          self.realization.appendChild(_cloneChild.realization);
+          _cloneChild.linkHierarchyRealizaion();
+        });
+      }
+    });
+  }
+
+  clearRealizationChildren() {
+    if (this.realization === null) return;
+    if (this.type === 'string') return;
+
+    while (this.realization.childNodes.length > 0) {
+      this.realization.removeChild(this.realization.childNodes[0]);
+    }
+
+    //
+    // for (let i = 0; i < childrenCount; i++) {
+    //   console.log(children[i]);
+    //   this.realization.removeChild(children[i]);
+    // }
+  }
+
   // getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
   getRefferencingElementNode() {
     var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
@@ -503,8 +678,8 @@ class ElementNode {
   removeAttribute(_attrName) {
     delete this.attributes[_attrName];
 
-    if (this.getRealDOMElement() !== null) {
-      this.getRealDOMElement().removeAttribute(_attrName);
+    if (this.getRealization() !== null) {
+      this.getRealization().removeAttribute(_attrName);
     }
   }
 
@@ -522,19 +697,19 @@ class ElementNode {
   changeTextEditMode( /*_changeCallback*/ ) {
     this.mode = 'textEdit';
 
-    this.getRealDOMElement().setAttribute("contenteditable", 'true');
+    this.getRealization().setAttribute("contenteditable", 'true');
 
-    // this.getRealDOMElement().onkeyup = function(_e) {
+    // this.getRealization().onkeyup = function(_e) {
     //   console.log('key up', _e, this);
     //   _changeCallback(this.innerHTML);
     // }
     //
-    // this.getRealDOMElement().onpaste = function(_e) {
+    // this.getRealization().onpaste = function(_e) {
     //   console.log('paste', _e, this);
     //   _changeCallback(this.innerHTML);
     // }
     //
-    // this.getRealDOMElement().ondrop = function(_e) {
+    // this.getRealization().ondrop = function(_e) {
     //   console.log('drop', _e, this);
     //   _changeCallback(this.innerHTML);
     // }
@@ -545,11 +720,11 @@ class ElementNode {
       this.updateSyncDOMChanged();
     }
     this.mode = 'normal';
-    this.getRealDOMElement().removeAttribute("contenteditable");
+    this.getRealization().removeAttribute("contenteditable");
     //
-    // this.getRealDOMElement().onkeyup = undefined;
-    // this.getRealDOMElement().onpaste = undefined;
-    // this.getRealDOMElement().ondrop = undefined;
+    // this.getRealization().onkeyup = undefined;
+    // this.getRealization().onpaste = undefined;
+    // this.getRealization().ondrop = undefined;
   }
 
   isTextEditMode() {
@@ -559,7 +734,7 @@ class ElementNode {
   // Real DOM의 내용과 자신의 내용의 변경사항을 파악하여 자신의 내용을 업데이트 한다.
   updateSyncDOMChanged() {
 
-    let realDOMElement = this.getRealDOMElement();
+    let realDOMElement = this.getRealization();
 
     let childNodes = realDOMElement.childNodes;
 
@@ -578,10 +753,10 @@ class ElementNode {
 
   ////////////////////
   // Exists
-  // realElement
-  hasRealDOMElement() {
-    return typeof this.realElement !== 'undefined';
-  }
+  // Deprecated
+  // hasRealDOMElement() {
+  //   return typeof this.realElement !== 'undefined';
+  // }
 
 
   ////////////////////
@@ -840,52 +1015,52 @@ class ElementNode {
   }
 
 
-
-  applyAttributesToRealDOM(_escapeResolve) {
-
-    //console.log("Do you think i must escape resolving?", _escapeResolve);
-
-    var realElement = this.getRealDOMElement();
-    if (this.getType() === 'string') {
-      // resolve String : data binding and i18n processing
-      //console.log(this.getText());
-      realElement.nodeValue = _escapeResolve ? this.getText() : this.resolveRenderText(this.getText());
-
-    } else {
-      var currentRect = this.getCurrentRectangle();
-      var elementAttributes = this.getAttributes();
-      var keys = Object.keys(elementAttributes);
-
-      for (var i = 0; i < keys.length; i++) {
-
-        if (keys[i] !== 'tagName') {
-          // resolve String : data binding and i18n processing
-          realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.resolveRenderText(elementAttributes[keys[i]]));
-        }
-      }
-
-
-      if (/^\d+/.test(currentRect.left)) {
-        realElement.style.left = currentRect.left;
-      }
-
-      if (/^\d+/.test(currentRect.top)) {
-        realElement.style.top = currentRect.top;
-      }
-
-      if (/^\d+/.test(currentRect.width)) {
-        realElement.style.width = currentRect.width;
-      }
-
-      if (/^\d+/.test(currentRect.height)) {
-        realElement.style.height = currentRect.height;
-      }
-
-      if (this.isTextEditMode()) {
-        realElement.setAttribute('contenteditable', true);
-      }
-    }
-  }
+  // .deprecated
+  // applyAttributesToRealDOM(_escapeResolve) {
+  //
+  //   //console.log("Do you think i must escape resolving?", _escapeResolve);
+  //
+  //   var realElement = this.getRealization();
+  //   if (this.getType() === 'string') {
+  //     // resolve String : data binding and i18n processing
+  //     //console.log(this.getText());
+  //     realElement.nodeValue = _escapeResolve ? this.getText() : this.resolveRenderText(this.getText());
+  //
+  //   } else {
+  //     var currentRect = this.getCurrentRectangle();
+  //     var elementAttributes = this.getAttributes();
+  //     var keys = Object.keys(elementAttributes);
+  //
+  //     for (var i = 0; i < keys.length; i++) {
+  //
+  //       if (keys[i] !== 'tagName') {
+  //         // resolve String : data binding and i18n processing
+  //         realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.resolveRenderText(elementAttributes[keys[i]]));
+  //       }
+  //     }
+  //
+  //
+  //     if (/^\d+/.test(currentRect.left)) {
+  //       realElement.style.left = currentRect.left;
+  //     }
+  //
+  //     if (/^\d+/.test(currentRect.top)) {
+  //       realElement.style.top = currentRect.top;
+  //     }
+  //
+  //     if (/^\d+/.test(currentRect.width)) {
+  //       realElement.style.width = currentRect.width;
+  //     }
+  //
+  //     if (/^\d+/.test(currentRect.height)) {
+  //       realElement.style.height = currentRect.height;
+  //     }
+  //
+  //     if (this.isTextEditMode()) {
+  //       realElement.setAttribute('contenteditable', true);
+  //     }
+  //   }
+  // }
 
 
 
@@ -1081,168 +1256,168 @@ class ElementNode {
   //////////////////////
   //
   /********************
-   * linkRealDOMofChild
+   * linkRealDOMofChild( Deprecated )
    * 자신의 ElementNode에 생성된 RealDOMElement Tree를 갱신한다.
    * 자신의 자식 ElementNode의 구조가 변경되었고 자신의 하위 ElementNode중 RealElement를 가지지 않는 ElementNode가 없을 때 호출한다.
    * 자신의 자식 ElementNode에 구축된 realElement를 자신의 realElement에 자식으로 추가한다.
    * 그리고 자식의 linkRealDOMofChild 메소드를 호출하여 재귀로 동작한다.
    */
-  linkRealDOMofChild() {
-    var self = this;
+  // linkRealDOMofChild() {
+  //   var self = this;
+  //
+  //   // Real Element 를 가지고 있으면 linkRealDOMofChild 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
+  //   if (this.hasRealDOMElement()) {
+  //
+  //     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
+  //     var realDOMElement = this.getRealization();
+  //
+  //     realDOMElement.innerHTML = '';
+  //     var elementNodeType = this.getType();
+  //
+  //     switch (elementNodeType) {
+  //       case "string":
+  //         //realDOMElement.nodeValue = this.resolveRenderText(this.getText());
+  //         break;
+  //       case "html":
+  //         break;
+  //       case "react":
+  //         this.linkRealDOMofChild_react_type();
+  //         break;
+  //       case "empty":
+  //         // emptyType 구축
+  //         this.linkRealDOMofChild_empty_type();
+  //         break;
+  //       default:
+  //
+  //     }
+  //
+  //
+  //     if (this.getType() !== 'empty') {
+  //       ////////////////////////////
+  //       // 자식 Real DOMElement Tree를 직접 갱신하여 결과를 자신에게 연결(append)한다.
+  //       this.children.map(function(_child) {
+  //
+  //         // (HTML|STRING|EMPTY)TYPE 의 자식ElementNode만 RealElment를 자신에게 append한다.
+  //         switch (_child.getType()) {
+  //           case "string":
+  //           case "html":
+  //           case "react":
+  //           case "empty":
+  //             if (_child.hasRealDOMElement()) {
+  //
+  //               // HTML DOM append
+  //               realDOMElement.appendChild(_child.linkRealDOMofChild());
+  //             }
+  //             break;
+  //
+  //         }
+  //
+  //
+  //       });
+  //       // 자식 RealElement 처리 완료
+  //       ///////////////////
+  //     }
+  //
+  //
+  //     return realDOMElement;
+  //   }
+  // }
 
-    // Real Element 를 가지고 있으면 linkRealDOMofChild 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
-    if (this.hasRealDOMElement()) {
+  // Deprecated
+  // linkRealDOMofChild_empty_type() {
+  //
+  //   var realElement = this.getRealization();
+  //   // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
+  //   // 그에따른 처리..
+  //
+  //
+  //   this.clearRefferenceInstance();
+  //   var refTarget = this.getRefferenceTarget();
+  //   if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
+  //
+  //     switch (this.getRefferenceType()) {
+  //       case "react":
+  //       case "html":
+  //       case "grid":
+  //       case "empty":
+  //         var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+  //
+  //
+  //         this.setRefferenceInstance(refferenceElementNode);
+  //
+  //         if (refferenceElementNode !== undefined) {
+  //
+  //           realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
+  //
+  //           // if (this.getRefferenceType() === 'react') {
+  //           //   refferenceElementNode.renderReact();
+  //           // }
+  //         } else {
+  //           console.warn("참조중인 id의 노드가 존재하지 않습니다.");
+  //         }
+  //
+  //         break;
+  //       case "document":
+  //
+  //         break;
+  //       default:
+  //     }
+  //   }
+  //
+  //
+  //   return realElement;
+  // }
 
-      // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
-      var realDOMElement = this.getRealDOMElement();
+  // Deprecated
+  // linkRealDOMofChild_react_type() {
+  //   var realElement = this.getRealization();
+  //
+  //   var packageKey = this.getReactPackageKey();
+  //   var componentKey = this.getReactComponentKey();
+  //
+  //   // ReactComponent 를 얻어온다.
+  //   var component = this.document.getReactTypeComponent(packageKey, componentKey, realElement.ownerDocument.defaultView);
+  //
+  //   //console.log(realElement.ownerDocument.defaultView, realElement.ownerDocument, 'aa');
+  //
+  //
+  //   var React = require('react');
+  //   var reactElementInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+  //
+  //   this.setReactElement(reactElementInstance);
+  //
+  //   React.render(reactElementInstance, realElement);
+  //
+  //   if (typeof component.CSS !== 'undefined') {
+  //     this.setCSS(component.CSS);
+  //     this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+  //   }
+  //
+  //   return realElement;
+  // }
 
-      realDOMElement.innerHTML = '';
-      var elementNodeType = this.getType();
-
-      switch (elementNodeType) {
-        case "string":
-          //realDOMElement.nodeValue = this.resolveRenderText(this.getText());
-          break;
-        case "html":
-          break;
-        case "react":
-          this.linkRealDOMofChild_react_type();
-          break;
-        case "empty":
-          // emptyType 구축
-          this.linkRealDOMofChild_empty_type();
-          break;
-        default:
-
-      }
-
-
-      if (this.getType() !== 'empty') {
-        ////////////////////////////
-        // 자식 Real DOMElement Tree를 직접 갱신하여 결과를 자신에게 연결(append)한다.
-        this.children.map(function(_child) {
-
-          // (HTML|STRING|EMPTY)TYPE 의 자식ElementNode만 RealElment를 자신에게 append한다.
-          switch (_child.getType()) {
-            case "string":
-            case "html":
-            case "react":
-            case "empty":
-              if (_child.hasRealDOMElement()) {
-
-                // HTML DOM append
-                realDOMElement.appendChild(_child.linkRealDOMofChild());
-              }
-              break;
-
-          }
-
-
-        });
-        // 자식 RealElement 처리 완료
-        ///////////////////
-      }
-
-
-      return realDOMElement;
-    }
-  }
-
-
-  linkRealDOMofChild_empty_type() {
-
-    var realElement = this.getRealDOMElement();
-    // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
-    // 그에따른 처리..
-
-
-    this.clearRefferenceInstance();
-    var refTarget = this.getRefferenceTarget();
-    if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
-
-      switch (this.getRefferenceType()) {
-        case "react":
-        case "html":
-        case "grid":
-        case "empty":
-          var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
-
-
-          this.setRefferenceInstance(refferenceElementNode);
-
-          if (refferenceElementNode !== undefined) {
-
-            realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
-
-            // if (this.getRefferenceType() === 'react') {
-            //   refferenceElementNode.renderReact();
-            // }
-          } else {
-            console.warn("참조중인 id의 노드가 존재하지 않습니다.");
-          }
-
-          break;
-        case "document":
-
-          break;
-        default:
-      }
-    }
-
-
-    return realElement;
-  }
-
-
-  linkRealDOMofChild_react_type() {
-    var realElement = this.getRealDOMElement();
-
-    var packageKey = this.getReactPackageKey();
-    var componentKey = this.getReactComponentKey();
-
-    // ReactComponent 를 얻어온다.
-    var component = this.document.getReactTypeComponent(packageKey, componentKey, realElement.ownerDocument.defaultView);
-
-    //console.log(realElement.ownerDocument.defaultView, realElement.ownerDocument, 'aa');
-
-
-    var React = require('react');
-    var reactElementInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
-
-    this.setReactElement(reactElementInstance);
-
-    React.render(reactElementInstance, realElement);
-
-    if (typeof component.CSS !== 'undefined') {
-      this.setCSS(component.CSS);
-      this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
-    }
-
-    return realElement;
-  }
-
-
-  renderReact() {
-    var realElement = this.getRealDOMElement();
-
-    var packageKey = this.getReactPackageKey();
-    var componentKey = this.getReactComponentKey();
-
-    // ReactComponent 를 얻어온다.
-    var component = this.document.getReactTypeComponent(packageKey, componentKey);
-
-
-    var React = require('react');
-    var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
-
-
-    React.render(refferenceInstance, realElement);
-
-    if (typeof component.CSS !== 'undefined') {
-      this.setCSS(component.CSS);
-      this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
-    }
-  }
+  // Deprecated
+  // renderReact() {
+  //   var realElement = this.getRealization();
+  //
+  //   var packageKey = this.getReactPackageKey();
+  //   var componentKey = this.getReactComponentKey();
+  //
+  //   // ReactComponent 를 얻어온다.
+  //   var component = this.document.getReactTypeComponent(packageKey, componentKey);
+  //
+  //
+  //   var React = require('react');
+  //   var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
+  //
+  //
+  //   React.render(refferenceInstance, realElement);
+  //
+  //   if (typeof component.CSS !== 'undefined') {
+  //     this.setCSS(component.CSS);
+  //     this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
+  //   }
+  // }
 
 
 
