@@ -276,11 +276,8 @@ Document.prototype.extractAndRealizeElementNode = function(_realization) {
   if (_realization.nodeName === '#text') {
     if (elementNode === null) {
       elementNode = this.newElementNode();
-      elementNode.buildByDomElement(_realization);
-      // elementNode.setType('string');
     }
-
-    // elementNode.setText(_realization.nodeValue);
+    elementNode.buildByDomElement(_realization);
   } else {
     if (elementNode === null) {
       elementNode = this.newElementNode();

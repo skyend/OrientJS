@@ -515,98 +515,98 @@ class DocumentContextController {
     }
   }
 
-  /**
-   * constructToRealElement
-   * ElementNode에 RealElement를 재귀로 세팅한다.
-   *
-   */
-  constructToRealElement(_nodeElement, _globalOptions) {
-    var self = this;
-    let globalOptions = _globalOptions || {};
-    let escapeResolve = globalOptions.escapeResolve || false;
-
-    if (_nodeElement.isTextEditMode()) {
-      escapeResolve = true;
-      globalOptions.escapeResolve = escapeResolve;
-    }
-
-    //_nodeElement.removeRepeatChildren();
-    //
-    // if (!escapeResolve) {
-    //   _nodeElement.preProcessingMeBeforeRender();
-    // }
-
-    if (_nodeElement.type === "html") {
-      this.instillRealHTMLElement(_nodeElement, escapeResolve);
-
-      // 자식도 재귀호출로 처리
-      if (typeof _nodeElement.children === 'object') {
-        _nodeElement.children.map(function(__childNodeElement) {
-          self.constructToRealElement(__childNodeElement, globalOptions);
-        });
-      }
-    } else if (_nodeElement.type === 'string') {
-      this.instillRealTextElement(_nodeElement, escapeResolve);
-    } else if (_nodeElement.type === 'empty') {
-      this.instillRealEMPTYElement(_nodeElement, escapeResolve);
-
-      // 참조중인 ElementNode도 함께 생성
-      var refEleNode = _nodeElement.getRefferencingElementNode();
-      if (refEleNode !== undefined) {
-        this.constructToRealElement(refEleNode, globalOptions);
-      }
-    } else if (_nodeElement.type === 'react') {
-      this.instillRealReactElement(_nodeElement, escapeResolve);
-    }
-  }
-
-  /**
-   * instillRealHTMLElement
-   * ElementNode에 HTML 타입의 RealElement를 주입한다.
-   *
-   */
-  instillRealHTMLElement(_nodeElement, _escapeResolve) {
-    var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
-
-    _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
-  }
-
-  /**
-   * instillRealTextElement
-   * ElementNode에 TextNode 타입의 RealElement를 주입한다.
-   *
-   */
-  instillRealTextElement(_nodeElement, _escapeResolve) {
-    var textNode = this.context.getDocument().createTextNode('');
-
-    _nodeElement.setRealElement(textNode);
-    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
-  }
-
-  /**
-   * instillRealEMPTYElement
-   * ElementNode에 TextNode 타입의 RealElement를 주입한다.
-   *
-   */
-  instillRealEMPTYElement(_nodeElement, _escapeResolve) {
-    var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
-
-    _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
-  }
-
-  /**
-   * instillRealReactElement
-   * ElementNode에 React 타입의 RealElement를 주입한다.
-   *
-   */
-  instillRealReactElement(_nodeElement, _escapeResolve) {
-    var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
-
-    _nodeElement.setRealElement(realElement);
-    _nodeElement.applyAttributesToRealDOM(_escapeResolve);
-  }
+  // /**
+  //  * constructToRealElement
+  //  * ElementNode에 RealElement를 재귀로 세팅한다.
+  //  *
+  //  */
+  // constructToRealElement(_nodeElement, _globalOptions) {
+  //   var self = this;
+  //   let globalOptions = _globalOptions || {};
+  //   let escapeResolve = globalOptions.escapeResolve || false;
+  //
+  //   if (_nodeElement.isTextEditMode()) {
+  //     escapeResolve = true;
+  //     globalOptions.escapeResolve = escapeResolve;
+  //   }
+  //
+  //   //_nodeElement.removeRepeatChildren();
+  //   //
+  //   // if (!escapeResolve) {
+  //   //   _nodeElement.preProcessingMeBeforeRender();
+  //   // }
+  //
+  //   if (_nodeElement.type === "html") {
+  //     this.instillRealHTMLElement(_nodeElement, escapeResolve);
+  //
+  //     // 자식도 재귀호출로 처리
+  //     if (typeof _nodeElement.children === 'object') {
+  //       _nodeElement.children.map(function(__childNodeElement) {
+  //         self.constructToRealElement(__childNodeElement, globalOptions);
+  //       });
+  //     }
+  //   } else if (_nodeElement.type === 'string') {
+  //     this.instillRealTextElement(_nodeElement, escapeResolve);
+  //   } else if (_nodeElement.type === 'empty') {
+  //     this.instillRealEMPTYElement(_nodeElement, escapeResolve);
+  //
+  //     // 참조중인 ElementNode도 함께 생성
+  //     var refEleNode = _nodeElement.getRefferencingElementNode();
+  //     if (refEleNode !== undefined) {
+  //       this.constructToRealElement(refEleNode, globalOptions);
+  //     }
+  //   } else if (_nodeElement.type === 'react') {
+  //     this.instillRealReactElement(_nodeElement, escapeResolve);
+  //   }
+  // }
+  //
+  // /**
+  //  * instillRealHTMLElement
+  //  * ElementNode에 HTML 타입의 RealElement를 주입한다.
+  //  *
+  //  */
+  // instillRealHTMLElement(_nodeElement, _escapeResolve) {
+  //   var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
+  //
+  //   _nodeElement.setRealElement(realElement);
+  //   _nodeElement.applyAttributesToRealDOM(_escapeResolve);
+  // }
+  //
+  // /**
+  //  * instillRealTextElement
+  //  * ElementNode에 TextNode 타입의 RealElement를 주입한다.
+  //  *
+  //  */
+  // instillRealTextElement(_nodeElement, _escapeResolve) {
+  //   var textNode = this.context.getDocument().createTextNode('');
+  //
+  //   _nodeElement.setRealElement(textNode);
+  //   _nodeElement.applyAttributesToRealDOM(_escapeResolve);
+  // }
+  //
+  // /**
+  //  * instillRealEMPTYElement
+  //  * ElementNode에 TextNode 타입의 RealElement를 주입한다.
+  //  *
+  //  */
+  // instillRealEMPTYElement(_nodeElement, _escapeResolve) {
+  //   var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
+  //
+  //   _nodeElement.setRealElement(realElement);
+  //   _nodeElement.applyAttributesToRealDOM(_escapeResolve);
+  // }
+  //
+  // /**
+  //  * instillRealReactElement
+  //  * ElementNode에 React 타입의 RealElement를 주입한다.
+  //  *
+  //  */
+  // instillRealReactElement(_nodeElement, _escapeResolve) {
+  //   var realElement = this.context.getDocument().createElement(_nodeElement.getTagName());
+  //
+  //   _nodeElement.setRealElement(realElement);
+  //   _nodeElement.applyAttributesToRealDOM(_escapeResolve);
+  // }
 
   /**
    * convertToStyleElements
