@@ -1,7 +1,7 @@
 var ElementNode = require('./ElementNode.js');
 var _ = require('underscore');
 
-var Document = function(_contextController, _documentDataObject) {
+var Document = function(_contextController, _documentParams, _documentDataObject) {
   //////////////
   // 필드 정의
   ////////////////////////
@@ -30,6 +30,8 @@ var Document = function(_contextController, _documentDataObject) {
   this.runtimReactCSSRepo = {};
   this.contextController = _contextController;
 
+
+  this.params = _documentParams || {};
 
   console.log('Document Map', _documentDataObject);
   //////////////////////////
@@ -63,6 +65,10 @@ var Document = function(_contextController, _documentDataObject) {
   }
 };
 
+Document.prototype.setParam = function(_paramNS, _data) {
+  this.params[_paramNS] = _data;
+};
+
 ////////////////////
 // Setters
 // documentName
@@ -77,8 +83,6 @@ Document.prototype.setDocumentTitle = function(_documentTitle) {
 // pageCSS
 Document.prototype.setPageCSS = function(_pageCSS) {
   this.pageCSS = _pageCSS;
-
-  this.contextController.updatePageCSS();
 };
 // type
 Document.prototype.setType = function(_type) {
@@ -90,6 +94,10 @@ Document.prototype.setRootElementNode = function(_elementNode) {
 };
 ////////////////////
 // Getters
+Document.prototype.getParam = function(_paramNS) {
+  return this.params[_paramNS];
+};
+
 // documentID
 Document.prototype.getDocumentID = function() {
   return this.documentID;
@@ -268,15 +276,17 @@ Document.prototype.extractAndRealizeElementNode = function(_realization) {
   if (_realization.nodeName === '#text') {
     if (elementNode === null) {
       elementNode = this.newElementNode();
-      elementNode.setType('string');
+      elementNode.buildByDomElement(_realization);
+      // elementNode.setType('string');
     }
 
-    elementNode.setText(_realization.nodeValue);
+    // elementNode.setText(_realization.nodeValue);
   } else {
     if (elementNode === null) {
       elementNode = this.newElementNode();
-      elementNode.setType('html');
-      elementNode.setTagName(_realization.nodeName);
+      elementNode.buildByDomElement(_realization);
+      // elementNode.setType('html');
+      // elementNode.setTagName(_realization.nodeName);
     }
 
     let newChildren = [];

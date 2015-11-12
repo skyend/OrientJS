@@ -25,11 +25,11 @@ var ElementSelectRect = React.createClass({
 
   mouseDownPoint(){
     this.dragReady = true;
-    console.log('down');
+
   },
 
   mouseMovePoint(_e, _horizon, _vertical){
-    console.log('move');
+
     if (this.dragReady) {
       app.ui.occupyGlobalDrag(this, true);
       app.ui.enableGlobalDrag();
@@ -44,12 +44,10 @@ var ElementSelectRect = React.createClass({
   },
 
   mouseUpPoint(){
-    console.log('up');
     this.dragReady = false;
   },
 
   mouseLeavePoint(){
-    console.log('leave');
     this.dragReady = false;
   },
 

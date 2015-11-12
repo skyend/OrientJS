@@ -278,7 +278,7 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-    return;
+    //return;
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     //console.log("call contextmenu", _e);

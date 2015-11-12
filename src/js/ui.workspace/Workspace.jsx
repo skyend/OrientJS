@@ -219,12 +219,17 @@ var Workspace = React.createClass({
   onThrowCatcherOpenedDirectContextTab(_eventData, _pass){
     //console.log(_eventData);
     console.log('컨텍스트가 열렸습니다.');
+
     this.applyToolStates("ServiceResources", {
       runningContext: _eventData.contextItem
     });
 
     this.applyToolStates("ContextContentsNavigation", {
       runningContext: _eventData.contextItem
+    });
+
+    this.applyToolStates("DocumentCSSEditor", {
+      contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
     });
 
     this.refs['HeadToolBar'].setState({

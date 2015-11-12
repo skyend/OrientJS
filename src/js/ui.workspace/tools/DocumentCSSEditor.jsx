@@ -19,13 +19,14 @@ var DocumentCSSEditor = React.createClass({
 
   getInitialState(){
     return {
-      document: null
+      document: null,
+      contextController:null
     }
   },
 
   onThrowCatcherChangedValue(_eventData, _pass){
-    this.state.document.setPageCSS(_eventData.data);
 
+    this.state.contextController.modifyDocumentCSS(_eventData.data);
   },
 
   renderEditor(){
@@ -37,7 +38,9 @@ var DocumentCSSEditor = React.createClass({
   render() {
     var rootClasses = ['DocumentCSSEditor', this.props.theme, this.getMySizeClass()];
 
-    var targetDocument = this.state.document;
+    if( this.state.contextController === null ) return <div>Not Found ContextController</div>;
+
+    var targetDocument = this.state.contextController.document;
 
     if (targetDocument === null) return <div>No focused a Document</div>;
 

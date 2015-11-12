@@ -22,11 +22,11 @@ class DocumentContextController {
     // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
     if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-      this.document = new Document(this, _document);
+      this.document = new Document(this, {}, _document);
     } else {
 
       // 없다면 새로운 Document를 생성한다.
-      this.document = new Document(this);
+      this.document = new Document(this, {});
     }
 
 
@@ -89,6 +89,12 @@ class DocumentContextController {
 
   get isUnsaved() {
     return this.unsaved;
+  }
+
+  modifyDocumentCSS(_cssText) {
+    this.document.setPageCSS(_cssText);
+    this.updatePageCSS();
+    this.changedContent();
   }
 
   modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
