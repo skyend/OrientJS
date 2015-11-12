@@ -3,6 +3,7 @@ import _ from 'underscore';
 import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
 import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
+import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
 import './DirectContext.less';
 import Returns from "../Returns.js";
 
@@ -15,9 +16,12 @@ var DirectContext = React.createClass({
       stageHeight: 480,
       elementNavigatorX: 0,
       elementNavigatorY: 0,
-      showElementNavigator: false,
       fixSelected: false,
       editModeElementNode: null,
+
+      showElementNavigator: false,
+      showElementMiniOptionSet:true,
+      showElementRemoteControl:true,
       sizing: 'desktop'
     };
   },
@@ -239,7 +243,7 @@ var DirectContext = React.createClass({
   },
 
   editElement(){
-    this.emit('OpenElementEditTool');
+    this.toggleTextEditMode(this.state.selectedElementNode);
   },
 
   jumpToParentElement(){
@@ -258,6 +262,10 @@ var DirectContext = React.createClass({
     var parentRealDOMElement = parent.getRealization();
 
     this.selectElement(parentRealDOMElement, parentRealDOMElement.getBoundingClientRect());
+  },
+
+  useElementRemoteControl(){
+    this.setState({showElementRemoteControl:true, showElementMiniOptionSet:false});
   },
 
   closeElementNavigator(){
@@ -425,6 +433,34 @@ var DirectContext = React.createClass({
     setTimeout(function(){
       self.forceUpdate();
     }, 100);
+  },
+
+  onThrowCatcherReturnMiniOption(){
+    this.setState({showElementRemoteControl:false, showElementMiniOptionSet:true});
+  },
+
+  onThrowCatcherJumpToParent(){
+    this.jumpToParentElement();
+  },
+
+  onThrowCatcherEdit(){
+    this.editElement();
+  },
+
+  onThrowCatcherClone(){
+    this.cloneElement();
+  },
+
+  onThrowCatcherCopyData(){
+    this.copyElementJSON();
+  },
+
+  onThrowCatcherPasteIn(){
+    this.pasteElementIn();
+  },
+
+  onThrowCatcherRemove(){
+    this.removeElement();
   },
 
   onThrowCatcherScrollAtStage(_eventData, _pass){
@@ -718,6 +754,11 @@ var DirectContext = React.createClass({
           </div>
         )
       }
+
+
+      if( !this.state.showElementMiniOptionSet ){
+        elementNavigatorClasses.push('off');
+      }
     }
 
 
@@ -777,6 +818,12 @@ var DirectContext = React.createClass({
               </li>
 
               <li>
+                <button onClick={this.useElementRemoteControl}>
+                  <i className='fa fa-share-square-o'/> <span className='title'>Change RemoteControl</span>
+                </button>
+              </li>
+
+              <li>
                 <button onClick={this.closeElementNavigator}>
                   <i className='fa fa-times'/> <span className='title'>Close</span>
                 </button>
@@ -794,6 +841,8 @@ var DirectContext = React.createClass({
                            active={this.state.showElementNavigator}
                            resizable={selectedElementResizable}
                            editModeHighlight={this.state.editModeElementNode !== null }/>
+
+        {this.state.showElementRemoteControl? <ElementRemoteControl defaultLeft={stageX + (iframeStageWidth/2)} defaultTop={stageY + (iframeStageHeight/3)}/>:''}
       </div>
 
     );

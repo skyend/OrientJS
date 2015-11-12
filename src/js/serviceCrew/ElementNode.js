@@ -531,7 +531,7 @@ class ElementNode {
 
       switch (this.type) {
         case "empty":
-
+          this.realizeEmpty();
           break;
         case "react":
 
@@ -552,6 +552,10 @@ class ElementNode {
     if (this.type === 'html') {
       this.childrenRealize(realizeOptions);
     }
+  }
+
+  realizeEmpty() {
+    this.document.findById(this.getRefferenceTarget()).realize();
   }
 
   modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint) {
@@ -659,18 +663,27 @@ class ElementNode {
 
     this.clearRealizationChildren();
 
-    this.children.map(function(_child) {
+    switch (this.type) {
+      case "html":
+        this.children.map(function(_child) {
 
-      self.realization.appendChild(_child.realization);
-      _child.linkHierarchyRealizaion();
+          self.realization.appendChild(_child.realization);
+          _child.linkHierarchyRealizaion();
 
-      if (_child.clonePool.length > 0) {
-        _child.clonePool.map(function(_cloneChild) {
-          self.realization.appendChild(_cloneChild.realization);
-          _cloneChild.linkHierarchyRealizaion();
+          if (_child.clonePool.length > 0) {
+            _child.clonePool.map(function(_cloneChild) {
+              self.realization.appendChild(_cloneChild.realization);
+              _cloneChild.linkHierarchyRealizaion();
+            });
+          }
         });
-      }
-    });
+        break;
+      case "empty":
+        this.realization.appendChild(this.document.findById(this.getRefferenceTarget()).getRealization());
+    }
+
+
+
   }
 
   clearRealizationChildren() {
