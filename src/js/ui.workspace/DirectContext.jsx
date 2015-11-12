@@ -21,7 +21,7 @@ var DirectContext = React.createClass({
 
       showElementNavigator: false,
       showElementMiniOptionSet:true,
-      showElementRemoteControl:true,
+      showElementRemoteControl:false,
       sizing: 'desktop'
     };
   },
@@ -243,7 +243,17 @@ var DirectContext = React.createClass({
   },
 
   editElement(){
-    this.toggleTextEditMode(this.state.selectedElementNode);
+    // select 된 요소를 변경한다.
+    
+    let targetElementNode = _elementNode;
+
+    if( this.state.selectedElementNode.type === 'string' ){
+      targetElementNode = targetElementNode.getParent();
+
+      this.selectElement(targetElementNode.getRealization());
+    }
+
+    this.toggleTextEditMode(targetElementNode);
   },
 
   jumpToParentElement(){
@@ -463,22 +473,17 @@ var DirectContext = React.createClass({
     this.removeElement();
   },
 
+  onThrowCatcherReturnSelect(){
+    this.closeElementNavigator();
+  },
+
   onThrowCatcherScrollAtStage(_eventData, _pass){
     this.forceUpdate();
 
   },
 
   onThrowCatcherDClickElementInStage(_eventData){
-    console.log('double click element', _eventData, _eventData.targetDOMNode, _eventData.targetDOMNode.___en);
-    let elementNode = _eventData.targetDOMNode.___en;
-
-    // string Type 은 요소의 부모를 editMode로 전환한다.
-    if( elementNode === undefined || elementNode.type === 'string') {
-      this.selectElement(_eventData.targetDOMNode.parentNode);
-      this.toggleTextEditMode(this.state.selectedElementNode);
-    } else {
-      this.toggleTextEditMode(this.state.selectedElementNode);
-    }
+    this.editElement();
   },
 
   onThrowCatcherClickElementInStage(_eventData, _pass) {
@@ -842,7 +847,7 @@ var DirectContext = React.createClass({
                            resizable={selectedElementResizable}
                            editModeHighlight={this.state.editModeElementNode !== null }/>
 
-        {this.state.showElementRemoteControl? <ElementRemoteControl defaultLeft={stageX + (iframeStageWidth/2)} defaultTop={stageY + (iframeStageHeight/3)}/>:''}
+        {this.state.showElementRemoteControl && this.state.showElementNavigator? <ElementRemoteControl defaultLeft={stageX + (iframeStageWidth/2)} defaultTop={stageY + (iframeStageHeight/3)}/>:''}
       </div>
 
     );

@@ -641,6 +641,7 @@ class ElementNode {
     }
 
     if (this.isTextEditMode()) {
+      console.log(this.realization);
       this.realization.setAttribute('contenteditable', true);
     }
   }
@@ -729,37 +730,18 @@ class ElementNode {
     this.applyAttributesToRealDOM();
   }
 
-  changeTextEditMode( /*_changeCallback*/ ) {
+  changeTextEditMode() {
     this.mode = 'textEdit';
-
-    this.getRealization().setAttribute("contenteditable", 'true');
-
-    // this.getRealization().onkeyup = function(_e) {
-    //   console.log('key up', _e, this);
-    //   _changeCallback(this.innerHTML);
-    // }
-    //
-    // this.getRealization().onpaste = function(_e) {
-    //   console.log('paste', _e, this);
-    //   _changeCallback(this.innerHTML);
-    // }
-    //
-    // this.getRealization().ondrop = function(_e) {
-    //   console.log('drop', _e, this);
-    //   _changeCallback(this.innerHTML);
-    // }
+    //this.getRealization().setAttribute("contenteditable", 'true');
   }
 
   changeNormalMode() {
     if (this.mode === 'textEdit') {
       this.updateSyncDOMChanged();
     }
+
     this.mode = 'normal';
     this.getRealization().removeAttribute("contenteditable");
-    //
-    // this.getRealization().onkeyup = undefined;
-    // this.getRealization().onpaste = undefined;
-    // this.getRealization().ondrop = undefined;
   }
 
   isTextEditMode() {

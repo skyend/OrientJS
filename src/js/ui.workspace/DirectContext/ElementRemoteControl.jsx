@@ -20,7 +20,7 @@ export default React.createClass({
   },
 
   doubleClickTop(){
-    this.emit("ReturnMiniOption");
+    this.emit("ReturnMiniOption")
   },
 
   mouseDownHook(){
@@ -99,6 +99,10 @@ export default React.createClass({
     this.emit("Remove");
   },
 
+  returnSelect(){
+    this.emit("ReturnSelect");
+  },
+
   render(){
     let style = {
       left: this.state.left,
@@ -140,6 +144,18 @@ export default React.createClass({
                 </button>]
             ]
           }  width='150' height='80'/>
+
+
+          <GridBox placements={
+            [
+              [
+                <button className='option' onClick={this.returnSelect}>
+                  <i className='fa fa-times'/>
+                  <span className='title'>Return Select</span>
+                </button>
+              ]
+            ]
+          }  width='150' height='30'/>
 
         </div>
       </div>
