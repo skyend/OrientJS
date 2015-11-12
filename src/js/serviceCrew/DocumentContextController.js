@@ -417,33 +417,31 @@ class DocumentContextController {
   }
 
   rerenderingElementNode(_elementNode, _realizeOptions) {
+
+    if (_elementNode === null) {
+      this.clearSuperElement();
+      return;
+    }
+
     let parentElementNode = _elementNode.getParent();
+
+    _elementNode.realize(_realizeOptions);
 
     if (parentElementNode !== null) {
 
-      // parentElementNode.children.map((_childElementNode) => {
-      //   this.constructToRealElement(_childElementNode);
-      // });
-
-      _elementNode.realize(_realizeOptions);
       parentElementNode.linkHierarchyRealizaion();
 
     } else {
-      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender(_realizeOptions);
+      this.clearSuperElement();
+      _elementNode.linkHierarchyRealizaion();
+      this.superElement.appendChild(_elementNode.realization);
     }
   }
 
   rootRender(_realizeOptions) {
 
     this.updateRenderCSS();
-    this.document.rootElementNode.realize(_realizeOptions);
-    this.document.rootElementNode.linkHierarchyRealizaion();
-
-    this.clearSuperElement();
-
-    this.superElement.appendChild(this.document.rootElementNode.realization);
-
+    this.rerenderingElementNode(this.document.rootElementNode, _realizeOptions);
 
 
     //

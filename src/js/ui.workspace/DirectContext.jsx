@@ -244,8 +244,8 @@ var DirectContext = React.createClass({
 
   editElement(){
     // select 된 요소를 변경한다.
-    
-    let targetElementNode = _elementNode;
+
+    let targetElementNode = this.state.selectedElementNode;
 
     if( this.state.selectedElementNode.type === 'string' ){
       targetElementNode = targetElementNode.getParent();

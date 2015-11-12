@@ -641,7 +641,6 @@ class ElementNode {
     }
 
     if (this.isTextEditMode()) {
-      console.log(this.realization);
       this.realization.setAttribute('contenteditable', true);
     }
   }
@@ -845,8 +844,6 @@ class ElementNode {
     }
 
     this.children = newChildList;
-
-    this.linkRealDOMofChild();
   }
 
 
