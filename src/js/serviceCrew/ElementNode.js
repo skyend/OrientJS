@@ -508,6 +508,8 @@ class ElementNode {
 
 
   realize(_realizeOptions) {
+    this.clonePool = [];
+
     let realizeOptions = _realizeOptions || {};
 
     // _ghostOrder 인자 에 값을 입력함으로써 GhostPoint임을 간접적으로 전달한다.
@@ -515,8 +517,6 @@ class ElementNode {
     let ghostOrder = realizeOptions.ghostOrder;
 
     let htmlDoc = this.document.getHTMLDocument();
-    let ghostRealizations = [];
-    let repeatOption = 0;
 
     // type에 따른 DOM 생성
     if (this.getType() === 'string') {
@@ -530,16 +530,7 @@ class ElementNode {
       this.realization.setAttribute('___id___', this.id);
 
       switch (this.type) {
-        case "html":
-
-          this.children.map(function(_child) {
-            _child.realize({
-              skipControl: realizeOptions.skipControl
-            });
-          });
-          break;
         case "empty":
-
 
           break;
         case "react":
@@ -548,44 +539,70 @@ class ElementNode {
       }
     }
 
+    this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
+
     // attribute 매핑
-    this.mappingAttributes();
+    this.mappingAttributes(realizeOptions.skipResolve);
 
     // 이벤트 매핑
     this.mappingEvent();
 
-    this.clonePool = [];
 
-    if (!realizeOptions.skipControl) {
-      // rendering 사이클에 개입되는 control 처리
-      // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
-      if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !isGhostizePoint) {
 
-        for (let i = 0; i < repeatOption; i++) {
-          // clone ElementNode 생성
-          let cloned = new ElementNode(this.document, this.export(), {
-            isGhost: true,
-            repeatOrder: i + 1
-          });
-
-          // clone ElementNode realize
-          cloned.realize({
-            ghostOrder: i + 1,
-            skipControl: realizeOptions.skipControl
-          });
-
-          this.clonePool.push(cloned);
-        }
-      } else {
-        if (this.clonePool.length > 0) {
-          this.clonePool = [];
-        }
-      }
-
+    if (this.type === 'html') {
+      this.childrenRealize(realizeOptions);
     }
   }
 
-  mappingAttributes() {
+  modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint) {
+    if (_skipControl) return;
+    let repeatOption;
+
+    // rendering 사이클에 개입되는 control 처리
+    // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
+    if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !_isGhostizePoint) {
+
+      this.isRepeated = true;
+      this.repeatOrder = 0;
+
+      for (let i = 0; i < repeatOption - 1; i++) {
+        // clone ElementNode 생성
+        let cloned = new ElementNode(this.document, this.export(), {
+          isGhost: true,
+          repeatOrder: i + 1,
+          isRepeated: true
+        });
+
+        cloned.setParent(this.getParent());
+
+        // clone ElementNode realize
+        cloned.realize({
+          ghostOrder: i + 1,
+          skipControl: _skipControl,
+          skipResolve: _skipResolve
+        });
+
+        this.clonePool.push(cloned);
+      }
+    } else {
+      if (this.clonePool.length > 0) {
+        this.clonePool = [];
+      }
+    }
+  }
+
+  childrenRealize(_realizeOptions) {
+    let realizeOptions = _realizeOptions || {};
+
+    this.children.map(function(_child) {
+      _child.realize({
+        skipControl: realizeOptions.skipControl,
+        skipResolve: realizeOptions.skipResolve
+      });
+    });
+  }
+
+  mappingAttributes(_skipResolve) {
     let attributes = this.getAttributes();
 
     let attributeKeys = Object.keys(attributes);
@@ -597,10 +614,10 @@ class ElementNode {
         case "tagName":
           break;
         case "text":
-          this.realization.nodeValue = this.getAttributeWithResolve(key);
+          this.realization.nodeValue = _skipResolve ? this.getAttribute(key) : this.getAttributeWithResolve(key);
           break;
         default:
-          this.mappingAttribute(key);
+          this.mappingAttribute(key, _skipResolve);
       }
     }
 
@@ -614,13 +631,18 @@ class ElementNode {
       }
     }
 
+    // skipResolve 옵션이 걸려있다면 text-transform 를 해제한다. 대소문자
+    if (_skipResolve && this.type !== 'string') {
+      this.realization.style.textTransform = 'none';
+    }
+
     if (this.isTextEditMode()) {
       this.realization.setAttribute('contenteditable', true);
     }
   }
 
-  mappingAttribute(_attrName) {
-    this.realization.setAttribute(_attrName, this.getAttributeWithResolve(_attrName));
+  mappingAttribute(_attrName, _skipResolve) {
+    this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
   }
 
   mappingEvent() {

@@ -437,7 +437,7 @@ var DirectContext = React.createClass({
     let elementNode = _eventData.targetDOMNode.___en;
 
     // string Type 은 요소의 부모를 editMode로 전환한다.
-    if( elementNode.type === 'string') {
+    if( elementNode === undefined || elementNode.type === 'string') {
       this.selectElement(_eventData.targetDOMNode.parentNode);
       this.toggleTextEditMode(this.state.selectedElementNode);
     } else {

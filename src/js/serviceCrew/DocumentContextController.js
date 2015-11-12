@@ -342,7 +342,8 @@ class DocumentContextController {
           }*/
     );
     this.rerenderingElementNode(_elementNode, {
-      skipControl: true
+      skipControl: true,
+      skipResolve: true
     });
   }
 
