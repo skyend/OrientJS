@@ -223,7 +223,13 @@
     },
 
     "APISourcePalette": {
-      "jsxPath": "APISourcePalette"
+      "jsxPath": "APISourcePalette",
+      "title": "API Source Palette"
+    },
+
+    "APISourceMappingHelper": {
+      "jsxPath": "APISourceMappingHelper",
+      "title": "API Source Mapping Helper"
     }
   }
 }

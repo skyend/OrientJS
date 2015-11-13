@@ -118,7 +118,7 @@ var SubWindowSystem = React.createClass({
   // Drag Routines
   ///
   onMouseDownToHeader(_e) {
-    console.log(_e.nativeEvent.target);
+
     if (!this.state.fullScreen) {
 
       // GlobalDrag 자원 획득( 획득한 자원은 반드시 반환하고 상태를 종료 해주어야 한다.)

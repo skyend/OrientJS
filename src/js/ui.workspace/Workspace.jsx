@@ -225,10 +225,14 @@ var Workspace = React.createClass({
     });
 
     this.applyToolStates("ContextContentsNavigation", {
-      runningContext: _eventData.contextItem
+      runningContext: _eventData.contextItem.contextType === 'document'? _eventData.contextItem:null
     });
 
     this.applyToolStates("DocumentCSSEditor", {
+      contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
+    });
+
+    this.applyToolStates("APISourceMappingHelper", {
       contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
     });
 
@@ -248,6 +252,14 @@ var Workspace = React.createClass({
 
     this.applyToolStates("ContextContentsNavigation", {
       runningContext: null
+    });
+
+    this.applyToolStates("DocumentCSSEditor", {
+      contextController:null
+    });
+
+    this.applyToolStates("APISourceMappingHelper", {
+      contextController: null
     });
 
     this.refs['HeadToolBar'].setState({

@@ -22,6 +22,20 @@ let Request = React.createClass({
     }
   },
 
+  useRequest(_e){
+    _e.stopPropagation();
+    console.log(this.props.request, this.props.apiSource);
+
+    this.emit("RequestAttachTool", {
+      "toolKey": "APISourceMappingHelper",
+      "where": "SubWindow",
+      "params":{
+        request: this.props.request,
+        apiSource: this.props.apiSource
+      }
+    });
+  },
+
   click(){
     let self = this;
     let nextValue = !this.state.showItemTree;
@@ -33,6 +47,8 @@ let Request = React.createClass({
     let dragEvent = _e.nativeEvent;
 
     dragEvent.dataTransfer.setData("text/plain", "${"+_path+"}");
+
+    //this.emit("NewDataDragStart");
   },
 
   componentDidUpdate(){
@@ -118,6 +134,10 @@ let Request = React.createClass({
         <div className={headClasses.join(' ')} onClick={this.click}>
           {this.props.name}
           <small> {this.state.dataFrame !== null? <i className="fa fa-inbox"/>:''}</small>
+
+          <div className='useable' onClick={this.useRequest}>
+            <i className='fa fa-cog'/>
+          </div>
         </div>
         { this.state.showItemTree? this.renderBindingItemTree():''}
       </div>
@@ -172,7 +192,6 @@ let APISourceItem = React.createClass({
   },
 
   renderRequest(_name, _request){
-
     return (
       <Request request={_request} name={_name} apiSource={this.props.apiSource}/>
     );
