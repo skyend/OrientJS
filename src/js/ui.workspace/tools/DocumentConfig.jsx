@@ -48,6 +48,14 @@ var DocumentConfig = React.createClass({
 
   },
 
+  componentDidMount(){
+    console.log('extned');
+    this.emit("ExtendDisplay",{
+      width:300,
+      height: 500
+    });
+  },
+
   renderDocument(){
     var targetDocument = this.state.document;
 

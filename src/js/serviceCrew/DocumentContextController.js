@@ -482,12 +482,11 @@ class DocumentContextController {
       var baseWindow = this.context.getWindow();
       var styleBlock = baseWindow.document.createElement('style');
       this.context.applyStyleElement(styleBlock);
-
       this.pageCSSBlock = styleBlock;
     }
 
     // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.document.getPageCSS();
+    this.pageCSSBlock.innerHTML = this.document.interpret(this.document.getPageCSS());
 
   }
 

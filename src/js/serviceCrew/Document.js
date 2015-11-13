@@ -79,7 +79,6 @@ Document.prototype.setDocumentName = function(_documentName) {
 Document.prototype.setDocumentTitle = function(_documentTitle) {
   this.documentTitle = _documentTitle;
 };
-// pa
 // pageCSS
 Document.prototype.setPageCSS = function(_pageCSS) {
   this.pageCSS = _pageCSS;
@@ -447,6 +446,39 @@ Document.prototype.insertElementNode = function(_insertType, _elementNode, _base
   return _elementNode;
 };
 
+
+/********
+ * Interpret
+ *  텍스트를 분석하여 특정 패턴으로 제작된 문자열을 추출하고 해당 문자열 내의 내용을 해석하여 패턴과 해석결과를 치환 한다.
+ * ${url:...} / ${field:... } / ${title:...}
+ */
+Document.prototype.interpret = function(_text) {
+  var self = this;
+
+  var sampleUrlMap = {
+    image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
+    image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
+    image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
+    image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
+    image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
+    image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
+    image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
+  };
+
+
+  return _text.replace(/(\${.*?})/g, function(_matched) {
+    return self.processingFormularBlock(_matched);
+  });
+};
+
+Document.prototype.processingFormularBlock = function(_blockString) {
+
+  console.log('processingFormularBlock');
+  console.log(_blockString);
+
+
+  return _blockString;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

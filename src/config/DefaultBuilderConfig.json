@@ -132,76 +132,67 @@
   "tools": {
     "UserAccount": {
       "jsxPath": "UserAccount",
-      "title": "ICafe Node Type Explorer"
+      "title": "User Account"
     },
+
     "ProjectSetting": {
       "jsxPath": "ProjectSetting",
-      "title": "ICafe Node Type Explorer"
+      "title": "Project Setting"
     },
+
     "BuilderSetting": {
       "jsxPath": "BuilderSetting",
-      "title": "ICafe Node Type Explorer"
+      "title": "Builder Setting"
     },
 
     "ComponentPalette": {
       "jsxPath": "ComponentPalette",
-      "title": "ICafe Node Type Explorer"
-    },
-
-    "DocumentsNavigation": {
-      "jsxPath": "DocumentsNavigation",
-      "configPath": "DeviceMenuConfig",
-      "title": "ICafe Node Type Explorer"
+      "title": "Component Palette"
     },
 
     "ServiceResources": {
       "jsxPath": "ServiceResources",
       "configPath": "ServiceResources",
-      "title": "ICafe Node Type Explorer"
+      "title": "Service Resources"
     },
 
     "ElementNodeEditor": {
       "jsxPath": "ElementNodeEditor",
       "configPath": "ElementNodeEditor",
-      "title": "ICafe Node Type Explorer"
+      "title": "Element Node Editor"
     },
 
     "ContextContentsNavigation": {
       "jsxPath": "ContextContentsNavigation",
       "configPath": "ContextContentsNavigation",
-      "title": "ICafe Node Type Explorer"
+      "title": "Context Contents Navigation"
     },
     "ElementNodeControl": {
       "jsxPath": "ElementNodeControl",
       "configPath": "ElementNodeControl",
-      "title": "ICafe Node Type Explorer"
+      "title": "Element Node Control"
     },
     "ElemenEventControl": {
       "jsxPath": "ElemenEventControl",
       "configPath": "ElemenEventControl",
-      "title": "ICafe Node Type Explorer"
+      "title": "Element Event Control"
     },
 
     "ElemenEffectControl": {
       "jsxPath": "ElemenEffectControl",
       "configPath": "ElemenEffectControl",
-      "title": "ICafe Node Type Explorer"
+      "title": "Element Effect Control"
     },
 
     "DocumentConfig": {
       "jsxPath": "DocumentConfig",
       "configPath": "DocumentConfig",
-      "title": "ICafe Node Type Explorer"
+      "title": "Document Config"
     },
 
     "DocumentCSSEditor": {
       "jsxPath": "DocumentCSSEditor",
-      "title": "ICafe Node Type Explorer"
-    },
-
-    "TestModal": {
-      "jsxPath": "TestModal",
-      "title": "ICafe Node Type Explorer"
+      "title": "Document CSS Editor"
     },
 
     "DocumentCUForm": {

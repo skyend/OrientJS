@@ -40,8 +40,8 @@ var SubWindowSystem = React.createClass({
       x: 0,
       y: 0,
 
-      width: 200,
-      height: 150
+      width: this.props.width,
+      height: this.props.height
     };
   },
 
@@ -164,14 +164,24 @@ var SubWindowSystem = React.createClass({
     });
   },
 
+  onThrowCatcherExtendDisplay(_eventData){
+    let wantWidth = _eventData.width;
+    let wantHeight = _eventData.height;
+
+    console.log('listen' , _eventData, wantWidth, wantHeight, this, this.state.zOrder, wantHeight + 50);
+
+    this.setState({
+      width: wantWidth,
+      height: wantHeight + 50
+    });
+  },
+
   componentDidMount() {
 
     // 최초 마운트 후 입력된 Properties를 state로 반영한다.
     this.setState({
       x: this.props.x,
       y: this.props.y,
-      width: this.props.width,
-      height: this.props.height,
       zOrder: this.props.zOrder,
       baseZOrder: this.props.baseZOrder
     });
@@ -182,7 +192,7 @@ var SubWindowSystem = React.createClass({
       case "text":
         return this.props.text;
       case "toolEgg":
-        return <ToolNest toolEgg={this.props.toolEgg} width={this.props.width} height={this.props.height}/>;
+        return <ToolNest toolEgg={this.props.toolEgg} ref='nest'/>;
     }
   },
 
@@ -200,27 +210,24 @@ var SubWindowSystem = React.createClass({
       <div className={classes.join(' ')} style={styles} onMouseDown={this.focus}>
         <div className='head-title-bar' onMouseDown={this.onMouseDownToHeader} ref='window-head'>
           <div className='title'>
+            <i className='fa fa-plane'/>
             { this.props.title }
           </div>
-          <div className='left-area'>
-            <ul>
-              <li onClick={this.closeMe}>
-                <i className='fa fa-times'></i>
-              </li>
-              <li onClick={this.toggleFullScreen}>
-                <i className={ this.state.fullScreen ? 'fa fa-square-o' : 'fa fa-plus'}></i>
-              </li>
-              <li onClick={this.toggleMinimalize}>
-                <i className='fa fa-minus'></i>
-              </li>
-            </ul>
-          </div>
-          <div className='right-area'>
 
-          </div>
+          <ul>
+            <li onClick={this.toggleFullScreen}>
+              <i className={ this.state.fullScreen ? 'fa fa-plus' : 'fa fa-square-o'}></i>
+            </li>
+            <li onClick={this.closeMe}>
+              <i className='fa fa-times'></i>
+            </li>
+          </ul>
         </div>
-        <div className='window-description' ref='window-body' style={windowBodyStyle}>
+        <div className='window-description' ref='window-body'>
           {this.renderWindowDesc()}
+        </div>
+        <div className='foot'>
+
         </div>
       </div>
     );

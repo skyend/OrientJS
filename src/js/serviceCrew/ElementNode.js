@@ -471,15 +471,15 @@ class ElementNode {
   // will deprecate
   // realControl
   getRealControl(_controlName) {
-    return this.resolveRenderText(this.controls[_controlName]);
+    return this.interpret(this.controls[_controlName]);
   }
 
   getControlWithResolve(_controlName) {
-    return this.resolveRenderText(this.controls[_controlName]);
+    return this.interpret(this.controls[_controlName]);
   }
 
   getAttributeWithResolve(_attrName) {
-    return this.resolveRenderText(this.attributes[_attrName]);
+    return this.interpret(this.attributes[_attrName]);
   }
 
 
@@ -497,7 +497,7 @@ class ElementNode {
 
   // realControl
   isUsingBind(_controlName) {
-    return this.resolveRenderText(this.controls[_controlName]);
+    return this.interpret(this.controls[_controlName]);
   }
 
 
@@ -1038,7 +1038,7 @@ class ElementNode {
   //   if (this.getType() === 'string') {
   //     // resolve String : data binding and i18n processing
   //     //console.log(this.getText());
-  //     realElement.nodeValue = _escapeResolve ? this.getText() : this.resolveRenderText(this.getText());
+  //     realElement.nodeValue = _escapeResolve ? this.getText() : this.interpret(this.getText());
   //
   //   } else {
   //     var currentRect = this.getCurrentRectangle();
@@ -1049,7 +1049,7 @@ class ElementNode {
   //
   //       if (keys[i] !== 'tagName') {
   //         // resolve String : data binding and i18n processing
-  //         realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.resolveRenderText(elementAttributes[keys[i]]));
+  //         realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.interpret(elementAttributes[keys[i]]));
   //       }
   //     }
   //
@@ -1237,7 +1237,7 @@ class ElementNode {
 
       if (_child.controls['repeat-n'] === undefined || _child.controls['repeat-n'] === null) return;
 
-      var count = parseInt(_child.resolveRenderText(_child.controls['repeat-n']));
+      var count = parseInt(_child.interpret(_child.controls['repeat-n']));
 
       if (/^\d+$/.test(count)) {
         for (var i = count; i > 0; i--) {
@@ -1290,7 +1290,7 @@ class ElementNode {
   //
   //     switch (elementNodeType) {
   //       case "string":
-  //         //realDOMElement.nodeValue = this.resolveRenderText(this.getText());
+  //         //realDOMElement.nodeValue = this.interpret(this.getText());
   //         break;
   //       case "html":
   //         break;
@@ -1489,11 +1489,11 @@ class ElementNode {
 
   /////////////
   // String Resolve
-  resolveRenderText(_seedText) {
+  interpret(_seedText) {
     var self = this;
 
     var preResolvedText = (_seedText + "").replace(/\*\(([\w\.\-\:]+)\)/g, function(_tested, _firstMatch) {
-      return self.preResolving(_firstMatch);
+      return self.pretreatment(_firstMatch);
     });
 
     // this.emitToParent("Test", {
@@ -1501,11 +1501,11 @@ class ElementNode {
     // });
 
     // resolve String : data binding and i18n processing
-    return this.document.getServiceManager().resolveString(preResolvedText);
+    return this.document.interpret(preResolvedText);
   }
 
 
-  preResolving(_resolveKey) {
+  pretreatment(_resolveKey) {
     var self = this;
     var WhatThings = /^(\w+):([\w-\.]+)$/;
 
@@ -1515,7 +1515,7 @@ class ElementNode {
         if (_namespace === 'attr') {
           var attributeValue = self.getAttribute(_want);
 
-          return attributeValue !== undefined ? self.resolveRenderText(attributeValue) : self.emitToParent("GetResolvedAttribute", {
+          return attributeValue !== undefined ? self.interpret(attributeValue) : self.emitToParent("GetResolvedAttribute", {
             attr: _want
           });
         }
@@ -1642,7 +1642,7 @@ class ElementNode {
 
     var value = this.getAttribute(_eventData.attr);
     if (value !== undefined) {
-      return this.resolveRenderText(value);
+      return this.interpret(value);
     }
 
     return false;

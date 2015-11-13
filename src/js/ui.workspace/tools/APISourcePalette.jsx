@@ -275,8 +275,6 @@ export default React.createClass({
   },
 
   renderAPISource(_apiSource){
-    console.log(_apiSource);
-
     return (
       <APISourceItem apiSource={_apiSource} iceHost={this.state.iceHost} interfaces={this.state.apiinterfaceList}/>
     );

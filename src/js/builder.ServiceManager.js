@@ -227,35 +227,7 @@ class ServiceManager {
     return ObjectExplorer.getValueByKeyPath(this.chechedApiResources, _dataPath);
   }
 
-  /********
-   * resolveString
-   * 모든 String 을 바인딩 법칙에 따라 변환하여준다.
-   * ${url:...} / ${field:... } / ${title:...}
-   */
-  resolveString(_text) {
-    var self = this;
-    var sampleUrlMap = {
-      image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
-      image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
-      image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
-      image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
-      image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
-      image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
-      image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
-    };
 
-
-    return _text.replace(/\${(\w+):(.+?)}/g, function(_matched, _namespace, _want) {
-      if (_namespace === 'url') {
-        return sampleUrlMap[_want] || _matched;
-      } else if (_namespace === 'api') {
-
-        return self.getICafeAPIDataOfField(_want) || 'resolve error:' + _want;
-      } else if (_namespace === 'text') {
-        return _want;
-      }
-    });
-  }
 
 
   getDocumentContextController(_documentId, _complete) {
