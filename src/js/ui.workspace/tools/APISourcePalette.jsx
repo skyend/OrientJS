@@ -29,6 +29,9 @@ let Request = React.createClass({
     this.emit("RequestAttachTool", {
       "toolKey": "APISourceMappingHelper",
       "where": "SubWindow",
+      "attachOptions":{
+        "allowDuplicate":true
+      },
       "params":{
         request: this.props.request,
         apiSource: this.props.apiSource

@@ -1,6 +1,6 @@
-var Async = require('./lib/Async.js');
-var React = require('react');
-var _ = require('underscore');
+import Async from './lib/Async.js';
+import React from 'react';
+import _ from 'underscore';
 
 var ToolFactory = function(_session, _toolsMap) {
   this.session = _session;
@@ -41,21 +41,52 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
 
   this.storedStates[_toolKey] = storedToolState;
 
+  this.updateLivingBirds(_toolKey);
+};
+
+ToolFactory.prototype.updateLivingBirds = function(_toolKey) {
   if (this.livingBirds[_toolKey] === undefined) return;
-  if (this.livingBirds[_toolKey]._owner === null) return;
-  if (this.livingBirds[_toolKey]._owner._instance === null) return;
+  let self = this;
 
+  this.livingBirds[_toolKey].map(function(_nest) {
+    _nest.applyToolBirdState(self.storedStates[_toolKey]);
 
-  // ToolBird의 Owner는 ToolNest일 것이다.
-  // ToolNest는 ToolBird를 랜더링하기 위해 제공받은 ToolEgg를 호출하게 된다.
-  // ToolEgg를 호출 하여 ToolBird Element를 얻는 후 StoredState 를 반영하므로
-  // ToolNest에게 forceUpdate 메시지를 보낸다.
-  this.livingBirds[_toolKey]._owner._instance.forceUpdate()
+    // if (_bird._owner === null) return;
+    // if (_bird._owner._instance === null) return;
+    //
+    // // ToolBird의 Owner는 ToolNest일 것이다.
+    // // ToolNest는 ToolBird를 랜더링하기 위해 제공받은 ToolEgg를 호출하게 된다.
+    // // ToolEgg를 호출 하여 ToolBird Element를 얻는 후 StoredState 를 반영하므로
+    // // ToolNest에게 forceUpdate 메시지를 보낸다.
+    // //_bird._owner._instance.forceUpdate();
+    // console.log(_bird._owner._instance);
+    // _bird._owner._instance.applyToolBirdState(self.storedStates[_toolKey]);
+  });
+
 };
 
 
-ToolFactory.prototype.addLivingBird = function(_toolKey, _bird) {
-  this.livingBirds[_toolKey] = _bird;
+ToolFactory.prototype.addLivingBird = function(_toolKey, _bird, _nest) {
+  if (this.livingBirds[_toolKey] === undefined) {
+    this.livingBirds[_toolKey] = [];
+  }
+
+  this.livingBirds[_toolKey].push(_nest);
+};
+
+ToolFactory.prototype.removeNest = function(_toolKey, _nest) {
+  let find = _.findIndex(this.livingBirds[_toolKey], _nest);
+  let self = this;
+  let newNests = [];
+
+  this.livingBirds[_toolKey].map(function(_n) {
+    if (_nest !== _n) {
+      newNests.push(_n);
+    }
+  });
+
+  this.livingBirds[_toolKey] = newNests;
+  console.log(this.livingBirds);
 };
 
 ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
@@ -64,7 +95,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
 
     // ToolNest 에서 egg를 실행하여 Tool ReactElement를 얻는다.
-    var egg = function(_props) {
+    var egg = function(_props, _nest) {
       var props = _props || {};
       props = _.extend(props, self.storedProps[_toolKey]);
 
@@ -76,7 +107,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
 
       var toolBird = React.createElement(__toolClass, props);
 
-      self.addLivingBird(_toolKey, toolBird);
+      self.addLivingBird(_toolKey, toolBird, _nest);
 
       return toolBird;
     };
@@ -86,6 +117,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
     egg.toolKey = _toolKey;
     egg.toolTitle = self.toolsMap[_toolKey].title;
     egg.toolHelperText = self.toolsMap[_toolKey].toolHelperText;
+    egg.factory = self;
 
     // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
     if (_params !== undefined && _params.title !== undefined) {

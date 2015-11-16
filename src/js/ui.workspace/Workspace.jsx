@@ -275,12 +275,12 @@ var Workspace = React.createClass({
     this.refs['HeadToolBar'].forceUpdate();
   },
 
-  attachTool(_position, _toolEgg){
+  attachTool(_position, _attachOptions, _toolEgg){
     //console.log('Position ', _position, _toolEgg);
 
     switch (_position) {
       case "SubWindow":
-        this.attachToolSubWindow(_toolEgg);
+        this.attachToolSubWindow(_toolEgg, _attachOptions.allowDuplicate);
         break;
       case "LeftNavigation":
         this.refs['LeftNavigation'].setState({toolEgg: _toolEgg});
@@ -319,10 +319,10 @@ var Workspace = React.createClass({
     this.refs['stage-context-menu'].setState({display: 'off'});
   },
 
-  attachToolSubWindow(_toolEgg) {
+  attachToolSubWindow(_toolEgg, _allowDuplicate) {
     var subWindowSystem = this.refs['SubWindowSystem'];
 
-    subWindowSystem.spawnSubWindow(_toolEgg.toolKey, false, {
+    subWindowSystem.spawnSubWindow(_toolEgg.toolKey, _allowDuplicate || false, {
       title: _toolEgg.toolTitle,
       descType: "toolEgg",
       toolEgg: _toolEgg

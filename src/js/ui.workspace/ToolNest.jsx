@@ -9,23 +9,18 @@ var ToolNest = React.createClass({
     };
   },
 
-  renderToolEgg(){
-    var bird = this.props.toolEgg({width: this.props.width, height: (this.props.height || '100%')});
+  applyToolBirdState(_toolStates){
 
-    this.bird = bird;
+    let tool = this.refs[Object.keys(this.refs)[0]];
+    console.log(tool, this.refs,_toolStates);
 
-    return bird;
+    tool.setState(_toolStates);
   },
 
-  applyToolBirdState(){
-    // storedToolState 가 있으면 반영한다.
-    var refKeys = Object.keys(this.refs);
+  componentWillUnmount(){
+    this.props.toolEgg.factory.removeNest(this.props.toolEgg.toolKey, this);
 
-    var birdInstance = this.refs[refKeys[0]];
-
-    if (typeof birdInstance.props.storedState === 'object') {
-      birdInstance.setState(birdInstance.props.storedState);
-    }
+    console.log('will unmount', this);
   },
 
   componentDidUpdate(){
@@ -35,6 +30,11 @@ var ToolNest = React.createClass({
   componentDidMount(){
     this.applyToolBirdState();
   },
+
+  renderToolEgg(){
+    return this.props.toolEgg({width: this.props.width, height: (this.props.height || '100%')}, this);
+  },
+
 
   render(){
 

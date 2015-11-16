@@ -122,7 +122,7 @@
         // 중복생성을 허용한다면
         // ref를 중복된 key에서 중복생성으로 인해 만들어진 누적중복값에 +1을 한 후 새 ref를 만든다.
         _newSubWindowItem.lastDuplicatedCount = lastDuplicatedCount + 1;
-        _newSubWindowItem.ref = _newSubWindowItem + "_" + _newSubWindowItem.lastDuplicatedCount;
+        _newSubWindowItem.ref = _subWindowKey + "_" + _newSubWindowItem.lastDuplicatedCount;
       }
 
       _newSubWindowItem.key = _subWindowKey;
@@ -144,12 +144,12 @@
     },
 
 
-    renderWindowItem(_subWindowItem) {
+    renderWindowItem(_subWindowItem, _i ) {
 
       if (_subWindowItem.empty) {
         return <div style={{display: 'none'}}/>
       } else {
-
+        console.log(_subWindowItem );
         return ( <SubWindow ref={ _subWindowItem.ref }
                             title={_subWindowItem.title}
                             descType={_subWindowItem.descType}

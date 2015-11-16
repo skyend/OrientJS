@@ -475,7 +475,7 @@ UI.prototype.onThrowCatcherRequestAttachTool = function(_eventData) {
 
   this.toolFactory.getToolEgg(_eventData.toolKey, _eventData.params, function(__egg) {
 
-    self.rootUIInstance.attachTool(_eventData.where, __egg)
+    self.rootUIInstance.attachTool(_eventData.where, _eventData.attachOptions || {}, __egg)
   });
 };
 
