@@ -86,7 +86,6 @@ ToolFactory.prototype.removeNest = function(_toolKey, _nest) {
   });
 
   this.livingBirds[_toolKey] = newNests;
-  console.log(this.livingBirds);
 };
 
 ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {

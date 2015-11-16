@@ -12,11 +12,11 @@ export default React.createClass({
   },
 
   render(){
-    
+    console.log('APISourceMappingHelper',this.state, this.props);
     return (
       <div className='APISourceMappingHelper'>
         <div className='top'>
-
+          <input />
         </div>
         <div className='source-palette'>
 

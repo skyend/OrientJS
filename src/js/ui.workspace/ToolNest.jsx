@@ -10,25 +10,21 @@ var ToolNest = React.createClass({
   },
 
   applyToolBirdState(_toolStates){
-
     let tool = this.refs[Object.keys(this.refs)[0]];
-    console.log(tool, this.refs,_toolStates);
 
     tool.setState(_toolStates);
   },
 
   componentWillUnmount(){
     this.props.toolEgg.factory.removeNest(this.props.toolEgg.toolKey, this);
-
-    console.log('will unmount', this);
   },
 
   componentDidUpdate(){
-    this.applyToolBirdState();
+    this.props.toolEgg.factory.updateLivingBirds(this.props.toolEgg.toolKey);
   },
 
   componentDidMount(){
-    this.applyToolBirdState();
+    this.props.toolEgg.factory.updateLivingBirds(this.props.toolEgg.toolKey);
   },
 
   renderToolEgg(){

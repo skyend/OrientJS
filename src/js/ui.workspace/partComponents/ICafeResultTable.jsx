@@ -94,7 +94,7 @@ var ICafeResultTable = React.createClass({
   renderMultiPagenation(){
     if (this.props.result.page === undefined) return "";
     let current = this.props.result.page.current;
-    let pages_count = this.props.result.page.pages.length;
+    let pages_count = this.props.result.page.total / this.props.result.page.count; //.length;
 
     let start_point = Math.max(current - 3, 1);
     let end_point = Math.min(pages_count - 1, current + 4);
@@ -102,7 +102,7 @@ var ICafeResultTable = React.createClass({
 
     var pagerButtonList = [];
 
-    for (var i = start_point; i < end_point; i++) {
+    for (var i = start_point; i <= end_point; i++) {
       var classes = [];
 
       if (current == i) {

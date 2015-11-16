@@ -570,16 +570,17 @@ UI.prototype.onThrowCatcherNeedICEHost = function(_eventData) {
     iceHost: iceHost
   });
 };
-//
-// UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
-//   var self = this;
-//
-//   this.app.serviceManager.getApisourceList(function(_result) {
-//     self.toolFactory.storeToolState("ServiceResources", {
-//       apisourceList: _result.list
-//     });
-//   });
-// };
+
+
+UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApisourceList(function(_result) {
+    self.toolFactory.storeToolState("ServiceResources", {
+      apisourceList: _result.list
+    });
+  });
+};
 
 
 UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
@@ -617,7 +618,8 @@ UI.prototype.onThrowCatcherNeedAPIInterfaceList = function(_eventData) {
 
   this.app.serviceManager.getApiinterfaceList(function(_result) {
     _eventData.path[0].setState({
-      apiinterfaceList: _result.list
+      apiInterfaceList: _result.list,
+      apiinterfaceList: _result.list,
     });
   });
 };

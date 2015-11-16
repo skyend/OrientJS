@@ -657,7 +657,7 @@ var APISourceContext = React.createClass({
         self.setState({nodeTypeData: _result});
       });
 
-
+      console.log(this, 'NeedAPIInterfaceList');
       this.emit("NeedAPIInterfaceList");
     }
 
