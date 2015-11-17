@@ -12,7 +12,18 @@ var ToolNest = React.createClass({
   applyToolBirdState(_toolStates){
     let tool = this.refs[Object.keys(this.refs)[0]];
 
-    tool.setState(_toolStates);
+
+
+    if( tool !== undefined ){
+      tool.setState(_toolStates);
+    } else {
+      console.log(this, this.refs, _toolStates);
+      console.log("tool undefiend");
+    }
+  },
+
+  onThrowCatcherSaveState(_eventData){
+    this.props.toolEgg.setState(_eventData.state);
   },
 
   componentWillUnmount(){

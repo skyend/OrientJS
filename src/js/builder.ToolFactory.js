@@ -117,6 +117,10 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
     egg.toolTitle = self.toolsMap[_toolKey].title;
     egg.toolHelperText = self.toolsMap[_toolKey].toolHelperText;
     egg.factory = self;
+    // egg를 통해 state를 변경한것은 tool이 종료되어도 state는 보관되어 tool이 시작될때 반영된다.
+    egg.setState = function(_state) {
+      self.storeToolState(_toolKey, _state);
+    };
 
     // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
     if (_params !== undefined && _params.title !== undefined) {
