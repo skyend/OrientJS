@@ -1504,7 +1504,7 @@ class ElementNode {
     return this.document.interpret(preResolvedText);
   }
 
-
+  // 전처리
   pretreatment(_resolveKey) {
     var self = this;
     var WhatThings = /^(\w+):([\w-\.]+)$/;

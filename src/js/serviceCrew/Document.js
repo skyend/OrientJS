@@ -1,5 +1,6 @@
 var ElementNode = require('./ElementNode.js');
-var _ = require('underscore');
+import _ from 'underscore';
+import ObjectExplorer from '../util/ObjectExplorer.js';
 
 var Document = function(_contextController, _documentParams, _documentDataObject) {
   //////////////
@@ -455,7 +456,20 @@ Document.prototype.insertElementNode = function(_insertType, _elementNode, _base
 Document.prototype.interpret = function(_text) {
   var self = this;
 
-  var sampleUrlMap = {
+
+
+  let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
+    return self.valueResolve(_signString);
+  });
+
+  return valuesResolved.replace(/({.*?})/g, function(_matched) {
+    return self.processingFormularBlock(_matched);
+  });
+};
+
+Document.prototype.valueResolve = function(_sign) {
+  let self = this;
+  var sampleResourceMap = {
     image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
     image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
     image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
@@ -465,9 +479,33 @@ Document.prototype.interpret = function(_text) {
     image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
   };
 
+  return _sign.replace(/^(\*?)(.*)$/, function(_m, _firstMark, _refValue) {
 
-  return _text.replace(/(\${.*?})/g, function(_matched) {
-    return self.processingFormularBlock(_matched);
+    // Param
+    if (_firstMark === '*') {
+
+      let splited = _refValue.split(/\//);
+      let ns = splited.shift();
+      let detail = splited.length > 0 ? splited.join('/') : undefined;
+
+      let param = self.getParam(ns);
+
+      if (detail !== undefined) {
+        return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param`';
+      } else {
+        return param;
+      }
+    } else {
+      let splited = _refValue.split(':');
+      let category = splited[0];
+      let name = splited[1];
+
+      if (category === 'resource') {
+        return sampleResourceMap[name];
+      }
+    }
+
+    return 'Interpret Error';
   });
 };
 

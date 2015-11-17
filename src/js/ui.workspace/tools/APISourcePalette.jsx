@@ -46,10 +46,9 @@ let Request = React.createClass({
   },
 
   onDragStart(_e, _path){
-    console.log(_e.nativeEvent,_path);
-    let dragEvent = _e.nativeEvent;
 
-    dragEvent.dataTransfer.setData("text/plain", "${"+this.props.apiSource.nt_tid+_path+"}");
+    let dragEvent = _e.nativeEvent;
+    dragEvent.dataTransfer.setData("text/plain", "${*"+this.props.apiSource.nt_tid+_path+"}");
   },
 
   componentDidUpdate(){
