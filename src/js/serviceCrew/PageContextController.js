@@ -1,6 +1,26 @@
+import Page from './Page.js';
+
 class PageContextController {
   constructor(_page, _session, _serviceManager) {
     this._superDOMElement;
+    this.attached = false;
+    this.context = null;
+    this.running = false;
+    this.unsaved = false;
+
+    this.session = _session;
+    this.serviceManager = _serviceManager;
+
+    this.superElement = null;
+
+    // screen Mode
+    this.screenSizing = 'desktop'; // desktop, tablet, mobile
+
+    if (_page !== undefined) {
+      this.page = new Page(this, _page);
+    } else {
+      this.page = new Page(this);
+    }
   }
 
   attach(_context, _superDOMElement) {
@@ -25,8 +45,13 @@ class PageContextController {
   }
 
   save() {
-    this.unsaved = false;
-    this.context.feedSaveStateChange();
+    let self = this;
+    let pageJSON = this.page.export();
+
+    this.serviceManager.saveDocument(this.page.getID(), pageJSON, function(_result) {
+      self.unsaved = false;
+      self.context.feedSaveStateChange();
+    });
   }
 
   changedContent() {
@@ -48,8 +73,6 @@ class PageContextController {
   getScreenSizing() {
     return this.screenSizing;
   }
-
-
 };
 
 

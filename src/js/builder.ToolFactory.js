@@ -31,10 +31,10 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
       break;
     }
   }
+
   // 이전과 다른 State가 없다면 스킵
-  if (!changed) return;
-
-
+  //if (!changed) return;
+  console.log('store Tool state');
 
   // State Merge
   storedToolState = _.extend(storedToolState, state);

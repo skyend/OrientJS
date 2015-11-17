@@ -31,22 +31,15 @@ var DirectContext = React.createClass({
       this.closeElementNavigator();
     }
 
-
     this.contextController.pause();
-
   },
 
   goingToContextRunning(){
     this.contextController.resume();
 
-    if (this.props.contextType === "document") {
-      console.log(this.contextController.document);
-
-      this.emit("DocumentFocused", {
-        document: this.contextController.document
-      });
-    }
-
+    this.emit("DocumentFocused", {
+      document: this.contextController.document
+    });
   },
 
   feedSaveStateChange(){

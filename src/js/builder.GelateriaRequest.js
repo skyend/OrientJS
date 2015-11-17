@@ -180,6 +180,22 @@ class GelateriaRequest {
       });
   }
 
+  getDocumentList(_serviceId, _complete) {
+    request.post('http://125.131.88.146:8080/' + ['documents', 'list'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get document list");
+
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
+      });
+  }
+
+
 
 
   createPage(_serviceId, _title, _complete) {
@@ -201,20 +217,6 @@ class GelateriaRequest {
       });
   }
 
-  getDocumentList(_serviceId, _complete) {
-    request.post('http://125.131.88.146:8080/' + ['documents', 'list'].join('/'))
-      .type('form')
-      .withCredentials()
-      .send({
-        serviceId: _serviceId,
-      })
-      .end(function(err, res) {
-        if (err !== null) throw new Error("fail load get document list");
-
-        var dataObject = JSON.parse(res.text);
-        _complete(dataObject);
-      });
-  }
 
   getPageList(_serviceId, _complete) {
     request.post('http://125.131.88.146:8080/' + ['pages', 'list'].join('/'))
@@ -259,6 +261,26 @@ class GelateriaRequest {
     //
     //     _complete(dataObject);
     //   });
+  }
+
+  savePage(_serviceId, _page_id, _pageDataObject, _complete) {
+    request.post("http://125.131.88.146:8080/" + ["pages", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        service_real_id: _serviceId,
+        page_id: _page_id,
+        page: JSON.stringify(_pageDataObject)
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("save page fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
   }
 
   createApisource(_serviceId, _title, _nt_tid, _icon, _nid, _complete) {
