@@ -180,7 +180,7 @@
                                         &::before,
                                         &::after
                                         {
-                                            color: #a9247f;
+                                            color: rgb(168,148,166);
                                         }
 
                                         > .en-class
@@ -189,7 +189,7 @@
                                             &::before,
                                             &::after
                                             {
-                                                color: #ce9b76;
+                                                color: rgb(155,69,0);
                                             }
                                         }
                                         > .en-element-id
@@ -198,7 +198,7 @@
                                             &::before,
                                             &::after
                                             {
-                                                color: #ce9b76;
+                                                color: rgb(155,69,0);
                                             }
                                         }
 
@@ -213,7 +213,7 @@
                                             &::before,
                                             &::after
                                             {
-                                                color: #ce9b76;
+                                                color: rgb(155,69,0);
                                             }
                                         }
 
@@ -223,7 +223,7 @@
                                             &::before,
                                             &::after
                                             {
-                                                color: #ce9b76;
+                                                color: rgb(155,69,0);
                                             }
                                         }
                                     }
@@ -260,11 +260,55 @@
                                 &.focused
                                 {
                                     background-color: #0059b3;
-                                    *,
-                                    *::after,
-                                    *::before
+
+                                    *
                                     {
                                         color: #fff!important;
+                                    }
+
+                                    .visibility
+                                    {
+                                        &::before,
+                                        &::after
+                                        {
+                                            color: rgb(200,200,200)!important;
+                                        }
+
+                                        .en-class
+                                        {
+                                            &:after,
+                                            &:before
+                                            {
+                                                color: rgb(200,200,200)!important;
+                                            }
+                                        }
+
+                                        .en-element-id
+                                        {
+                                            &:after,
+                                            &:before
+                                            {
+                                                color: rgb(200,200,200)!important;
+                                            }
+                                        }
+
+                                        .en-id
+                                        {
+                                            &:after,
+                                            &:before
+                                            {
+                                                color: rgb(200,200,200)!important;
+                                            }
+                                        }
+
+                                        .en-type
+                                        {
+                                            &:after,
+                                            &:before
+                                            {
+                                                color: rgb(200,200,200)!important;
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -339,6 +383,14 @@
                             line-height: 100%;
                             > div
                             {
+                                > .folder
+                                {
+                                    width: 10px;
+                                    padding-left: 5px;
+
+                                    vertical-align: middle;
+                                }
+
                                 > .indent-block
                                 {
                                     display: inline-block;

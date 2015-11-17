@@ -11,7 +11,8 @@ var ContextContentsNavigation = React.createClass({
   getInitialState(){
     return {
       elementNode: null,
-      runningContext: null
+      runningContext: null,
+      unfolded:{}
     };
   },
 
@@ -19,6 +20,18 @@ var ContextContentsNavigation = React.createClass({
     this.emit("SelectElementNode", {
       elementNode: _elementNode
     });
+  },
+
+  toggleElementChildren(_e, _id){
+    _e.stopPropagation();
+
+    if( this.state.unfolded[_id] !== true ){
+      this.state.unfolded[_id] = true;
+    } else {
+      this.state.unfolded[_id] = false;
+    }
+
+    this.emit('SaveState',{state: {unfolded: this.state.unfolded}});
   },
 
   menterElementNode(_elementNode){
@@ -46,7 +59,8 @@ var ContextContentsNavigation = React.createClass({
     //console.log('tree navi updated', this.state.runningContext);
   },
 
-  renderElementVisibility(_elementNode, _indentBlocks){
+  renderElementVisibility(_elementNode, _indentBlocks, _hasChildren){
+    let self = this;
     var ghost = '';
     var repeatNumber = 0;
     if (_elementNode.isGhost) {
@@ -55,10 +69,13 @@ var ContextContentsNavigation = React.createClass({
       repeatNumber = _elementNode.getRealControl('repeat-n');
     }
 
+    if( !_hasChildren ) _indentBlocks.push(<div className='indent-block'/>);
 
     return (
       <div>
         { _indentBlocks }
+        { _hasChildren? <i className={'folder fa fa-caret-' + (this.state.unfolded[_elementNode.getId()]? 'down':'right')} onClick={function(_e){ self.toggleElementChildren(_e,_elementNode.getId())}}/>:''}
+
         <label className={'visibility '+ ghost}>
             <span className='tag-name'>
               {_elementNode.getTagName()}
@@ -144,12 +161,12 @@ var ContextContentsNavigation = React.createClass({
              onClick={function(){self.clickElementNode(_elementNode)}}
              onMouseEnter={function(){self.menterElementNode(_elementNode)}}
              onMouseLeave={function(){self.mleaveElementNode(_elementNode)}}>
-          { this.renderElementVisibility(_elementNode, indentBlocks) }
+          { this.renderElementVisibility(_elementNode, indentBlocks, hasChildren) }
           { isEmptyType ? this.renderEmptyInfo(_elementNode, indentBlocks) : '' }
         </div>
 
 
-        { hasChildren ? this.renderElementNodeChildren(_elementNode.children, _depth + 1) : '' }
+        { hasChildren && this.state.unfolded[_elementNode.getId()] ? this.renderElementNodeChildren(_elementNode.children, _depth + 1) : '' }
       </li>
     );
   },

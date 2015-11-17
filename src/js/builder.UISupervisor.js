@@ -72,10 +72,10 @@ UI.prototype.eventMapping = function() {
   };
 
   this.window.document.ondrop = function(_e) {
-    _e.preventDefault();
-    _e.dataTransfer.setData("text/plain", 'nono');
+    //_e.preventDefault();
+    //_e.dataTransfer.setData("text/plain", 'nono');
     console.log(_e, 'drop in builder');
-    return false;
+    //return false;
   }
 }
 

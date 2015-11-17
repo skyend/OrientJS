@@ -23,6 +23,10 @@ var EnterableWrapperInput = React.createClass({
     return this.state.value;
   },
 
+  onDrop(e){
+
+  },
+
   onChange(_e){
     var value = _e.target.value;
 
@@ -43,7 +47,7 @@ var EnterableWrapperInput = React.createClass({
 
   render(){
     return (
-      <input value={ this.state.value } onChange={this.onChange}/>
+      <input value={ this.state.value } onChange={this.onChange} onDrop={this.onDrop}/>
     );
   }
 });

@@ -15,11 +15,18 @@ var PageCUForm = React.createClass({
   },
 
   negative(){
+    if( typeof this.props.params['nagative-action'] === 'function' ){
+      this.props.params['nagative-action']();
+    }
+    
     this.emit("Close");
   },
 
   positive(){
-    this.props.params['positive-action']();
+    if( typeof this.props.params['positive-action'] === 'function' ){
+      this.props.params['positive-action']();
+    }
+
     this.emit("Close");
   },
 
