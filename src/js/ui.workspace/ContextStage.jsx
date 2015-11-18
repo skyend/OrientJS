@@ -9,7 +9,7 @@
 import _ from 'underscore';
 
 
-import './DocumentStage.less';
+import './ContextStage.less';
 
 import IFrameStage from './partComponents/IFrameStage.jsx';
 import DirectContext from './DirectContext.jsx';
@@ -19,14 +19,14 @@ import VDomController from '../virtualdom/VDomController.js';
 import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
 import React from "react";
 
-var DocumentStage = React.createClass({
+var ContextStage = React.createClass({
 
   // Mixin EventDistributor
   mixins: [require('./reactMixin/EventDistributor.js')],
   getInitialState(){
 
     return {
-      runningContextID: "TEST#1",
+      runningContextID: undefined,
       stageMode: 'desktop',
       contexts: [
         //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
@@ -67,10 +67,18 @@ var DocumentStage = React.createClass({
       // 새 컨텍스트를 추가한다.
       this.state.contexts.push(_contextSpec);
       this.setState({contexts: this.state.contexts, runningContextID: _contextSpec.contextID});
+
+      this.emit('NewContext', {
+        contextItem: _contextSpec
+      });
     }
 
 
-    this.emitOpenedDirectContextTab(_contextSpec);
+
+    this.emit('FocusedContext', {
+      contextItem: _contextSpec
+    });
+    // this.emitOpenedDirectContextTab();
   },
 
   closeContext(_targetContext, _force){
@@ -122,11 +130,16 @@ var DocumentStage = React.createClass({
     }
 
 
-    this.emitClosedDirectContextTab(_targetContext);
+    this.emit('ClosedContext', {
+      contextItem: _targetContext
+    });
 
     if (nextContext !== null) {
       this.setState({runningContextID: nextContext.contextID});
-      this.emitOpenedDirectContextTab(nextContext);
+
+      this.emit('FocusedContext', {
+        contextItem: nextContext
+      });
     } else {
       // 컨텍스트가 모두 닫힌 상태이므로 contexts 배열을 빈 배열로 초기화한다.
       this.setState({runningContextID: null, contexts: []});
@@ -136,20 +149,22 @@ var DocumentStage = React.createClass({
   clickTabItem(_contextItem) {
     this.setState({runningContextID: _contextItem.contextID});
 
-    this.emitOpenedDirectContextTab(_contextItem);
-  },
-
-  emitClosedDirectContextTab(_contextItem){
-    this.emit('ClosedDirectContextTab', {
+    this.emit('FocusedContext', {
       contextItem: _contextItem
     });
   },
 
-  emitOpenedDirectContextTab(_contextItem){
-    this.emit('OpenedDirectContextTab', {
-      contextItem: _contextItem
-    });
-  },
+  // emitClosedDirectContextTab(_contextItem){
+  //   this.emit('ClosedDirectContextTab', {
+  //     contextItem: _contextItem
+  //   });
+  // },
+  //
+  // emitOpenedDirectContextTab(_contextItem){
+  //   this.emit('NewContext', {
+  //     contextItem: _contextItem
+  //   });
+  // },
 
 
   onModifyDocument(_documentHtml) {
@@ -1082,4 +1097,4 @@ var DocumentStage = React.createClass({
   }
 });
 
-export default DocumentStage;
+export default ContextStage;

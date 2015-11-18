@@ -13,7 +13,7 @@ import Async from '../lib/Async.js';
 import HeadToolBar from'./HeadToolBar.jsx'; //상단 네비게이션 UI
 import ToolNavigation from './ToolNavigation.jsx';
 
-import DocumentStage from './DocumentStage.jsx'; //중앙 컨텐츠 영역 UI
+import ContextStage from './ContextStage.jsx'; //중앙 컨텐츠 영역 UI
 import FootStatusBar from './FootStatusBar.jsx'; //하단 상태 표시줄 UI
 import Modal from './Modal.jsx'; //Modal UI
 import FloatingMenuBox from './FloatingMenuBox.jsx'; //StageContextMenu
@@ -110,7 +110,7 @@ var Workspace = React.createClass({
   onThrowCatcherStageElementDelete(_eventData, _pass) {
     //_eventData.target.element.remove();
 
-    this.refs['DocumentStage'].deleteElement({
+    this.refs['ContextStage'].deleteElement({
       contextId: _eventData.target.contextId,
       elementId: _eventData.target.elementId
     });
@@ -121,7 +121,7 @@ var Workspace = React.createClass({
 
   onThrowCatcherStageElementClone(_eventData, _pass) {
     this.offContextMenu();
-    this.refs['DocumentStage'].setState({a: 1});
+    this.refs['ContextStage'].setState({a: 1});
   },
 
   onThrowCatcherStageElementEdit(_eventData, _pass) {
@@ -215,11 +215,8 @@ var Workspace = React.createClass({
     this.notifyMessage(_eventData.title, _eventData.message, _eventData.level);
   },
 
-  // 열린 컨텍스트 탭
-  onThrowCatcherOpenedDirectContextTab(_eventData, _pass){
-    //console.log(_eventData);
-    console.log('컨텍스트가 열렸습니다.');
 
+  onThrowCatcherFocusedContext(_eventData){
     this.applyToolStates("ServiceResources", {
       runningContext: _eventData.contextItem
     });
@@ -241,11 +238,7 @@ var Workspace = React.createClass({
     });
   },
 
-
-  onThrowCatcherClosedDirectContextTab(_eventData, _pass){
-    //console.log(_eventData);
-    console.log('컨텍스트가 닫혔습니다.');
-
+  onThrowCatcherUnfocusedContext(_eventData){
     this.applyToolStates("ServiceResources", {
       runningContext: null
     });
@@ -265,11 +258,85 @@ var Workspace = React.createClass({
     this.refs['HeadToolBar'].setState({
       contextItem: null
     });
+  },
 
+  onThrowCatcherNewContext(_eventData){
+
+  },
+
+  onThrowCatcherClosedContext(_eventData){
     this.emit("DestroyContext", {
       context: _eventData.contextItem
     });
   },
+
+
+  onThrowCatcherDocumentFocused(_eventData, _pass){
+    this.applyToolStates("DocumentConfig", {
+      document: _eventData.document
+    });
+
+    this.applyToolStates("DocumentCSSEditor", {
+      document: _eventData.document
+    });
+  },
+
+
+  // // 열린 컨텍스트 탭
+  // onThrowCatcherOpenedDirectContextTab(_eventData, _pass){
+  //   //console.log(_eventData);
+  //   console.log('컨텍스트가 열렸습니다.');
+  //
+  //   this.applyToolStates("ServiceResources", {
+  //     runningContext: _eventData.contextItem
+  //   });
+  //
+  //   this.applyToolStates("ContextContentsNavigation", {
+  //     runningContext: _eventData.contextItem.contextType === 'document'? _eventData.contextItem:null
+  //   });
+  //
+  //   this.applyToolStates("DocumentCSSEditor", {
+  //     contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
+  //   });
+  //
+  //   this.applyToolStates("APISourceMappingHelper", {
+  //     contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
+  //   });
+  //
+  //   this.refs['HeadToolBar'].setState({
+  //     contextItem: _eventData.contextItem
+  //   });
+  // },
+  //
+  //
+  // onThrowCatcherClosedDirectContextTab(_eventData, _pass){
+  //   //console.log(_eventData);
+  //   console.log('컨텍스트가 닫혔습니다.');
+  //
+  //   this.applyToolStates("ServiceResources", {
+  //     runningContext: null
+  //   });
+  //
+  //   this.applyToolStates("ContextContentsNavigation", {
+  //     runningContext: null
+  //   });
+  //
+  //   this.applyToolStates("DocumentCSSEditor", {
+  //     contextController:null
+  //   });
+  //
+  //   this.applyToolStates("APISourceMappingHelper", {
+  //     contextController: null
+  //   });
+  //
+  //   this.refs['HeadToolBar'].setState({
+  //     contextItem: null
+  //   });
+  //
+  //   this.emit("DestroyContext", {
+  //     context: _eventData.contextItem
+  //   });
+  // },
 
   onThrowCatcherRefreshedDirectContext(){
     this.refs['HeadToolBar'].forceUpdate();
@@ -329,45 +396,34 @@ var Workspace = React.createClass({
     });
   },
 
-  newSubWindow() {
-    var subWindowSystem = this.refs['SubWindowSystem'];
-
-    subWindowSystem.spawnSubWindow('New', false, {
-      title: 'aae',
-      descType: "New",
-
-
-    });
-  },
-
   onThrowCatcherBeginDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['DocumentStage'];
+    var documentStage = this.refs['ContextStage'];
 
     //_componentName
     documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   onThrowCatcherDragDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['DocumentStage'];
+    var documentStage = this.refs['ContextStage'];
 
     documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   onThrowCatcherDropDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['DocumentStage'];
+    var documentStage = this.refs['ContextStage'];
 
     documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   openStageContext(_contextSpec){
-    var documentStage = this.refs['DocumentStage'];
+    var documentStage = this.refs['ContextStage'];
 
     documentStage.openContext(_contextSpec);
   },
 
 
   onThrowCatcherSelectElementNode(_eventData, _pass){
-    this.refs['DocumentStage'].selectElementNode(_eventData.elementNode);
+    this.refs['ContextStage'].selectElementNode(_eventData.elementNode);
   },
 
   // 성공적으로 요소가 선택되었을 때
@@ -427,11 +483,11 @@ var Workspace = React.createClass({
   },
 
   onThrowCatcherMouseEnterElementNode(_eventData, _pass){
-    this.refs['DocumentStage'].mouseEnterElement(_eventData.elementNode);
+    this.refs['ContextStage'].mouseEnterElement(_eventData.elementNode);
   },
 
   onThrowCatcherMouseLeaveElementNode(_eventData, _pass){
-    this.refs['DocumentStage'].mouseLeaveElement(_eventData.elementNode);
+    this.refs['ContextStage'].mouseLeaveElement(_eventData.elementNode);
   },
 
   onThrowCatcherUpdatedContext(_eventData, _pass){
@@ -439,19 +495,9 @@ var Workspace = React.createClass({
     this.refs['RightNavigation'].forceUpdate();
   },
 
-  onThrowCatcherDocumentFocused(_eventData, _pass){
-    this.applyToolStates("DocumentConfig", {
-      document: _eventData.document
-    });
-
-    this.applyToolStates("DocumentCSSEditor", {
-      document: _eventData.document
-    });
-  },
-
   onThrowCatcherChangedSaveState(_eventData){
     this.refs['HeadToolBar'].forceUpdate();
-    this.refs['DocumentStage'].forceUpdate();
+    this.refs['ContextStage'].forceUpdate();
   },
 
 
@@ -459,7 +505,7 @@ var Workspace = React.createClass({
   onThrowCatcherSaveCurrentContext(_eventData, _pass){
     console.log(_eventData, _pass);
 
-    var docStage = this.refs['DocumentStage'];
+    var docStage = this.refs['ContextStage'];
     var currentContext = docStage.getCurrentRunningContext();
     if (currentContext !== undefined) {
       currentContext.save();
@@ -471,11 +517,11 @@ var Workspace = React.createClass({
   onThrowCatcherChangeStageMode(_eventData, _pass){
     var mode = _eventData.mode;
 
-    this.refs['DocumentStage'].setStageMode(mode);
+    this.refs['ContextStage'].setStageMode(mode);
   },
 
   onThrowCatcherDocumentRedo(){
-    var docStage = this.refs['DocumentStage'];
+    var docStage = this.refs['ContextStage'];
     var currentContext = docStage.getCurrentRunningContext();
 
     if (currentContext === undefined) {
@@ -495,7 +541,7 @@ var Workspace = React.createClass({
   },
 
   onThrowCatcherDocumentUndo(){
-    var docStage = this.refs['DocumentStage'];
+    var docStage = this.refs['ContextStage'];
     var currentContext = docStage.getCurrentRunningContext();
 
     if (currentContext === undefined) {
@@ -518,17 +564,17 @@ var Workspace = React.createClass({
   onThrowCatcherResized(_eventData){
 
     if (_eventData.refPath[0] === 'LeftNavigation') {
-      this.resizeDocumentStage();
+      this.resizeContextStage();
     } else if (_eventData.refPath[0] === 'RightNavigation') {
-      this.resizeDocumentStage();
+      this.resizeContextStage();
     } else if (_eventData.refPath[0] === 'BottomNavigation') {
       this.resizeSideNavigation();
     }
 
   },
 
-  resizeDocumentStage(){
-    var documentStage = this.refs['DocumentStage'];
+  resizeContextStage(){
+    var documentStage = this.refs['ContextStage'];
     var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
     var leftNavigationDOM = this.refs['LeftNavigation'].getDOMNode();
     var rightNavigationDOM = this.refs['RightNavigation'].getDOMNode();
@@ -545,7 +591,7 @@ var Workspace = React.createClass({
   },
 
   resizeSideNavigation(){
-    var documentStage = this.refs['DocumentStage'];
+    var documentStage = this.refs['ContextStage'];
     var leftNavigation = this.refs['LeftNavigation'];
     var rightNavigation = this.refs['RightNavigation'];
     var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
@@ -565,7 +611,7 @@ var Workspace = React.createClass({
   screenResized(){
 
     this.resizeSideNavigation();
-    this.resizeDocumentStage();
+    this.resizeContextStage();
   },
 
 
@@ -629,7 +675,7 @@ var Workspace = React.createClass({
                           verticalText={true}
                           position='bottom'/>
 
-          <DocumentStage ref='DocumentStage'
+          <ContextStage ref='ContextStage'
                          aimingCount={100}
                          aimingEscapeStepSize={10}
                          boundaryBorderSize={5}/>
