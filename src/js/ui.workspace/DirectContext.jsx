@@ -686,6 +686,7 @@ var DirectContext = React.createClass({
       height: this.props.height
     };
 
+
     if (this.props.runningState) {
       style.display = 'block';
     }

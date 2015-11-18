@@ -443,7 +443,6 @@ UI.prototype.onThrowCatcherBringPageContext = function(_eventData) {
   // Document Meta 정보로 DocumentContextController를 얻는다
   this.app.serviceManager
     .getPageContextController(page._id, function(_pageContextController) {
-      console.log(page);
       self.rootUIInstance.openStageContext({
         pageID: page._id,
         contextID: 'page#' + page._id,

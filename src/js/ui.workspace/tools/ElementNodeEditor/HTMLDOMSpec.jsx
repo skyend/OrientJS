@@ -15,48 +15,49 @@ var HTMLDOMSpec = React.createClass({
     };
   },
 
-  onThrowCatcherRemoveField(_eventData, _pass){
-
-  },
-
-  onThrowCatcherRenameField(_eventData, _pass){
-    if (_eventData.refPath[1] === "dataAttribute") {
-
-      if (/data-\w+/.test(_eventData.current)) {
-
-        this.props.elementNode.renameAttribute(_eventData.past, _eventData.current);
-      } else {
-
-        this.emit('NoticeMessage', {
-          title: "필드명을 변경할 수 없습니다.",
-          message: "해당 필드의 이름은 data-로 시작하여야 합니다.",
-          level: "error"
-        });
-      }
-
-      this.forceUpdate();
-    }
-  },
-
-  onThrowCatcherNewFieldAdd(_eventData, _pass){
-    if (_eventData.refPath[0] === "dataAttribute") {
-
-      // elementNode에 새 attribute를 할당
-      this.props.elementNode.setAttribute("data-" + Math.floor(Math.random() * 99999), "");
-
-      this.forceUpdate();
-    }
-  },
-
-  onThrowCatcherRemoveField(_eventData, _pass){
-    if (_eventData.refPath[1] === "dataAttribute") {
-
-      // elementNode에 새 attribute를 할당
-      this.props.elementNode.removeAttribute(_eventData.fieldName);
-
-      this.forceUpdate();
-    }
-  },
+  // ElementNodeEditor.jsx 에서 재개발 예정
+  // onThrowCatcherRenameField(_eventData, _pass){
+  //   if (_eventData.refPath[1] === "dataAttribute") {
+  //
+  //     if (/data-\w+/.test(_eventData.current)) {
+  //       this.emit("RenameAttribute", {
+  //         past: _eventData.past,
+  //         current: _eventData.current
+  //       });
+  //
+  //       // this.props.elementNode.renameAttribute(_eventData.past, _eventData.current);
+  //     } else {
+  //
+  //       this.emit('NoticeMessage', {
+  //         title: "필드명을 변경할 수 없습니다.",
+  //         message: "해당 필드의 이름은 data-로 시작하여야 합니다.",
+  //         level: "error"
+  //       });
+  //     }
+  //
+  //     this.forceUpdate();
+  //   }
+  // },
+  //
+  // onThrowCatcherNewFieldAdd(_eventData, _pass){
+  //   if (_eventData.refPath[0] === "dataAttribute") {
+  //
+  //     // elementNode에 새 attribute를 할당
+  //     this.props.elementNode.setAttribute("data-" + Math.floor(Math.random() * 99999), "");
+  //
+  //     this.forceUpdate();
+  //   }
+  // },
+  //
+  // onThrowCatcherRemoveField(_eventData, _pass){
+  //   if (_eventData.refPath[1] === "dataAttribute") {
+  //
+  //     // elementNode에 새 attribute를 할당
+  //     this.props.elementNode.removeAttribute(_eventData.fieldName);
+  //
+  //     this.forceUpdate();
+  //   }
+  // },
 
   render() {
 

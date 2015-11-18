@@ -23,16 +23,7 @@ var ContextStage = React.createClass({
 
   // Mixin EventDistributor
   mixins: [require('./reactMixin/EventDistributor.js')],
-  getInitialState(){
 
-    return {
-      runningContextID: undefined,
-      stageMode: 'desktop',
-      contexts: [
-        //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
-      ]
-    }
-  },
 
   getDefaultProps() {
     this.observers = {};
@@ -52,6 +43,19 @@ var ContextStage = React.createClass({
           name: 'tab test2'
         }
       ]
+    }
+  },
+
+  getInitialState(){
+
+    return {
+      runningContextID: undefined,
+      stageMode: 'desktop',
+      contexts: [
+        //{ contextID : "TEST#1", contextType: "Document", contextController:null } // ContextType : Document | Page, ContextController : PageController | DocumentController
+      ],
+      width:this.props.width || 2048,
+      height:this.props.height || 1720
     }
   },
 
@@ -173,29 +177,6 @@ var ContextStage = React.createClass({
     }
   },
 
-  /**
-   * tabContextResize()
-   *
-   * 아래의 footerPanelPart 기준으로 리사이즈 한다.
-   */
-    tabContextResize() {
-    var tabContext = this.refs['tab-context'];
-    //var footerToolPart = this.refs['footer-tool-part'];
-    var tabArea = this.refs['tab-area'];
-
-    var tabContextDOM = tabContext.getDOMNode();
-    //var footerToolPartDOM = footerToolPart.getDOMNode();
-    var tabAreaDOM = tabArea.getDOMNode();
-    var selfDOM = this.getDOMNode();
-
-    var selfDOMHeight = selfDOM.offsetHeight;
-    var tabAreaDOMHeight = tabAreaDOM.offsetHeight;
-    //var footerToolPartDOMHeight = footerToolPartDOM.offsetHeight;
-
-    var tabContextDOMHeight = selfDOMHeight - tabAreaDOMHeight;// - footerToolPartDOMHeight;
-    tabContextDOM.style.height = tabContextDOMHeight + 'px';
-  },
-
   getTabContextOffsetLeftByDS(){
     return this.refs['tab-context'].getDOMNode().offsetLeft;
   },
@@ -203,17 +184,6 @@ var ContextStage = React.createClass({
   getTabContextOffsetTopByDS(){
 
     return this.refs['tab-context'].getDOMNode().offsetTop;
-  },
-
-  /**
-   * onFooterToolPartResize()
-   *
-   * FooterPanelPart의 사이즈가 조정 되었을 때 PanelContainer 에 의해 호출 된다.
-   */
-    onFooterToolPartResize() {
-
-    /* tab-context 리사이즈 */
-    this.tabContextResize();
   },
 
 
@@ -235,7 +205,7 @@ var ContextStage = React.createClass({
    * @Param _absoluteY
    * @Param _key
    */
-    startDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
+  startDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
     if (!this.hasCurrentRunningContext()) return;
     var context = this.getCurrentRunningContext();
     if (!context.isAcceptDropComponent()) return;
@@ -257,7 +227,7 @@ var ContextStage = React.createClass({
    * @Param _absoluteY
    * @Param _key
    */
-    dragDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
+  dragDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
     if (!this.hasCurrentRunningContext()) return;
     var context = this.getCurrentRunningContext();
     if (!context.isAcceptDropComponent()) return;
@@ -366,7 +336,7 @@ var ContextStage = React.createClass({
    * popHighestTarget
    * VNode 리스트에서 zIndex가 제일 높은 VNode를 찾는다.
    */
-    popHighestTarget(_elementList){
+  popHighestTarget(_elementList){
     var max = -100;
     var highestElement = null;
     _elementList.map(function (_element) {
@@ -394,7 +364,7 @@ var ContextStage = React.createClass({
    * @Param _componentKey
    * @Param _packageKey
    */
-    stopDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
+  stopDeployComponentByPalette(_absoluteX, _absoluteY, _componentKey, _packageKey){
     if (!this.hasCurrentRunningContext()) return;
     var context = this.getCurrentRunningContext();
     if (!context.isAcceptDropComponent()) return;
@@ -503,7 +473,7 @@ var ContextStage = React.createClass({
    * 배치완료된 요소 처리
    * @Param _attachedElement : DOMElement
    */
-    deployedComponent(_attachedElement){
+  deployedComponent(_attachedElement){
 
   },
 
@@ -512,7 +482,7 @@ var ContextStage = React.createClass({
    * 대상요소의 Node를 분석하여 Path를 추출한다.
    * @Param _target Target이 되는 VNode
    */
-    getTargetPath(_target){
+  getTargetPath(_target){
     var pathArray = [];
 
     // 드랍이 예상되는 요소의 Path를 반환
@@ -544,7 +514,7 @@ var ContextStage = React.createClass({
    * @Param _absoluteX
    * @Param _absoluteY
    */
-    findGuideDirectBound(_absoluteX, _absoluteY){
+  findGuideDirectBound(_absoluteX, _absoluteY){
     var topBound = this.refs['drop-guide-box-top'];
     var bottomBound = this.refs['drop-guide-box-bottom'];
     var leftBound = this.refs['drop-guide-box-left'];
@@ -732,7 +702,7 @@ var ContextStage = React.createClass({
    * @Param _absoluteX
    * @Param _absoluteY
    */
-    aimingTarget(_target, _absoluteX, _absoluteY){
+  aimingTarget(_target, _absoluteX, _absoluteY){
     var self = this;
     // Single Targeted
 
@@ -942,7 +912,6 @@ var ContextStage = React.createClass({
 
 
   componentDidUpdate(_prevProps, _prevState) {
-    this.tabContextResize();
 
     if (this.getCurrentRunningContext()) {
       var context = this.getCurrentRunningContext();

@@ -101,21 +101,7 @@ var ElementNodeEditor = React.createClass({
 
 
     this.setState({elementNode: elementNode});
-    elementNode.executeSnapshot();
   },
-
-  refreshElementNodeRendering(_elementNode){
-    var elementDocument = _elementNode.document;
-    var contextController = elementDocument.getContextController();
-
-    if (_elementNode.getParent() !== null) {
-      contextController.constructToRealElement(_elementNode);
-      _elementNode.getParent().linkRealDOMofChild();
-    } else {
-      contextController.rootRender();
-    }
-  },
-
 
   renderEditParts(_elementNode){
 

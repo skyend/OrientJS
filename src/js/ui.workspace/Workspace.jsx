@@ -232,7 +232,7 @@ var Workspace = React.createClass({
     this.applyToolStates("APISourceMappingHelper", {
       contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
     });
-
+    console.log(_eventData);
     this.refs['HeadToolBar'].setState({
       contextItem: _eventData.contextItem
     });
@@ -397,28 +397,28 @@ var Workspace = React.createClass({
   },
 
   onThrowCatcherBeginDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
 
     //_componentName
-    documentStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+    contextStage.startDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   onThrowCatcherDragDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
 
-    documentStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+    contextStage.dragDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   onThrowCatcherDropDeployComponent(_eventData, _pass){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
 
-    documentStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
+    contextStage.stopDeployComponentByPalette(_eventData.absoluteX, _eventData.absoluteY, _eventData.componentKey, _eventData.packageKey);
   },
 
   openStageContext(_contextSpec){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
 
-    documentStage.openContext(_contextSpec);
+    contextStage.openContext(_contextSpec);
   },
 
 
@@ -574,24 +574,24 @@ var Workspace = React.createClass({
   },
 
   resizeContextStage(){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
     var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
     var leftNavigationDOM = this.refs['LeftNavigation'].getDOMNode();
     var rightNavigationDOM = this.refs['RightNavigation'].getDOMNode();
     var bottomNavigationDOM = this.refs['BottomNavigation'].getDOMNode();
 
 
-    documentStage.setState({
-      width: this.getDOMNode().offsetWidth - leftNavigationDOM.offsetWidth - rightNavigationDOM.offsetWidth,
-      height: this.getDOMNode().offsetHeight - headToolBarDOM.offsetHeight - bottomNavigationDOM.offsetHeight,
-      x: leftNavigationDOM.offsetWidth,
+    contextStage.setState({
+      width: this.getDOMNode().offsetWidth - parseInt(leftNavigationDOM.style.width) -  parseInt(rightNavigationDOM.style.width),
+      height: this.getDOMNode().offsetHeight - headToolBarDOM.offsetHeight - parseInt(bottomNavigationDOM.style.height),
+      x: parseInt(leftNavigationDOM.style.width),
       y: headToolBarDOM.offsetHeight
     });
 
   },
 
   resizeSideNavigation(){
-    var documentStage = this.refs['ContextStage'];
+    var contextStage = this.refs['ContextStage'];
     var leftNavigation = this.refs['LeftNavigation'];
     var rightNavigation = this.refs['RightNavigation'];
     var headToolBarDOM = this.refs['HeadToolBar'].getDOMNode();
@@ -599,12 +599,12 @@ var Workspace = React.createClass({
 
     leftNavigation.setState({
       top: headToolBarDOM.offsetHeight,
-      bottom: bottomNavigationDOM.offsetHeight
+      bottom: parseInt(bottomNavigationDOM.style.height)
     });
 
     rightNavigation.setState({
       top: headToolBarDOM.offsetHeight,
-      bottom: bottomNavigationDOM.offsetHeight
+      bottom: parseInt(bottomNavigationDOM.style.height)
     });
   },
 
@@ -676,6 +676,8 @@ var Workspace = React.createClass({
                           position='bottom'/>
 
           <ContextStage ref='ContextStage'
+                          width={window.innerWidth}
+                          height={window.innerHeight}
                          aimingCount={100}
                          aimingEscapeStepSize={10}
                          boundaryBorderSize={5}/>

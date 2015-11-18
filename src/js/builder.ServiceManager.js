@@ -273,7 +273,6 @@ class ServiceManager {
       console.log('서비스 매니저의 서비스아이디', this.service_id);
       this.app.gelateriaRequest.loadPage(this.service_id, _pageId, function(_result) {
 
-
         if (_result.result === 'success') {
           var pageContextController = new PageContextController(_result.page, self.app.session, self);
 
@@ -287,7 +286,7 @@ class ServiceManager {
       });
 
     } else {
-      _complete(this.docContextControllers[_pageId]);
+      _complete(this.pageContextControllers[_pageId]);
     }
   }
 

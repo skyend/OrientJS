@@ -101,7 +101,7 @@ var HeadToolBar = React.createClass({
           //saveDisabled = false;
           break;
       }
-
+      console.log(this.state.contextItem);
       if (this.state.contextItem.contextController.isUnsaved) {
         saveDisabled = false;
       }
