@@ -1,4 +1,6 @@
-var ElementNode = require('./ElementNode.js');
+import ElementNode from './ElementNode.js';
+import EmptyElementNode from './ElementNode/EmptyElementNode.js';
+
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
 
@@ -246,7 +248,15 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
   var elementNode;
 
   if (typeof _elementNodeDataObject !== 'undefined') {
-    elementNode = new ElementNode(this, _elementNodeDataObject, _preInsectProps);
+    console.log(_elementNodeDataObject);
+    if (_elementNodeDataObject.type === 'empty') {
+
+      elementNode = new EmptyElementNode(this, _elementNodeDataObject, _preInsectProps);
+    } else {
+
+      elementNode = new ElementNode(this, _elementNodeDataObject, _preInsectProps);
+    }
+
 
     // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
     if (!/^\d+$/.test(elementNode.getId())) {

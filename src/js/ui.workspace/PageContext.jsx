@@ -7,7 +7,8 @@ export default React.createClass({
   getInitialState(){
     return {
       stageWidth:1024,
-      stageHeight:768
+      stageHeight:768,
+      selectedElementNode: null
     };
   },
   //
@@ -35,6 +36,10 @@ export default React.createClass({
 
   getContextType(){
     return this.props.contextType;
+  },
+
+  onThrowCatcherClickElementInStage(_e){
+    console.log(_e);
   },
 
   componentDidUpdate(){

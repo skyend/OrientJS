@@ -20,25 +20,27 @@ class ElementNode {
     this.componentName;
     this.comment;
 
-    // refference
-    this.refferenceType; // react | document | ...
-    this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
-    this.refferenceTargetProps; // {...}
+
 
     // Element Controls
     this.controls;
     /**
     Controls {
         repeat-n: number or ${...}
-    }
-     **/
+    } **/
     this.rectangle = {
       desktop: {},
       tablet: {},
       mobile: {}
     }
 
+    /* Empty Type */
+    // refference
+    this.refferenceType; // react | document | ...
+    this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
+    this.refferenceTargetProps; // {...}
 
+    /* React Type */
     this.reactPackageKey;
     this.reactComponentKey;
     this.reactComponentProps;
@@ -62,7 +64,7 @@ class ElementNode {
       this.clonePool = []; // repeated
     }()
 
-
+    /* Empty Type */
     this.refferenceInstance = null;
 
     // Repeat by parent's Repeat Control
@@ -1202,9 +1204,11 @@ class ElementNode {
       isGhost: this.isGhost
     }
 
-
+    let elementNodeData;
+    let child;
     for (var i = 0; i < _childrenDataList.length; i++) {
-      var child = this.document.newElementNode(_childrenDataList[i], preInsectProps);
+      elementNodeData = _childrenDataList[i];
+      child = this.document.newElementNode(elementNodeData, preInsectProps);
       child.setParent(this);
       list.push(child);
     }
@@ -1482,7 +1486,6 @@ class ElementNode {
     });
 
     this.pastRevision = this.export();
-
   }
 
 

@@ -163,8 +163,9 @@ var IFrameStage = React.createClass({
     this.currentIframeDocument = innerDocument;
 
     this.bindContextMenuTrigger(_iframe);
-
+    console.log('iframe loaded');
     innerDocument.addEventListener('click', function (_ev) {
+      console.log('click element');
       self.onMouseClickAtStage(_ev);
     }, false);
 
@@ -189,7 +190,7 @@ var IFrameStage = React.createClass({
    * onMouseClickAtStage
    *
    */
-    onMouseClickAtStage(_e) {
+  onMouseClickAtStage(_e) {
     this.elementClick(_e.target, _e);
   },
 
@@ -204,9 +205,11 @@ var IFrameStage = React.createClass({
 
 
   elementClick(_target, _e){
-
+    let element = this.searchClickedDOM(_target, _e.x, _e.y);
+    console.log(element);
+    
     this.emit("ClickElementInStage", {
-      targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
+      targetDOMNode: element
     });
   },
 
