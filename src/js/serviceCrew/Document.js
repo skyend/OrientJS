@@ -2,6 +2,7 @@ import HTMLElementNode from './ElementNode/HTMLElementNode.js';
 import StringElementNode from './ElementNode/StringElementNode.js';
 import EmptyElementNode from './ElementNode/EmptyElementNode.js';
 import ReactElementNode from './ElementNode/ReactElementNode.js';
+import GridElementNode from './ElementNode/GridElementNode.js';
 
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
@@ -256,6 +257,7 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
   else if (type === 'string') elementNodeCLASS = StringElementNode;
   else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
   else if (type === 'react') elementNodeCLASS = ReactElementNode;
+  else if (type === 'grid') elementNodeCLASS = GridElementNode;
   else {
     throw new Error('unkown elementNode type');
   }
