@@ -1,5 +1,7 @@
-import ElementNode from './ElementNode.js';
+import HTMLElementNode from './ElementNode/HTMLElementNode.js';
+import StringElementNode from './ElementNode/StringElementNode.js';
 import EmptyElementNode from './ElementNode/EmptyElementNode.js';
+import ReactElementNode from './ElementNode/ReactElementNode.js';
 
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
@@ -244,26 +246,26 @@ Document.prototype.getReactElementNodeCSSLines = function() {
  * newElementNode
  * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
  */
-Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectProps) {
+Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectProps, _type) {
   var elementNode;
+  let elementNodeCLASS;
+  let elementNodeDataObject = _elementNodeDataObject || {};
+  let type = elementNodeDataObject.type || _type;
+  console.log(arguments);
+  if (type === 'html') elementNodeCLASS = HTMLElementNode;
+  else if (type === 'string') elementNodeCLASS = StringElementNode;
+  else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
+  else if (type === 'react') elementNodeCLASS = ReactElementNode;
+  else {
+    throw new Error('unkown elementNode type');
+  }
 
-  if (typeof _elementNodeDataObject !== 'undefined') {
-    console.log(_elementNodeDataObject);
-    if (_elementNodeDataObject.type === 'empty') {
 
-      elementNode = new EmptyElementNode(this, _elementNodeDataObject, _preInsectProps);
-    } else {
-
-      elementNode = new ElementNode(this, _elementNodeDataObject, _preInsectProps);
-    }
+  elementNode = new elementNodeCLASS(this, elementNodeDataObject, _preInsectProps);
 
 
-    // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
-    if (!/^\d+$/.test(elementNode.getId())) {
-      elementNode.setId(this.getNewElementNodeId());
-    }
-  } else {
-    elementNode = new ElementNode(this);
+  // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
+  if (!/^\d+$/.test(elementNode.getId())) {
     elementNode.setId(this.getNewElementNodeId());
   }
 
@@ -271,7 +273,8 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
 };
 
 Document.prototype.newElementNodeFromComponent = function(_component) {
-  var newElementNode = this.newElementNode();
+
+  var newElementNode = this.newElementNode(undefined, {}, _component.elementType);
   newElementNode.buildByComponent(_component);
 
   return newElementNode;
@@ -285,13 +288,13 @@ Document.prototype.extractAndRealizeElementNode = function(_realization) {
 
   if (_realization.nodeName === '#text') {
     if (elementNode === null) {
-      elementNode = this.newElementNode();
+      elementNode = this.newElementNode(undefined, {}, 'string');
     }
-    elementNode.buildByDomElement(_realization);
+    elementNode.buildByElement(_realization);
   } else {
     if (elementNode === null) {
-      elementNode = this.newElementNode();
-      elementNode.buildByDomElement(_realization);
+      elementNode = this.newElementNode(undefined, {}, 'html');
+      elementNode.buildByElement(_realization);
       // elementNode.setType('html');
       // elementNode.setTagName(_realization.nodeName);
     }
@@ -381,12 +384,15 @@ Document.prototype.findRecursive = function(_t, _finder) {
   if (result) {
     return _t;
   } else {
-    for (var i = 0; i < _t.children.length; i++) {
-      var recvResult = this.findRecursive(_t.children[i], _finder);
-      if (recvResult) {
-        return recvResult;
+    if (_t.children !== undefined) {
+      for (var i = 0; i < _t.children.length; i++) {
+        var recvResult = this.findRecursive(_t.children[i], _finder);
+        if (recvResult) {
+          return recvResult;
+        }
       }
     }
+
   }
 
   return false;

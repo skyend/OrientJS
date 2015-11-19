@@ -145,8 +145,18 @@ var ToolNavigation = React.createClass({
   renderToolNest(){
     if (this.state.toolEgg === null) return '';
 
+    let width, height;
+
+    if( this.naviType === 'vertical' ){
+      width = '100%';
+      height = this.state.toolSize - this.props.naviSize;
+    } else if( this.naviType === 'horizontal' ){
+      width = this.state.toolSize - this.state.naviSize;
+      height = '100%';
+    }
+
     return (
-      <ToolNest toolEgg={this.state.toolEgg}/>
+      <ToolNest toolEgg={this.state.toolEgg} width={width} height={height}/>
     );
   },
 
