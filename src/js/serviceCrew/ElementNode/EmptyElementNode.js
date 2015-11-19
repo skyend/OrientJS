@@ -94,7 +94,9 @@ class EmptyElementNode extends TagBaseElementNode {
   }
 
   linkHierarchyRealizaion() {
-    this.realization.appendChild(this.document.findById(this.getRefferenceTarget()).getRealization());
+    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    if (refferenceElementNode != false)
+      this.realization.appendChild(refferenceElementNode.getRealization());
   }
 
   realize(_realizeOptions) {
@@ -105,7 +107,12 @@ class EmptyElementNode extends TagBaseElementNode {
 
   realizeEmpty(_realizeOptions) {
     console.log(this.getRefferenceTarget());
-    this.document.findById(this.getRefferenceTarget()).realize(_realizeOptions);
+    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    console.log(refferenceElementNode);
+
+    if (refferenceElementNode != false)
+      refferenceElementNode.realize(_realizeOptions);
+
   }
 
   export (_withoutId) {

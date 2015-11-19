@@ -53,8 +53,17 @@ class StringElementNode extends ElementNode {
     this.setText(_textNode.nodeValue)
   }
 
+  createRealizationNode() {
+
+    let htmlDoc = this.document.getHTMLDocument();
+    this.realization = htmlDoc.createTextNode('');
+    this.realization.___en = this;
+  }
+
   realize(_realizeOptions) {
     super.realize(_realizeOptions);
+    this.createRealizationNode();
+
     let realizeOptions = _realizeOptions || {};
 
     if (realizeOptions.skipResolve === true) {

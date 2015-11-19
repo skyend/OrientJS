@@ -206,27 +206,17 @@ class ElementNode {
   }
 
 
+
   realize(_realizeOptions) {
+
+    // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
     this.clonePool = [];
 
     let realizeOptions = _realizeOptions || {};
 
     // _ghostOrder 인자 에 값을 입력함으로써 GhostPoint임을 간접적으로 전달한다.
     let isGhostizePoint = realizeOptions.ghostOrder !== undefined;
-    let ghostOrder = realizeOptions.ghostOrder;
-
-    let htmlDoc = this.document.getHTMLDocument();
-
-    // type에 따른 DOM 생성
-    if (this.getType() === 'string') {
-      this.realization = htmlDoc.createTextNode('');
-      this.realization.___en = this;
-    } else {
-
-      this.realization = htmlDoc.createElement(this.getTagName());
-      this.realization.___en = this;
-      this.realization.setAttribute('___id___', this.id);
-    }
+    // let ghostOrder = realizeOptions.ghostOrder;
 
     this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
   }
@@ -244,8 +234,9 @@ class ElementNode {
       this.repeatOrder = 0;
 
       for (let i = 0; i < repeatOption - 1; i++) {
+
         // clone ElementNode 생성
-        let cloned = new ElementNode(this.document, this.export(), {
+        let cloned = this.document.newElementNode(this.export(), {
           isGhost: true,
           repeatOrder: i + 1,
           isRepeated: true

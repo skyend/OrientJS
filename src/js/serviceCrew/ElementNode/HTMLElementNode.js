@@ -33,6 +33,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {
+          console.log(_cloneChild);
           self.realization.appendChild(_cloneChild.realization);
           _cloneChild.linkHierarchyRealizaion();
         });
@@ -109,7 +110,7 @@ class HTMLElementNode extends TagBaseElementNode {
   realize(_realizeOptions) {
     super.realize(_realizeOptions);
     let realizeOptions = _realizeOptions || {};
-
+    console.log('realize', this);
     this.childrenRealize(realizeOptions);
   }
 

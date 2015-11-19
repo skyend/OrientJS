@@ -171,8 +171,17 @@ class TagBaseElementNode extends ElementNode {
 
   }
 
+  createRealizationNode() {
+    let htmlDoc = this.document.getHTMLDocument();
+    this.realization = htmlDoc.createElement(this.getTagName());
+    this.realization.___en = this;
+    this.realization.setAttribute('___id___', this.id);
+  }
+
   realize(_realizeOptions) {
     super.realize(_realizeOptions);
+    this.createRealizationNode();
+
     let realizeOptions = _realizeOptions || {};
 
     // attribute 매핑
@@ -180,7 +189,6 @@ class TagBaseElementNode extends ElementNode {
 
     // 이벤트 매핑
     this.mappingEvent();
-
   }
 
   mappingEvent() {
