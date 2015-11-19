@@ -251,7 +251,7 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
   let elementNodeCLASS;
   let elementNodeDataObject = _elementNodeDataObject || {};
   let type = elementNodeDataObject.type || _type;
-  console.log(arguments);
+
   if (type === 'html') elementNodeCLASS = HTMLElementNode;
   else if (type === 'string') elementNodeCLASS = StringElementNode;
   else if (type === 'empty') elementNodeCLASS = EmptyElementNode;

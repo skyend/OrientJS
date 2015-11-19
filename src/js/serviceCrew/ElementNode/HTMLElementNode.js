@@ -9,16 +9,22 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children;
   }
 
-  appendChild(_elementNode) {
-    if (this.getType() === 'string') {
-      return false;
-    }
+  realize(_realizeOptions) {
+    super.realize(_realizeOptions);
+    let realizeOptions = _realizeOptions || {};
+    console.log('realize', this);
+    this.childrenRealize(realizeOptions);
+  }
 
-    _elementNode.setParent(this);
+  childrenRealize(_realizeOptions) {
+    let realizeOptions = _realizeOptions || {};
 
-    this.children.push(_elementNode);
-
-    return true;
+    this.children.map(function(_child) {
+      _child.realize({
+        skipControl: realizeOptions.skipControl,
+        skipResolve: realizeOptions.skipResolve
+      });
+    });
   }
 
   linkHierarchyRealizaion() {
@@ -40,6 +46,21 @@ class HTMLElementNode extends TagBaseElementNode {
       }
     });
   }
+
+
+  appendChild(_elementNode) {
+    if (this.getType() === 'string') {
+      return false;
+    }
+
+    _elementNode.setParent(this);
+
+    this.children.push(_elementNode);
+
+    return true;
+  }
+
+
 
   clearRealizationChildren() {
     if (this.realization === null) return;
@@ -107,22 +128,11 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children = children;
   }
 
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-    let realizeOptions = _realizeOptions || {};
-    console.log('realize', this);
-    this.childrenRealize(realizeOptions);
-  }
 
-  childrenRealize(_realizeOptions) {
-    let realizeOptions = _realizeOptions || {};
+  import (_elementNodeDataObject) {
+    super.import(_elementNodeDataObject);
+    this.children = this.inspireChildren(_elementNodeDataObject.children);
 
-    this.children.map(function(_child) {
-      _child.realize({
-        skipControl: realizeOptions.skipControl,
-        skipResolve: realizeOptions.skipResolve
-      });
-    });
   }
 
   export (_withoutId) {
@@ -144,12 +154,6 @@ class HTMLElementNode extends TagBaseElementNode {
     });
 
     return result;
-  }
-
-  import (_elementNodeDataObject) {
-    super.import(_elementNodeDataObject);
-    this.children = this.inspireChildren(_elementNodeDataObject.children);
-
   }
 }
 

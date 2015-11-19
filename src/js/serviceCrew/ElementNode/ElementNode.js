@@ -63,68 +63,6 @@ class ElementNode {
     }
   }
 
-
-
-  ////////////////////
-  // Setters
-  // enid
-  setId(_id) {
-    this.id = _id;
-  }
-
-  // name
-  setName(_name) {
-    this.name = _name;
-  }
-
-
-  // type
-  setType(_type) {
-    this.type = _type;
-  }
-
-
-  // componentName
-  setComponentName(_componentName) {
-    this.componentName = _componentName;
-  }
-
-  // parent // 상위노드로 부터 호출됨
-  setParent(_parentENode) {
-    this.parent = _parentENode;
-  }
-
-  //  will Deprecate
-  unlinkParent() {
-    this.parent = null;
-  }
-
-
-  // control
-  setControl(_controlName, _value) {
-    this.controls[_controlName] = _value;
-    //this.emitToParent("RequestReRenderMe");
-  }
-
-  // controls
-  setControls(_controls) {
-    this.controls = _controls;
-  }
-
-
-
-
-  // comment : 주석
-  setComment(_comment) {
-    this.comment = _comment;
-  }
-
-
-
-
-
-
-
   ////////////////////
   // Getters
   // id
@@ -137,28 +75,20 @@ class ElementNode {
     return this.name;
   }
 
-
-
   // type
   getType() {
     return this.type;
   }
-
 
   // control
   getControl(_controlName) {
     return this.controls[_controlName];
   }
 
-
-
-
-
   // controls
   getControls() {
     return this.controls;
   }
-
 
   // componentName
   getComponentName() {
@@ -193,19 +123,66 @@ class ElementNode {
     return this.interpret(this.attributes[_attrName]);
   }
 
-
-  // realControl
-  isUsingBind(_controlName) {
-    return this.interpret(this.controls[_controlName]);
+  getRealization() {
+    return this.realization;
   }
 
-
-  // isReferenced
-  isReferenced() {
-    return this.getParent() !== null;
+  ////////////////////
+  /***************
+   * getMyContextControllerOfDocument
+   * 자신이 소속된 Document의 ContextController를 반환
+   */
+  getMyContextControllerOfDocument() {
+    return this.document.getMyDirector();
   }
 
+  ////////////////////
+  // Setters
+  // enid
+  setId(_id) {
+    this.id = _id;
+  }
 
+  // name
+  setName(_name) {
+    this.name = _name;
+  }
+
+  // type
+  setType(_type) {
+    this.type = _type;
+  }
+
+  // componentName
+  setComponentName(_componentName) {
+    this.componentName = _componentName;
+  }
+
+  // parent // 상위노드로 부터 호출됨
+  setParent(_parentENode) {
+    this.parent = _parentENode;
+  }
+
+  //  will Deprecate
+  unlinkParent() {
+    this.parent = null;
+  }
+
+  // control
+  setControl(_controlName, _value) {
+    this.controls[_controlName] = _value;
+    //this.emitToParent("RequestReRenderMe");
+  }
+
+  // controls
+  setControls(_controls) {
+    this.controls = _controls;
+  }
+
+  // comment : 주석
+  setComment(_comment) {
+    this.comment = _comment;
+  }
 
   realize(_realizeOptions) {
 
@@ -221,6 +198,21 @@ class ElementNode {
     this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
   }
 
+
+
+
+
+
+
+  // realControl
+  isUsingBind(_controlName) {
+    return this.interpret(this.controls[_controlName]);
+  }
+
+  // isReferenced
+  isReferenced() {
+    return this.getParent() !== null;
+  }
 
   modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint) {
     if (_skipControl) return;
@@ -261,9 +253,7 @@ class ElementNode {
   }
 
 
-  getRealization() {
-    return this.realization;
-  }
+
 
 
   // Real DOM의 내용과 자신의 내용의 변경사항을 파악하여 자신의 내용을 업데이트 한다.
@@ -294,14 +284,7 @@ class ElementNode {
   // }
 
 
-  ////////////////////
-  /***************
-   * getMyContextControllerOfDocument
-   * 자신이 소속된 Document의 ContextController를 반환
-   */
-  getMyContextControllerOfDocument() {
-    return this.document.getMyDirector();
-  }
+
 
 
   /////////////////

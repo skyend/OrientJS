@@ -17,7 +17,65 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
+  // Getters
+  // element.tagName -> getTagName()
+  getTagName() {
+    return this.getAttribute('tagName');
+  }
 
+  // attribute
+  getAttribute(_name) {
+    return this.attributes[_name];
+  }
+
+  // id
+  getIdAtrribute() {
+    return this.getAttribute('id');
+  }
+
+  // classes
+  getClasses() {
+    return this.getAttribute('class');
+  }
+
+  // attributes
+  getAttributes() {
+    return this.attributes;
+  }
+
+  // Inline Style
+  getInlineStyle() {
+    return this.getAttribute('style');
+  }
+
+  getRectangle() {
+    return this.rectangle;
+  }
+
+  getBoundingRect() {
+
+    var boundingRect;
+    var realElement = this.getRealization();
+
+    boundingRect = realElement.getBoundingClientRect();
+
+    return boundingRect;
+  }
+
+  getCurrentRectangle() {
+    console.log(this);
+    switch (this.document.contextController.getScreenSizing()) {
+      case "desktop":
+        return this.rectangle['desktop'];
+      case "tablet":
+        return this.rectangle['tablet'];
+      case "mobile":
+        return this.rectangle['mobile'];
+    }
+  }
+
+
+  // Setters
   // Id Atrribute
   setIdAtrribute(_id) {
     this.setAttribute('id', _id);
@@ -43,45 +101,9 @@ class TagBaseElementNode extends ElementNode {
     this.setAttribute('style', _style);
   }
 
-  // element.tagName -> getTagName()
-  getTagName() {
-    return this.getAttribute('tagName');
-  }
-
-
-  // attribute
-  getAttribute(_name) {
-    return this.attributes[_name];
-  }
-
-  // id
-  getIdAtrribute() {
-    return this.getAttribute('id');
-  }
-
-  // classes
-  getClasses() {
-    return this.getAttribute('class');
-  }
-
-
-  // attributes
-  getAttributes() {
-    return this.attributes;
-  }
-
-  // Inline Style
-  getInlineStyle() {
-    return this.getAttribute('style');
-  }
-
   setRectangle(_rectangle) {
     this.rectangle = _rectangle;
   }
-  getRectangle() {
-    return this.rectangle;
-  }
-
 
   // attribute
   setAttribute(_name, _value) {
@@ -93,6 +115,44 @@ class TagBaseElementNode extends ElementNode {
   setAttributes(_attributes) {
     this.attributes = _attributes;
   }
+
+  setRectanglePart(_partValue, _partName) {
+    var rectangleRef = this.getCurrentRectangle();
+
+    if (/^[\d\.]+$/.test(rectangleRef[_partName])) {
+      // 숫자로만 이루어져 있을 경우
+      rectangleRef[_partName] = _partValue;
+    } else if (/^[\d\.]+((\w+)|%)$/.test(rectangleRef[_partName])) {
+      // 숫자와 알파벳 또는 퍼센트로 이루어져 있을 경우
+      this.setRectanglePartWithKeepingUnit(_partValue, _partName);
+    } else {
+      // 아무것도 해당되지 않을 경우
+      rectangleRef[_partName] = _partValue;
+    }
+  }
+
+  setRectanglePartWithKeepingUnit(_partValue, _partName) {
+    console.log(valueWithUnitSeperator(_partValue));
+  }
+
+  // realize
+  realize(_realizeOptions) {
+    super.realize(_realizeOptions);
+    this.createRealizationNode();
+
+    let realizeOptions = _realizeOptions || {};
+
+    // attribute 매핑
+    this.mappingAttributes(realizeOptions.skipResolve);
+
+    // 이벤트 매핑
+    this.mappingEvent();
+  }
+
+  valueWithUnitSeperator(_value) {
+
+  }
+
 
   changeTextEditMode() {
     this.mode = 'textEdit';
@@ -135,41 +195,6 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-  getBoundingRect() {
-
-    var boundingRect;
-    var realElement = this.getRealization();
-
-    boundingRect = realElement.getBoundingClientRect();
-
-    return boundingRect;
-  }
-
-  setRectanglePart(_partValue, _partName) {
-    var rectangleRef = this.getCurrentRectangle();
-
-    if (/^[\d\.]+$/.test(rectangleRef[_partName])) {
-      // 숫자로만 이루어져 있을 경우
-      rectangleRef[_partName] = _partValue;
-    } else if (/^[\d\.]+((\w+)|%)$/.test(rectangleRef[_partName])) {
-      // 숫자와 알파벳 또는 퍼센트로 이루어져 있을 경우
-      this.setRectanglePartWithKeepingUnit(_partValue, _partName);
-    } else {
-      // 아무것도 해당되지 않을 경우
-      rectangleRef[_partName] = _partValue;
-    }
-  }
-
-
-  setRectanglePartWithKeepingUnit(_partValue, _partName) {
-    console.log(valueWithUnitSeperator(_partValue));
-  }
-
-
-
-  valueWithUnitSeperator(_value) {
-
-  }
 
   createRealizationNode() {
     let htmlDoc = this.document.getHTMLDocument();
@@ -178,18 +203,7 @@ class TagBaseElementNode extends ElementNode {
     this.realization.setAttribute('___id___', this.id);
   }
 
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-    this.createRealizationNode();
 
-    let realizeOptions = _realizeOptions || {};
-
-    // attribute 매핑
-    this.mappingAttributes(realizeOptions.skipResolve);
-
-    // 이벤트 매핑
-    this.mappingEvent();
-  }
 
   mappingEvent() {
     // Todo.....
@@ -236,17 +250,7 @@ class TagBaseElementNode extends ElementNode {
     this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
   }
 
-  getCurrentRectangle() {
-    console.log(this);
-    switch (this.document.contextController.getScreenSizing()) {
-      case "desktop":
-        return this.rectangle['desktop'];
-      case "tablet":
-        return this.rectangle['tablet'];
-      case "mobile":
-        return this.rectangle['mobile'];
-    }
-  }
+
 
   // 편집자에 의해 Rect가 변경될 떄
   transformRectByEditor(_left, _top, _width, _height) {
@@ -283,18 +287,9 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
-    result.attributes = _.clone(this.getAttributes());
-    result.rectangle = _.clone(this.getRectangle());
-    result.tagName = this.getTagName();
-    result.inherentCSS = this.getCSS(); // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
 
-    return result;
-  }
 
   import (_elementNodeDataObject) {
-
     super.import(_elementNodeDataObject);
     this.attributes = _elementNodeDataObject.attributes;
     this.rectangle = _elementNodeDataObject.rectangle || {
@@ -302,8 +297,15 @@ class TagBaseElementNode extends ElementNode {
       tablet: {},
       mobile: {}
     }
+  }
 
-    console.log('imported', this);
+  export (_withoutId) {
+    let result = super.export(_withoutId);
+    result.attributes = _.clone(this.getAttributes());
+    result.rectangle = _.clone(this.getRectangle());
+    result.tagName = this.getTagName();
+    result.inherentCSS = this.getCSS(); // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
+    return result;
   }
 }
 

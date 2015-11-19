@@ -11,26 +11,6 @@ class ReactElementNode extends TagBaseElementNode {
   }
 
   // packageKey
-  setReactPackageKey(_reactPackageKey) {
-    this.reactPackageKey = _reactPackageKey;
-  }
-
-  // componentKey
-  setReactComponentKey(_reactComponentKey) {
-    this.reactComponentKey = _reactComponentKey;
-  }
-
-  // componentKey
-  setReactComponentProps(_reactComponentProps) {
-    this.reactComponentProps = _reactComponentProps;
-  }
-
-  // React Element
-  setReactElement(_reactElement) {
-    this.reactElement = _reactElement;
-  }
-
-  // packageKey
   getReactPackageKey() {
     return this.reactPackageKey;
   }
@@ -48,6 +28,26 @@ class ReactElementNode extends TagBaseElementNode {
   // React Element
   getReactElement() {
     return this.reactElement;
+  }
+
+  // packageKey
+  setReactPackageKey(_reactPackageKey) {
+    this.reactPackageKey = _reactPackageKey;
+  }
+
+  // componentKey
+  setReactComponentKey(_reactComponentKey) {
+    this.reactComponentKey = _reactComponentKey;
+  }
+
+  // componentKey
+  setReactComponentProps(_reactComponentProps) {
+    this.reactComponentProps = _reactComponentProps;
+  }
+
+  // React Element
+  setReactElement(_reactElement) {
+    this.reactElement = _reactElement;
   }
 
   // ReactTypeComponent

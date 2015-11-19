@@ -8,9 +8,8 @@ class StringElementNode extends ElementNode {
 
   }
 
-  linkHierarchyRealizaion() {
-    super.linkHierarchyRealizaion();
-    this.realization.appendChild(this.document.findById(this.getRefferenceTarget()).getRealization());
+  getText() {
+    return this.text;
   }
 
   getBoundingRect() {
@@ -39,18 +38,8 @@ class StringElementNode extends ElementNode {
     return boundingRect;
   }
 
-
-
-  buildByComponent(_component) {
-    super.buildByComponent(_component);
-
-    this.setText("Text");
-    this.setTagName('text');
-  }
-
-  buildByElement(_textNode) {
-    this.setType('string');
-    this.setText(_textNode.nodeValue)
+  setText(_text) {
+    this.text = _text;
   }
 
   createRealizationNode() {
@@ -73,12 +62,32 @@ class StringElementNode extends ElementNode {
     }
   }
 
-  getText() {
-    return this.text;
+  linkHierarchyRealizaion() {
+    super.linkHierarchyRealizaion();
+    this.realization.appendChild(this.document.findById(this.getRefferenceTarget()).getRealization());
   }
 
-  setText(_text) {
-    this.text = _text;
+
+  buildByComponent(_component) {
+    super.buildByComponent(_component);
+
+    this.setText("Text");
+    this.setTagName('text');
+  }
+
+  buildByElement(_textNode) {
+    this.setType('string');
+    this.setText(_textNode.nodeValue)
+  }
+
+
+
+
+
+
+  import (_elementNodeDataObject) {
+    super.import(_elementNodeDataObject);
+    this.text = _elementNodeDataObject.text;
   }
 
   export (_withoutId) {
@@ -86,11 +95,6 @@ class StringElementNode extends ElementNode {
     result.text = this.getText();
 
     return result;
-  }
-
-  import (_elementNodeDataObject) {
-    super.import(_elementNodeDataObject);
-    this.text = _elementNodeDataObject.text;
   }
 }
 

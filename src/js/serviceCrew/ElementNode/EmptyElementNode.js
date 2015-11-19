@@ -34,7 +34,11 @@ class EmptyElementNode extends TagBaseElementNode {
     return this.refferenceInstance;
   }
 
-
+  // getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
+  getRefferencingElementNode() {
+    var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+    return refElNode;
+  }
 
   // refferenceType
   setRefferenceType(_refferenceType) {
@@ -60,23 +64,37 @@ class EmptyElementNode extends TagBaseElementNode {
     }
   }
 
+  realize(_realizeOptions) {
+    super.realize(_realizeOptions);
+
+    this.realizeEmpty(_realizeOptions);
+  }
+
+  realizeEmpty(_realizeOptions) {
+    console.log(this.getRefferenceTarget());
+    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    console.log(refferenceElementNode);
+
+    if (refferenceElementNode != false)
+      refferenceElementNode.realize(_realizeOptions);
+  }
+
+  linkHierarchyRealizaion() {
+    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    if (refferenceElementNode != false)
+      this.realization.appendChild(refferenceElementNode.getRealization());
+  }
+
   // clear refferenceInstance
   clearRefferenceInstance() {
     if (this.refferenceInstance !== null) this.refferenceInstance.unlinkParent();
     else console.warn("참조중인 인스턴스가 없습니다.");
   }
 
-  // getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
-  getRefferencingElementNode() {
-    var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
-    return refElNode;
-  }
-
   buildByComponent(_component) {
     super.buildByComponent(_component);
     this.buildEmptyTypeElement();
   }
-
 
   /******************
    * buildEmptyTypeElement
@@ -93,26 +111,11 @@ class EmptyElementNode extends TagBaseElementNode {
     this.setRefferenceTarget('none');
   }
 
-  linkHierarchyRealizaion() {
-    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
-    if (refferenceElementNode != false)
-      this.realization.appendChild(refferenceElementNode.getRealization());
-  }
-
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-
-    this.realizeEmpty(_realizeOptions);
-  }
-
-  realizeEmpty(_realizeOptions) {
-    console.log(this.getRefferenceTarget());
-    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
-    console.log(refferenceElementNode);
-
-    if (refferenceElementNode != false)
-      refferenceElementNode.realize(_realizeOptions);
-
+  import (_elementNodeDataObject) {
+    let result = super.import(_elementNodeDataObject);
+    this.refferenceType = _elementNodeDataObject.refferenceType;
+    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
+    return result;
   }
 
   export (_withoutId) {
@@ -122,13 +125,6 @@ class EmptyElementNode extends TagBaseElementNode {
     result.refferenceTarget = this.getRefferenceTarget();
     result.refferenceTargetProps = this.getRefferenceTargetProps();
 
-    return result;
-  }
-
-  import (_elementNodeDataObject) {
-    let result = super.import(_elementNodeDataObject);
-    this.refferenceType = _elementNodeDataObject.refferenceType;
-    this.refferenceTarget = _elementNodeDataObject.refferenceTarget;
     return result;
   }
 }
