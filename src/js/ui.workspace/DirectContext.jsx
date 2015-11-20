@@ -56,7 +56,6 @@ var DirectContext = React.createClass({
     return this.getContextControllerFromDOMElement(_domElement).isDropableToRoot();
   },
 
-
   deployComponentToInLast(_vid, _component){
     if( this.state.editModeElementNode !== null ) return this.errorNotice('컴포넌트 드롭 실패', '요소 Text를 편집중입니다.');
 
@@ -137,20 +136,21 @@ var DirectContext = React.createClass({
     }
   },
 
-  /***********
-   * getContextControllerByElementNode
-   * 입력된 ElementNode를 통해 ContextController 를 가져온다.
-   * 이것은 PageContextController에 의해 DocumentContextController가 생성되어 동작중일 때
-   * 대상요소의 해당 DocumentContextController를 참조하여. document데이터에 반영하기 위해서이다.
-   * 이것으로 Document의 Document참조 Page의 Document참조 구조에서 서로 독립적으로 동작하여 서로의 데이터를 스스로 갱신하게 하여 수월한 관리가 가능하며.
-   * 참조중인 하나이상의 Document를 하나의 IframeStage에서 편집할 수 있게 해준다.
-   *
-   * @Param _elementNode : ElementNode // 찾고자 하는 ContextController에서 사용되는 ElementNode
-   * @Return DocumentContextController : DocumentContextController
-   */
-    getContextControllerByElementNode(_elementNode){
-    return _elementNode.getMyContextControllerOfDocument();
-  },
+  // will Deprecate
+  // /***********
+  //  * getContextControllerByElementNode
+  //  * 입력된 ElementNode를 통해 ContextController 를 가져온다.
+  //  * 이것은 PageContextController에 의해 DocumentContextController가 생성되어 동작중일 때
+  //  * 대상요소의 해당 DocumentContextController를 참조하여. document데이터에 반영하기 위해서이다.
+  //  * 이것으로 Document의 Document참조 Page의 Document참조 구조에서 서로 독립적으로 동작하여 서로의 데이터를 스스로 갱신하게 하여 수월한 관리가 가능하며.
+  //  * 참조중인 하나이상의 Document를 하나의 IframeStage에서 편집할 수 있게 해준다.
+  //  *
+  //  * @Param _elementNode : ElementNode // 찾고자 하는 ContextController에서 사용되는 ElementNode
+  //  * @Return DocumentContextController : DocumentContextController
+  //  */
+  //   getContextControllerByElementNode(_elementNode){
+  //   return _elementNode.getMyContextControllerOfDocument();
+  // },
 
   /**************
    * getContextControllerFromDOMElement
@@ -171,12 +171,12 @@ var DirectContext = React.createClass({
       dropTarget = dropTarget.parentNode;
     }
 
-
-    // ___en 필드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
-    // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
-    if (fountElementNode) {
-      return this.getContextControllerByElementNode(dropTarget.___en);
-    }
+    // will Deprecate
+    // // ___en 필드를 가진 Element를 찾았다면 해당 엘리먼트를 통해 ContextController 를 얻고
+    // // 찾지 못했다면 DirectContext의 최상위 contextController인 this.contextController를 contextController로 사용한다.
+    // if (fountElementNode) {
+    //   return this.getContextControllerByElementNode(dropTarget.___en);
+    // }
 
     return this.contextController;
   },
@@ -193,7 +193,6 @@ var DirectContext = React.createClass({
     );
 
   },
-
 
   copyElementJSON(){
     var data = this.state.selectedElementNode.export(false);

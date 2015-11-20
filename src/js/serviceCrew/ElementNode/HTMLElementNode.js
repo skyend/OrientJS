@@ -60,6 +60,27 @@ class HTMLElementNode extends TagBaseElementNode {
     return true;
   }
 
+  findById(_id) {
+    return this.findRecursive(function(_compareElement) {
+      return _compareElement.id == _id;
+    });
+  }
+
+  findRecursive(_finder) {
+    var result = _finder(this);
+    if (result) {
+      return this;
+    } else {
+      for (var i = 0; i < this.children.length; i++) {
+        var recvResult = this.findRecursive(this.children[i], _finder);
+
+        if (recvResult) {
+          return recvResult;
+        }
+      }
+    }
+    return false;
+  }
 
 
   clearRealizationChildren() {

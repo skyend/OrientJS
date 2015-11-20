@@ -3,6 +3,7 @@ import StringElementNode from './ElementNode/StringElementNode.js';
 import EmptyElementNode from './ElementNode/EmptyElementNode.js';
 import ReactElementNode from './ElementNode/ReactElementNode.js';
 import GridElementNode from './ElementNode/GridElementNode.js';
+import ElementNodeFactory from './ElementNode/Factory.js';
 
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
@@ -248,23 +249,8 @@ Document.prototype.getReactElementNodeCSSLines = function() {
  * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
  */
 Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectProps, _type) {
-  var elementNode;
-  let elementNodeCLASS;
-  let elementNodeDataObject = _elementNodeDataObject || {};
-  let type = elementNodeDataObject.type || _type;
 
-  if (type === 'html') elementNodeCLASS = HTMLElementNode;
-  else if (type === 'string') elementNodeCLASS = StringElementNode;
-  else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
-  else if (type === 'react') elementNodeCLASS = ReactElementNode;
-  else if (type === 'grid') elementNodeCLASS = GridElementNode;
-  else {
-    throw new Error('unkown elementNode type');
-  }
-
-
-  elementNode = new elementNodeCLASS(this, elementNodeDataObject, _preInsectProps);
-
+  let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
 
   // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
   if (!/^\d+$/.test(elementNode.getId())) {

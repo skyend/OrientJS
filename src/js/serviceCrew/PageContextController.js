@@ -60,6 +60,14 @@ class PageContextController {
     this.context.feedSaveStateChange();
   }
 
+  modifyCreateRootGrid() {
+
+  }
+
+  get rootGrid() {
+    return this.page.rootGrid;
+  }
+
   get isUnsaved() {
     return this.unsaved;
   }

@@ -127,14 +127,15 @@ class ElementNode {
     return this.realization;
   }
 
-  ////////////////////
-  /***************
-   * getMyContextControllerOfDocument
-   * 자신이 소속된 Document의 ContextController를 반환
-   */
-  getMyContextControllerOfDocument() {
-    return this.document.getMyDirector();
-  }
+  // will Deprecate
+  // ////////////////////
+  // /***************
+  //  * getMyContextControllerOfDocument
+  //  * 자신이 소속된 Document의 ContextController를 반환
+  //  */
+  // getMyContextControllerOfDocument() {
+  //   return this.document.getMyDirector();
+  // }
 
   ////////////////////
   // Setters
@@ -276,18 +277,7 @@ class ElementNode {
     this.children = newChildren;
   }
 
-  ////////////////////
-  // Exists
-  // Deprecated
-  // hasRealDOMElement() {
-  //   return typeof this.realElement !== 'undefined';
-  // }
-
-
-
-
-
-  /////////////////
+  ////////
   /***********
    * updated
    * 요소가 변경되었을 때 호출한다.
@@ -295,39 +285,6 @@ class ElementNode {
   updated() {
     this.updateDate = new Date();
   }
-
-
-  /**************
-   * dettachMeFromParent
-   * 부모의 Children 리스트에서 자신을 제거한다.
-   * 하지만 사라지지는 않는다.
-   */
-  dettachMeFromParent() {
-
-    var parent = this.getParent();
-
-    // 부모 ElementNode가 존재한다면.
-    if (parent !== null) {
-      // 부모에게 detach요청
-      parent.detachChild(this);
-    } else {
-      // 부모 ElementNode가 존재하지 않는다면 자신이 Document의 RootElementNode이거나 ElementNodes 리스트에 존재하는 노드이므로
-      // 다르게 처리해준다.
-
-      // RootElement일 경우
-      if (this.document.getRootElementNode() === this) {
-        this.document.removeRootElementNode();
-      } else {
-        //  ElementNodes 리스트에 존재하는 노드(참조용노드)
-        // 추후 구현
-
-
-      }
-    }
-
-    return this;
-  }
-
 
   /**************
    * dettachChild
@@ -409,60 +366,6 @@ class ElementNode {
     this.setType(elementNodeType);
   }
 
-
-
-
-  // /******************
-  //  * buildByDomElement
-  //  * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
-  //  * child는 재귀로 호출한다.
-  //  */
-  // buildByDomElement(_domElement) {
-  //
-  //   // TextNode 의 경우 단순한 빌딩
-  //   if (_domElement.nodeName === '#text') {
-  //     this.setType('string');
-  //     this.setAttributes({
-  //       'tagName': 'text',
-  //       'text': _domElement.nodeValue
-  //     });
-  //
-  //     return;
-  //   }
-  //
-  //   // TextNode가 아닌경우
-  //   this.setType('html');
-  //
-  //   // element Attribute를 읽어서 자신에게 매핑한다.
-  //   this.copyAllAtrributeFromDOMElement(_domElement);
-  //
-  //   //////////////////
-  //   // 자식노드 재귀처리 //
-  //   var children = [];
-  //   var childNodes = _domElement.childNodes;
-  //
-  //   // 자식노드도 생성
-  //   var child_ = null;
-  //   for (var i = 0; i < childNodes.length; i++) {
-  //     child_ = childNodes[i];
-  //
-  //     // comment node 는 무시
-  //     if (child_.nodeName === '#comment') continue;
-  //
-  //     // 새 자식용 ElementNode 생성
-  //     var newChildElementNode = this.document.newElementNode();
-  //     newChildElementNode.buildByDomElement(child_);
-  //
-  //     children.push(newChildElementNode);
-  //
-  //     newChildElementNode.setParent(this);
-  //   }
-  //   // 재귀끝  //
-  //   ////////////
-  //
-  //
-  //   this.children = children;
-  // }
 
 
   copyAllAtrributeFromDOMElement(_domElement) {
@@ -567,7 +470,7 @@ class ElementNode {
     return returns;
   }
 
-
+  // 자신을 통해 부모에 삽입되므로 자신의 ElementNode Type과는 상관없이 insertBefore를 지원한다.
   insertBefore(_elementNode) {
     var parent = this.getParent();
 
@@ -597,7 +500,7 @@ class ElementNode {
     return true;
   }
 
-
+  // 자신을 통해 부모에 삽입되므로 자신의 ElementNode Type과는 상관없이 insertAfter를 지원한다.
   insertAfter(_elementNode) {
     var parent = this.getParent();
 
@@ -649,6 +552,7 @@ class ElementNode {
     let child;
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
+
       child = this.document.newElementNode(elementNodeData, preInsectProps);
       child.setParent(this);
       list.push(child);
@@ -656,180 +560,6 @@ class ElementNode {
 
     return list;
   }
-
-  //////////////////////
-  //
-  /********************
-   * linkRealDOMofChild( Deprecated )
-   * 자신의 ElementNode에 생성된 RealDOMElement Tree를 갱신한다.
-   * 자신의 자식 ElementNode의 구조가 변경되었고 자신의 하위 ElementNode중 RealElement를 가지지 않는 ElementNode가 없을 때 호출한다.
-   * 자신의 자식 ElementNode에 구축된 realElement를 자신의 realElement에 자식으로 추가한다.
-   * 그리고 자식의 linkRealDOMofChild 메소드를 호출하여 재귀로 동작한다.
-   */
-  // linkRealDOMofChild() {
-  //   var self = this;
-  //
-  //   // Real Element 를 가지고 있으면 linkRealDOMofChild 메소드를 호출하여 자신의 RealElement Tree를 갱신한다.
-  //   if (this.hasRealDOMElement()) {
-  //
-  //     // RealElement 는 실제 사용자에게 보여지는 HTML DOMElement
-  //     var realDOMElement = this.getRealization();
-  //
-  //     realDOMElement.innerHTML = '';
-  //     var elementNodeType = this.getType();
-  //
-  //     switch (elementNodeType) {
-  //       case "string":
-  //         //realDOMElement.nodeValue = this.interpret(this.getText());
-  //         break;
-  //       case "html":
-  //         break;
-  //       case "react":
-  //         this.linkRealDOMofChild_react_type();
-  //         break;
-  //       case "empty":
-  //         // emptyType 구축
-  //         this.linkRealDOMofChild_empty_type();
-  //         break;
-  //       default:
-  //
-  //     }
-  //
-  //
-  //     if (this.getType() !== 'empty') {
-  //       ////////////////////////////
-  //       // 자식 Real DOMElement Tree를 직접 갱신하여 결과를 자신에게 연결(append)한다.
-  //       this.children.map(function(_child) {
-  //
-  //         // (HTML|STRING|EMPTY)TYPE 의 자식ElementNode만 RealElment를 자신에게 append한다.
-  //         switch (_child.getType()) {
-  //           case "string":
-  //           case "html":
-  //           case "react":
-  //           case "empty":
-  //             if (_child.hasRealDOMElement()) {
-  //
-  //               // HTML DOM append
-  //               realDOMElement.appendChild(_child.linkRealDOMofChild());
-  //             }
-  //             break;
-  //
-  //         }
-  //
-  //
-  //       });
-  //       // 자식 RealElement 처리 완료
-  //       ///////////////////
-  //     }
-  //
-  //
-  //     return realDOMElement;
-  //   }
-  // }
-
-  // Deprecated
-  // linkRealDOMofChild_empty_type() {
-  //
-  //   var realElement = this.getRealization();
-  //   // empty 타입은 다른 ElementNode 또는 ReactComponent 또는 Document를 참조한다.
-  //   // 그에따른 처리..
-  //
-  //
-  //   this.clearRefferenceInstance();
-  //   var refTarget = this.getRefferenceTarget();
-  //   if (refTarget !== 'none' && refTarget !== undefined && refTarget !== null) {
-  //
-  //     switch (this.getRefferenceType()) {
-  //       case "react":
-  //       case "html":
-  //       case "grid":
-  //       case "empty":
-  //         var refferenceElementNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
-  //
-  //
-  //         this.setRefferenceInstance(refferenceElementNode);
-  //
-  //         if (refferenceElementNode !== undefined) {
-  //
-  //           realElement.appendChild(refferenceElementNode.linkRealDOMofChild());
-  //
-  //           // if (this.getRefferenceType() === 'react') {
-  //           //   refferenceElementNode.renderReact();
-  //           // }
-  //         } else {
-  //           console.warn("참조중인 id의 노드가 존재하지 않습니다.");
-  //         }
-  //
-  //         break;
-  //       case "document":
-  //
-  //         break;
-  //       default:
-  //     }
-  //   }
-  //
-  //
-  //   return realElement;
-  // }
-
-  // Deprecated
-  // linkRealDOMofChild_react_type() {
-  //   var realElement = this.getRealization();
-  //
-  //   var packageKey = this.getReactPackageKey();
-  //   var componentKey = this.getReactComponentKey();
-  //
-  //   // ReactComponent 를 얻어온다.
-  //   var component = this.document.getReactTypeComponent(packageKey, componentKey, realElement.ownerDocument.defaultView);
-  //
-  //   //console.log(realElement.ownerDocument.defaultView, realElement.ownerDocument, 'aa');
-  //
-  //
-  //   var React = require('react');
-  //   var reactElementInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
-  //
-  //   this.setReactElement(reactElementInstance);
-  //
-  //   React.render(reactElementInstance, realElement);
-  //
-  //   if (typeof component.CSS !== 'undefined') {
-  //     this.setCSS(component.CSS);
-  //     this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
-  //   }
-  //
-  //   return realElement;
-  // }
-
-  // Deprecated
-  // renderReact() {
-  //   var realElement = this.getRealization();
-  //
-  //   var packageKey = this.getReactPackageKey();
-  //   var componentKey = this.getReactComponentKey();
-  //
-  //   // ReactComponent 를 얻어온다.
-  //   var component = this.document.getReactTypeComponent(packageKey, componentKey);
-  //
-  //
-  //   var React = require('react');
-  //   var refferenceInstance = React.createElement(component.class, this.getRefferenceTargetProps() || {});
-  //
-  //
-  //   React.render(refferenceInstance, realElement);
-  //
-  //   if (typeof component.CSS !== 'undefined') {
-  //     this.setCSS(component.CSS);
-  //     this.document.appendReactElementNodeCSS(component.componentName, component.CSS);
-  //   }
-  // }
-
-
-
-
-
-
-
-
 
   executeSnapshot(_type) {
     //var presentRevision = this.export();
