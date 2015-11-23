@@ -63,7 +63,7 @@ var ElementNodeEditor = React.createClass({
             this.state.contextController.modifyElementAttribute(elementNode.id, 'class', changedData);
             break;
           case "Text" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'text', changedData);
+            this.state.contextController.modifyElementProperty(elementNode.id, 'text', changedData);
             break;
           case "Comment" :
             this.state.contextController.modifyElementProperty(elementNode.id, 'Comment', changedData);

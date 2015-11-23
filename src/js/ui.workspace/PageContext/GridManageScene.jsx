@@ -3,22 +3,47 @@ import './GridManageScene.less';
 
 let GridManageScene = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+    return {
+      placeholderDisappear: false
+    };
+  },
 
   createRootGrid(){
-    this.emit("CreateRootGrid");
+    let self = this;
+
+    this.setState({placeholderDisappear:true});
+
+    setTimeout(function(){
+      self.emit("CreateRootGrid");
+    }, 500);
   },
 
   renderMainArea(){
+    let buttonStyle = {};
+    let svgStyle = {};
+    if( this.state.placeholderDisappear ){
+      svgStyle.opacity = 0;
+
+      buttonStyle.width = this.props.width;
+      buttonStyle.height = this.props.height;
+      buttonStyle.left = buttonStyle.top = 0;
+      buttonStyle.margin = 0;
+      buttonStyle.backgroundColor = 'transparent';
+      buttonStyle.color = 'transparent';
+      buttonStyle.pointerEvents = 'none';
+    }
+
     return (
-      <div className='grid-placeholder'>
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={this.props.width} height={this.props.height} >
+      <div className='grid-placeholder' >
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={this.props.width} height={this.props.height} style={svgStyle} >
           <desc>Created with Raphaël</desc>
           <defs></defs>
           <path fill="none" stroke="#423F36" d={"M0,0L"+this.props.width+","+this.props.height} stroke-width="5"></path>
           <path fill="none" stroke="#423F36" d={"M"+this.props.width+",0L0,"+this.props.height} stroke-width="5"></path>
         </svg>
 
-        <button onClick={this.createRootGrid}>Create Root Grid</button>
+        <button style={buttonStyle} onClick={this.createRootGrid}>Create Root Grid</button>
       </div>
     );
   },

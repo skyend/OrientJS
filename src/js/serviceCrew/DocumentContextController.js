@@ -152,6 +152,9 @@ class DocumentContextController {
       case "rectangle":
         targetElementNode.transformRectByEditor(_propValue.left, _propValue.top, _propValue.width, _propValue.height);
         break;
+      case "text":
+        targetElementNode.setText(_propValue);
+        break;
       default:
         console.error("No matched property key");
     }

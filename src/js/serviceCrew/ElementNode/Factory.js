@@ -24,12 +24,6 @@ class Factory {
 
     elementNode = new elementNodeCLASS(_document, elementNodeDataObject, _preInsectProps);
 
-
-    // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
-    if (!/^\d+$/.test(elementNode.getId())) {
-      elementNode.setId(this.getNewElementNodeId());
-    }
-
     return elementNode;
   }
 }

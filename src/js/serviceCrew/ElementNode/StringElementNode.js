@@ -1,9 +1,9 @@
 import ElementNode from './ElementNode.js';
 import _ from 'underscore';
-console.log(ElementNode);
+
 class StringElementNode extends ElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
-    super(_document, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+    super(_environment, _elementNodeDataObject, _preInsectProps);
     this.text;
 
   }
@@ -44,7 +44,7 @@ class StringElementNode extends ElementNode {
 
   createRealizationNode() {
 
-    let htmlDoc = this.document.getHTMLDocument();
+    let htmlDoc = this.environment.getHTMLDocument();
     this.realization = htmlDoc.createTextNode('');
     this.realization.___en = this;
   }
@@ -64,7 +64,7 @@ class StringElementNode extends ElementNode {
 
   linkHierarchyRealizaion() {
     super.linkHierarchyRealizaion();
-    this.realization.appendChild(this.document.findById(this.getRefferenceTarget()).getRealization());
+    this.realization.appendChild(this.environment.findById(this.getRefferenceTarget()).getRealization());
   }
 
 

@@ -2,8 +2,8 @@ import TagBaseElementNode from './TagBaseElementNode.js';
 import _ from 'underscore';
 
 class ReactElementNode extends TagBaseElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
-    super(_document, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+    super(_environment, _elementNodeDataObject, _preInsectProps);
     /* React Type */
     this.reactPackageKey;
     this.reactComponentKey;

@@ -3,7 +3,7 @@ import Returns from "../../Returns.js";
 import _ from 'underscore';
 
 class ElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -12,7 +12,7 @@ class ElementNode {
     // 필드 정의
     ////////////////////////
 
-    // document profile
+    // environment profile
     this.id;
     this.type; // html / string / react / grid
     this.name; // 참고용 이름
@@ -46,7 +46,7 @@ class ElementNode {
     this.isRepeated = preInsectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
     this.repeatOrder = preInsectProps.repeatOrder || -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
 
-    this.document = _document;
+    this.environment = _environment;
     this.mode = 'normal';
 
     //////////////////////////
@@ -134,7 +134,7 @@ class ElementNode {
   //  * 자신이 소속된 Document의 ContextController를 반환
   //  */
   // getMyContextControllerOfDocument() {
-  //   return this.document.getMyDirector();
+  //   return this.environment.getMyDirector();
   // }
 
   ////////////////////
@@ -172,7 +172,6 @@ class ElementNode {
   // control
   setControl(_controlName, _value) {
     this.controls[_controlName] = _value;
-    //this.emitToParent("RequestReRenderMe");
   }
 
   // controls
@@ -229,7 +228,7 @@ class ElementNode {
       for (let i = 0; i < repeatOption - 1; i++) {
 
         // clone ElementNode 생성
-        let cloned = this.document.newElementNode(this.export(), {
+        let cloned = this.environment.newElementNode(this.export(), {
           isGhost: true,
           repeatOrder: i + 1,
           isRepeated: true
@@ -268,7 +267,7 @@ class ElementNode {
 
     for (let i = 0; i < childNodes.length; i++) {
       let realChild = childNodes[i];
-      let newChildElementNode = this.document.extractAndRealizeElementNode(realChild);
+      let newChildElementNode = this.extractAndRealizeElementNode(realChild);
 
       newChildElementNode.setParent(this);
 
@@ -387,6 +386,44 @@ class ElementNode {
     this.setAttributes(elementSpec);
   }
 
+  extractAndRealizeElementNode(_realization) {
+
+    let elementNode = _realization.___en || null;
+
+    if (_realization.nodeName === '#text') {
+      if (elementNode === null) {
+        elementNode = this.environment.newElementNode(undefined, {}, 'string');
+      }
+      elementNode.buildByElement(_realization);
+    } else {
+      if (elementNode === null) {
+        elementNode = this.environment.newElementNode(undefined, {}, 'html');
+        elementNode.buildByElement(_realization);
+        // elementNode.setType('html');
+        // elementNode.setTagName(_realization.nodeName);
+      }
+
+      let newChildren = [];
+      //  console.log(_realElement.childNodes, 'here');
+
+      for (var i = 0; i < _realization.childNodes.length; i++) {
+
+
+        let afterRealize = this.extractAndRealizeElementNode(_realization.childNodes[i]);
+        afterRealize.setParent(elementNode);
+
+        //console.log(_realElement.childNodes[i]);
+
+        if (afterRealize !== null) {
+          newChildren.push(afterRealize);
+        }
+      }
+
+      elementNode.children = newChildren;
+    }
+
+    return elementNode;
+  };
 
   // .deprecated
   // applyAttributesToRealDOM(_escapeResolve) {
@@ -553,7 +590,7 @@ class ElementNode {
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
 
-      child = this.document.newElementNode(elementNodeData, preInsectProps);
+      child = this.environment.newElementNode(elementNodeData, preInsectProps);
       child.setParent(this);
       list.push(child);
     }
@@ -584,12 +621,15 @@ class ElementNode {
       return self.pretreatment(_firstMatch);
     });
 
-    // this.emitToParent("Test", {
-    //   text: _seedText
-    // });
 
     // resolve String : data binding and i18n processing
-    return this.document.interpret(preResolvedText);
+
+    // environment 가 있을 때 environment의 interpret를 진행
+    if (this.environment !== undefined) {
+      return this.environment.interpret(preResolvedText);
+    } else {
+      return preResolvedText;
+    }
   }
 
   // 전처리
@@ -655,8 +695,8 @@ class ElementNode {
   emitToParent(_eventName, _eventData, __ORIGIN__) {
     if (this.parent === null) {
 
-      // 이벤트를 듣는 부모가 없다면 이벤트를 document로 전송한다.
-      return this.document.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
+      // 이벤트를 듣는 부모가 없다면 이벤트를 environment로 전송한다.
+      return this.environment.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
     }
 
     return this.parent.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
@@ -669,52 +709,6 @@ class ElementNode {
     // });
   }
 
-  ////
-  // 이벤트 사용
-  // var result = this.emitToParent("Test", {
-  //   text: _seedText
-  // });
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // 자식의 attribute변경을 감시한다.
-  onEC_UpdatedAttribute(_eventData, _origin) {
-
-    // 자신이 반복자로 지정되어있을 경우 자신을 다시 랜더링한다.
-    if (this.getControl('repeat-n') !== undefined) {
-
-      // 자신을 다시 랜더링해달라고 요청
-      this.emitToParent("RequestReRenderMe");
-      return true;
-    }
-
-    if (this.getParent() === null) {
-      // 자신이 최상위 부모라면 더이상 이벤트 터널통과를 중단.
-      return true;
-    }
-
-
-    // 위의 해당사항이 없다면 이벤트터널을 계속 통과하도록 false반환.
-    return false;
-  }
-
-
-  // 자식이 자신을 다시 랜더링해달라고 요청했을 때
-  // 자식의 요청을 받은 부모가 반복자로 지정되어 있으면 반복되어 랜더링된 요소들을 함께 갱신하기 위해 Event를 자신의 선에서 다시 발생시킨다.
-  // 반복자의 자손중 반복자가 또 있는 경우
-  onEC_RequestReRenderMe(_eventData, _origin) {
-
-    // 자신이 반복자로 지정되어있을 경우 자신을 다시 랜더링한다.
-    if (this.getControl('repeat-n') !== undefined) {
-
-      // 자신을 다시 랜더링해달라고 요청
-      this.emitToParent("RequestReRenderMe");
-      return true;
-    }
-
-    // 위의 해당사항이 없다면 이벤트터널을 계속 통과하도록 false반환.
-    return false;
-  }
 
 
   onEC_GetRepeatN(_eventData, _origin) {

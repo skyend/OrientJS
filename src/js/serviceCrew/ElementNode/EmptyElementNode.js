@@ -2,8 +2,8 @@ import TagBaseElementNode from './TagBaseElementNode.js';
 import _ from 'underscore';
 
 class EmptyElementNode extends TagBaseElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
-    super(_document, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+    super(_environment, _elementNodeDataObject, _preInsectProps);
 
     this.refferenceType; // react | document | ...
     this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }
@@ -36,7 +36,7 @@ class EmptyElementNode extends TagBaseElementNode {
 
   // getRefferencingElementNode //Empty Type elnode 의 참조중인 elNode를 가져옴
   getRefferencingElementNode() {
-    var refElNode = this.document.getElementNodeFromPool(this.getRefferenceTarget());
+    var refElNode = this.environment.getElementNodeFromPool(this.getRefferenceTarget());
     return refElNode;
   }
 
@@ -72,7 +72,7 @@ class EmptyElementNode extends TagBaseElementNode {
 
   realizeEmpty(_realizeOptions) {
     console.log(this.getRefferenceTarget());
-    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    let refferenceElementNode = this.environment.findById(this.getRefferenceTarget());
     console.log(refferenceElementNode);
 
     if (refferenceElementNode != false)
@@ -80,7 +80,7 @@ class EmptyElementNode extends TagBaseElementNode {
   }
 
   linkHierarchyRealizaion() {
-    let refferenceElementNode = this.document.findById(this.getRefferenceTarget());
+    let refferenceElementNode = this.environment.findById(this.getRefferenceTarget());
     if (refferenceElementNode != false)
       this.realization.appendChild(refferenceElementNode.getRealization());
   }

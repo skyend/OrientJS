@@ -3,8 +3,8 @@ import _ from 'underscore';
 import React from 'react';
 
 class HTMLElementNode extends TagBaseElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
-    super(_document, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+    super(_environment, _elementNodeDataObject, _preInsectProps);
     // children
     this.children;
   }
@@ -34,14 +34,14 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children.map(function(_child) {
 
       self.realization.appendChild(_child.realization);
-      if (_child.type === 'string') return;
-      _child.linkHierarchyRealizaion();
+      if (_child.type === 'html') _child.linkHierarchyRealizaion();
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {
-          console.log(_cloneChild);
+
           self.realization.appendChild(_cloneChild.realization);
-          _cloneChild.linkHierarchyRealizaion();
+
+          if (_cloneChild.type === 'html') _cloneChild.linkHierarchyRealizaion();
         });
       }
     });
@@ -102,7 +102,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
     if (typeof _component.CSS !== 'undefined') {
       this.setCSS(_component.CSS);
-      this.document.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
+      this.environment.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
     }
   }
 
@@ -132,9 +132,9 @@ class HTMLElementNode extends TagBaseElementNode {
       var newChildElementNode;
 
       if (child_.nodeName === '#text') {
-        newChildElementNode = this.document.newElementNode(undefined, {}, 'string');
+        newChildElementNode = this.environment.newElementNode(undefined, {}, 'string');
       } else {
-        newChildElementNode = this.document.newElementNode(undefined, {}, 'html');
+        newChildElementNode = this.environment.newElementNode(undefined, {}, 'html');
       }
 
       newChildElementNode.buildByElement(child_);

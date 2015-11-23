@@ -2,8 +2,8 @@ import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 
 class TagBaseElementNode extends ElementNode {
-  constructor(_document, _elementNodeDataObject, _preInsectProps) {
-    super(_document, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+    super(_environment, _elementNodeDataObject, _preInsectProps);
     this.tagName;
     this.attributes;
     this.css;
@@ -64,7 +64,7 @@ class TagBaseElementNode extends ElementNode {
 
   getCurrentRectangle() {
     console.log(this);
-    switch (this.document.contextController.getScreenSizing()) {
+    switch (this.environment.contextController.getScreenSizing()) {
       case "desktop":
         return this.rectangle['desktop'];
       case "tablet":
@@ -108,7 +108,6 @@ class TagBaseElementNode extends ElementNode {
   // attribute
   setAttribute(_name, _value) {
     this.attributes[_name] = _value;
-    this.updatedAttribute(_name);
   }
 
   // attributes
@@ -197,7 +196,7 @@ class TagBaseElementNode extends ElementNode {
 
 
   createRealizationNode() {
-    let htmlDoc = this.document.getHTMLDocument();
+    let htmlDoc = this.environment.getHTMLDocument();
     this.realization = htmlDoc.createElement(this.getTagName());
     this.realization.___en = this;
     this.realization.setAttribute('___id___', this.id);
@@ -273,18 +272,6 @@ class TagBaseElementNode extends ElementNode {
       this.setRectanglePart(_height, 'height');
     }
 
-  }
-
-  ////////////
-  //
-  updatedAttribute(_attrKey) {
-    if (this.isRepeated) {
-      this.emitToParent("RequestReRenderMe");
-    } else {
-      this.emitToParent("UpdatedAttribute", {
-        attrKey: _attrKey
-      });
-    }
   }
 
 

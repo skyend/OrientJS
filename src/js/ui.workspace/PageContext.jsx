@@ -111,7 +111,7 @@ export default React.createClass({
 
     if( this.state.currentScene === 'grid' ){
       return <div className="grid-manage-scene">
-        <GridManageScene rootGrid={this.props.contextController.getRootGrid()} left={ stageX } top={ stageY } width={sceneWidth} height={sceneHeight}/>
+        <GridManageScene rootGrid={this.props.contextController.rootGrid} left={ stageX } top={ stageY } width={sceneWidth} height={sceneHeight}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
       return <div className="meta-manage-scene">
