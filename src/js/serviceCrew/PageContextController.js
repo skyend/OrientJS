@@ -41,7 +41,6 @@ class PageContextController {
 
     this.serviceManager.savePage(this.page.id, pageJSON, function(_result) {
       self.unsaved = false;
-      console.log('saved');
       self.context.feedSaveStateChange();
     });
   }
@@ -58,8 +57,8 @@ class PageContextController {
     this.changedContent();
   }
 
-  get rootGrid() {
-    return this.page.rootGrid;
+  getRootGridElement() {
+    return this.page.rootGridElement;
   }
 
   get isUnsaved() {

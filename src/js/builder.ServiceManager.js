@@ -97,7 +97,6 @@ class ServiceManager {
   savePage(_page_id, _pageDataObject, _complete) {
 
     this.app.gelateriaRequest.savePage(this.service_id, _page_id, _pageDataObject, function(_result) {
-      console.log('sabepage');
       _complete(_result);
     });
   }

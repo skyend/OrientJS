@@ -1,8 +1,16 @@
 import React from 'react';
 import './GridManageScene.less';
+import GridManager from '../ContextCommon/GridManager.jsx';
 
 let GridManageScene = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
+
+  getDefaultProps(){
+    return {
+      rootGridElement: null
+    };
+  },
+
   getInitialState(){
     return {
       placeholderDisappear: false
@@ -19,7 +27,7 @@ let GridManageScene = React.createClass({
     }, 500);
   },
 
-  renderMainArea(){
+  renderAreaPlaceholder(){
     let buttonStyle = {};
     let svgStyle = {};
     if( this.state.placeholderDisappear ){
@@ -39,13 +47,23 @@ let GridManageScene = React.createClass({
         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={this.props.width} height={this.props.height} style={svgStyle} >
           <desc>Created with Raphaël</desc>
           <defs></defs>
-          <path fill="none" stroke="#423F36" d={"M0,0L"+this.props.width+","+this.props.height} stroke-width="5"></path>
-          <path fill="none" stroke="#423F36" d={"M"+this.props.width+",0L0,"+this.props.height} stroke-width="5"></path>
+          <path fill="none" stroke="#423F36" d={"M0,0L"+this.props.width+","+this.props.height} strokeWidth="5"></path>
+          <path fill="none" stroke="#423F36" d={"M"+this.props.width+",0L0,"+this.props.height} strokeWidth="5"></path>
         </svg>
 
         <button style={buttonStyle} onClick={this.createRootGrid}>Create Root Grid</button>
       </div>
     );
+  },
+
+  renderMainArea(){
+    if( this.props.rootGridElement === null ){
+      return this.renderAreaPlaceholder();
+    }
+
+    return (
+      <GridManager gridElementNode={this.props.rootGridElement} width={this.props.width} height={this.props.height} left={0} top={0}/>
+    )
   },
 
   render(){

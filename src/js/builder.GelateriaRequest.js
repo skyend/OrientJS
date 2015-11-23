@@ -274,8 +274,6 @@ class GelateriaRequest {
         page: JSON.stringify(_pageDataObject)
       })
       .end(function(err, res) {
-
-        console.log("Saved", err, res);
         if (err !== null) throw new Error("save page fail");
 
         var dataObject = JSON.parse(res.text);

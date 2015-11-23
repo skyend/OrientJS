@@ -66,6 +66,8 @@ export default React.createClass({
 
   onThrowCatcherCreateRootGrid(){
     this.props.contextController.modifyCreateRootGrid();
+    console.log(this.props.contextController);
+    this.forceUpdate();
   },
 
   componentWillUpdate(_nextProps, _nextState){
@@ -120,7 +122,7 @@ export default React.createClass({
 
     if( this.state.currentScene === 'grid' ){
       return <div className="grid-manage-scene">
-        <GridManageScene rootGrid={this.props.contextController.rootGrid} left={ stageX } top={ stageY } width={sceneWidth} height={sceneHeight}/>
+        <GridManageScene rootGridElement={this.props.contextController.getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
       return <div className="meta-manage-scene">

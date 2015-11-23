@@ -51,7 +51,8 @@ class Page {
 
   createRootGridElement() {
     let gridElementNode = Factory.takeElementNode(undefined, undefined, 'grid');
-    console.log(gridElementNode);
+    gridElementNode.behavior = 'grid';
+
     this.rootGridElement = gridElementNode;
   }
 
