@@ -6,7 +6,7 @@ import EmptyElementNode from './EmptyElementNode.js';
 
 
 class Factory {
-  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _document) {
+  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _environment) {
     var elementNode;
     let elementNodeCLASS;
     let elementNodeDataObject = _elementNodeDataObject || {};
@@ -22,7 +22,7 @@ class Factory {
     }
 
 
-    elementNode = new elementNodeCLASS(_document, elementNodeDataObject, _preInsectProps);
+    elementNode = new elementNodeCLASS(_environment, elementNodeDataObject, _preInsectProps);
 
     return elementNode;
   }

@@ -4,6 +4,7 @@ import _ from 'underscore';
 class EmptyElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     super(_environment, _elementNodeDataObject, _preInsectProps);
+    this.type = 'empty';
 
     this.refferenceType; // react | document | ...
     this.refferenceTarget; // reactComponent{ _componentKey, _packageKey }

@@ -4,6 +4,7 @@ import _ from 'underscore';
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     super(_environment, _elementNodeDataObject, _preInsectProps);
+    this.type = 'string';
     this.text;
 
   }

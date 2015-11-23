@@ -264,6 +264,7 @@ class GelateriaRequest {
   }
 
   savePage(_serviceId, _page_id, _pageDataObject, _complete) {
+    console.log('do save');
     request.post("http://125.131.88.146:8080/" + ["pages", 'save'].join("/"))
       .type('form')
       .withCredentials()
@@ -274,7 +275,7 @@ class GelateriaRequest {
       })
       .end(function(err, res) {
 
-
+        console.log("Saved", err, res);
         if (err !== null) throw new Error("save page fail");
 
         var dataObject = JSON.parse(res.text);

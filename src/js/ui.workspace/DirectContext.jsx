@@ -590,9 +590,7 @@ var DirectContext = React.createClass({
 
 
   save(){
-    var contextController = this.props.contextController;
-
-    contextController.save();
+    this.props.contextController.save();
   },
 
   infoNotice(_title, _message){

@@ -23,17 +23,8 @@ class PageContextController {
     }
   }
 
-  attach(_context, _superDOMElement) {
-    this.attached = true;
+  setContext(_context) {
     this.context = _context;
-    this.unsaved = false;
-    this._superDOMElement = _superDOMElement;
-    this.screenSizing = 'desktop';
-    /* processing */
-
-    this._superDOMElement.setAttribute('draggable', true);
-    console.log(this._superDOMElement);
-
   }
 
   pause() {
@@ -48,8 +39,9 @@ class PageContextController {
     let self = this;
     let pageJSON = this.page.export();
 
-    this.serviceManager.saveDocument(this.page.getID(), pageJSON, function(_result) {
+    this.serviceManager.savePage(this.page.id, pageJSON, function(_result) {
       self.unsaved = false;
+      console.log('saved');
       self.context.feedSaveStateChange();
     });
   }
@@ -61,7 +53,9 @@ class PageContextController {
   }
 
   modifyCreateRootGrid() {
+    this.page.createRootGridElement();
 
+    this.changedContent();
   }
 
   get rootGrid() {

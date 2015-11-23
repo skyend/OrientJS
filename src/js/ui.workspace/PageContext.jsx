@@ -36,6 +36,14 @@ export default React.createClass({
     });
   },
 
+  feedSaveStateChange(){
+    this.emit("ChangedSaveState");
+  },
+
+  save(){
+    this.props.contextController.save();
+  },
+
   getContextType(){
     return this.props.contextType;
   },
@@ -93,6 +101,7 @@ export default React.createClass({
 
     // contextController 연결
     this.contextController = this.props.contextController;
+    this.contextController.setContext(this);
 
     if (this.props.runningState) {
       this.goingToContextRunning();

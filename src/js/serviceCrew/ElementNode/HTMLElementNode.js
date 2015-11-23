@@ -5,6 +5,8 @@ import React from 'react';
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     super(_environment, _elementNodeDataObject, _preInsectProps);
+    this.type = 'html';
+
     // children
     this.children;
   }
@@ -12,7 +14,7 @@ class HTMLElementNode extends TagBaseElementNode {
   realize(_realizeOptions) {
     super.realize(_realizeOptions);
     let realizeOptions = _realizeOptions || {};
-    console.log('realize', this);
+
     this.childrenRealize(realizeOptions);
   }
 

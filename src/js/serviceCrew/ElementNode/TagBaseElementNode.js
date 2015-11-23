@@ -20,7 +20,7 @@ class TagBaseElementNode extends ElementNode {
   // Getters
   // element.tagName -> getTagName()
   getTagName() {
-    return this.getAttribute('tagName');
+    return this.tagName;
   }
 
   // attribute
@@ -83,7 +83,7 @@ class TagBaseElementNode extends ElementNode {
 
   // tagName
   setTagName(_tagName) {
-    this.setAttribute('tagName', _tagName);
+    this.tagName = _tagName;
   }
 
   // classes
@@ -132,6 +132,15 @@ class TagBaseElementNode extends ElementNode {
 
   setRectanglePartWithKeepingUnit(_partValue, _partName) {
     console.log(valueWithUnitSeperator(_partValue));
+  }
+
+
+  createRealizationNode() {
+    let htmlDoc = this.environment.getHTMLDocument();
+    this.realization = htmlDoc.createElement(this.getTagName());
+    console.log(this.getTagName());
+    this.realization.___en = this;
+    this.realization.setAttribute('___id___', this.id);
   }
 
   // realize
@@ -194,13 +203,6 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-
-  createRealizationNode() {
-    let htmlDoc = this.environment.getHTMLDocument();
-    this.realization = htmlDoc.createElement(this.getTagName());
-    this.realization.___en = this;
-    this.realization.setAttribute('___id___', this.id);
-  }
 
 
 
@@ -278,6 +280,7 @@ class TagBaseElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
+    this.tagName = _elementNodeDataObject.tagName;
     this.attributes = _elementNodeDataObject.attributes;
     this.rectangle = _elementNodeDataObject.rectangle || {
       desktop: {},

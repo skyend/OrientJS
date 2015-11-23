@@ -1,9 +1,9 @@
 import _ from 'underscore';
+import Factory from './ElementNode/Factory.js';
 
 class Page {
   constructor(_contextController, _pageDataObject) {
     this.contextController = _contextController;
-
 
     this.import(_pageDataObject);
   }
@@ -24,8 +24,8 @@ class Page {
     this._updated = _updated;
   }
 
-  set rootGrid(_rootGrid) {
-    return this._rootGrid = _rootGrid;
+  set rootGridElement(_rootGridElement) {
+    return this._rootGridElement = _rootGridElement;
   }
 
   get title() {
@@ -44,8 +44,15 @@ class Page {
     return this._updated;
   }
 
-  get rootGrid() {
-    return this._rootGrid;
+  get rootGridElement() {
+    return this._rootGridElement;
+  }
+
+
+  createRootGridElement() {
+    let gridElementNode = Factory.takeElementNode(undefined, undefined, 'grid');
+    console.log(gridElementNode);
+    this.rootGridElement = gridElementNode;
   }
 
   import (_pageDataObject) {
@@ -58,7 +65,7 @@ class Page {
     this.created = data.created;
     this.updated = data.updated || undefined;
 
-    this.rootGrid = data.rootGrid;
+    this._rootGridElement = data.rootGridElement;
   }
 
   export () {
@@ -67,7 +74,7 @@ class Page {
       title: this.title,
       created: this.created,
       updated: this.updated,
-      rootGrid: _.clone(this.rootGrid)
+      rootGridElement: _.clone(this._rootGridElement.export())
     };
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import Returns from "../../Returns.js";
 import _ from 'underscore';
+import Factory from './Factory.js';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -228,11 +229,11 @@ class ElementNode {
       for (let i = 0; i < repeatOption - 1; i++) {
 
         // clone ElementNode 생성
-        let cloned = this.environment.newElementNode(this.export(), {
+        let cloned = Factory.takeElementNode(this.export(), {
           isGhost: true,
           repeatOrder: i + 1,
           isRepeated: true
-        });
+        }, this.getType(), this.environment);
 
         cloned.setParent(this.getParent());
 
@@ -710,7 +711,6 @@ class ElementNode {
   }
 
 
-
   onEC_GetRepeatN(_eventData, _origin) {
     if (this.isRepeated) {
       return this.repeatOrder;
@@ -729,12 +729,6 @@ class ElementNode {
 
     return false;
   }
-
-
-  onEC_Snapshot(_eventData, _origin) {
-    return false;
-  }
-
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
