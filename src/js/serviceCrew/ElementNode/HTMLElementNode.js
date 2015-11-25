@@ -1,4 +1,5 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
+import Factory from './Factory.js';
 import _ from 'underscore';
 import React from 'react';
 
@@ -114,10 +115,9 @@ class HTMLElementNode extends TagBaseElementNode {
    * child는 재귀로 호출한다.
    */
   buildByElement(_domElement) {
-    this.setType('html');
+    super.buildByElement(_domElement);
 
-    // element Attribute를 읽어서 자신에게 매핑한다.
-    this.copyAllAtrributeFromDOMElement(_domElement);
+    this.setType('html');
 
     //////////////////
     // 자식노드 재귀처리 //
@@ -149,6 +149,37 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
     this.children = children;
+  }
+
+  //////////////////////////
+  // import methods
+  /*************
+   * inspireChildren
+   * ElementNode Data객체 리스트를 실제 ElementNode 객체 리스트로 변환한다.
+   * @Param _childrenDataList : JSON Array
+   */
+  inspireChildren(_childrenDataList) {
+    if (typeof _childrenDataList === 'undefined' || _childrenDataList === null) return []; // object가 아니면 빈 배열을 리턴한다.
+    if (typeof _childrenDataList.length !== 'number') throw new Error("element child nodes is not Array.");
+    var list = [];
+
+    var preInsectProps = {
+      //isRepeated: this.isRepeated,
+      isGhost: this.isGhost
+    }
+
+    let elementNodeData;
+    let child;
+    for (var i = 0; i < _childrenDataList.length; i++) {
+      elementNodeData = _childrenDataList[i];
+      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment); // ID가 없는 ElementNode는 계속 ID가 없다.
+      //child = this.environment.newElementNode(elementNodeData, preInsectProps); // ID가 없는 ElementNode의 경우 생성 후 ID를 부여한다.
+
+      child.setParent(this);
+      list.push(child);
+    }
+
+    return list;
   }
 
 

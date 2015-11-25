@@ -202,8 +202,26 @@ class TagBaseElementNode extends ElementNode {
     this.applyAttributesToRealDOM();
   }
 
+  buildByElement(_domElement) {
+    this.copyAllAtrributeFromDOMElement(_domElement);
+
+  }
 
 
+  copyAllAtrributeFromDOMElement(_domElement) {
+    this.setTagName(_domElement.nodeName);
+
+    // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
+    var attributes = _domElement.attributes;
+    let attrName;
+    let attrValue;
+    for (var i = 0; i < attributes.length; i++) {
+      attrName = attributes[i].name;
+      if (/^__vid__$/.test(attrName)) continue;
+
+      this.setAttribute(attributes[i].name, attributes[i].nodeValue);
+    }
+  }
 
 
   mappingEvent() {
@@ -281,7 +299,7 @@ class TagBaseElementNode extends ElementNode {
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
     this.tagName = _elementNodeDataObject.tagName;
-    this.attributes = _elementNodeDataObject.attributes;
+    this.attributes = _elementNodeDataObject.attributes || {};
     this.rectangle = _elementNodeDataObject.rectangle || {
       desktop: {},
       tablet: {},

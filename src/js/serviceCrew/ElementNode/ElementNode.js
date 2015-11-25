@@ -368,24 +368,7 @@ class ElementNode {
 
 
 
-  copyAllAtrributeFromDOMElement(_domElement) {
-    var elementSpec = {
-      'tagName': _domElement.nodeName.toLowerCase(),
-    }
 
-
-    // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
-    var attributes = _domElement.attributes;
-    for (var i = 0; i < attributes.length; i++) {
-      switch (attributes[i].name) {
-        case '__vid__':
-          continue;
-      }
-      elementSpec[attributes[i].name] = attributes[i].nodeValue;
-    }
-
-    this.setAttributes(elementSpec);
-  }
 
   extractAndRealizeElementNode(_realization) {
 
@@ -569,35 +552,7 @@ class ElementNode {
   }
 
 
-  //////////////////////////
-  // import methods
-  /*************
-   * inspireChildren
-   * ElementNode Data객체 리스트를 실제 ElementNode 객체 리스트로 변환한다.
-   * @Param _childrenDataList : JSON Array
-   */
-  inspireChildren(_childrenDataList) {
-    if (typeof _childrenDataList === 'undefined' || _childrenDataList === null) return []; // object가 아니면 빈 배열을 리턴한다.
-    if (typeof _childrenDataList.length !== 'number') throw new Error("element nodes is not Array.");
-    var list = [];
 
-    var preInsectProps = {
-      //isRepeated: this.isRepeated,
-      isGhost: this.isGhost
-    }
-
-    let elementNodeData;
-    let child;
-    for (var i = 0; i < _childrenDataList.length; i++) {
-      elementNodeData = _childrenDataList[i];
-
-      child = this.environment.newElementNode(elementNodeData, preInsectProps);
-      child.setParent(this);
-      list.push(child);
-    }
-
-    return list;
-  }
 
   executeSnapshot(_type) {
     //var presentRevision = this.export();
