@@ -99,6 +99,8 @@ class PageContextController {
     };
 
     this.page.screenSize = this._screenSize;
+
+    console.log(this._screenSize);
   }
 
   getScreenSize() {

@@ -33,7 +33,7 @@ class Page {
 
   set screenSize(_screenSize) {
     this._screenSize = _screenSize;
-
+    console.log(this._screenSize);
     if (this.rootGridElement !== null) {
       this.rootGridElement.screenSize = this._screenSize;
     }

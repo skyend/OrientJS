@@ -38,7 +38,9 @@ class GridElementNode extends HTMLElementNode {
   }
 
   set screenSize(_screenSize) {
+
     this._screenSize = _screenSize;
+    console.log(this._screenSize, this);
   }
 
   set temporaryDecrementRectSize(_rect) {
@@ -54,6 +56,7 @@ class GridElementNode extends HTMLElementNode {
     this.childrenIteration(function(_child) {
       console.log(_child.calcContainerSize());
     });
+    console.log("Screen SISISISISIZE", this.screenSize);
 
     return {
       requiredWidth: requiredWidth,
