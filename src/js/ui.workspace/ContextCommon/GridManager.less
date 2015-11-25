@@ -2,6 +2,7 @@
 {
     position: relative;
 
+    //transition: all .3s;
     > .behavior
     {
         position: relative;
@@ -48,6 +49,8 @@
 
         width: 100%;
         height: 100%;
+
+        background-color: #333;
         .line
         {
             position: absolute;
@@ -135,10 +138,10 @@
             background-color: rgba(0, 0, 0, .48);
         }
 
-        > .behavior-grid
-        {
-            border: 5px solid rgba(0, 0, 0, .48);
-        }
+        // > .behavior-grid
+        // {
+        //     border: 5px solid rgba(0, 0, 0, .48);
+        // }
     }
 
     &.row
@@ -148,9 +151,22 @@
             background-color: rgba(76, 13, 13, .41);
         }
 
-        > .behavior-grid
+        // > .behavior-row
+        // {
+        //     border: 5px solid rgba(76, 13, 13, .41);
+        // }
+    }
+
+    &.column
+    {
+        > .options-bar
         {
-            border: 5px solid rgba(76, 13, 13, .41);
+            background-color: rgba(42, 87, 154, .48);
         }
+
+        // > .behavior-column
+        // {
+        //     border: 5px solid rgba(42, 87, 154, .48);
+        // }
     }
 }

@@ -72,6 +72,44 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  onThrowCatcherAppendNewColumn(_eventData){
+    let targetNodeId = _eventData.targetId;
+
+    this.getContextController().modifyAppendNewGrid(targetNodeId, 'column');
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAppendBeforeNewRow(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyAppendBeforeNewGrid(targetNodeId, 'row');
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAppendAfterNewRow(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyAppendAfterNewGrid(targetNodeId, 'row');
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAppendBeforeNewColumn(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyAppendBeforeNewGrid(targetNodeId, 'column');
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAppendAfterNewColumn(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyAppendAfterNewGrid(targetNodeId, 'column');
+
+    this.forceUpdate();
+  },
+
+
+
   onThrowCatcherClickElementInStage(_e){
     console.log(_e);
   },
@@ -132,6 +170,8 @@ export default React.createClass({
     var stageX = ( this.props.width - sceneWidth ) / 2;
     var stageY = ( this.props.height - sceneHeight ) / 2;
 
+    this.props.contextController.setScreenSize(sceneWidth, sceneHeight);
+
     if( this.state.currentScene === 'grid' ){
       return <div className="grid-manage-scene">
         <GridManageScene rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
@@ -159,6 +199,8 @@ export default React.createClass({
     if (this.props.runningState) {
       style.display = 'block';
     }
+
+
 
     return (
       <div className='PageContext' style={style}>

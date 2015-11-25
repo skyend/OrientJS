@@ -42,4 +42,91 @@
             }
         }
     }
+
+
+    > .outline-container
+    {
+        position: absolute;
+
+        width: 100%;
+        height: 100%;
+
+        > .outline
+        {
+            position: absolute;
+
+            transition: all .3s;
+
+            background-color: rgba(76, 13, 13, .41);
+
+            &.left
+            {
+                top: 0;
+                left: 0;
+
+                width: 5px;
+                height: 100%;
+            }
+            &.right
+            {
+                top: 0;
+                right: 0;
+
+                width: 5px;
+                height: 100%;
+            }
+            &.top
+            {
+                top: 0;
+                right: 5px;
+                left: 5px;
+
+                height: 5px;
+
+
+                &:hover
+                {
+                    height: 20px;
+                }
+            }
+
+            &.bottom
+            {
+                right: 5px;
+                bottom: 0;
+                left: 5px;
+
+                height: 5px;
+
+
+                &:hover
+                {
+                    height: 20px;
+                }
+            }
+
+            &.activable
+            {
+                cursor: pointer;
+                animation-name: blink-row;
+                animation-duration: 1s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+            }
+        }
+    }
+}
+
+
+@keyframes blink-row
+{
+    from
+    {
+        background-color: rgba(76, 13, 13, .41);
+    }
+
+    to
+    {
+        background-color: rgba(243, 152, 152, .41);
+    }
 }

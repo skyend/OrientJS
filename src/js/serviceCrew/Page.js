@@ -6,6 +6,9 @@ class Page {
     this.contextController = _contextController;
 
     this.import(_pageDataObject);
+
+    // runtime
+    this._screenSize = {};
   }
 
   set title(_title) {
@@ -25,7 +28,13 @@ class Page {
   }
 
   set rootGridElement(_rootGridElement) {
-    return this._rootGridElement = _rootGridElement;
+    this._rootGridElement = _rootGridElement;
+  }
+
+  set screenSize(_screenSize) {
+    this._screenSize = _screenSize;
+
+    this.rootGridElement.screenSize = this._screenSize;
   }
 
   get title() {
@@ -48,6 +57,10 @@ class Page {
     return this._rootGridElement;
   }
 
+  get screenSize() {
+    return this._screenSize;
+  }
+
   getNewGridId() {
     return ++this.lastGridId;
   }
@@ -64,11 +77,28 @@ class Page {
     let targetNode = this.rootGridElement.findById(_targetId);
     if (targetNode === false) throw new Error("Not found targetGridNode");
 
+    targetNode.appendChild(this.newGridNode(_behavior));
+  }
+
+  appendBeforeNewGrid(_targetId, _behavior) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+    if (targetNode === false) throw new Error("Not found targetGridNode");
+
+    targetNode.insertBefore(this.newGridNode(_behavior));
+  }
+
+  appendAfterNewGrid(_targetId, _behavior) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+    if (targetNode === false) throw new Error("Not found targetGridNode");
+
+    targetNode.insertAfter(this.newGridNode(_behavior));
+  }
+
+  newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
     newGridNode.setId(this.getNewGridId());
     newGridNode.behavior = _behavior;
-
-    targetNode.appendChild(newGridNode);
+    return newGridNode;
   }
 
   import (_pageDataObject) {

@@ -72,7 +72,7 @@ class HTMLElementNode extends TagBaseElementNode {
       return this;
     } else {
       for (var i = 0; i < this.children.length; i++) {
-        var recvResult = this.findRecursive(this.children[i], _finder);
+        var recvResult = this.children[i].findRecursive(_finder);
 
         if (recvResult) {
           return recvResult;
@@ -80,6 +80,11 @@ class HTMLElementNode extends TagBaseElementNode {
       }
     }
     return false;
+  }
+
+  // alias : result[Array] == this.children.map(Function)
+  childrenIteration(_processFunc) {
+    return this.children.map(_processFunc);
   }
 
 

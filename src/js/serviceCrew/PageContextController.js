@@ -23,6 +23,8 @@ class PageContextController {
     }
   }
 
+
+
   setContext(_context) {
     this.context = _context;
   }
@@ -62,6 +64,16 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyAppendBeforeNewGrid(_targetId, _behavior) {
+    this.page.appendBeforeNewGrid(_targetId, _behavior);
+    this.changedContent();
+  }
+
+  modifyAppendAfterNewGrid(_targetId, _behavior) {
+    this.page.appendAfterNewGrid(_targetId, _behavior);
+    this.changedContent();
+  }
+
   getRootGridElement() {
     return this.page.rootGridElement;
   }
@@ -79,6 +91,21 @@ class PageContextController {
   getScreenSizing() {
     return this.screenSizing;
   }
+
+  setScreenSize(_width, _height) {
+    this._screenSize = {
+      width: _width,
+      height: _height
+    };
+
+    this.page.screenSize = this._screenSize;
+  }
+
+  getScreenSize() {
+    return this._screenSize;
+  }
+
+
 };
 
 

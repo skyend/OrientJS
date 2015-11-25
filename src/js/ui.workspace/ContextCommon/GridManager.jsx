@@ -2,6 +2,8 @@ import './GridManager.less';
 import React from 'react';
 import BehaviorGrid from './GridManager/Grid.jsx';
 import BehaviorRow from './GridManager/Row.jsx';
+import BehaviorColumn from './GridManager/Column.jsx';
+import BehaviorLayer from './GridManager/Layer.jsx';
 
 let GridManager = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
@@ -19,25 +21,28 @@ let GridManager = React.createClass({
   },
 
   renderLayer(){
-
-
+    return (
+      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+    )
   },
 
   renderColumn(){
-
-
+    return (
+      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+    )
   },
 
   renderRow(){
+    console.log(this.props);
     return (
-      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} minHeight={this.props.height-30} top={30}/>
+      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
     )
   },
 
   renderGrid(){
 
     return (
-      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} minHeight={this.props.height-30} top={30}/>
+      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
     )
   },
 
@@ -68,6 +73,9 @@ let GridManager = React.createClass({
           </li>
           <li>
             <i className='fa fa-cog'/>Setting
+          </li>
+          <li>
+            <i className='fa fa-trash'/>Remove
           </li>
         </ul>
       </div>
