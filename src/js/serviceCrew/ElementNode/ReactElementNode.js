@@ -1,4 +1,5 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
+import React from 'react';
 import _ from 'underscore';
 
 class ReactElementNode extends TagBaseElementNode {
@@ -10,6 +11,9 @@ class ReactElementNode extends TagBaseElementNode {
     this.reactPackageKey;
     this.reactComponentKey;
     this.reactComponentProps;
+
+    this.loadedComponent = null;
+    console.log(this, 'react create');
   }
 
   // packageKey
@@ -55,6 +59,25 @@ class ReactElementNode extends TagBaseElementNode {
   // ReactTypeComponent
   setReactTypeComponent(_component) {
     this.reactTypeComponent = _component;
+  }
+
+  linkHierarchyRealizaion() {
+    //React.render(React.createElement(this.loadedComponent.class), this.realization)
+  }
+
+  realize(_realizeOptions) {
+    super.realize(_realizeOptions);
+    let realizeOptions = _realizeOptions || {};
+
+    if (realizeOptions.skipControl !== true) {
+      let packageKey = this.getReactPackageKey();
+      let componentKey = this.getReactComponentKey();
+      let component = this.environment.contextController.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
+
+      this.loadedComponent = component;
+
+      React.render(React.createElement(this.loadedComponent.class), this.realization)
+    }
   }
 
   buildByComponent(_component) {

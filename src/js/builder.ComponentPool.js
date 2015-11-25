@@ -40,7 +40,7 @@
     var packagesMeta = this.getAvailablePackageMeta();
 
 
-    if (typeof _componentKey === 'undefined') {
+    if (_componentKey === undefined) {
       throw new Error("is bad component key");
     }
 
@@ -132,18 +132,19 @@
     var packageKey = _packageKey;
 
     if (arguments.length == 1) {
+      console.log('인자', arguments);
       var splitedComponentName = componentKey.split('/');
       packageKey = splitedComponentName[0];
       componentKey = splitedComponentName[1];
     }
-
+    console.log('componentKey', componentKey);
     var componentName = packageKey + "/" + componentKey;
 
     // Component Pool 메타데이터가 있는지 확인한다.
     if (typeof this.metaData === 'undefined') {
       throw new Error('does not update the componentPoolState');
     }
-
+    //console.log('인자', arguments);
     var componentMeta = this.getAvailableComponentMetaByKey(componentKey, packageKey);
 
 

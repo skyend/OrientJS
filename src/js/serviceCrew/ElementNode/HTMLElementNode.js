@@ -20,13 +20,9 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   childrenRealize(_realizeOptions) {
-    let realizeOptions = _realizeOptions || {};
 
     this.children.map(function(_child) {
-      _child.realize({
-        skipControl: realizeOptions.skipControl,
-        skipResolve: realizeOptions.skipResolve
-      });
+      _child.realize(_realizeOptions);
     });
   }
 
@@ -37,7 +33,8 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children.map(function(_child) {
 
       self.realization.appendChild(_child.realization);
-      if (_child.type === 'html') _child.linkHierarchyRealizaion();
+
+      if (/^(html|react|empty)$/.test(_child.type)) _child.linkHierarchyRealizaion();
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {
