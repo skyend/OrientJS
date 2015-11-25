@@ -1,12 +1,35 @@
 {
   "LeftNavigation": {
     "menuGroups": [{
+      "groupName": "System",
+      "menuItems_disable": [{
+        "key": "user-account",
+        "title": "User Account",
+        "icon": "user",
+        "equipToolKey": "UserAccount"
+      }, {
+        "key": "builder-setting",
+        "title": "Builder Settings",
+        "icon": "cog",
+        "equipToolKey": "BuilderSetting"
+      }, {
+        "key": "project-setting",
+        "title": "Project Settings",
+        "icon": "dashboard",
+        "equipToolKey": "ProjectSetting"
+      }]
+    }, {
       "groupName": "Service Object Configure",
       "menuItems": [{
         "key": "service-resources",
         "title": "Service Resources",
         "icon": "book",
         "equipToolKey": "ServiceResources"
+      }, {
+        "key": "page-configure",
+        "title": "Page Configure",
+        "icon": "file-o",
+        "equipToolKey": "PageConfigure"
       }, {
         "key": "document-configure",
         "title": "Document Configure",
@@ -25,6 +48,16 @@
         "title": "API Source Palette",
         "icon": "database",
         "equipToolKey": "APISourcePalette"
+      }, {
+        "key": "service-resources-color-scheme",
+        "title": "Color Scheme",
+        "icon": "flask",
+        "equipToolKey": "ColorScheme"
+      }, {
+        "key": "service-resource-image",
+        "title": "Image Resource",
+        "icon": "file-image-o",
+        "equipToolKey": "ImageResource"
       }]
     }]
   },
@@ -41,6 +74,16 @@
         "title": "Element Control",
         "icon": "wrench",
         "equipToolKey": "ElementNodeControl"
+      }, {
+        "key": "element-node-event",
+        "title": "Element Event",
+        "icon": "rocket",
+        "equipToolKey": "ElemenEventControl"
+      }, {
+        "key": "element-node-effect",
+        "title": "Element Effect",
+        "icon": "magic",
+        "equipToolKey": "ElemenEffectControl"
       }]
     }]
   },
@@ -53,6 +96,16 @@
         "title": "Document CSS",
         "icon": "cube",
         "equipToolKey": "DocumentCSSEditor"
+      }, {
+        "key": "document-js-editor",
+        "title": "Document Script",
+        "icon": "fire",
+        "equipToolKey": "DocumentScriptEditor"
+      }, {
+        "key": "document-body-editor",
+        "title": "Document Body",
+        "icon": "code",
+        "equipToolKey": "DocumentBodyEditor"
       }]
     }, {
       "groupName": "DocumentGeneralTools",
