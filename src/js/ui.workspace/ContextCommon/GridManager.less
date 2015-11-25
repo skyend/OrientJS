@@ -9,6 +9,7 @@
 
         overflow: auto;
 
+        box-sizing: border-box;
         width: 100%;
         height: 100%;
 
@@ -123,6 +124,33 @@
                     width: 20px;
                 }
             }
+        }
+    }
+
+
+    &.grid
+    {
+        > .options-bar
+        {
+            background-color: rgba(0, 0, 0, .48);
+        }
+
+        > .behavior-grid
+        {
+            border: 5px solid rgba(0, 0, 0, .48);
+        }
+    }
+
+    &.row
+    {
+        > .options-bar
+        {
+            background-color: rgba(76, 13, 13, .41);
+        }
+
+        > .behavior-grid
+        {
+            border: 5px solid rgba(76, 13, 13, .41);
         }
     }
 }

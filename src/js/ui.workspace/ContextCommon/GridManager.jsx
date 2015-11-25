@@ -1,6 +1,7 @@
 import './GridManager.less';
 import React from 'react';
 import BehaviorGrid from './GridManager/Grid.jsx';
+import BehaviorRow from './GridManager/Row.jsx';
 
 let GridManager = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
@@ -28,8 +29,9 @@ let GridManager = React.createClass({
   },
 
   renderRow(){
-
-
+    return (
+      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} minHeight={this.props.height-30} top={30}/>
+    )
   },
 
   renderGrid(){
@@ -187,7 +189,7 @@ let GridManager = React.createClass({
   },
 
   render(){
-
+    let classes = ['GridManager', this.props.gridElementNode.behavior];
     let style = {
       width:this.props.width,
       height:this.props.height,
@@ -196,10 +198,9 @@ let GridManager = React.createClass({
     };
 
     return (
-      <div className='GridManager' style={style}>
+      <div className={classes.join(' ')} style={style}>
         { this.renderOptionBar() }
         { this.renderByBehavior() }
-
         { this.renderGridMap() }
       </div>
     )

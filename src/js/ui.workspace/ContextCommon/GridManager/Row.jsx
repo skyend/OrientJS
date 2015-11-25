@@ -1,6 +1,6 @@
 import React from 'react';
 import GridManager from '../GridManager.jsx';
-import './Grid.less';
+import './Row.less';
 
 export default React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
@@ -15,27 +15,27 @@ export default React.createClass({
     };
   },
 
-  appendRow(){
+  appendColumn(){
     console.log("?", this.props.elementNode);
 
-    this.emit("AppendNewRow", {
+    this.emit("AppendNewColumn", {
       targetId: this.props.elementNode.getId()
     });
   },
 
-  renderRows(){
-    return this.props.elementNode.children.map(function(_row, _i){
-      return <GridManager gridElementNode={_row}/>
+  renderColumns(){
+    return this.props.elementNode.children.map(function(_column){
+      return <GridManager gridElementNode={_column}/>
     });
   },
 
-  renderRowHolder(){
+  renderColumnHolder(){
     console.log( this.props.elementNode.children );
 
     return (
-      <div className='row-holder'>
-        <button onClick={this.appendRow}>
-          Add First Row
+      <div className='column-holder'>
+        <button onClick={this.appendColumn}>
+          Add First Column
         </button>
       </div>
     )
@@ -52,8 +52,8 @@ export default React.createClass({
     };
 
     return (
-      <div className='behavior behavior-grid' style={style}>
-        { this.props.elementNode.children.length > 0 ? this.renderRows():this.renderRowHolder() }
+      <div className='behavior behavior-row' style={style}>
+        { this.props.elementNode.children.length > 0 ? this.renderColumns():this.renderColumnHolder() }
       </div>
     )
   }

@@ -57,6 +57,11 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyAppendNewGrid(_targetId, _behavior) {
+    this.page.appendNewGrid(_targetId, _behavior);
+    this.changedContent();
+  }
+
   getRootGridElement() {
     return this.page.rootGridElement;
   }

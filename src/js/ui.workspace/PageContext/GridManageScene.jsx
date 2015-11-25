@@ -27,6 +27,8 @@ let GridManageScene = React.createClass({
     }, 500);
   },
 
+
+
   renderAreaPlaceholder(){
     let buttonStyle = {};
     let svgStyle = {};

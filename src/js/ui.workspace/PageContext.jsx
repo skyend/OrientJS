@@ -32,8 +32,12 @@ export default React.createClass({
 
     this.emit("ContextFocused", {
       contextType: 'page',
-      contextController: this.props.contextController
+      contextController: this.getContextController()
     });
+  },
+
+  getContextController(){
+    return this.props.contextController;
   },
 
   feedSaveStateChange(){
@@ -41,7 +45,7 @@ export default React.createClass({
   },
 
   save(){
-    this.props.contextController.save();
+    this.getContextController().save();
   },
 
   getContextType(){
@@ -60,13 +64,21 @@ export default React.createClass({
     if( this.state.currentScene !== 'preview' ) this.setState({currentScene:'preview'});
   },
 
+  onThrowCatcherAppendNewRow( _eventData ){
+    let targetNodeId = _eventData.targetId;
+
+    this.getContextController().modifyAppendNewGrid(targetNodeId, 'row');
+
+    this.forceUpdate();
+  },
+
   onThrowCatcherClickElementInStage(_e){
     console.log(_e);
   },
 
   onThrowCatcherCreateRootGrid(){
-    this.props.contextController.modifyCreateRootGrid();
-    console.log(this.props.contextController);
+    this.getContextController().modifyCreateRootGrid();
+
     this.forceUpdate();
   },
 
@@ -74,17 +86,17 @@ export default React.createClass({
     this.state.prevStageWidth = this.state.stageWidth;
     this.state.prevStageHeight = this.state.stageHeight;
 
-    if (_nextState.sizing !== this.props.contextController.getScreenSizing()) {
+    if (_nextState.sizing !== this.getContextController().getScreenSizing()) {
       this.mustRedrawStage = true;
     }
 
     // contextController 의 디스플레이모드를 변경한다.
-    this.props.contextController.setScreenSizing(_nextState.sizing);
+    this.getContextController().setScreenSizing(_nextState.sizing);
   },
 
   componentDidUpdate(){
 
-    if (this.props.runningState === this.props.contextController.running) return;
+    if (this.props.runningState === this.getContextController().running) return;
 
     if (this.mustRedrawStage) {
       // Todo...
@@ -102,7 +114,7 @@ export default React.createClass({
   componentDidMount(){
 
     // contextController 연결
-    this.contextController = this.props.contextController;
+    this.contextController = this.getContextController();
     this.contextController.setContext(this);
 
     if (this.props.runningState) {
@@ -122,7 +134,7 @@ export default React.createClass({
 
     if( this.state.currentScene === 'grid' ){
       return <div className="grid-manage-scene">
-        <GridManageScene rootGridElement={this.props.contextController.getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
+        <GridManageScene rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
       return <div className="meta-manage-scene">
