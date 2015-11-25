@@ -124,13 +124,14 @@
               ComponentPalette
             </div>
             <div className='body'>
-              <div className='previewer-area'>
-                <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer"/>
-              </div>
+
               <div className='package-list-area'>
                 <ul className='package-list'>
                   {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
                 </ul>
+              </div>
+              <div className='previewer-area'>
+                <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer" color="aqua"/>
               </div>
             </div>
             <div className='foot'>

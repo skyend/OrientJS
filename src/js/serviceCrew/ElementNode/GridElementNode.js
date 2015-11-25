@@ -30,7 +30,7 @@ class GridElementNode extends HTMLElementNode {
   }
 
   get temporaryDecrementRectSize() {
-    return this._temporaryDecrementRectSize
+    return this._temporaryDecrementRectSize;
   }
 
   set behavior(_behavior) {

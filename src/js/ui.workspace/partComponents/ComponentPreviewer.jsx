@@ -89,15 +89,14 @@ var ComponentPreviewer = React.createClass({
   render() {
     var classes = [];
     classes.push('ComponentPreviewer');
-    classes.push('theme-default');
-    classes.push(this.props.color);
+    classes.push('theme-'+(this.props.color||'defualt'));
     classes.push(this.props.size);
 
     return (
       <div className={ classes.join(' ') } style={ { width: this.props.width, height: this.props.height } }>
         <div className='render-area'>
 
-          <IFrameStage ref='render-stage' src='about:blank' width={this.props.width}
+          <IFrameStage ref='render-stage' src='about:blank' width={this.props.width} color={this.props.color}
                        height={this.props.height}/>
 
           <div className="component-view-wrap">
