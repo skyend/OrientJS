@@ -60,12 +60,14 @@ var ContextContentsNavigation = React.createClass({
 
   renderElementVisibility(_elementNode, _indentBlocks, _hasChildren){
     let self = this;
-    var ghost = '';
-    var repeatNumber = 0;
+    let ghost = '';
+    let type = _elementNode.getType();
+    let repeatNumber = 0;
+
     if (_elementNode.isGhost) {
       ghost = 'ghost';
     } else {
-      repeatNumber = _elementNode.getRealControl('repeat-n');
+      repeatNumber = _elementNode.getControlWithResolve('repeat-n');
     }
 
     if( !_hasChildren ) _indentBlocks.push(<div className='indent-block'/>);
@@ -77,24 +79,24 @@ var ContextContentsNavigation = React.createClass({
 
         <label className={'visibility '+ ghost}>
             <span className='tag-name'>
-              {_elementNode.getTagName()}
+              { type !== 'string'? _elementNode.getTagName():'text'}
             </span>
-          { _elementNode.attributes.id !== undefined ? (
+          { type !== 'string'? (_elementNode.getAttribute('id') !== undefined ? (
             <span className='en-element-id'>
-              {_elementNode.attributes.id}
-            </span>) : ''
+              {_elementNode.getAttribute('id')}
+            </span>) : ''):''
           }
             <span className='en-type'>
-              {_elementNode.getType()}
+              {type}
             </span>
             <span className='en-id'>
               {_elementNode.id}
             </span>
-          { _elementNode.attributes.class !== undefined ? (
+          { type !== 'string'? (_elementNode.attributes.class !== undefined ? (
             <span className='en-class'>
               {_elementNode.attributes.class}
             </span>
-          ) : '' }
+          ) : ''):'' }
 
         </label>
           <span className='element-runes'>
@@ -137,22 +139,27 @@ var ContextContentsNavigation = React.createClass({
 
   renderElementNode(_elementNode, _depth){
 
-    var self = this;
-    var indentBlocks = [];
-    for (var i = 0; i < _depth; i++) {
+    let self = this;
+    let indentBlocks = [];
+    let type = _elementNode.getType();
+
+    for (let i = 0; i < _depth; i++) {
       indentBlocks.push(<div className='indent-block'/>);
     }
 
-    var selectedClass = '';
+    let selectedClass = '';
     if (this.state.selectedElementNode === _elementNode) {
       selectedClass = 'focused';
     }
 
-    var isEmptyType = false;
-    if (_elementNode.getType() === 'empty') isEmptyType = true;
+    let isEmptyType = false;
+    if (type === 'empty') isEmptyType = true;
 
-    var hasChildren = false;
-    if (_elementNode.children.length > 0) hasChildren = true;
+    let hasChildren = false;
+
+    if( /^(html|grid)$/.test(type)){
+      if (_elementNode.children.length > 0) hasChildren = true;
+    }
 
     return (
       <li>
