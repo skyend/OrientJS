@@ -88,13 +88,13 @@ var HeadToolBar = React.createClass({
     if (this.state.contextItem !== null) {
       switch (this.state.contextItem.contextType) {
         case "document":
-          //saveDisabled = false;
           modeChangeDisabled = false;
           if( this.state.contextItem.contextController.isTextEditMode() ){
             modeChangeDisabled = true;
           }
           break;
         case "page":
+          modeChangeDisabled = false;
           break;
         case "apiInterface":
         case "apiSource":

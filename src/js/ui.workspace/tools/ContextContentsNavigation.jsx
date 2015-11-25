@@ -1,5 +1,4 @@
 var React = require("react");
-var ElementNode = require('../../serviceCrew/ElementNode.js');
 
 require('./ContextContentsNavigation.less');
 
@@ -211,7 +210,7 @@ var ContextContentsNavigation = React.createClass({
           <span className='context-name'>{runningContext.contextName}</span>
         </div>
         <ul>
-          { elementNode instanceof ElementNode ? this.renderElementNode(elementNode, 0) : <div/> }
+          { elementNode !== null ? this.renderElementNode(elementNode, 0) : <div/> }
         </ul>
         { this.renderElementNodePool(elementNodes) }
       </div>

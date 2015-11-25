@@ -21,12 +21,6 @@ var EmptyTypeElementNode = React.createClass({
     var elementNode = this.props.elementNode;
 
     var profileFieldSet = [
-      {
-        "name": "DocumentName",
-        title: "Document Name",
-        "initialValue": elementNode.document.documentName,
-        enterable: false
-      },
       {"name": "ElementID", title: "Element ID", "initialValue": elementNode.id, enterable: false},
       {
         "name": "ElementType",

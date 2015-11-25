@@ -16,7 +16,7 @@
       return {
         subWindowItems: [],
 
-        startZIndex: 10
+        startZIndex: 101
       }
     },
 

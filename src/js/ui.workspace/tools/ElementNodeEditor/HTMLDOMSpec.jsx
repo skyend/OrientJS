@@ -69,41 +69,37 @@ var HTMLDOMSpec = React.createClass({
       return {value: _tagObj.tagName};
     });
 
-    var elementSpecFieldSet = [
-      {
+    var elementSpecFieldSet = [];
+    var tagAttributeFieldSet = [];
+    var dataAttributeFieldSet = [];
+
+    if( elementNode.getType() !== 'string' ){
+      elementSpecFieldSet.push({
         "name": "TagName",
         title: "태그명",
         "initialValue": elementNode.getTagName() || '',
         type: "select",
         "enterable": true,
         options: htmlTagSelectOptions
-      },
-      {
+      });
+
+      elementSpecFieldSet.push({
         "name": "Classes",
         title: "클래스",
         "initialValue": elementNode.getClasses() || '',
         type: "input",
         "enterable": true
-      },
-      {
+      });
+
+      elementSpecFieldSet.push({
         "name": "Id",
         title: "아이디",
         "initialValue": elementNode.getIdAtrribute() || '',
         type: "input",
         "enterable": true
-      },
-      {
-        "name": "Comment",
-        title: "주석",
-        "initialValue": elementNode.getComment(),
-        type: "textarea",
-        "enterable": true,
-        height: 50
-      }
-    ];
+      });
 
-    var tagAttributeFieldSet = [
-      {
+      tagAttributeFieldSet.push({
         "name": "InlineStyle",
         title: "인라인스타일",
         "initialValue": elementNode.getInlineStyle() || '',
@@ -111,21 +107,9 @@ var HTMLDOMSpec = React.createClass({
         type: 'ace',
         lang: 'css',
         height: 100
-      },
-    ];
+      });
 
-    var dataAttributeFieldSet = [];
 
-    if (elementNode.getType() === 'string') {
-      elementSpecFieldSet = [{
-        "name": "Text",
-        title: "텍스트",
-        "initialValue": elementNode.getText() || '',
-        type: "textarea",
-        "enterable": true,
-        height: 50
-      }];
-    } else {
       var targetTagSpecIndex = _.findIndex(htmlTag, {tagName: elementNode.getTagName()});
       var targetTagSpec = htmlTag[targetTagSpecIndex];
 
@@ -176,7 +160,27 @@ var HTMLDOMSpec = React.createClass({
           });
         }
       });
+    } else {
+      elementSpecFieldSet = [{
+        "name": "Text",
+        title: "텍스트",
+        "initialValue": elementNode.getText() || '',
+        type: "textarea",
+        "enterable": true,
+        height: 50
+      }];
     }
+
+
+    elementSpecFieldSet.push({
+      "name": "Comment",
+      title: "주석",
+      "initialValue": elementNode.getComment(),
+      type: "textarea",
+      "enterable": true,
+      height: 50
+    });
+
 
 
     return (
