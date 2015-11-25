@@ -9,7 +9,7 @@ var DocumentCUForm = React.createClass({
 
   getInitialState(){
     return {
-      message: '생성할 문서의 기본 속성을 정해주세요.',
+      message: '생성할 Fragment 의 기본 속성을 정해주세요.',
       savedTitle: '',
       savedType: 'contents'
     }
@@ -42,7 +42,7 @@ var DocumentCUForm = React.createClass({
   },
 
   failDocumentCreate(){
-    alert("Fail create document");
+    alert("Fail create fragment");
   },
 
   onChange(){
@@ -56,12 +56,12 @@ var DocumentCUForm = React.createClass({
       <div className={classes.join(' ')}>
 
         <div className='fields'>
-          <HorizonField fieldName='title' title='Document Title' theme="dark" enterable={true} type='input'
+          <HorizonField fieldName='title' title='Fragment Title' theme="dark" enterable={true} type='input'
                         onChange={ this.onChange }
                         defaultValue={this.state.savedTitle} height={40} ref='title'
                         nameWidth={150}/>
 
-          <HorizonField fieldName='type' title='Document Type' theme="dark" enterable={true} type='select'
+          <HorizonField fieldName='type' title='Fragment Type' theme="dark" enterable={true} type='select'
                         onChange={ this.onChange }
                         ref='type'
                         defaultValue={this.state.savedType} height={40}

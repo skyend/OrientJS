@@ -132,28 +132,85 @@
     }
 
 
-    &.black
+
+    &.theme-blue
     {
-        background-color: rgba(0,0,0,.5);
+        background-color: rgb(242,242,242);
 
         > .wrapper
         {
             > .head
             {
-                background-color: #0d0d0d;
-
-                .noselect;
+                //
             }
 
             > .body
             {
                 border-top-color: #ccc;
                 border-bottom-color: #ccc;
-            }
 
-            > .foot
-            {
-                background-color: #0d0d0d;
+                > .previewer-area
+                {
+                    //
+                }
+
+                > .package-list-area
+                {
+                    > ul.package-list
+                    {
+                        > li.package
+                        {
+                            > label
+                            {
+                                color: #dde9fd;
+                                background-color: #26529a;
+
+                                &:hover
+                                {
+                                    background-color: #1051bb;
+                                }
+                            }
+
+                            > ul
+                            {
+                                > li
+                                {
+                                    color: #092758;
+                                    background-color: #def0f7;
+
+                                    &:hover
+                                    {
+                                        color: #dde9fd;
+                                        background-color: #26529a;
+                                    }
+                                    // &:nth-child(even)
+                                    // {
+                                    //     color: #d2d5da;
+                                    //     border-color: #b6ced8;
+                                    //     background-color: #3a404c;
+                                    //
+                                    //     &:hover
+                                    //     {
+                                    //         background-color: rgb(106, 146, 177);
+                                    //     }
+                                    // }
+                                    //
+                                    // &:nth-child(odd)
+                                    // {
+                                    //     color: #27282b;
+                                    //     border-color: #4c789a;
+                                    //     background-color: #717d94;
+                                    //
+                                    //     &:hover
+                                    //     {
+                                    //         background-color: rgb(162, 186, 196);
+                                    //     }
+                                    // }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -115,7 +115,7 @@
 
     render() {
       var wide = false;
-      var rootClasses = ['ComponentPalette', 'theme-scott-mc-carthy', this.getMySizeClass()];
+      var rootClasses = ['ComponentPalette', 'theme-blue', this.getMySizeClass()];
 
       return (
         <div className={rootClasses.join(' ')}>

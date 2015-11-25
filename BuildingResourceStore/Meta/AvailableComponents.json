@@ -22,6 +22,42 @@
       "path": "BasicFramePackage/GridTypeElement.jsx"
     }]
   }, {
+    "key": "SmartAdmin",
+    "name": "Smart Admin Widgets",
+    "components": [{
+      "key": "SignInForm",
+      "name": "Sign In Form",
+      "path": "SmartAdmin/SignInForm.jsx"
+    }, {
+      "key": "SignUpForm",
+      "name": "Sign Up Form",
+      "path": "SmartAdmin/SignUpForm.jsx"
+    }, {
+      "key": "UserDisplay",
+      "name": "User Display",
+      "path": "SmartAdmin/UserDisplay.jsx"
+    }, {
+      "key": "ContentWriteForm",
+      "name": "Content Write Form",
+      "path": "SmartAdmin/ContentWriteForm.jsx"
+    }, {
+      "key": "ContentsList",
+      "name": "Contents List",
+      "path": "SmartAdmin/ContentsList.jsx"
+    }, {
+      "key": "ContentDisplay",
+      "name": "Content Display",
+      "path": "SmartAdmin/ContentsDisplay.jsx"
+    }, {
+      "key": "CommentForm",
+      "name": "Comment Write Form",
+      "path": "SmartAdmin/CommentForm.jsx"
+    }, {
+      "key": "CommentList",
+      "name": "Comment List",
+      "path": "SmartAdmin/CommentList.jsx"
+    }]
+  }, {
     "key": "HTMLTags",
     "name": "HTML 태그 패키지",
     "components": [{

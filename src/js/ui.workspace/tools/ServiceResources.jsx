@@ -159,9 +159,9 @@
       var iconClass;
 
       if (_document.type === 'layout') {
-        iconClass = 'fa-file-pdf-o'
+        iconClass = 'fa-file-pdf-o';
       } else if (_document.type === 'contents') {
-        iconClass = "fa-file-text-o"
+        iconClass = "fa-file-text-o";
       }
 
       var self = this;
@@ -211,7 +211,7 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-file-text-o'></i> Articles <span className='add-button'> <i
+            <i className='fa fa-file-text-o'></i> Fragments <span className='add-button'> <i
             className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
           </label>
           <ul>
