@@ -109,8 +109,8 @@ var HTMLDOMSpec = React.createClass({
         height: 100
       });
 
-
-      var targetTagSpecIndex = _.findIndex(htmlTag, {tagName: elementNode.getTagName()});
+      console.log( elementNode.getTagName());
+      var targetTagSpecIndex = _.findIndex(htmlTag, {tagName: elementNode.getTagName().toLowerCase()});
       var targetTagSpec = htmlTag[targetTagSpecIndex];
 
       tagAttributeFieldSet.push({
