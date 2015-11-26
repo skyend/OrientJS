@@ -119,7 +119,22 @@ export default React.createClass({
   onThrowCatcherRemoveGridElement(_eventData){
     let targetNodeId = _eventData.targetId;
     this.getContextController().modifyRemoveGridElement(targetNodeId);
-    
+
+    this.forceUpdate();
+  },
+
+  // grid behavior 의 Grid를 세팅
+  onThrowCatcherSetNewGrid(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifySetNewGrid(targetNodeId, 'grid');
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAppendNewLayer(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyAppendNewGrid(targetNodeId, 'layer');
+
     this.forceUpdate();
   },
 

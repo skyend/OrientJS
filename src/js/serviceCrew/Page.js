@@ -96,6 +96,12 @@ class Page {
     targetNode.insertAfter(this.newGridNode(_behavior));
   }
 
+  setNewGrid(_targetId, _behavior) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+    if (targetNode === false) throw new Error("Not found targetGridNode");
+    targetNode.setOneChild(this.newGridNode(_behavior));
+  }
+
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
     newGridNode.setId(this.getNewGridId());

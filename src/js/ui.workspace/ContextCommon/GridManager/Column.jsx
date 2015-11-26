@@ -44,6 +44,18 @@ export default React.createClass({
     });
   },
 
+  addGrid(){
+    this.emit("SetNewGrid", {
+      targetId: this.props.elementNode.getId()
+    });
+  },
+
+  addLayer(){
+    this.emit("AppendNewLayer", {
+      targetId: this.props.elementNode.getId()
+    });
+  },
+
   activeHandleInsertRowBefore(){
     this.setState({activeHandleInsertRowBefore:true});
   },
@@ -82,11 +94,35 @@ export default React.createClass({
     return(
       <div className='outline-container'>
         <div className='outline left activable' onClick={this.appendBeforeNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
-        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
+        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowAfter} onMouseOut={this.inactiveHandleInsertRowAfter}/>
         <div className='outline top'/>
         <div className='outline bottom'/>
       </div>
     );
+  },
+
+  renderChildren(){
+    let columnCount = this.props.elementNode.children.length;
+
+    let leftSpace = 5;
+    let rightSpace = 5;
+    let topSpace = 5;
+    let bottomSpace = 5;
+
+    if( this.state.activeHandleInsertRowBefore ) leftSpace = 20;
+    else if (this.state.activeHandleInsertRowAfter) rightSpace = 20;
+
+    let assignedWidth = this.props.width-(leftSpace+rightSpace);
+    let assignedHeight = this.props.height-(topSpace+bottomSpace);
+
+    if( columnCount == 1 ){
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
+    }
+
+
+    return this.props.elementNode.children.map(function(_gridElement, _i){
+      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+    });
   },
 
   renderCore(){

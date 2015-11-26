@@ -74,6 +74,11 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifySetNewGrid(_targetId, _behavior) {
+    this.page.setNewGrid(_targetId, _behavior);
+    this.changedContent();
+  }
+
   modifyClearGridElement(_targetId) {
     this.page.clearElementNode(_targetId);
     this.changedContent();
