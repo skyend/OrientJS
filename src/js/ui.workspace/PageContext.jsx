@@ -119,7 +119,7 @@ export default React.createClass({
   onThrowCatcherRemoveGridElement(_eventData){
     let targetNodeId = _eventData.targetId;
     this.getContextController().modifyRemoveGridElement(targetNodeId);
-
+    
     this.forceUpdate();
   },
 

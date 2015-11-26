@@ -24,6 +24,7 @@ let GridManageScene = React.createClass({
 
     setTimeout(function(){
       self.emit("CreateRootGrid");
+      self.setState({placeholderDisappear:false});
     }, 500);
   },
 
