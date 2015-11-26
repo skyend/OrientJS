@@ -77,7 +77,7 @@ var HTMLDOMSpec = React.createClass({
       elementSpecFieldSet.push({
         "name": "TagName",
         title: "태그명",
-        "initialValue": elementNode.getTagName() || '',
+        "initialValue": elementNode.getTagName().toLowerCase() || '',
         type: "select",
         "enterable": true,
         options: htmlTagSelectOptions
@@ -109,7 +109,7 @@ var HTMLDOMSpec = React.createClass({
         height: 100
       });
 
-      console.log( elementNode.getTagName());
+
       var targetTagSpecIndex = _.findIndex(htmlTag, {tagName: elementNode.getTagName().toLowerCase()});
       var targetTagSpec = htmlTag[targetTagSpecIndex];
 
