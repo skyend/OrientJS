@@ -12,7 +12,7 @@ import ApiSourceContextController from './serviceCrew/ApiSourceContextController
 import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
-
+import Viewer from './serviceCrew/Viewer.js';
 
 
 
@@ -340,6 +340,11 @@ class ServiceManager {
     } else {
       _complete(this.apiInterfaceContextControllers[_apiInterfaceId]);
     }
+  }
+
+
+  newViewer() {
+    return new Viewer(this);
   }
 }
 

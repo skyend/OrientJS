@@ -714,6 +714,12 @@ UI.prototype.onThrowCatcherChangeContextControllerState = function(_eventData) {
   this.rootUIInstance.forceUpdate();
 }
 
+UI.prototype.onThrowCatcherGetViewer = function(_eventData) {
+  let viewer = this.app.serviceManager.newViewer();
+
+  _eventData.path[0].setViewer(viewer);
+}
+
 /****************************************************************/
 /**************************** Builder Logic End *****************/
 /****************************************************************/

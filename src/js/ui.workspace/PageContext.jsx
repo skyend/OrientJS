@@ -1,6 +1,7 @@
 import React from 'react';
 import './PageContext.less';
 import IFrameStage from './partComponents/IFrameStage.jsx';
+import PreviewScene from './PageContext/PreviewScene.jsx';
 import GridManageScene from './PageContext/GridManageScene.jsx';
 
 export default React.createClass({
@@ -127,12 +128,12 @@ export default React.createClass({
     let fragmentId = _eventData.fragmentId;
 
     this.getContextController().modifyGridElementProp(targetNodeId, 'fragmentId', fragmentId);
-    
+
     this.forceUpdate();
   },
 
   onThrowCatcherClickElementInStage(_eventData){
-    console.log(_e);
+    console.log(_eventData);
   },
 
   onThrowCatcherCreateRootGrid(){
@@ -204,9 +205,7 @@ export default React.createClass({
 
       </div>
     } else if( this.state.currentScene === 'preview' ){
-      return <div className="preview-scene">
-        <IFrameStage ref='iframe-stage' width={sceneWidth} height={sceneHeight} left={ stageX } top={ stageY }/>
-      </div>
+      return <PreviewScene left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40} page={this.props.contextController.page}/>
     }
   },
 

@@ -207,7 +207,7 @@ var IFrameStage = React.createClass({
   elementClick(_target, _e){
     let element = this.searchClickedDOM(_target, _e.x, _e.y);
     console.log(element);
-    
+
     this.emit("ClickElementInStage", {
       targetDOMNode: element
     });
@@ -281,7 +281,10 @@ var IFrameStage = React.createClass({
   },
 
   onCallContextMenu(_e) {
-    //return;
+    if( this.props.freeContextMenu ){
+      return;
+    }
+
     _e.preventDefault();
     var selfDom = this.getDOMNode();
     //console.log("call contextmenu", _e);
