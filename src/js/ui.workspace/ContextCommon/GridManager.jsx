@@ -48,6 +48,11 @@ let GridManager = React.createClass({
 
   renderByBehavior(){
     let gridBehavior = this.props.gridElementNode.behavior;
+    this.props.gridElementNode.resetTemporaryDecrementRectSize();
+    this.props.gridElementNode.temporaryDecrementRectSize = {
+      width: 0,
+      height: 30
+    };
 
     if( gridBehavior === 'grid' ){
       return this.renderGrid();

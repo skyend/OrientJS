@@ -170,9 +170,11 @@ export default React.createClass({
     var stageX = ( this.props.width - sceneWidth ) / 2;
     var stageY = ( this.props.height - sceneHeight ) / 2;
 
-    this.props.contextController.setScreenSize(sceneWidth, sceneHeight);
+
 
     if( this.state.currentScene === 'grid' ){
+      this.props.contextController.setScreenSize(sceneWidth, sceneHeight-40);
+
       return <div className="grid-manage-scene">
         <GridManageScene rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
       </div>

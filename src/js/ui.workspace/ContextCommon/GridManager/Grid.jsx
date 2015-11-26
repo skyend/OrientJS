@@ -35,15 +35,34 @@ export default React.createClass({
   },
 
   renderRows(){
+
     let rowCount = this.props.elementNode.children.length;
-    console.log(rowCount, this.props.elementNode.children[0]);
+    let leftSpace = 5;
+    let rightSpace = 5;
+    let topSpace = 5;
+    let bottomSpace = 5;
+
+    this.props.elementNode.temporaryDecrementRectSize = {
+      width: leftSpace+rightSpace,
+      height: topSpace+bottomSpace
+    };
+
+    let assignedWidth = this.props.width-(leftSpace+rightSpace);
+    let assignedHeight = this.props.height-(topSpace+bottomSpace);
+
+    console.log( this.props.elementNode.temporaryDecrementRectSize);
+
     if( rowCount == 1 ){
-      console.log( this.props.height, 'renderRows');
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={5} top={5} width={this.props.width-10} height={this.props.height-10}/>;
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
     } else {
       console.log( this.props.elementNode.calcContainerSize() );
+
+      let divideWidth = assignedWidth;
+      let divideHeight = assignedHeight / rowCount;
+
+
       return this.props.elementNode.children.map(function(_row, _i){
-        return <GridManager gridElementNode={_row}/>
+        return <GridManager gridElementNode={_row} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
       });
     }
   },

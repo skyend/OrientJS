@@ -79,11 +79,12 @@ export default React.createClass({
     if( this.state.activeHandleInsertRowBefore ) topSpace = 20;
     else if (this.state.activeHandleInsertRowAfter) bottomSpace = 20;
 
-    this.props.elementNode.temporaryDecrementRectSize({
+    this.props.elementNode.temporaryDecrementRectSize = {
       width: leftSpace+rightSpace,
       height: topSpace+bottomSpace
-    });
-
+    };
+    let assignedWidth = this.props.width-(leftSpace+rightSpace);
+    let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
     // 부모의 넓이가 필요한 이유?
     // 자식의 넓이를 설정할 때 자식의 넓이를 적절히 분배하기 위해
@@ -91,17 +92,20 @@ export default React.createClass({
 
 
     if( columnCount == 1 ){
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={this.props.width-(leftSpace+rightSpace)} height={this.props.height-(topSpace+bottomSpace)}/>;
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
     } else {
 
+      let divideWidth = assignedWidth / columnCount;
+      let divideHeight = assignedHeight;
+
       return this.props.elementNode.children.map(function(_column, _i){
-        return <GridManager gridElementNode={_column}/>
+        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
       });
     }
   },
 
   renderColumnHolder(){
-    console.log( this.props.elementNode.children );
+    //console.log( this.props.elementNode.children );
 
     return (
       <div className='column-holder'>

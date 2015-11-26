@@ -44,7 +44,16 @@ class GridElementNode extends HTMLElementNode {
   }
 
   set temporaryDecrementRectSize(_rect) {
-    this._temporaryDecrementRectSize = _rect;
+    this._temporaryDecrementRectSize.width += _rect.width;
+    this._temporaryDecrementRectSize.height += _rect.height;
+  }
+
+
+  resetTemporaryDecrementRectSize() {
+    this._temporaryDecrementRectSize = {
+      width: 0,
+      height: 0
+    };
   }
 
 
@@ -52,12 +61,12 @@ class GridElementNode extends HTMLElementNode {
     console.log(this.getCurrentRectangle());
     let requiredWidth = 0; // 필요한 최소 넓이
     let requiredHeight = 0; // 필요한 최소 높이
-    console.log(this.getParent());
+
     this.childrenIteration(function(_child) {
       console.log(_child.calcContainerSize());
     });
-    console.log("Screen SISISISISIZE", this.screenSize);
 
+    console.log('calcContainerSize {temporaryDecrementRectSize}', this.temporaryDecrementRectSize);
     return {
       requiredWidth: requiredWidth,
       requiredHeight: requiredHeight
