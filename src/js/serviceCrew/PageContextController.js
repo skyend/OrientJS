@@ -74,6 +74,21 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyClearGridElement(_targetId) {
+    this.page.clearElementNode(_targetId);
+    this.changedContent();
+  }
+
+  modifyRemoveGridElement(_targetId) {
+    this.page.removeElementNode(_targetId);
+    this.changedContent();
+  }
+
+  modifyGridElementProp(_targetId, _fieldName, _value) {
+    this.page.modiftyGridElementProp(_targetId, _fieldName, _value);
+    this.changedContent();
+  }
+
   getRootGridElement() {
     return this.page.rootGridElement;
   }

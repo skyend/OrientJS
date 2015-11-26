@@ -321,8 +321,15 @@ UI.prototype.loadDocumentList = function(_complete) {
     if (_result.result === 'success') {
       console.log('load document list', _result);
       _complete(_result);
+    }
+  });
+};
 
-
+UI.prototype.loadDocument = function(_documentId, _complete) {
+  self.app.serviceManager.getDocument(_documentId, function(_result) {
+    if (_result.result === 'success') {
+      console.log('load document', _result);
+      _complete(_result);
     }
   });
 };
@@ -631,6 +638,20 @@ UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
 
     self.toolFactory.storeToolState("ServiceResources", {
       documentList: _result.list
+    });
+
+    _eventData.path[0].setState({
+      fragments: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedDocument = function(_eventData) {
+  var self = this;
+  this.loadDocument(_eventData.documentId, function(_result) {
+
+    _eventData.path[0].setState({
+      fragmentObject: _result.document
     });
   });
 };

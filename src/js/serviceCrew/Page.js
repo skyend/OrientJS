@@ -103,6 +103,31 @@ class Page {
     return newGridNode;
   }
 
+  clearElementNode(_targetId) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+    targetNode.clearInside();
+  }
+
+  removeElementNode(_targetId) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    if (targetNode === this.rootGridElement) {
+      this.rootGridElement = null;
+    } else {
+      targetNode.remove();
+    }
+  }
+
+  modiftyGridElementProp(_targetId, _fieldName, _value) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    switch (_fieldName) {
+      case "fragmentId":
+        targetNode.followingFragment = _value;
+        break;
+    }
+  }
+
   import (_pageDataObject) {
     let data = _pageDataObject || {};
 

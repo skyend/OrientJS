@@ -108,9 +108,30 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  onThrowCatcherClearGridElement(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyClearGridElement(targetNodeId);
 
+    this.forceUpdate();
+  },
 
-  onThrowCatcherClickElementInStage(_e){
+  onThrowCatcherRemoveGridElement(_eventData){
+    let targetNodeId = _eventData.targetId;
+    this.getContextController().modifyRemoveGridElement(targetNodeId);
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAttachFragment(_eventData){
+    let targetNodeId = _eventData.targetId;
+    let fragmentId = _eventData.fragmentId;
+
+    this.getContextController().modifyGridElementProp(targetNodeId, 'fragmentId', fragmentId);
+    
+    this.forceUpdate();
+  },
+
+  onThrowCatcherClickElementInStage(_eventData){
     console.log(_e);
   },
 

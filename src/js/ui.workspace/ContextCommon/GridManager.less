@@ -104,7 +104,18 @@
                 padding: 0;
                 padding-left: 10px;
 
-                color: #fff;
+                color: #c5c5c5;
+
+                &.interface
+                {
+                    cursor: pointer;
+                    transition: all .3s;
+                    &:hover
+                    {
+                        color: #fff;
+                    }
+                }
+
                 &:before
                 {
                     display: inline-block;
@@ -130,6 +141,16 @@
         }
     }
 
+    > .setting-panel
+    {
+        position: absolute;
+        z-index: 2;
+        top: 30px;
+        bottom: 0;
+
+        width: 100%;
+    }
+
 
     &.grid
     {
@@ -137,7 +158,10 @@
         {
             background-color: rgba(0, 0, 0, .48);
         }
-
+        > .setting-panel
+        {
+            background-color: rgba(0, 0, 0, .48);
+        }
         // > .behavior-grid
         // {
         //     border: 5px solid rgba(0, 0, 0, .48);
@@ -150,7 +174,10 @@
         {
             background-color: rgba(76, 13, 13, .41);
         }
-
+        > .setting-panel
+        {
+            background-color: rgba(76, 13, 13, .41);
+        }
         // > .behavior-row
         // {
         //     border: 5px solid rgba(76, 13, 13, .41);
@@ -165,7 +192,10 @@
         {
             background-color: rgba(42, 87, 154, .48);
         }
-
+        > .setting-panel
+        {
+            background-color: rgba(42, 87, 154, .48);
+        }
         // > .behavior-column
         // {
         //     border: 5px solid rgba(42, 87, 154, .48);

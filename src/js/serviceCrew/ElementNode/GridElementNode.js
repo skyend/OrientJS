@@ -19,6 +19,7 @@ class GridElementNode extends HTMLElementNode {
     }
 
     this._behavior; // Grid, Row, Column, Layer
+    this._followingFragment;
   }
 
   get behavior() {
@@ -31,6 +32,10 @@ class GridElementNode extends HTMLElementNode {
 
   get temporaryDecrementRectSize() {
     return this._temporaryDecrementRectSize;
+  }
+
+  get followingFragment() {
+    return this._followingFragment;
   }
 
   set behavior(_behavior) {
@@ -46,6 +51,10 @@ class GridElementNode extends HTMLElementNode {
   set temporaryDecrementRectSize(_rect) {
     this._temporaryDecrementRectSize.width += _rect.width;
     this._temporaryDecrementRectSize.height += _rect.height;
+  }
+
+  set followingFragment(_followingFragment) {
+    this._followingFragment = _followingFragment;
   }
 
 
@@ -66,6 +75,8 @@ class GridElementNode extends HTMLElementNode {
       console.log(_child.calcContainerSize());
     });
 
+    //if (t)
+
     console.log('calcContainerSize {temporaryDecrementRectSize}', this.temporaryDecrementRectSize);
     return {
       requiredWidth: requiredWidth,
@@ -73,21 +84,29 @@ class GridElementNode extends HTMLElementNode {
     };
   }
 
-  calcParentSize() {
+  calcSize() {
 
   }
 
+  remove() {
+    this.getParent().detachChild(this);
+  }
 
+  clearInside() {
+    this.followingFragment = null;
+    this.children = [];
+  }
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
     this.behavior = _elementNodeDataObject.behavior;
-
+    this.followingFragment = _elementNodeDataObject.followingFragment || null;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.behavior = this.behavior;
+    result.followingFragment = this.followingFragment;
 
     return result;
   }

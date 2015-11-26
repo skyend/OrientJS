@@ -7,6 +7,11 @@ import BehaviorLayer from './GridManager/Layer.jsx';
 
 let GridManager = React.createClass({
   mixins:[require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+    return {
+      settingMode:false
+    };
+  },
 
   getDefaultProps(){
     return {
@@ -18,6 +23,30 @@ let GridManager = React.createClass({
       showGridMap:true,
       step:25
     };
+  },
+
+  clcikSetting(){
+    this.setState({settingMode:!this.state.settingMode});
+  },
+
+  clickEraser(){
+    this.emit("ClearGridElement", {
+      targetId: this.props.gridElementNode.getId()
+    });
+  },
+
+  clickTrash(){
+    this.emit("RemoveGridElement", {
+      targetId: this.props.gridElementNode.getId()
+    });
+  },
+
+  renderSettingPanel(){
+    return (
+      <div className='setting-panel'>
+        setting panel
+      </div>
+    )
   },
 
   renderLayer(){
@@ -54,16 +83,20 @@ let GridManager = React.createClass({
       height: 30
     };
 
-    if( gridBehavior === 'grid' ){
-      return this.renderGrid();
-    } else if ( gridBehavior === 'row' ){
-      return this.renderRow();
-    } else if ( gridBehavior === 'column'){
-      return this.renderColumn();
-    } else if ( gridBehavior === 'layer' ){
-      return this.renderLayer();
+    if( !this.state.settingMode ){
+      if( gridBehavior === 'grid' ){
+        return this.renderGrid();
+      } else if ( gridBehavior === 'row' ){
+        return this.renderRow();
+      } else if ( gridBehavior === 'column'){
+        return this.renderColumn();
+      } else if ( gridBehavior === 'layer' ){
+        return this.renderLayer();
+      } else {
+        throw new Error('invalid behavior');
+      }
     } else {
-      throw new Error('invalid behavior');
+      return this.renderSettingPanel();
     }
   },
 
@@ -76,11 +109,14 @@ let GridManager = React.createClass({
           <li>
             <span>{gridBehavior.toUpperCase()}</span>
           </li>
-          <li>
-            <i className='fa fa-cog'/>Setting
+          <li className='interface' title="Setting me" onClick={this.clcikSetting}>
+            <i className='fa fa-cog'/>
           </li>
-          <li>
-            <i className='fa fa-trash'/>Remove
+          <li className='interface' title="Clear inside" onClick={this.clickEraser}>
+            <i className='fa fa-eraser'/>
+          </li>
+          <li className='interface' title="Remove me" onClick={this.clickTrash}>
+            <i className='fa fa-trash'/>
           </li>
         </ul>
       </div>

@@ -4,12 +4,6 @@ import './Column.less';
 
 export default React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
-  getInitialState(){
-    return {
-      activeHandleInsertRowBefore:false,
-      activeHandleInsertRowAfter:false
-    };
-  },
 
   getDefaultProps(){
     return {
@@ -19,6 +13,35 @@ export default React.createClass({
       minWidth:'auto',
       minHeight:'auto'
     };
+  },
+
+  getInitialState(){
+    return {
+      activeHandleInsertRowBefore:false,
+      activeHandleInsertRowAfter:false,
+      fragmentObject:null
+    };
+  },
+
+  setFragmentId(_fragmentId){
+    this.emit("AttachFragment", {
+      targetId: this.props.elementNode.getId(),
+      fragmentId: _fragmentId
+    });
+  },
+
+  attachFragment(){
+    var self = this;
+
+    this.emit("RequestAttachTool", {
+      "toolKey": "FragmentSelector",
+      "where": "ModalWindow",
+      "params": {
+        "input-data-callback": function (_d) {
+          self.setFragmentId(_d);
+        }
+      }
+    });
   },
 
   activeHandleInsertRowBefore(){
@@ -49,6 +72,12 @@ export default React.createClass({
     });
   },
 
+  requestFragmentObject(_fragmentId){
+    this.emit("NeedDocument", {
+      documentId:_fragmentId
+    });
+  },
+
   renderOutline(){
     return(
       <div className='outline-container'>
@@ -59,6 +88,75 @@ export default React.createClass({
       </div>
     );
   },
+
+  renderCore(){
+    let hasFragment = false;
+    if( this.props.elementNode.followingFragment !== null ){
+      hasFragment = true;
+    }
+
+    let renders = [];
+
+    if( this.props.elementNode.children.length == 0 && !hasFragment ){
+      renders.push(this.renderEmptyHolder())
+    } else {
+      if( hasFragment ){
+        renders.push(this.renderFragment());
+      }
+
+      if( this.props.elementNode.children.length > 0 ){
+        renders.push(this.renderChildren());
+      }
+    }
+
+    return renders;
+  },
+
+  renderEmptyHolder(){
+    return (
+      <div className='holder'>
+        <div className='button-wrapper'>
+          <button onClick={this.attachFragment}>Attach Fragment</button>
+          <button onClick={this.addGrid}>Add Grid</button>
+          <button onClick={this.addLayer}>Add Layer</button>
+        </div>
+      </div>
+    )
+  },
+
+  renderFragment(){
+    let svgStyle = {};
+    let fragmentTitle = undefined;
+
+    // fragmentObject 가 null이면
+    if( this.state.fragmentObject === null ){
+      this.requestFragmentObject(this.props.elementNode.followingFragment);
+    } else {
+
+      //fragmentObject 가 null 아닌데 _id가 매치되지 않는경우 Fragment가 변경된 경우로 다시 요청한다.
+      if( this.state.fragmentObject._id !== this.props.elementNode.followingFragment ){
+        this.requestFragmentObject(this.props.elementNode.followingFragment);
+      } else {
+        fragmentTitle = this.state.fragmentObject.title;
+      }
+    }
+
+    return (
+      <div className='fragment'>
+        <div className='fragment-info'>
+          <div className='title'>
+            {fragmentTitle || this.props.elementNode.followingFragment}
+          </div>
+        </div>
+      </div>);
+  },
+
+// <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={this.props.width} height={this.props.height} style={svgStyle} >
+//   <desc>Created with Raphaël</desc>
+//   <defs></defs>
+//   <path fill="none" stroke="#423F36" d={"M0,0L"+this.props.width+","+this.props.height} strokeWidth="5"></path>
+//   <path fill="none" stroke="#423F36" d={"M"+this.props.width+",0L0,"+this.props.height} strokeWidth="5"></path>
+// </svg>
 
   render(){
     let style = {
@@ -73,6 +171,7 @@ export default React.createClass({
     return (
       <div className='behavior behavior-column' style={style}>
         {this.renderOutline()}
+        {this.renderCore()}
       </div>
     )
   }

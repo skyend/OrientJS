@@ -286,24 +286,7 @@ class ElementNode {
     this.updateDate = new Date();
   }
 
-  /**************
-   * dettachChild
-   * 자신의 Children에서 하나의 child를 제거한다.
-   */
-  detachChild(_child) {
-    var children = this.children;
-    var newChildList = [];
 
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-
-      if (child != _child) {
-        newChildList.push(child);
-      }
-    }
-
-    this.children = newChildList;
-  }
 
 
 

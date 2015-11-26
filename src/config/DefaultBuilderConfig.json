@@ -177,6 +177,11 @@
     "APISourceMappingHelper": {
       "jsxPath": "APISourceMappingHelper",
       "title": "API Source Mapping Helper"
+    },
+
+    "FragmentSelector": {
+      "jsxPath": "FragmentSelector",
+      "title": "Select Fragment"
     }
   }
 }

@@ -64,6 +64,17 @@ class ServiceManager {
     });
   }
 
+  getDocument(_documentId, _complete) {
+    this.app.gelateriaRequest.loadDocument(this.service_id, _documentId, function(_result) {
+      if (_result.result === 'success') {
+        _complete(_result);
+      } else {
+        alert("도큐먼트 로드 실패. " + _result.reason);
+      }
+
+    });
+  }
+
   saveDocument(_document_id, _documentDataObject, _complete) {
     console.log("Save Document", _document_id, _documentDataObject);
 
