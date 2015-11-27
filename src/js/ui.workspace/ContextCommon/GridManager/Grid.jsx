@@ -37,10 +37,10 @@ export default React.createClass({
   renderRows(){
 
     let rowCount = this.props.elementNode.children.length;
-    let leftSpace = 5;
-    let rightSpace = 5;
-    let topSpace = 5;
-    let bottomSpace = 5;
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
 
     this.props.elementNode.temporaryDecrementRectSize = {
       width: leftSpace+rightSpace,

@@ -71,13 +71,13 @@ export default React.createClass({
   renderColumns(){
     let columnCount = this.props.elementNode.children.length;
 
-    let leftSpace = 5;
-    let rightSpace = 5;
-    let topSpace = 5;
-    let bottomSpace = 5;
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
 
-    if( this.state.activeHandleInsertRowBefore ) topSpace = 20;
-    else if (this.state.activeHandleInsertRowAfter) bottomSpace = 20;
+    if( this.state.activeHandleInsertRowBefore ) topSpace = 10;
+    else if (this.state.activeHandleInsertRowAfter) bottomSpace = 10;
 
     this.props.elementNode.temporaryDecrementRectSize = {
       width: leftSpace+rightSpace,

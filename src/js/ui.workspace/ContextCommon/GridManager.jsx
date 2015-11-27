@@ -51,27 +51,27 @@ let GridManager = React.createClass({
 
   renderLayer(){
     return (
-      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderColumn(){
     return (
-      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderRow(){
     console.log(this.props);
     return (
-      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderGrid(){
 
     return (
-      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
@@ -80,7 +80,7 @@ let GridManager = React.createClass({
     this.props.gridElementNode.resetTemporaryDecrementRectSize();
     this.props.gridElementNode.temporaryDecrementRectSize = {
       width: 0,
-      height: 30
+      height: 20
     };
 
     if( !this.state.settingMode ){

@@ -104,13 +104,13 @@ export default React.createClass({
   renderChildren(){
     let columnCount = this.props.elementNode.children.length;
 
-    let leftSpace = 5;
-    let rightSpace = 5;
-    let topSpace = 5;
-    let bottomSpace = 5;
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
 
-    if( this.state.activeHandleInsertRowBefore ) leftSpace = 20;
-    else if (this.state.activeHandleInsertRowAfter) rightSpace = 20;
+    if( this.state.activeHandleInsertRowBefore ) leftSpace = 10;
+    else if (this.state.activeHandleInsertRowAfter) rightSpace = 10;
 
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
