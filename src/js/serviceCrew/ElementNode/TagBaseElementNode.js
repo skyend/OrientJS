@@ -7,7 +7,7 @@ class TagBaseElementNode extends ElementNode {
     this.tagName;
     this.attributes;
     this.css;
-    this.rectangle; // 영역 정보 { width: (px|%|remain), height:(px|%|remain), shift-(left|right|top|bottom): (px|%),} // shift : 지정 값만큼 해당방향으로 밀어준다
+    this.rectangle; // 영역 정보 { width: (px|%|remain|auto), height:(px|%|remain|auto), shift-(left|right|top|bottom): (px|%),} // shift : 지정 값만큼 해당방향으로 밀어준다
     // remain : 부모의 영역중 자신외의 다른 child가 차지하는 공간을 모두 합하여 부모의 영역에서 그만큼 감소 시켰을 때 남은 값
     this.phase; // 위상 자신의 위치정보를 가진다. { horizon: (px|%|left|center|top), vertical: (px|%|top|middle|bottom) }
 
@@ -75,6 +75,10 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
+  get zIndex() {
+    return this._zIndex;
+  }
+
 
   // Setters
   // Id Atrribute
@@ -133,6 +137,10 @@ class TagBaseElementNode extends ElementNode {
 
   setRectanglePartWithKeepingUnit(_partValue, _partName) {
     console.log(valueWithUnitSeperator(_partValue));
+  }
+
+  set zIndex(_zIndex) {
+    this._zIndex = _zIndex;
   }
 
 
@@ -301,6 +309,7 @@ class TagBaseElementNode extends ElementNode {
     super.import(_elementNodeDataObject);
     this.tagName = _elementNodeDataObject.tagName;
     this.attributes = _elementNodeDataObject.attributes || {};
+    this.zIndex = _elementNodeDataObject.zIndex;
     this.rectangle = _elementNodeDataObject.rectangle || {
       desktop: {},
       tablet: {},
@@ -312,6 +321,7 @@ class TagBaseElementNode extends ElementNode {
     let result = super.export(_withoutId);
     result.attributes = _.clone(this.getAttributes());
     result.rectangle = _.clone(this.getRectangle());
+    result.zIndex = this.zIndex;
     result.tagName = this.getTagName();
     result.inherentCSS = this.getCSS(); // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
     return result;

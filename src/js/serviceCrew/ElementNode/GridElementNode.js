@@ -45,7 +45,6 @@ class GridElementNode extends HTMLElementNode {
   set screenSize(_screenSize) {
 
     this._screenSize = _screenSize;
-    console.log(this._screenSize, this);
   }
 
   set temporaryDecrementRectSize(_rect) {
@@ -56,6 +55,8 @@ class GridElementNode extends HTMLElementNode {
   set followingFragment(_followingFragment) {
     this._followingFragment = _followingFragment;
   }
+
+
 
 
   resetTemporaryDecrementRectSize() {
@@ -82,6 +83,14 @@ class GridElementNode extends HTMLElementNode {
       requiredWidth: requiredWidth,
       requiredHeight: requiredHeight
     };
+  }
+
+  calcRequiredContainerSize() {
+    let currentRect = this.getCurrentRectangle();
+    let designedWidth = currentRect.width;
+    let designedHeight = currentRect.height;
+
+    console.log(currentRect);
   }
 
   calcSize() {

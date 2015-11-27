@@ -25,6 +25,11 @@ let GridManager = React.createClass({
     };
   },
 
+  clickBehavior(){
+    console.log( this.props.gridElementNode );
+    console.log( this.props.gridElementNode.getCurrentRectangle());
+  },
+
   clcikSetting(){
     this.setState({settingMode:!this.state.settingMode});
   },
@@ -106,7 +111,7 @@ let GridManager = React.createClass({
     return (
       <div className='options-bar'>
         <ul>
-          <li>
+          <li onClick={this.clickBehavior}>
             <span>{gridBehavior.toUpperCase()}</span>
           </li>
           <li className='interface' title="Setting me" onClick={this.clcikSetting}>

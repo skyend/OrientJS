@@ -94,7 +94,7 @@ export default React.createClass({
     return(
       <div className='outline-container'>
         <div className='outline left activable' onClick={this.appendBeforeNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
-        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
+        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowAfter} onMouseOut={this.inactiveHandleInsertRowAfter}/>
         <div className='outline top'/>
         <div className='outline bottom'/>
       </div>
