@@ -50,19 +50,46 @@ export default React.createClass({
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
+    console.log(this.props.elementNode.calcContainerSize());
     console.log( this.props.elementNode.temporaryDecrementRectSize);
 
     if( rowCount == 1 ){
       return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
     } else {
-      console.log( this.props.elementNode.calcContainerSize() );
+      //console.log( this.props.elementNode.calcContainerSize() );
 
       let divideWidth = assignedWidth;
       let divideHeight = assignedHeight / rowCount;
 
+      // 비율을 계산하여 assigned 값에 대입하여 처리하자 Okay!!!! 조금더 가까이
+
+      let sumWidth = 0;
+      let sumHeight = 0;
+      this.props.elementNode.childrenIteration(function(_child){
+        let childContainerSize = _child.calcContainerSize();
+        sumWidth += childContainerSize.width; // rows의 경우 width를 모두 더하면 안된다 줄이 바뀌므로 개별로 접근해야한다.
+        sumHeight += childContainerSize.height;
+      });
+
+
+      //비율 계산
+      // 실제 넓이 1000
+      // 주어진 넓이 900
+      console.log('sumWidth ', sumWidth, 'assignedWidth ', assignedWidth);
+      let widthRatio = sumWidth / assignedWidth;
+      let heightRatio = sumHeight / assignedHeight;
 
       return this.props.elementNode.children.map(function(_row, _i){
-        return <GridManager gridElementNode={_row} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+        let childContainerSize = _row.calcContainerSize();
+
+        console.log( childContainerSize);
+
+        let width = childContainerSize.width === undefined ? divideWidth : childContainerSize.width * widthRatio;
+        let height = childContainerSize.height === undefined ? divideHeight : childContainerSize.height * heightRatio;
+        console.log('real width: ', childContainerSize.width, "width with Ratio: ", width, 'ratio: ', widthRatio);
+        console.log('real height: ', childContainerSize.height, "height with Ratio: ", height, 'ratio: ', heightRatio);
+
+        return <GridManager gridElementNode={_row} left={leftSpace} top={topSpace} width={width} height={height}/>
       });
     }
   },

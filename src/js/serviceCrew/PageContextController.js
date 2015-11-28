@@ -94,6 +94,13 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyGridRect(_targetId, _rect) {
+    this.page.modifyGridRect(_targetId, _rect);
+
+    this.changedContent();
+  }
+
+
   getRootGridElement() {
     return this.page.rootGridElement;
   }

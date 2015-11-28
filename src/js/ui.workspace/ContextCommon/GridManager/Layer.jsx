@@ -115,6 +115,8 @@ export default React.createClass({
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
+    console.log(this.props.elementNode.calcContainerSize());
+
     if( columnCount == 1 ){
       return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
     }

@@ -64,7 +64,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
   getCurrentRectangle() {
-    console.log(this);
+    //    console.log(this);
     switch (this.environment.contextController.getScreenSizing()) {
       case "desktop":
         return this.rectangle['desktop'];
@@ -123,20 +123,24 @@ class TagBaseElementNode extends ElementNode {
   setRectanglePart(_partValue, _partName) {
     var rectangleRef = this.getCurrentRectangle();
 
-    if (/^[\d\.]+$/.test(rectangleRef[_partName])) {
-      // 숫자로만 이루어져 있을 경우
-      rectangleRef[_partName] = _partValue;
-    } else if (/^[\d\.]+((\w+)|%)$/.test(rectangleRef[_partName])) {
-      // 숫자와 알파벳 또는 퍼센트로 이루어져 있을 경우
-      this.setRectanglePartWithKeepingUnit(_partValue, _partName);
-    } else {
-      // 아무것도 해당되지 않을 경우
-      rectangleRef[_partName] = _partValue;
-    }
+    // 단순화
+    rectangleRef[_partName] = _partValue;
+
+    // 밑의 구문이 원래 구문이었음 후에 Rectangle관련 문제시 참조하기
+    // if (/^[\d\.]+$/.test(rectangleRef[_partName])) {
+    //   // 숫자로만 이루어져 있을 경우
+    //   rectangleRef[_partName] = _partValue;
+    // } else if (/^[\d\.]+((\w+)|%)$/.test(rectangleRef[_partName])) {
+    //   // 숫자와 알파벳 또는 퍼센트로 이루어져 있을 경우
+    //   this.setRectanglePartWithKeepingUnit(_partValue, _partName);
+    // } else {
+    //   // 아무것도 해당되지 않을 경우
+    //   rectangleRef[_partName] = _partValue;
+    // }
   }
 
   setRectanglePartWithKeepingUnit(_partValue, _partName) {
-    console.log(valueWithUnitSeperator(_partValue));
+    //console.log(valueWithUnitSeperator(_partValue));
   }
 
   set zIndex(_zIndex) {

@@ -88,8 +88,7 @@ export default React.createClass({
 
     // 부모의 넓이가 필요한 이유?
     // 자식의 넓이를 설정할 때 자식의 넓이를 적절히 분배하기 위해
-
-
+    //let containerSize = this.props.elementNode.calcContainerSize();
 
     if( columnCount == 1 ){
       return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
@@ -98,7 +97,9 @@ export default React.createClass({
       let divideWidth = assignedWidth / columnCount;
       let divideHeight = assignedHeight;
 
+    
       return this.props.elementNode.children.map(function(_column, _i){
+
         return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
       });
     }

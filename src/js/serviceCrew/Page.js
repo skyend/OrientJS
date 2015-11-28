@@ -148,6 +148,13 @@ class Page {
     }
   }
 
+  modifyGridRect(_targetId, _rect) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    targetNode.setRectanglePart(_rect.width, 'width');
+    targetNode.setRectanglePart(_rect.height, 'height');
+  }
+
   import (_pageDataObject) {
     let data = _pageDataObject || {};
 

@@ -147,6 +147,14 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  onThrowCatcherElementRectEdit(_eventData){
+    let targetNodeId = _eventData.targetId;
+    let rect = _eventData.rect;
+
+    this.getContextController().modifyGridRect(targetNodeId, rect);
+    this.forceUpdate();
+  },
+
   onThrowCatcherClickElementInStage(_eventData){
     console.log(_eventData);
   },
