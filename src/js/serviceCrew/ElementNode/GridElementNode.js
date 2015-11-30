@@ -79,21 +79,52 @@ class GridElementNode extends HTMLElementNode {
 
 
 
-    console.log('calcContainerSize {temporaryDecrementRectSize}', this.temporaryDecrementRectSize);
+    //console.log('calcContainerSize {temporaryDecrementRectSize}', this.temporaryDecrementRectSize);
     return {
       width: width,
       height: height
     };
   }
 
+  analysisFriendAutoPart(_part) {
+    let self = this;
+    let autoCount = 1; // include me
+    let upperSize = this.getUpperContainerPart(_part);
+    let parent = this.getParent();
+    let remainSize = upperSize;
+
+    if (parent !== null) {
+      parent.childrenIteration(function(_child) {
+        let rect = _child.getCurrentRectangle();
+        if (_child !== self) {
+          if (rect[_part] === 'auto') {
+            autoCount++;
+          } else {
+            remainSize -= _child.calcContainerPart(_part);
+          }
+        }
+      });
+
+      return remainSize / autoCount;
+    } else {
+      return upperSize;
+    }
+  }
+
   calcContainerPart(_part) {
     let currentRect = this.getCurrentRectangle();
     let valueUnit = this.getCriterionFromQuantity(currentRect[_part]);
-    console.log('calcContainerPart currentRect[' + _part + '] valueUnit', currentRect[_part], valueUnit);
+    //console.log('calcContainerPart currentRect[' + _part + '] valueUnit', currentRect[_part], valueUnit);
 
     if (valueUnit === 'auto') {
       // 부모로부터 정보를 얻어야 함
-      return;
+      if (this.behavior === 'row' && _part === 'width') {
+        return this.getUpperContainerPart(_part);
+      } else if (this.behavior === 'column' && _part === 'height') {
+        return this.getUpperContainerPart(_part);
+      }
+
+      return this.analysisFriendAutoPart(_part);
     } else if (valueUnit === 'px') {
       return parseInt(currentRect[_part]);
     } else if (valueUnit === '%') {
@@ -105,7 +136,7 @@ class GridElementNode extends HTMLElementNode {
       // 1200 의 20% == 240
       // 1200 의 30% == 360
 
-      console.log(_part, ' calc : ', currentRect[_part], ' result: ', (value / 100) * upperContainerPartValue);
+      //console.log(_part, ' calc : ', currentRect[_part], ' result: ', (value / 100) * upperContainerPartValue);
       return (value / 100) * upperContainerPartValue;
     }
 

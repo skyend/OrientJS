@@ -53,6 +53,10 @@ class PageContextController {
     this.context.feedSaveStateChange();
   }
 
+  updateVisual() {
+    this.context.forceUpdate();
+  }
+
   modifyCreateRootGrid() {
     this.page.createRootGridElement();
 
@@ -96,8 +100,8 @@ class PageContextController {
 
   modifyGridRect(_targetId, _rect) {
     this.page.modifyGridRect(_targetId, _rect);
-
     this.changedContent();
+    this.updateVisual();
   }
 
 
@@ -127,7 +131,7 @@ class PageContextController {
 
     this.page.screenSize = this._screenSize;
 
-    console.log(this._screenSize);
+    console.log(this._screenSize, '---------------size');
   }
 
   getScreenSize() {
