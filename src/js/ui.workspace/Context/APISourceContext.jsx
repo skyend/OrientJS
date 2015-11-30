@@ -1,13 +1,13 @@
 import React from 'react';
 import _ from 'underscore';
-import CheckBox from './partComponents/CheckBox.jsx';
-import ICafeResultTable from './partComponents/ICafeResultTable.jsx';
+import CheckBox from '../partComponents/CheckBox.jsx';
+import ICafeResultTable from '../partComponents/ICafeResultTable.jsx';
 
 require('./APISourceContext.less');
 
 
 var Request = React.createClass({
-  mixins: [require('./reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {
@@ -515,7 +515,7 @@ var Request = React.createClass({
 });
 
 var APISourceContext = React.createClass({
-  mixins: [require('./reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
 
   getInitialState(){
     return {

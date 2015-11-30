@@ -4,13 +4,13 @@ import BehaviorGrid from './GridManager/Grid.jsx';
 import BehaviorRow from './GridManager/Row.jsx';
 import BehaviorColumn from './GridManager/Column.jsx';
 import BehaviorLayer from './GridManager/Layer.jsx';
-import HorizonField from '../partComponents/HorizonField.jsx';
+import HorizonField from '../../partComponents/HorizonField.jsx';
 
 let GridManager = React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
-      settingMode:false
+      //settingMode:false
     };
   },
 
@@ -27,27 +27,27 @@ let GridManager = React.createClass({
   },
 
   // for ElementSettingPanel
-  onThrowCatcherChangedValue(_e){
-
-
-    if( _e.name === 'RectWidth' ){
-      this.emit("ElementRectEdit", {
-        targetId: this.props.gridElementNode.getId(),
-        rect: {
-          width: _e.data,
-          height: this.refs['input-rect-height'].getValue()
-        }
-      });
-    } else if ( _e.name === 'RectHeight' ){
-      this.emit("ElementRectEdit", {
-        targetId: this.props.gridElementNode.getId(),
-        rect: {
-          width: this.refs['input-rect-width'].getValue(),
-          height: _e.data
-        }
-      });
-    }
-  },
+  // onThrowCatcherChangedValue(_e){
+  //
+  //
+  //   if( _e.name === 'RectWidth' ){
+  //     this.emit("ElementRectEdit", {
+  //       targetId: this.props.gridElementNode.getId(),
+  //       rect: {
+  //         width: _e.data,
+  //         height: this.refs['input-rect-height'].getValue()
+  //       }
+  //     });
+  //   } else if ( _e.name === 'RectHeight' ){
+  //     this.emit("ElementRectEdit", {
+  //       targetId: this.props.gridElementNode.getId(),
+  //       rect: {
+  //         width: this.refs['input-rect-width'].getValue(),
+  //         height: _e.data
+  //       }
+  //     });
+  //   }
+  // },
 
 
   clickBehavior(){
@@ -56,7 +56,9 @@ let GridManager = React.createClass({
   },
 
   clcikSetting(){
-    this.setState({settingMode:!this.state.settingMode});
+    this.emit("GridElementNodeSetting", {
+      gridElementNode: this.props.gridElementNode
+    });
   },
 
   clickEraser(){
@@ -71,23 +73,23 @@ let GridManager = React.createClass({
     });
   },
 
-  renderSettingPanel(){
-    let elementRect = this.props.gridElementNode.getCurrentRectangle();
-
-    return (
-      <div className='setting-panel'>
-        <HorizonField fieldName='RectWidth' title='Rect Width' theme="dark" enterable={true} type='input'
-                      onChange={ this.widthChanged }
-                      defaultValue={elementRect.width} height={30} ref='input-rect-width'
-                      nameWidth={100}/>
-
-        <HorizonField fieldName='RectHeight' title='Rect Height' theme="dark" enterable={true} type='input'
-                      onChange={ this.heightChanged }
-                      defaultValue={elementRect.height} height={30} ref='input-rect-height'
-                      nameWidth={100}/>
-      </div>
-    )
-  },
+  // renderSettingPanel(){
+  //   let elementRect = this.props.gridElementNode.getCurrentRectangle();
+  //
+  //   return (
+  //     <div className='setting-panel'>
+  //       <HorizonField fieldName='RectWidth' title='Rect Width' theme="dark" enterable={true} type='input'
+  //                     onChange={ this.widthChanged }
+  //                     defaultValue={elementRect.width} height={30} ref='input-rect-width'
+  //                     nameWidth={100}/>
+  //
+  //       <HorizonField fieldName='RectHeight' title='Rect Height' theme="dark" enterable={true} type='input'
+  //                     onChange={ this.heightChanged }
+  //                     defaultValue={elementRect.height} height={30} ref='input-rect-height'
+  //                     nameWidth={100}/>
+  //     </div>
+  //   )
+  // },
 
   renderLayer(){
     return (
@@ -102,14 +104,12 @@ let GridManager = React.createClass({
   },
 
   renderRow(){
-    console.log(this.props);
     return (
       <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderGrid(){
-
     return (
       <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
@@ -123,20 +123,17 @@ let GridManager = React.createClass({
       height: 20
     };
 
-    if( !this.state.settingMode ){
-      if( gridBehavior === 'grid' ){
-        return this.renderGrid();
-      } else if ( gridBehavior === 'row' ){
-        return this.renderRow();
-      } else if ( gridBehavior === 'column'){
-        return this.renderColumn();
-      } else if ( gridBehavior === 'layer' ){
-        return this.renderLayer();
-      } else {
-        throw new Error('invalid behavior');
-      }
+
+    if( gridBehavior === 'grid' ){
+      return this.renderGrid();
+    } else if ( gridBehavior === 'row' ){
+      return this.renderRow();
+    } else if ( gridBehavior === 'column'){
+      return this.renderColumn();
+    } else if ( gridBehavior === 'layer' ){
+      return this.renderLayer();
     } else {
-      return this.renderSettingPanel();
+      throw new Error('invalid behavior');
     }
   },
 

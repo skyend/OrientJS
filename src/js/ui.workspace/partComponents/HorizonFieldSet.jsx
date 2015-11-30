@@ -30,6 +30,10 @@ var HorizonFieldSet = React.createClass({
     });
   },
 
+  getFieldValue(_name){
+    return this.refs[_name].getValue();
+  },
+
   onThrowCatcherChangedValue(_eventData, _pass){
     //console.log(_eventData );
     _pass();

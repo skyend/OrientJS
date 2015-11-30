@@ -3,7 +3,7 @@ import './GridManageScene.less';
 import GridManager from '../ContextCommon/GridManager.jsx';
 
 let GridManageScene = React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {

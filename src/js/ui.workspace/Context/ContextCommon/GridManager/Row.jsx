@@ -3,7 +3,7 @@ import GridManager from '../GridManager.jsx';
 import './Row.less';
 
 export default React.createClass({
-  mixins:[require('../../reactMixin/EventDistributor.js')],
+  mixins:[require('../../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
       activeHandleInsertRowBefore:false,
@@ -86,21 +86,34 @@ export default React.createClass({
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
+    let myContainerSize = this.props.elementNode.calcContainerSize();
+
+    let widthRatio = assignedWidth / myContainerSize.width;
+    let heightRatio = assignedHeight / myContainerSize.height;
+
     // 부모의 넓이가 필요한 이유?
     // 자식의 넓이를 설정할 때 자식의 넓이를 적절히 분배하기 위해
     //let containerSize = this.props.elementNode.calcContainerSize();
 
     if( columnCount == 1 ){
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
+      let childContainerSize = this.props.elementNode.children[0].calcContainerSize();
+      let width = childContainerSize.width * widthRatio;
+      let height = childContainerSize.height * heightRatio;
+
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>;
     } else {
 
       let divideWidth = assignedWidth / columnCount;
       let divideHeight = assignedHeight;
 
-    
-      return this.props.elementNode.children.map(function(_column, _i){
 
-        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+      return this.props.elementNode.children.map(function(_column, _i){
+        let childContainerSize = _column.calcContainerSize();
+
+        let width = childContainerSize.width === undefined ? divideWidth : childContainerSize.width * widthRatio;
+        let height = childContainerSize.height === undefined ? divideHeight : childContainerSize.height * heightRatio;
+
+        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={width} height={height}/>
       });
     }
   },

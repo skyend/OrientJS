@@ -12,9 +12,9 @@ import _ from 'underscore';
 import './ContextStage.less';
 
 import IFrameStage from './partComponents/IFrameStage.jsx';
-import DirectContext from './DirectContext.jsx';
-import PageContext from './PageContext.jsx';
-import APISourceContext from './APISourceContext.jsx';
+import DirectContext from './Context/DirectContext.jsx';
+import PageContext from './Context/PageContext.jsx';
+import APISourceContext from './Context/APISourceContext.jsx';
 import VDomController from '../virtualdom/VDomController.js';
 import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
 import React from "react";

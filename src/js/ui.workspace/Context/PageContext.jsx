@@ -1,11 +1,11 @@
 import React from 'react';
 import './PageContext.less';
-import IFrameStage from './partComponents/IFrameStage.jsx';
+import IFrameStage from '../partComponents/IFrameStage.jsx';
 import PreviewScene from './PageContext/PreviewScene.jsx';
 import GridManageScene from './PageContext/GridManageScene.jsx';
 
 export default React.createClass({
-  mixins: [require('./reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
       stageWidth:1024,
@@ -26,6 +26,10 @@ export default React.createClass({
     }
 
     this.contextController.pause();
+    this.emit("ContextFocused", {
+      contextType: 'page',
+      contextController: this.getContextController()
+    });
   },
 
   goingToContextRunning(){
@@ -43,6 +47,7 @@ export default React.createClass({
 
   feedSaveStateChange(){
     this.emit("ChangedSaveState");
+    this.forceUpdate();
   },
 
   save(){
@@ -147,16 +152,21 @@ export default React.createClass({
     this.forceUpdate();
   },
 
-  onThrowCatcherElementRectEdit(_eventData){
-    let targetNodeId = _eventData.targetId;
-    let rect = _eventData.rect;
-
-    this.getContextController().modifyGridRect(targetNodeId, rect);
-    this.forceUpdate();
-  },
+  // onThrowCatcherElementRectEdit(_eventData){
+  //   let targetNodeId = _eventData.targetId;
+  //   let rect = _eventData.rect;
+  //
+  //   this.getContextController().modifyGridRect(targetNodeId, rect);
+  //   this.forceUpdate();
+  // },
 
   onThrowCatcherClickElementInStage(_eventData){
     console.log(_eventData);
+  },
+
+  onThrowCatcherGridElementNodeSetting(_eventData, _pass){
+    _eventData.contextController = this.getContextController();
+    _pass();
   },
 
   onThrowCatcherCreateRootGrid(){

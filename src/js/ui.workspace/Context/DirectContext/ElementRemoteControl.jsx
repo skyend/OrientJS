@@ -1,9 +1,9 @@
 import './ElementRemoteControl.less';
-import GridBox from "../partComponents/GridBox.jsx";
+import GridBox from "../../partComponents/GridBox.jsx";
 import React from 'react';
 
 export default React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {

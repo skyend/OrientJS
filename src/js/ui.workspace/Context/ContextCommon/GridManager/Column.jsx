@@ -3,7 +3,7 @@ import GridManager from '../GridManager.jsx';
 import './Column.less';
 
 export default React.createClass({
-  mixins:[require('../../reactMixin/EventDistributor.js')],
+  mixins:[require('../../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {
