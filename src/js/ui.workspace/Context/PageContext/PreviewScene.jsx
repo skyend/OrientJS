@@ -1,9 +1,9 @@
 import React from 'react';
 import './PreviewScene.less';
-import IFrameStage from '../partComponents/IFrameStage.jsx';
+import IFrameStage from '../../partComponents/IFrameStage.jsx';
 
 let PreviewScene = React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {
@@ -24,7 +24,7 @@ let PreviewScene = React.createClass({
   setViewer(_viewer){
     _viewer.page = this.props.page;
     _viewer.attach( this.refs['iframe-stage'].getIframeInnerWindow());
-    
+
     this.setState({viewer:_viewer});
   },
 

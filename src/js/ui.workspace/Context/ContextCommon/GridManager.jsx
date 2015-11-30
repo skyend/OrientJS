@@ -4,12 +4,13 @@ import BehaviorGrid from './GridManager/Grid.jsx';
 import BehaviorRow from './GridManager/Row.jsx';
 import BehaviorColumn from './GridManager/Column.jsx';
 import BehaviorLayer from './GridManager/Layer.jsx';
+import HorizonField from '../../partComponents/HorizonField.jsx';
 
 let GridManager = React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
-      settingMode:false
+      //settingMode:false
     };
   },
 
@@ -25,8 +26,39 @@ let GridManager = React.createClass({
     };
   },
 
+  // for ElementSettingPanel
+  // onThrowCatcherChangedValue(_e){
+  //
+  //
+  //   if( _e.name === 'RectWidth' ){
+  //     this.emit("ElementRectEdit", {
+  //       targetId: this.props.gridElementNode.getId(),
+  //       rect: {
+  //         width: _e.data,
+  //         height: this.refs['input-rect-height'].getValue()
+  //       }
+  //     });
+  //   } else if ( _e.name === 'RectHeight' ){
+  //     this.emit("ElementRectEdit", {
+  //       targetId: this.props.gridElementNode.getId(),
+  //       rect: {
+  //         width: this.refs['input-rect-width'].getValue(),
+  //         height: _e.data
+  //       }
+  //     });
+  //   }
+  // },
+
+
+  clickBehavior(){
+    console.log( this.props.gridElementNode );
+    console.log( this.props.gridElementNode.getCurrentRectangle());
+  },
+
   clcikSetting(){
-    this.setState({settingMode:!this.state.settingMode});
+    this.emit("GridElementNodeSetting", {
+      gridElementNode: this.props.gridElementNode
+    });
   },
 
   clickEraser(){
@@ -41,37 +73,51 @@ let GridManager = React.createClass({
     });
   },
 
-  renderSettingPanel(){
-    return (
-      <div className='setting-panel'>
-        setting panel
-      </div>
-    )
+  addLayer(){
+    this.emit("AppendNewLayer", {
+      targetId: this.props.gridElementNode.getId()
+    });
   },
+
+  // renderSettingPanel(){
+  //   let elementRect = this.props.gridElementNode.getCurrentRectangle();
+  //
+  //   return (
+  //     <div className='setting-panel'>
+  //       <HorizonField fieldName='RectWidth' title='Rect Width' theme="dark" enterable={true} type='input'
+  //                     onChange={ this.widthChanged }
+  //                     defaultValue={elementRect.width} height={30} ref='input-rect-width'
+  //                     nameWidth={100}/>
+  //
+  //       <HorizonField fieldName='RectHeight' title='Rect Height' theme="dark" enterable={true} type='input'
+  //                     onChange={ this.heightChanged }
+  //                     defaultValue={elementRect.height} height={30} ref='input-rect-height'
+  //                     nameWidth={100}/>
+  //     </div>
+  //   )
+  // },
 
   renderLayer(){
     return (
-      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderColumn(){
     return (
-      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderRow(){
-    console.log(this.props);
     return (
-      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderGrid(){
-
     return (
-      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-30} minHeight={this.props.height-30} top={30}/>
+      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
@@ -80,34 +126,55 @@ let GridManager = React.createClass({
     this.props.gridElementNode.resetTemporaryDecrementRectSize();
     this.props.gridElementNode.temporaryDecrementRectSize = {
       width: 0,
-      height: 30
+      height: 20
     };
 
-    if( !this.state.settingMode ){
-      if( gridBehavior === 'grid' ){
-        return this.renderGrid();
-      } else if ( gridBehavior === 'row' ){
-        return this.renderRow();
-      } else if ( gridBehavior === 'column'){
-        return this.renderColumn();
-      } else if ( gridBehavior === 'layer' ){
-        return this.renderLayer();
-      } else {
-        throw new Error('invalid behavior');
-      }
+
+    if( gridBehavior === 'grid' ){
+      return this.renderGrid();
+    } else if ( gridBehavior === 'row' ){
+      return this.renderRow();
+    } else if ( gridBehavior === 'column'){
+      return this.renderColumn();
+    } else if ( gridBehavior === 'layer' ){
+      return this.renderLayer();
     } else {
-      return this.renderSettingPanel();
+      throw new Error('invalid behavior');
     }
+  },
+
+  renderLayerTabs(){
+    if( !/^column|layer$/.test(this.props.gridElementNode.behavior)) return;
+    if( !this.props.gridElementNode.isLayerContainer() ) return;
+    let self = this;
+
+    return (
+      <ul className='layer-tab'>
+        <li onClick={this.addLayer}>
+          <i className='fa fa-plus'/>
+        </li>
+        {this.props.gridElementNode.childrenIteration(function(_child){
+          let gridName = _child.getName() || '';
+
+          return (
+            <li>
+              Layer#{_child.getId()}{gridName !== ''? "@"+gridName:''}
+            </li>
+          );
+        })}
+      </ul>
+    )
   },
 
   renderOptionBar(){
     let gridBehavior = this.props.gridElementNode.behavior;
+    let gridName = this.props.gridElementNode.getName() || '';
 
     return (
       <div className='options-bar'>
         <ul>
-          <li>
-            <span>{gridBehavior.toUpperCase()}</span>
+          <li onClick={this.clickBehavior}>
+            <span>{gridBehavior.toUpperCase()}{gridName !== ''? "@"+gridName:''}</span>
           </li>
           <li className='interface' title="Setting me" onClick={this.clcikSetting}>
             <i className='fa fa-cog'/>
@@ -119,6 +186,7 @@ let GridManager = React.createClass({
             <i className='fa fa-trash'/>
           </li>
         </ul>
+        { this.renderLayerTabs() }
       </div>
     )
   },

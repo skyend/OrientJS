@@ -2,7 +2,7 @@ import React from "react";
 import './ElementSelectRect.less';
 
 var ElementSelectRect = React.createClass({
-  mixins: [require('../reactMixin/EventDistributor.js')],
+  mixins: [require('../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
       dragging: false

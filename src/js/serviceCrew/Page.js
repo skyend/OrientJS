@@ -68,11 +68,7 @@ class Page {
   }
 
   createRootGridElement() {
-    let gridElementNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
-    gridElementNode.behavior = 'grid';
-    gridElementNode.setId(this.getNewGridId());
-
-    this.rootGridElement = gridElementNode;
+    this.rootGridElement = this.newGridNode('grid');
   }
 
   appendNewGrid(_targetId, _behavior) {
@@ -96,10 +92,34 @@ class Page {
     targetNode.insertAfter(this.newGridNode(_behavior));
   }
 
+  setNewGrid(_targetId, _behavior) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+    if (targetNode === false) throw new Error("Not found targetGridNode");
+    targetNode.setOneChild(this.newGridNode(_behavior));
+  }
+
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
     newGridNode.setId(this.getNewGridId());
     newGridNode.behavior = _behavior;
+
+    // 초기 rectangle은 width, height 모두 auto로 지정한다.
+    // 자식들크기를 합하여 자신의 Container최소 크기를 계산할 때 auto 는 0으로 가정하여 계산하게 된다.
+    newGridNode.setRectangle({
+      desktop: {
+        width: 'auto',
+        height: 'auto'
+      },
+      tablet: {
+        width: 'auto',
+        height: 'auto'
+      },
+      mobile: {
+        width: 'auto',
+        height: 'auto'
+      }
+    });
+
     return newGridNode;
   }
 
@@ -125,6 +145,21 @@ class Page {
       case "fragmentId":
         targetNode.followingFragment = _value;
         break;
+    }
+  }
+
+  modifyGridRect(_targetId, _rect) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    targetNode.setRectanglePart(_rect.width, 'width');
+    targetNode.setRectanglePart(_rect.height, 'height');
+  }
+
+  modifyGridProperty(_targetId, _name, _value) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    if (_name === 'name') {
+      targetNode.setName(_value);
     }
   }
 

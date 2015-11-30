@@ -1,9 +1,9 @@
 import React from 'react';
 import GridManager from '../GridManager.jsx';
-import './Column.less';
+import './Layer.less';
 
 export default React.createClass({
-  mixins:[require('../../reactMixin/EventDistributor.js')],
+  mixins:[require('../../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {
@@ -41,6 +41,18 @@ export default React.createClass({
           self.setFragmentId(_d);
         }
       }
+    });
+  },
+
+  addGrid(){
+    this.emit("SetNewGrid", {
+      targetId: this.props.elementNode.getId()
+    });
+  },
+
+  addLayer(){
+    this.emit("AppendNewLayer", {
+      targetId: this.props.elementNode.getId()
     });
   },
 
@@ -82,11 +94,37 @@ export default React.createClass({
     return(
       <div className='outline-container'>
         <div className='outline left activable' onClick={this.appendBeforeNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
-        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowBefore} onMouseOut={this.inactiveHandleInsertRowBefore}/>
+        <div className='outline right activable' onClick={this.appendAfterNewColumn} onMouseOver={this.activeHandleInsertRowAfter} onMouseOut={this.inactiveHandleInsertRowAfter}/>
         <div className='outline top'/>
         <div className='outline bottom'/>
       </div>
     );
+  },
+
+  renderChildren(){
+    let columnCount = this.props.elementNode.children.length;
+
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
+
+    if( this.state.activeHandleInsertRowBefore ) leftSpace = 10;
+    else if (this.state.activeHandleInsertRowAfter) rightSpace = 10;
+
+    let assignedWidth = this.props.width-(leftSpace+rightSpace);
+    let assignedHeight = this.props.height-(topSpace+bottomSpace);
+
+    console.log(this.props.elementNode.calcContainerSize());
+
+    if( columnCount == 1 ){
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
+    }
+
+
+    return this.props.elementNode.children.map(function(_gridElement, _i){
+      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+    });
   },
 
   renderCore(){
@@ -169,7 +207,7 @@ export default React.createClass({
     };
 
     return (
-      <div className='behavior behavior-column' style={style}>
+      <div className='behavior behavior-layer' style={style}>
         {this.renderOutline()}
         {this.renderCore()}
       </div>

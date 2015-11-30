@@ -3,7 +3,7 @@ import GridManager from '../GridManager.jsx';
 import './Row.less';
 
 export default React.createClass({
-  mixins:[require('../../reactMixin/EventDistributor.js')],
+  mixins:[require('../../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
       activeHandleInsertRowBefore:false,
@@ -71,13 +71,13 @@ export default React.createClass({
   renderColumns(){
     let columnCount = this.props.elementNode.children.length;
 
-    let leftSpace = 5;
-    let rightSpace = 5;
-    let topSpace = 5;
-    let bottomSpace = 5;
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
 
-    if( this.state.activeHandleInsertRowBefore ) topSpace = 20;
-    else if (this.state.activeHandleInsertRowAfter) bottomSpace = 20;
+    if( this.state.activeHandleInsertRowBefore ) topSpace = 10;
+    else if (this.state.activeHandleInsertRowAfter) bottomSpace = 10;
 
     this.props.elementNode.temporaryDecrementRectSize = {
       width: leftSpace+rightSpace,
@@ -86,20 +86,34 @@ export default React.createClass({
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
+    let myContainerSize = this.props.elementNode.calcContainerSize();
+
+    let widthRatio = assignedWidth / myContainerSize.width;
+    let heightRatio = assignedHeight / myContainerSize.height;
+
     // 부모의 넓이가 필요한 이유?
     // 자식의 넓이를 설정할 때 자식의 넓이를 적절히 분배하기 위해
-
-
+    //let containerSize = this.props.elementNode.calcContainerSize();
 
     if( columnCount == 1 ){
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>;
+      let childContainerSize = this.props.elementNode.children[0].calcContainerSize();
+      let width = childContainerSize.width * widthRatio;
+      let height = childContainerSize.height * heightRatio;
+
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>;
     } else {
 
       let divideWidth = assignedWidth / columnCount;
       let divideHeight = assignedHeight;
 
+
       return this.props.elementNode.children.map(function(_column, _i){
-        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+        let childContainerSize = _column.calcContainerSize();
+
+        let width = childContainerSize.width === undefined ? divideWidth : childContainerSize.width * widthRatio;
+        let height = childContainerSize.height === undefined ? divideHeight : childContainerSize.height * heightRatio;
+
+        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={width} height={height}/>
       });
     }
   },

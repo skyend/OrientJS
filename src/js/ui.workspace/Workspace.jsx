@@ -238,27 +238,31 @@ var Workspace = React.createClass({
     });
   },
 
-  onThrowCatcherUnfocusedContext(_eventData){
-    this.applyToolStates("ServiceResources", {
-      runningContext: null
-    });
-
-    this.applyToolStates("ContextContentsNavigation", {
-      runningContext: null
-    });
-
-    this.applyToolStates("DocumentCSSEditor", {
-      contextController:null
-    });
-
-    this.applyToolStates("APISourceMappingHelper", {
-      contextController: null
-    });
-
-    this.refs['HeadToolBar'].setState({
-      contextItem: null
-    });
-  },
+  // onThrowCatcherUnfocusedContext(_eventData){
+  //   this.applyToolStates("ServiceResources", {
+  //     runningContext: null
+  //   });
+  //
+  //   this.applyToolStates("ContextContentsNavigation", {
+  //     runningContext: null
+  //   });
+  //
+  //   this.applyToolStates("DocumentCSSEditor", {
+  //     contextController:null
+  //   });
+  //
+  //   this.applyToolStates("APISourceMappingHelper", {
+  //     contextController: null
+  //   });
+  //
+  //   this.refs['HeadToolBar'].setState({
+  //     contextItem: null
+  //   });
+  //
+  //
+  //   this.noticeSelectedElementToTools(null, null);
+  //   this.noticeSelectedGridElementToTools(null, null);
+  // },
 
   onThrowCatcherNewContext(_eventData){
 
@@ -428,59 +432,40 @@ var Workspace = React.createClass({
 
   // 성공적으로 요소가 선택되었을 때
   onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
-
-    this.applyToolStates("ElementNodeEditor", {
-      elementNode: _eventData.elementNode,
-      contextController: _eventData.contextController
-    });
-
-    this.applyToolStates("ElementNodeControl", {
-      elementNode: _eventData.elementNode,
-      contextController: _eventData.contextController
-    });
-
-    this.applyToolStates("ElementEventControl", {
-      elementNode: _eventData.elementNode,
-      contextController: _eventData.contextController
-    });
-
-    this.applyToolStates("ElementEffectControl", {
-      elementNode: _eventData.elementNode,
-      contextController: _eventData.contextController
-    });
-
-    this.applyToolStates("ContextContentsNavigation", {
-      selectedElementNode: _eventData.elementNode,
-      contextController: _eventData.contextController
-    });
+    this.noticeSelectedElementToTools(_eventData.elementNode, _eventData.contextController);
   },
 
   onThrowCatcherCancelSelectElementNode(_eventData, _pass){
+    this.noticeSelectedElementToTools(null, null);
+  },
+
+  noticeSelectedElementToTools(_selectedElementNode, _contextController){
     this.applyToolStates("ElementNodeEditor", {
-      elementNode: null,
-      contextController: null
+      elementNode: _selectedElementNode,
+      contextController: _contextController
     });
 
     this.applyToolStates("ElementNodeControl", {
-      elementNode: null,
-      contextController: null
+      elementNode: _selectedElementNode,
+      contextController: _contextController
     });
 
     this.applyToolStates("ElementEventControl", {
-      elementNode: null,
-      contextController: null
+      elementNode: _selectedElementNode,
+      contextController: _contextController
     });
 
     this.applyToolStates("ElementEffectControl", {
-      elementNode: null,
-      contextController: null
+      elementNode: _selectedElementNode,
+      contextController: _contextController
     });
 
     this.applyToolStates("ContextContentsNavigation", {
-      selectedElementNode: null,
-      contextController: null
+      selectedElementNode: _selectedElementNode,
+      contextController: _contextController
     });
   },
+
 
   onThrowCatcherMouseEnterElementNode(_eventData, _pass){
     this.refs['ContextStage'].mouseEnterElement(_eventData.elementNode);
@@ -498,6 +483,22 @@ var Workspace = React.createClass({
   onThrowCatcherChangedSaveState(_eventData){
     this.refs['HeadToolBar'].forceUpdate();
     this.refs['ContextStage'].forceUpdate();
+  },
+
+  onThrowCatcherGridElementNodeSetting(_eventData){
+    this.emit('RequestAttachTool', {
+      where: "RightNavigation",
+      toolKey: "GridElementNodeEditor"
+    });
+
+    this.noticeSelectedGridElementToTools(_eventData.gridElementNode, _eventData.contextController);
+  },
+
+  noticeSelectedGridElementToTools(_gridELementNode, _contextController){
+    this.applyToolStates("GridElementNodeEditor", {
+      gridElementNode: _gridELementNode,
+      contextController:_contextController
+    });
   },
 
 

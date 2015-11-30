@@ -1,15 +1,15 @@
-import IFrameStage from './partComponents/IFrameStage.jsx';
+import IFrameStage from '../partComponents/IFrameStage.jsx';
 import _ from 'underscore';
 import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
 import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
 import './DirectContext.less';
-import Returns from "../Returns.js";
+import Returns from "../../Returns.js";
 
 
 var DirectContext = React.createClass({
-  mixins: [require('./reactMixin/EventDistributor.js')],
+  mixins: [require('../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
       stageWidth: 720,

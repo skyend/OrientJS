@@ -60,6 +60,19 @@ class HTMLElementNode extends TagBaseElementNode {
     return true;
   }
 
+  // 기존자식리스트들을 버리고 하나의 자식만 추가한다.
+  setOneChild(_elementNode) {
+    if (this.getType() === 'string') {
+      return false;
+    }
+
+    _elementNode.setParent(this);
+
+    this.children = [_elementNode];
+
+    return true;
+  }
+
   /**************
    * dettachChild
    * 자신의 Children에서 하나의 child를 제거한다.

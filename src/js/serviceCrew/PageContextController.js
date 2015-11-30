@@ -53,6 +53,10 @@ class PageContextController {
     this.context.feedSaveStateChange();
   }
 
+  updateVisual() {
+    this.context.forceUpdate();
+  }
+
   modifyCreateRootGrid() {
     this.page.createRootGridElement();
 
@@ -74,6 +78,11 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifySetNewGrid(_targetId, _behavior) {
+    this.page.setNewGrid(_targetId, _behavior);
+    this.changedContent();
+  }
+
   modifyClearGridElement(_targetId) {
     this.page.clearElementNode(_targetId);
     this.changedContent();
@@ -88,6 +97,19 @@ class PageContextController {
     this.page.modiftyGridElementProp(_targetId, _fieldName, _value);
     this.changedContent();
   }
+
+  modifyGridRect(_targetId, _rect) {
+    this.page.modifyGridRect(_targetId, _rect);
+    this.changedContent();
+    this.updateVisual();
+  }
+
+  modifyGridProperty(_targetId, _name, _value) {
+    this.page.modifyGridProperty(_targetId, _name, _value);
+    this.changedContent();
+    this.updateVisual();
+  }
+
 
   getRootGridElement() {
     return this.page.rootGridElement;
@@ -115,7 +137,7 @@ class PageContextController {
 
     this.page.screenSize = this._screenSize;
 
-    console.log(this._screenSize);
+    console.log(this._screenSize, '---------------size');
   }
 
   getScreenSize() {

@@ -1,6 +1,9 @@
-.behavior-column
+.behavior-layer
 {
     position: relative;
+
+    overflow: visible;
+
     > .fragment
     {
         position: absolute;
@@ -136,28 +139,28 @@
             background-color: rgba(42, 87, 154, .48);
             &.left
             {
-                top: 5px;
-                bottom: 5px;
+                top: 2px;
+                bottom: 2px;
                 left: 0;
 
-                width: 5px;
+                width: 2px;
 
                 &:hover
                 {
-                    width: 20px;
+                    width: 10px;
                 }
             }
             &.right
             {
-                top: 5px;
+                top: 2px;
                 right: 0;
-                bottom: 5px;
+                bottom: 2px;
 
-                width: 5px;
+                width: 2px;
 
                 &:hover
                 {
-                    width: 20px;
+                    width: 10px;
                 }
             }
             &.top
@@ -166,7 +169,7 @@
                 left: 0;
 
                 width: 100%;
-                height: 5px;
+                height: 2px;
             }
 
             &.bottom
@@ -175,13 +178,13 @@
                 left: 0;
 
                 width: 100%;
-                height: 5px;
+                height: 2px;
             }
 
             &.activable
             {
                 cursor: pointer;
-                animation-name: blink-column;
+                animation-name: blink-layer;
                 animation-duration: 1s;
                 animation-iteration-count: infinite;
                 animation-direction: alternate;
@@ -190,7 +193,7 @@
     }
 }
 
-@keyframes blink-column
+@keyframes blink-layer
 {
     from
     {

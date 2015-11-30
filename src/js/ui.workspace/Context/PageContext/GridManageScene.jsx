@@ -3,7 +3,7 @@ import './GridManageScene.less';
 import GridManager from '../ContextCommon/GridManager.jsx';
 
 let GridManageScene = React.createClass({
-  mixins:[require('../reactMixin/EventDistributor.js')],
+  mixins:[require('../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
     return {
@@ -63,6 +63,8 @@ let GridManageScene = React.createClass({
     if( this.props.rootGridElement === null ){
       return this.renderAreaPlaceholder();
     }
+
+    console.log(this.props.rootGridElement.calcRequiredContainerSize());
 
     return (
       <GridManager gridElementNode={this.props.rootGridElement} width={this.props.width} height={this.props.height} left={0} top={0}/>

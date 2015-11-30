@@ -7,8 +7,7 @@
     {
         position: relative;
         z-index: 2;
-
-        overflow: auto;
+        //overflow: auto;
 
         box-sizing: border-box;
         width: 100%;
@@ -83,7 +82,7 @@
         left: 0;
 
         width: 100%;
-        height: 30px;
+        height: 20px;
 
         background-color: rgba(0, 0, 0, .48);
 
@@ -97,12 +96,16 @@
 
             > li
             {
+                font-size: 12px;
+
                 display: inline-block;
 
                 height: 100%;
                 margin: 0;
                 padding: 0;
                 padding-left: 10px;
+
+                vertical-align: bottom;
 
                 color: #c5c5c5;
 
@@ -135,7 +138,27 @@
 
                 > i
                 {
-                    width: 20px;
+                    //width: 20px;
+                }
+            }
+
+
+            &.layer-tab
+            {
+                float: right;
+                > li
+                {
+                    padding: 0 10px;
+
+                    &:hover
+                    {
+                        color: #fff;
+                    }
+
+                    .forwarded
+                    {
+                        background-color: rgba(41, 129, 218, .7);
+                    }
                 }
             }
         }
@@ -145,7 +168,7 @@
     {
         position: absolute;
         z-index: 2;
-        top: 30px;
+        top: 20px;
         bottom: 0;
 
         width: 100%;
@@ -166,6 +189,22 @@
         // {
         //     border: 5px solid rgba(0, 0, 0, .48);
         // }
+
+        &:hover
+        {
+            // > .outline-container
+            // {
+            //     > .outline
+            //     {
+            //         background-color: rgba(76, 13, 13, .41);
+            //     }
+            // }
+
+            > .options-bar
+            {
+                //background-color: rgba(0, 0, 0, .7);
+            }
+        }
     }
 
     &.row
@@ -190,11 +229,31 @@
         float: left;
         > .options-bar
         {
-            background-color: rgba(42, 87, 154, .48);
+            background-color: rgba(80, 154, 42, .48);
         }
         > .setting-panel
         {
-            background-color: rgba(42, 87, 154, .48);
+            background-color: rgba(80, 154, 42, .48);
+        }
+        // > .behavior-column
+        // {
+        //     border: 5px solid rgba(42, 87, 154, .48);
+        // }
+    }
+
+    &.layer
+    {
+        position: absolute;
+
+        display: inline-block;
+        float: left;
+        > .options-bar
+        {
+            background-color: rgba(42, 113, 154, .48);
+        }
+        > .setting-panel
+        {
+            background-color: rgba(42, 113, 154, .48);
         }
         // > .behavior-column
         // {

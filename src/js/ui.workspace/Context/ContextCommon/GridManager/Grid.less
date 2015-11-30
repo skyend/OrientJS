@@ -2,7 +2,11 @@
 {
     position: relative;
 
-
+    overflow: auto;
+    &::-webkit-scrollbar
+    {
+        width: 0 !important;
+    }
 
     > .row-holder
     {
@@ -63,19 +67,19 @@
             background-color: rgba(0, 0, 0, .48);
             &.left
             {
-                top: 5px;
-                bottom: 5px;
+                top: 2px;
+                bottom: 2px;
                 left: 0;
 
-                width: 5px;
+                width: 2px;
             }
             &.right
             {
-                top: 5px;
+                top: 2px;
                 right: 0;
-                bottom: 5px;
+                bottom: 2px;
 
-                width: 5px;
+                width: 2px;
             }
             &.top
             {
@@ -83,7 +87,7 @@
                 left: 0;
 
                 width: 100%;
-                height: 5px;
+                height: 2px;
             }
 
             &.bottom
@@ -92,7 +96,7 @@
                 left: 0;
 
                 width: 100%;
-                height: 5px;
+                height: 2px;
             }
 
             &.activale

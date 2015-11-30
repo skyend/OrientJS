@@ -27,6 +27,8 @@ class Viewer {
 
   attach(_window) {
     this.window = _window;
+    this.window.document.body.innerHTML = "aaa";
+
   }
 }
 
