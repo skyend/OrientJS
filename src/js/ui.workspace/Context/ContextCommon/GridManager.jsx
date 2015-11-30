@@ -73,6 +73,12 @@ let GridManager = React.createClass({
     });
   },
 
+  addLayer(){
+    this.emit("AppendNewLayer", {
+      targetId: this.props.gridElementNode.getId()
+    });
+  },
+
   // renderSettingPanel(){
   //   let elementRect = this.props.gridElementNode.getCurrentRectangle();
   //
@@ -137,14 +143,38 @@ let GridManager = React.createClass({
     }
   },
 
+  renderLayerTabs(){
+    if( !/^column|layer$/.test(this.props.gridElementNode.behavior)) return;
+    if( !this.props.gridElementNode.isLayerContainer() ) return;
+    let self = this;
+
+    return (
+      <ul className='layer-tab'>
+        <li onClick={this.addLayer}>
+          <i className='fa fa-plus'/>
+        </li>
+        {this.props.gridElementNode.childrenIteration(function(_child){
+          let gridName = _child.getName() || '';
+
+          return (
+            <li>
+              Layer#{_child.getId()}{gridName !== ''? "@"+gridName:''}
+            </li>
+          );
+        })}
+      </ul>
+    )
+  },
+
   renderOptionBar(){
     let gridBehavior = this.props.gridElementNode.behavior;
+    let gridName = this.props.gridElementNode.getName() || '';
 
     return (
       <div className='options-bar'>
         <ul>
           <li onClick={this.clickBehavior}>
-            <span>{gridBehavior.toUpperCase()}</span>
+            <span>{gridBehavior.toUpperCase()}{gridName !== ''? "@"+gridName:''}</span>
           </li>
           <li className='interface' title="Setting me" onClick={this.clcikSetting}>
             <i className='fa fa-cog'/>
@@ -156,6 +186,7 @@ let GridManager = React.createClass({
             <i className='fa fa-trash'/>
           </li>
         </ul>
+        { this.renderLayerTabs() }
       </div>
     )
   },

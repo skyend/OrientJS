@@ -104,6 +104,12 @@ class PageContextController {
     this.updateVisual();
   }
 
+  modifyGridProperty(_targetId, _name, _value) {
+    this.page.modifyGridProperty(_targetId, _name, _value);
+    this.changedContent();
+    this.updateVisual();
+  }
+
 
   getRootGridElement() {
     return this.page.rootGridElement;

@@ -143,6 +143,15 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  // onThrowCatcherSetGridProperty(_eventData){
+  //   let targetNodeId = _eventData.targetId;
+  //   let name = _eventData.name;
+  //   let value = _eventData.value;
+  //   this.getContextController().modifyGridProperty(targetNodeId, name, value);
+  //
+  //   this.forceUpdate();
+  // },
+
   onThrowCatcherAttachFragment(_eventData){
     let targetNodeId = _eventData.targetId;
     let fragmentId = _eventData.fragmentId;

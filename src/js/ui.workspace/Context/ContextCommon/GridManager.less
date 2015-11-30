@@ -138,7 +138,27 @@
 
                 > i
                 {
-                    width: 20px;
+                    //width: 20px;
+                }
+            }
+
+
+            &.layer-tab
+            {
+                float: right;
+                > li
+                {
+                    padding: 0 10px;
+
+                    &:hover
+                    {
+                        color: #fff;
+                    }
+
+                    .forwarded
+                    {
+                        background-color: rgba(41, 129, 218, .7);
+                    }
                 }
             }
         }
@@ -223,6 +243,8 @@
 
     &.layer
     {
+        position: absolute;
+
         display: inline-block;
         float: left;
         > .options-bar

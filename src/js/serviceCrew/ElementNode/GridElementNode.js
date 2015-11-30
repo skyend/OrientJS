@@ -122,6 +122,8 @@ class GridElementNode extends HTMLElementNode {
         return this.getUpperContainerPart(_part);
       } else if (this.behavior === 'column' && _part === 'height') {
         return this.getUpperContainerPart(_part);
+      } else if (this.behavior === 'layer') {
+        return this.getUpperContainerPart(_part);
       }
 
       return this.analysisFriendAutoPart(_part);
@@ -221,6 +223,15 @@ class GridElementNode extends HTMLElementNode {
         //throw new Error("Not supported Quantity Unit[" + unit + "]");
       }
     }
+  }
+
+  isLayerContainer() {
+    if (this.children.length > 0) {
+      if (this.children[0].behavior === 'layer') {
+        return true;
+      }
+    }
+    return false;
   }
 
 

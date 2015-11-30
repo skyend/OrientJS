@@ -155,6 +155,14 @@ class Page {
     targetNode.setRectanglePart(_rect.height, 'height');
   }
 
+  modifyGridProperty(_targetId, _name, _value) {
+    let targetNode = this.rootGridElement.findById(_targetId);
+
+    if (_name === 'name') {
+      targetNode.setName(_value);
+    }
+  }
+
   import (_pageDataObject) {
     let data = _pageDataObject || {};
 

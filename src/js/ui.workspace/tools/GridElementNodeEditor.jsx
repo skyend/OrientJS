@@ -34,7 +34,7 @@ var GridElementNodeEditor = React.createClass({
     let targetId = this.state.gridElementNode.getId();
     let fieldName = _eventData.name;
     let data = _eventData.data;
-    
+
     if( fieldName === 'width' ){
       let height = this.refs['sizing'].getFieldValue('height');
 
@@ -49,38 +49,31 @@ var GridElementNodeEditor = React.createClass({
         width: width,
         height: data
       });
+    } else if( fieldName === 'name' ){
+      this.state.contextController.modifyGridProperty(targetId, 'name', data);
     }
   },
 
-  renderSizingFields(){
+  renderInfoFields(){
     let gridElementNode = this.state.gridElementNode;
 
     if( gridElementNode === null ) return "No selected gridElementNode";
-    let elementRect = gridElementNode.getCurrentRectangle();
 
     let fieldSet = [];
     fieldSet.push({
-      "name": "Width",
-      title: "Width",
-      "initialValue": elementRect.width,
-      type: "input",
-      "enterable": true
-    });
-
-    fieldSet.push({
-      "name": "Height",
-      title: "Height",
-      "initialValue": elementRect.height,
+      "name": "name",
+      title: "Name",
+      "initialValue": gridElementNode.getName(),
       type: "input",
       "enterable": true
     });
 
     return (
-      <HorizonFieldSet title="Grid Positioning" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='positioning'/>
+      <HorizonFieldSet title="Info" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='sizing'/>
     )
   },
 
-  renderPositioningFields(){
+  renderSizingFields(){
     let gridElementNode = this.state.gridElementNode;
 
     if( gridElementNode === null ) return "No selected gridElementNode";
@@ -108,12 +101,41 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
+  renderPositioningFields(){
+    let gridElementNode = this.state.gridElementNode;
+
+    if( gridElementNode === null ) return "No selected gridElementNode";
+    let elementRect = gridElementNode.getCurrentRectangle();
+
+    let fieldSet = [];
+    fieldSet.push({
+      "name": "width",
+      title: "Width",
+      "initialValue": elementRect.width,
+      type: "input",
+      "enterable": true
+    });
+
+    fieldSet.push({
+      "name": "height",
+      title: "Height",
+      "initialValue": elementRect.height,
+      type: "input",
+      "enterable": true
+    });
+
+    return (
+      <HorizonFieldSet title="Grid Positioning" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='positioning'/>
+    )
+  },
+
   render() {
     var rootClasses = ['GridElementNodeEditor', this.getMySizeClass()];
 
     return (
       <div className={rootClasses.join(' ')}>
         <div className='wrapper'>
+          { this.renderInfoFields()}
           { this.renderSizingFields()}
           { this.renderPositioningFields()}
         </div>

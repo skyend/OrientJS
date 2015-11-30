@@ -102,7 +102,7 @@ export default React.createClass({
   },
 
   renderChildren(){
-    let columnCount = this.props.elementNode.children.length;
+    let childCount = this.props.elementNode.children.length;
 
     let leftSpace = 2;
     let rightSpace = 2;
@@ -115,15 +115,25 @@ export default React.createClass({
     let assignedWidth = this.props.width-(leftSpace+rightSpace);
     let assignedHeight = this.props.height-(topSpace+bottomSpace);
 
-    console.log(this.props.elementNode.calcContainerSize());
+    let myContainerSize = this.props.elementNode.calcContainerSize();
+    let widthRatio = assignedWidth / myContainerSize.width;
+    let heightRatio = assignedHeight / myContainerSize.height;
 
-    if( columnCount == 1 ){
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
+    if( childCount == 1 ){
+      let childContainerSize = this.props.elementNode.children[0].calcContainerSize();
+      let width = childContainerSize.width * widthRatio;
+      let height = childContainerSize.height * heightRatio;
+
+      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>
     }
 
 
     return this.props.elementNode.children.map(function(_gridElement, _i){
-      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+      let childContainerSize = _gridElement.calcContainerSize();
+      let width = childContainerSize.width * widthRatio;
+      let height = childContainerSize.height * heightRatio;
+
+      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={width} height={height}/>
     });
   },
 
@@ -154,9 +164,13 @@ export default React.createClass({
     return (
       <div className='holder'>
         <div className='button-wrapper'>
-          <button onClick={this.attachFragment}>Attach Fragment</button>
-          <button onClick={this.addGrid}>Add Grid</button>
-          <button onClick={this.addLayer}>Add Layer</button>
+          <button onClick={this.attachFragment}><i className='fa fa-file-text-o'/></button>
+        </div>
+        <div className='button-wrapper'>
+          <button onClick={this.addLayer}><i className='fa fa-share-square-o'/></button>
+        </div>
+        <div className='button-wrapper'>
+          <button onClick={this.addGrid}><i className='fa fa-th'/></button>
         </div>
       </div>
     )
@@ -165,6 +179,19 @@ export default React.createClass({
   renderFragment(){
     let svgStyle = {};
     let fragmentTitle = undefined;
+    let fragmentStyle = {};
+    let leftSpace = 2;
+    let rightSpace = 2;
+    let topSpace = 2;
+    let bottomSpace = 2;
+
+    if( this.state.activeHandleInsertRowBefore ) leftSpace = 10;
+    else if (this.state.activeHandleInsertRowAfter) rightSpace = 10;
+
+    fragmentStyle.left = leftSpace;
+    fragmentStyle.top = topSpace;
+    fragmentStyle.width = this.props.width - leftSpace - rightSpace;
+    fragmentStyle.height = this.props.height - topSpace - bottomSpace;
 
     // fragmentObject 가 null이면
     if( this.state.fragmentObject === null ){
@@ -180,7 +207,7 @@ export default React.createClass({
     }
 
     return (
-      <div className='fragment'>
+      <div className='fragment' style={fragmentStyle}>
         <div className='fragment-info'>
           <div className='title'>
             {fragmentTitle || this.props.elementNode.followingFragment}
