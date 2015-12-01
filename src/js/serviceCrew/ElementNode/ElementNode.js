@@ -565,6 +565,7 @@ class ElementNode {
 
     // environment 가 있을 때 environment의 interpret를 진행
     if (this.environment !== undefined) {
+
       return this.environment.interpret(preResolvedText);
     } else {
       return preResolvedText;

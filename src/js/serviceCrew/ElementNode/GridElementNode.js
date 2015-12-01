@@ -56,7 +56,15 @@ class GridElementNode extends HTMLElementNode {
     this._followingFragment = _followingFragment;
   }
 
+  realize(_realizeOptions) {
+    super.realize(_realizeOptions);
 
+    console.log(this.realization);
+    let containerSize = this.calcContainerSize();
+    this.realization.style.width = containerSize.width;
+    this.realization.style.height = containerSize.height;
+    this.realization.setAttribute("behavior", this.behavior);
+  }
 
 
   resetTemporaryDecrementRectSize() {

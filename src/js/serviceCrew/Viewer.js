@@ -27,8 +27,17 @@ class Viewer {
 
   attach(_window) {
     this.window = _window;
-    this.window.document.body.innerHTML = "aaa";
+    //this.window.document.body.innerHTML = "Hello";
+    this.page.screenSize = {
+      width: this.window.innerWidth,
+      height: this.window.innerHeight
+    };
 
+    this.page.setHTMLDocument(this.window.document);
+    this.page.rootGridElement.realize();
+    this.page.rootGridElement.linkHierarchyRealizaion();
+
+    this.window.document.body.appendChild(this.page.rootGridElement.realization);
   }
 }
 

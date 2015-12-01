@@ -34,7 +34,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
       self.realization.appendChild(_child.realization);
 
-      if (/^(html|react|empty)$/.test(_child.type)) _child.linkHierarchyRealizaion();
+      if (/^(html|react|empty|grid)$/.test(_child.type)) _child.linkHierarchyRealizaion();
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {

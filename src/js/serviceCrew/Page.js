@@ -39,6 +39,10 @@ class Page {
     }
   }
 
+  setHTMLDocument(_htmlDocument) {
+    this.htmlDocument = _htmlDocument;
+  }
+
   get title() {
     return this._title;
   }
@@ -65,6 +69,10 @@ class Page {
 
   getNewGridId() {
     return ++this.lastGridId;
+  }
+
+  getHTMLDocument() {
+    return this.htmlDocument;
   }
 
   createRootGridElement() {
@@ -161,6 +169,10 @@ class Page {
     if (_name === 'name') {
       targetNode.setName(_value);
     }
+  }
+
+  interpret() {
+    // Todo....
   }
 
   import (_pageDataObject) {
