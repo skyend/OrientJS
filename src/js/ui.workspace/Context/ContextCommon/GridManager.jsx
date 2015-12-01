@@ -221,7 +221,7 @@ let GridManager = React.createClass({
       <div className='options-bar' onClick={this.selectMe}>
         <ul>
           <li onClick={this.clickBehavior}>
-            <span>{gridBehavior.toUpperCase()}{gridName !== ''? "@"+gridName:''}</span>
+            <span>{gridBehavior.toUpperCase()}#{this.props.gridElementNode.getId()}{gridName !== ''? "@"+gridName:''}</span>
           </li>
           <li className='interface' title="Setting me" onClick={this.clcikSetting}>
             <i className='fa fa-cog'/>

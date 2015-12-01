@@ -109,16 +109,42 @@ var GridElementNodeEditor = React.createClass({
 
     let fieldSet = [];
     fieldSet.push({
-      "name": "width",
-      title: "Width",
+      "name": "horizontal",
+      title: "Horizontal",
       "initialValue": elementRect.width,
+      type: "select",
+      "options": [
+        { value:"left", title:"Left" },
+        { value:"center", title:"Center" },
+        { value:"Right", title:"right" }
+      ],
+      "enterable": true
+    });
+
+    fieldSet.push({
+      "name": "vertical",
+      title: "Vertical",
+      "initialValue": elementRect.height,
+      type: "select",
+      "options": [
+        { value:"top", title:"Top" },
+        { value:"middle", title:"Middle" },
+        { value:"bottom", title:"Bottom" }
+      ],
+      "enterable": true
+    });
+
+    fieldSet.push({
+      "name": "horizontalOffset",
+      title: "horizontalOffset",
+      "initialValue": elementRect.height,
       type: "input",
       "enterable": true
     });
 
     fieldSet.push({
-      "name": "height",
-      title: "Height",
+      "name": "verticalOffset",
+      title: "VerticalOffset",
       "initialValue": elementRect.height,
       type: "input",
       "enterable": true
@@ -126,6 +152,34 @@ var GridElementNodeEditor = React.createClass({
 
     return (
       <HorizonFieldSet title="Grid Positioning" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='positioning'/>
+    )
+  },
+
+  renderRenderingFields(){
+    let gridElementNode = this.state.gridElementNode;
+
+    if( gridElementNode === null ) return "No selected gridElementNode";
+    let elementRect = gridElementNode.getCurrentRectangle();
+
+    let fieldSet = [];
+    fieldSet.push({
+      "name": "zIndex",
+      title: "Order",
+      "initialValue": gridElementNode.zIndex,
+      type: "input",
+      "enterable": true
+    });
+
+    fieldSet.push({
+      "name": "display",
+      title: "Display",
+      "initialValue": elementRect.height,
+      type: "input",
+      "enterable": true
+    });
+
+    return (
+      <HorizonFieldSet title="Grid Rendering" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='rendering'/>
     )
   },
 
@@ -138,6 +192,7 @@ var GridElementNodeEditor = React.createClass({
           { this.renderInfoFields()}
           { this.renderSizingFields()}
           { this.renderPositioningFields()}
+          { this.renderRenderingFields()}
         </div>
       </div>
     );

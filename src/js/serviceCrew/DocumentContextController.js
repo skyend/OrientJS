@@ -41,7 +41,7 @@ class DocumentContextController {
     this.revisionPointer = 0;
     this.revisionHistoryQueue = [];
     this.revisionManager = new DocumentRevisionManager();
-
+    this.componentCSSHolders = {};
 
   }
 
@@ -448,6 +448,26 @@ class DocumentContextController {
     this.rerenderingElementNode(this.document.rootElementNode, _realizeOptions);
   }
 
+  applyComponentCSS(_cssIdentifier, _cssText) {
+    this.componentCSSHolders[_cssIdentifier] = _cssText;
+
+    this.updatePageCSS();
+  }
+
+  extractComponentsStyleSheet() {
+    let cssLines = '\n';
+    let heldCSSKeys = Object.keys(this.componentCSSHolders);
+
+    for (let i = 0; i < heldCSSKeys.length; i++) {
+      let key = heldCSSKeys[i];
+      cssLines += '/*Component :'
+      cssLines += key;
+      cssLines += '*/\n';
+      cssLines += this.componentCSSHolders[key];
+    }
+
+    return cssLines;
+  }
 
   /********
    * updateHTMLTypeElementNodeCSS
@@ -464,8 +484,9 @@ class DocumentContextController {
       this.pageCSSBlock = styleBlock;
     }
 
+
     // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.document.interpret(this.document.getPageCSS());
+    this.pageCSSBlock.innerHTML = this.document.interpret(this.document.getPageCSS()) + this.extractComponentsStyleSheet();
 
   }
 

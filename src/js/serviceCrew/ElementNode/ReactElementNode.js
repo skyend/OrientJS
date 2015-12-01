@@ -75,7 +75,9 @@ class ReactElementNode extends TagBaseElementNode {
       let component = this.environment.contextController.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
 
       this.loadedComponent = component;
+      //console.log('Loaded Component', this.loadedComponent.CSS);
 
+      this.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, this.loadedComponent.CSS);
       React.render(React.createElement(this.loadedComponent.class), this.realization)
     }
   }
