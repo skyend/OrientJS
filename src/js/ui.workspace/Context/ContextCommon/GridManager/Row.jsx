@@ -17,7 +17,8 @@ export default React.createClass({
       width:'auto',
       height:'auto',
       minWidth:'auto',
-      minHeight:'auto'
+      minHeight:'auto',
+      selectedGridNode:null
     };
   },
 
@@ -69,6 +70,7 @@ export default React.createClass({
   },
 
   renderColumns(){
+    let self = this;
     let columnCount = this.props.elementNode.children.length;
 
     let leftSpace = 2;
@@ -100,7 +102,7 @@ export default React.createClass({
       let width = childContainerSize.width * widthRatio;
       let height = childContainerSize.height * heightRatio;
 
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>;
+      return <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>;
     } else {
 
       let divideWidth = assignedWidth / columnCount;
@@ -113,7 +115,7 @@ export default React.createClass({
         let width = childContainerSize.width === undefined ? divideWidth : childContainerSize.width * widthRatio;
         let height = childContainerSize.height === undefined ? divideHeight : childContainerSize.height * heightRatio;
 
-        return <GridManager gridElementNode={_column} left={leftSpace} top={topSpace} width={width} height={height}/>
+        return <GridManager selectedGridNode={self.props.selectedGridNode} gridElementNode={_column} left={leftSpace} top={topSpace} width={width} height={height}/>
       });
     }
   },

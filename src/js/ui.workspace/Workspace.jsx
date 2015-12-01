@@ -485,12 +485,14 @@ var Workspace = React.createClass({
     this.refs['ContextStage'].forceUpdate();
   },
 
-  onThrowCatcherGridElementNodeSetting(_eventData){
+  onThrowCatcherOpenGridElementNodeSetting(_eventData){
     this.emit('RequestAttachTool', {
       where: "RightNavigation",
       toolKey: "GridElementNodeEditor"
     });
+  },
 
+  onThrowCatcherSelectGridElementNode(_eventData){
     this.noticeSelectedGridElementToTools(_eventData.gridElementNode, _eventData.contextController);
   },
 

@@ -10,7 +10,7 @@ export default React.createClass({
     return {
       stageWidth:1024,
       stageHeight:768,
-      selectedElementNode: null,
+      selectedGridNode: null,
       currentScene:'grid'
     };
   },
@@ -173,8 +173,16 @@ export default React.createClass({
     console.log(_eventData);
   },
 
-  onThrowCatcherGridElementNodeSetting(_eventData, _pass){
+  onThrowCatcherSelectGridElementNode(_eventData, _pass){
     _eventData.contextController = this.getContextController();
+
+    if( this.state.selectedGridNode === _eventData.gridElementNode ){
+      this.setState({selectedGridNode:null});
+      _eventData.gridElementNode = null;
+    } else {
+      this.setState({selectedGridNode:_eventData.gridElementNode});
+    }
+
     _pass();
   },
 
@@ -240,7 +248,7 @@ export default React.createClass({
       this.props.contextController.setScreenSize(sceneWidth, sceneHeight-40);
 
       return <div className="grid-manage-scene">
-        <GridManageScene rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
+        <GridManageScene selectedGridNode={this.state.selectedGridNode} rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
       return <div className="meta-manage-scene">

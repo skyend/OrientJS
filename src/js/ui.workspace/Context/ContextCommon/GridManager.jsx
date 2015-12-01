@@ -17,6 +17,7 @@ let GridManager = React.createClass({
   getDefaultProps(){
     return {
       gridElementNode: null,
+      selectedGridNode:null,
       width:'100%',
       height:'100%',
       left:0,
@@ -55,27 +56,49 @@ let GridManager = React.createClass({
     console.log( this.props.gridElementNode.getCurrentRectangle());
   },
 
-  clcikSetting(){
-    this.emit("GridElementNodeSetting", {
+  clcikSetting(_e){
+    _e.stopPropagation();
+    this.emit("OpenGridElementNodeSetting", {
+      gridElementNode: this.props.gridElementNode
+    });
+
+    this.emit("SelectGridElementNode", {
       gridElementNode: this.props.gridElementNode
     });
   },
 
-  clickEraser(){
+  clickEraser(_e){
+    _e.stopPropagation();
+
     this.emit("ClearGridElement", {
       targetId: this.props.gridElementNode.getId()
     });
   },
 
-  clickTrash(){
+  clickTrash(_e){
+    _e.stopPropagation();
+
+
     this.emit("RemoveGridElement", {
       targetId: this.props.gridElementNode.getId()
     });
   },
 
-  addLayer(){
+  addLayer(_e){
+    _e.stopPropagation();
+
+
     this.emit("AppendNewLayer", {
       targetId: this.props.gridElementNode.getId()
+    });
+  },
+
+  selectMe(_e){
+    _e.stopPropagation();
+
+
+    this.emit("SelectGridElementNode", {
+      gridElementNode: this.props.gridElementNode
     });
   },
 
@@ -99,25 +122,25 @@ let GridManager = React.createClass({
 
   renderLayer(){
     return (
-      <BehaviorLayer elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
+      <BehaviorColumn selectedGridNode={this.props.selectedGridNode} elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderColumn(){
     return (
-      <BehaviorColumn elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
+      <BehaviorColumn selectedGridNode={this.props.selectedGridNode} elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderRow(){
     return (
-      <BehaviorRow elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
+      <BehaviorRow selectedGridNode={this.props.selectedGridNode} elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
   renderGrid(){
     return (
-      <BehaviorGrid elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
+      <BehaviorGrid selectedGridNode={this.props.selectedGridNode} elementNode={this.props.gridElementNode} width={this.props.width} height={this.props.height-20} minHeight={this.props.height-20} top={20}/>
     )
   },
 
@@ -143,22 +166,45 @@ let GridManager = React.createClass({
     }
   },
 
-  renderLayerTabs(){
-    if( !/^column|layer$/.test(this.props.gridElementNode.behavior)) return;
-    if( !this.props.gridElementNode.isLayerContainer() ) return;
+  renderChildrenTabs(){
     let self = this;
+    // if( !/^column|layer$/.test(this.props.gridElementNode.behavior)) return;
+    // if( !this.props.gridElementNode.isLayerContainer() ) return;
+
 
     return (
-      <ul className='layer-tab'>
-        <li onClick={this.addLayer}>
-          <i className='fa fa-plus'/>
-        </li>
+      <ul className='children-tab'>
+        {function(){
+          if( !self.props.gridElementNode.isLayerContainer() ) return;
+          return (
+            <li onClick={self.addLayer}>
+              <i className='fa fa-plus'/>
+            </li>
+          );
+        }()}
         {this.props.gridElementNode.childrenIteration(function(_child){
+          let classes = [];
           let gridName = _child.getName() || '';
+          if( _child === self.props.selectedGridNode ){
+            classes.push("selected")
+          }
+
+          let forward = function(_e){
+            _e.stopPropagation();
+
+            //self.props.gridElementNode.childBringToBackIndex(_child);
+
+            self.emit("SelectGridElementNode", {
+              gridElementNode: _child
+            });
+
+
+            self.forceUpdate();
+          };
 
           return (
-            <li>
-              Layer#{_child.getId()}{gridName !== ''? "@"+gridName:''}
+            <li className={classes.join(' ')} onClick={forward} draggable={true}>
+              {_child.behavior[0].toUpperCase()}#{_child.getId()}{gridName !== ''? <span className='name'>{"@"+gridName}</span>:''}
             </li>
           );
         })}
@@ -170,8 +216,9 @@ let GridManager = React.createClass({
     let gridBehavior = this.props.gridElementNode.behavior;
     let gridName = this.props.gridElementNode.getName() || '';
 
+
     return (
-      <div className='options-bar'>
+      <div className='options-bar' onClick={this.selectMe}>
         <ul>
           <li onClick={this.clickBehavior}>
             <span>{gridBehavior.toUpperCase()}{gridName !== ''? "@"+gridName:''}</span>
@@ -186,7 +233,7 @@ let GridManager = React.createClass({
             <i className='fa fa-trash'/>
           </li>
         </ul>
-        { this.renderLayerTabs() }
+        { this.renderChildrenTabs() }
       </div>
     )
   },
@@ -313,6 +360,10 @@ let GridManager = React.createClass({
       left:this.props.left,
       top:this.props.top
     };
+
+    if( this.props.gridElementNode === this.props.selectedGridNode){
+      classes.push('selected');
+    }
 
     return (
       <div className={classes.join(' ')} style={style}>

@@ -11,7 +11,8 @@ export default React.createClass({
       width:'auto',
       height:'auto',
       minWidth:'auto',
-      minHeight:'auto'
+      minHeight:'auto',
+      selectedGridNode:null
     };
   },
 
@@ -102,6 +103,7 @@ export default React.createClass({
   },
 
   renderChildren(){
+    let self = this;
     let columnCount = this.props.elementNode.children.length;
 
     let leftSpace = 2;
@@ -118,12 +120,12 @@ export default React.createClass({
     console.log(this.props.elementNode.calcContainerSize());
 
     if( columnCount == 1 ){
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
+      return <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={assignedWidth} height={assignedHeight}/>
     }
 
 
     return this.props.elementNode.children.map(function(_gridElement, _i){
-      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
+      return <GridManager selectedGridNode={self.props.selectedGridNode} gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={divideWidth} height={divideHeight}/>
     });
   },
 

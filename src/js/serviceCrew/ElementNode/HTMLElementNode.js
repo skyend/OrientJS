@@ -185,6 +185,30 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children = children;
   }
 
+  // 해당 _child를 제일 마지막 인덱스로 이동시킨다.
+  childBringToBackIndex(_targetChild) {
+    let sortedArray = [];
+    let targetIndex;
+    // _child의 인덱스 찾기
+    this.childrenIteration(function(_child, _i) {
+      if (_targetChild === _child) {
+        targetIndex = _i;
+      }
+    });
+
+    let cursor = targetIndex;
+    for (let i = 0; i < this.children.length; i++) {
+      let child = this.children[i];
+      if (i != targetIndex) {
+        sortedArray.push(child);
+      }
+    }
+
+    sortedArray.push(this.children[targetIndex]);
+    this.children = sortedArray;
+    console.log("Index :", targetIndex);
+  }
+
   //////////////////////////
   // import methods
   /*************

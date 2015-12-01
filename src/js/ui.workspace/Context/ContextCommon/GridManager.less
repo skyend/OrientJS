@@ -84,6 +84,8 @@
         width: 100%;
         height: 20px;
 
+        cursor: pointer;
+
         background-color: rgba(0, 0, 0, .48);
 
         > ul
@@ -105,7 +107,7 @@
                 padding: 0;
                 padding-left: 10px;
 
-                vertical-align: bottom;
+                vertical-align: top;
 
                 color: #c5c5c5;
 
@@ -143,12 +145,29 @@
             }
 
 
-            &.layer-tab
+            &.children-tab
             {
                 float: right;
                 > li
                 {
-                    padding: 0 10px;
+                    padding: 0 5px;
+
+                    > .name
+                    {
+                        display: inline-block;
+                        overflow: hidden;
+
+                        width: 35px;
+                        height: 100%;
+
+                        text-overflow: ellipsis;
+                    }
+
+                    &.selected
+                    {
+                        color: #fff;
+                        text-shadow: 0 0 5px #fff;
+                    }
 
                     &:hover
                     {
@@ -249,7 +268,7 @@
         float: left;
         > .options-bar
         {
-            background-color: rgba(42, 113, 154, .48);
+            background-color: rgba(42, 113, 154, .7);
         }
         > .setting-panel
         {
@@ -259,5 +278,50 @@
         // {
         //     border: 5px solid rgba(42, 87, 154, .48);
         // }
+    }
+
+    &.selected
+    {
+        &.grid
+        {
+            > .options-bar
+            {
+                background-color: rgba(0, 0, 0, .6);
+            }
+        }
+
+        &.row
+        {
+            > .options-bar
+            {
+                background-color: rgba(76, 13, 13, .6);
+            }
+        }
+
+        &.column
+        {
+            > .options-bar
+            {
+                background-color: rgba(80, 154, 42, .6);
+            }
+        }
+
+        &.layer
+        {
+            > .options-bar
+            {
+                background-color: rgba(42, 113, 154, .7);
+            }
+        }
+
+        > .options-bar
+        {
+            box-shadow: inset 0 0 10px #fff;
+        }
+
+        > .behavior
+        {
+            background-color: rgba(0, 0, 0, .65);
+        }
     }
 }

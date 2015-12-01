@@ -11,7 +11,8 @@ export default React.createClass({
       width:'auto',
       height:'auto',
       minWidth:'auto',
-      minHeight:'auto'
+      minHeight:'auto',
+      selectedGridNode:null
     };
   },
 
@@ -90,6 +91,19 @@ export default React.createClass({
     });
   },
 
+  hasSelectedGridNodeChild(){
+    console.log('has ?');
+    for(let i = 0; i < this.props.elementNode.children.length; i++ ){
+      console.log(i);
+      if( this.props.elementNode.children[i] === this.props.selectedGridNode ){
+        console.log('true')
+        return true;
+      }
+    }
+
+    return false;
+  },
+
   renderOutline(){
     return(
       <div className='outline-container'>
@@ -102,6 +116,7 @@ export default React.createClass({
   },
 
   renderChildren(){
+    let self = this;
     let childCount = this.props.elementNode.children.length;
 
     let leftSpace = 2;
@@ -124,16 +139,34 @@ export default React.createClass({
       let width = childContainerSize.width * widthRatio;
       let height = childContainerSize.height * heightRatio;
 
-      return <GridManager gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>
+      return <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.elementNode.children[0]} left={leftSpace} top={topSpace} width={width} height={height}/>
+    }
+
+    let children = [];
+    let selectedChildIndex = 0;
+    if( this.hasSelectedGridNodeChild() ){
+      console.log("Has Selected Grid Node CHild");
+      for( let i = 0; i < this.props.elementNode.children.length; i++ ){
+        if( this.props.selectedGridNode !== this.props.elementNode.children[i] ){
+          children.push( this.props.elementNode.children[i] );
+        } else {
+          selectedChildIndex = i;
+        }
+      }
+      children.push(this.props.elementNode.children[selectedChildIndex]);
+    } else {
+      children = this.props.elementNode.children;
     }
 
 
-    return this.props.elementNode.children.map(function(_gridElement, _i){
+    return children.map(function(_gridElement, _i){
       let childContainerSize = _gridElement.calcContainerSize();
       let width = childContainerSize.width * widthRatio;
       let height = childContainerSize.height * heightRatio;
 
-      return <GridManager gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={width} height={height}/>
+
+
+      return <GridManager selectedGridNode={self.props.selectedGridNode} gridElementNode={_gridElement} left={leftSpace} top={topSpace} width={width} height={height}/>
     });
   },
 
@@ -224,6 +257,9 @@ export default React.createClass({
 // </svg>
 
   render(){
+    let classes = ['behavior'];
+    classes.push('behavior-'+this.props.elementNode.behavior);
+
     let style = {
       width:this.props.width,
       height:this.props.height,
@@ -234,7 +270,7 @@ export default React.createClass({
     };
 
     return (
-      <div className='behavior behavior-column' style={style}>
+      <div className={classes.join(' ')} style={style}>
         {this.renderOutline()}
         {this.renderCore()}
       </div>
