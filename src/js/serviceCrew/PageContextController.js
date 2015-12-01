@@ -17,9 +17,9 @@ class PageContextController {
     this.screenSizing = 'desktop'; // desktop, tablet, mobile
 
     if (_page !== undefined) {
-      this.page = new Page(this, _page);
+      this.page = new Page(this, _page, _serviceManager);
     } else {
-      this.page = new Page(this);
+      this.page = new Page(this, undefined, _serviceManager);
     }
   }
 

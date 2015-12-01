@@ -11,7 +11,8 @@ class DocumentContextController {
     this.unsaved = false;
     this.editMode = false;
 
-    this.session = _session;
+    //this.session = _session;
+
     this.serviceManager = _serviceManager;
 
     this.superElement = null;

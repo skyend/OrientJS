@@ -13,16 +13,32 @@ class Viewer {
 
   set page(_page) {
     this._page = _page;
+    this._page.fragmentContext = this;
   }
 
   set window(_window) {
     this._window = _window;
   }
 
+  getWindow() {
+    return this.window;
+  }
 
+  getDocument() {
+    return this.window.document;
+  }
 
-  initialize(_page) {
-    this.page = _page;
+  applyStyleElement(_styleElement) {
+    console.log('applyStyleElement');
+    console.log(_styleElement);
+
+    this.window.document.head.appendChild(_styleElement);
+  }
+
+  applyScriptElement(_scriptElement) {
+    console.log('applyScriptElement');
+    console.log(_scriptElement);
+    this.window.document.head.appendChild(_scriptElement);
   }
 
   attach(_window) {

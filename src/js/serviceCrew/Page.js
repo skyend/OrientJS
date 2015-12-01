@@ -1,10 +1,11 @@
 import _ from 'underscore';
 import Factory from './ElementNode/Factory.js';
+import DocumentContextController from './DocumentContextController.js';
 
 class Page {
-  constructor(_contextController, _pageDataObject) {
+  constructor(_contextController, _pageDataObject, _serviceManager) {
     this.contextController = _contextController;
-
+    this.serviceManager = _serviceManager;
     this.import(_pageDataObject);
 
     // runtime
@@ -39,6 +40,10 @@ class Page {
     }
   }
 
+  set fragmentContext(_fragmentContext) {
+    this._fragmentContext = _fragmentContext;
+  }
+
   setHTMLDocument(_htmlDocument) {
     this.htmlDocument = _htmlDocument;
   }
@@ -65,6 +70,10 @@ class Page {
 
   get screenSize() {
     return this._screenSize;
+  }
+
+  get fragmentContext() {
+    return this._fragmentContext;
   }
 
   getNewGridId() {
@@ -173,6 +182,17 @@ class Page {
 
   interpret() {
     // Todo....
+  }
+
+  getFragment(_fragmentId, _complete) {
+    let self = this;
+    console.log("Fragment Load", _fragmentId);
+    this.serviceManager.getDocument(_fragmentId, function(_page, _context) {
+      console.log('loaded', _page);
+
+      _complete(new DocumentContextController(_page.document, undefined, self.serviceManager));
+    });
+
   }
 
   import (_pageDataObject) {
