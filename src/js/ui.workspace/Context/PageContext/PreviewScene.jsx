@@ -24,8 +24,20 @@ let PreviewScene = React.createClass({
   setViewer(_viewer){
     _viewer.page = this.props.page;
     _viewer.attach( this.refs['iframe-stage'].getIframeInnerWindow());
-
+    _viewer.rendering({
+      width:this.props.width,
+      height: this.props.height
+    });
     this.setState({viewer:_viewer});
+  },
+
+  componentDidUpdate(){
+    if( this.state.viewer !== null ){
+      this.state.viewer.rendering({
+        width:this.props.width,
+        height: this.props.height
+      });
+    }
   },
 
   componentDidMount(){
