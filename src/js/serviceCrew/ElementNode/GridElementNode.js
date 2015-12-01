@@ -63,6 +63,8 @@ class GridElementNode extends HTMLElementNode {
     let containerSize = this.calcContainerSize();
     this.realization.style.width = containerSize.width;
     this.realization.style.height = containerSize.height;
+    this.realization.style.display = 'inline-block';
+    this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
     this.realization.setAttribute("behavior", this.behavior);
   }
 
