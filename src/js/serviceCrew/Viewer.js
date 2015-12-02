@@ -18,6 +18,8 @@ class Viewer {
 
   set window(_window) {
     this._window = _window;
+    //this._window.location.search = window.location.search;
+    console.log(window.location.search);
   }
 
   getWindow() {
@@ -47,15 +49,21 @@ class Viewer {
   }
 
   rendering(_screenSize) {
-    this.window.document.body.innerHTML = '';
+    let self = this;
 
-    this.page.screenSize = _screenSize;
+    this.page.prepareParams(function() {
+      self.window.document.body.innerHTML = '';
 
-    this.page.setHTMLDocument(this.window.document);
-    this.page.rootGridElement.realize();
-    this.page.rootGridElement.linkHierarchyRealizaion();
-    this.window.document.body.style.margin = 0;
-    this.window.document.body.appendChild(this.page.rootGridElement.realization);
+      self.page.screenSize = _screenSize;
+
+      self.page.setHTMLDocument(self.window.document);
+      self.page.rootGridElement.realize();
+      self.page.rootGridElement.linkHierarchyRealizaion();
+      self.window.document.body.style.margin = 0;
+      self.window.document.body.appendChild(self.page.rootGridElement.realization);
+    });
+
+
   }
 }
 

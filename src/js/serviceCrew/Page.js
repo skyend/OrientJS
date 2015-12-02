@@ -44,6 +44,18 @@ class Page {
     this._fragmentContext = _fragmentContext;
   }
 
+  set accessPoint(_accessPoint) {
+    this._accessPoint = _accessPoint;
+  }
+
+  set paramSupplies(_paramSupplies) {
+    this._paramSupplies = _paramSupplies;
+  }
+
+  set preparedAPISourceList(_preparedAPISourceList) {
+    this._preparedAPISourceList = _preparedAPISourceList;
+  }
+
   setHTMLDocument(_htmlDocument) {
     this.htmlDocument = _htmlDocument;
   }
@@ -74,6 +86,18 @@ class Page {
 
   get fragmentContext() {
     return this._fragmentContext;
+  }
+
+  get accessPoint() {
+    return this._accessPoint || '';
+  }
+
+  get paramSupplies() {
+    return this._paramSupplies;
+  }
+
+  get preparedAPISourceList() {
+    return this._preparedAPISourceList || null;
   }
 
   getNewGridId() {
@@ -190,9 +214,132 @@ class Page {
     this.serviceManager.getDocument(_fragmentId, function(_page, _context) {
       console.log('loaded', _page);
 
-      _complete(new DocumentContextController(_page.document, undefined, self.serviceManager));
+      _complete(new DocumentContextController(_page.document, self.params, self.serviceManager));
     });
 
+  }
+
+  addFragmentParamSupply() {
+    this.paramSupplies.push({});
+  }
+
+  prepareParams(_complete) {
+
+
+    if (this.paramSupplies === undefined) return;
+    let self = this;
+
+    if (this.preparedAPISourceList === null) {
+
+      // apiSourceList가 준비되어 있지 않다면 로드한 후 next를 실행한다.
+      this.serviceManager.getApiSourceListWithInterface(function(_apiSourceList) {
+        self.preparedAPISourceList = _apiSourceList;
+
+        next();
+      });
+    } else {
+      next();
+    }
+
+
+    function next() {
+      console.log('준비됨 apisource', self.preparedAPISourceList);
+      let params = {};
+      let paramCount = self.paramSupplies.length;
+      let completeCount = 0;
+
+      self.paramSupplies.map(function(_paramSupply) {
+        console.log('_paramSupply', _paramSupply);
+
+        self.paramProcessing(_paramSupply, function(_result) {
+          params[_paramSupply.ns] = _result;
+          completeCount++;
+
+          if (paramCount === completeCount) {
+            _complete();
+            console.log("::::::: Success all params ::::::::");
+            self.params = params;
+          }
+        });
+      });
+    }
+  }
+
+  paramProcessing(_paramSupply, _complete) {
+    let keys = Object.keys(_paramSupply);
+    let fields = [];
+    let result;
+    let key;
+
+    for (let i = 0; i < keys.length; i++) {
+      key = keys[i];
+
+      if (/^field_/.test(key)) {
+        fields.push({
+          name: key.replace(/^field_/, ''),
+          value: this.interpret(_paramSupply[key])
+        });
+      }
+    }
+
+
+    console.log('처리해 ', _paramSupply, fields);
+    console.log(fields);
+
+    if (_paramSupply.method === 'request') {
+      let apiSourceId = _paramSupply.apiSourceId;
+      let requestName = _paramSupply.requestName;
+
+      let apiSourceIndex = _.findIndex(this.preparedAPISourceList, {
+        id: apiSourceId
+      });
+
+      let apiSource = this.preparedAPISourceList[apiSourceIndex];
+
+      console.log('자 이걸 처리해야되', apiSource, requestName);
+
+      apiSource.executeRequest(requestName, fields, undefined, function(_result) {
+        result = _result;
+        console.log("받았다", _result);
+
+        _complete(result);
+      });
+    } else if (_paramSupply.method === 'resolve-text') {
+      result = this.interpret(_paramSupply.text);
+      _complete(result);
+    }
+
+
+
+
+  }
+
+  // http Parameter 로 치환가능
+  // 접두사 : http-param
+  interpret(_text) {
+    let httpParams = window.location.search.replace(/^\??/, '').split('&');
+    let httpParamDic = {};
+
+
+    // http Parameter 추출
+    httpParams.map(function(_paramPair) {
+      let splitedPair = _paramPair.split('=');
+
+      httpParamDic[splitedPair[0]] = splitedPair[1];
+    });
+
+    // text 변환
+    let text = _text.replace(/\$\{(.*?)\}/g, function(_matched, _core) {
+
+      let result = _core.replace(/^http\-param:(.*)$/, function(_matched, _httpParamName) {
+
+        return httpParamDic[_httpParamName];
+      });
+
+      return result;
+    });
+
+    return text;
   }
 
   import (_pageDataObject) {
@@ -205,6 +352,8 @@ class Page {
     this.title = data.title || 'Untitled';
     this.created = data.created;
     this.updated = data.updated || undefined;
+    this.accessPoint = data.accessPoint;
+    this.paramSupplies = data.paramSupplies || [];
 
     this._rootGridElement = data.rootGridElement !== undefined ? Factory.takeElementNode(data.rootGridElement, undefined, undefined, this) : null;
   }
@@ -216,6 +365,8 @@ class Page {
       lastGridId: this.lastGridId,
       created: this.created,
       updated: this.updated,
+      accessPoint: this.accessPoint,
+      paramSupplies: this.paramSupplies,
       rootGridElement: _.clone(this._rootGridElement.export())
     };
   }

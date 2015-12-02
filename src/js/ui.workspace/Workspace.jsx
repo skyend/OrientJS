@@ -632,6 +632,8 @@ var Workspace = React.createClass({
   },
 
   render() {
+
+
     return (
       <div className='workspace'>
         <div className='editor-floor-supporters'>

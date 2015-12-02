@@ -601,7 +601,7 @@ UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
       apiSourceList = apiSourceList.map(function(_apiSource) {
         return new APISource(self.app, _apiSource, apiInterfaceList);
       });
-      console.log(apiSourceList);
+
       _eventData.path[0].setState({
         apisourceList: apiSourceList
       });

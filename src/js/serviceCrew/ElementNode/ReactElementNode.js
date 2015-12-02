@@ -72,7 +72,7 @@ class ReactElementNode extends TagBaseElementNode {
     if (realizeOptions.skipControl !== true) {
       let packageKey = this.getReactPackageKey();
       let componentKey = this.getReactComponentKey();
-      let component = this.environment.contextController.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
+      let component = this.environment.contextController.serviceManager.app.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
 
       this.loadedComponent = component;
       //console.log('Loaded Component', this.loadedComponent.CSS);

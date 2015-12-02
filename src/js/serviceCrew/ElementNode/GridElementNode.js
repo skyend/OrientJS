@@ -62,8 +62,9 @@ class GridElementNode extends HTMLElementNode {
 
     console.log(this.realization);
     let containerSize = this.calcContainerSize();
-    this.realization.style.width = containerSize.width;
-    this.realization.style.height = containerSize.height;
+    //this.realization.style.width = containerSize.width;
+    //this.realization.style.height = containerSize.height;
+
     if (this.behavior === 'column') {
       this.realization.style.display = 'inline-block';
     }

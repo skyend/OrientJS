@@ -222,7 +222,7 @@ class ElementNode {
     // rendering 사이클에 개입되는 control 처리
     // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
     if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !_isGhostizePoint) {
-
+      console.log("_________________RESOLVE_____REPEAT_N", this.getControlWithResolve('repeat-n'), this.getControl('repeat-n'));
       this.isRepeated = true;
       this.repeatOrder = 0;
 

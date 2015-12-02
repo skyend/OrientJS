@@ -71,7 +71,6 @@ export default class APISource {
     });
   }
 
-
   // updateRequest(_request) {
   //   let reqName = _request.name;
   //   this.requests[reqName] = _request;
@@ -105,6 +104,15 @@ export default class APISource {
 
       request.testDataFrame = request.createResultDataFrame(request.testResultData, self.nodeTypeData.propertytype);
 
+      _end(_result);
+    });
+  }
+
+  executeRequest(_requestName, _fields, _headers, _end) {
+    let request = this.requests[_requestName];
+
+    this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, _headers, _fields, function(_result) {
+      console.log('요청 결과다 ', _result);
       _end(_result);
     });
   }

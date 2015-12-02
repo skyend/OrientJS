@@ -3,6 +3,7 @@ import './PageContext.less';
 import IFrameStage from '../partComponents/IFrameStage.jsx';
 import PreviewScene from './PageContext/PreviewScene.jsx';
 import GridManageScene from './PageContext/GridManageScene.jsx';
+import MetaBoardScene from './PageContext/MetaBoardScene.jsx';
 
 export default React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
@@ -186,8 +187,26 @@ export default React.createClass({
     _pass();
   },
 
+  onThrowCatcherModifyAccessPoint(_eventData){
+    this.getContextController().modifyAccessPoint(_eventData.value);
+
+    this.forceUpdate();
+  },
+
   onThrowCatcherCreateRootGrid(){
     this.getContextController().modifyCreateRootGrid();
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAddFragmentParamSupply(){
+    this.getContextController().modifyAddFragmentParamSupply();
+
+    this.forceUpdate();
+  },
+
+  onThrowCatcherUpdatedParamSupply(){
+    this.getContextController().modifyUpdatedParamSupply();
 
     this.forceUpdate();
   },
@@ -251,9 +270,7 @@ export default React.createClass({
         <GridManageScene selectedGridNode={this.state.selectedGridNode} rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
-      return <div className="meta-manage-scene">
-
-      </div>
+      return <MetaBoardScene page={this.getContextController().page}/>
     } else if( this.state.currentScene === 'preview' ){
       return <PreviewScene left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40} page={this.props.contextController.page}/>
     }
