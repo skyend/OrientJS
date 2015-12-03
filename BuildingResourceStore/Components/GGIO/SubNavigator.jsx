@@ -25,8 +25,14 @@ module.exports =  {
         console.log(this.props.pathObject);
 
         var addedElements = [];
+        try {
+          var elements = this.props.pathObject.value.split('|').map(this.renderDepth);
+        } catch(_e) {
+          return <nav className='nav-here'>
+            No Data
+          </nav>;
+        }
 
-        var elements = this.props.pathObject.value.split('|').map(this.renderDepth);
 
         elements.map(function(_element){
           addedElements.push(">");

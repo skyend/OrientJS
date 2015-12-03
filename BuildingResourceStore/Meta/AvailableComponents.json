@@ -76,6 +76,14 @@
       "key": "StarList",
       "name": "Star List",
       "path": "GGIO/StarList.jsx"
+    }, {
+      "key": "StarThumbs",
+      "name": "Star Thumbs",
+      "path": "GGIO/StarThumbsViewer.jsx"
+    }, {
+      "key": "MainWallContent",
+      "name": "Main Wall Contents",
+      "path": "GGIO/MainWallContent.jsx"
     }]
   }, {
     "key": "HTMLTags",

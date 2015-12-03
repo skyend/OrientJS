@@ -1,0 +1,612 @@
+/* star-list 공통 */
+div.star-thumbs
+{
+    position: relative;
+
+    width: 1000px;
+    margin: 69px auto 199px auto;
+
+    .placeholder
+    {
+        width: 100%;
+        height: 100%;
+
+        background-color: #333;
+
+        &:before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+
+        > h1
+        {
+            display: inline-block;
+
+            width: 100%;
+
+            text-align: center;
+            vertical-align: middle;
+
+            color: #fff;
+        }
+    }
+
+    .global-window
+    {
+        position: fixed;
+        z-index: 999;
+        top: 0;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+
+        -webkit-transition: opacity .15s ease-in-out;
+           -moz-transition: opacity .15s ease-in-out;
+            -ms-transition: opacity .15s ease-in-out;
+             -o-transition: opacity .15s ease-in-out;
+                transition: opacity .15s ease-in-out;
+        pointer-events: none;
+
+        opacity: 0;
+        background-color: rgba(0,0,0,.8);
+    }
+}
+div.star-thumbs h3
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+ul.star-thumbsList > li
+{
+    position: absolute;
+
+    overflow: hidden;
+
+    cursor: pointer;
+}
+ul.star-thumbsList > li > a
+{
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    text-indent: -9999px;
+}
+ul.star-thumbsList > li:hover
+{
+    background-position: 0 100%;
+}
+ul.star-sNav
+{
+    width: 1000px;
+    margin: 0 auto 150px;
+
+    *zoom: 1;
+}
+ul.star-sNav:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+ul.star-sNav > li
+{
+    float: left;
+
+    margin-left: 20px;
+}
+ul.star-sNav > li:first-child
+{
+    margin-left: 0;
+}
+
+/* pop-ssCollection */
+#fade
+{
+    position: fixed;
+    z-index: 10;
+    z-index: 9999;top: 0;left: 0;
+
+    display: none;
+
+    width: 100%; height: 100%;
+
+    opacity: .80;
+    background: #000;
+}
+/* 팝업 fixed 할시.. (common.js 팝업 높이 재조정 주석처리할것) */
+/*.popup_block{
+	 display: none;
+	 background: #fff;
+	 float: left;
+	 font-size: 1.2em;
+	 position: fixed;
+	 top: 50%; left: 50%;
+	 z-index: 99999;
+	 -webkit-box-shadow: 0px 0px 20px #000;
+	 -moz-box-shadow: 0px 0px 20px #000;
+	 box-shadow: 0px 0px 20px #000;
+	 -webkit-border-radius: 10px;
+	 -moz-border-radius: 10px;
+	 border-radius: 10px;
+	}*/
+.popup_block
+{
+    font-size: 1.2em;
+
+    position: relative;
+    z-index: 99999;
+    /*top: -1850px;*/
+    left: 50%;
+
+    display: none;
+    float: left;
+
+    -webkit-border-radius: 10px;
+       -moz-border-radius: 10px;
+            border-radius: 10px;
+    background: #fff;
+    -webkit-box-shadow: 0 0 20px #000;
+       -moz-box-shadow: 0 0 20px #000;
+            box-shadow: 0 0 20px #000;
+}
+img.btn_close
+{
+    position: absolute;
+    z-index: 999;
+    top: 15px;
+    right: 13px;
+}
+/*--Making IE6 Understand Fixed Positioning--*/
+*html #fade
+{
+    position: absolute;
+}
+*html .popup_block
+{
+    position: absolute;
+}
+.pop-ssCollection
+{
+    display: none;
+}
+.pop-ss-head
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 70px;
+
+    text-align: center;
+
+    background-color: #fff;
+}
+.pop-ss-head > h3
+{
+    display: inline-block;
+
+    width: 336px;
+    height: 20px;	/* 150303 수정  */
+    margin-top: 28px;
+
+    text-indent: -9999px;
+
+    background: url(../images/pop/h_2015ssCollection.png) no-repeat 0 0;
+}
+.pop-ss-head .pop-snsLink
+{
+    position: absolute;
+    top: 12px;
+    left: 10px;
+
+    *zoom: 1;
+}
+.pop-ss-head .pop-snsLink:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+.pop-ss-head .pop-snsLink > li
+{
+    float: left;
+}
+.pop-ss-head .pop-snsLink > li > a
+{
+    display: block;
+    overflow: hidden;
+
+    width: 46px;
+    height: 46px;
+
+    text-indent: -9999px;
+
+    background-image: url(../images/common/btn_share_view2.png);
+}
+.pop-ss-head .pop-snsLink > li > a.btn-fb
+{
+    background-position: 0 0;
+}
+.pop-ss-head .pop-snsLink > li > a.btn-bl
+{
+    background-position: 100% 0;
+}
+.pop-ss-linkArea
+{
+    position: absolute;
+
+    margin-top: 20px;
+}
+.pop-ss-linkArea.linkArea2
+{
+    right: 0;
+}
+.pop-ss-linkArea > h3
+{
+    font-size: 15px;
+
+    width: 247px;
+    margin-bottom: 14px;
+    padding-bottom: 11px;
+
+    color: #fff;
+    border-bottom: 1px solid #fff;
+}
+.pop-ss-linkArea > dl
+{
+    *zoom: 1;
+}
+.pop-ss-linkArea > dl:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+.pop-ss-linkArea > dl > dt,
+.pop-ss-linkArea > dl > dd
+{
+    float: left;
+
+    margin-top: 7px;
+
+    color: #fff;
+}
+.pop-ss-linkArea > dl > dt:first-child,
+.pop-ss-linkArea > dl > dt:first-child + dd
+{
+    margin-top: 0;
+}
+.pop-ss-linkArea > dl > dt
+{
+    font-weight: bold;
+
+    position: relative;
+
+    margin-right: 5px;
+    /*clear: both;*/
+}
+
+.pop-ss-linkArea > dl > dt > a
+{
+    position: absolute;
+    top: 0;
+    left: 190px;
+
+    width: 41px;
+    height: 11px;
+    margin-top: 3px;
+
+    text-indent: -9999px;
+
+    background: url(../images/common/btn_pop_link.png) no-repeat 0 0;
+}
+ul.pop-btn_arrow
+{
+    z-index: 999;
+}
+ul.pop-btn_arrow > li
+{
+    position: absolute;
+
+    margin-top: -51px;
+}
+ul.pop-btn_arrow > li.btn_pre
+{
+    top: 50%;
+    left: -100px;
+}
+ul.pop-btn_arrow > li.btn_next
+{
+    top: 50%;
+    right: -100px;
+}
+ul.pop-btn_arrow > li > a
+{
+    display: block;
+
+    width: 30px;
+    height: 102px;
+
+    text-indent: -9999px;
+}
+ul.pop-btn_arrow > li.btn_pre > a
+{
+    background: url(../images/common/btn_arrow_l.png) no-repeat 0 0;
+}
+ul.pop-btn_arrow > li.btn_next > a
+{
+    background: url(../images/common/btn_arrow_r.png) no-repeat 0 0;
+}
+
+/* star-list01 */
+ul.star-thumbsList-jw
+{
+    height: 1756px;
+}
+ul.star-thumbsList-jw > li.list01
+{
+    top: 141px;
+    left: 0;
+
+    width: 500px;
+    height: 356px;
+
+    background-image: url(../images/brand/img_star_jw01.png);
+}
+ul.star-thumbsList-jw > li.list02
+{
+    top: 0;
+    right: 0;
+
+    width: 480px;
+    height: 257px;
+
+    background-image: url(../images/brand/img_star_jw02.png);
+}
+ul.star-thumbsList-jw > li.list03
+{
+    top: 517px;
+    left: -87px;
+
+    width: 587px;
+    height: 254px;
+
+    background-image: url(../images/brand/img_star_jw03.png);
+}
+ul.star-thumbsList-jw > li.list04
+{
+    top: 277px;
+    left: 520px;
+
+    width: 374px;
+    height: 494px;
+
+    background-image: url(../images/brand/img_star_jw04.png);
+}
+ul.star-thumbsList-jw > li.list05
+{
+    top: 277px;
+    right: -115px;
+
+    width: 201px;
+    height: 255px;
+
+    background-image: url(../images/brand/img_star_jw05.png);
+}
+ul.star-thumbsList-jw > li.list06
+{
+    top: 877px;
+    left: 0;
+
+    width: 275px;
+    height: 330px;
+
+    background-image: url(../images/brand/img_star_jw06.png);
+}
+ul.star-thumbsList-jw > li.list07
+{
+    top: 791px;
+    left: 295px;
+
+    width: 705px;
+    height: 416px;
+
+    background-image: url(../images/brand/img_star_jw07.png);
+}
+ul.star-thumbsList-jw > li.list08
+{
+    top: 1227px;
+    left: -54px;
+
+    width: 428px;
+    height: 529px;
+
+    background-image: url(../images/brand/img_star_jw08.png);
+}
+ul.star-thumbsList-jw > li.list09
+{
+    top: 1317px;
+    right: -94px;
+
+    width: 700px;
+    height: 338px;
+
+    background-image: url(../images/brand/img_star_jw09.png);
+}
+
+/* star-list02 */
+ul.star-thumbsList-yg
+{
+    height: 1566px;
+}
+ul.star-thumbsList-yg > li.list01
+{
+    top: 141px;
+    left: 0;
+
+    width: 500px;
+    height: 356px;
+
+    background-image: url(../images/brand/img_star_yg01.png);
+}
+ul.star-thumbsList-yg > li.list02
+{
+    top: 0;
+    right: 0;
+
+    width: 480px;
+    height: 257px;
+
+    background-image: url(../images/brand/img_star_yg02.png);
+}
+ul.star-thumbsList-yg > li.list03
+{
+    top: 517px;
+    left: -87px;
+
+    width: 587px;
+    height: 254px;
+
+    background-image: url(../images/brand/img_star_yg03.png);
+}
+ul.star-thumbsList-yg > li.list04
+{
+    top: 277px;
+    left: 520px;
+
+    width: 374px;
+    height: 494px;
+
+    background-image: url(../images/brand/img_star_yg04.png);
+}
+ul.star-thumbsList-yg > li.list05
+{
+    top: 277px;
+    right: -115px;
+
+    width: 201px;
+    height: 255px;
+
+    background-image: url(../images/brand/img_star_yg05.png);
+}
+ul.star-thumbsList-yg > li.list06
+{
+    top: 877px;
+    left: 0;
+
+    width: 275px;
+    height: 330px;
+
+    background-image: url(../images/brand/img_star_yg06.png);
+}
+ul.star-thumbsList-yg > li.list07
+{
+    top: 791px;
+    left: 295px;
+
+    width: 705px;
+    height: 416px;
+
+    background-image: url(../images/brand/img_star_yg07.png);
+}
+ul.star-thumbsList-yg > li.list08
+{
+    top: 1227px;
+    left: 118px;
+
+    width: 976px;
+    height: 338px;
+
+    background-image: url(../images/brand/img_star_yg08.png);
+}
+
+/* star-list03 */
+ul.star-thumbsList-jwyg
+{
+    height: 1756px;
+}
+ul.star-thumbsList-jwyg > li.list01
+{
+    top: 141px;
+    left: 0;
+
+    width: 500px;
+    height: 356px;
+
+    background-image: url(../images/brand/img_star_jwyg01.png);
+}
+ul.star-thumbsList-jwyg > li.list02
+{
+    top: 0;
+    right: 0;
+
+    width: 480px;
+    height: 257px;
+
+    background-image: url(../images/brand/img_star_jwyg02.png);
+}
+ul.star-thumbsList-jwyg > li.list03
+{
+    top: 517px;
+    left: -87px;
+
+    width: 587px;
+    height: 254px;
+
+    background-image: url(../images/brand/img_star_jwyg03.png);
+}
+ul.star-thumbsList-jwyg > li.list04
+{
+    top: 277px;
+    left: 520px;
+
+    width: 374px;
+    height: 494px;
+
+    background-image: url(../images/brand/img_star_jwyg04.png);
+}
+ul.star-thumbsList-jwyg > li.list05
+{
+    top: 787px;
+    right: -115px;
+
+    width: 1000px;
+    height: 416px;
+
+    background-image: url(../images/brand/img_star_jwyg05.png);
+}
+ul.star-thumbsList-jwyg > li.list06
+{
+    top: 1227px;
+    left: -54px;
+
+    width: 428px;
+    height: 529px;
+
+    background-image: url(../images/brand/img_star_jwyg06.png);
+}
+ul.star-thumbsList-jwyg > li.list07
+{
+    top: 1317px;
+    right: -94px;
+
+    width: 700px;
+    height: 338px;
+
+    background-image: url(../images/brand/img_star_jwyg07.png);
+}
