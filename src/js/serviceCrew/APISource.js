@@ -1,5 +1,6 @@
 import Request from './Request.js';
 import _ from 'underscore';
+import requestAgent from 'superagent';
 
 export default class APISource {
   constructor(_app, _apiSourceData, _apiInterfaceList) {
@@ -71,7 +72,6 @@ export default class APISource {
     });
   }
 
-
   // updateRequest(_request) {
   //   let reqName = _request.name;
   //   this.requests[reqName] = _request;
@@ -87,26 +87,82 @@ export default class APISource {
     let self = this;
     let request = this.requests[_requestName];
 
-    let fields = request.calcurateFields(this.nodeTypeData);
+    let fieldsObject = request.calcurateFields(this.nodeTypeData);
     let headers = request.calcurateHeaders();
     //let fieldMap = {};
     //let headerMap = {};
 
     let fieldPlaceholders = this.getRequestTestFieldPlaceholder(_requestName);
 
-    fields = fields.map(function(_field) {
+    let fields = fieldsObject.map(function(_field) {
       _field.testValue = fieldPlaceholders[_field.name];
       return _field;
     });
 
+    if (request.crud === '*') {
+      this.executeCustomURL(request, fieldsObject, function(_result) {
+        console.log("커스텀 결과?", _result);
+      });
+    } else {
 
-    this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, headers, fields, function(_result) {
-      request.testResultData = _result;
+      this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, headers, fields, function(_result) {
+        request.testResultData = _result;
 
-      request.testDataFrame = request.createResultDataFrame(request.testResultData, self.nodeTypeData.propertytype);
+        request.testDataFrame = request.createResultDataFrame(request.testResultData, self.nodeTypeData.propertytype);
 
-      _end(_result);
+        _end(_result);
+      });
+    }
+
+
+  }
+
+  executeRequest(_requestName, _fields, _headers, _end) {
+    let request = this.requests[_requestName];
+    console.log('Request Name', _requestName, request);
+
+    if (request.crud === '*') {
+      this.executeCustomURL(request, _fields, _end);
+    } else {
+      this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, _headers, _fields, function(_result) {
+        console.log('요청 결과다 ', _result);
+        _end(_result);
+      });
+    }
+  }
+
+  executeCustomURL(_requestObject, _fields, _end) {
+
+    var fields = {};
+
+    _fields.map(function(_field) {
+      fields[_field.name] = _field.testValue || _field.value;
     });
+
+    if (_requestObject.method === 'post') {
+      requestAgent.post(_requestObject.customUrlPattern)
+        .type('form')
+        .send(fields)
+        .end(function(err, res) {
+          if (err !== null) throw new Error("fail customRequest");
+
+          //console.log(res);
+          var dataObject = JSON.parse(res.text);
+
+          _end(dataObject);
+        });
+    } else if (_requestObject.method === 'get') {
+      console.log("커스텀 요청", _requestObject);
+
+      requestAgent.get(_requestObject.customUrlPattern)
+        .query(fields)
+        .end(function(err, res) {
+          console.log("커스텀 URL 요청결과", err, res);
+          var result = res.body;
+
+          _end(result);
+        });
+    }
   }
 
   set nodeTypeData(_nodeTypeData) {

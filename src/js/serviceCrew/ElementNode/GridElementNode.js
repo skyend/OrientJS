@@ -57,17 +57,40 @@ class GridElementNode extends HTMLElementNode {
   }
 
   realize(_realizeOptions) {
+    let self = this;
     super.realize(_realizeOptions);
 
     console.log(this.realization);
     let containerSize = this.calcContainerSize();
-    this.realization.style.width = containerSize.width;
-    this.realization.style.height = containerSize.height;
-    this.realization.style.display = 'inline-block';
-    this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
+    //this.realization.style.width = containerSize.width;
+    //this.realization.style.height = containerSize.height;
+
+    if (this.behavior === 'column') {
+      this.realization.style.display = 'inline-block';
+    }
+
+    //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
     this.realization.setAttribute("behavior", this.behavior);
+
+
+    if (this.followingFragment !== null) {
+      this.environment.getFragment(this.followingFragment, function(_fragmentContextController) {
+        self.setFragmentCC(_fragmentContextController);
+        self.fragmentRender();
+      });
+    }
   }
 
+  setFragmentCC(_fragmentContextController) {
+    this.fragmentContextController = _fragmentContextController;
+    console.log(this.fragmentContextController);
+  }
+
+  fragmentRender() {
+    this.realization.innerHTML = '';
+    this.fragmentContextController.attach(this.environment.fragmentContext, this.realization);
+    this.fragmentContextController.beginRender();
+  }
 
   resetTemporaryDecrementRectSize() {
     this._temporaryDecrementRectSize = {

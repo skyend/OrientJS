@@ -84,12 +84,14 @@ let Request = React.createClass({
         let typeDetail = typeof _object.length === 'number'? "array":"object";
         return (
           <li className={typeDetail}>
-            <div className='item' draggable={true}>
+            <div className='item' draggable={true} onDragStart={function(_e){self.onDragStart(_e, (_parentPath+"/"+_key));}}>
               <span className='key'>{_key}</span>
               <span className='value'> </span>
             </div>
             <ul>
               {Object.keys(_object).map(function(__key) {
+
+
                 return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+_key)
               })}
             </ul>
@@ -107,7 +109,7 @@ let Request = React.createClass({
         </div>
       )
     }
-
+    console.log(this.state.dataFrame);
     return Object.keys(this.state.dataFrame).map(function(_key) {
       return self.renderDataFrameUnit(_key, self.state.dataFrame[_key], '');
     });

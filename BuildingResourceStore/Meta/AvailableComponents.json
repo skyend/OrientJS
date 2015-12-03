@@ -58,6 +58,34 @@
       "path": "SmartAdmin/CommentList.jsx"
     }]
   }, {
+    "key": "GGIO",
+    "name": "GGIO Components",
+    "components": [{
+      "key": "GNB",
+      "name": "Global Navigation Bar",
+      "path": "GGIO/GNB.jsx"
+    }, {
+      "key": "SubNavigator",
+      "name": "Sub Navgatior",
+      "path": "GGIO/SubNavigator.jsx"
+    }, {
+      "key": "Footer",
+      "name": "Global Footer",
+      "path": "GGIO/Footer.jsx"
+    }, {
+      "key": "StarList",
+      "name": "Star List",
+      "path": "GGIO/StarList.jsx"
+    }, {
+      "key": "StarThumbs",
+      "name": "Star Thumbs",
+      "path": "GGIO/StarThumbsViewer.jsx"
+    }, {
+      "key": "MainWallContent",
+      "name": "Main Wall Contents",
+      "path": "GGIO/MainWallContent.jsx"
+    }]
+  }, {
     "key": "HTMLTags",
     "name": "HTML 태그 패키지",
     "components": [{

@@ -97,7 +97,7 @@ var GridElementNodeEditor = React.createClass({
     });
 
     return (
-      <HorizonFieldSet title="Grid Sizing" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='sizing'/>
+      <HorizonFieldSet title="Rectangle Sizing" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='sizing'/>
     )
   },
 
@@ -151,7 +151,7 @@ var GridElementNodeEditor = React.createClass({
     });
 
     return (
-      <HorizonFieldSet title="Grid Positioning" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='positioning'/>
+      <HorizonFieldSet title="Rectangle Positioning" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='positioning'/>
     )
   },
 
@@ -179,7 +179,7 @@ var GridElementNodeEditor = React.createClass({
     });
 
     return (
-      <HorizonFieldSet title="Grid Rendering" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='rendering'/>
+      <HorizonFieldSet title="Rectangle Rendering" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='rendering'/>
     )
   },
 

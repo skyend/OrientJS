@@ -36,6 +36,30 @@ class ReactElementNode extends TagBaseElementNode {
     return this.reactElement;
   }
 
+  getReactComponentProp(_propKey) {
+    return this.reactComponentProps[_propKey];
+  }
+
+  getReactComponentProps() {
+    return this.reactComponentProps;
+  }
+
+  getReactComponentPropsWithResolve(_propKey) {
+    let self = this;
+    let resolvedProps = {};
+    let props = this.getReactComponentProps();
+    let propKeys = Object.keys(props);
+
+    propKeys.map(function(_key) {
+
+
+      resolvedProps[_key] = self.interpret(props[_key]);
+      console.log('리졸브---', _key, resolvedProps[_key]);
+    });
+
+    return resolvedProps;
+  }
+
   // packageKey
   setReactPackageKey(_reactPackageKey) {
     this.reactPackageKey = _reactPackageKey;
@@ -49,6 +73,11 @@ class ReactElementNode extends TagBaseElementNode {
   // componentKey
   setReactComponentProps(_reactComponentProps) {
     this.reactComponentProps = _reactComponentProps;
+  }
+
+  // componentKey
+  setReactComponentProp(_propKey, _propValue) {
+    this.reactComponentProps[_propKey] = _propValue;
   }
 
   // React Element
@@ -72,13 +101,16 @@ class ReactElementNode extends TagBaseElementNode {
     if (realizeOptions.skipControl !== true) {
       let packageKey = this.getReactPackageKey();
       let componentKey = this.getReactComponentKey();
-      let component = this.environment.contextController.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
+      let component = this.environment.contextController.serviceManager.app.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
 
       this.loadedComponent = component;
       //console.log('Loaded Component', this.loadedComponent.CSS);
 
       this.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, this.loadedComponent.CSS);
-      React.render(React.createElement(this.loadedComponent.class), this.realization)
+
+      console.log('바인딩 ', this.getReactComponentPropsWithResolve());
+
+      React.render(React.createElement(this.loadedComponent.class, this.getReactComponentPropsWithResolve()), this.realization)
     }
   }
 
@@ -94,7 +126,7 @@ class ReactElementNode extends TagBaseElementNode {
     let result = super.export(_withoutId);
     result.reactPackageKey = this.getReactPackageKey();
     result.reactComponentKey = this.getReactComponentKey();
-
+    result.reactComponentProps = _.clone(this.getReactComponentProps());
     return result;
   }
 
@@ -103,7 +135,7 @@ class ReactElementNode extends TagBaseElementNode {
 
     this.reactPackageKey = _elementNodeDataObject.reactPackageKey;
     this.reactComponentKey = _elementNodeDataObject.reactComponentKey;
-    this.reactComponentProps = _elementNodeDataObject.reactComponentProps;
+    this.reactComponentProps = _elementNodeDataObject.reactComponentProps || {};
 
     return result;
   }

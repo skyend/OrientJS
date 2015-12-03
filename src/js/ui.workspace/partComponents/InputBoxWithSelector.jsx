@@ -13,7 +13,7 @@
  *   fieldName : "emul-ip-address"
  *     뛰어쓰기를 지양하는 필드의 unique한 id
  *
- *   selectorItems : ['value1', 'value2', ... ]
+ *   options : ['value1', 'value2', ... ]
  *     필드의 선택가능한 입력 문자열의 배열
  *
  *   autoLoad : "http://.."
@@ -28,7 +28,7 @@
   var ReactClass = React.createClass({
     getDefaultProps(){
       return {
-        selectorItems: []
+        options: []
       }
     },
     getInitialState() {
@@ -39,16 +39,7 @@
       }
     },
 
-    getItemElement(_item, _index) {
-      var classes = [];
 
-      if (this.state.itemCursor === _index) {
-        classes.push('cursor-here');
-      }
-
-      return (<li className={classes.join(' ')} value={_item} onClick={this.selectItem}
-                  data-index={_index}>{ _item }</li>)
-    },
 
     onKeyUp(_e) {
       switch (_e.nativeEvent.keyCode) {
@@ -75,7 +66,7 @@
         /* Enter */
         case 13 :
           if (this.state.spreadDisplay === 'block') {
-            this.setValue(this.props.selectorItems[this.state.itemCursor]);
+            this.setValue(this.props.options[this.state.itemCursor]);
             this.toggleSpread();
           }
       }
@@ -126,7 +117,7 @@
     },
 
     setValue(_value) {
-      this.refs['input'].getDOMNode().value = _value;
+      this.refs['input'].getDOMNode().value = _value.value;
       this.changedValue();
     },
 
@@ -142,8 +133,8 @@
 
     componentDidMount() {
 
-      if (typeof  this.props.selectorItems === 'object') {
-        this.setValue(this.props.selectorItems[0]);
+      if (typeof  this.props.options === 'object') {
+        this.setValue(this.props.options[0]);
       }
     },
 
@@ -153,15 +144,26 @@
       }
     },
 
+    renderItemElement(_item, _index) {
+      var classes = [];
+
+      if (this.state.itemCursor === _index) {
+        classes.push('cursor-here');
+      }
+
+      return (<li className={classes.join(' ')} value={_item.value} onClick={this.selectItem}
+                  data-index={_index}>{ _item.value + '(' + _item.title +')'}</li>)
+    },
+
     render() {
       var classes = ['InputBoxWithSelector', this.props.color]
 
-      if (typeof this.props.selectorItems === 'object') {
-        this.props.itemCount = this.props.selectorItems.length;
+      if (typeof this.props.options === 'object') {
+        this.props.itemCount = this.props.options.length;
       } else {
         this.props.itemCount = 0;
       }
-
+      console.log( this.props );
 
       return (
         <div className={classes.join(' ')}>
@@ -176,7 +178,7 @@
 
             <div className="selector-wrapper" style={{'display': this.state.spreadDisplay}} ref='spread'>
               <ul className='selector'>
-                { this.props.selectorItems.map(this.getItemElement)}
+                { this.props.options.map(this.renderItemElement)}
               </ul>
             </div>
           </div>

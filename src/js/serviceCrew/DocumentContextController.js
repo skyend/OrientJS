@@ -4,14 +4,15 @@ import LZString from '../lib/lz-string.js';
 import DocumentRevisionManager from './DocumentRevisionManager.js';
 
 class DocumentContextController {
-  constructor(_document, _session, _serviceManager) {
+  constructor(_document, _params, _serviceManager) {
     this.attached = false;
     this.context = null;
     this.running = false;
     this.unsaved = false;
     this.editMode = false;
 
-    this.session = _session;
+    //this.session = _session;
+
     this.serviceManager = _serviceManager;
 
     this.superElement = null;
@@ -22,14 +23,7 @@ class DocumentContextController {
     // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
     if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-      this.document = new Document(this, {
-        test: {
-          test: {
-            first: 1,
-            last: 2
-          }
-        }
-      }, _document);
+      this.document = new Document(this, _params, _document);
     } else {
 
       // 없다면 새로운 Document를 생성한다.
@@ -155,10 +149,43 @@ class DocumentContextController {
       case "text":
         targetElementNode.setText(_propValue);
         break;
+      case "tagName":
+        targetElementNode.setTagName(_propValue);
+        break;
       default:
         console.error("No matched property key");
     }
 
+
+    if (parentElementNode !== null) {
+      targetElementNode.realize();
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkHierarchyRealizaion();
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender();
+    }
+
+    this.changedContent();
+  }
+
+  modifyReactElementProperty(_elementIdorElement, _propKey, _propValue) {
+    let targetElementNode = null;
+    let parentElementNode = null;
+    let treeRefresh = false;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+
+    targetElementNode.setReactComponentProp(_propKey, _propValue);
 
     if (parentElementNode !== null) {
       targetElementNode.realize();
@@ -733,10 +760,10 @@ class DocumentContextController {
     this.context.updatedHistory();
   }
 
-  resolveRenderText(_seedText) {
-    // resolve String : data binding and i18n processing
-    return this.serviceManager.resolveString(_seedText);
-  }
+  // resolveRenderText(_seedText) {
+  //   // resolve String : data binding and i18n processing
+  //   return this.serviceManager.resolveString(_seedText);
+  // }
 
   /********
    * updateHTMLTypeElementNodeCSS

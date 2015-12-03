@@ -13,7 +13,7 @@ import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextCont
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
 import Viewer from './serviceCrew/Viewer.js';
-
+import APISource from './serviceCrew/APISource.js';
 
 
 class ServiceManager {
@@ -27,8 +27,8 @@ class ServiceManager {
     this.apiSourceContextControllers = {};
     this.apiInterfaceContextControllers = {};
 
-    this.iceHost = "http://icedev.i-on.net";
-
+    //this.iceHost = "http://icedev.i-on.net";
+    this.iceHost = 'http://125.131.88.75:8080';
     this.iceDriver = new ICEServerDriver(this.iceHost);
 
     this.sampleDatas = {};
@@ -131,6 +131,24 @@ class ServiceManager {
       });
 
       _complete(_result);
+    });
+  }
+
+  getApiSourceListWithInterface(_complete) {
+    let self = this;
+
+    this.getApisourceList(function(_asResult) {
+      let apiSourceList = _asResult.list;
+
+      self.getApiinterfaceList(function(_aiResult) {
+        let apiInterfaceList = _aiResult.list;
+
+        apiSourceList = apiSourceList.map(function(_apiSource) {
+          return new APISource(self.app, _apiSource, apiInterfaceList);
+        });
+
+        _complete(apiSourceList);
+      });
     });
   }
 

@@ -1,17 +1,18 @@
-var React = require("react");
-require('./ElementNodeEditor.less');
+import React from "react";
+import './ElementNodeEditor.less';
 
-var BasicButton = require('../partComponents/BasicButton.jsx');
-var InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
-var HorizonField = require('../partComponents/HorizonField.jsx');
-var HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
-var htmlTag = require('./toolsData/htmlTag.json');
+import BasicButton from '../partComponents/BasicButton.jsx';
+import InputBoxWithSelector from '../partComponents/InputBoxWithSelector.jsx';
+import HorizonField from '../partComponents/HorizonField.jsx';
+import HorizonFieldSet from '../partComponents/HorizonFieldSet.jsx';
+import htmlTag from './toolsData/htmlTag.json';
 
-var ElementProfile = require('./ElementNodeEditor/ElementProfile.jsx');
-var HTMLDOMSpec = require('./ElementNodeEditor/HTMLDOMSpec.jsx');
-var EmptyTypeElementNode = require('./ElementNodeEditor/EmptyTypeElementNode.jsx');
+import ElementProfile from './ElementNodeEditor/ElementProfile.jsx';
+import HTMLDOMSpec from './ElementNodeEditor/HTMLDOMSpec.jsx';
+import EmptyTypeElementNode from './ElementNodeEditor/EmptyTypeElementNode.jsx';
+import ReactTypeElementNode from './ElementNodeEditor/ReactTypeElementNode.jsx';
 
-var ElementNodeEditor = React.createClass({
+let ElementNodeEditor = React.createClass({
   mixins: [
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
@@ -52,9 +53,11 @@ var ElementNodeEditor = React.createClass({
 
     } else if (_eventData.refPath[2] === 'HTMLDOMSpec') {
       if (_eventData.refPath[1] === 'elementDOMSpec') {
+        console.log(_eventData.name, changedData);
+
         switch (_eventData.name) {
           case "TagName" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'tagName', changedData);
+            this.state.contextController.modifyElementProperty(elementNode.id, 'tagName', changedData);
             break;
           case "Id" :
             this.state.contextController.modifyElementAttribute(elementNode.id, 'id', changedData);
@@ -97,28 +100,38 @@ var ElementNodeEditor = React.createClass({
             break;
         }
       }
+    } else if (_eventData.refPath[2] === 'ReactTypeElementNode' ){
+      if(_eventData.refPath[1] === 'reactComponentProps' ){
+        let propKey = _eventData.name;
+        this.state.contextController.modifyReactElementProperty(elementNode.id, propKey, changedData);
+      }
     }
 
 
     this.setState({elementNode: elementNode});
   },
 
+  renderSpecialPartByType(_elementNode){
+    let type = _elementNode.getType();
+
+    if( type === 'empty' ){
+      return <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='EmptyTypeElementNode'/>;
+    } else if ( type === 'react' ){
+      return <ReactTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ReactTypeElementNode'/>;
+    } else {
+      return '';
+    }
+  },
+
   renderEditParts(_elementNode){
-
-    var isEmptyType = false;
-
-    if (_elementNode.getType() === 'empty') isEmptyType = true;
 
     return (
       <div className='edit-parts'>
-        <ElementProfile elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme}
-                        ref='ElementProfile'/>
+        <ElementProfile elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ElementProfile'/>
 
-        <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme}
-                     ref='HTMLDOMSpec'/>
+        <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
 
-        {isEmptyType ? <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width}
-                                             theme={this.props.config.theme} ref='EmptyTypeElementNode'/> : ''}
+       { this.renderSpecialPartByType(_elementNode) }
       </div>
     );
   },

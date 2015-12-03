@@ -17,9 +17,9 @@ class PageContextController {
     this.screenSizing = 'desktop'; // desktop, tablet, mobile
 
     if (_page !== undefined) {
-      this.page = new Page(this, _page);
+      this.page = new Page(this, _page, _serviceManager);
     } else {
-      this.page = new Page(this);
+      this.page = new Page(this, undefined, _serviceManager);
     }
   }
 
@@ -110,6 +110,21 @@ class PageContextController {
     this.updateVisual();
   }
 
+  modifyAccessPoint(_accessPoint) {
+    this.page.accessPoint = _accessPoint;
+    this.changedContent();
+  }
+
+  modifyAddFragmentParamSupply() {
+    this.page.addFragmentParamSupply();
+    this.changedContent();
+  }
+
+  // 추후 수정
+  modifyUpdatedParamSupply() {
+    // MetaBoardScene내에서 객체내부를 직접 변경하므로 현재는 changedContent 만 알려준다.
+    this.changedContent();
+  }
 
   getRootGridElement() {
     return this.page.rootGridElement;

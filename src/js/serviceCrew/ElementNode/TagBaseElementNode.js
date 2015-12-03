@@ -73,6 +73,7 @@ class TagBaseElementNode extends ElementNode {
       case "mobile":
         return this.rectangle['mobile'];
     }
+    return {};
   }
 
   get zIndex() {

@@ -8,10 +8,10 @@ var EmptyTypeElementNode = React.createClass({
     require('../../reactMixin/EventDistributor.js'),
     require('../mixins/WidthRuler.js')],
 
-  getInitialState(){
-    return {
-      elementNode: null
-    };
+  getDefaultProps(){
+      return {
+        elementNode : null
+      };
   },
 
   render() {
@@ -49,7 +49,7 @@ var EmptyTypeElementNode = React.createClass({
         }];
 
         var refferencingInfoArray = [];
-        elementNode.document.elementNodes.map(function (_elementNode) {
+        elementNode.environment.elementNodes.map(function (_elementNode) {
 
           tempArray = [_elementNode.getName(), " [ " + _elementNode.getId() + " ] ", "( " + _elementNode.getType() + " )"];
 
