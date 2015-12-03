@@ -109,7 +109,7 @@ let Request = React.createClass({
         </div>
       )
     }
-
+    console.log(this.state.dataFrame);
     return Object.keys(this.state.dataFrame).map(function(_key) {
       return self.renderDataFrameUnit(_key, self.state.dataFrame[_key], '');
     });

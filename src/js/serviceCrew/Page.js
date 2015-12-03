@@ -249,6 +249,10 @@ class Page {
       let paramCount = self.paramSupplies.length;
       let completeCount = 0;
 
+      if (paramCount == 0) {
+        _complete();
+      }
+
       self.paramSupplies.map(function(_paramSupply) {
         console.log('_paramSupply', _paramSupply);
 

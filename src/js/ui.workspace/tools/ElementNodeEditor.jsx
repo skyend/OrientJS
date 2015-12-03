@@ -53,9 +53,11 @@ let ElementNodeEditor = React.createClass({
 
     } else if (_eventData.refPath[2] === 'HTMLDOMSpec') {
       if (_eventData.refPath[1] === 'elementDOMSpec') {
+        console.log(_eventData.name, changedData);
+
         switch (_eventData.name) {
           case "TagName" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'tagName', changedData);
+            this.state.contextController.modifyElementProperty(elementNode.id, 'tagName', changedData);
             break;
           case "Id" :
             this.state.contextController.modifyElementAttribute(elementNode.id, 'id', changedData);

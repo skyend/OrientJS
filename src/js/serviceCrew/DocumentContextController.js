@@ -149,6 +149,9 @@ class DocumentContextController {
       case "text":
         targetElementNode.setText(_propValue);
         break;
+      case "tagName":
+        targetElementNode.setTagName(_propValue);
+        break;
       default:
         console.error("No matched property key");
     }

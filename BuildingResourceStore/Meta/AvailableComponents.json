@@ -61,6 +61,18 @@
     "key": "GGIO",
     "name": "GGIO Components",
     "components": [{
+      "key": "GNB",
+      "name": "Global Navigation Bar",
+      "path": "GGIO/GNB.jsx"
+    }, {
+      "key": "SubNavigator",
+      "name": "Sub Navgatior",
+      "path": "GGIO/SubNavigator.jsx"
+    }, {
+      "key": "Footer",
+      "name": "Global Footer",
+      "path": "GGIO/Footer.jsx"
+    }, {
       "key": "StarList",
       "name": "Star List",
       "path": "GGIO/StarList.jsx"
