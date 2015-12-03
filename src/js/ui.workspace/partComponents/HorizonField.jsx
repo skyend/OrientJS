@@ -1,15 +1,32 @@
 require('./HorizonField.less');
 
-var React = require("react");
-
-var brace = require('brace');
-var AceEditor = require('react-ace');
+import React from "react";
+import brace from 'brace';
+import AceEditor from 'react-ace';
+import InputBoxWithSelector from './InputBoxWithSelector.jsx';
 
 require('brace/mode/css')
 require('brace/mode/javascript')
 require('brace/mode/html')
 require('brace/mode/json')
 require('brace/theme/twilight')
+
+
+var EnterableWrapperSelectable = React.createClass({
+  mixins: [require('../reactMixin/EventDistributor.js')],
+  getInitialState(){
+    return {
+      value: undefined
+    };
+  },
+
+  render(){
+    return (
+      <InputBoxWithSelector color="gray" value={ this.state.value } onChange={this.onChange} options={this.props.options} onDrop={this.onDrop}/>
+    );
+  }
+})
+
 
 var EnterableWrapperInput = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
@@ -336,6 +353,9 @@ var HorizonField = React.createClass({
         case "ace":
           field = <EnterableWrapperCodeEditor lang={this.props.lang || 'plain'} editorId={this.props.editorId}
                                               defaultValue={this.props.defaultValue} ref='enterable-field'/>
+          break;
+        case "selectable":
+          field = <EnterableWrapperSelectable defaultValue={this.props.defaultValue} options={ this.props.options } ref='enterable-field'/>
           break;
       }
       iconClass = "fa fa-pencil";

@@ -50,8 +50,9 @@ class Viewer {
 
   rendering(_screenSize) {
     let self = this;
-
+    console.log("A rendering");
     this.page.prepareParams(function() {
+      console.log("B rendering");
       self.window.document.body.innerHTML = '';
 
       self.page.screenSize = _screenSize;

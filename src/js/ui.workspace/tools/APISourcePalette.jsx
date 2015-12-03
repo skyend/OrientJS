@@ -90,7 +90,9 @@ let Request = React.createClass({
             </div>
             <ul>
               {Object.keys(_object).map(function(__key) {
-                return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+_key)
+
+
+                return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+__key)
               })}
             </ul>
           </li>

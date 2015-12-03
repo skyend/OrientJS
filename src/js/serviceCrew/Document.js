@@ -381,14 +381,23 @@ Document.prototype.interpret = function(_text) {
   var self = this;
 
 
+  // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
+  // 객체를 보존하여 반환하도록 한다.
+  if (/^\$\{.*?\}$/.test(_text)) {
+    let matched = _text.match(/(\${(.*?)})/);
 
-  let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
-    return self.valueResolve(_signString);
-  });
+    let signString = matched[2];
 
-  return valuesResolved.replace(/({.*?})/g, function(_matched) {
-    return self.processingFormularBlock(_matched);
-  });
+    return this.valueResolve(signString);
+  } else {
+    let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
+      return self.valueResolve(_signString);
+    });
+
+    return valuesResolved.replace(/({.*?})/g, function(_matched) {
+      return self.processingFormularBlock(_matched);
+    });
+  }
 };
 
 Document.prototype.valueResolve = function(_sign) {
@@ -403,35 +412,79 @@ Document.prototype.valueResolve = function(_sign) {
     image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
   };
 
-  return _sign.replace(/^(\*?)(.*)$/, function(_m, _firstMark, _refValue) {
+  if (!/^(\*?)(.*)$/.test(_sign)) {
+    return 'Interpret Syntax Error';
+  }
 
-    // Param
-    if (_firstMark === '*') {
+  let matched = _sign.match(/^(\*?)(.*)$/);
+  let firstMark = matched[1];
+  let refValue = matched[2];
 
-      let splited = _refValue.split(/\//);
-      let ns = splited.shift();
-      let detail = splited.length > 0 ? splited.join('/') : undefined;
 
-      let param = self.getParam(ns);
+  if (firstMark === '*') {
 
-      if (detail !== undefined) {
-        return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param`';
-      } else {
-        return param;
-      }
-    } else {
-      let splited = _refValue.split(':');
-      let category = splited[0];
-      let name = splited[1];
+    let splited = refValue.split(/\//);
+    let ns = splited.shift();
+    let detail = splited.length > 0 ? splited.join('/') : undefined;
 
-      if (category === 'resource') {
-        return sampleResourceMap[name];
-      }
+    let param = self.getParam(ns);
+    if (param === undefined) {
+      return '`No Param NS: ' + ns + '`';
     }
+    //console.log(detail, param, splited, _refValue);
 
-    return 'Interpret Error';
-  });
+    if (detail !== undefined) {
+      return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param ' + detail + ' in ' + ns + '`';
+    } else {
+      return param;
+    }
+  } else {
+    let splited = refValue.split(':');
+    let category = splited[0];
+    let name = splited[1];
+
+    if (category === 'resource') {
+      return sampleResourceMap[name];
+    }
+  }
+
+  return 'Interpret Error';
+
+  // return _sign.replace(/^(\*?)(.*)$/, function(_m, _firstMark, _refValue) {
+  //   console.log('$$$$==', arguments);
+  //   // Param
+  //   if (_firstMark === '*') {
+  //
+  //     let splited = _refValue.split(/\//);
+  //     let ns = splited.shift();
+  //     let detail = splited.length > 0 ? splited.join('/') : undefined;
+  //
+  //     let param = self.getParam(ns);
+  //     if (param === undefined) {
+  //       return '`No Param NS: ' + ns + '`';
+  //     }
+  //     console.log(detail, param, splited, _refValue);
+  //     console.log(ObjectExplorer.getValueByKeyPath(param, detail), "-------", detail, param);
+  //     if (detail !== undefined) {
+  //       return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param ' + detail + ' in ' + ns + '`';
+  //     } else {
+  //       return param;
+  //     }
+  //   } else {
+  //     let splited = _refValue.split(':');
+  //     let category = splited[0];
+  //     let name = splited[1];
+  //
+  //     if (category === 'resource') {
+  //       return sampleResourceMap[name];
+  //     }
+  //   }
+  //
+  //   return 'Interpret Error';
+  // });
 };
+
+
 
 Document.prototype.processingFormularBlock = function(_blockString) {
 

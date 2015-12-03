@@ -5,6 +5,7 @@
  * @returns {*}
  */
 function getValueByKeyPath(_object, _keyPath) {
+
   var splitPath = _keyPath.split('/');
 
   var currValue = _object;
@@ -44,7 +45,7 @@ function stringReplacement(_string, _dicObject, _replacePointBracketString) {
   var matched = resultString.match(pointFindRegExp);
   while (matched !== null) {
     var replaceKey = matched[1];
-
+    console.log('####', _string, _dicObject, _replacePointBracketString);
     // replace
     var replaceValue = getValueByKeyPath(_dicObject, replaceKey);
     resultString = resultString.replace(replacePointForeBracket + replaceKey + replacePointBackBracket, replaceValue);

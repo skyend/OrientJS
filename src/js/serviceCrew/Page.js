@@ -225,8 +225,9 @@ class Page {
 
   prepareParams(_complete) {
 
-
+    console.log('paramSupplies', this.paramSupplies);
     if (this.paramSupplies === undefined) return;
+
     let self = this;
 
     if (this.preparedAPISourceList === null) {

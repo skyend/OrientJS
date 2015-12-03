@@ -58,6 +58,14 @@
       "path": "SmartAdmin/CommentList.jsx"
     }]
   }, {
+    "key": "GGIO",
+    "name": "GGIO Components",
+    "components": [{
+      "key": "StarList",
+      "name": "Star List",
+      "path": "GGIO/StarList.jsx"
+    }]
+  }, {
     "key": "HTMLTags",
     "name": "HTML 태그 패키지",
     "components": [{

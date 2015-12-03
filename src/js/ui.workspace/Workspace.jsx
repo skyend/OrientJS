@@ -433,10 +433,12 @@ var Workspace = React.createClass({
   // 성공적으로 요소가 선택되었을 때
   onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
     this.noticeSelectedElementToTools(_eventData.elementNode, _eventData.contextController);
+    this.noticeSelectedGridElementToTools(_eventData.elementNode, _eventData.contextController);
   },
 
   onThrowCatcherCancelSelectElementNode(_eventData, _pass){
     this.noticeSelectedElementToTools(null, null);
+    this.noticeSelectedGridElementToTools(null, null);
   },
 
   noticeSelectedElementToTools(_selectedElementNode, _contextController){

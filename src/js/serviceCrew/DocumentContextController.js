@@ -166,6 +166,36 @@ class DocumentContextController {
     this.changedContent();
   }
 
+  modifyReactElementProperty(_elementIdorElement, _propKey, _propValue) {
+    let targetElementNode = null;
+    let parentElementNode = null;
+    let treeRefresh = false;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.document.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+
+    targetElementNode.setReactComponentProp(_propKey, _propValue);
+
+    if (parentElementNode !== null) {
+      targetElementNode.realize();
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkHierarchyRealizaion();
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender();
+    }
+
+    this.changedContent();
+  }
+
   modifyElementAttribute(_elementIdorElement, _attrKey, _attrValue) {
     let targetElementNode = null;
     let parentElementNode = null;
