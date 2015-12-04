@@ -21,7 +21,7 @@ class TagBaseElementNode extends ElementNode {
   // Getters
   // element.tagName -> getTagName()
   getTagName() {
-    return this.tagName;
+    return this.tagName || 'div';
   }
 
   // attribute

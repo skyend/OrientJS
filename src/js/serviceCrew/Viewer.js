@@ -50,6 +50,35 @@ class Viewer {
 
   rendering(_screenSize) {
     let self = this;
+
+    // this.window.onunload = function(_e) {
+    //   return self.pageUnload(_e);
+    // }
+    //
+    //
+    // this.window.addEventListener('beforeunload', function(event) {
+    //   alert('I am the 1st one.');
+    //   event.preventDefault();
+    //   return false;
+    // });
+    //
+    // this.window.addEventListener('unload', function(event) {
+    //   alert('I am the 3rd one.');
+    //   event.preventDefault();
+    //   return false;
+    // });
+    //
+    // function pageLoaded() {
+    //   alert("load event handler called.");
+    // }
+    //
+    // function pageUnloaded() {
+    //   alert("unload event handler called.");
+    // }
+    //
+    // this.window.addEventListener("load", pageLoaded, false);
+    // this.window.addEventListener("unload", pageUnloaded, false);
+
     console.log("A rendering");
     this.page.prepareParams(function() {
       console.log("B rendering");
@@ -65,6 +94,15 @@ class Viewer {
     });
 
 
+  }
+
+
+  pageUnload(_e) {
+    alert("Move");
+    _e.preventDefault();
+    _e.stopPropagation();
+    console.log(_e, 'page unload');
+    return false;
   }
 }
 

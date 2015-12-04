@@ -126,6 +126,35 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyElementAttribute(_elementIdorElement, _attrKey, _attrValue) {
+    let targetElementNode = null;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    let treeRefresh = false;
+
+    switch (_attrKey) {
+      case "tagName":
+        targetElementNode.setAttribute("tagName", _attrValue);
+        treeRefresh = true;
+        break;
+      case "class":
+        targetElementNode.setAttribute("class", _attrValue);
+        break;
+      case "id":
+        targetElementNode.setAttribute("id", _attrValue);
+        break;
+      default:
+        targetElementNode.setAttribute(_attrKey, _attrValue);
+    }
+
+    this.changedContent();
+  }
+
   getRootGridElement() {
     return this.page.rootGridElement;
   }

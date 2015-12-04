@@ -496,6 +496,7 @@ var Workspace = React.createClass({
 
   onThrowCatcherSelectGridElementNode(_eventData){
     this.noticeSelectedGridElementToTools(_eventData.gridElementNode, _eventData.contextController);
+    this.noticeSelectedElementToTools(_eventData.gridElementNode, _eventData.contextController);
   },
 
   noticeSelectedGridElementToTools(_gridELementNode, _contextController){
