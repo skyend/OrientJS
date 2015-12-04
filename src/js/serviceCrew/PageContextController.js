@@ -126,6 +126,34 @@ class PageContextController {
     this.changedContent();
   }
 
+  modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
+    let targetElementNode = null;
+
+    if (typeof _elementIdorElement === 'number') {
+      targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    switch (_propKey) {
+      case "Name":
+        targetElementNode.setName(_propValue);
+
+        break;
+      case "Comment":
+        targetElementNode.setComment(_propValue);
+
+        break;
+      case "tagName":
+        targetElementNode.setTagName(_propValue);
+        break;
+      default:
+        console.error("No matched property key");
+    }
+
+    this.changedContent();
+  }
+
   modifyElementAttribute(_elementIdorElement, _attrKey, _attrValue) {
     let targetElementNode = null;
 
@@ -138,10 +166,6 @@ class PageContextController {
     let treeRefresh = false;
 
     switch (_attrKey) {
-      case "tagName":
-        targetElementNode.setAttribute("tagName", _attrValue);
-        treeRefresh = true;
-        break;
       case "class":
         targetElementNode.setAttribute("class", _attrValue);
         break;
