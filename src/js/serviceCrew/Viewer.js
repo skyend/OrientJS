@@ -79,6 +79,10 @@ class Viewer {
     // this.window.addEventListener("load", pageLoaded, false);
     // this.window.addEventListener("unload", pageUnloaded, false);
 
+    // this.window.onbeforeunload = function(_e) {
+    //   return false;
+    // }
+
     console.log("A rendering");
     this.page.prepareParams(function() {
       console.log("B rendering");

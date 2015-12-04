@@ -18,11 +18,11 @@ module.exports =  {
       var row = this.props.rows[_rowIdx];
       var size = 25;
 
-      if( _rowIdx == 1 && _colIdx == 1){
+      if( _rowIdx == 0 && _colIdx == 1){
         size = 50;
-      } else if( _rowIdx == 2 && _colIdx == 2){
+      } else if( _rowIdx == 1 && _colIdx == 2){
         size = 75;
-      } else if( _rowIdx == 3 && _colIdx == 1){
+      } else if( _rowIdx == 2 && _colIdx == 1){
         size = 50;
       }
 
@@ -37,9 +37,6 @@ module.exports =  {
     },
 
     renderRow(_item, _i){
-      if( _i == 0 ) return;
-
-
 
       var elements = [];
 
