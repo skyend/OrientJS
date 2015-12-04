@@ -24,6 +24,8 @@ module.exports =  {
         this.setState({showDepth2:false});
       },
 
+
+
       renderDepth2(){
         if( !this.state.showDepth2 ) return;
 
@@ -51,21 +53,92 @@ module.exports =  {
         )
       },
 
+      renderDepth2Items(_item){
+        return (
+          <li>
+            <a href="#">
+              {_item.name}
+            </a>
+          </li>
+        )
+      },
+
+      renderDepth2(_depth2, _depth1Base){
+        if( !this.state.showDepth2 ) return;        
+        var self = this;
+        var depth2List = [];
+        console.log("Depth 2", _depth2, _depth1Base);
+
+        _depth1Base.map(function(_item){
+          var nid = _item.nid;
+          console.log(nid,_depth2 );
+          if( _depth2[nid] !== undefined ){
+            depth2List.push(_depth2[nid]);
+          }
+        });
+
+        console.log(depth2List);
+
+        return (
+          <div className="depth2">
+            <nav>
+              {depth2List.map(function(_depth2Items,_i){
+                return (
+                  <ul className={"w"+(_i+1)}>
+                    { _depth2Items.map(self.renderDepth2Items)}
+                  </ul>
+                )
+              })}
+            </nav>
+          </div>
+        )
+      },
+
       render: function () {
+        console.log( "GNB ITEM", this.props.items);
+        var items = this.props.items;
+        var depth1 = [];
+        var depth2 = {};
+
+        items.map(function(_item){
+          if( _item.menu_depth == "1"){
+            _item.child = []; // child 공간확보
+            depth1.push(_item);
+          } else if ( _item.menu_depth == "2" ){
+
+            if( depth2[_item.parent_menu_id.nid] === undefined ){
+              depth2[_item.parent_menu_id.nid] = [];
+            }
+
+            depth2[_item.parent_menu_id.nid].push(_item);
+          }
+        });
+
+        depth1 = depth1.sort(function(_a, _b){
+          return parseInt(_a.order_no) > parseInt(_b.order_no);
+        });
+
+        // depth2 = depth2.sort(function(_a, _b){
+        //   return parseInt(_a.order_no) > parseInt(_b.order_no);
+        // });
+
+
+        console.log('depth1', depth1);
+
+
 
         return (
           <header className='ggio-gnb' onMouseLeave={this.hideDepth2}>
           	<h1><a href="#"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
           	<nav className="depth1">
           		<ul onMouseEnter={this.showDepth2}>
-          			<li className="w1"><a href="#">Brand</a></li>
-          			<li className="w2"><a href="#">Men&apos;s&nbsp;LAB</a></li>
-          			<li className="w3"><a href="#">GGIO<sup className="bNum">2</sup>&nbsp;Issue</a></li>
-          			<li className="w4"><a href="#">Event</a></li>
-          			<li className="w5"><a href="#">Online&nbsp;Shop</a></li>
+                {depth1.map(function(_item, _i){
+                  return <li className={"w"+(_i+1)}><a href="#">{_item.name}</a></li>;
+                })}
+
           		</ul>
           	</nav>
-            {this.renderDepth2()}
+            {this.renderDepth2(depth2, depth1)}
           	<span className="sos-sub"><a href="#">STYLE S.O.S</a></span>
           	<nav className="nav-login">
           		<ul>
@@ -99,3 +172,11 @@ module.exports =  {
       float:'left'
     }
   };
+
+  /*
+  <li className="w1"><a href="#">Brand</a></li>
+  <li className="w2"><a href="#">Men&apos;s&nbsp;LAB</a></li>
+  <li className="w3"><a href="#">GGIO<sup className="bNum">2</sup>&nbsp;Issue</a></li>
+  <li className="w4"><a href="#">Event</a></li>
+  <li className="w5"><a href="#">Online&nbsp;Shop</a></li>
+  */

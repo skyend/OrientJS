@@ -121,7 +121,7 @@ var HeadToolBar = React.createClass({
       <header className='HeadToolBar'>
         <ul className="navigation">
           <li>
-            <OutlineButton icon='floppy-o' width="80" title='Save' color='white' iconSize='24' onClick={this.clickSave} disabled={saveDisabled}/>
+            <OutlineButton icon='floppy-o' width="80" title='Save' color='blue' iconSize='24' onClick={this.clickSave} disabled={saveDisabled}/>
           </li>
           <li>
             <OutlineButton icon='reply' width="80" title='Undo' color='white' iconSize='24' onClick={this.undo} disabled={undoDisabled}/>
