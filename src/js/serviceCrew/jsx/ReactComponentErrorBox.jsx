@@ -32,7 +32,7 @@ export default React.createClass({
       width:this.props.width,
       height:this.props.height,
       padding:10,
-      boxSIzing:'border-box'
+      boxSIzing:'border-box',
       h1:{
         fontSize:20,
         color:'#EC6F5A'

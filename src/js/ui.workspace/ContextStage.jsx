@@ -62,6 +62,9 @@ var ContextStage = React.createClass({
   openContext(_contextSpec){
     var alreadyContextIndex = _.findIndex(this.state.contexts, {contextID: _contextSpec.contextID});
 
+
+    this.emit("UnfocusedContext");
+
     if (alreadyContextIndex != -1) {
 
       // 컨텍스트를 앞으로 가져온다.
@@ -105,6 +108,8 @@ var ContextStage = React.createClass({
       });
       return;
     }
+
+    this.emit("UnfocusedContext");
 
     let index = _.findIndex(this.state.contexts, function (_context) {
       return _context !== null && _context.contextID === _targetContext.contextID;
@@ -152,6 +157,7 @@ var ContextStage = React.createClass({
 
   clickTabItem(_contextItem) {
     this.setState({runningContextID: _contextItem.contextID});
+    this.emit("UnfocusedContext");
 
     this.emit('FocusedContext', {
       contextItem: _contextItem

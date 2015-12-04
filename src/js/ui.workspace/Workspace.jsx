@@ -238,31 +238,10 @@ var Workspace = React.createClass({
     });
   },
 
-  // onThrowCatcherUnfocusedContext(_eventData){
-  //   this.applyToolStates("ServiceResources", {
-  //     runningContext: null
-  //   });
-  //
-  //   this.applyToolStates("ContextContentsNavigation", {
-  //     runningContext: null
-  //   });
-  //
-  //   this.applyToolStates("DocumentCSSEditor", {
-  //     contextController:null
-  //   });
-  //
-  //   this.applyToolStates("APISourceMappingHelper", {
-  //     contextController: null
-  //   });
-  //
-  //   this.refs['HeadToolBar'].setState({
-  //     contextItem: null
-  //   });
-  //
-  //
-  //   this.noticeSelectedElementToTools(null, null);
-  //   this.noticeSelectedGridElementToTools(null, null);
-  // },
+  onThrowCatcherUnfocusedContext(_eventData){
+    this.noticeSelectedElementToTools(null, null);
+    this.noticeSelectedGridElementToTools(null, null);
+  },
 
   onThrowCatcherNewContext(_eventData){
 
