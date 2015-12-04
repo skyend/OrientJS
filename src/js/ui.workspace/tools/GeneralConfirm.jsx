@@ -18,7 +18,7 @@ var PageCUForm = React.createClass({
     if( typeof this.props.params['nagative-action'] === 'function' ){
       this.props.params['nagative-action']();
     }
-    
+
     this.emit("Close");
   },
 
@@ -39,12 +39,8 @@ var PageCUForm = React.createClass({
           { this.props.params['confirm-message'] }
         </div>
         <div className='button-box'>
-          <GridBox placements={[
-            [
-              <OutlineButton color='white' title='NO' onClick={this.negative}/>,
-              <OutlineButton color='white' title='YES' onClick={this.positive}/>,
-            ]
-          ]} width={200} height={30}/>
+          <OutlineButton color='red' height="40" title='NO' onClick={this.negative}/>
+          <OutlineButton color='blue' height="40" title='YES' onClick={this.positive}/>
         </div>
       </div>
     )

@@ -243,12 +243,11 @@ var ICafeNodeExplorer = React.createClass({
         </div>
         <div className='foot'>
           <span className='message-box'>{ this.state.message }</span>
-          <GridBox placements={[
-            [
-              <OutlineButton color='white' title='Cancel' onClick={this.cancel}/>,
-              <OutlineButton color='white' title='Add selected Nodetypes' onClick={this.add}/>,
-            ]
-          ]} width={300} height={40}/>
+
+          <div className='button-wrapper'>
+            <OutlineButton color='red' title='Cancel' height='40' onClick={this.cancel}/>
+            <OutlineButton color='blue' width='150'  height='40' title='Add selected Nodetypes' onClick={this.add}/>
+          </div>
         </div>
       </div>
     )

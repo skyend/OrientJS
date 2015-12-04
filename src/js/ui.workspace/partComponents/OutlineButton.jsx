@@ -5,7 +5,9 @@ var OutlineButton = React.createClass({
   getDefaultProps(){
     return {
       onClick: null,
-      disabled: false
+      disabled: false,
+      width:60,
+      height:60
     }
   },
 
@@ -23,7 +25,7 @@ var OutlineButton = React.createClass({
     if (this.props.icon !== undefined) {
       var iconclass = 'fa fa-' + this.props.icon;
       return (
-        <div className='icon' style={{fontSize:this.props.iconSize||'inherit'}}>
+        <div className='icon' style={{fontSize:this.props.iconSize||'auto'}}>
           <i className={iconclass}/>
         </div>
       )
@@ -35,7 +37,7 @@ var OutlineButton = React.createClass({
   renderTitle(){
     if (this.props.title !== undefined) {
       return (
-        <div className='title' style={{fontSize:this.props.titleSize||'inherit'}}>
+        <div className='title' style={{fontSize:this.props.titleSize||'auto'}}>
           {this.props.title}
         </div>
       )
@@ -51,9 +53,13 @@ var OutlineButton = React.createClass({
     classes.push(this.props.size);
     if (this.props.disabled)
       classes.push('disabled');
+    let style = {
+      width:this.props.width,
+      height:this.props.height
+    };
 
     return (
-      <div className={classes.join(' ')}>
+      <div className={classes.join(' ')} style={style}>
         <button onClick={ this.onClick }>
           { this.renderIcon() }
           { this.renderTitle() }

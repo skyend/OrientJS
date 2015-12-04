@@ -120,43 +120,28 @@ var HeadToolBar = React.createClass({
     return (
       <header className='HeadToolBar'>
         <ul className="navigation">
-          <li style={{width:100}}>
-            <OutlineButton icon='floppy-o' title='Save' color='white' iconSize='24' onClick={this.clickSave}
-                           disabled={saveDisabled}/>
+          <li>
+            <OutlineButton icon='floppy-o' width="80" title='Save' color='white' iconSize='24' onClick={this.clickSave} disabled={saveDisabled}/>
           </li>
           <li>
-            <GridBox placements={[
-                        [
-                          <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.undo} disabled={undoDisabled}/>,
-                          <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.redo} disabled={redoDisabled}/>
-                        ]
-                      ]} width={140} height={80}/>
+            <OutlineButton icon='reply' width="80" title='Undo' color='white' iconSize='24' onClick={this.undo} disabled={undoDisabled}/>
+            <OutlineButton icon='share' width="80" title='Redo' color='white' iconSize='24' onClick={this.redo} disabled={redoDisabled}/>
           </li>
-
 
           <li className='right'>
-
-            <GridBox placements={[
-                        [
-                          <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='12'/>
-                        ],[
-                          <OutlineButton icon='sign-out'  color='white' iconSize='22' onClick={this.signout} />,
-                          <OutlineButton icon='power-off'  color='white' iconSize='22' onClick={this.exitbuilder} />
-                        ]
-                      ]} width={130} height={80}/>
+            <OutlineButton icon='sign-out'  color='white' iconSize='24' onClick={this.signout} />
+            <OutlineButton icon='power-off' color='red' iconSize='24' onClick={this.exitbuilder} />
           </li>
+
           <li className='right'>
-            <GridBox placements={[
-                        [
-                          <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop} disabled={modeChangeDisabled}/>
-                        ],[
-                          <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet} disabled={modeChangeDisabled}/>,
-                          <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile} disabled={modeChangeDisabled}/>
-                        ]
-                      ]} width={140} height={80}/>
+              <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='blue'/>
           </li>
 
-
+          <li className='right'>
+            <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop} disabled={modeChangeDisabled}/>
+            <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet} disabled={modeChangeDisabled}/>
+            <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile} disabled={modeChangeDisabled}/>
+          </li>
         </ul>
       </header>
     )
@@ -164,3 +149,42 @@ var HeadToolBar = React.createClass({
 });
 
 export default HeadToolBar;
+
+
+/*
+
+<GridBox placements={[
+            [
+              <OutlineButton icon='reply' title='Undo' color='white' iconSize='24' onClick={this.undo} disabled={undoDisabled}/>,
+              <OutlineButton icon='share' title='Redo' color='white' iconSize='24' onClick={this.redo} disabled={redoDisabled}/>
+            ]
+          ]} width={140} height={80}/>
+
+
+<GridBox placements={[
+            [
+              <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='white' iconSize='12'/>
+            ],[
+              <OutlineButton icon='sign-out'  color='white' iconSize='22' onClick={this.signout} />,
+              <OutlineButton icon='power-off'  color='white' iconSize='22' onClick={this.exitbuilder} />
+            ]
+          ]} width={130} height={80}/>
+
+
+<GridBox placements={[
+            [
+              <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop} disabled={modeChangeDisabled}/>
+            ],[
+              <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet} disabled={modeChangeDisabled}/>,
+              <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile} disabled={modeChangeDisabled}/>
+            ]
+          ]} width={140} height={80}/>
+          <GridBox placements={[
+                      [
+                        <OutlineButton icon='desktop' title='Desktop' color='white' onClick={this.modeChangeDesktop} disabled={modeChangeDisabled}/>
+                      ],[
+                        <OutlineButton icon='tablet' title='Tablet' color='white' onClick={this.modeChangeTablet} disabled={modeChangeDisabled}/>,
+                        <OutlineButton icon='mobile' title='Mobile' color='white' onClick={this.modeChangeMobile} disabled={modeChangeDisabled}/>
+                      ]
+                    ]} width={140} height={80}/>
+*/

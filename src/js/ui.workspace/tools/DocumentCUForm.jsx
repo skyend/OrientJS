@@ -76,8 +76,8 @@ var DocumentCUForm = React.createClass({
         <div className='buttons'>
           <GridBox placements={[
             [
-              <OutlineButton color='white' title='Cancel' onClick={this.cancel}/>,
-              <OutlineButton color='white' title='Create' onClick={this.create}/>,
+              <OutlineButton color='red' title='Cancel' onClick={this.cancel}/>,
+              <OutlineButton color='blue' title='Create' onClick={this.create}/>,
             ]
           ]} width={150} height={50}/>
 
