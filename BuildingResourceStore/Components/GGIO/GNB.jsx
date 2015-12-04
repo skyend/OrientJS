@@ -64,7 +64,7 @@ module.exports =  {
       },
 
       renderDepth2(_depth2, _depth1Base){
-        if( !this.state.showDepth2 ) return;        
+        if( !this.state.showDepth2 ) return;
         var self = this;
         var depth2List = [];
         console.log("Depth 2", _depth2, _depth1Base);
@@ -129,28 +129,46 @@ module.exports =  {
 
         return (
           <header className='ggio-gnb' onMouseLeave={this.hideDepth2}>
-          	<h1><a href="#"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
-          	<nav className="depth1">
-          		<ul onMouseEnter={this.showDepth2}>
+            <h1><a href="#"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
+            <nav className="depth1">
+              <ul onMouseEnter={this.showDepth2}>
                 {depth1.map(function(_item, _i){
                   return <li className={"w"+(_i+1)}><a href="#">{_item.name}</a></li>;
                 })}
 
-          		</ul>
-          	</nav>
+              </ul>
+            </nav>
             {this.renderDepth2(depth2, depth1)}
-          	<span className="sos-sub"><a href="#">STYLE S.O.S</a></span>
-          	<nav className="nav-login">
-          		<ul>
-          			<li><a href="#">Login</a></li>
-          			<li><a href="#">Join</a></li>
-          			<li><a href="#">My Page</a></li>
-          			<li><a href="#">CS Center</a></li>
-          			<li><a href="#">Notice</a></li>
-          		</ul>
-          	</nav>
+            <span className="sos-sub"><a href="#">STYLE S.O.S</a></span>
+            <nav className="nav-login">
+              <ul>
+                <li><a href="#">Login</a></li>
+                <li><a href="#">Join</a></li>
+                <li><a href="#">My Page</a></li>
+                <li><a href="#">CS Center</a></li>
+                <li><a href="#">Notice</a></li>
+              </ul>
+            </nav>
           </header>
         )
+        //
+        // try {
+        //
+        // } catch( _e ){
+        //   var style = {
+        //     width:'100%',
+        //     height:50,
+        //     backgroundColor:"#333",
+        //     color:'#fff'
+        //   };
+        //
+        //   return (
+        //     <div className='placeholder' style={style}>
+        //       GGIO GNB Component Error : {_e.toString()}
+        //     </div>
+        //   )
+        // }
+
       }
 
     }),
@@ -161,7 +179,8 @@ module.exports =  {
     propStruct : {
       "items" : {
         "title": "Image items",
-        "format" : "array[object]"
+        "format" : "array[object]",
+        "require":true
       },
     },
 

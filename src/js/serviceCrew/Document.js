@@ -413,7 +413,7 @@ Document.prototype.valueResolve = function(_sign) {
   };
 
   if (!/^(\*?)(.*)$/.test(_sign)) {
-    return 'Interpret Syntax Error';
+    return '`Error: Interpret Syntax Error`';
   }
 
   let matched = _sign.match(/^(\*?)(.*)$/);
@@ -429,12 +429,12 @@ Document.prototype.valueResolve = function(_sign) {
 
     let param = self.getParam(ns);
     if (param === undefined) {
-      return '`No Param NS: ' + ns + '`';
+      return '`Error: No Param NS: ' + ns + '`';
     }
     //console.log(detail, param, splited, _refValue);
 
     if (detail !== undefined) {
-      return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param ' + detail + ' in ' + ns + '`';
+      return ObjectExplorer.getValueByKeyPath(param, detail) || '`Error: No Param ' + detail + ' in ' + ns + '`';
     } else {
       return param;
     }
@@ -448,7 +448,7 @@ Document.prototype.valueResolve = function(_sign) {
     }
   }
 
-  return 'Interpret Error';
+  return '`Error: Interpret Error`';
 
   // return _sign.replace(/^(\*?)(.*)$/, function(_m, _firstMark, _refValue) {
   //   console.log('$$$$==', arguments);

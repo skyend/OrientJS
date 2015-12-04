@@ -1,5 +1,6 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
 import React from 'react';
+import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';
 import _ from 'underscore';
 
 class ReactElementNode extends TagBaseElementNode {
@@ -106,11 +107,47 @@ class ReactElementNode extends TagBaseElementNode {
       this.loadedComponent = component;
       //console.log('Loaded Component', this.loadedComponent.CSS);
 
-      this.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, this.loadedComponent.CSS);
+
 
       console.log('바인딩 ', this.getReactComponentPropsWithResolve());
 
-      React.render(React.createElement(this.loadedComponent.class, this.getReactComponentPropsWithResolve()), this.realization)
+      let reactElement;
+      let reactProperties = this.getReactComponentPropsWithResolve();
+      reactElement = React.createElement(this.loadedComponent.class, reactProperties);
+
+      try {
+
+        React.render(reactElement, this.realization);
+
+        this.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, this.loadedComponent.CSS);
+
+      } catch (_e) {
+        let maybe = undefined;
+        let expectedProblemProps = [];
+        let propStruct = this.loadedComponent.propStruct;
+
+        if (propStruct !== undefined) {
+          let propKeys = Object.keys(propStruct);
+
+          propKeys.map(function(_key) {
+            if (propStruct[_key].require == true) {
+              console.log(reactProperties);
+              if (typeof reactProperties[_key] === 'string' && /`Error:/.test(reactProperties[_key])) {
+                expectedProblemProps.push(_key);
+              }
+            }
+          });
+
+        }
+
+        React.render(React.createElement(ReactComponentErrorBox, {
+          componentKey: componentKey,
+          packageKey: packageKey,
+          error: _e,
+          maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.'
+        }), this.realization);
+      }
+
     }
   }
 

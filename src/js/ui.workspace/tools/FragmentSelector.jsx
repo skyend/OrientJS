@@ -82,13 +82,8 @@ export default React.createClass({
         </div>
 
         <div className='buttons'>
-          <GridBox placements={[
-            [
-              <OutlineButton color='white' title='Cancel' onClick={this.cancel}/>,
-              <OutlineButton color='white' title='Select' onClick={this.select}/>,
-            ]
-          ]} width={150} height={50}/>
-
+          <OutlineButton color='red' title='Cancel' width="70" height="40" onClick={this.cancel}/>
+          <OutlineButton color='blue' title='Select' width="70" height="40" onClick={this.select}/>
         </div>
       </div>
     )

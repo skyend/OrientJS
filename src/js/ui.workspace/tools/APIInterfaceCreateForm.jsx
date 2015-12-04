@@ -65,10 +65,10 @@ var APIInterfaceCreateForm = React.createClass({
         <div className='buttons'>
           <GridBox placements={[
             [
-              <OutlineButton color='red' title='Cancel' onClick={this.cancel}/>,
-              <OutlineButton color='blue' title='Create' onClick={this.create}/>,
+              <OutlineButton color='red' width="70" height="40" title='Cancel' onClick={this.cancel}/>,
+              <OutlineButton color='blue' width="70" height="40" title='Create' onClick={this.create}/>,
             ]
-          ]} width={150} height={50}/>
+          ]} width={140} height={50}/>
 
         </div>
       </div>
