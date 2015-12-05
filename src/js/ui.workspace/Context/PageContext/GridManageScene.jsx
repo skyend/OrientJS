@@ -1,6 +1,7 @@
 import React from 'react';
 import './GridManageScene.less';
-import GridManager from '../ContextCommon/GridManager.jsx';
+//import GridManager from '../ContextCommon/GridManager.jsx';
+import GridBound from './GridManageScene/GridBound.jsx';
 
 let GridManageScene = React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
@@ -64,16 +65,14 @@ let GridManageScene = React.createClass({
     if( this.props.rootGridElement === null ){
       return this.renderAreaPlaceholder();
     }
+    let returnElements = [];
+    let divideWidth = this.props.width / 3;
 
-    console.log(this.props.rootGridElement.calcRequiredContainerSize());
+    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={0} screenMode="desktop"/>);
+    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet"/>);
+    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile"/>);
 
-    let containerSize = this.props.rootGridElement.calcContainerSize();
-
-    console.log('containerSize', containerSize);
-
-    return (
-      <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.rootGridElement} width={containerSize.width} height={containerSize.height} left={0} top={0}/>
-    )
+    return returnElements;
   },
 
   render(){
