@@ -53,7 +53,7 @@ var Document = function(_contextController, _documentParams, _documentDataObject
     this.documentUpdate = _documentDataObject.updated;
     this.lastElementId = _documentDataObject.lastElementId || 0;
 
-    this.rootElementNode = typeof _documentDataObject.rootElementNode === 'object' ?
+    this.rootElementNode = _documentDataObject.rootElementNode !== null ?
       this.newElementNode(_documentDataObject.rootElementNode) : null;
 
     this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
@@ -493,6 +493,11 @@ Document.prototype.processingFormularBlock = function(_blockString) {
 
 
   return _blockString;
+}
+
+
+Document.prototype.analysisNeedBind = function() {
+  console.log('analysis -', this.export());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

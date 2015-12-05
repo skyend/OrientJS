@@ -194,6 +194,12 @@ class Page {
 
     targetNode.setRectanglePart(_rect.width, 'width');
     targetNode.setRectanglePart(_rect.height, 'height');
+
+    targetNode.setRectanglePart(_rect.minWidth, 'minWidth');
+    targetNode.setRectanglePart(_rect.minHeight, 'minHeight');
+
+    targetNode.setRectanglePart(_rect.maxWidth, 'maxWidth');
+    targetNode.setRectanglePart(_rect.maxHeight, 'maxHeight');
   }
 
   modifyGridProperty(_targetId, _name, _value) {

@@ -84,6 +84,10 @@
       "key": "MainWallContent",
       "name": "Main Wall Contents",
       "path": "GGIO/MainWallContent.jsx"
+    }, {
+      "key": "MainSlide",
+      "name": "Main Slide Banner",
+      "path": "GGIO/MainSlide.jsx"
     }]
   }, {
     "key": "HTMLTags",

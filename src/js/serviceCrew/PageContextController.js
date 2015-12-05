@@ -99,6 +99,7 @@ class PageContextController {
   }
 
   modifyGridRect(_targetId, _rect) {
+    console.log(_rect, 'rect');
     this.page.modifyGridRect(_targetId, _rect);
     this.changedContent();
     this.updateVisual();

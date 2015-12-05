@@ -1,0 +1,244 @@
+/* visual */
+div.visual-box
+{
+    position: relative;
+}
+div.visual-box .visual
+{
+    text-align: center;
+
+    background-color: #6b6d71;
+}
+div.visual-box .visual div
+{
+    z-index: 10;
+}
+div.visual-box .visual div img
+{
+    width: 100%;
+}
+/* button previous, next */
+div.visual-box .visual .prev
+{
+    position: absolute;
+    z-index: 999;
+    top: 300px;
+    left: 18px;
+
+    display: block;
+
+    width: 25px;
+    height: 72px;
+
+    text-indent: -9999px;
+
+    background-image: url(http://125.131.88.75:8080/image/kolon/main/btn_next.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+div.visual-box .visual .next
+{
+    position: absolute;
+    z-index: 999;
+    top: 300px;
+    right: 18px;
+
+    display: block;
+
+    width: 25px;
+    height: 72px;
+
+    text-indent: -9999px;
+
+    background-image: url(http://125.131.88.75:8080/image/kolon/main/btn_next.png);
+    background-repeat: no-repeat;
+    background-position: -25px 0;
+}
+/* button bullet */
+div.visual-box .visual span
+{
+    position: absolute;
+    z-index: 999;
+    bottom: 15px;
+    left: 50%;
+
+    margin-left: -60px;
+}
+div.visual-box .visual span a
+{
+    display: block;
+    float: left;
+
+    width: 11px;
+    height: 11px;
+    margin-right: 14px;
+
+    cursor: pointer;
+    text-indent: -9999px;
+
+    border: 2px solid #fff;
+    -webkit-border-radius: 8px;
+       -moz-border-radius: 8px;
+            border-radius: 8px;
+    background-color: transparent;
+
+        -ms-border-radius: 8px;
+         -o-border-radius: 8px;
+}
+div.visual-box .visual span a:hover,
+div.visual-box .visual span a.on
+{
+    background-color: #fff;
+}
+div.visual-box span.face
+{
+    position: absolute;
+    top: 20px;
+    right: 29px;
+}
+/* nav login */
+div.visual-box nav
+{
+    position: absolute;
+    z-index: 11;
+    top: 46px;
+    right: 20px;
+}
+div.visual-box nav li
+{
+    float: left;
+}
+div.visual-box nav li a
+{
+    font-size: 11px;
+
+    display: block;
+
+    margin-left: 21px;
+
+    color: #dcdddf;
+}
+/* text content */
+div.visual-box .content
+{
+    position: absolute;
+    z-index: 999;
+    z-index: 100;
+    top: 107px;
+    left: 50%;
+
+    width: 964px;
+    height: 370px;
+    margin-left: -483px;
+}
+div.visual-box .content div
+{
+    height: 393px;
+
+    text-align: center;
+
+    color: #fff;
+    border: 1px solid #c5c6c8;
+}
+/* 150303 수정 */
+div.visual-box .content div p
+{
+    font-size: 48px;
+    line-height: 60px;
+
+    display: -webkit-box;
+    overflow: hidden;
+
+    max-height: 120px;
+    padding-top: 100px;
+
+    text-align: center;
+    white-space:      pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space:   -o-pre-wrap; /* Opera 7 */
+    text-overflow: ellipsis;
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    word-break: break-all;
+
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+div.visual-box .content div span.ellipsis
+{
+    font-size: 20px;
+
+    display: inline-block;
+    overflow: hidden;
+
+    width: 50%;
+    margin: 30px auto 0;
+
+    white-space: nowrap;
+            text-overflow: ellipsis;
+        -ms-text-overflow: ellipsis;
+
+    -webkit-text-overflow: ellipsis;
+       -moz-text-overflow: ellipsis;
+         -o-text-overflow: ellipsis;
+}
+div.visual-box .content div a.btn-confirm
+{
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 31px;
+
+    display: block;
+
+    width: 97px;
+    height: 31px;
+    margin: 20px auto 0;
+
+    color: #272727;
+    background-color: #fff;
+}
+/* btn-close */
+div.visual-box .content a.btn-close
+{
+    position: relative;
+    left: 920px;
+
+    display: block;
+
+    width: 44px;
+    height: 44px;
+
+    text-indent: -9999px;
+
+    background-image: url(../images/main/btn_close.png);
+    background-repeat: no-repeat;
+}
+/* btn-open */
+div.visual-box div.btn-open
+{
+    position: absolute;
+    z-index: 999;
+    top: 107px;
+    left: 50%;
+
+    display: none;
+
+    width: 964px;
+    margin-left: -483px;
+}
+div.visual-box div.btn-open a
+{
+    position: relative;
+    left: 920px;
+
+    display: block;
+
+    width: 110px;
+    height: 52px;
+
+    text-indent: -9999px;
+
+    background-image: url(../images/main/btn_open.png);
+    background-repeat: no-repeat;
+}

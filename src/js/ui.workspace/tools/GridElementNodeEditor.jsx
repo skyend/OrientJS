@@ -35,22 +35,19 @@ var GridElementNodeEditor = React.createClass({
     let fieldName = _eventData.name;
     let data = _eventData.data;
 
-    if( fieldName === 'width' ){
-      let height = this.refs['sizing'].getFieldValue('height');
+
+    if( fieldName === 'name' ){
+      this.state.contextController.modifyGridProperty(targetId, 'name', data);
+    } else {
 
       this.state.contextController.modifyGridRect(targetId,{
-        width: data,
-        height: height
+        width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
+        minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
+        maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
+        height: fieldName === 'height' ? data : this.refs['sizing'].getFieldValue('height'),
+        minHeight: fieldName === 'min-height' ? data : this.refs['sizing'].getFieldValue('min-height'),
+        maxHeight: fieldName === 'max-height' ? data : this.refs['sizing'].getFieldValue('max-height')
       });
-    } else if( fieldName === 'height' ){
-      let width = this.refs['sizing'].getFieldValue('width');
-
-      this.state.contextController.modifyGridRect(targetId, {
-        width: width,
-        height: data
-      });
-    } else if( fieldName === 'name' ){
-      this.state.contextController.modifyGridProperty(targetId, 'name', data);
     }
   },
 
@@ -78,7 +75,7 @@ var GridElementNodeEditor = React.createClass({
 
     if( gridElementNode === null ) return "No selected gridElementNode";
     let elementRect = gridElementNode.getCurrentRectangle();
-
+    console.log(elementRect);
     let fieldSet = [];
     fieldSet.push({
       "name": "width",
@@ -87,11 +84,38 @@ var GridElementNodeEditor = React.createClass({
       type: "input",
       "enterable": true
     });
-
+    fieldSet.push({
+      "name": "min-width",
+      title: "Min Width",
+      "initialValue": elementRect.minWidth,
+      type: "input",
+      "enterable": true
+    });
+    fieldSet.push({
+      "name": "max-width",
+      title: "Max Width",
+      "initialValue": elementRect.maxWidth,
+      type: "input",
+      "enterable": true
+    });
     fieldSet.push({
       "name": "height",
       title: "Height",
       "initialValue": elementRect.height,
+      type: "input",
+      "enterable": true
+    });
+    fieldSet.push({
+      "name": "min-height",
+      title: "Min Height",
+      "initialValue": elementRect.minHeight,
+      type: "input",
+      "enterable": true
+    });
+    fieldSet.push({
+      "name": "max-height",
+      title: "Max Height",
+      "initialValue": elementRect.maxHeight,
       type: "input",
       "enterable": true
     });
