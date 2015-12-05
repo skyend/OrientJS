@@ -67,8 +67,12 @@ let GridManageScene = React.createClass({
 
     console.log(this.props.rootGridElement.calcRequiredContainerSize());
 
+    let containerSize = this.props.rootGridElement.calcContainerSize();
+
+    console.log('containerSize', containerSize);
+
     return (
-      <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.rootGridElement} width={this.props.width} height={this.props.height} left={0} top={0}/>
+      <GridManager selectedGridNode={this.props.selectedGridNode} gridElementNode={this.props.rootGridElement} width={containerSize.width} height={containerSize.height} left={0} top={0}/>
     )
   },
 
