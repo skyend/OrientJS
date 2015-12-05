@@ -1,5 +1,6 @@
 import React from 'react';
 import './GridBound.less';
+import GridElementBox from './GridBound/GridElementBox.jsx';
 
 export default React.createClass({
   mixins:[require('../../../reactMixin/EventDistributor.js')],
@@ -12,7 +13,8 @@ export default React.createClass({
       top:0,
       cellStep:20,
       screenMode:'desktop',
-      folding:false // 접기
+      folding:false, // 접기
+      rootGridElement:null
     };
   },
 
@@ -22,6 +24,10 @@ export default React.createClass({
 
   unfold(){
     this.emit("Unfold")
+  },
+
+  renderGridElement(){
+    return <GridElementBox />
   },
 
   renderGridMap(){
@@ -180,6 +186,14 @@ export default React.createClass({
     );
   },
 
+  renderFoldingHolder(){
+    return (
+      <div className='folding-holder'>
+        <i className={'fa fa-'+this.props.screenMode}/>
+      </div>
+    )
+  },
+
   render(){
     let style = {
       width: this.props.width,
@@ -191,6 +205,8 @@ export default React.createClass({
     return (
       <div className='GridBound' style={style}>
         {this.renderTopArea()}
+        {this.renderGridElement()}
+        {this.props.folding? this.renderFoldingHolder():''}
         {this.props.folding? '':this.renderGridMap()}
       </div>
     )

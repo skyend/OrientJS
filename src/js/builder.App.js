@@ -17,7 +17,6 @@ import GelateriaRequest from './builder.GelateriaRequest.js';
 import _ from 'underscore';
 
 import Viewer from './serviceCrew/Viewer.js';
-import IframeStage from './ui.workspace/partComponents/IframeStage.jsx';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
