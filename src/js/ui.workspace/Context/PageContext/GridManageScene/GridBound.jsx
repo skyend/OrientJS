@@ -14,8 +14,15 @@ export default React.createClass({
       cellStep:20,
       screenMode:'desktop',
       folding:false, // 접기
-      rootGridElement:null
+      rootGridElement: null,
+      selectedGridElement: null
     };
+  },
+
+  getInitialState(){
+    return {
+      multiplier:1
+    }
   },
 
   fold(){
@@ -26,13 +33,7 @@ export default React.createClass({
     this.emit("Unfold")
   },
 
-  renderGridElement(){
-    return <GridElementBox />
-  },
-
-  renderGridMap(){
-    let gridLines = [];
-
+  getGetGridAvailableRect(){
     // 가로줄 수
     let horizonCount = Math.floor((this.props.height-30) / this.props.cellStep);
 
@@ -44,6 +45,52 @@ export default React.createClass({
 
     let leftOffset = (this.props.width - width)/2;
     let topOffset = ((this.props.height - 30) - height)/2;
+
+    return {
+      width: width,
+      height: height,
+      left:leftOffset,
+      top:topOffset
+    };
+  },
+
+  renderGridElementHolder(){
+
+  },
+
+  renderGridElement(){
+    if( this.props.rootGridElement === null ){
+      return (
+        <div className='grid-element-wrapper'>
+          {this.renderGridElementHolder()}
+        </div>
+      );
+    }
+
+    return (
+      <div className='grid-element-wrapper'>
+        <GridElementBox gridElement={this.props.rootGridElement}/>
+      </div>
+    );
+  },
+
+  renderGridMap(){
+    let gridLines = [];
+    let availableRect = this.getGetGridAvailableRect();
+
+
+
+    let width = availableRect.width;
+    let height = availableRect.height;
+
+    // 가로줄 수
+    let horizonCount = height / this.props.cellStep;
+
+    // 세로줄 수
+    let verticalCount = width / this.props.cellStep;
+
+    let leftOffset = availableRect.left;
+    let topOffset = availableRect.top;
 
 
     let style = {};
@@ -162,7 +209,7 @@ export default React.createClass({
     if( this.props.folding ){
       return (
         <div className='top-area'>
-          <ul className='options right-options'>
+          <ul className='navigator right-navigator'>
             <li onClick={this.unfold}>
               <i className='fa fa-toggle-off'/>
             </li>
@@ -170,6 +217,9 @@ export default React.createClass({
         </div>
       )
     }
+    let self = this;
+    let multipliers = [.5,1,2,3];
+    let availableRect = this.getGetGridAvailableRect();
 
     return (
       <div className='top-area'>
@@ -177,8 +227,27 @@ export default React.createClass({
           {this.props.screenMode}
         </div>
 
-        <ul className='options right-options'>
-          <li onClick={this.fold}>
+
+        <ul className='navigator left-navigator'>
+          {multipliers.map(function(_m){
+            let switchMultiplier = function(){
+              self.setState({multiplier:_m});
+            };
+
+            return (
+              <li className={self.state.multiplier == _m ? 'button active':'button'} onClick={switchMultiplier}>
+                x{(_m+"").replace(/^0\./,'.')}
+              </li>
+            );
+          })}
+
+          <li className='text'>
+            {availableRect.width * this.state.multiplier} x {availableRect.height * this.state.multiplier}
+          </li>
+        </ul>
+
+        <ul className='navigator right-navigator'>
+          <li className='button' onClick={this.fold}>
             <i className='fa fa-toggle-on'/>
           </li>
         </ul>
