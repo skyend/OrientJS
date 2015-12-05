@@ -550,9 +550,6 @@ var DirectContext = React.createClass({
   onThrowCatcherElementResizingEnd(_eventData){
     var elNode = this.state.selectedElementNode;
     this.setState({selectedElementResizg: false});
-
-    elNode.getParent().executeSnapshot('all');
-
     // 랜더링
     //elNode.document.getContextController().rootRender();
   },

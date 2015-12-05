@@ -144,7 +144,9 @@ class ReactElementNode extends TagBaseElementNode {
           componentKey: componentKey,
           packageKey: packageKey,
           error: _e,
-          maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.'
+          maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.',
+          width: "100%",
+          height: "100%"
         }), this.realization);
       }
 
