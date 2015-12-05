@@ -15,7 +15,10 @@ let GridManageScene = React.createClass({
 
   getInitialState(){
     return {
-      placeholderDisappear: false
+      placeholderDisappear: false,
+      desktopGridFold:false,
+      tabletGridFold:false,
+      mobileGridFold:false
     };
   },
 
@@ -30,7 +33,29 @@ let GridManageScene = React.createClass({
     }, 500);
   },
 
+  onThrowCatcherUnfold(_e){
+    let targetMode = _e.path[0].props.screenMode;
 
+    if( targetMode === 'desktop' ){
+      this.setState({desktopGridFold:false})
+    } else if( targetMode === 'tablet' ){
+      this.setState({tabletGridFold:false})
+    } else if( targetMode === 'mobile' ){
+      this.setState({mobileGridFold:false})
+    }
+  },
+
+  onThrowCatcherFold(_e){
+    let targetMode = _e.path[0].props.screenMode;
+
+    if( targetMode === 'desktop' ){
+      this.setState({desktopGridFold:true})
+    } else if( targetMode === 'tablet' ){
+      this.setState({tabletGridFold:true})
+    } else if( targetMode === 'mobile' ){
+      this.setState({mobileGridFold:true})
+    }
+  },
 
   renderAreaPlaceholder(){
     let buttonStyle = {};
@@ -66,11 +91,24 @@ let GridManageScene = React.createClass({
       return this.renderAreaPlaceholder();
     }
     let returnElements = [];
-    let divideWidth = this.props.width / 3;
 
-    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={0} screenMode="desktop"/>);
-    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet"/>);
-    returnElements.push(<GridBound width={divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile"/>);
+
+    let foldGrids = 0;
+    if( this.state.desktopGridFold ){
+      foldGrids++;
+    }
+    if( this.state.tabletGridFold ){
+      foldGrids++;
+    }
+    if( this.state.mobileGridFold ){
+      foldGrids++;
+    }
+
+    let divideWidth = (this.props.width-(foldGrids*30)) / (3-foldGrids);
+
+    returnElements.push(<GridBound width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
+    returnElements.push(<GridBound width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
+    returnElements.push(<GridBound width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
 
     return returnElements;
   },
