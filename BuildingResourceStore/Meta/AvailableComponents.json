@@ -77,6 +77,10 @@
       "name": "Global Footer",
       "path": "GGIO/Footer.jsx"
     }, {
+      "key": "Footer_html",
+      "name": "Global Foote (HTML)r",
+      "path": "GGIO/Footer_HTML.jsx"
+    }, {
       "key": "StarList",
       "name": "Star List",
       "path": "GGIO/StarList.jsx"
@@ -84,6 +88,10 @@
       "key": "StarThumbs",
       "name": "Star Thumbs",
       "path": "GGIO/StarThumbsViewer.jsx"
+    }, {
+      "key": "StarCollectionImages_HTML",
+      "name": "Star Collection Images (HTML)",
+      "path": "GGIO/StarCollectionImages_html.jsx"
     }, {
       "key": "MainWallContent",
       "name": "Main Wall Contents",
