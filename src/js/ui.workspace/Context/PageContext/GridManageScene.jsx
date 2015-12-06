@@ -2,6 +2,7 @@ import React from 'react';
 import './GridManageScene.less';
 //import GridManager from '../ContextCommon/GridManager.jsx';
 import GridBound from './GridManageScene/GridBound.jsx';
+import GridTreeView from './GridManageScene/GridTreeView.jsx';
 
 let GridManageScene = React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
@@ -15,23 +16,24 @@ let GridManageScene = React.createClass({
 
   getInitialState(){
     return {
-      placeholderDisappear: false,
+      // placeholderDisappear: false,
       desktopGridFold:false,
       tabletGridFold:true,
-      mobileGridFold:true
+      mobileGridFold:true,
+      treeViewFold:false
     };
   },
 
-  createRootGrid(){
-    let self = this;
-
-    this.setState({placeholderDisappear:true});
-
-    setTimeout(function(){
-      self.emit("CreateRootGrid");
-      self.setState({placeholderDisappear:false});
-    }, 500);
-  },
+  // createRootGrid(){
+  //   let self = this;
+  //
+  //   this.setState({placeholderDisappear:true});
+  //
+  //   setTimeout(function(){
+  //     self.emit("CreateRootGrid");
+  //     self.setState({placeholderDisappear:false});
+  //   }, 500);
+  // },
 
   onThrowCatcherUnfold(_e){
     let targetMode = _e.path[0].props.screenMode;
@@ -45,6 +47,10 @@ let GridManageScene = React.createClass({
     }
   },
 
+  onThrowCatcherUnfoldTreeView(_e){
+    this.setState({treeViewFold:false});
+  },
+
   onThrowCatcherFold(_e){
     let targetMode = _e.path[0].props.screenMode;
 
@@ -55,6 +61,10 @@ let GridManageScene = React.createClass({
     } else if( targetMode === 'mobile' ){
       this.setState({mobileGridFold:true})
     }
+  },
+
+  onThrowCatcherFoldTreeView(_e){
+    this.setState({treeViewFold:true});
   },
 
   renderAreaPlaceholder(){
@@ -87,9 +97,6 @@ let GridManageScene = React.createClass({
   },
 
   renderMainArea(){
-    if( this.props.rootGridElement === null ){
-      return this.renderAreaPlaceholder();
-    }
     let returnElements = [];
 
 
@@ -103,13 +110,16 @@ let GridManageScene = React.createClass({
     if( this.state.mobileGridFold ){
       foldGrids++;
     }
+    if( this.state.treeViewFold ){
+      foldGrids++;
+    }
 
-    let divideWidth = (this.props.width-(foldGrids*30)) / (3-foldGrids);
+    let divideWidth = (this.props.width-(foldGrids*30)) / (4-foldGrids);
 
-    returnElements.push(<GridBound gridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
-    returnElements.push(<GridBound gridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
-    returnElements.push(<GridBound gridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
-
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
+    returnElements.push(<GridTreeView rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.treeViewFold? 30:divideWidth} height={this.props.height} left={divideWidth * 3} folding={this.state.treeViewFold}/>);
     return returnElements;
   },
 

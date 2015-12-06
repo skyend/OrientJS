@@ -76,6 +76,10 @@ class TagBaseElementNode extends ElementNode {
     return {};
   }
 
+  getRectangleByScreenMode(_screenMode) {
+    return this.rectangle[_screenMode];
+  }
+
   get zIndex() {
     return this._zIndex;
   }

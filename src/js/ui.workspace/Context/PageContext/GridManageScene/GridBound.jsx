@@ -1,6 +1,7 @@
 import React from 'react';
 import './GridBound.less';
 import GridElementBox from './GridBound/GridElementBox.jsx';
+import OutlineButton from '../../../partComponents/OutlineButton.jsx';
 
 export default React.createClass({
   mixins:[require('../../../reactMixin/EventDistributor.js')],
@@ -11,7 +12,7 @@ export default React.createClass({
       height:0,
       left:0,
       top:0,
-      cellStep:20,
+      cellStep:50,
       screenMode:'desktop',
       folding:false, // 접기
       rootGridElement: null,
@@ -33,15 +34,24 @@ export default React.createClass({
     this.emit("Unfold")
   },
 
+  getCellStep(){
+    return this.props.cellStep / this.state.multiplier;
+  },
+
+  creatRootGrid(){
+    this.emit("CreateRootGrid");
+  },
+
   getGetGridAvailableRect(){
+    let cellStep = this.getCellStep();
     // 가로줄 수
-    let horizonCount = Math.floor((this.props.height-30) / this.props.cellStep);
+    let horizonCount = Math.floor((this.props.height-30) / cellStep);
 
     // 세로줄 수
-    let verticalCount = Math.floor(this.props.width / this.props.cellStep);
+    let verticalCount = Math.floor(this.props.width / cellStep);
 
-    let width = verticalCount * this.props.cellStep;
-    let height = horizonCount * this.props.cellStep;
+    let width = verticalCount * cellStep;
+    let height = horizonCount * cellStep;
 
     let leftOffset = (this.props.width - width)/2;
     let topOffset = ((this.props.height - 30) - height)/2;
@@ -55,21 +65,31 @@ export default React.createClass({
   },
 
   renderGridElementHolder(){
-
+    return <div className='holder'>
+      <OutlineButton icon='th-large' width="200" title='Create Root Grid' color='blue' titleSize='14' iconSize='16' onClick={this.creatRootGrid}/>
+    </div>
   },
 
   renderGridElement(){
+    console.log('root GridRender', this.props.rootGridElement, this.props);
+    let availableRect = this.getGetGridAvailableRect();
+
     if( this.props.rootGridElement === null ){
       return (
-        <div className='grid-element-wrapper'>
+        <div className='grid-element-wrapper' style={availableRect}>
           {this.renderGridElementHolder()}
         </div>
       );
     }
 
+    this.props.rootGridElement.screenSize = {
+      width: availableRect.width,
+      height: availableRect.height
+    };
+
     return (
-      <div className='grid-element-wrapper'>
-        <GridElementBox gridElement={this.props.rootGridElement}/>
+      <div className='grid-element-wrapper' style={availableRect}>
+        <GridElementBox gridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridElement} multiplier={this.state.multiplier} screenMode={this.props.screenMode}/>
       </div>
     );
   },
@@ -77,17 +97,17 @@ export default React.createClass({
   renderGridMap(){
     let gridLines = [];
     let availableRect = this.getGetGridAvailableRect();
-
+    let cellStep = this.getCellStep();
 
 
     let width = availableRect.width;
     let height = availableRect.height;
 
     // 가로줄 수
-    let horizonCount = height / this.props.cellStep;
+    let horizonCount = height / cellStep;
 
     // 세로줄 수
-    let verticalCount = width / this.props.cellStep;
+    let verticalCount = width / cellStep;
 
     let leftOffset = availableRect.left;
     let topOffset = availableRect.top;
@@ -101,7 +121,7 @@ export default React.createClass({
         width:width,
         height: 1,
         left:leftOffset,
-        top:topOffset + (this.props.cellStep*i)
+        top:topOffset + (cellStep*i)
       };
 
       gridLines.push(
@@ -114,7 +134,7 @@ export default React.createClass({
       style = {
         width:1,
         height: height,
-        left:leftOffset + (this.props.cellStep*i),
+        left:leftOffset + (cellStep*i),
         top:topOffset
       };
 
@@ -274,7 +294,7 @@ export default React.createClass({
     return (
       <div className='GridBound' style={style}>
         {this.renderTopArea()}
-        {this.renderGridElement()}
+        {this.props.folding? '':this.renderGridElement()}
         {this.props.folding? this.renderFoldingHolder():''}
         {this.props.folding? '':this.renderGridMap()}
       </div>

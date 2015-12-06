@@ -1,0 +1,122 @@
+.GridElementBox
+{
+    position: relative;
+
+    transition: background .3s;
+
+    outline: 1px solid #338fc5;
+    //
+    &:hover
+    {
+        background-color: rgba(11, 91, 148, .35);
+    }
+
+    &:grid
+    {
+        outline: 1px dashed #c53333;
+    }
+
+    &:row
+    {
+        outline: 1px solid #338fc5;
+    }
+
+    &:column
+    {
+        outline: 1px solid #338fc5;
+    }
+
+    &:layer
+    {
+        outline: 1px solid #338fc5;
+    }
+
+    &.selected
+    {
+        background-color: rgba(4, 232, 0, .35);
+    }
+
+    > .child-holder
+    {
+        width: 100%;
+        height: 100%;
+
+        text-align: center;
+        &::before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+
+        > *
+        {
+            vertical-align: middle;
+        }
+    }
+    > .fragment
+    {
+        //position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+
+        overflow: hidden;
+
+        width: 100%;
+        height: 100%;
+
+        svg
+        {
+            position: absolute;
+            z-index: 1;
+
+            background-color: #333;
+        }
+
+        > .fragment-info
+        {
+            position: absolute;
+            z-index: 2;
+
+            width: 100%;
+            height: 100%;
+
+            transition: all .5s;
+            text-align: center;
+
+            background: rgba(21, 100, 199, .5);
+            box-shadow: inset 0 0 50px #155dc7;
+
+            &::before
+            {
+                display: inline-block;
+
+                width: 0;
+                height: 100%;
+
+                content: ' ';
+                vertical-align: middle;
+            }
+
+            > .title
+            {
+                display: inline-block;
+
+                padding: 10px;
+
+                vertical-align: middle;
+
+                color: #fff;
+                border: 2px dashed #fff;
+                /* background-color: rgba(255, 255, 255, 0.4); */
+                /* border-style: dashed; */
+                border-radius: 10px;
+            }
+        }
+    }
+}

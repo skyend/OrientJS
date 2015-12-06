@@ -1,0 +1,291 @@
+.GridTreeView
+{
+    position: relative;
+
+    display: inline-block;
+
+    transition: background .2s;
+    vertical-align: top;
+    ul,
+    li
+    {
+        display: inline-block;
+
+        margin: 0;
+        padding: 0;
+    }
+
+
+    &:hover
+    {
+        background-color: rgba(0,0,0,.3);
+    }
+
+    > .top-area,
+    > .bottom-area
+    {
+        font-family: 'Open Sans';
+        font-size: 13px;
+
+        position: relative;
+
+        box-sizing: border-box;
+        width: 100%;
+        height: 30px;
+
+        color: #fff;
+        border-bottom: 1px solid rgba(57, 60, 64, .76);
+        > .title
+        {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            text-align: center;
+            text-transform: uppercase;
+            pointer-events: none;
+            &::before
+            {
+                display: inline-block;
+
+                width: 0;
+                height: 100%;
+
+                content: ' ';
+                vertical-align: middle;
+            }
+
+            *
+            {
+                vertical-align: middle;
+            }
+        }
+
+        ul.navigator
+        {
+            height: 100%;
+            > li
+            {
+                min-width: 29px;
+                height: 100%;
+                //border-left: 1px solid rgba(57, 60, 64, .76);
+
+                text-align: center;
+                &::before
+                {
+                    display: inline-block;
+
+                    width: 0;
+                    height: 100%;
+
+                    content: ' ';
+                    vertical-align: middle;
+                }
+
+                &.button
+                {
+                    cursor: pointer;
+
+                    color: #a9abad;
+
+                    &.active
+                    {
+                        color: #fff;
+                        background-color: rgba(0,0,0,.25);
+                    }
+                }
+
+                &.text
+                {
+                    padding: 0 10px;
+
+                    color: #c3c3c3;
+                }
+            }
+
+            &.right-navigator
+            {
+                float: right;
+            }
+
+            &.left-navigator
+            {
+                float: left;
+            }
+        }
+    }
+
+
+    > .folding-holder
+    {
+        position: absolute;
+        top: 30px;
+        bottom: 0;
+
+        width: 100%;
+
+        text-align: center;
+
+        color: #bdbdbd;
+        &::before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+
+        *
+        {
+            vertical-align: middle;
+        }
+    }
+
+    > .grid-hierarachy
+    {
+        position: absolute;
+        top: 30px;
+        bottom: 30px;
+
+        overflow: auto;
+
+        width: 100%;
+
+        .grid-element
+        {
+            position: relative;
+
+            width: 100%;
+            //height: 30px;
+            > .row
+            {
+                position: relative;
+
+                width: 100%;
+                height: 50px;
+
+                transition: background .3s;
+                &:hover
+                {
+                    background-color: rgba(0,0,0,.3);
+                }
+
+                &.selected
+                {
+                    background-color: rgb(10, 98, 187);
+                }
+                > .thumb
+                {
+                    display: inline-block;
+
+                    box-sizing: border-box;
+                    width: 60px;
+                    height: 100%;
+                    padding: 5px;
+
+                    vertical-align: top;
+                    > .box
+                    {
+                        font-size: 17px;
+
+                        position: relative;
+
+                        box-sizing: border-box;
+                        width: 100%;
+                        height: 100%;
+
+                        text-align: center;
+
+                        color: #d0d0d0;
+                        border: 1px dashed #fff;
+                        &::before
+                        {
+                            display: inline-block;
+
+                            width: 0;
+                            height: 100%;
+
+                            content: ' ';
+                            vertical-align: middle;
+                        }
+                        > *
+                        {
+                            vertical-align: middle;
+                        }
+                    }
+                }
+
+                > .info
+                {
+                    position: absolute;
+                    right: 0;
+
+                    display: inline-block;
+
+                    box-sizing: border-box;
+                    height: 100%;
+
+                    color: #d0d0d0;
+
+                    &::before
+                    {
+                        position: relative;
+
+                        display: inline-block;
+
+                        width: 0;
+                        height: 100%;
+
+                        content: ' ';
+                        vertical-align: middle;
+                    }
+                    > *
+                    {
+                        vertical-align: middle;
+                    }
+
+                    > .options
+                    {
+                        display: inline-block;
+                        float: right;
+
+                        height: 50px;
+                        li
+                        {
+                            font-size: 20px;
+
+                            box-sizing: border-box;
+                            width: 40px;
+                            height: 100%;
+                            padding: 10px;
+
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                > .indent-block
+                {
+                    display: inline-block;
+
+                    height: 100%;
+                }
+            }
+        }
+    }
+
+    .bottom-area
+    {
+        position: absolute;
+        bottom: 0;
+
+        width: 100%;
+        height: 30px;
+    }
+}
