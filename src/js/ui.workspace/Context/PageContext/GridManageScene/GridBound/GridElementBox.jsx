@@ -181,9 +181,9 @@ let GridElementBox = React.createClass({
     } else {
       if( /^[\d\.]+(px)?$/.test(rectangle.width) ){
         style.width = parseInt(rectangle.width) / this.props.multiplier;
+      } else {
+        style.width = rectangle.width;
       }
-
-      style.width = rectangle.width;
     }
 
     if( rectangle.height === 'auto' ){
@@ -191,9 +191,9 @@ let GridElementBox = React.createClass({
     } else {
       if( /^[\d\.]+(px)?$/.test(rectangle.height) ){
         style.height = parseInt(rectangle.height) / this.props.multiplier;
+      } else {
+        style.height = rectangle.height;
       }
-
-      style.height = rectangle.height;
     }
 
 
