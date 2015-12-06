@@ -7,6 +7,8 @@ import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
 import './DirectContext.less';
 import Returns from "../../Returns.js";
 
+let sharedElementCopyData = null;
+
 
 var DirectContext = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
@@ -195,9 +197,12 @@ var DirectContext = React.createClass({
   },
 
   copyElementJSON(){
-    var data = this.state.selectedElementNode.export(false);
+    // elementNode를 copy 할 때에는 ID를 제외하고 copy한다.
+    // 타 Document에 붙여넣기되었을 때 ID충돌을 방지하기 위함이다.
+    // 타 Document에 붙여넣기 될 때 ID가 비어 있으면 자동으로 새로 부여하게 될 것이다.
+    var data = this.state.selectedElementNode.export(true);
 
-    this.copiedElementNodeData = data;
+    sharedElementCopyData = data;
 
     this.infoNotice("복사 성공", this.state.selectedElementNode.getId() + " ElementNode 가 성공적으로 복사되었습니다.")
   },
@@ -205,14 +210,14 @@ var DirectContext = React.createClass({
   pasteElementIn(){
     if( this.state.editModeElementNode !== null ) return this.errorNotice('붙여넣기 실패', '요소 Text를 편집중입니다.');
 
-    if (this.copiedElementNodeData === undefined) {
+    if (sharedElementCopyData === null) {
       this.errorNotice('붙여넣기 실패', '이전에 복사된 내용이 없습니다.');
       return;
     }
 
     var elementNode = this.state.selectedElementNode;
 
-    this.props.contextController.modifyElementTree(elementNode.id, 'pasteIn', this.copiedElementNodeData);
+    this.props.contextController.modifyElementTree(elementNode.id, 'pasteIn', sharedElementCopyData);
   },
 
   removeElement(){

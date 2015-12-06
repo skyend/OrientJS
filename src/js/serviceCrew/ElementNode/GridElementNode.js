@@ -102,12 +102,12 @@ class GridElementNode extends HTMLElementNode {
   // 자식의 사이즈와 무관하게 자신의 사이즈를 계산한다.
   // 자신의 사이즈가 단위가 px 과 같은 고정값일 경우 자신의 Rectangle을 가져와 반환하며
   // 자신의 사이즈가 단위가 % 와 같은 상대값일 경우 부모의 ContainerSize를 기반으로 계산한다.
-  calcContainerSize() {
+  calcContainerSize(_screenMode) {
     // let currentRect = this.getCurrentRectangle();
     // let widthUnit = this.getCriterionFromQuantity(currentRect.width);
     // let heightUnit = this.getCriterionFromQuantity(currentRect.height);
-    let width = this.calcContainerPart('width');
-    let height = this.calcContainerPart('height');
+    let width = this.calcContainerPart('width', _screenMode);
+    let height = this.calcContainerPart('height', _screenMode);
 
 
 
@@ -119,21 +119,27 @@ class GridElementNode extends HTMLElementNode {
     };
   }
 
-  analysisFriendAutoPart(_part) {
+  analysisFriendAutoPart(_part, _screenMode) {
     let self = this;
     let autoCount = 1; // include me
-    let upperSize = this.getUpperContainerPart(_part);
+    let upperSize = this.getUpperContainerPart(_part, _screenMode);
     let parent = this.getParent();
     let remainSize = upperSize;
 
     if (parent !== null) {
       parent.childrenIteration(function(_child) {
-        let rect = _child.getCurrentRectangle();
+        let rect;
+        if (_screenMode === undefined) {
+          rect = _child.getCurrentRectangle();
+        } else {
+          rect = _child.getRectangleByScreenMode(_screenMode);
+        }
+
         if (_child !== self) {
           if (rect[_part] === 'auto') {
             autoCount++;
           } else {
-            remainSize -= _child.calcContainerPart(_part);
+            remainSize -= _child.calcContainerPart(_part, _screenMode);
           }
         }
       });
@@ -144,28 +150,33 @@ class GridElementNode extends HTMLElementNode {
     }
   }
 
-  calcContainerPart(_part) {
-    let currentRect = this.getCurrentRectangle();
+  calcContainerPart(_part, _screenMode) {
+    let currentRect;
+    if (_screenMode === undefined) {
+      currentRect = this.getCurrentRectangle();
+    } else {
+      currentRect = this.getRectangleByScreenMode(_screenMode);
+    }
     let valueUnit = this.getCriterionFromQuantity(currentRect[_part]);
     //console.log('calcContainerPart currentRect[' + _part + '] valueUnit', currentRect[_part], valueUnit);
 
     if (valueUnit === 'auto') {
       // 부모로부터 정보를 얻어야 함
       if (this.behavior === 'row' && _part === 'width') {
-        return this.getUpperContainerPart(_part);
+        return this.getUpperContainerPart(_part, _screenMode);
       } else if (this.behavior === 'column' && _part === 'height') {
-        return this.getUpperContainerPart(_part);
+        return this.getUpperContainerPart(_part, _screenMode);
       } else if (this.behavior === 'layer') {
-        return this.getUpperContainerPart(_part);
+        return this.getUpperContainerPart(_part, _screenMode);
       }
 
-      return this.analysisFriendAutoPart(_part);
+      return this.analysisFriendAutoPart(_part, _screenMode);
     } else if (valueUnit === 'px') {
       return parseInt(currentRect[_part]);
     } else if (valueUnit === '%') {
       let value = parseInt(currentRect[_part]);
 
-      let upperContainerPartValue = this.getUpperContainerPart(_part);
+      let upperContainerPartValue = this.getUpperContainerPart(_part, _screenMode);
       // % 연산
       // 1200 의 10% == 120
       // 1200 의 20% == 240
@@ -179,10 +190,10 @@ class GridElementNode extends HTMLElementNode {
     return currentRect[_part];
   }
 
-  getUpperContainerPart(_part) {
+  getUpperContainerPart(_part, _screenMode) {
     let parent = this.getParent();
     if (parent !== null) {
-      return parent.calcContainerPart(_part);
+      return parent.calcContainerPart(_part, _screenMode);
     } else {
       return this.screenSize[_part];
     }

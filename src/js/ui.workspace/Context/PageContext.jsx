@@ -267,7 +267,7 @@ export default React.createClass({
       this.props.contextController.setScreenSize(sceneWidth, sceneHeight-40);
 
       return <div className="grid-manage-scene">
-        <GridManageScene selectedGridNode={this.state.selectedGridNode} rootGridElement={this.getContextController().getRootGridElement()} left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40}/>
+        <GridManageScene selectedGridNode={this.state.selectedGridNode} rootGridElement={this.getContextController().getRootGridElement()} left={ 5 } top={ 45 } width={this.props.width - 10} height={this.props.height-50}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
       return <MetaBoardScene page={this.getContextController().page}/>

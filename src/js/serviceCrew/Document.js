@@ -53,7 +53,7 @@ var Document = function(_contextController, _documentParams, _documentDataObject
     this.documentUpdate = _documentDataObject.updated;
     this.lastElementId = _documentDataObject.lastElementId || 0;
 
-    this.rootElementNode = _documentDataObject.rootElementNode !== null ?
+    this.rootElementNode = (_documentDataObject.rootElementNode !== null && _documentDataObject.rootElementNode !== undefined) ?
       this.newElementNode(_documentDataObject.rootElementNode) : null;
 
     this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
