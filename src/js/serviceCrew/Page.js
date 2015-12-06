@@ -100,6 +100,14 @@ class Page {
     return this._preparedAPISourceList || null;
   }
 
+  getParamSupply(_NS) {
+    let index = _.findIndex(this.paramSupplies, {
+      ns: _NS
+    });
+
+    return this.paramSupplies[index];
+  }
+
   getNewGridId() {
     return ++this.lastGridId;
   }
@@ -210,6 +218,27 @@ class Page {
     }
   }
 
+  checkPrepareParamSupply(_ns) {
+    let paramSupply = this.getParamSupply(_ns);
+
+    if (paramSupply === undefined) {
+      return null;
+    } else {
+      if (paramSupply.method === 'request') {
+        if ((paramSupply.apiSourceId === '' || paramSupply.apiSourceId === undefined) || (paramSupply.requestName === '' || paramSupply.requestName === undefined)) {
+          return false;
+        }
+
+      } else if (paramSupply.method === 'resolve-text') {
+        if (paramSupply.text === undefined || paramSupply.text == '') {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
   interpret() {
     // Todo....
   }
@@ -308,6 +337,20 @@ class Page {
       let apiSource = this.preparedAPISourceList[apiSourceIndex];
 
       console.log('자 이걸 처리해야되', apiSource, requestName);
+      console.log('요청', apiSource.requests[requestName], fields);
+
+      // 불필요한 필드가 삽입되어 있을 때를 대비하여 request parameter 리스트에서 제거한다.
+      fields = fields.filter(function(_field) {
+        let name = _field.name;
+        let index = _.findIndex(apiSource.requests[requestName].fieldList, {
+          name: name
+        });
+
+        if (index < 0) {
+          return false;
+        }
+        return true;
+      });
 
       apiSource.executeRequest(requestName, fields, undefined, function(_result) {
         result = _result;

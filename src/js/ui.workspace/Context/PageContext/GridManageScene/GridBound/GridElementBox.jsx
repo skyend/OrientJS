@@ -6,6 +6,8 @@ let GridElementBox = React.createClass({
   mixins:[require('../../../../reactMixin/EventDistributor.js')],
 
   getDefaultProps(){
+
+
     return {
       gridElement:null,
       selectedGridElement:null,
@@ -15,9 +17,19 @@ let GridElementBox = React.createClass({
   },
 
   getInitialState(){
+    this.fragmentLoading = false;
+
     return {
       fragmentObject:null
     }
+  },
+
+  doubleClickFlagment(){
+    //console.log('Double click', this.state.fragmentObject);
+
+    this.emit("BringDocumentContext", {
+      document: this.state.fragmentObject
+    });
   },
 
   appendRow(){
@@ -75,12 +87,6 @@ let GridElementBox = React.createClass({
     });
   },
 
-  requestFragmentObject(_fragmentId){
-    this.emit("NeedDocument", {
-      documentId:_fragmentId
-    });
-  },
-
   click(_e){
     console.log('click', _e.target);
     _e.stopPropagation();
@@ -94,9 +100,19 @@ let GridElementBox = React.createClass({
     _e.stopPropagation();
   },
 
+  componentWillUpdate(){
+    if( this.state.fragmentObject !== null ){
+      if( this.props.gridElement.loadedFollowingFragmentObject !== null ){
+        this.props.gridElement.analysisFollowingFragmentData();
+      }
+    }
+  },
+
   renderFragment(){
+    let self = this;
     let svgStyle = {};
     let fragmentTitle = undefined;
+    let preparedAllBindRules = true;
     let fragmentStyle = {};
     let leftSpace = 2;
     let rightSpace = 2;
@@ -111,21 +127,46 @@ let GridElementBox = React.createClass({
     fragmentStyle.width = this.props.width - leftSpace - rightSpace;
     fragmentStyle.height = this.props.height - topSpace - bottomSpace;
 
-    // fragmentObject 가 null이면
-    if( this.state.fragmentObject === null ){
-      this.requestFragmentObject(this.props.gridElement.followingFragment);
-    } else {
 
-      //fragmentObject 가 null 아닌데 _id가 매치되지 않는경우 Fragment가 변경된 경우로 다시 요청한다.
-      if( this.state.fragmentObject._id !== this.props.gridElement.followingFragment ){
-        this.requestFragmentObject(this.props.gridElement.followingFragment);
+    if( this.fragmentLoading == false ){
+
+      // fragmentObject 가 null이면
+      if( this.state.fragmentObject === null){
+        this.fragmentLoading = true;
+        this.props.gridElement.loadFollowingFragmentObject(function(_fragmentData){
+          self.fragmentLoading = false;
+          self.props.gridElement.analysisFollowingFragmentData();
+          self.setState({fragmentObject:_fragmentData});
+        });
+
       } else {
-        fragmentTitle = this.state.fragmentObject.title;
+        console.log(this.state.fragmentObject._id,this.props.gridElement.followingFragment);
+        if (this.state.fragmentObject._id !== this.props.gridElement.followingFragment) {
+          this.fragmentLoading = true;
+          //fragmentObject 가 null 아닌데 _id가 매치되지 않는경우 Fragment가 변경된 경우로 다시 요청한다.
+          this.props.gridElement.loadFollowingFragmentObject(function(_fragmentData){
+            self.fragmentLoading = false;
+            self.props.gridElement.analysisFollowingFragmentData();
+            self.setState({fragmentObject:_fragmentData});
+          });
+        }
       }
     }
 
+
+    if( this.state.fragmentObject !== null ){
+      fragmentTitle = this.state.fragmentObject.title;
+
+      if( this.props.gridElement.fragmentAnalysisResult !== null ){
+        preparedAllBindRules = this.props.gridElement.isPreparedAllBindRules();
+      }
+    }
+
+
+
+
     return (
-      <div className='fragment' style={fragmentStyle}>
+      <div className={'fragment '+ (!preparedAllBindRules ? "need-bind-rule":'') } style={fragmentStyle} onDoubleClick={this.doubleClickFlagment}>
         <div className='fragment-info'>
           <div className='title'>
             {fragmentTitle || this.props.gridElement.followingFragment}

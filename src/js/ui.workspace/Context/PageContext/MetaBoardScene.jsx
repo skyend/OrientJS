@@ -8,8 +8,9 @@ let ApiSourceRequest = React.createClass({
 
   getDefaultProps(){
     return {
-       apiSourceList:null,
-       apiInterfaceList:null
+      page:null,
+      apiSourceList:null,
+      apiInterfaceList:null
     };
   },
 
@@ -154,6 +155,7 @@ export default React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
   getInitialState(){
     return {
+      page:null,
       apisourceList:null,
       apiInterfaceList:null
     }

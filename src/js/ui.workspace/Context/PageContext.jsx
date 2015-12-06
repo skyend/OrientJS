@@ -221,6 +221,11 @@ export default React.createClass({
 
     // contextController 의 디스플레이모드를 변경한다.
     this.getContextController().setScreenSizing(_nextState.sizing);
+
+
+    // 컴포넌트가 업데이트 되기 전 binding 상황을 분석한다.
+
+    // this.props.contextController.analysisBind();
   },
 
   componentDidUpdate(){

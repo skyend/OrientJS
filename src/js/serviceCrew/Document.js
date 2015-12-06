@@ -496,9 +496,15 @@ Document.prototype.processingFormularBlock = function(_blockString) {
 }
 
 
-Document.prototype.analysisNeedBind = function() {
-  console.log('analysis -', this.export());
-}
+// Document.prototype.analysisNeedBind = function() {
+//   console.log('analysis -', this.export());
+//
+//
+//
+//
+// }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -568,5 +574,67 @@ Document.prototype.export = function(_withoutElementNodes) {
   };
 };
 
+function objectExplore(_object, _explorer) {
+  let oType = typeof _object;
+
+  if (oType === 'undefined') {
+    return;
+  } else if (oType === 'number') {
+    _explorer(_object);
+  } else if (oType === 'boolean') {
+    _explorer(_object);
+  } else if (oType === 'string') {
+    _explorer(_object);
+  } else if (oType === 'object') {
+    if (_object === null) {
+      return;
+    } else if (_object.length !== undefined && typeof _object.length === 'number') {
+      let item;
+      for (let i = 0; i < _object.length; i++) {
+        item = _object[i];
+
+        objectExplore(item, _explorer);
+      }
+    } else {
+      let keys = Object.keys(_object);
+      let key;
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+
+        objectExplore(_object[key], _explorer);
+      }
+    }
+  }
+}
+
+// Static Method
+Document.analysisData = function(_data) {
+  // ${ } *()
+  //console.log('도큐먼트가 분석한다', _data);
+
+  let analysisResult = {};
+
+  objectExplore(_data, function(_fieldData) {
+
+    // find Bind
+    if (/\$\{\*.+?(\/.+?)?\}/.test(_fieldData)) {
+      //console.log("find bind", _fieldData);
+
+      let matches = _fieldData.match(/\$\{\*(.+?)(\/(.+?))?\}/);
+      let ns = matches[1];
+      let detailPath = matches[3];
+
+      //console.log('Matches', ns, detailPath);
+
+      if (analysisResult[ns] === undefined) {
+        analysisResult[ns] = [];
+      }
+
+      analysisResult[ns].push(detailPath);
+    }
+  });
+
+  return analysisResult;
+}
 
 module.exports = Document;

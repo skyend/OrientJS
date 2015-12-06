@@ -436,7 +436,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
         contextTitle: documentMeta.title,
         contextType: 'document',
         contextController: _documentContextController,
-        iconClass: _eventData.iconClass
+        iconClass: 'file-text-o'
       });
     });
 

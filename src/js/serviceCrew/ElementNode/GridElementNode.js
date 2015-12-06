@@ -1,5 +1,5 @@
 import HTMLElementNode from './HTMLElementNode.js';
-
+import Document from '../Document.js';
 
 class GridElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -22,6 +22,7 @@ class GridElementNode extends HTMLElementNode {
     this._followingFragment;
 
     this._loadedFollowingFragmentObject = null;
+    this._fragmentAnalysisResult = null;
   }
 
   get behavior() {
@@ -44,6 +45,10 @@ class GridElementNode extends HTMLElementNode {
     return this._loadedFollowingFragmentObject;
   }
 
+  get fragmentAnalysisResult() {
+    return this._fragmentAnalysisResult;
+  }
+
   set behavior(_behavior) {
     this._behavior = _behavior;
   }
@@ -64,6 +69,10 @@ class GridElementNode extends HTMLElementNode {
 
   set loadedFollowingFragmentObject(_loadedFollowingFragmentObject) {
     this._loadedFollowingFragmentObject = _loadedFollowingFragmentObject;
+  }
+
+  set fragmentAnalysisResult(_fragmentAnalysisResult) {
+    this._fragmentAnalysisResult = _fragmentAnalysisResult;
   }
 
   realize(_realizeOptions) {
@@ -234,8 +243,11 @@ class GridElementNode extends HTMLElementNode {
   }
 
   loadFollowingFragmentObject(_complete) {
+    console.log("load followingFragment Object");
+    this.loadedFollowingFragmentObject = null;
 
     if (this.followingFragment !== null) {
+
       let self = this;
 
       let fragment = this.environment.serviceManager.getDocument(this.followingFragment, function(_fragment) {
@@ -243,11 +255,7 @@ class GridElementNode extends HTMLElementNode {
         self.loadedFollowingFragmentObject = _fragment.document;
         _complete(_fragment.document);
       });
-
-
     }
-
-
   }
 
   calcWidthSize(_width) {
@@ -313,6 +321,35 @@ class GridElementNode extends HTMLElementNode {
   clearInside() {
     this.followingFragment = null;
     this.children = [];
+  }
+
+  analysisFollowingFragmentData() {
+    let analysisResult = Document.analysisData(this.loadedFollowingFragmentObject);
+    this.fragmentAnalysisResult = analysisResult;
+  }
+
+  isPreparedAllBindRules() {
+    let self = this;
+    let usingNSs = Object.keys(this.fragmentAnalysisResult);
+    let prepared = true;
+
+    let nsResult = usingNSs.map(function(_ns) {
+      let result = self.environment.checkPrepareParamSupply(_ns);
+
+      if (result != true) {
+        prepared = false;
+      }
+
+      return {
+        ns: _ns,
+        result: result
+      };
+    });
+
+
+
+    return prepared;
+    //console.log('check bind rule', this.environment, this.fragmentAnalysisResult);
   }
 
   import (_elementNodeDataObject) {

@@ -124,13 +124,13 @@ export default React.createClass({
 
     let thumbIcon;
     if( _gridElement.behavior === 'grid' ){
-      thumbIcon = <i className='fa fa-th-large'/>
+      thumbIcon = <i className='fa fa-th-large'/>;
     } else if( _gridElement.behavior === 'row' ){
-      thumbIcon = <i className='fa fa-bars'/>
+      thumbIcon = <i className='fa fa-bars'/>;
     } else if( _gridElement.behavior === 'column' ){
-      thumbIcon = <i className='fa fa-columns'/>
+      thumbIcon = <i className='fa fa-columns'/>;
     } else if( _gridElement.behavior === 'layer' ){
-      thumbIcon = <i className='fa fa-plane'/>
+      thumbIcon = <i className='fa fa-plane'/>;
     }
 
     let selectGridNode = function(){
@@ -138,11 +138,25 @@ export default React.createClass({
         gridElementNode:_gridElement
       });
     }
+      console.log('TreeView')
+    if( this.followingFragment !== null ){
 
-    if( this.followingFragment !== null && _gridElement.loadedFollowingFragmentObject === null ){
-      _gridElement.loadFollowingFragmentObject(function(_fragment){
-        self.forceUpdate();
-      });
+      if( _gridElement.loadedFollowingFragmentObject === null ){
+        _gridElement.loadFollowingFragmentObject(function(_fragment){
+          self.forceUpdate();
+        });
+      } else if( _gridElement.followingFragment !== _gridElement.loadedFollowingFragmentObject._id ){
+        _gridElement.loadFollowingFragmentObject(function(_fragment){
+          self.forceUpdate();
+        });
+      }
+    } else {
+      //
+      // if( this.followingFragment !== _gridElement.loadedFollowingFragmentObject._id ){
+      //     _gridElement.loadFollowingFragmentObject(function(_fragment){
+      //       self.forceUpdate();
+      //     });
+      // }
     }
 
     return (
@@ -157,7 +171,7 @@ export default React.createClass({
           <div className="info" style={infoStyle}>
             <span className='behavior'>{_gridElement.behavior}</span>
             <span className='id'>{_gridElement.getId()}</span>
-            { this.followingFragment !== null ? <span className='attached-fragment'> <i className='fa fa-chain'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment} </span>:''}
+            { _gridElement.followingFragment !== null ? <span className='attached-fragment'> <i className='fa fa-chain'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment} </span>:''}
 
             <div className='options'>
               <li className='interface' title="Setting me" onClick={function(_e){self.clcikSetting(_e, _gridElement)}}>
