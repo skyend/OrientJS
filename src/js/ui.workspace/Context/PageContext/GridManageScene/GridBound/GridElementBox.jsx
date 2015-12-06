@@ -140,13 +140,13 @@ let GridElementBox = React.createClass({
     let childButtons = [];
 
     if( behavior === 'grid' ){
-      childButtons.push(<OutlineButton icon='bars' width="150" title='Create First Row' color='blue' titleSize='14' iconSize='16' onClick={this.appendRow}/>);
+      childButtons.push(<OutlineButton width="150" height='30' title='Create First Row' color='blue' titleSize='14' iconSize='16' onClick={this.appendRow}/>);
     } else if( behavior === 'row' ){
-      childButtons.push(<OutlineButton icon='columns' width="170" title='Create First Column' color='blue' titleSize='14' iconSize='16' onClick={this.appendColumn}/>);
+      childButtons.push(<OutlineButton width="170" height='30' title='Create First Column' color='blue' titleSize='14' iconSize='16' onClick={this.appendColumn}/>);
     }else if( behavior === 'column' || behavior === 'layer'){
-      childButtons.push(<OutlineButton icon='file-text-o' width="170" title='Attach Fragment' color='blue' titleSize='14' iconSize='16' onClick={this.attachFragment}/>);
-      childButtons.push(<OutlineButton icon='plane' width="170" title='Create First Layer' color='blue' titleSize='14' iconSize='16' onClick={this.addLayer}/>);
-      childButtons.push(<OutlineButton icon='th-large' width="120" title='Create Grid' color='blue' titleSize='14' iconSize='16' onClick={this.addGrid}/>);
+      childButtons.push(<OutlineButton width="170" title='Attach Fragment' height='30' color='blue' titleSize='14' iconSize='16' onClick={this.attachFragment}/>);
+      childButtons.push(<OutlineButton width="170" title='Create First Layer' height='30' color='blue' titleSize='14' iconSize='16' onClick={this.addLayer}/>);
+      childButtons.push(<OutlineButton width="120" title='Create Grid' height='30' color='blue' titleSize='14' iconSize='16' onClick={this.addGrid}/>);
     }
 
     return (

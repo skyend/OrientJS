@@ -93,6 +93,11 @@ export default React.createClass({
     });
   },
 
+  componentDidMount(){
+    let self = this;
+
+  },
+
   renderGridElement(_gridElement, _depth){
 
     if(_gridElement === null){
@@ -100,6 +105,7 @@ export default React.createClass({
         No Grid
       </div>;
     }
+
 
     let self = this;
     let indentBlocks = [];
@@ -133,6 +139,12 @@ export default React.createClass({
       });
     }
 
+    if( this.followingFragment !== null && _gridElement.loadedFollowingFragmentObject === null ){
+      _gridElement.loadFollowingFragmentObject(function(_fragment){
+        self.forceUpdate();
+      });
+    }
+
     return (
       <div className='grid-element'>
         <div className={"row" + (this.props.selectedGridElement === _gridElement? ' selected':'')} onClick={selectGridNode} >
@@ -143,8 +155,9 @@ export default React.createClass({
             </div>
           </div>
           <div className="info" style={infoStyle}>
-            <span>{_gridElement.behavior}</span>
-            <span>#{_gridElement.getId()}</span>
+            <span className='behavior'>{_gridElement.behavior}</span>
+            <span className='id'>{_gridElement.getId()}</span>
+            { this.followingFragment !== null ? <span className='attached-fragment'> <i className='fa fa-chain'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment} </span>:''}
 
             <div className='options'>
               <li className='interface' title="Setting me" onClick={function(_e){self.clcikSetting(_e, _gridElement)}}>

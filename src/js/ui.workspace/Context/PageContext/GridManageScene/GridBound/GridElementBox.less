@@ -11,30 +11,51 @@
         background-color: rgba(11, 91, 148, .35);
     }
 
-    &:grid
+    &.grid
     {
         outline: 1px dashed #c53333;
+        &.selected
+        {
+            background-color: rgba(0, 0, 0, .35);
+        }
     }
 
-    &:row
+    &.row
+    {
+        //display: block;
+        outline: 1px solid #338fc5;
+        &.selected
+        {
+            background-color: rgba(232, 0, 0, .35);
+        }
+    }
+
+    &.column
+    {
+        float: left;
+
+        outline: 1px solid #338fc5;
+        &.selected
+        {
+            background-color: rgba(4, 232, 0, .35);
+        }
+
+        &:last-child
+        {
+            clear: both;
+        }
+    }
+
+    &.layer
     {
         outline: 1px solid #338fc5;
+        &.selected
+        {
+            background-color: rgba(232, 232, 0, .35);
+        }
     }
 
-    &:column
-    {
-        outline: 1px solid #338fc5;
-    }
 
-    &:layer
-    {
-        outline: 1px solid #338fc5;
-    }
-
-    &.selected
-    {
-        background-color: rgba(4, 232, 0, .35);
-    }
 
     > .child-holder
     {

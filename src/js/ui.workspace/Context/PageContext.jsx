@@ -176,13 +176,13 @@ export default React.createClass({
 
   onThrowCatcherSelectGridElementNode(_eventData, _pass){
     _eventData.contextController = this.getContextController();
-
-    if( this.state.selectedGridNode === _eventData.gridElementNode ){
-      this.setState({selectedGridNode:null});
-      _eventData.gridElementNode = null;
-    } else {
-      this.setState({selectedGridNode:_eventData.gridElementNode});
-    }
+    this.setState({selectedGridNode:_eventData.gridElementNode});
+    // if( this.state.selectedGridNode === _eventData.gridElementNode ){
+    //   this.setState({selectedGridNode:null});
+    //   _eventData.gridElementNode = null;
+    // } else {
+    //   this.setState({selectedGridNode:_eventData.gridElementNode});
+    // }
 
     _pass();
   },

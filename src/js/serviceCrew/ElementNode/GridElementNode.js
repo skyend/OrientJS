@@ -20,6 +20,8 @@ class GridElementNode extends HTMLElementNode {
 
     this._behavior; // Grid, Row, Column, Layer
     this._followingFragment;
+
+    this._loadedFollowingFragmentObject = null;
   }
 
   get behavior() {
@@ -38,6 +40,10 @@ class GridElementNode extends HTMLElementNode {
     return this._followingFragment;
   }
 
+  get loadedFollowingFragmentObject() {
+    return this._loadedFollowingFragmentObject;
+  }
+
   set behavior(_behavior) {
     this._behavior = _behavior;
   }
@@ -54,6 +60,10 @@ class GridElementNode extends HTMLElementNode {
 
   set followingFragment(_followingFragment) {
     this._followingFragment = _followingFragment;
+  }
+
+  set loadedFollowingFragmentObject(_loadedFollowingFragmentObject) {
+    this._loadedFollowingFragmentObject = _loadedFollowingFragmentObject;
   }
 
   realize(_realizeOptions) {
@@ -221,6 +231,23 @@ class GridElementNode extends HTMLElementNode {
       width: Math.max(sumWidth, this.calcWidthSize(currentRect.width)),
       height: Math.max(sumHeight, this.calcHeightSize(currentRect.height))
     };
+  }
+
+  loadFollowingFragmentObject(_complete) {
+
+    if (this.followingFragment !== null) {
+      let self = this;
+
+      let fragment = this.environment.serviceManager.getDocument(this.followingFragment, function(_fragment) {
+
+        self.loadedFollowingFragmentObject = _fragment.document;
+        _complete(_fragment.document);
+      });
+
+
+    }
+
+
   }
 
   calcWidthSize(_width) {
