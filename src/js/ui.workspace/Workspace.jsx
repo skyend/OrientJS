@@ -150,7 +150,6 @@ var Workspace = React.createClass({
     this.refs['BottomNavigation'].setState({show: true});
   },
 
-
   onThrowCatcherFoldTool(_eventData, _pass) {
     console.log(_eventData);
     if (_eventData.refPath[0] === 'RightNavigation') {
@@ -202,7 +201,6 @@ var Workspace = React.createClass({
 
 
   },
-
 
   onThrowCatcherNeedProjectMeta(_eventData, _pass){
     //console.log('NeedProjectMeta',this.state.projectMeta);

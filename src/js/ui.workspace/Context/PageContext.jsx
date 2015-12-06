@@ -55,6 +55,27 @@ export default React.createClass({
     this.getContextController().save();
   },
 
+  publish(){
+    let httpParams = ['publish='];
+    let accessPoint = this.props.contextController.page.accessPoint;
+
+    if( accessPoint === '' ){
+      this.emit("NoticeMessage", {
+        title:"퍼블리시를 할 수 없습니다.",
+        message:"Meta Board 에서 Access Point 항목을 입력해 주세요.",
+        level:"error"
+      });
+
+      return;
+    }
+
+    httpParams.push("page="+accessPoint);
+    httpParams.push('serviceId='+this.props.contextController.serviceManager.service_id);
+    httpParams.push("pageId="+this.contextController.page.id);
+
+    window.open(window.location.origin+'/?'+httpParams.join('&'));
+  },
+
   getContextType(){
     return this.props.contextType;
   },
@@ -310,8 +331,12 @@ export default React.createClass({
                 <div className='title'>Meta Board</div>
               </li>
               <li className={this.state.currentScene === 'preview'? "active":""} onClick={this.switchPreviewScene}>
-                <i className='fa fa-rocket'/>
+                <i className='fa fa-plane'/>
                 <div className='title'>Preview</div>
+              </li>
+              <li onClick={this.publish}>
+                <i className='fa fa-rocket'/>
+                <div className='title'>Publish</div>
               </li>
             </ul>
           </div>

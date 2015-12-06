@@ -85,7 +85,7 @@ class GridElementNode extends HTMLElementNode {
     //this.realization.style.height = containerSize.height;
 
     if (this.behavior === 'column') {
-      this.realization.style.display = 'inline-block';
+      this.realization.style.float = 'left';
     }
 
     //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';

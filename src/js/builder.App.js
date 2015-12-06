@@ -58,10 +58,15 @@ App.prototype.startPublishPage = function(_params) {
   let serviceId = _params['serviceId'];
   let pageId = _params['pageId'];
 
+  let headChildren = document.head.querySelectorAll("style,link,script");
+  for (let i = 0; i < headChildren.length; i++) {
+    headChildren[i].remove();
+  }
   // Main Page
   // http://localhost:8081/?publish=on&serviceId=565e7e1d4d00580a00e5becd&projectId=56193d447acb5b7b633dc8eb&pageId=566116414d00580a00e5bef4
 
   let serviceManager = new ServiceManager(this, serviceId);
+  this.serviceManager = serviceManager;
   // serviceManager.getPageList(function(_result) {
   //   console.log(_result);
   //
@@ -77,16 +82,22 @@ App.prototype.startPublishPage = function(_params) {
   serviceManager.getPageContextController(pageId, function(_contextController) {
     console.log(_contextController);
 
-    let previewScene = React.render(React.createElement(PreviewScene, {
-      width: '100%',
-      height: '100%'
-    }), window.document.body);
+    // let previewScene = React.render(React.createElement(PreviewScene, {
+    //   width: '100%',
+    //   height: '100%'
+    // }), window.document.body);
 
     let viewer = new Viewer(serviceManager);
+    viewer.page = _contextController.page;
+    viewer.window = window;
+    viewer.rendering({
+      width: window.clientWidth,
+      height: window.clientHeight
+    });
 
-    previewScene.setViewer(viewer)
-      //viewer.window =
-    console.log(previewScene, viewer);
+    //previewScene.setViewer(viewer)
+    //viewer.window =
+
   });
 
   //window.document.body.innerHTML = "<iframe id='publish-zone' width='100%' height='100%' style='border'></iframe>";
