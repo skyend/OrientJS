@@ -1,0 +1,345 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video
+{
+    font-size: 100%;
+
+    margin: 0; padding: 0; border: 0;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section
+{
+    display: block;
+}
+body
+{
+    line-height: 1em;
+}
+ol,
+ul
+{
+    list-style: none;
+}
+table
+{
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+/* ie에서 이미지 공백 오류처리 */
+img
+{
+    vertical-align: top; border: none;
+}
+
+/* 링크 초기화 */
+a:link,
+a:visited,
+a:hover,
+a:active
+{
+    text-decoration: none; letter-spacing: 0; border: none;
+}
+
+
+header nav:after,
+article.container .content-general:after,
+div.quick-btn:after,
+footer:after
+{
+    display: block;
+    clear: both;
+
+    content: '';
+}
+/* header
+------------------------------------------------------ */
+header
+{
+    position: relative;
+
+    overflow: visible;
+
+    color: #fff;
+    background-color: #272727;
+}
+header a
+{
+    font-weight: bold;
+
+    color: #fff;
+}
+header h1
+{
+    position: absolute;
+    top: 19px;
+    left: 37px;
+}
+/* banner sos */
+header span a
+{
+    position: absolute;
+    z-index: 99;
+
+    display: block;
+
+    width: 167px;
+    height: 70px;
+
+    text-indent: -9999px;
+
+    background-repeat: no-repeat;
+    background-position: right 0;
+}
+header span.sos-main a
+{
+    top: -28px;
+    right: 20px;
+
+    background-image: url('../images/common/bg_bnr_sos_m.png');
+}
+header span.sos-sub a
+{
+    top: 57px;
+    right: 0;
+
+    background-image: url('../images/common/bg_bnr_sos_s.png');
+}
+/* nav depth1 */
+header nav.depth1
+{
+    width: 1000px;
+    margin: 0 auto;
+}
+header nav.depth1 ul li
+{
+    float: left;
+}
+header nav.depth1 ul li a
+{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 70px;
+
+    display: block;
+
+    height: 70px;
+
+    text-transform: uppercase;
+}
+
+/* 150303 추가 - 시작 */
+header.mainHeader.fixed
+{
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: auto;
+}
+sup.bNum
+{
+    font-size: 12px;
+
+    display: inline-block;
+    zoom: 1;
+
+    margin-top: -3px;
+
+    vertical-align: top;
+
+    *display: inline;
+}
+sup.bNum.sm
+{
+    font-size: 10px;
+}
+sup.bNum.mt0
+{
+    margin-top: 0;
+}
+/* 150303 추가 - 끝 */
+
+/* nav depth2 */
+header div.depth2
+{
+    position: absolute;
+    z-index: 10;
+    top: 70px;
+    left: 0;
+
+    width: 100%;
+    padding-top: 25px;
+    padding-bottom: 30px;
+
+    border-top: 1px solid #474747;
+    background-color: #272727;
+}
+header div.depth2 nav
+{
+    width: 1000px;
+    margin: 0 auto;
+}
+header div.depth2 nav ul
+{
+    float: left;
+}
+header div.depth2 nav ul li a
+{
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 35px;
+
+    display: block;
+
+    -webkit-transition: color 1s;
+       -moz-transition: color 1s;
+        -ms-transition: color 1s;
+         -o-transition: color 1s;
+            transition: color 1s;
+
+    color: #a9a9a9;
+}
+header div.depth2 nav ul li a:hover,
+header div.depth2 nav ul li a.on
+{
+    color: #fff;
+}
+header .w1
+{
+    width: 167px;
+    padding-left: 81px;
+}
+header .w2
+{
+    width: 195px;
+}
+header .w3
+{
+    width: 211px;
+}
+header .w4
+{
+    width: 161px;
+}
+header .w5
+{
+    width: 185px;
+}
+/* nav login */
+header nav.nav-login
+{
+    position: absolute;
+    top: 11px;
+    right: 21px;
+}
+header nav.nav-login li
+{
+    float: left;
+}
+header nav.nav-login li a
+{
+    font-size: 11px;
+
+    display: block;
+
+    margin-left: 18px;
+
+    color: #a4a4a4;
+}
+/* 숨겨지는 영역
+------------------------------------------------------ */
+
+header div.depth2
+{
+    display: none;
+}

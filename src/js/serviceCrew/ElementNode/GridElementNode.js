@@ -336,7 +336,8 @@ class GridElementNode extends HTMLElementNode {
     let nsResult = usingNSs.map(function(_ns) {
       let result = self.environment.checkPrepareParamSupply(_ns);
 
-      if (result != true) {
+      console.log(result);
+      if (result !== true) {
         prepared = false;
       }
 
@@ -345,6 +346,8 @@ class GridElementNode extends HTMLElementNode {
         result: result
       };
     });
+
+    console.log('프패', prepared);
 
 
 

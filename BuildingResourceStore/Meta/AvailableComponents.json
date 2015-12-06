@@ -65,6 +65,10 @@
       "name": "Global Navigation Bar",
       "path": "GGIO/GNB.jsx"
     }, {
+      "key": "GNB_HTML",
+      "name": "Global Navigation Bar(HTML)",
+      "path": "GGIO/GNB_HTML.jsx"
+    }, {
       "key": "SubNavigator",
       "name": "Sub Navgatior",
       "path": "GGIO/SubNavigator.jsx"

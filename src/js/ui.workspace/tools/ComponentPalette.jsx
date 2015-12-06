@@ -18,14 +18,14 @@
     },
 
     mouseOverListItem(_componentKey, _packageKey){
-      var syncWindowContext = this.refs['ComponentPreviewer'].getIframeWindow();
+      //var syncWindowContext = this.refs['ComponentPreviewer'].getIframeWindow();
 
 
-      this.emit('IMustPreviewComponent', {
-        componentKey: _componentKey,
-        packageKey: _packageKey,
-        syncWindowContext: syncWindowContext
-      });
+      // this.emit('IMustPreviewComponent', {
+      //   componentKey: _componentKey,
+      //   packageKey: _packageKey,
+      //   syncWindowContext: syncWindowContext
+      // });
     },
 
     mouseDownTo(_componentKey, _packageKey){
@@ -72,7 +72,7 @@
     },
 
     componentDidMount(){
-      this.refs['ComponentPreviewer'].displayComponent(InputBoxWithSelector, "reactClass");
+      //this.refs['ComponentPreviewer'].displayComponent(InputBoxWithSelector, "reactClass");
 
       this.emit('NeedStateComponentPackageMeta');
     },
@@ -130,9 +130,7 @@
                   {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
                 </ul>
               </div>
-              <div className='previewer-area'>
-                <ComponentPreviewer width="100%" height="100%" ref="ComponentPreviewer" color="aqua"/>
-              </div>
+
             </div>
             <div className='foot'>
 

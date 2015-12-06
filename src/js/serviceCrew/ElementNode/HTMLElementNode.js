@@ -47,6 +47,11 @@ class HTMLElementNode extends TagBaseElementNode {
     });
   }
 
+  hookingLink() {
+    let realization = this.realization;
+
+  }
+
 
   appendChild(_elementNode) {
     if (this.getType() === 'string') {

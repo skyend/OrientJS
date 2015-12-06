@@ -117,7 +117,7 @@
     },
 
     setValue(_value) {
-      this.refs['input'].getDOMNode().value = _value.value;
+      this.refs['input'].getDOMNode().value = _value;
       this.changedValue();
     },
 

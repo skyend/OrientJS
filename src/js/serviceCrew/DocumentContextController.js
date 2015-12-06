@@ -466,7 +466,19 @@ class DocumentContextController {
       this.clearSuperElement();
       _elementNode.linkHierarchyRealizaion();
       this.superElement.appendChild(_elementNode.realization);
+
     }
+
+    console.log(this.superElement.querySelectorAll('*'));
+
+    let elements = this.superElement.querySelectorAll('*');
+
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].onclick = function(_e) {
+        _e.preventDefault();
+      };
+    }
+
   }
 
   rootRender(_realizeOptions) {

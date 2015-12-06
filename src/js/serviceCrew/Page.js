@@ -225,6 +225,8 @@ class Page {
       return null;
     } else {
       if (paramSupply.method === 'request') {
+        console.log("데이터 검증", _ns, paramSupply, paramSupply.apiSourceId, paramSupply.requestName);
+
         if ((paramSupply.apiSourceId === '' || paramSupply.apiSourceId === undefined) || (paramSupply.requestName === '' || paramSupply.requestName === undefined)) {
           return false;
         }
