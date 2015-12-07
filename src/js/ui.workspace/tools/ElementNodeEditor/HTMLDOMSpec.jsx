@@ -145,6 +145,15 @@ var HTMLDOMSpec = React.createClass({
         tagAttributeFieldSet.push(fieldConfig)
       });
 
+      // data-navigate
+      tagAttributeFieldSet.push({
+        name: 'data-navigate',
+        title: 'Link Navagate',
+        initialValue: elementNode.getAttribute('data-navigate') || '',
+        type: 'input',
+        enterable: true
+      });
+
       var elementAttrKeys = Object.keys(elementNode.getAttributes());
 
       elementAttrKeys.map(function (_key) {

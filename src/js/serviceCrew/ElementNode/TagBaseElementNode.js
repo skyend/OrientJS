@@ -196,11 +196,15 @@ class TagBaseElementNode extends ElementNode {
 
         self.navigateHandling(targetNavigate);
       }
+    } else {
+      this.realization.onclick = function(_e) {
+        _e.preventDefault();
+      }
     }
   }
 
   navigateHandling(_navigate) {
-    console.log(_navigate);
+
     let splited = _navigate.split('&');
 
     this.environment.contextController.serviceManager.navigatePage(splited);
