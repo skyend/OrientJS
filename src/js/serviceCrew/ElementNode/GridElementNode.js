@@ -83,9 +83,11 @@ class GridElementNode extends HTMLElementNode {
     let containerSize = this.calcContainerSize();
     //this.realization.style.width = containerSize.width;
     //this.realization.style.height = containerSize.height;
+    if (this.behavior === 'row') {
 
-    if (this.behavior === 'column') {
+    } else if (this.behavior === 'column') {
       this.realization.style.float = 'left';
+
     }
 
     //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
@@ -97,6 +99,20 @@ class GridElementNode extends HTMLElementNode {
         self.setFragmentCC(_fragmentContextController);
         self.fragmentRender(_realizeOptions);
       });
+    }
+  }
+
+  linkHierarchyRealizaion() {
+    super.linkHierarchyRealizaion();
+
+    if (this.behavior === 'row') {
+      // 마지막에 clear블록을 삽입하여 float:left CSS 속성을 가진 Column들의 높이를 적용한다.
+      let clearBlock = document.createElement('div');
+      clearBlock.style.clear = 'both';
+      //clearBlock.style.content = " ";
+      clearBlock.style.display = "block";
+
+      this.realization.appendChild(clearBlock);
     }
   }
 

@@ -73,7 +73,6 @@ class StringElementNode extends ElementNode {
     super.buildByComponent(_component);
 
     this.setText("Text");
-    this.setTagName('text');
   }
 
   buildByElement(_textNode) {
