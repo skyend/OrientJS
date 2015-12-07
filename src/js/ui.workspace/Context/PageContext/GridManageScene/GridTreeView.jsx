@@ -2,6 +2,12 @@ import React from 'react';
 import './GridTreeView.less';
 import OutlineButton from '../../../partComponents/OutlineButton.jsx';
 
+let sharedCopyData = {};
+sharedCopyData.grid = null;
+sharedCopyData.rows = null;
+sharedCopyData.column = null;
+sharedCopyData.columnChildren = null;
+
 export default React.createClass({
   mixins:[require('../../../reactMixin/EventDistributor.js')],
 
@@ -57,6 +63,33 @@ export default React.createClass({
     });
   },
 
+  copyElement(){
+    let copyData = this.props.selectedGridElement.export(true);
+    // this.emit('NoticeMessage', {
+    //   title: "복사 완료",
+    //   message: "Grid 가 복사되었습니다.",
+    //   level: "info"
+    // });
+  },
+
+  copyChildren(){
+    let copyData = this.props.selectedGridElement.export(true);
+    // this.emit('NoticeMessage', {
+    //   title: "복사 완료",
+    //   message: "Grid 가 복사되었습니다.",
+    //   level: "info"
+    // });
+  },
+
+  paste(){
+    let copyData = this.props.selectedGridElement.export(true);
+    // this.emit('NoticeMessage', {
+    //   title: "붙여넣기 완료",
+    //   message: "Grid가 삽입 되었습니다.",
+    //   level: "info"
+    // });
+  },
+
   appendRow(){
     this.emit("AppendNewRow", {
       targetId: this.props.selectedGridElement.getId()
@@ -96,6 +129,22 @@ export default React.createClass({
   componentDidMount(){
     let self = this;
 
+  },
+
+  renderGridElementFootInfo(_gridElement){
+    let returnInfoElements = [];
+    let className = _gridElement.getAttribute('class');
+    let idName = _gridElement.getAttribute('id');
+
+    if( idName !== '' && idName !== undefined ){
+      returnInfoElements.push( <span className='subject id'>{idName}</span> );
+    }
+
+    if( className !== '' && className !== undefined ){
+      returnInfoElements.push( <span className='subject class'>{className}</span> );
+    }
+
+    return returnInfoElements;
   },
 
   renderGridElement(_gridElement, _depth){
@@ -171,6 +220,10 @@ export default React.createClass({
           <div className="info" style={infoStyle}>
             <span className='behavior'>{_gridElement.behavior}</span>
             <span className='id'>{_gridElement.getId()}</span>
+            <div className='foot-info'>
+              { this.renderGridElementFootInfo(_gridElement)}
+            </div>
+
             { _gridElement.followingFragment !== null ? <span className='attached-fragment'> <i className='fa fa-chain'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment} </span>:''}
 
             <div className='options'>
@@ -204,20 +257,40 @@ export default React.createClass({
   },
 
   renderBottomArea(){
+    let renderItems = [];
+
     if( this.props.selectedGridElement === null ) return;
 
     let behavior = this.props.selectedGridElement.behavior;
-    let renderItems = [];
+
+    // renderItems.push(
+    //   <li className='button text' onClick={this.copyRows}>
+    //     <i className='fa fa-clipboard'/> Copy
+    //   </li>
+    // );
+    // 
+    // renderItems.push(
+    //   <li className='button text' onClick={this.pasteRows}>
+    //     <i className='fa fa-clipboard'/> Copy children
+    //   </li>
+    // );
+    //
+    // renderItems.push(
+    //   <li className='button text' onClick={this.pasteRows}>
+    //     <i className='fa fa-pencil-square'/> Paste
+    //   </li>
+    // );
+
     if( behavior === 'grid' ){
       renderItems.push(
         <li className='button text' onClick={this.appendRow}>
-          <i className='fa fa-plus-square-o '/> Append Row
+          <i className='fa fa-plus-square-o'/> Append Row
         </li>
       );
     } else if( behavior === 'row' ){
       renderItems.push(
         <li className='button text' onClick={this.appendColumn}>
-          <i className='fa fa-plus-square-o '/> Append Column
+          <i className='fa fa-plus-square-o'/> Append Column
         </li>
       );
       renderItems.push(
