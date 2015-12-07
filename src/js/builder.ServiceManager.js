@@ -152,6 +152,10 @@ class ServiceManager {
     });
   }
 
+  getAPISourceWithInterfaces(_apisource_id, _complete) {
+
+  }
+
   saveAPISource(_apisource_id, _apisourceDataObject, _complete) {
     this.app.gelateriaRequest.saveAPISource(this.service_id, _apisource_id, _apisourceDataObject, function(_result) {
       _complete(_result);
@@ -360,6 +364,25 @@ class ServiceManager {
     }
   }
 
+
+  navigatePage(_navigateParamList) {
+    let list = [];
+    list.push("publish=");
+    _navigateParamList.map(function(_param, _i) {
+
+      if (_i == 0) list.push('page=' + _param);
+      else
+        list.push(_param);
+
+      console.log('navi params', _navigateParamList);
+    });
+
+    list.push("serviceId=" + this.service_id);
+
+    console.log(list.join("&"));
+
+    location.href = location.origin + "/?" + list.join("&");
+  }
 
   newViewer() {
     return new Viewer(this);

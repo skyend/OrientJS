@@ -57,6 +57,7 @@ App.prototype.startPublishPage = function(_params) {
   let projectId = _params['projectId'];
   let serviceId = _params['serviceId'];
   let pageId = _params['pageId'];
+  let pageAccessPointName = _params['page'];
 
   let headChildren = document.head.querySelectorAll("style,link,script");
   for (let i = 0; i < headChildren.length; i++) {
@@ -79,26 +80,41 @@ App.prototype.startPublishPage = function(_params) {
   //   console.log(page);
   // });
 
-  serviceManager.getPageContextController(pageId, function(_contextController) {
-    console.log(_contextController);
+  serviceManager.getPageList(function(_list) {
+    let index = _.findIndex(_list.list, {
+      accessPoint: pageAccessPointName
+    });
 
-    // let previewScene = React.render(React.createElement(PreviewScene, {
-    //   width: '100%',
-    //   height: '100%'
-    // }), window.document.body);
+    if (index > -1) {
+      let page = _list.list[index];
+      pageId = page._id;
+    }
 
-    let viewer = new Viewer(serviceManager);
-    viewer.page = _contextController.page;
-    viewer.window = window;
-    viewer.rendering({
-      width: window.clientWidth,
-      height: window.clientHeight
-    }, false);
+    serviceManager.getPageContextController(pageId, function(_contextController) {
+      console.log(_contextController);
 
-    //previewScene.setViewer(viewer)
-    //viewer.window =
+      // let previewScene = React.render(React.createElement(PreviewScene, {
+      //   width: '100%',
+      //   height: '100%'
+      // }), window.document.body);
 
+      let viewer = new Viewer(serviceManager);
+      viewer.page = _contextController.page;
+      viewer.window = window;
+      viewer.rendering({
+        width: window.clientWidth,
+        height: window.clientHeight
+      }, false);
+
+      //previewScene.setViewer(viewer)
+      //viewer.window =
+
+    });
   });
+
+
+
+
 
   //window.document.body.innerHTML = "<iframe id='publish-zone' width='100%' height='100%' style='border'></iframe>";
 

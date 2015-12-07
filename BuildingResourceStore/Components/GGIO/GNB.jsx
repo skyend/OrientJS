@@ -54,9 +54,10 @@ module.exports =  {
       },
 
       renderDepth2Items(_item){
+
         return (
           <li>
-            <a href="#">
+            <a href="#" data-navigate={_item.menu_id}>
               {_item.name}
             </a>
           </li>
@@ -64,10 +65,17 @@ module.exports =  {
       },
 
       renderDepth2(_depth2, _depth1Base){
-        if( !this.state.showDepth2 ) return;
+
+        var style = {display:'none'};
+
         var self = this;
         var depth2List = [];
         console.log("Depth 2", _depth2, _depth1Base);
+
+        if( this.state.showDepth2 ) {
+          style.display = 'block';
+        }
+
 
         _depth1Base.map(function(_item){
           var nid = _item.nid;
@@ -80,7 +88,7 @@ module.exports =  {
         console.log(depth2List);
 
         return (
-          <div className="depth2">
+          <div className="depth2" style={style}>
             <nav>
               {depth2List.map(function(_depth2Items,_i){
                 return (
@@ -129,17 +137,17 @@ module.exports =  {
 
         return (
           <header className='ggio-gnb' onMouseLeave={this.hideDepth2}>
-            <h1><a href="#"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
+            <h1><a href="#" data-navigate="main"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
             <nav className="depth1">
               <ul onMouseEnter={this.showDepth2}>
                 {depth1.map(function(_item, _i){
-                  return <li className={"w"+(_i+1)}><a href="#">{_item.name}</a></li>;
+                  return <li className={"w"+(_i+1)}><a href="#" data-navigate={_item.menu_id}>{_item.name}</a></li>;
                 })}
 
               </ul>
             </nav>
             {this.renderDepth2(depth2, depth1)}
-            <span className="sos-sub"><a href="#">STYLE S.O.S</a></span>
+            {/*<span className="sos-sub"><a href="#">STYLE S.O.S</a></span>*/}
             <nav className="nav-login">
               <ul>
                 <li><a href="#">Login</a></li>

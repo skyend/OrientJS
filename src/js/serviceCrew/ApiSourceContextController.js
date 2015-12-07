@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import RequestManager from './RequestManager.js';
 import ICEServer from '../builder.ICEServer.js';
+import APISource from './APISource.js';
 
 class ApiSourceContextController extends RequestManager {
   constructor(_apisource, _session, _serviceManager) {
@@ -17,6 +18,8 @@ class ApiSourceContextController extends RequestManager {
     this.requests = this.apiSource.requests = this.apiSource.requests || {};
     this.apiSource.interfaces = this.apiSource.interfaces || [];
     this.apiSource.placeholders = this.apiSource.placeholders || {};
+
+
 
     this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
@@ -155,7 +158,8 @@ class ApiSourceContextController extends RequestManager {
       _end(_result);
     });
 
-
+    // console.log(this.apiSource);
+    // this.apiSource.executeTestRequest(_request.name, _end)
 
   }
 

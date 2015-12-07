@@ -10,15 +10,20 @@ module.exports =  {
       // ReactJS 개발 가이드에 따라 컴포넌트를 구현합니다.
 
       // 예시
-      renderItem(_item){
+      renderItem(_item, _i){
+        var navigate = "starCollection&parent_nid="+_item.nid;
+
+        if( _i == 0 ){
+          navigate = "starCollection_jw";
+        }
 
         return (
           <li>
-            <a href="star_list01.html">
+            <a href="#" data-navigate={navigate}>
               <img src={"http://125.131.88.75:8080/page/star_collection/image.cm?fileid="+_item.contents_file.value} width="1000"  alt="JOO WON COLLECTION" />
             </a>
           </li>
-        )
+        );
       },
 
 

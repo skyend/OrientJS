@@ -71,7 +71,7 @@ export default React.createClass({
 
     httpParams.push("page="+accessPoint);
     httpParams.push('serviceId='+this.props.contextController.serviceManager.service_id);
-    httpParams.push("pageId="+this.contextController.page.id);
+    //httpParams.push("pageId="+this.contextController.page.id);
 
     window.open(window.location.origin+'/?'+httpParams.join('&'));
   },

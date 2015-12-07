@@ -243,7 +243,7 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-database'></i> ICafe API Sources
+            <i className='fa fa-database'></i> ICE API Sources
                 <span className='add-button' onClick={this.clickAddAPISource}>
                   <i className='fa fa-plus'></i>
                 </span>

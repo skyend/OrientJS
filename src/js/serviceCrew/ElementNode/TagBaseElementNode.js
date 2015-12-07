@@ -166,11 +166,7 @@ class TagBaseElementNode extends ElementNode {
     super.realize(_realizeOptions);
     this.createRealizationNode();
 
-    this.realization.onclick = function(_e) {
-      _e.preventDefault();
 
-      ///alert('click Element');
-    }
 
     let realizeOptions = _realizeOptions || {};
 
@@ -178,11 +174,35 @@ class TagBaseElementNode extends ElementNode {
     this.mappingAttributes(realizeOptions.skipResolve);
 
 
-    if (this.realization.getAttribute('navigate') !== undefined) {
 
-    }
+
     // 이벤트 매핑
     this.mappingEvent();
+
+    this.mappingNavigate();
+  }
+
+  mappingNavigate() {
+    // navigate
+    if (this.realization.getAttribute('data-navigate') !== undefined) {
+      let navigate = this.realization.getAttribute('data-navigate');
+      let self = this;
+
+      this.realization.onclick = function(_e) {
+        _e.preventDefault();
+
+        let targetNavigate = _e.target.getAttribute('data-navigate');
+
+        self.navigateHandling(targetNavigate);
+      }
+    }
+  }
+
+  navigateHandling(_navigate) {
+    console.log(_navigate);
+    let splited = _navigate.split('&');
+
+    this.environment.contextController.serviceManager.navigatePage(splited);
   }
 
   valueWithUnitSeperator(_value) {

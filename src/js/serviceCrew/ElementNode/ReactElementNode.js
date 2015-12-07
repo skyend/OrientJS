@@ -150,6 +150,29 @@ class ReactElementNode extends TagBaseElementNode {
         }), this.realization);
       }
 
+
+      this.mappingNavigateChildren();
+    }
+  }
+
+  mappingNavigateChildren() {
+
+    let children = this.realization.querySelectorAll("*");
+    let self = this;
+
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+
+      // navigate
+      if (child.getAttribute('data-navigate') !== null && child.getAttribute('data-navigate') !== undefined) {
+        let navigate = child.getAttribute('data-navigate');
+
+        child.onclick = function(_e) {
+          console.log("React click");
+          _e.preventDefault();
+          self.navigateHandling(navigate);
+        };
+      }
     }
   }
 

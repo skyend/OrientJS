@@ -102,6 +102,7 @@ export default class APISource {
     if (request.crud === '*') {
       this.executeCustomURL(request, fieldsObject, function(_result) {
         console.log("커스텀 결과?", _result);
+        _end(_result);
       });
     } else {
 
