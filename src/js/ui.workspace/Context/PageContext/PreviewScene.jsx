@@ -27,7 +27,7 @@ let PreviewScene = React.createClass({
     _viewer.rendering({
       width:this.props.width,
       height: this.props.height
-    });
+    }, true);
     this.setState({viewer:_viewer});
   },
 
@@ -36,7 +36,7 @@ let PreviewScene = React.createClass({
       this.state.viewer.rendering({
         width:this.props.width,
         height: this.props.height
-      });
+      },true);
     }
   },
 

@@ -48,7 +48,7 @@ class Viewer {
     //this.window.document.body.innerHTML = "Hello";
   }
 
-  rendering(_screenSize) {
+  rendering(_screenSize, _blockClick) {
     let self = this;
 
     // this.window.onunload = function(_e) {
@@ -92,10 +92,24 @@ class Viewer {
       self.page.screenSize = _screenSize;
 
       self.page.setHTMLDocument(self.window.document);
-      self.page.rootGridElement.realize();
+      self.page.rootGridElement.realize({
+        clickBlock: _blockClick || false
+      });
       self.page.rootGridElement.linkHierarchyRealizaion();
       self.window.document.body.style.margin = 0;
       self.window.document.body.appendChild(self.page.rootGridElement.realization);
+
+      // if (_blockClick) {
+      //   console.log("Block Click");
+      //   let elements = self.window.document.body.querySelectorAll('*');
+      //   console.log(elements);
+      //   for (let i = 0; i < elements.length; i++) {
+      //     elements[i].onclick = function(_e) {
+      //       _e.preventDefault();
+      //     };
+      //   }
+      // }
+
     });
 
 

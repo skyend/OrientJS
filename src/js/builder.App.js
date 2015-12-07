@@ -93,7 +93,7 @@ App.prototype.startPublishPage = function(_params) {
     viewer.rendering({
       width: window.clientWidth,
       height: window.clientHeight
-    });
+    }, false);
 
     //previewScene.setViewer(viewer)
     //viewer.window =

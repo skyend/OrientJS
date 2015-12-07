@@ -19,8 +19,8 @@ module.exports =  {
             	<h2><img src="http://125.131.88.75:8080/image/kolon/common/h_logo_foot.png" width="112" height="40" alt="GGIO2 CURATION" /></h2>
             	<div className="content">
             		<nav><a href="#">이용약관</a>  /  <a href="#">개인정보취급방침</a>  /  <a href="#">개인정보처리방침</a></nav>
-            		<address>코오롱인더스트리㈜  대표이사 : 박동문  사업자등록번호 : 138-85-19612   개인정보관리 책임자 : 경영지원본부 손정현 상무
-            서울시 서초구 서초대로 411 GT타워    대표전화 : 1588-7667   FAX : 02-3677-7546    EMAIL : ggio2@kolon.com</address>
+            		  <address>코오롱인더스트리㈜  대표이사 : 박동문  사업자등록번호 : 138-85-19612   개인정보관리 책임자 : 경영지원본부 손정현 상무<br/>
+                  	서울시 서초구 서초대로 411 GT타워    대표전화 : 1588-7667   FAX : 02-3677-7546    EMAIL : ggio2@kolon.com</address>
             		<p>COPYRIGHT&copy; 2015 GGIO<sup className="bNum sm mt0">2</sup> ALL RIGHTS RESERVED.</p>
             	</div>
             </footer>

@@ -95,7 +95,7 @@ class GridElementNode extends HTMLElementNode {
     if (this.followingFragment !== null) {
       this.environment.getFragment(this.followingFragment, function(_fragmentContextController) {
         self.setFragmentCC(_fragmentContextController);
-        self.fragmentRender();
+        self.fragmentRender(_realizeOptions);
       });
     }
   }
@@ -105,10 +105,10 @@ class GridElementNode extends HTMLElementNode {
     console.log(this.fragmentContextController);
   }
 
-  fragmentRender() {
+  fragmentRender(_realizeOptions) {
     this.realization.innerHTML = '';
     this.fragmentContextController.attach(this.environment.fragmentContext, this.realization);
-    this.fragmentContextController.beginRender();
+    this.fragmentContextController.beginRender(_realizeOptions);
   }
 
   resetTemporaryDecrementRectSize() {

@@ -448,6 +448,7 @@ class DocumentContextController {
   }
 
   rerenderingElementNode(_elementNode, _realizeOptions) {
+    let realizeOptions = _realizeOptions || {};
 
     if (_elementNode === null) {
       this.clearSuperElement();
@@ -456,7 +457,7 @@ class DocumentContextController {
 
     let parentElementNode = _elementNode.getParent();
 
-    _elementNode.realize(_realizeOptions);
+    _elementNode.realize(realizeOptions);
 
     if (parentElementNode !== null) {
 
@@ -466,18 +467,19 @@ class DocumentContextController {
       this.clearSuperElement();
       _elementNode.linkHierarchyRealizaion();
       this.superElement.appendChild(_elementNode.realization);
-
     }
 
-    console.log(this.superElement.querySelectorAll('*'));
+    if (realizeOptions.clickBlock) {
+      let elements = this.superElement.querySelectorAll('*');
 
-    let elements = this.superElement.querySelectorAll('*');
-
-    for (let i = 0; i < elements.length; i++) {
-      elements[i].onclick = function(_e) {
-        _e.preventDefault();
-      };
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].onclick = function(_e) {
+          _e.preventDefault();
+        };
+      }
     }
+
+
 
   }
 

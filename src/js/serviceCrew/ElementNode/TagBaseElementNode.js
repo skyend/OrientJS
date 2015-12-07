@@ -166,11 +166,21 @@ class TagBaseElementNode extends ElementNode {
     super.realize(_realizeOptions);
     this.createRealizationNode();
 
+    this.realization.onclick = function(_e) {
+      _e.preventDefault();
+
+      ///alert('click Element');
+    }
+
     let realizeOptions = _realizeOptions || {};
 
     // attribute 매핑
     this.mappingAttributes(realizeOptions.skipResolve);
 
+
+    if (this.realization.getAttribute('navigate') !== undefined) {
+
+    }
     // 이벤트 매핑
     this.mappingEvent();
   }

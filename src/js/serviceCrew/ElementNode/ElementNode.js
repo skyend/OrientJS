@@ -197,6 +197,8 @@ class ElementNode {
     // let ghostOrder = realizeOptions.ghostOrder;
 
     this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
+
+    console.log('Realize options', this, _realizeOptions);
   }
 
 
