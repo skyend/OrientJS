@@ -471,11 +471,16 @@ class DocumentContextController {
 
     if (realizeOptions.clickBlock) {
       let elements = this.superElement.querySelectorAll('*');
+      let elementNavigateAttr;
 
       for (let i = 0; i < elements.length; i++) {
-        elements[i].onclick = function(_e) {
-          _e.preventDefault();
-        };
+        elementNavigateAttr = elements[i].getAttribute("data-navigate");
+
+        if (elementNavigateAttr === undefined || elementNavigateAttr === null) {
+          elements[i].onclick = function(_e) {
+            _e.preventDefault();
+          };
+        }
       }
     }
 

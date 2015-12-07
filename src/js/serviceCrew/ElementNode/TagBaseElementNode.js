@@ -184,7 +184,8 @@ class TagBaseElementNode extends ElementNode {
 
   mappingNavigate() {
     // navigate
-    if (this.realization.getAttribute('data-navigate') !== undefined) {
+
+    if (this.realization.getAttribute('data-navigate') !== undefined && this.realization.getAttribute('data-navigate') !== null) {
       let navigate = this.realization.getAttribute('data-navigate');
       let self = this;
 

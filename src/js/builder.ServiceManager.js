@@ -366,6 +366,22 @@ class ServiceManager {
 
 
   navigatePage(_navigateParamList) {
+    if (!/publish=/.test(window.location.search)) {
+
+      let self = this;
+      this.getPageList(function(_list) {
+        let targetPageIndex = _.findIndex(_list.list, {
+          accessPoint: _navigateParamList[0]
+        });
+
+        if (targetPageIndex > -1) {
+          self.app.uiSupervisor.openPageContext(_list.list[targetPageIndex], 'fa-newspaper-o');
+        }
+      })
+
+      return;
+    }
+
     let list = [];
     list.push("publish=");
     _navigateParamList.map(function(_param, _i) {
@@ -381,7 +397,7 @@ class ServiceManager {
 
     console.log(list.join("&"));
 
-    location.href = location.origin + "/?" + list.join("&");
+    window.location.href = location.origin + "/?" + list.join("&");
   }
 
   newViewer() {

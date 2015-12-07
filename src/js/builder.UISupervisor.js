@@ -442,23 +442,32 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
 
 };
 
+
+UI.prototype.openPageContext = function(_page, _iconClass) {
+  var self = this;
+  console.log(_page);
+
+  this.app.serviceManager
+    .getPageContextController(_page._id, function(_pageContextController) {
+      self.rootUIInstance.openStageContext({
+        pageID: _page._id,
+        contextID: 'page#' + _page._id,
+        contextTitle: _page.title,
+        contextType: 'page',
+        contextController: _pageContextController,
+        iconClass: _iconClass
+      });
+    });
+}
+
 UI.prototype.onThrowCatcherBringPageContext = function(_eventData) {
 
   //console.log('BringDocumentContext', _eventData.document);
   var page = _eventData.page;
-  var self = this;
+
+
   // Document Meta 정보로 DocumentContextController를 얻는다
-  this.app.serviceManager
-    .getPageContextController(page._id, function(_pageContextController) {
-      self.rootUIInstance.openStageContext({
-        pageID: page._id,
-        contextID: 'page#' + page._id,
-        contextTitle: page.title,
-        contextType: 'page',
-        contextController: _pageContextController,
-        iconClass: _eventData.iconClass
-      });
-    });
+  this.openPageContext(page, _eventData.iconClass);
 };
 
 UI.prototype.onThrowCatcherDestroyContext = function(_eventData) {

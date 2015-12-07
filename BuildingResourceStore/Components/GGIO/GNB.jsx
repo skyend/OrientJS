@@ -131,10 +131,6 @@ module.exports =  {
         // });
 
 
-        console.log('depth1', depth1);
-
-
-
         return (
           <header className='ggio-gnb' onMouseLeave={this.hideDepth2}>
             <h1><a href="#" data-navigate="main"><img src="http://125.131.88.75:8080/image/kolon/common/h_logo.png" width="93" height="34" alt="GGIO2 CURATION" /></a></h1>
