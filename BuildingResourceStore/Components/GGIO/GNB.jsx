@@ -85,15 +85,19 @@ module.exports =  {
           }
         });
 
-        console.log(depth2List);
 
         return (
           <div className="depth2" style={style}>
             <nav>
               {depth2List.map(function(_depth2Items,_i){
+
+                var depth2Items = _depth2Items.sort(function(_a, _b){
+                  return parseInt(_a.order_no) > parseInt(_b.order_no);
+                });
+
                 return (
                   <ul className={"w"+(_i+1)}>
-                    { _depth2Items.map(self.renderDepth2Items)}
+                    { depth2Items.map(self.renderDepth2Items)}
                   </ul>
                 )
               })}

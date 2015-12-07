@@ -376,7 +376,11 @@ class ServiceManager {
 
         if (targetPageIndex > -1) {
           self.app.uiSupervisor.openPageContext(_list.list[targetPageIndex], 'fa-newspaper-o');
+        } else {
+          alert("존재하지 않는 페이지 입니다.");
         }
+
+
       })
 
       return;

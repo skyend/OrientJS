@@ -52,10 +52,28 @@ div.star-thumbs
             -ms-transition: opacity .15s ease-in-out;
              -o-transition: opacity .15s ease-in-out;
                 transition: opacity .15s ease-in-out;
+        text-align: center;
         pointer-events: none;
 
         opacity: 0;
         background-color: rgba(0,0,0,.8);
+
+        &::before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+        > .window
+        {
+            display: inline-block;
+
+            vertical-align: middle;
+        }
     }
 }
 div.star-thumbs h3

@@ -31,10 +31,17 @@ module.exports =  {
       renderPopupInside(){
         if( this.state.popupItem === null ) return;
         var item = this.state.popupItem;
+        var self = this;
+
+        var closePopup = function(){
+          self.setState({popupItem:null,popupItemAppear:false});
+        };
 
         return (
-          <div className='window'>
-            <img src={"http://125.131.88.75:8080/page/star_collection/image.cm?fileid="+item.pop_image.value} onLoad={this.imageLoaded}/>
+          <div className='window' >
+            <div className="item-wrapper">
+              <img onClick={closePopup} src={"http://125.131.88.75:8080/page/star_collection/image.cm?fileid="+item.pop_image.value} onLoad={this.imageLoaded}/>
+            </div>
           </div>
         );
       },
