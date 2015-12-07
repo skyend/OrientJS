@@ -22,7 +22,7 @@ import React from 'react';
 
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 0.76;
+  window.gelateriaVersion = 1.01;
 
   this.session = new Session();
   this.gelateriaRequest = new GelateriaRequest();
