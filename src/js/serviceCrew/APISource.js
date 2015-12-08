@@ -105,13 +105,14 @@ export default class APISource {
         _end(_result);
       });
     } else {
-
       this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, headers, fields, function(_result) {
-        request.testResultData = _result;
 
-        request.testDataFrame = request.createResultDataFrame(request.testResultData, self.nodeTypeData.propertytype);
+        self.contextController.getNodeTypeData(function(_nodeTypeData) {
+          request.testResultData = _result;
+          request.testDataFrame = request.createResultDataFrame(request.testResultData, _nodeTypeData.propertytype);
 
-        _end(_result);
+          _end(_result);
+        });
       });
     }
 
@@ -210,7 +211,9 @@ export default class APISource {
       let interfaceObject = self.apiInterfaceList[interfaceIndex];
 
       Object.keys(interfaceObject.requests || {}).map(function(_key) {
-        self.requests[_key] = new Request(interfaceObject.requests[_key]);
+        let request = new Request(interfaceObject.requests[_key], interfaceObject);
+
+        self.requests[_key] = request;
       });
     });
 
@@ -232,7 +235,7 @@ export default class APISource {
         Object.keys(self.requests).map(function(_key) {
           let request = self.requests[_key];
 
-          if (!request.isFrame) {
+          if (!request.isInheritance) {
             requests[_key] = request;
           }
         });

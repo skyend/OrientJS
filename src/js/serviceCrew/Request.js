@@ -1,7 +1,7 @@
 import _ from 'underscore';
 
 export default class Request {
-  constructor(_requestData, _isFrame) {
+  constructor(_requestData, _interface) {
     this.name = _requestData.name;
     this.method = _requestData.method || 'get';
     this.fieldFillFromNodeType = _requestData.fieldFillFromNodeType;
@@ -11,7 +11,13 @@ export default class Request {
     this.crud = _requestData.crud;
 
     // interface내에 속하는 request의 속성
-    this.isFrame = _isFrame;
+    this.interface = _interface;
+    if (this.interface !== undefined) {
+      // 이것은 상속물이다
+      this.isInheritance = true;
+    } else {
+      this.isInheritance = false;
+    }
   }
 
 

@@ -153,7 +153,22 @@ class ServiceManager {
   }
 
   getAPISourceWithInterfaces(_apisource_id, _complete) {
+    let self = this;
 
+    this.app.gelateriaRequest.loadApisource(this.service_id, _apisource_id, function(_result) {
+      if (_result.result === 'success') {
+        self.getApiinterfaceList(function(_aiResult) {
+          let apiInterfaceList = _aiResult.list;
+
+          let apiSource = new APISource(self.app, _result.apisource, apiInterfaceList);
+
+          _complete(apiSource);
+        });
+      } else {
+        alert("Fail API Source load :" + _apisource_id);
+      }
+
+    });
   }
 
   saveAPISource(_apisource_id, _apisourceDataObject, _complete) {
@@ -325,10 +340,10 @@ class ServiceManager {
   getApiSourceContextController(_apiSourceId, _complete) {
     var self = this;
     if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
-      this.app.gelateriaRequest.loadApisource(this.service_id, _apiSourceId, function(_result) {
+      this.getAPISourceWithInterfaces(_apiSourceId, function(_apiSource) {
 
-        if (_result.result === 'success') {
-          var apiSourceContextController = new ApiSourceContextController(_result.apisource, self.app.session, self);
+        if (_apiSource !== null) {
+          var apiSourceContextController = new ApiSourceContextController(_apiSource, self.app.session, self);
 
           self.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
 

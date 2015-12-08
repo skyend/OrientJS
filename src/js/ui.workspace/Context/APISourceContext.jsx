@@ -13,8 +13,7 @@ var Request = React.createClass({
     return {
       request: null,
       nodeTypeData: null,
-      isInterface: false,
-      isImplemented: false
+      isInterface: false
     }
   },
 
@@ -74,7 +73,7 @@ var Request = React.createClass({
     console.log(this.getFields());
 
     this.props.contextController.executeRequestTest(this.props.request, this.getFields(), this.getHeaders(), function (_result) {
-      console.log(_result);
+      console.log('test data setState', _result);
 
       self.setState({icafeResult: _result, showDataPreviewer: true, loadingData: false});
     });
@@ -297,12 +296,12 @@ var Request = React.createClass({
 
     this.emit("UpdatedRequest", {
       request: this.props.request,
-      isInterface: this.props.isImplemented
+      isInheritance: this.isInheritance
     });
   },
 
   renderWithCheckEditable(_buttonElement){
-    if (this.props.isImplemented) return '';
+    if( this.isInheritance ) return '';
 
     return _buttonElement;
   },
@@ -313,7 +312,7 @@ var Request = React.createClass({
     }
 
     return <div className='data-render-zone open'>
-      <ICafeResultTable result={this.state.icafeResult} propertytypes={ this.props.nodeTypeData.propertytype}/>
+      <ICafeResultTable result={this.state.icafeResult} propertytypes={this.props.nodeTypeData.propertytype}/>
     </div>;
   },
 
@@ -372,8 +371,6 @@ var Request = React.createClass({
 
       return <input defaultValue={customUrlPattern} onChange={this.changeURLPattern} ref='url-pattern'/>
     }
-
-
   },
 
   renderRows(){
@@ -484,20 +481,19 @@ var Request = React.createClass({
 
   render(){
     var self = this;
-    this.isFromInterface = false;
+    this.isInheritance = this.props.request.isInheritance;
 
-    if (this.props.interface !== undefined)
-      this.isFromInterface = true;
 
-    return <div className={'request '+ (this.isFromInterface? "smaller from-interface":'')}>
+
+    return <div className={'request '+ (this.isInheritance? "smaller from-interface":'')}>
       <div className='row'>
         <button onClick={this.toggleFold} className=''> { this.state.fold ?
           <i className='fa fa-chevron-down'/> : <i className='fa fa-chevron-up'/>} </button>
         <div className='request-name'>
           { this.props.request.name}
         </div>
-        { this.isFromInterface ? <div className='interface-name'>
-          <i className='fa fa-plug'/> { this.props.interface.title }
+        { this.isInheritance ? <div className='interface-name'>
+          <i className='fa fa-plug'/> { this.props.request.interface.title }
         </div> : ''}
 
         {this.renderWithCheckEditable(<button onClick={this.deleteRequest}> Delete </button>)}
@@ -599,7 +595,7 @@ var APISourceContext = React.createClass({
   },
 
   onThrowCatcherUpdatedRequest(_eventData){
-    if (_eventData.isImplemented) return; // implemented 의 request 는 저장할 수 없다.
+    if (_eventData.isInheritance) return; // implemented 의 request 는 저장할 수 없다.
 
     this.props.contextController.updateRequest(_eventData.request);
 
@@ -733,19 +729,8 @@ var APISourceContext = React.createClass({
         </button>
       </div>,
       <div className='request-list'>
-        { this.state.followInterfaces.map(function (_interface) {
-          return Object.keys(_interface.requests || {}).map(function (_requestKey) {
-            var request = _interface.requests[_requestKey];
-
-            return <Request request={request} interface={_interface}
-                            contextController={self.props.contextController}
-                            crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData||{}}
-                            isImplemented={true}/>
-          });
-        })}
-      </div>,
-      <div className='request-list'>
         { this.props.contextController.requestsList.map(function (_request) {
+          console.log(_request);
 
           return <Request request={_request} contextController={self.props.contextController}
                           crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData}

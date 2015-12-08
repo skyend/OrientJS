@@ -20,7 +20,7 @@ class ApiSourceContextController extends RequestManager {
     this.apiSource.placeholders = this.apiSource.placeholders || {};
 
 
-
+    this.cachedNodeTypeData = null;
     this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
 
@@ -62,9 +62,16 @@ class ApiSourceContextController extends RequestManager {
   }
 
   getNodetypeData(_complete) {
-    this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
-      _complete(_result);
-    });
+    if (this.cachedNodeTypeData === null) {
+      let self = this;
+      this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
+
+        self.cachedNodeTypeData = _result;
+        _complete(_result);
+      });
+    } else {
+      _complete(this.cachedNodeTypeData);
+    }
   }
 
   pause() {
@@ -133,12 +140,20 @@ class ApiSourceContextController extends RequestManager {
 
   executeRequestTest(_request, _fields, _headers, _end) {
     console.log("Request ", _request);
+    console.log(this.apiSource);
+    this.apiSource.executeTestRequest(_request.name, function(_result) {
+      _end(_result);
+    });
+
+    return;
+
 
     let fields = _fields || [];
     let headers = _headers || [];
     let testValueSet = this.getRequestTestFieldPlaceholder(_request.name);
     let testHeaderValueSet = this.getRequestHeaderPlaceholder(_request.name);
     console.log(testValueSet);
+
     fields = fields.map(function(_field) {
 
       let cloneField = _.clone(_field);

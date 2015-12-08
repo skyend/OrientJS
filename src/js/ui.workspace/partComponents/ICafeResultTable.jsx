@@ -234,19 +234,22 @@ var ICafeResultTable = React.createClass({
           {_item.fieldName }
           { currentPath ? (<code className='hidden'> { currentPath } </code>) : '' }
         </td>
-        <td> {typeof _item.fieldValue === 'object' ? this.renderObject(_item.fieldValue, currentPath) : _item.fieldValue } </td>
+        <td> {(_item.fieldValue !== null && _item.fieldValue !== undefined) && typeof _item.fieldValue === 'object' ? this.renderObject(_item.fieldValue, currentPath) : _item.fieldValue } </td>
       </tr>
     );
   },
 
   renderObjectBodyRows(_object, _path){
     let self = this;
+    console.log(_object);
+
     var convertedToArray = Object.keys(_object).map(function (_key) {
       return {
         fieldName: _key,
         fieldValue: _object[_key]
       };
     });
+    console.log(convertedToArray);
 
     return convertedToArray.map(function (_item) {
       return self.renderObjectRow(_item, _path)
@@ -255,6 +258,7 @@ var ICafeResultTable = React.createClass({
   },
 
   renderObject(_object, _path){
+    console.log('renderObject ', _object)
     return (
       <table>
         <thead>
@@ -267,6 +271,8 @@ var ICafeResultTable = React.createClass({
   },
 
   renderUnknown(_object){
+    console.log('renderUnknown ',_object);
+
     return (
       <div className='wrapper'>
         <div className='header'>
@@ -293,11 +299,16 @@ var ICafeResultTable = React.createClass({
 
   render(){
     let classes = ['ICafeResultTable', this.props.theme];
-    console.log(this.props);
+    console.log('render', this.props);
 
-    if (this.props.result === null) return <div className={classes.join(' ')}> Error
-      <pre>{stringify(this.props.result)}</pre>
-    </div>;
+    if (this.props.result === null || this.props.result === undefined){
+
+      return (
+        <div className={classes.join(' ')}> Error
+          <pre>{stringify(this.props.result)}</pre>
+        </div>
+      );
+    }
 
     return (
       <div className={classes.join(' ')}>
