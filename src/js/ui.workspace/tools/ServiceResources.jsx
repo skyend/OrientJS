@@ -128,7 +128,7 @@
     },
 
     renderPageItem(_page){
-      var iconClass = 'fa-newspaper-o';
+      var iconClass = 'fa-file-text';
 
       var self = this;
       var click = function () {
@@ -156,13 +156,7 @@
     },
 
     renderDocumentItem(_document){
-      var iconClass;
-
-      if (_document.type === 'layout') {
-        iconClass = 'fa-file-pdf-o';
-      } else if (_document.type === 'contents') {
-        iconClass = "fa-file-text-o";
-      }
+      var iconClass = 'fa-html5';
 
       var self = this;
       var click = function () {
@@ -195,7 +189,7 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-file-o'></i> Pages <span className='add-button'> <i className='fa fa-plus'
+            <i className='fa fa-file-text'></i> Pages <span className='add-button'> <i className='fa fa-plus'
                                                                                     onClick={this.clickNewPage}></i> </span>
           </label>
           <ul>
@@ -211,11 +205,39 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-file-text-o'></i> Fragments <span className='add-button'> <i
+            <i className='fa fa-html5'></i> Fragments <span className='add-button'> <i
             className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
           </label>
           <ul>
             { this.state.documentList.map(this.renderDocumentItem) }
+          </ul>
+        </div>
+      )
+    },
+
+    renderCSSList(){
+      return (
+        <div className="resourceList">
+          <label className='listLabel'>
+            <i className='fa fa-css3'></i> Cascading Style Sheets <span className='add-button'> <i
+            className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+          </label>
+          <ul>
+
+          </ul>
+        </div>
+      )
+    },
+
+    renderJSList(){
+      return (
+        <div className="resourceList">
+          <label className='listLabel'>
+            <i className='fa fa-gg'></i> Javascripts <span className='add-button'> <i
+            className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+          </label>
+          <ul>
+
           </ul>
         </div>
       )
@@ -238,7 +260,7 @@
       )
     },
 
-    renderAPISourceList(){
+    renderICEAPISourceList(){
 
       return (
         <div className="resourceList">
@@ -250,6 +272,23 @@
           </label>
           <ul>
             { this.state.apisourceList.map(this.renderAPISourceItem) }
+          </ul>
+        </div>
+      )
+    },
+
+    renderMashupAPISourceList(){
+
+      return (
+        <div className="resourceList">
+          <label className='listLabel'>
+            <i className='fa fa-share-alt-square'></i> Mashup APIs
+                <span className='add-button' onClick={this.clickAddAPISource}>
+                  <i className='fa fa-plus'></i>
+                </span>
+          </label>
+          <ul>
+
           </ul>
         </div>
       )
@@ -280,11 +319,44 @@
 
       return (
         <div className={rootClasses.join(' ')}>
+          <div className="top-area">
+            <div className='filters'>
+              <ul>
+                <li className='filter-mark'>
+                  <i className="fa fa-filter"/>
+                </li>
+                <li>
+                  <i className="fa fa-file-text"/>
+                </li>
+                <li>
+                  <i className="fa fa-html5"/>
+                </li>
+                <li>
+                  <i className="fa fa-css3"/>
+                </li>
+                <li>
+                  <i className="fa fa-gg"/>
+                </li>
+                <li>
+                  <i className="fa fa-plug"/>
+                </li>
+                <li>
+                  <i className="fa fa-database"/>
+                </li>
+                <li>
+                  <i className="fa fa-share-alt-square"/>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div className='list-wrapper'>
             { this.renderPageList() }
             { this.renderDocumentList() }
+            { this.renderCSSList() }
+            { this.renderJSList() }
             { this.renderAPIInterfaceList() }
-            { this.renderAPISourceList() }
+            { this.renderICEAPISourceList() }
+            { this.renderMashupAPISourceList() }
           </div>
         </div>
       );

@@ -11,73 +11,158 @@
     height: 100%;
     margin: 0;
 
-    > .list-wrapper
+    > .top-area
     {
         position: relative;
 
+        width: 100%;
+        height: 30px;
+
+        .filters
+        {
+            box-sizing: border-box;
+            height: 100%;
+
+            border-bottom: 1px solid #75abf1;
+            background-color: #3479d3;
+        }
+
+        ul
+        {
+            display: inline-block;
+
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            li
+            {
+                display: inline-block;
+
+                width: 30px;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+
+                transition: all .3s;
+                text-align: center;
+                &:before
+                {
+                    display: inline-block;
+
+                    width: 0;
+                    height: 100%;
+
+                    content: ' ';
+                    vertical-align: middle;
+                }
+
+                > i
+                {
+                    vertical-align: middle;
+                }
+            }
+        }
+    }
+
+    > .list-wrapper
+    {
+        position: absolute;
+        top: 30px;
+        bottom: 0;
+
         overflow: auto;
 
-        height: 100%;
-
-
+        width: 100%;
 
         > .resourceList
         {
             font-size: 12px;
 
-            padding: 5px;
-            padding-left: 10px;
-
             > .listLabel
             {
+                font-size: 14px;
+
+                position: relative;
+
+                display: block;
+
+                box-sizing: border-box;
+                width: 100%;
+                padding: 5px;
                 .add-button
                 {
-                    font-size: 12px;
-                    line-height: 1;
+                    font-size: 14px;
 
-                    display: inline-block;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
 
-                    box-sizing: border-box;
-                    width: 20px;
-                    height: 20px;
-                    margin-left: 10px;
-                    padding: 4px 0;
+                    display: block;
+
+                    width: 30px;
+                    height: 100%;
 
                     cursor: pointer;
                     transition: all .3s;
                     text-align: center;
-                    vertical-align: middle;
+                    text-align: center;
 
-                    border: 1px solid #000;
-                    border-radius: 3px;
-                    background-color: #292c33;
-                    box-shadow: 0 0 5px rgba(98, 104, 113, .64);
+                    background-color: #4284da;
+
                     &:hover
                     {
-                        background-color: #495063;
+                        background-color: #155fbf;
                     }
 
                     &:active
                     {
-                        background-color: #28468e;
+                        background-color: #114b96;
                     }
+
+                    &:before
+                    {
+                        display: inline-block;
+
+                        width: 0;
+                        height: 100%;
+
+                        content: ' ';
+                        vertical-align: middle;
+                    }
+
+                    > i
+                    {
+                        vertical-align: middle;
+                    }
+                }
+
+                &:after
+                {
+                    display: block;
+                    clear: both;
+
+                    content: ' ';
                 }
             }
 
             ul
             {
+                width: 100%;
                 margin: 0;
-                padding: 5px;
-                padding-left: 15px;
+                padding: 0;
+
 
                 li
                 {
                     font-family: 'Open Sans', sans-serif;
 
+                    box-sizing: border-box;
+                    width: 100%;
                     margin-top: 0;
-                    padding: 3px;
+                    padding: 4px;
+                    padding-left: 25px;
 
-                    cursor: default;
+                    cursor: pointer;
                 }
             }
         }
@@ -88,7 +173,45 @@
     {
         font-family: 'Open Sans';
 
-        background-color: rgb(23,26,32);
+        background-color: #30363e;
+
+        > .top-area
+        {
+            .filters
+            {
+                border-bottom: 1px solid #75abf1;
+                background-color: #3479d3;
+            }
+
+            ul
+            {
+                li
+                {
+                    color: #fff;
+                    &:hover
+                    {
+                        background-color: #155fbf;
+                    }
+
+                    &:active
+                    {
+                        background-color: #114b96;
+                    }
+
+                    &.selected
+                    {
+                        background-color: #27599a;
+                    }
+
+                    &.filter-mark
+                    {
+                        color: #dde9fd;
+                        background-color: #3479d3;
+                    }
+                }
+            }
+        }
+
 
         > .list-wrapper
         {
@@ -96,7 +219,8 @@
             {
                 > .listLabel
                 {
-                    color: #fff;
+                    color: #dde9fd;
+                    background-color: #3479d3;
                 }
 
                 ul
