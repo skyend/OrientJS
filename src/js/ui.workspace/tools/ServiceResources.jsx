@@ -189,8 +189,10 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-file-text'></i> Pages <span className='add-button'> <i className='fa fa-plus'
-                                                                                    onClick={this.clickNewPage}></i> </span>
+            <i className='fa fa-file-text'></i>Pages
+            <span className='add-button'>
+              <i className='fa fa-plus' onClick={this.clickNewPage}></i>
+            </span>
           </label>
           <ul>
             { this.state.pageList.map(this.renderPageItem) }
@@ -205,8 +207,9 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-html5'></i> Fragments <span className='add-button'> <i
-            className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+            <i className='fa fa-html5'></i> Fragments <span className='add-button'>
+              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            </span>
           </label>
           <ul>
             { this.state.documentList.map(this.renderDocumentItem) }
@@ -219,8 +222,10 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-css3'></i> Cascading Style Sheets <span className='add-button'> <i
-            className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+            <i className='fa fa-css3'></i> Cascading Style Sheets
+            <span className='add-button'>
+              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            </span>
           </label>
           <ul>
 
@@ -233,8 +238,10 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-gg'></i> Javascripts <span className='add-button'> <i
-            className='fa fa-plus' onClick={this.clickNewDocument}></i> </span>
+            <i className='fa fa-gg'></i> Javascripts
+            <span className='add-button'>
+              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            </span>
           </label>
           <ul>
 
@@ -249,9 +256,9 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-plug'></i> API Interfaces
-                <span className='add-button' onClick={this.clickAddAPIInterface}>
-                  <i className='fa fa-plus'></i>
-                </span>
+              <span className='add-button' onClick={this.clickAddAPIInterface}>
+                <i className='fa fa-plus'></i>
+              </span>
           </label>
           <ul>
             { this.state.apiinterfaceList.map(this.renderAPIInterfaceItem) }
@@ -266,9 +273,9 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-database'></i> ICE API Sources
-                <span className='add-button' onClick={this.clickAddAPISource}>
-                  <i className='fa fa-plus'></i>
-                </span>
+              <span className='add-button' onClick={this.clickAddAPISource}>
+                <i className='fa fa-plus'></i>
+              </span>
           </label>
           <ul>
             { this.state.apisourceList.map(this.renderAPISourceItem) }
@@ -283,9 +290,9 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-share-alt-square'></i> Mashup APIs
-                <span className='add-button' onClick={this.clickAddAPISource}>
-                  <i className='fa fa-plus'></i>
-                </span>
+              <span className='add-button' onClick={this.clickAddAPISource}>
+                <i className='fa fa-plus'></i>
+              </span>
           </label>
           <ul>
 
