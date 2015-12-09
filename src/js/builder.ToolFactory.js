@@ -124,6 +124,10 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
     self.storeToolState(_toolKey, _state);
   };
 
+  egg.updateState = function() {
+    self.updateLivingBirds(_toolKey);
+  };
+
   // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
   if (_params !== undefined && _params.title !== undefined) {
     egg.toolTitle = _params.title;

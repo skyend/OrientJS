@@ -50,6 +50,7 @@ var ToolNest = React.createClass({
 
     this.props.toolEgg({width: this.props.width, height: (this.props.height || '100%')}, this, function(_toolClass, _toolProps){
       self.setState({toolClass:_toolClass, toolProps:_toolProps});
+      self.props.toolEgg.updateState();
     });
   },
 
@@ -59,7 +60,6 @@ var ToolNest = React.createClass({
       console.log('change toolEgg');
       this.setState({toolClass:null, toolProps:null});
       this.hatchTool();
-      return false;
     }
   },
 
