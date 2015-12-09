@@ -994,6 +994,7 @@ var ContextStage = React.createClass({
 
     var running = false;
     if (this.state.runningContextID === _contextSpec.contextID) {
+      console.log(this.state.runningContextID, 'context running');
       running = true;
     }
 

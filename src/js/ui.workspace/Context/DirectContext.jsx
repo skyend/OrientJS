@@ -680,14 +680,16 @@ var DirectContext = React.createClass({
     this.stageY = stageY;
 
     var style = {
-      display: 'none',
       width: this.props.width,
       height: this.props.height
     };
 
 
     if (this.props.runningState) {
-      style.display = 'block';
+      style.opacity = 1;
+    } else {
+      style.opacity = 0;
+      style.pointerEvents = 'none';
     }
 
     var elementNavigatorStyle = {};

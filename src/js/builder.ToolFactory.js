@@ -91,10 +91,9 @@ ToolFactory.prototype.removeNest = function(_toolKey, _nest) {
 ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   var self = this;
 
-  this.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
-
-    // ToolNest 에서 egg를 실행하여 Tool ReactElement를 얻는다.
-    var egg = function(_props, _nest) {
+  // ToolNest 에서 egg를 실행하여 Tool ReactElement를 얻는다.
+  var egg = function(_props, _nest, _callback) {
+    self.toolClassLoad(_toolKey, function(__toolClass, __toolConfig) {
       var props = _props || {};
       props = _.extend(props, self.storedProps[_toolKey]);
 
@@ -104,31 +103,33 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
       // tool property에 storedState를 입력 해 둔다.
       props.storedState = self.storedStates[_toolKey];
 
-      var toolBird = React.createElement(__toolClass, props);
-
-      self.addLivingBird(_toolKey, toolBird, _nest);
-
-      return toolBird;
-    };
+      // var toolBird = React.createElement(__toolClass, props);
+      //
+      // self.addLivingBird(_toolKey, toolBird, _nest);
 
 
+      _callback(__toolClass, props);
+      //return toolBird;
+    });
+  };
 
-    egg.toolKey = _toolKey;
-    egg.toolTitle = self.toolsMap[_toolKey].title;
-    egg.toolHelperText = self.toolsMap[_toolKey].toolHelperText;
-    egg.factory = self;
-    // egg를 통해 state를 변경한것은 tool이 종료되어도 state는 보관되어 tool이 시작될때 반영된다.
-    egg.setState = function(_state) {
-      self.storeToolState(_toolKey, _state);
-    };
 
-    // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
-    if (_params !== undefined && _params.title !== undefined) {
-      egg.toolTitle = _params.title;
-    }
 
-    _givingEgg(egg);
-  });
+  egg.toolKey = _toolKey;
+  egg.toolTitle = self.toolsMap[_toolKey].title;
+  egg.toolHelperText = self.toolsMap[_toolKey].toolHelperText;
+  egg.factory = self;
+  // egg를 통해 state를 변경한것은 tool이 종료되어도 state는 보관되어 tool이 시작될때 반영된다.
+  egg.setState = function(_state) {
+    self.storeToolState(_toolKey, _state);
+  };
+
+  // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.
+  if (_params !== undefined && _params.title !== undefined) {
+    egg.toolTitle = _params.title;
+  }
+
+  _givingEgg(egg);
 };
 
 ToolFactory.prototype.toolClassLoad = function(_toolKey, _loadedCB) {
