@@ -137,9 +137,7 @@ let Request = React.createClass({
           {this.props.name}
           <small> {this.state.dataFrame !== null? <i className="fa fa-inbox"/>:''}</small>
 
-          <div className='useable' onClick={this.useRequest}>
-            <i className='fa fa-cog'/>
-          </div>
+        
         </div>
         { this.state.showItemTree? this.renderBindingItemTree():''}
       </div>

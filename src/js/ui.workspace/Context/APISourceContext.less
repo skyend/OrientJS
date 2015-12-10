@@ -500,7 +500,24 @@
                 //     outline: none;
                 //     background-color: #42464e;
                 // }
+                .body
+                {
+                    display: inline-block;
+                    &:after
+                    {
+                        display: inline-block;
+                        clear: both;
 
+                        content: ' ';
+                    }
+
+                    > .data-zone,
+                    > .editting-zone
+                    {
+                        display: inline-block;
+                        float: left;
+                    }
+                }
                 label
                 {
                     font-size: 16px;
@@ -514,8 +531,7 @@
                 }
 
 
-
-                > .row
+                .row
                 {
                     position: relative;
 
@@ -524,25 +540,11 @@
 
                     border-top: 1px solid #e0e0e0;
 
-
-
-
-                    button
-                    {
-                        height: 100%;
-                    }
-
-                    &:last-child
-                    {
-                        border-bottom: 0;
-                    }
-
-                    &:first-child
+                    &.head
                     {
                         height: 45px;
 
                         background-color: #fcfcfc;
-
                         .right-button-area
                         {
                             position: absolute;
@@ -553,6 +555,17 @@
 
                             height: 100%;
                         }
+                    }
+
+
+                    button
+                    {
+                        height: 100%;
+                    }
+
+                    &:last-child
+                    {
+                        border-bottom: 0;
                     }
                 }
 

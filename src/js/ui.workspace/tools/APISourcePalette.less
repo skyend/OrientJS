@@ -15,24 +15,19 @@
         {
             > li
             {
-                padding: 0 5px 5px 5px;
+                border-bottom: 1px solid #b1d2fd;
 
                 > .source-title
                 {
                     box-sizing: border-box;
-                    /* width: 100%; */
                     height: 30px;
                     padding-left: 10px;
 
                     cursor: pointer;
                     transition: all .3s;
 
-                    color: #d6d6d6;
-                    border-radius: 10px;
-                    background-color: #272727;
-                    box-shadow: inset 0 0 10px #505152;
-                    text-shadow: 0 0 7px #02122d;
-
+                    color: #fff;
+                    background-color: #3479d3;
                     > span
                     {
                         font-size: 14px;
@@ -55,51 +50,49 @@
 
                     &:hover
                     {
-                        background-color: #3a60a2;
-                        box-shadow: inset 0 0 10px #23385f;
+                        background-color: #1051bb;
                     }
 
                     &.active
                     {
-                        border-radius: 10px 10px 0 0;
-                        background-color: #0d9aa9;
+                        //border-radius: 10px 10px 0 0;
                     }
                 }
 
                 > .source-requests-display
                 {
                     box-sizing: border-box;
-                    padding: 5px;
 
                     color: #cecece;
-                    border: 1px solid #3b676d;
                     border-top: 0;
-                    border-radius: 0 0 10px 10px;
+                    > .loading
+                    {
+                        font-size: 15px;
+
+                        width: 100%;
+                        padding: 15px;
+                    }
 
                     .request
                     {
-                        margin-bottom: 5px;
-
                         .head
                         {
-                            font-family: fantasy;
+                            font-family: 'Open Sans';
 
                             overflow: hidden;
 
                             box-sizing: border-box;
                             width: 100%;
                             height: 30px;
-                            padding-left: 10px;
+                            padding-left: 15px;
 
                             cursor: pointer;
                             transition: all .2s;
 
                             color: #cecece;
-                            border: 1px solid #3a3d43;
-                            border-radius: 10px;
-                            background: #3b3e44;
-                            box-shadow: inset 0 3px 10px rgba(0, 0, 0, .47);
-                            text-shadow: 0 1px 1px #040404;
+                            border-bottom: 1px solid #5486c7;
+                            background-color: #1f5090;
+
                             *
                             {
                                 vertical-align: middle;
@@ -117,40 +110,7 @@
                                 background-color: #2759bd;
                             }
 
-                            > .useable
-                            {
-                                display: inline-block;
-                                float: right;
 
-                                width: 30px;
-                                height: 100%;
-
-                                transition: all .3s;
-                                text-align: center;
-
-                                color: #757575;
-                                background-color: rgba(0, 0, 0, .2);
-                                *
-                                {
-                                    vertical-align: middle;
-                                }
-
-                                &:before
-                                {
-                                    display: inline-block;
-
-                                    width: 0;
-                                    height: 100%;
-
-                                    content: ' ';
-                                    vertical-align: middle;
-                                }
-
-                                &:hover
-                                {
-                                    color: #fff;
-                                }
-                            }
 
                             &:before
                             {
@@ -162,22 +122,29 @@
                                 content: ' ';
                                 vertical-align: middle;
                             }
+
+                            &:last-child
+                            {
+                                border-bottom: 0;
+                            }
                         }
 
                         .data-frame
                         {
-                            padding: 10px 0 0 0;
-
                             .loading
                             {
-                                font-family: fantasy;
+                                font-size: 15px;
+
+                                box-sizing: border-box;
+                                width: 100%;
+                                padding: 15px;
                             }
 
                             ul
                             {
                                 box-sizing: border-box;
                                 //
-                                padding-left: 20px;
+
 
                                 li
                                 {

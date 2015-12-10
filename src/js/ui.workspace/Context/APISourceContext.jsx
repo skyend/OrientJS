@@ -13,7 +13,8 @@ var Request = React.createClass({
     return {
       request: null,
       nodeTypeData: null,
-      isInterface: false
+      isInterface: false,
+      width:0
     }
   },
 
@@ -307,9 +308,6 @@ var Request = React.createClass({
   },
 
   renderDataZone(){
-    if (!this.state.showDataPreviewer) {
-      return <div className='data-render-zone'/>
-    }
 
     return <div className='data-render-zone open'>
       <ICafeResultTable result={this.state.icafeResult} propertytypes={this.props.nodeTypeData.propertytype}/>
@@ -374,7 +372,7 @@ var Request = React.createClass({
   },
 
   renderRows(){
-    if (this.state.fold) return '';
+
     let self = this;
     let testFieldPlaceHolders;
 
@@ -472,11 +470,41 @@ var Request = React.createClass({
       <div className='row'>
         <label> Chains </label>
         {self.renderWithCheckEditable(<button> new Chain </button>)}
-      </div>,
-
-      <div className='row'>
-        { this.renderDataZone() }
       </div>];
+  },
+
+  renderBody(){
+    if (this.state.fold) return '';
+
+    let editZoneStyle = {
+      width:'100%'
+    };
+
+    let dataZoneStyle = {
+      display:'none'
+    };
+
+    if( this.state.showDataPreviewer ){
+      editZoneStyle={
+        width:(this.props.width /2)
+      };
+      dataZoneStyle = {
+        width:(this.props.width /2) - 20
+      };
+    }
+
+
+    return (
+      <div className='body'>
+        <div className='editting-zone' style={editZoneStyle}>
+          { this.renderRows()}
+        </div>
+
+        <div className='data-zone' style={dataZoneStyle}>
+          { this.renderDataZone()}
+        </div>
+      </div>
+    )
   },
 
   render(){
@@ -486,7 +514,8 @@ var Request = React.createClass({
 
 
     return <div className={'request '+ (this.isInheritance? "smaller from-interface":'')}>
-      <div className='row'>
+
+      <div className='row head'>
         <button onClick={this.toggleFold} className=''> { this.state.fold ?
           <i className='fa fa-chevron-down'/> : <i className='fa fa-chevron-up'/>} </button>
         <div className='request-name'>
@@ -506,7 +535,8 @@ var Request = React.createClass({
           </button>
         </div>
       </div>
-      { this.renderRows()}
+
+      {this.renderBody()}
     </div>
   }
 });
@@ -733,7 +763,7 @@ var APISourceContext = React.createClass({
         { this.props.contextController.requestsList.map(function (_request) {
           console.log(_request);
 
-          return <Request request={_request} contextController={self.props.contextController}
+          return <Request request={_request} contextController={self.props.contextController} width={self.props.width}
                           crudOptions={self.renderCRUDList()} nodeTypeData={self.state.nodeTypeData}
                           isInterface={self.props.contextType === 'apiInterface'}/>
         })}
