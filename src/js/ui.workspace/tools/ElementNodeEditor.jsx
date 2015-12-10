@@ -17,6 +17,15 @@ let ElementNodeEditor = React.createClass({
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      _storedState:{
+        elementNode: null,
+        contextController: null
+      }
+    };
+  },
+
   getInitialState(){
     return {
       elementNode: null,
@@ -36,7 +45,7 @@ let ElementNodeEditor = React.createClass({
 
   // 변경되는 값에따라 바로바로 ElementNode에 반영하고 랜더링을 진행한다.
   onThrowCatcherChangedValue(_eventData, _pass){
-    var elementNode = this.state.elementNode;
+    var elementNode = this.props._storedState.elementNode;
     console.log("Changed ID", elementNode.id);
 
     var changedData = _eventData.data;
@@ -46,7 +55,7 @@ let ElementNodeEditor = React.createClass({
       if (_eventData.refPath[1] === 'profile-set') {
         switch (_eventData.name) {
           case "Name" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'Name', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'Name', changedData);
             break;
         }
       }
@@ -57,19 +66,19 @@ let ElementNodeEditor = React.createClass({
 
         switch (_eventData.name) {
           case "TagName" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'tagName', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'tagName', changedData);
             break;
           case "Id" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'id', changedData);
+            this.props._storedState.contextController.modifyElementAttribute(elementNode.id, 'id', changedData);
             break;
           case "Classes" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'class', changedData);
+            this.props._storedState.contextController.modifyElementAttribute(elementNode.id, 'class', changedData);
             break;
           case "Text" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'text', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'text', changedData);
             break;
           case "Comment" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'Comment', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'Comment', changedData);
             break;
         }
 
@@ -78,32 +87,32 @@ let ElementNodeEditor = React.createClass({
       if (_eventData.refPath[1] === 'tagAttribute') {
         switch (_eventData.name) {
           case "InlineStyle" :
-            this.state.contextController.modifyElementAttribute(elementNode.id, 'style', changedData);
+            this.props._storedState.contextController.modifyElementAttribute(elementNode.id, 'style', changedData);
             break;
           default:
-            this.state.contextController.modifyElementAttribute(elementNode.id, _eventData.name, changedData);
+            this.props._storedState.contextController.modifyElementAttribute(elementNode.id, _eventData.name, changedData);
         }
       }
 
       if (_eventData.refPath[1] === 'dataAttribute') {
-        this.state.contextController.modifyElementAttribute(elementNode.id, _eventData.name, changedData);
+        this.props._storedState.contextController.modifyElementAttribute(elementNode.id, _eventData.name, changedData);
       }
 
     } else if (_eventData.refPath[2] === 'EmptyTypeElementNode') {
       if (_eventData.refPath[1] === 'emptyTypeProps') {
         switch (_eventData.name) {
           case "RefferenceType" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'refferenceType', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'refferenceType', changedData);
             break;
           case "RefferenceTarget" :
-            this.state.contextController.modifyElementProperty(elementNode.id, 'refferenceTarget', changedData);
+            this.props._storedState.contextController.modifyElementProperty(elementNode.id, 'refferenceTarget', changedData);
             break;
         }
       }
     } else if (_eventData.refPath[2] === 'ReactTypeElementNode' ){
       if(_eventData.refPath[1] === 'reactComponentProps' ){
         let propKey = _eventData.name;
-        this.state.contextController.modifyReactElementProperty(elementNode.id, propKey, changedData);
+        this.props._storedState.contextController.modifyReactElementProperty(elementNode.id, propKey, changedData);
       }
     }
 
@@ -139,7 +148,7 @@ let ElementNodeEditor = React.createClass({
   render() {
     var rootClasses = ['ElementNodeEditor', this.props.config.theme, this.getMySizeClass()];
 
-    var elementNode = this.state.elementNode;
+    var elementNode = this.props._storedState.elementNode;
 
     return (
       <div className={rootClasses.join(' ')}>

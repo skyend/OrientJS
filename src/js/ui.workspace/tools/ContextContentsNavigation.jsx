@@ -7,6 +7,16 @@ var ContextContentsNavigation = React.createClass({
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      _storedState:{
+        elementNode: null,
+        runningContext: null,
+      }
+    };
+  },
+
+
   getInitialState(){
     return {
       elementNode: null,
@@ -148,7 +158,7 @@ var ContextContentsNavigation = React.createClass({
     }
 
     let selectedClass = '';
-    if (this.state.selectedElementNode === _elementNode) {
+    if (this.props._storedState.selectedElementNode === _elementNode) {
       selectedClass = 'focused';
     }
 
@@ -198,8 +208,8 @@ var ContextContentsNavigation = React.createClass({
 
   renderTreeWrapper(){
 
-    if (this.state.runningContext === null) return <div/>;
-    var runningContext = this.state.runningContext;
+    if (this.props._storedState.runningContext === null) return <div/>;
+    var runningContext = this.props._storedState.runningContext;
     var elementNode;
     var elementNodes;
 

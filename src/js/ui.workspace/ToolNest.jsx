@@ -17,7 +17,10 @@ var ToolNest = React.createClass({
   },
 
   applyToolBirdState(_toolStates){
-    let tool = this.refs[Object.keys(this.refs)[0]];
+    console.log("apply ToolBirdState", _toolStates);
+
+    let tool = this.refs[this.props.toolEgg.toolKey];
+
     console.log("applyToolBirdState", tool);
 
 
@@ -47,9 +50,11 @@ var ToolNest = React.createClass({
 
   hatchTool(){
     let self = this;
-
+    console.log("Call hatchTool");
     this.props.toolEgg({width: this.props.width, height: (this.props.height || '100%')}, this, function(_toolClass, _toolProps){
+      console.log('Hatched tool');
       self.setState({toolClass:_toolClass, toolProps:_toolProps});
+      self.applyToolBirdState(self.props.toolEgg.factory.getStoredState(self.props.toolEgg.toolKey));
       self.props.toolEgg.updateState();
     });
   },
@@ -64,6 +69,7 @@ var ToolNest = React.createClass({
   },
 
   componentDidMount(){
+    console.log('did mount');
     this.hatchTool();
   },
   //
@@ -73,7 +79,12 @@ var ToolNest = React.createClass({
 
   renderToolEgg(){
     if( this.state.toolClass !== null ){
+      let props = this.state.toolProps;
+      props.ref = this.props.toolEgg.toolKey;
 
+      let storedState = this.props.toolEgg.factory.getStoredState(this.props.toolEgg.toolKey);
+      props._storedState = storedState;
+      
       let toolBird = React.createElement(this.state.toolClass, this.state.toolProps);
       this.props.toolEgg.factory.addLivingBird(this.props.toolEgg.toolKey, toolBird, this);
       return toolBird;
@@ -86,7 +97,7 @@ var ToolNest = React.createClass({
   },
 
   render(){
-    console.log(this.props);
+    console.log(this.props, 'call toolNest render ');
     return (
       <div className='tool-nest' style={{height:(this.props.height || '100%'), width:this.props.width}}>
         { this.renderToolEgg() }

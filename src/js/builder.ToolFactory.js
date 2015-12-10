@@ -47,9 +47,10 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
 ToolFactory.prototype.updateLivingBirds = function(_toolKey) {
   if (this.livingBirds[_toolKey] === undefined) return;
   let self = this;
-
+  console.log('updateLivingBirds', this.livingBirds[_toolKey]);
   this.livingBirds[_toolKey].map(function(_nest) {
-    _nest.applyToolBirdState(self.storedStates[_toolKey]);
+    console.log(self.storedStates[_toolKey]);
+    _nest.applyToolBirdState(self.getStoredState(_toolKey));
 
     // if (_bird._owner === null) return;
     // if (_bird._owner._instance === null) return;
@@ -63,6 +64,11 @@ ToolFactory.prototype.updateLivingBirds = function(_toolKey) {
     // _bird._owner._instance.applyToolBirdState(self.storedStates[_toolKey]);
   });
 
+};
+
+ToolFactory.prototype.getStoredState = function(_toolKey) {
+  console.log('get State', this.storedStates[_toolKey]);
+  return this.storedStates[_toolKey];
 };
 
 
@@ -125,7 +131,8 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   };
 
   egg.updateState = function() {
-    self.updateLivingBirds(_toolKey);
+    console.log('update state', _toolKey);
+    //self.updateLivingBirds(_toolKey);
   };
 
   // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.

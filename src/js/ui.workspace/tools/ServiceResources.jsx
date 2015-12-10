@@ -10,6 +10,19 @@
       require('../reactMixin/EventDistributor.js'),
       require('./mixins/WidthRuler.js')],
 
+    getDefaultProps(){
+      return {
+        _storedState:{
+          documentList: [],
+          pageList: [],
+          apisourceList: [],
+          apiinterfaceList: [],
+          pageMetaList: [], // x
+          documentMetaList: [], // x
+          apiSourceMetaList: [], // x
+        }
+      };
+    },
 
     getInitialState(){
       return {
@@ -21,7 +34,8 @@
         apiinterfaceList: [],
         pageMetaList: [], // x
         documentMetaList: [], // x
-        apiSourceMetaList: [] // x
+        apiSourceMetaList: [], // x
+        filterList:[]
       };
     },
 
@@ -60,6 +74,7 @@
     },
 
     clickNewDocument(){
+      console.log("new document");
 
       this.emit("RequestAttachTool", {
         "toolKey": "DocumentCUForm",
@@ -189,9 +204,9 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-file-text'></i>Pages
-            <span className='add-button'>
-              <i className='fa fa-plus' onClick={this.clickNewPage}></i>
+            <i className='fa fa-file-text'></i> Pages
+            <span className='add-button' onClick={this.clickNewPage}>
+              <i className='fa fa-plus'/>
             </span>
           </label>
           <ul>
@@ -207,8 +222,9 @@
       return (
         <div className="resourceList">
           <label className='listLabel'>
-            <i className='fa fa-html5'></i> Fragments <span className='add-button'>
-              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            <i className='fa fa-html5'></i> Fragments
+            <span className='add-button' onClick={this.clickNewDocument}>
+              <i className='fa fa-plus'/>
             </span>
           </label>
           <ul>
@@ -223,8 +239,8 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-css3'></i> Cascading Style Sheets
-            <span className='add-button'>
-              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            <span className='add-button' onClick={this.clickNewDocument}>
+              <i className='fa fa-plus'></i>
             </span>
           </label>
           <ul>
@@ -239,8 +255,8 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-gg'></i> Javascripts
-            <span className='add-button'>
-              <i className='fa fa-plus' onClick={this.clickNewDocument}></i>
+            <span className='add-button' onClick={this.clickNewDocument}>
+              <i className='fa fa-plus'></i>
             </span>
           </label>
           <ul>
@@ -317,6 +333,10 @@
       self.emit("NeedPageList");
       self.emit("NeedAPISourceList");
       self.emit("NeedAPIInterfaceList");
+    },
+
+    renderFilterTarget(){
+
     },
 
     render() {

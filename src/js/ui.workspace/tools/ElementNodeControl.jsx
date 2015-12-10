@@ -6,23 +6,25 @@ var ElementNodeControl = React.createClass({
   mixins: [
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
-
-  getInitialState(){
+  getDefaultProps(){
     return {
-      elementNode: null,
-      contextController: null
+      _storedState:{
+        elementNode: null,
+        contextController: null
+      }
     };
   },
 
+
   onThrowCatcherChangedValue(_eventData, _pass){
-    var elementNode = this.state.elementNode;
+    var elementNode = this.props._storedState.elementNode;
     var changedData = _eventData.data;
 
     if (_eventData.refPath[1] === 'RepeatControl') {
       switch (_eventData.refPath[0]) {
         case "RepeatN":
           if (changedData === '') changedData = undefined;
-          this.state.contextController.modifyElementControl(elementNode.id, 'repeat-n', changedData);
+          this.props._storedState.contextController.modifyElementControl(elementNode.id, 'repeat-n', changedData);
       }
     }
 
@@ -56,7 +58,7 @@ var ElementNodeControl = React.createClass({
   render() {
     var rootClasses = ['ElementNodeControl', this.props.config.theme, this.getMySizeClass()];
 
-    var elementNode = this.state.elementNode;
+    var elementNode = this.props._storedState.elementNode;
 
     return (
       <div className={rootClasses.join(' ')}>

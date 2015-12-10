@@ -17,6 +17,16 @@ var DocumentCSSEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      _storedState:{
+        document: null,
+        contextController:null
+      }
+    };
+  },
+
+
   getInitialState(){
     return {
       document: null,
@@ -30,7 +40,7 @@ var DocumentCSSEditor = React.createClass({
   },
 
   renderEditor(){
-    var targetDocument = this.state.document;
+    var targetDocument = this.props._storedState.document;
 
     return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/>;
   },
@@ -38,9 +48,9 @@ var DocumentCSSEditor = React.createClass({
   render() {
     var rootClasses = ['DocumentCSSEditor', this.props.theme, this.getMySizeClass()];
 
-    if( this.state.contextController === null ) return <div>Not Found ContextController</div>;
+    if( this.props._storedState.contextController === null ) return <div>Not Found ContextController</div>;
 
-    var targetDocument = this.state.contextController.document;
+    var targetDocument = this.props._storedState.contextController.document;
 
     if (targetDocument === null) return <div>No focused a Document</div>;
 

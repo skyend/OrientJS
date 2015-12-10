@@ -19,7 +19,10 @@ var GridElementNodeEditor = React.createClass({
 
   getDefaultProps(){
     return {
-
+      _storedState:{
+        gridElementNode: null,
+        contextController: null
+      }
     };
   },
 
@@ -31,16 +34,16 @@ var GridElementNodeEditor = React.createClass({
   },
 
   onThrowCatcherChangedValue(_eventData){
-    let targetId = this.state.gridElementNode.getId();
+    let targetId = this.props._storedState.gridElementNode.getId();
     let fieldName = _eventData.name;
     let data = _eventData.data;
 
 
     if( fieldName === 'name' ){
-      this.state.contextController.modifyGridProperty(targetId, 'name', data);
+      this.props._storedState.contextController.modifyGridProperty(targetId, 'name', data);
     } else {
 
-      this.state.contextController.modifyGridRect(targetId,{
+      this.props._storedState.contextController.modifyGridRect(targetId,{
         width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
         minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
         maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
@@ -71,7 +74,7 @@ var GridElementNodeEditor = React.createClass({
   },
 
   renderSizingFields(){
-    let gridElementNode = this.state.gridElementNode;
+    let gridElementNode = this.props._storedState.gridElementNode;
 
     if( gridElementNode === null ) return "No selected gridElementNode";
     let elementRect = gridElementNode.getCurrentRectangle();
@@ -126,7 +129,7 @@ var GridElementNodeEditor = React.createClass({
   },
 
   renderPositioningFields(){
-    let gridElementNode = this.state.gridElementNode;
+    let gridElementNode = this.props._storedState.gridElementNode;
 
     if( gridElementNode === null ) return "No selected gridElementNode";
     let elementRect = gridElementNode.getCurrentRectangle();
@@ -180,7 +183,7 @@ var GridElementNodeEditor = React.createClass({
   },
 
   renderRenderingFields(){
-    let gridElementNode = this.state.gridElementNode;
+    let gridElementNode = this.props._storedState.gridElementNode;
 
     if( gridElementNode === null ) return "No selected gridElementNode";
     let elementRect = gridElementNode.getCurrentRectangle();

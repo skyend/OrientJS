@@ -6,7 +6,12 @@ import GridBox from "../partComponents/GridBox.jsx";
 
 var PageCUForm = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
-
+  getDefaultProps(){
+    return {
+      _storedState:{
+      }
+    };
+  },
   getInitialState(){
     return {
       message: '',
