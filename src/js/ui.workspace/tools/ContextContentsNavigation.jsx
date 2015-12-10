@@ -9,10 +9,8 @@ var ContextContentsNavigation = React.createClass({
 
   getDefaultProps(){
     return {
-      _storedState:{
-        elementNode: null,
-        runningContext: null,
-      }
+      elementNode: null,
+      runningContext: null
     };
   },
 
@@ -158,7 +156,7 @@ var ContextContentsNavigation = React.createClass({
     }
 
     let selectedClass = '';
-    if (this.props._storedState.selectedElementNode === _elementNode) {
+    if (this.props.selectedElementNode === _elementNode) {
       selectedClass = 'focused';
     }
 
@@ -208,8 +206,8 @@ var ContextContentsNavigation = React.createClass({
 
   renderTreeWrapper(){
 
-    if (this.props._storedState.runningContext === null) return <div/>;
-    var runningContext = this.props._storedState.runningContext;
+    if (this.props.runningContext === null) return <div/>;
+    var runningContext = this.props.runningContext;
     var elementNode;
     var elementNodes;
 

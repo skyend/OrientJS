@@ -1,6 +1,24 @@
 {
   "LeftNavigation": {
     "menuGroups": [{
+      "groupName": "System",
+      "menuItems": [{
+        "key": "user-account",
+        "title": "User Account",
+        "icon": "user",
+        "equipToolKey": "UserAccount"
+      }, {
+        "key": "builder-setting",
+        "title": "Builder Settings",
+        "icon": "cog",
+        "equipToolKey": "BuilderSetting"
+      }, {
+        "key": "project-setting",
+        "title": "Project Settings",
+        "icon": "dashboard",
+        "equipToolKey": "ProjectSetting"
+      }]
+    }, {
       "groupName": "Service Object Configure",
       "menuItems": [{
         "key": "service-resources",
@@ -8,8 +26,13 @@
         "icon": "book",
         "equipToolKey": "ServiceResources"
       }, {
+        "key": "page-configure",
+        "title": "Page Configure",
+        "icon": "file-o",
+        "equipToolKey": "PageConfigure"
+      }, {
         "key": "document-configure",
-        "title": "Fragment Configure",
+        "title": "Document Configure",
         "icon": "file-text-o",
         "equipToolKey": "DocumentConfig"
       }]
@@ -75,17 +98,17 @@
       "groupName": "DocumentEditorTools",
       "menuItems": [{
         "key": "document-css-editor",
-        "title": "Fragment CSS",
+        "title": "Document CSS",
         "icon": "cube",
         "equipToolKey": "DocumentCSSEditor"
       }, {
         "key": "document-js-editor",
-        "title": "Fragment Script",
+        "title": "Document Script",
         "icon": "fire",
         "equipToolKey": "DocumentScriptEditor"
       }, {
         "key": "document-body-editor",
-        "title": "Fragment Body",
+        "title": "Document Body",
         "icon": "code",
         "equipToolKey": "DocumentBodyEditor"
       }]
@@ -169,12 +192,12 @@
     "DocumentConfig": {
       "jsxPath": "DocumentConfig",
       "configPath": "DocumentConfig",
-      "title": "Fragment Config"
+      "title": "Document Config"
     },
 
     "DocumentCSSEditor": {
       "jsxPath": "DocumentCSSEditor",
-      "title": "Fragment CSS Editor"
+      "title": "Document CSS Editor"
     },
 
     "DocumentCUForm": {

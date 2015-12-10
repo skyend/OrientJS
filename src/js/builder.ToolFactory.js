@@ -10,6 +10,11 @@ var ToolFactory = function(_session, _toolsMap) {
   this.storedProps = {};
   this.storedStates = {};
 
+  this.nests = new Set();
+};
+
+ToolFactory.prototype.registerNest = function(_nest) {
+  this.nests.add(_nest);
 };
 
 // 특정 Tool 의 State를 보존한다.
@@ -23,6 +28,7 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
   var updateStateKeys = Object.keys(state);
   var changed = false;
   var key;
+
   for (var i = 0; i < updateStateKeys.length; i++) {
     key = updateStateKeys[i];
 
@@ -32,66 +38,21 @@ ToolFactory.prototype.storeToolState = function(_toolKey, _state) {
     }
   }
 
-  // 이전과 다른 State가 없다면 스킵
-  //if (!changed) return;
-  console.log('store Tool state');
-
   // State Merge
   storedToolState = _.extend(storedToolState, state);
 
   this.storedStates[_toolKey] = storedToolState;
 
-  this.updateLivingBirds(_toolKey);
-};
-
-ToolFactory.prototype.updateLivingBirds = function(_toolKey) {
-  if (this.livingBirds[_toolKey] === undefined) return;
-  let self = this;
-  console.log('updateLivingBirds', this.livingBirds[_toolKey]);
-  this.livingBirds[_toolKey].map(function(_nest) {
-    console.log(self.storedStates[_toolKey]);
-    _nest.applyToolBirdState(self.getStoredState(_toolKey));
-
-    // if (_bird._owner === null) return;
-    // if (_bird._owner._instance === null) return;
-    //
-    // // ToolBird의 Owner는 ToolNest일 것이다.
-    // // ToolNest는 ToolBird를 랜더링하기 위해 제공받은 ToolEgg를 호출하게 된다.
-    // // ToolEgg를 호출 하여 ToolBird Element를 얻는 후 StoredState 를 반영하므로
-    // // ToolNest에게 forceUpdate 메시지를 보낸다.
-    // //_bird._owner._instance.forceUpdate();
-    // console.log(_bird._owner._instance);
-    // _bird._owner._instance.applyToolBirdState(self.storedStates[_toolKey]);
-  });
-
+  for (let nest of this.nests)
+    nest.birdUpdate();
 };
 
 ToolFactory.prototype.getStoredState = function(_toolKey) {
-  console.log('get State', this.storedStates[_toolKey]);
   return this.storedStates[_toolKey];
 };
 
-
-ToolFactory.prototype.addLivingBird = function(_toolKey, _bird, _nest) {
-  if (this.livingBirds[_toolKey] === undefined) {
-    this.livingBirds[_toolKey] = [];
-  }
-
-  this.livingBirds[_toolKey].push(_nest);
-};
-
 ToolFactory.prototype.removeNest = function(_toolKey, _nest) {
-  let find = _.findIndex(this.livingBirds[_toolKey], _nest);
-  let self = this;
-  let newNests = [];
-
-  this.livingBirds[_toolKey].map(function(_n) {
-    if (_nest !== _n) {
-      newNests.push(_n);
-    }
-  });
-
-  this.livingBirds[_toolKey] = newNests;
+  this.nests.delete(_nest);
 };
 
 ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
@@ -109,13 +70,7 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
       // tool property에 storedState를 입력 해 둔다.
       props.storedState = self.storedStates[_toolKey];
 
-      // var toolBird = React.createElement(__toolClass, props);
-      //
-      // self.addLivingBird(_toolKey, toolBird, _nest);
-
-
       _callback(__toolClass, props);
-      //return toolBird;
     });
   };
 
@@ -128,11 +83,6 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   // egg를 통해 state를 변경한것은 tool이 종료되어도 state는 보관되어 tool이 시작될때 반영된다.
   egg.setState = function(_state) {
     self.storeToolState(_toolKey, _state);
-  };
-
-  egg.updateState = function() {
-    console.log('update state', _toolKey);
-    //self.updateLivingBirds(_toolKey);
   };
 
   // param 에 title 이 입력되어 있다면 toolTitle의 값을 param title 을 사용한다.

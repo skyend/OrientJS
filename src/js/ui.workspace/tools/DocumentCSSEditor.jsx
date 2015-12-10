@@ -19,10 +19,8 @@ var DocumentCSSEditor = React.createClass({
 
   getDefaultProps(){
     return {
-      _storedState:{
-        document: null,
-        contextController:null
-      }
+      document: null,
+      contextController:null
     };
   },
 
@@ -40,7 +38,7 @@ var DocumentCSSEditor = React.createClass({
   },
 
   renderEditor(){
-    var targetDocument = this.props._storedState.document;
+    var targetDocument = this.props.document;
 
     return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/>;
   },
@@ -48,11 +46,11 @@ var DocumentCSSEditor = React.createClass({
   render() {
     var rootClasses = ['DocumentCSSEditor', this.props.theme, this.getMySizeClass()];
 
-    if( this.props._storedState.contextController === null ) return <div>Not Found ContextController</div>;
+    if( this.props.contextController === null ) return <div className='DocumentCSSEditor error' ><span>Not Found ContextController</span></div>;
 
-    var targetDocument = this.props._storedState.contextController.document;
+    var targetDocument = this.props.contextController.document;
 
-    if (targetDocument === null) return <div>No focused a Document</div>;
+    if (targetDocument === null) return <div className='DocumentCSSEditor error' ><span>No focused a Document</span></div>;
 
     return (
       <div className={rootClasses.join(' ')}>

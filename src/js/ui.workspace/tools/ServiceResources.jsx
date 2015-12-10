@@ -12,21 +12,20 @@
 
     getDefaultProps(){
       return {
-        _storedState:{
-          documentList: [],
-          pageList: [],
-          apisourceList: [],
-          apiinterfaceList: [],
-          pageMetaList: [], // x
-          documentMetaList: [], // x
-          apiSourceMetaList: [], // x
-        }
+        runningContext: null,
+        documentList: [],
+        pageList: [],
+        apisourceList: [],
+        apiinterfaceList: [],
+        pageMetaList: [], // x
+        documentMetaList: [], // x
+        apiSourceMetaList: [] // x
       };
     },
 
     getInitialState(){
       return {
-        runningContext: null,
+
         iceHost: '',
         documentList: [],
         pageList: [],
@@ -94,11 +93,11 @@
       };
 
       var contextIsRunning = false;
-      //console.log("API context ", this.state.runningContext, _apiSourceMeta);
+      //console.log("API context ", this.props.runningContext, _apiSourceMeta);
 
-      if (this.state.runningContext !== null) {
-        if (this.state.runningContext.contextType === "apiInterface") {
-          if (this.state.runningContext.apiInterfaceID == _apiInterface._id) {
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === "apiInterface") {
+          if (this.props.runningContext.apiInterfaceID == _apiInterface._id) {
 
             contextIsRunning = true;
           }
@@ -124,10 +123,10 @@
       };
 
       var contextIsRunning = false;
-      //console.log("API context ", this.state.runningContext, _apiSourceMeta);
-      if (this.state.runningContext !== null) {
-        if (this.state.runningContext.contextType === "apiSource") {
-          if (this.state.runningContext.apiSourceID == _apiSource.id) {
+      //console.log("API context ", this.props.runningContext, _apiSourceMeta);
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === "apiSource") {
+          if (this.props.runningContext.apiSourceID == _apiSource.id) {
 
             contextIsRunning = true;
           }
@@ -154,9 +153,9 @@
       };
 
       var contextIsRunning = false;
-      if (this.state.runningContext !== null) {
-        if (this.state.runningContext.contextType === 'page') {
-          if (this.state.runningContext.pageID == _page._id) {
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'page') {
+          if (this.props.runningContext.pageID == _page._id) {
             contextIsRunning = true;
           }
         }
@@ -183,9 +182,9 @@
 
       var contextIsRunning = false;
 
-      if (this.state.runningContext !== null) {
-        if (this.state.runningContext.contextType === 'document') {
-          if (this.state.runningContext.documentID == _document._id) {
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'document') {
+          if (this.props.runningContext.documentID == _document._id) {
             contextIsRunning = true;
           }
         }
@@ -210,7 +209,7 @@
             </span>
           </label>
           <ul>
-            { this.state.pageList.map(this.renderPageItem) }
+            { this.props.pageList.map(this.renderPageItem) }
           </ul>
         </div>
       )
@@ -228,7 +227,7 @@
             </span>
           </label>
           <ul>
-            { this.state.documentList.map(this.renderDocumentItem) }
+            { this.props.documentList.map(this.renderDocumentItem) }
           </ul>
         </div>
       )
@@ -343,7 +342,7 @@
       var wide = false;
       var rootClasses = ['ServiceResources', this.props.config.theme, this.getMySizeClass()];
 
-
+      console.log(this.props,  this.state);
       return (
         <div className={rootClasses.join(' ')}>
           <div className="top-area">
