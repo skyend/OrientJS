@@ -64,10 +64,6 @@ var ElementNodeControl = React.createClass({
           <div className='body'>
             { elementNode !== null && elementNode !== undefined ? this.renderEditParts(elementNode) : "No focused." }
           </div>
-          <div className="footer">
-
-
-          </div>
         </div>
       </div>
     );
