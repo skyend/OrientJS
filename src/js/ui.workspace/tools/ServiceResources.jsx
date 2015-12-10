@@ -15,44 +15,46 @@
         runningContext: null,
         documentList: [],
         pageList: [],
-        apisourceList: [],
-        apiinterfaceList: [],
-        pageMetaList: [], // x
-        documentMetaList: [], // x
-        apiSourceMetaList: [] // x
       };
     },
 
     getInitialState(){
       return {
-
         iceHost: '',
-        documentList: [],
-        pageList: [],
         apisourceList: [],
         apiinterfaceList: [],
-        pageMetaList: [], // x
-        documentMetaList: [], // x
-        apiSourceMetaList: [], // x
-        filterList:[]
+        filterSet:new Set()
       };
     },
 
     clickAddAPISource(){
       // 클릭시에 모달을 뛰어 정보를 입력받고 ok를 누르면 APISource를 추가하는 과정을 처리한다.
       //
+      let self = this;
 
       this.emit("RequestAttachTool", {
         "toolKey": "ICafeNodeExplorer",
         "where": "ModalWindow",
-        "params": {"holdnodetypes": this.state.apisourceList}
+        "params": {
+          "holdnodetypes": this.state.apisourceList,
+          "success-notice": function(){
+            self.emit("NeedAPISourceList");
+          }
+        }
       });
     },
 
     clickAddAPIInterface(){
+      let self = this;
+
       this.emit("RequestAttachTool", {
         "toolKey": "APIInterfaceCreateForm",
-        "where": "ModalWindow"
+        "where": "ModalWindow",
+        "params": {
+          "success-notice": function(){
+            self.emit("NeedAPIInterfaceList");
+          }
+        }
       });
     },
 
@@ -316,6 +318,18 @@
       )
     },
 
+    toggleFilterItem(_name){
+      let filterSet = this.state.filterSet;
+
+      if( filterSet.has(_name) ){
+        filterSet.delete(_name);
+      } else {
+        filterSet.add(_name);
+      }
+
+      this.setState({filterSet: filterSet});
+    },
+
     componentDidUpdate(){
       //console.log('updated', this.state);
     },
@@ -334,15 +348,49 @@
       self.emit("NeedAPIInterfaceList");
     },
 
-    renderFilterTarget(){
+    renderLists(){
+      let renderList = [];
 
+      if( this.state.filterSet.size > 0 ){
+        if( this.state.filterSet.has('page') ){
+          renderList.push( this.renderPageList() );
+        }
+        if( this.state.filterSet.has('fragment') ){
+          renderList.push( this.renderDocumentList() );
+        }
+        if( this.state.filterSet.has('css') ){
+          renderList.push( this.renderCSSList() );
+        }
+        if( this.state.filterSet.has('js') ){
+          renderList.push( this.renderJSList() );
+        }
+        if( this.state.filterSet.has('APIInterface') ){
+          renderList.push( this.renderAPIInterfaceList() );
+        }
+        if( this.state.filterSet.has('APISource') ){
+          renderList.push( this.renderICEAPISourceList() );
+        }
+        if( this.state.filterSet.has('MashupAPISource') ){
+          renderList.push( this.renderMashupAPISourceList() );
+        }
+      } else {
+        renderList.push( this.renderPageList() );
+        renderList.push( this.renderDocumentList() );
+        renderList.push( this.renderCSSList() );
+        renderList.push( this.renderJSList() );
+        renderList.push( this.renderAPIInterfaceList() );
+        renderList.push( this.renderICEAPISourceList() );
+        renderList.push( this.renderMashupAPISourceList() );
+      }
+
+      return renderList;
     },
 
     render() {
-      var wide = false;
-      var rootClasses = ['ServiceResources', this.props.config.theme, this.getMySizeClass()];
+      let self = this;
+      let wide = false;
+      let rootClasses = ['ServiceResources', this.props.config.theme, this.getMySizeClass()];
 
-      console.log(this.props,  this.state);
       return (
         <div className={rootClasses.join(' ')}>
           <div className="top-area">
@@ -351,38 +399,32 @@
                 <li className='filter-mark'>
                   <i className="fa fa-filter"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('page')? 'selected':''} onClick={function(){self.toggleFilterItem('page')}}>
                   <i className="fa fa-file-text"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('fragment')? 'selected':''} onClick={function(){self.toggleFilterItem('fragment')}}>
                   <i className="fa fa-html5"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('css')? 'selected':''} onClick={function(){self.toggleFilterItem('css')}}>
                   <i className="fa fa-css3"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('js')? 'selected':''} onClick={function(){self.toggleFilterItem('js')}}>
                   <i className="fa fa-gg"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('APIInterface')? 'selected':''} onClick={function(){self.toggleFilterItem('APIInterface')}}>
                   <i className="fa fa-plug"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('APISource')? 'selected':''} onClick={function(){self.toggleFilterItem('APISource')}}>
                   <i className="fa fa-database"/>
                 </li>
-                <li>
+                <li className={this.state.filterSet.has('MashupAPISource')? 'selected':''} onClick={function(){self.toggleFilterItem('MashupAPISource')}}>
                   <i className="fa fa-share-alt-square"/>
                 </li>
               </ul>
             </div>
           </div>
           <div className='list-wrapper'>
-            { this.renderPageList() }
-            { this.renderDocumentList() }
-            { this.renderCSSList() }
-            { this.renderJSList() }
-            { this.renderAPIInterfaceList() }
-            { this.renderICEAPISourceList() }
-            { this.renderMashupAPISourceList() }
+            { this.renderLists() }
           </div>
         </div>
       );

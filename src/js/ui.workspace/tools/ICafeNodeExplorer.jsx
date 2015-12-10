@@ -44,9 +44,7 @@ var ICafeNodeExplorer = React.createClass({
         this.setState({stayForServer: false, message: "API Source를 등록하는중 오류가 발견되었습니다."});
         return;
       }
-
-      console.log("ALL success");
-      this.emit("UpdateAPISourceList");
+      this.props.params['success-notice']();
       this.emit("Close");
     }
   },

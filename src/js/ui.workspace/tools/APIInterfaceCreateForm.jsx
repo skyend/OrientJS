@@ -28,6 +28,7 @@ var APIInterfaceCreateForm = React.createClass({
   },
 
   onThrowCatcherChangedValue(){
+
   },
 
   cancel(){
@@ -36,7 +37,7 @@ var APIInterfaceCreateForm = React.createClass({
 
   successInterfaceCreate(){
     this.emit("Close");
-    this.emit("UpdateAPIInterfaceList");
+    this.props.params['success-notice']();
   },
 
   failInterfaceCreate(){
