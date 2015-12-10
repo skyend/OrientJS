@@ -489,7 +489,7 @@ var Request = React.createClass({
         width:(this.props.width /2)
       };
       dataZoneStyle = {
-        width:(this.props.width /2) - 20
+        width:(this.props.width /2)
       };
     }
 
