@@ -496,14 +496,15 @@ var Request = React.createClass({
           <i className='fa fa-plug'/> { this.props.request.interface.title }
         </div> : ''}
 
-        {this.renderWithCheckEditable(<button onClick={this.deleteRequest}> Delete </button>)}
-        <button onClick={this.testRequest}><i
-          className={'fa fa-refresh '+ (this.state.loadingData? "fa-spin":'')}/> Test
-        </button>
-        <button onClick={this.testRequestWithChain}><i
-          className={'fa fa-refresh '+ (this.state.loadingDataWithChain? "fa-spin":'')}/> Test With Chain
-        </button>
-
+        <div className='right-button-area'>
+          {this.renderWithCheckEditable(<button onClick={this.deleteRequest}> Delete </button>)}
+          <button onClick={this.testRequest}><i
+            className={'fa fa-refresh '+ (this.state.loadingData? "fa-spin":'')}/> Test
+          </button>
+          <button onClick={this.testRequestWithChain}><i
+            className={'fa fa-refresh '+ (this.state.loadingDataWithChain? "fa-spin":'')}/> Test With Chain
+          </button>
+        </div>
       </div>
       { this.renderRows()}
     </div>
