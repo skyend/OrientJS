@@ -391,79 +391,28 @@
             }
         }
 
-        input,
-        select
-        {
-            font-size: 14px;
-            line-height: 1;
 
-            box-sizing: border-box;
-            width: 300px;
-            height: 30px;
-            padding: 5px 10px;
-
-            vertical-align: middle;
-
-            color: #427dc9;
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            outline: none;
-            background-color: #fff;
-
-            & + button
-            {
-                margin-left: 5px;
-            }
-        }
-
-        button
-        {
-            font-family: 'Open Sans';
-            font-size: 14px;
-
-            display: inline-block;
-
-            box-sizing: border-box;
-            height: 100%;
-            margin: 0;
-            padding: 0 20px;
-
-            color: #fff;
-            border: 0;
-            outline: none;
-            background-color: #3479d3;
-            // &:before
-            // {
-            //     display: inline-block;
-            //
-            //     width: 0;
-            //     height: 100%;
-            //
-            //     content: ' ';
-            //     vertical-align: middle;
-            // }
-
-            &.right
-            {
-                float: right;
-            }
-
-            & + button
-            {
-                margin-left: 5px;
-            }
-        }
 
 
         .new-form
         {
+            position: relative;
+
             box-sizing: border-box;
             width: 100%;
             height: 50px;
 
+            text-align: center;
+
+            border-bottom: 1px solid #fff;
             > *
             {
                 margin-right: 10px;
+            }
+
+            > *:last-child
+            {
+                margin-right: 0;
             }
 
             .field-name
@@ -479,236 +428,107 @@
 
                 color: #999;
             }
+
+            > .right-button-area
+            {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                height: 100%;
+            }
+
+            &:before
+            {
+                display: inline-block;
+
+                width: 0;
+                height: 100%;
+
+                content: ' ';
+                vertical-align: middle;
+            }
+
+            input,
+            select
+            {
+                font-size: 14px;
+                line-height: 1;
+
+                box-sizing: border-box;
+                width: 300px;
+                height: 30px;
+                padding: 5px 10px;
+
+                vertical-align: middle;
+
+                color: #427dc9;
+                border: 1px solid #aaa;
+                border-radius: 5px;
+                outline: none;
+                background-color: #fff;
+
+                & + button
+                {
+                    margin-left: 5px;
+                }
+            }
+
+            button
+            {
+                font-family: 'Open Sans';
+                font-size: 14px;
+
+                display: inline-block;
+
+                box-sizing: border-box;
+                height: 100%;
+                margin: 0;
+                padding: 0 20px;
+
+                transition: all .3s;
+
+                color: #fff;
+                border: 0;
+                outline: none;
+                background-color: #3479d3;
+                // &:before
+                // {
+                //     display: inline-block;
+                //
+                //     width: 0;
+                //     height: 100%;
+                //
+                //     content: ' ';
+                //     vertical-align: middle;
+                // }
+
+                &.right
+                {
+                    float: right;
+                }
+
+                & + button
+                {
+                    margin-left: 5px;
+                }
+
+                &:hover
+                {
+                    background-color: #4692f5;
+                }
+
+                &:active
+                {
+                    background-color: #144482;
+                }
+            }
         }
 
         .request-list
         {
             width: 100%;
-
-            .request
-            {
-                width: 100%;
-
-                // select
-                // {
-                //     font-size: 22px;
-                //
-                //     height: 42px;
-                //     padding: 10px 10px;
-                //
-                //     vertical-align: middle;
-                //
-                //     color: #fff;
-                //     border: 1px solid #1e2127;
-                //     outline: none;
-                //     background-color: #42464e;
-                // }
-                .body
-                {
-                    position: relative;
-
-                    display: inline-block;
-
-                    width: 100%;
-                    &:after
-                    {
-                        display: inline-block;
-                        clear: both;
-
-                        content: ' ';
-                    }
-
-                    > .data-zone,
-                    > .editting-zone
-                    {
-                        display: inline-block;
-                        float: left;
-
-                        transition: all .5s;
-
-                        background-color: #e9e9e9;
-                        &:hover
-                        {
-                            background-color: #f3f3f3;
-                        }
-                    }
-
-                    > .data-zone
-                    {
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        bottom: 0;
-
-                        border-left: 1px solid #cecece;
-                    }
-                }
-                label
-                {
-                    font-size: 16px;
-
-                    display: inline-block;
-
-                    width: 150px;
-                    padding: 10px 20px;
-
-                    vertical-align: middle;
-                }
-
-
-                .row
-                {
-                    position: relative;
-
-                    box-sizing: border-box;
-                    width: 100%;
-
-                    border-top: 1px solid #e0e0e0;
-
-                    &.head
-                    {
-                        height: 45px;
-
-                        background-color: #fcfcfc;
-                        .right-button-area
-                        {
-                            position: absolute;
-                            top: 0;
-                            right: 0;
-
-                            display: inline-block;
-
-                            height: 100%;
-                        }
-                    }
-
-
-                    button
-                    {
-                        height: 100%;
-                    }
-
-                    &:last-child
-                    {
-                        border-bottom: 0;
-                    }
-                }
-
-                .request-name,
-                .interface-name
-                {
-                    font-size: 15px;
-                    line-height: 30px;
-
-                    display: inline-block;
-
-                    height: 26px;
-                    padding: 6px 20px;
-
-                    vertical-align: middle;
-
-
-                    &:before
-                    {
-                        content: ' Request : ';
-
-                        color: #aaa;
-                    }
-                }
-
-                .interface-name
-                {
-                    &:before
-                    {
-                        content: ' From : ';
-
-                        color: #aaa;
-                    }
-                }
-
-                .request-pattern
-                {
-                    display: inline-block;
-
-                    padding: 10px 0;
-
-                    vertical-align: middle;
-
-                    > input
-                    {
-                        width: 600px;
-                    }
-                }
-
-                .request-field-set
-                {
-                    display: inline-block;
-
-                    margin-right: 10px;
-
-                    vertical-align: middle;
-                    > .field
-                    {
-                        //display: inline-block;
-
-                        > input
-                        {
-                            width: 300px;
-                            margin-right: 0;
-                        }
-
-                        i
-                        {
-                            padding: 10px;
-
-                            vertical-align: middle;
-                        }
-
-                        & + .field
-                        {
-                            margin-top: 5px;
-                        }
-                    }
-                }
-
-
-                .data-render-zone
-                {
-                    overflow: auto;
-
-                    width: 100%;
-                    height: 0;
-
-                    transition: all .3s;
-
-                    //background-color: #2b2c2f;
-
-                    //box-shadow: inset 0 10px 40px rgba(30, 33, 39, .62);
-                    &.open
-                    {
-                        height: auto;
-                    }
-                }
-
-                .configs
-                {
-                    .config
-                    {
-                        display: inline-block;
-
-                        padding: 5px;
-
-                        .title
-                        {
-                            display: inline-block;
-
-                            margin-right: 5px;
-                        }
-                    }
-                }
-            }
         }
-
 
         .request-navigation
         {
@@ -722,9 +542,6 @@
             background-color: #fff;
         }
     }
-
-
-
 
     .node-render-zone
     {
