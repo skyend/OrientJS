@@ -44,7 +44,7 @@ class ApiSourceContextController extends RequestManager {
   save() {
     var self = this;
     console.log(this.apiSource);
-    this.serviceManager.saveAPISource(this.apiSource._id, this.apiSource, function(_result) {
+    this.serviceManager.saveAPISource(this.apiSource.id, this.apiSource.export(), function(_result) {
 
       self.unsaved = false;
       self.context.feedSaveStateChange();
@@ -84,18 +84,19 @@ class ApiSourceContextController extends RequestManager {
 
 
   addInterface(_interfaceId) {
-
-    this.apiSource['interfaces'] = this.apiSource['interfaces'] || [];
-
-    let foundIndex = _.findIndex(this.apiSource['interfaces'], function(_id) {
-      return _id === _interfaceId;
-    });
-
-    if (foundIndex > -1) {
-      return false;
-    }
-
-    this.apiSource['interfaces'].push(_interfaceId);
+    this.apiSource.addInterface(_interfaceId);
+    //
+    // this.apiSource['interfaces'] = this.apiSource['interfaces'] || [];
+    //
+    // let foundIndex = _.findIndex(this.apiSource['interfaces'], function(_id) {
+    //   return _id === _interfaceId;
+    // });
+    //
+    // if (foundIndex > -1) {
+    //   return false;
+    // }
+    //
+    // this.apiSource['interfaces'].push(_interfaceId);
 
     this.changedContent();
 

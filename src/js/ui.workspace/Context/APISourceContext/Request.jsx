@@ -19,7 +19,8 @@ var Request = React.createClass({
     return {
       showDataPreviewer: false,
       interfaces: [],
-      fold: true
+      fold: true,
+      icafeResult: null
     }
   },
 
@@ -493,12 +494,15 @@ var Request = React.createClass({
                 <div className='input-wrapper value'>
                   <input className='value' placeholder="Field value or resolver" value={_field.value} onChange={function(_e){ self.changeFieldValue(_i,_e); }}/>
                 </div>
-                <div className='input-wrapper test-value'>
-                  <input className='test-value' placeholder="Test value" value={testFieldPlaceHolders[_field.name]} onChange={function(_e){ self.changeFieldTestValue(_field.name,_e); }}/>
-                  { self.renderWithCheckEditable(
-                    <button onClick={ function(){self.deleteField(_i)} }><i className='fa fa-trash'/></button>
-                  )}
-                </div>
+                {self.props.isInterface ? '':(
+                  <div className='input-wrapper test-value'>
+                    <input className='test-value' placeholder="Test value" value={testFieldPlaceHolders[_field.name]} onChange={function(_e){ self.changeFieldTestValue(_field.name,_e); }}/>
+                    { self.renderWithCheckEditable(
+                      <button onClick={ function(){self.deleteField(_i)} }><i className='fa fa-trash'/></button>
+                    )}
+                  </div>
+                  )
+                }
               </div>
             )
           })}
@@ -527,6 +531,8 @@ var Request = React.createClass({
 
   renderBody(){
     if (this.state.fold) return '';
+    let edittingZone;
+    let dataZone;
 
     let editZoneStyle = {
       width:'100%'
@@ -536,25 +542,32 @@ var Request = React.createClass({
       display:'none'
     };
 
-    if( this.state.showDataPreviewer ){
+    edittingZone = (
+      <div className='editting-zone' style={editZoneStyle}>
+        { this.renderRows(editZoneStyle.width)}
+      </div>
+    );
+
+    if( this.state.showDataPreviewer && this.state.icafeResult){
       editZoneStyle={
         width:'50%'
       };
       dataZoneStyle = {
         width:'50%'
       };
+
+      dataZone = (
+        <div className='data-zone' style={dataZoneStyle}>
+          { this.renderDataZone()}
+        </div>
+      );
     }
 
 
     return (
       <div className='body'>
-        <div className='editting-zone' style={editZoneStyle}>
-          { this.renderRows(editZoneStyle.width)}
-        </div>
-
-        <div className='data-zone' style={dataZoneStyle}>
-          { this.renderDataZone()}
-        </div>
+        {edittingZone}
+        {dataZone}
       </div>
     )
   },

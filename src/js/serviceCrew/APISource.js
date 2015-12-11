@@ -10,12 +10,13 @@ export default class APISource {
     this.hasNodeTypeData = false;
     this._nodeTypeData = null;
 
-    this.importSource(_apiSourceData);
+    this.import(_apiSourceData);
   }
 
   addInterface(_interfaceId) {
 
     this.interfaces = this.interfaces || [];
+    console.log(_interfaceId);
 
     let foundIndex = _.findIndex(this.interfaces, function(_id) {
       return _id === _interfaceId;
@@ -26,7 +27,7 @@ export default class APISource {
     }
 
     this.interfaces.push(_interfaceId);
-
+    console.log(this.interfaces);
     return true;
   }
 
@@ -187,7 +188,7 @@ export default class APISource {
     });
   }
 
-  importSource(_apiSourceData) {
+  import (_apiSourceData) {
     let self = this;
 
     this.id = _apiSourceData._id;
@@ -220,8 +221,8 @@ export default class APISource {
     this.placeholders = _apiSourceData.placeholders || {}; // {}
   }
 
-  exportSource() {
-
+  export () {
+    console.log(this);
     return {
       "_id": this.id,
       "nt_tid": this.nt_tid,
@@ -236,9 +237,11 @@ export default class APISource {
           let request = self.requests[_key];
 
           if (!request.isInheritance) {
-            requests[_key] = request;
+            requests[_key] = request.export();
+            console.log(requests[_key]);
           }
         });
+
         return requests;
       }(this), // 추후에 배열로 변환하기
       "interfaces": this.interfaces,
