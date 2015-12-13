@@ -12,6 +12,7 @@ class Factory {
     let elementNodeDataObject = _elementNodeDataObject || {};
     let type = elementNodeDataObject.type || _type;
     console.log(_elementNodeDataObject, _type, _environment);
+
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
     else if (type === 'empty') elementNodeCLASS = EmptyElementNode;

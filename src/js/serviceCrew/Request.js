@@ -1,14 +1,10 @@
 import _ from 'underscore';
+import Identifier from '../util/Identifier.js';
 
 export default class Request {
   constructor(_requestData, _interface) {
-    this.name = _requestData.name;
-    this.method = _requestData.method || 'get';
-    this.fieldFillFromNodeType = _requestData.fieldFillFromNodeType;
-    this.fieldList = _requestData.fieldList;
-    this.headerList = _requestData.headerList;
-    this.customUrlPattern = _requestData.customUrlPattern;
-    this.crud = _requestData.crud;
+
+    this.import(_requestData);
 
     // interface내에 속하는 request의 속성
     this.interface = _interface;
@@ -157,6 +153,19 @@ export default class Request {
   //   }
   //
   // }
+
+  import (_requestData) {
+    let requestData = _requestData || {};
+
+    this.id = requestData.id || Identifier.genUUID();
+    this.name = requestData.name;
+    this.method = requestData.method || 'get';
+    this.fieldFillFromNodeType = requestData.fieldFillFromNodeType || false;
+    this.fieldList = requestData.fieldList || [];
+    this.headerList = requestData.headerList || [];
+    this.customUrlPattern = requestData.customUrlPattern || '';
+    this.crud = requestData.crud;
+  }
 
   export () {
     return {

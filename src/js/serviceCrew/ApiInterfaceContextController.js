@@ -1,8 +1,8 @@
 import RequestManager from './RequestManager.js';
 
-class ApiInterfaceContextController extends RequestManager {
+class ApiInterfaceContextController {
   constructor(_apiinterface, _session, _serviceManager) {
-    super();
+
     this.attached = false;
     this.context = null;
     this.running = false;
@@ -42,6 +42,42 @@ class ApiInterfaceContextController extends RequestManager {
     });
   }
 
+  existsRequest(_name) {
+    return this.requests[_name] !== undefined;
+  }
+
+  modifyAddRequest(_name, _crud) {
+    if (this.apiSource.addNewRequest(_name, _crud)) {
+      this.changedContent();
+    } else {
+      return false;
+    }
+  }
+
+  get requestsList() {
+    var self = this;
+
+    return Object.keys(this.requests).map(function(_key) {
+      self.requests[_key].name = _key;
+      return self.requests[_key];
+    });
+  }
+
+
+  updateRequest(_request) {
+    let reqName = _request.name;
+    this.requests[reqName] = _request;
+    delete this.requests[reqName].name;
+
+    this.changedContent();
+  }
+
+  deleteRequest(_request) {
+    let reqName = _request.name;
+    delete this.requests[reqName];
+    console.log(this.requests);
+    this.changedContent();
+  }
 
   // getRequestTestFieldPlaceholder(_requestName, _name, _value) {
   //
@@ -66,5 +102,4 @@ class ApiInterfaceContextController extends RequestManager {
 
 }
 
-
-module.exports = ApiInterfaceContextController;
+export default ApiInterfaceContextController;

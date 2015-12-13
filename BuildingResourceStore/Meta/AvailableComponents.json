@@ -58,6 +58,14 @@
       "path": "SmartAdmin/CommentList.jsx"
     }]
   }, {
+    "key": "SocialInclude",
+    "name": "Social Include",
+    "components": [{
+      "key": "Youtube",
+      "name": "Youtube",
+      "path": "SocialInclude/Youtube.jsx"
+    }]
+  }, {
     "key": "GGIO",
     "name": "GGIO Components",
     "components": [{

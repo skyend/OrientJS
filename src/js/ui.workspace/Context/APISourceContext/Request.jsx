@@ -531,8 +531,8 @@ var Request = React.createClass({
 
   renderBody(){
     if (this.state.fold) return '';
-    let edittingZone;
-    let dataZone;
+    let edittingZone = '';
+    let dataZone = '';
 
     let editZoneStyle = {
       width:'100%'
@@ -542,11 +542,7 @@ var Request = React.createClass({
       display:'none'
     };
 
-    edittingZone = (
-      <div className='editting-zone' style={editZoneStyle}>
-        { this.renderRows(editZoneStyle.width)}
-      </div>
-    );
+
 
     if( this.state.showDataPreviewer && this.state.icafeResult){
       editZoneStyle={
@@ -562,6 +558,12 @@ var Request = React.createClass({
         </div>
       );
     }
+
+    edittingZone = (
+      <div className='editting-zone' style={editZoneStyle}>
+        { this.renderRows(editZoneStyle.width)}
+      </div>
+    );
 
 
     return (

@@ -108,9 +108,9 @@ class Page {
     return this.paramSupplies[index];
   }
 
-  getNewGridId() {
-    return ++this.lastGridId;
-  }
+  // getNewGridId() {
+  //   return ++this.lastGridId;
+  // }
 
   getHTMLDocument() {
     return this.htmlDocument;
@@ -149,7 +149,7 @@ class Page {
 
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
-    newGridNode.setId(this.getNewGridId());
+    //newGridNode.setId(this.getNewGridId());
     newGridNode.behavior = _behavior;
 
     // 초기 rectangle은 width, height 모두 auto로 지정한다.

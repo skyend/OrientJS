@@ -172,6 +172,7 @@ class ServiceManager {
   }
 
   saveAPISource(_apisource_id, _apisourceDataObject, _complete) {
+    console.log(_apisourceDataObject);
     this.app.gelateriaRequest.saveAPISource(this.service_id, _apisource_id, _apisourceDataObject, function(_result) {
       _complete(_result);
     });

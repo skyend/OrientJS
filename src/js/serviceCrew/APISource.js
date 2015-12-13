@@ -13,6 +13,21 @@ export default class APISource {
     this.import(_apiSourceData);
   }
 
+  addNewRequest(_name, _crud) {
+    if (this.requests[_name] !== undefined) {
+      return false;
+    } else {
+      let newRequest = new Request({
+        name: _name,
+        crud: _crud
+      });
+
+      this.requests[_name] = newRequest;
+
+      return true;
+    }
+  }
+
   addInterface(_interfaceId) {
 
     this.interfaces = this.interfaces || [];
@@ -223,8 +238,9 @@ export default class APISource {
 
   export () {
     console.log(this);
+
     return {
-      "_id": this.id,
+      //"_id": this.id,
       "nt_tid": this.nt_tid,
       "title": this.title,
       "icon": this.icon,
@@ -241,7 +257,7 @@ export default class APISource {
             console.log(requests[_key]);
           }
         });
-
+        console.log('requests', requests);
         return requests;
       }(this), // 추후에 배열로 변환하기
       "interfaces": this.interfaces,

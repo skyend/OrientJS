@@ -82,7 +82,7 @@ var APISourceContext = React.createClass({
       return;
     }
 
-    this.props.contextController.addRequest(name, crud);
+    this.props.contextController.modifyAddRequest(name, crud);
 
     this.forceUpdate();
   },

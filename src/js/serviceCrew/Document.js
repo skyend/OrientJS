@@ -252,11 +252,6 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
 
   let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
 
-  // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
-  if (!/^\d+$/.test(elementNode.getId())) {
-    elementNode.setId(this.getNewElementNodeId());
-  }
-
   return elementNode;
 };
 
@@ -318,9 +313,9 @@ Document.prototype.cloneElement = function(_elementNode) {
   return newClonedElementNode;
 };
 
-Document.prototype.getNewElementNodeId = function() {
-  return ++(this.lastElementId);
-};
+// Document.prototype.getNewElementNodeId = function() {
+//   return ++(this.lastElementId);
+// };
 
 Document.prototype.getElementNodeFromPool = function(_id) {
   var index = _.findIndex(this.elementNodes, function(__elementNode) {

@@ -3,9 +3,9 @@ import RequestManager from './RequestManager.js';
 import ICEServer from '../builder.ICEServer.js';
 import APISource from './APISource.js';
 
-class ApiSourceContextController extends RequestManager {
+class ApiSourceContextController {
   constructor(_apisource, _session, _serviceManager) {
-    super();
+
     this.attached = false;
     this.apiSourceContext = null;
     this.running = false;
@@ -61,6 +61,14 @@ class ApiSourceContextController extends RequestManager {
     return this.unsaved;
   }
 
+  modifyAddRequest(_name, _crud) {
+    if (this.apiSource.addNewRequest(_name, _crud)) {
+      this.changedContent();
+    } else {
+      return false;
+    }
+  }
+
   getNodetypeData(_complete) {
     if (this.cachedNodeTypeData === null) {
       let self = this;
@@ -84,19 +92,18 @@ class ApiSourceContextController extends RequestManager {
 
 
   addInterface(_interfaceId) {
-    this.apiSource.addInterface(_interfaceId);
-    //
-    // this.apiSource['interfaces'] = this.apiSource['interfaces'] || [];
-    //
-    // let foundIndex = _.findIndex(this.apiSource['interfaces'], function(_id) {
-    //   return _id === _interfaceId;
-    // });
-    //
-    // if (foundIndex > -1) {
-    //   return false;
-    // }
-    //
-    // this.apiSource['interfaces'].push(_interfaceId);
+
+    this.apiSource['interfaces'] = this.apiSource['interfaces'] || [];
+
+    let foundIndex = _.findIndex(this.apiSource['interfaces'], function(_id) {
+      return _id === _interfaceId;
+    });
+
+    if (foundIndex > -1) {
+      return false;
+    }
+
+    this.apiSource['interfaces'].push(_interfaceId);
 
     this.changedContent();
 
@@ -179,8 +186,38 @@ class ApiSourceContextController extends RequestManager {
 
   }
 
+  existsRequest(_name) {
+    return this.requests[_name] !== undefined;
+  }
+
+
+
+  get requestsList() {
+    var self = this;
+
+    return Object.keys(this.requests).map(function(_key) {
+      self.requests[_key].name = _key;
+      return self.requests[_key];
+    });
+  }
+
+
+  updateRequest(_request) {
+    let reqName = _request.name;
+    this.requests[reqName] = _request;
+    delete this.requests[reqName].name;
+
+    this.changedContent();
+  }
+
+  deleteRequest(_request) {
+    let reqName = _request.name;
+    delete this.requests[reqName];
+    console.log(this.requests);
+    this.changedContent();
+  }
+
 
 }
 
-
-module.exports = ApiSourceContextController;
+export default ApiSourceContextController;
