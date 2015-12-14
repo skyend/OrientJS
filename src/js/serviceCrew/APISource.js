@@ -3,12 +3,12 @@ import _ from 'underscore';
 import requestAgent from 'superagent';
 
 export default class APISource {
-  constructor(_app, _apiSourceData, _apiInterfaceList) {
+  constructor(_apiSourceData, _apiInterfaceList, _serivceManager) {
 
-    this.app = _app;
     this.apiInterfaceList = _apiInterfaceList;
     this.hasNodeTypeData = false;
     this._nodeTypeData = null;
+    this.serviceManager = _serivceManager;
 
     this.import(_apiSourceData);
   }
@@ -31,7 +31,6 @@ export default class APISource {
   addInterface(_interfaceId) {
 
     this.interfaces = this.interfaces || [];
-    console.log(_interfaceId);
 
     let foundIndex = _.findIndex(this.interfaces, function(_id) {
       return _id === _interfaceId;
@@ -42,7 +41,7 @@ export default class APISource {
     }
 
     this.interfaces.push(_interfaceId);
-    console.log(this.interfaces);
+
     return true;
   }
 
@@ -121,9 +120,9 @@ export default class APISource {
         _end(_result);
       });
     } else {
-      this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, headers, fields, function(_result) {
-
-        self.contextController.getNodeTypeData(function(_nodeTypeData) {
+      this.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, headers, fields, function(_result) {
+        console.log('requestNodeType', self);
+        self.serviceManager.iceDriver.getNodeType(self.nid, function(_nodeTypeData) {
           request.testResultData = _result;
           request.testDataFrame = request.createResultDataFrame(request.testResultData, _nodeTypeData.propertytype);
 
@@ -142,7 +141,7 @@ export default class APISource {
     if (request.crud === '*') {
       this.executeCustomURL(request, _fields, _end);
     } else {
-      this.app.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, _headers, _fields, function(_result) {
+      this.serviceManager.iceDriver.requestNodeType(request.method, this.nt_tid, request.crud, _headers, _fields, function(_result) {
         console.log('요청 결과다 ', _result);
         _end(_result);
       });
@@ -164,7 +163,6 @@ export default class APISource {
         .end(function(err, res) {
           if (err !== null) throw new Error("fail customRequest");
 
-          //console.log(res);
           var dataObject = JSON.parse(res.text);
 
           _end(dataObject);
@@ -196,7 +194,8 @@ export default class APISource {
   // 노드타입 데이터를 로드해 자신에게 입력한다.
   prepareNodeTypeData(_end) {
     let self = this;
-    this.app.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
+    console.log(this, "prepareNodeTypeData");
+    this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
       console.log("prepareNodeTypeData", _result);
       self.nodeTypeData = _result;
       _end(true);

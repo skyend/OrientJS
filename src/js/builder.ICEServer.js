@@ -85,7 +85,7 @@ class ICEServer {
       .end(function(err, res) {
         var result = res.body;
 
-
+        console.log(result);
         self.getPropertytypesByTid(result.nt_tid, function(pt_res) {
 
           result.propertytype = pt_res.propertytypes;

@@ -19,13 +19,20 @@ var APISourceContext = React.createClass({
   goingToContextStop(){
 
     this.contextController.pause();
-    //console.log('changed context state to stop!');
   },
 
   goingToContextRunning(){
     this.contextController.resume();
     if (this.props.contextType === 'apiSource')
       this.contextController.needFollowInterfacesState();
+  },
+
+  save(){
+    this.props.contextController.save();
+  },
+
+  feedSaveStateChange(){
+    this.emit("ChangedSaveState");
   },
 
   getContextType(){
@@ -120,9 +127,6 @@ var APISourceContext = React.createClass({
   },
 
 
-  save(){
-    this.props.contextController.save();
-  },
 
 
   componentDidUpdate(){
@@ -155,10 +159,6 @@ var APISourceContext = React.createClass({
     } else {
       this.goingToContextStop();
     }
-  },
-
-  feedSaveStateChange(){
-    this.emit("ChangedSaveState");
   },
 
   renderCRUDList(){

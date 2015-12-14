@@ -158,6 +158,7 @@ export default class Request {
     let requestData = _requestData || {};
 
     this.id = requestData.id || Identifier.genUUID();
+    this.isVirtual = requestData.isVirtual || false;
     this.name = requestData.name;
     this.method = requestData.method || 'get';
     this.fieldFillFromNodeType = requestData.fieldFillFromNodeType || false;
@@ -171,6 +172,7 @@ export default class Request {
     return {
       name: this.name,
       method: this.method,
+      isVirtual: this.isVirtual, // 가상의 Request 인터페이스와 함께 동작한다.
       customUrlPattern: this.customUrlPattern,
       fieldFillFromNodeType: this.fieldFillFromNodeType,
       fieldList: this.fieldList,

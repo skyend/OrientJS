@@ -1,5 +1,3 @@
-import RequestManager from './RequestManager.js';
-
 class ApiInterfaceContextController {
   constructor(_apiinterface, _session, _serviceManager) {
 

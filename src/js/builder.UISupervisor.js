@@ -600,22 +600,27 @@ UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
   var self = this;
-
-  this.app.serviceManager.getApisourceList(function(_asResult) {
-    let apiSourceList = _asResult.list;
-
-    self.app.serviceManager.getApiinterfaceList(function(_aiResult) {
-      let apiInterfaceList = _aiResult.list;
-
-      apiSourceList = apiSourceList.map(function(_apiSource) {
-        return new APISource(self.app, _apiSource, apiInterfaceList);
-      });
-
-      _eventData.path[0].setState({
-        apisourceList: apiSourceList
-      });
+  this.app.serviceManager.getApiSourceListWithInterface(function(_apiSourceList) {
+    _eventData.path[0].setState({
+      apisourceList: _apiSourceList
     });
   });
+
+  // this.app.serviceManager.getApisourceList(function(_asResult) {
+  //   let apiSourceList = _asResult.list;
+  //
+  //   self.app.serviceManager.getApiinterfaceList(function(_aiResult) {
+  //     let apiInterfaceList = _aiResult.list;
+  //
+  //     apiSourceList = apiSourceList.map(function(_apiSource) {
+  //       return new APISource(_apiSource, apiInterfaceList, self.app.serviceMana);
+  //     });
+  //
+  //     _eventData.path[0].setState({
+  //       apisourceList: apiSourceList
+  //     });
+  //   });
+  // });
 };
 //
 // UI.prototype.onThrowCatcherUpdateAPIInterfaceList = function(_eventData) {
@@ -709,15 +714,15 @@ UI.prototype.onThrowCatcherNeedRequestResult = function(_eventData) {
   });
 };
 
-UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
-  let nid = _eventData.nodeTypeNID;
-
-  this.app.serviceManager.iceDriver.getNodeType(nid, function(_result) {
-    _eventData.path[0].setState({
-      nodeTypeData: _result
-    });
-  });
-}
+// UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
+//   let nid = _eventData.nodeTypeNID;
+//
+//   this.app.serviceManager.iceDriver.getNodeType(nid, function(_result) {
+//     _eventData.path[0].setState({
+//       nodeTypeData: _result
+//     });
+//   });
+// }
 
 UI.prototype.onThrowCatcherChangeContextControllerState = function(_eventData) {
   this.rootUIInstance.forceUpdate();

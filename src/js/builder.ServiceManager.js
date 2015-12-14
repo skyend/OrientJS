@@ -36,12 +36,6 @@ class ServiceManager {
     this.chechedApiResources = {};
   }
 
-  //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
-  getNodeTypeData(_nodeTypeId) {
-
-    return this.app.session.certifiedRequestJSON(this.iceHost + "/api/" + _nodeTypeId + "/list.json?t=api");
-  }
-
   createDocument(_title, _type, _complete) {
     //console.log('create ', _title, _type);
 
@@ -144,7 +138,7 @@ class ServiceManager {
         let apiInterfaceList = _aiResult.list;
 
         apiSourceList = apiSourceList.map(function(_apiSource) {
-          return new APISource(self.app, _apiSource, apiInterfaceList);
+          return new APISource(_apiSource, apiInterfaceList, self);
         });
 
         _complete(apiSourceList);
@@ -160,7 +154,7 @@ class ServiceManager {
         self.getApiinterfaceList(function(_aiResult) {
           let apiInterfaceList = _aiResult.list;
 
-          let apiSource = new APISource(self.app, _result.apisource, apiInterfaceList);
+          let apiSource = new APISource(_result.apisource, apiInterfaceList, self);
 
           _complete(apiSource);
         });
@@ -265,27 +259,6 @@ class ServiceManager {
 
     throw new Error("Not found context Controller");
   }
-
-  // Deprecated
-  // loadDocumentByMeta(_documentMeta) {
-  //   var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
-  //
-  //   var documentJSON = this.session.certifiedRequestJSON(documentURL);
-  //
-  //   return documentJSON;
-  // };
-
-  getICafeAPIDataOfField(_dataPath) {
-    var apiResourceKey = _dataPath.split('/')[0];
-
-    if (this.chechedApiResources[apiResourceKey] === undefined) {
-      this.chechedApiResources[apiResourceKey] = this.getNodeTypeData(apiResourceKey);
-    }
-
-
-    return ObjectExplorer.getValueByKeyPath(this.chechedApiResources, _dataPath);
-  }
-
 
 
 

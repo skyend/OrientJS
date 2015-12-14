@@ -1,5 +1,4 @@
 import _ from 'underscore';
-import RequestManager from './RequestManager.js';
 import ICEServer from '../builder.ICEServer.js';
 import APISource from './APISource.js';
 
@@ -72,7 +71,8 @@ class ApiSourceContextController {
   getNodetypeData(_complete) {
     if (this.cachedNodeTypeData === null) {
       let self = this;
-      this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
+      console.log(this.apiSource);
+      this.serviceManager.iceDriver.getNodeType(this.apiSource.nid, function(_result) {
 
         self.cachedNodeTypeData = _result;
         _complete(_result);
@@ -216,8 +216,6 @@ class ApiSourceContextController {
     console.log(this.requests);
     this.changedContent();
   }
-
-
 }
 
 export default ApiSourceContextController;
