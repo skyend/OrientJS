@@ -12,7 +12,7 @@ var React = require("react");
 // Supporters
 import EventDistributor from './ui.workspace/reactMixin/EventDistributor.js';
 import ToolFactory from './builder.ToolFactory.js';
-import APISource from "./serviceCrew/APISource.js";
+//import APISource from "./serviceCrew/APISource.js";
 
 // Sub UI Classes
 import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
@@ -377,17 +377,17 @@ UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
   });
 };
 
-UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
+UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
   var self = this;
   var apiSource = _eventData.apiSource;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSource.id, function(_apisourceContextController) {
+  var apiSourceContextController = this.app.serviceManager.getICEAPISourceContextController(apiSource._id, function(_apisourceContextController) {
 
     self.rootUIInstance.openStageContext({
-      apiSourceID: apiSource.id,
-      contextID: 'apiSource#' + apiSource.id,
+      apiSourceID: apiSource._id,
+      contextID: 'apiSource#' + apiSource._id,
       contextTitle: apiSource.title,
       contextType: 'apiSource',
       contextController: _apisourceContextController,
@@ -600,9 +600,9 @@ UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
   var self = this;
-  this.app.serviceManager.getApiSourceListWithInterface(function(_apiSourceList) {
+  this.app.serviceManager.getApisourceList(function(_result) {
     _eventData.path[0].setState({
-      apisourceList: _apiSourceList
+      apisourceList: _result.list
     });
   });
 

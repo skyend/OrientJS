@@ -12,10 +12,17 @@ let sharedElementCopyData = null;
 
 var DirectContext = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
+  getDefaultProps(){
+    return {
+      renderStageWidth:720,
+      renderStageHeight:480,
+      renderStageMode:'tablet'
+    };
+  },
+
   getInitialState(){
     return {
-      stageWidth: 720,
-      stageHeight: 480,
+
       elementNavigatorX: 0,
       elementNavigatorY: 0,
       fixSelected: false,
@@ -618,15 +625,12 @@ var DirectContext = React.createClass({
 
 
   componentWillUpdate(_nextProps, _nextState){
-    this.state.prevStageWidth = this.state.stageWidth;
-    this.state.prevStageHeight = this.state.stageHeight;
-
-    if (_nextState.sizing !== this.props.contextController.getScreenSizing()) {
+    if (_nextProps.renderStageMode !== this.props.contextController.getScreenSizing()) {
       this.mustRedrawStage = true;
     }
 
     // contextController 의 디스플레이모드를 변경한다.
-    this.props.contextController.setScreenSizing(_nextState.sizing);
+    this.props.contextController.setScreenSizing(_nextProps.renderStageMode);
   },
 
   componentDidUpdate(){
@@ -670,8 +674,8 @@ var DirectContext = React.createClass({
   },
 
   render(){
-    var iframeStageWidth = (this.state.stageWidth > this.props.width) ? this.props.width : this.state.stageWidth;
-    var iframeStageHeight = (this.state.stageHeight > this.props.height) ? this.props.height : this.state.stageHeight;
+    var iframeStageWidth = (this.props.renderStageWidth > this.props.width) ? this.props.width : this.props.renderStageWidth;
+    var iframeStageHeight = (this.props.renderStageHeight > this.props.height) ? this.props.height : this.props.renderStageHeight;
     iframeStageWidth -= 10;
     iframeStageHeight -= 10;
     var stageX = ( this.props.width - iframeStageWidth ) / 2;

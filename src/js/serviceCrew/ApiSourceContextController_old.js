@@ -23,7 +23,7 @@ class ApiSourceContextController {
     this.unsaved = false;
     console.log('Node Type Id', this.nodeTypeId);
 
-    this.session = _session;
+    //this.session = _session;
     this.serviceManager = _serviceManager;
   }
 

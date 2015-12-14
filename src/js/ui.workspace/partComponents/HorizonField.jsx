@@ -52,6 +52,10 @@ var EnterableWrapperInput = React.createClass({
     this.emit("ChangedValue", {
       value: value
     });
+
+    if( typeof this.props.onChange === 'function' ){
+      this.props.onChange(_e);
+    }
   },
 
   componentWillReceiveProps(_props){
@@ -64,7 +68,7 @@ var EnterableWrapperInput = React.createClass({
 
   render(){
     return (
-      <input value={ this.state.value } onChange={this.onChange} onDrop={this.onDrop}/>
+      <input value={ this.state.value } type={this.props.type || 'text'} onChange={this.onChange} onDrop={this.onDrop}/>
     );
   }
 });
@@ -340,7 +344,10 @@ var HorizonField = React.createClass({
     if (this.props.enterable) {
       switch (this.props.type) {
         case "input":
-          field = <EnterableWrapperInput defaultValue={this.props.defaultValue} ref='enterable-field'/>
+          field = <EnterableWrapperInput defaultValue={this.props.defaultValue} onChange={this.props.onChange} ref='enterable-field'/>
+          break;
+        case "file":
+          field = <EnterableWrapperInput defaultValue={this.props.defaultValue} onChange={this.props.onChange} type='file' ref='enterable-field'/>
           break;
         case "select":
           field =

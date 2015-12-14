@@ -49,6 +49,37 @@ var DocumentCUForm = React.createClass({
 
   },
 
+  onChangeHTML(_e){
+    console.log(_e.nativeEvent);
+
+    function readSingleFile(_target) {
+      //Retrieve the first (and only!) File from the FileList object
+      var f = _target.files[0];
+      console.log(f, f.webkitRelativePath);
+
+      if (f) {
+        var r = new FileReader();
+        r.onload = function(e) {
+  	      var contents = e.target.result;
+          console.log(contents);
+          // alert( "Got the file.n"
+          //       +"name: " + f.name + "n"
+          //       +"type: " + f.type + "n"
+          //       +"size: " + f.size + " bytesn"
+          //       + "starts with: " + contents.substr(1, contents.indexOf("n"))
+          // );
+        }
+        r.readAsText(f);
+      } else {
+        alert("Failed to load file");
+      }
+    }
+
+    console.log(readSingleFile(_e.nativeEvent.target));
+
+    //document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+  },
+
   render(){
     var classes = ['DocumentCUForm'];
 
@@ -67,6 +98,11 @@ var DocumentCUForm = React.createClass({
                         defaultValue={this.state.savedType} height={40}
                         options={[{title:'contents', value:'contents'}, {title:'layout', value:'layout'}]}
                         nameWidth={150}/>
+          <HorizonField fieldName='type' title='Fragment HTML' theme="dark" enterable={true} type='file'
+            onChange={ this.onChangeHTML }
+            ref='type'
+            defaultValue='' height={40}
+            nameWidth={150}/>
         </div>
 
         <div className='message'>

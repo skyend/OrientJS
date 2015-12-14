@@ -113,12 +113,12 @@
       )
     },
 
-    renderAPISourceItem(_apiSource){
+    renderICEAPISourceItem(_apiSource){
       var iconClass = 'fa-database';
 
       var self = this;
       var click = function () {
-        self.emit("BringApiSourceContext", {
+        self.emit("BringICEAPISourceContext", {
           apiSource: _apiSource,
           iconClass: iconClass
         });
@@ -128,7 +128,7 @@
       //console.log("API context ", this.props.runningContext, _apiSourceMeta);
       if (this.props.runningContext !== null) {
         if (this.props.runningContext.contextType === "apiSource") {
-          if (this.props.runningContext.apiSourceID == _apiSource.id) {
+          if (this.props.runningContext.apiSourceID == _apiSource._id) {
 
             contextIsRunning = true;
           }
@@ -295,7 +295,7 @@
               </span>
           </label>
           <ul>
-            { this.state.apisourceList.map(this.renderAPISourceItem) }
+            { this.state.apisourceList.map(this.renderICEAPISourceItem) }
           </ul>
         </div>
       )

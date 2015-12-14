@@ -1,6 +1,6 @@
 import request from 'superagent';
 import _ from "underscore";
-import Request from './serviceCrew/Request.js';
+//import Request from './serviceCrew/Request.js';
 
 let instance = null;
 

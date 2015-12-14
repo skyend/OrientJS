@@ -1,7 +1,7 @@
 import "./APISourcePalette.less"
 import React from 'react';
 import _ from 'underscore';
-import APISource from '../../serviceCrew/APISource.js';
+//import APISource from '../../serviceCrew/APISource.js';
 
 let Request = React.createClass({
   mixins: [ require('../reactMixin/EventDistributor.js') ],
@@ -137,7 +137,7 @@ let Request = React.createClass({
           {this.props.name}
           <small> {this.state.dataFrame !== null? <i className="fa fa-inbox"/>:''}</small>
 
-        
+
         </div>
         { this.state.showItemTree? this.renderBindingItemTree():''}
       </div>
