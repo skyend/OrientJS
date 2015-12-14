@@ -9,6 +9,8 @@ export default class ICEAPISource {
     this.import(_ICEAPISourceData);
   }
 
+
+
   loadNodeTypeMeta(_complete) {
     let self = this;
 
@@ -54,7 +56,16 @@ export default class ICEAPISource {
 
   export () {
     return {
-
+      //_id: this.id,
+      nt_tid: this.nt_tid,
+      title: this.title,
+      icon: this.icon,
+      nid: this.nid,
+      serviceId: this.serviceId,
+      created: this.created,
+      requests: this.requests.map(function(_request) {
+        return _request.export();
+      })
     }
   }
 }

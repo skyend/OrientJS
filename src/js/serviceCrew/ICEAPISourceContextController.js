@@ -11,6 +11,16 @@ export default class ICEAPISourceContextController extends ContextController {
     this.instance = new ICEAPISource(_ICEAPISourceData, _serviceManager);
   }
 
+  save() {
+    var self = this;
+    console.log(this.instance);
+    this.serviceManager.saveAPISource(this.instance.id, this.instance.export(), function(_result) {
+
+      self.unsaved = false;
+      self.context.feedSaveStateChange();
+    });
+  }
+
   checkDuplicatedRequest(_name) {
     let findedIndex = _.findIndex(this.instance.requests, {
       name: _name

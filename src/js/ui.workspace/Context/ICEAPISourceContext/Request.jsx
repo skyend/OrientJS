@@ -9,10 +9,7 @@ var Request = React.createClass({
   getDefaultProps(){
     return {
       request: null,
-      nodeTypeData: null,
-      isInterface: false,
-
-      contextController:null
+      nodeTypeData: null
     }
   },
 
@@ -20,8 +17,13 @@ var Request = React.createClass({
     var self = this;
 
     return (
-      <div className={'request '+ (this.isInheritance? "smaller from-interface":'')}>
-
+      <div className="Request">
+        <div className='head'>
+          <button className='folder button'>
+            <i className='fa fa-angle-right'/>
+          </button>
+          { this.props.request.toString() }
+        </div>
       </div>
     );
   }
