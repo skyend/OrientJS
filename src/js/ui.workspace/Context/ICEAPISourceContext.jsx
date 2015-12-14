@@ -96,6 +96,9 @@ export default React.createClass({
             New Request
           </button>
         </div>
+        {/*<div className="horizontal">
+          <span>Requests</span>
+        </div>*/}
         <div className='request-list'>
           { this.props.contextController.instance.requests.map( this.renderRequest ) }
         </div>
