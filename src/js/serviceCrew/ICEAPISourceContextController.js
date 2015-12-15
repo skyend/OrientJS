@@ -24,7 +24,7 @@ export default class ICEAPISourceContextController extends ContextController {
   checkDuplicatedRequest(_name) {
     let findedIndex = _.findIndex(this.instance.requests, {
       name: _name
-    })
+    });
 
     if (findedIndex !== -1) {
       return true;
@@ -37,6 +37,80 @@ export default class ICEAPISourceContextController extends ContextController {
     this.instance.addNewRequest(_name, _crud);
 
     this.changedContent();
+  }
+
+  modifyRequestCRUD(_requestId, _crudType) {
+
+    if (this.instance.changeRequestCRUD(_requestId, _crudType)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("CRUD를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestCustomCRUD(_requestId, _crudType) {
+
+    if (this.instance.changeRequestCustomCRUD(_requestId, _crudType)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("CRUD를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestMethod(_requestId, _method) {
+    if (this.instance.changeRequestMethod(_requestId, _method)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestNewField(_requestId) {
+    if (this.instance.requestNewField(_requestId)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestFieldName(_requestId, _fieldId, _value) {
+    if (this.instance.changeRequestFieldKey(_requestId, _fieldId, _value)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestFieldValue(_requestId, _fieldId, _value) {
+    if (this.instance.changeRequestFieldValue(_requestId, _fieldId, _value)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRequestFieldTestValue(_requestId, _fieldId, _value) {
+    if (this.instance.changeRequestFieldTestValue(_requestId, _fieldId, _value)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRemoveRequestField(_requestId, _fieldId) {
+    if (this.instance.removeRequestField(_requestId, _fieldId)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
+  modifyRemoveRequest(_requestId) {
+    if (this.instance.removeRequest(_requestId)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("Method를 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
   }
 
   prepareNodeTypeMeta(_complete) {

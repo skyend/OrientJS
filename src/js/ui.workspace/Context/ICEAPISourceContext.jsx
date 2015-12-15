@@ -14,6 +14,51 @@ export default React.createClass({
     };
   },
 
+  onThrowCatcherChangedRequestCRUD(_e){
+    this.props.contextController.modifyRequestCRUD(_e.requestId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherChangedRequestCustomCRUD(_e){
+    this.props.contextController.modifyRequestCustomCRUD(_e.requestId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherChangedRequestMethod(_e){
+    this.props.contextController.modifyRequestMethod(_e.requestId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherAddNewField(_e){
+    this.props.contextController.modifyRequestNewField(_e.requestId);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherChangeFieldName(_e){
+    this.props.contextController.modifyRequestFieldName(_e.requestId, _e.fieldId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherChangeFieldValue(_e){
+    this.props.contextController.modifyRequestFieldValue(_e.requestId, _e.fieldId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherChangeFieldTestValue(_e){
+    this.props.contextController.modifyRequestFieldTestValue(_e.requestId, _e.fieldId, _e.value);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherRemoveRequestField(_e){
+    this.props.contextController.modifyRemoveRequestField(_e.requestId, _e.fieldId);
+    this.forceUpdate();
+  },
+
+  onThrowCatcherRemoveRequest(_e){
+    this.props.contextController.modifyRemoveRequest(_e.requestId);
+    this.forceUpdate();
+  },
+
   newRequest(_e){
     let name = this.refs['new-request-name-input'].getDOMNode().value;
     let crud = this.refs['new-request-type-input'].getDOMNode().value;
@@ -57,7 +102,7 @@ export default React.createClass({
 
   renderRequest( _request, _i ){
     return (
-      <Request request={_request} nodeTypeData={this.props.contextController.instance.nodeTypeMeta} contextController={ this.props.contextController }/>
+      <Request request={_request} contextController={ this.props.contextController }/>
     )
   },
 
@@ -73,8 +118,6 @@ export default React.createClass({
       );
     }
 
-    let availableCRUDs = this.props.contextController.getAvailableCRUDs();
-
     return (
       <div className='body'>
         <div className='request-control'>
@@ -86,7 +129,7 @@ export default React.createClass({
             CRUD
           </label>
           <select ref='new-request-type-input'>
-            {availableCRUDs.map(function(_crud){
+            {this.props.contextController.getAvailableCRUDs().map(function(_crud){
               return (
                 <option value={_crud.type}>{_crud.type + " ("+_crud.name+")"}</option>
               );

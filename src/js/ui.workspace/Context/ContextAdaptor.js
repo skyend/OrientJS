@@ -48,6 +48,14 @@ export default {
     return style;
   },
 
+  notifyMethod(_title, _message, _level) {
+    this.emit("NoticeMessage", {
+      title: _title,
+      message: _message,
+      level: _level || 'info'
+    });
+  },
+
   componentDidUpdate: function() {
     if (this.props.runningState === this.props.contextController.running) return;
 

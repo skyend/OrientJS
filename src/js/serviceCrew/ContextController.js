@@ -17,6 +17,10 @@ export default class ContextController {
 
   }
 
+  builderNotify(_title, _message, _level) {
+    this.context.notifyMethod(_title, _message, _level);
+  }
+
   // save() {
   //   var self = this;
   //   var docjson = this.document.export();

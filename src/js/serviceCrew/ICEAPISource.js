@@ -1,4 +1,5 @@
-import Request from './Request.js';
+import Request from './API/Request.js';
+import _ from 'underscore';
 
 export default class ICEAPISource {
   constructor(_ICEAPISourceData, _serviceManager) {
@@ -39,6 +40,128 @@ export default class ICEAPISource {
     this.requests.push(newRequest);
   }
 
+  findRequest(_id) {
+    let foundReqIdx = _.findIndex(this.requests, {
+      id: _id
+    });
+
+    if (foundReqIdx !== -1) {
+      return this.requests[foundReqIdx];
+    } else {
+      return undefined;
+    }
+  }
+
+  changeRequestCRUD(_reqId, _crud) {
+    let req = this.findRequest(_reqId);
+
+    if (req !== undefined) {
+      req.crud = _crud;
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestCustomCRUD(_reqId, _value) {
+    let req = this.findRequest(_reqId);
+
+    if (req !== undefined) {
+      req.customCrud = _value;
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestMethod(_reqId, _method) {
+    let req = this.findRequest(_reqId);
+
+    if (req !== undefined) {
+      req.method = _method;
+      return true;
+    }
+
+    return false;
+  }
+
+  requestNewField(_requestId) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      req.addNewField();
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestFieldKey(_requestId, _fieldId, _value) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      req.changeFieldKey(_fieldId, _value);
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestFieldValue(_requestId, _fieldId, _value) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      req.changeFieldValue(_fieldId, _value);
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestFieldTestValue(_requestId, _fieldId, _value) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      req.changeFieldTestValue(_fieldId, _value);
+      return true;
+    }
+
+    return false;
+  }
+
+  removeRequestField(_requestId, _fieldId) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      req.removeField(_fieldId);
+      return true;
+    }
+
+    return false;
+  }
+
+  removeRequest(_requestId) {
+    let req = this.findRequest(_requestId);
+
+    if (req !== undefined) {
+      this.requests = this.requests.filter(function(_r) {
+        return _requestId !== _r.id;
+      });
+      return true;
+    }
+
+    return false;
+  }
+
+  getRequestLocation(_reqId) {
+    let req = this.findRequest(_reqId);
+
+    if (req !== undefined) {
+      return '/api/' + this.nt_tid + '/' + req.crudPoint;
+    } else {
+      return '';
+    }
+  }
 
   import (_ICEAPISourceData) {
     let ICEAPISourceData = _ICEAPISourceData || {};
@@ -51,6 +174,9 @@ export default class ICEAPISource {
     this.serviceId = ICEAPISourceData.serviceId;
     this.created = ICEAPISourceData.created;
     this.requests = ICEAPISourceData.requests || [];
+    this.requests = this.requests.map(function(_r) {
+      return new Request(_r);
+    });
 
   }
 
