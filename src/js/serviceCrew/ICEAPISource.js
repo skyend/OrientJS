@@ -163,6 +163,38 @@ export default class ICEAPISource {
     }
   }
 
+  executeRequest(_requestId, _fields, _heads, _complete) {
+    _fields.t = 'api';
+    let req = this.findRequest(_requestId);
+
+    this.serviceManager.iceDriver.requestNodeType(req.method, this.nt_tid, req.crudType, _heads, _fields, function(_result) {
+
+      _complete(_result);
+    });
+  }
+
+  executeTestRequest(_requestId, _complete) {
+    let self = this;
+
+    if (this.nodeTypeMeta === null) {
+      this.prepareNodeTypeMeta(function() {
+        self.executeTestRequest(_requestId, _complete);
+      });
+    } else {
+      let req = this.findRequest(_requestId);
+
+      let fields = {};
+
+      req.fields.map(function(_field) {
+        fields[_field.key] = _field.testValue;
+      });
+
+      this.executeRequest(_requestId, fields, {}, function(_result) {
+        _complete(_result);
+      });
+    }
+  }
+
   import (_ICEAPISourceData) {
     let ICEAPISourceData = _ICEAPISourceData || {};
 

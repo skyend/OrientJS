@@ -153,17 +153,13 @@ class ICEServer {
       });
   }
 
-  requestNodeType(_method, _nt_tid, _crud, _headerData, _fieldsData, _end) {
+  requestNodeType(_method, _nt_tid, _crud, _headerData, _fields, _end) {
     var fields = {};
-
-    _fieldsData.map(function(_field) {
-      fields[_field.name] = _field.testValue || _field.value;
-    });
 
 
     if (_method === 'get' || _method == undefined) {
       request.get(this.host + "/api/" + _nt_tid + "/" + _crud + ".json")
-        .query(fields)
+        .query(_fields)
         .end(function(err, res) {
           if (res === undefined) {
             _end({
@@ -173,6 +169,8 @@ class ICEServer {
             _end(res.body);
           }
         });
+    } else if (_method === 'post') {
+
     }
   }
 }

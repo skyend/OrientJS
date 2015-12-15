@@ -181,4 +181,9 @@ export default class ICEAPISourceContextController extends ContextController {
 
     return undefined;
   }
+
+
+  executeTestRequest(_requestId, _complete) {
+    this.instance.executeTestRequest(_requestId, _complete);
+  }
 }

@@ -1,6 +1,8 @@
 import React from 'react';
 import CheckBox from '../../partComponents/CheckBox.jsx';
 import ICafeResultTable from '../../partComponents/ICafeResultTable.jsx';
+import _ from 'underscore';
+
 import './Request.less';
 
 let FieldRow = React.createClass({
@@ -11,6 +13,8 @@ let FieldRow = React.createClass({
       field: null
     };
   },
+
+
 
   changeName(_e){
     this.props.changeName(this.props.field.id, _e);
@@ -56,16 +60,19 @@ let FieldRow = React.createClass({
 
 var Request = React.createClass({
   mixins: [require('../../reactMixin/EventDistributor.js')],
-  getInitialState(){
-    return {
-      open:false
-    }
-  },
 
   getDefaultProps(){
     return {
       request: null,
       contextController: null
+    }
+  },
+
+  getInitialState(){
+    return {
+      open:false,
+      'data-preview':'off',
+      'data-sample':null
     }
   },
 
@@ -164,11 +171,42 @@ var Request = React.createClass({
     }
   },
 
-  renderEditPart(){
+  executeTest(){
     let self = this;
 
+    this.setState({'data-preview':'loading'});
+
+    this.props.contextController.executeTestRequest(this.props.request.id, function(_result){
+
+      self.setState({
+        'data-preview' : 'on',
+        'data-sample':_result
+      });
+    });
+  },
+
+  onThrowCatcherGoToPage(_e){
+    let foundFieldIndex = _.findIndex(this.props.request.fields, {
+      key:'pagecurrent'
+    });
+
+    this.emit("ChangeFieldTestValue", {
+      requestId : this.props.request.id,
+      fieldId:this.props.request.fields[foundFieldIndex].id,
+      value: _e.to
+    });
+
+    this.executeTest();
+  },
+
+  renderEditPart(_width){
+    let self = this;
+    let style = {
+      width: _width
+    };
+
     return (
-      <div className='part'>
+      <div className='part' style={style}>
         <div className='section'>
           <div className='title'>
             <span>CRUD</span>
@@ -240,14 +278,36 @@ var Request = React.createClass({
     )
   },
 
+  renderPreviewPart(_width){
+    let self = this;
+    let style = {
+      width: _width
+    };
+
+    return (
+      <div className='part' style={style}>
+        <ICafeResultTable result={this.state['data-sample']} propertytypes={this.props.contextController.instance.nodeTypeMeta.propertytype}/>
+      </div>
+    );
+  },
+
   renderBody(){
     if( !this.state.open ) return '';
 
-    return (
-      <div className='body'>
-        { this.renderEditPart() }
-      </div>
-    )
+    if( this.state['data-preview'] === 'on' ){
+      return (
+        <div className='body'>
+          { this.renderEditPart('50%') }
+          { this.renderPreviewPart('50%') }
+        </div>
+      );
+    } else {
+      return (
+        <div className='body'>
+          { this.renderEditPart('100%') }
+        </div>
+      );
+    }
   },
 
   render(){
@@ -268,8 +328,8 @@ var Request = React.createClass({
             <button className='button' onClick={this.removeRequest}>
               <i className='fa fa-trash'/>
             </button>
-            <button className='button'>
-              <i className='fa fa-refresh fa-spin'/> Execute For Test
+            <button className='button' onClick={this.executeTest}>
+              {this.state['data-preview'] === 'loading'? <i className='fa fa-refresh fa-spin'/>:<i className='fa fa-refresh'/>} Execute For Test
             </button>
           </div>
         </div>

@@ -15,6 +15,14 @@ export default class Request {
     }
   }
 
+  get crudType() {
+    if (this.crud === '*') {
+      return this.customCrud;
+    } else {
+      return this.crud;
+    }
+  }
+
   addNewField() {
     this.fields.push({
       id: Identifier.genUUID(),

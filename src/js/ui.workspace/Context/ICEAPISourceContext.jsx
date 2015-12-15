@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 import ToggleColumns from '../partComponents/ToggleColumns.jsx';
-import Request from './ICEAPISourceContext/Request.jsx';
+import Request from './API/Request.jsx';
 
 //import Request from './APISourceContext/Request.jsx';
 require('./ICEAPISourceContext.less');
