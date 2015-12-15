@@ -180,7 +180,8 @@ var Request = React.createClass({
 
       self.setState({
         'data-preview' : 'on',
-        'data-sample':_result
+        'data-sample':_result,
+        open: true
       });
     });
   },
@@ -257,7 +258,7 @@ var Request = React.createClass({
             <span>Header</span>
           </div>
           <div className='data'>
-          A
+            Header
           </div>
         </div>
 
