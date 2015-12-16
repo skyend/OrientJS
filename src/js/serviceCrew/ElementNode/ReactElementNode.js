@@ -1,3 +1,4 @@
+"use strict";
 import TagBaseElementNode from './TagBaseElementNode.js';
 import React from 'react';
 import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';

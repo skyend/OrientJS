@@ -1,3 +1,4 @@
+"use strict";
 import _ from 'underscore';
 import Factory from './ElementNode/Factory.js';
 import DocumentContextController from './DocumentContextController.js';

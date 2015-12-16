@@ -1,3 +1,4 @@
+"use strict";
 import _ from 'underscore';
 import Identifier from '../../util/Identifier.js';
 

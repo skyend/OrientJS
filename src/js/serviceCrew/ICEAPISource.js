@@ -1,3 +1,4 @@
+"use strict";
 import Request from './API/Request.js';
 import _ from 'underscore';
 

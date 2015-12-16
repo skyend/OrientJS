@@ -1,3 +1,4 @@
+"use strict";
 class Viewer {
   constructor(_serviceManager) {
     this.serviceManager = _serviceManager;

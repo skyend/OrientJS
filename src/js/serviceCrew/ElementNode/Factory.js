@@ -1,3 +1,4 @@
+"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import GridElementNode from './GridElementNode.js';
 import ReactElementNode from './ReactElementNode.js';

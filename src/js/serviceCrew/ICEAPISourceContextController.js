@@ -1,3 +1,4 @@
+"use strict";
 import ContextController from './ContextController.js';
 import ICEAPISource from './ICEAPISource.js';
 import _ from 'underscore';

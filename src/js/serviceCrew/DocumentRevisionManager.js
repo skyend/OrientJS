@@ -1,3 +1,4 @@
+"use strict";
 import LZString from '../lib/lz-string.js';
 var revisionCounter = 0;
 

@@ -1,3 +1,4 @@
+"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import Document from '../Document.js';
 
