@@ -1,8 +1,8 @@
-import React from "react";
+let React = require("react");
 import "./ICafeNodeExplorer.less";
-import OutlineButton from '../partComponents/OutlineButton.jsx';
-import GridBox from "../partComponents/GridBox.jsx";
-import _ from 'underscore';
+let OutlineButton = require('../partComponents/OutlineButton.jsx');
+let GridBox = require("../partComponents/GridBox.jsx");
+let _ = require('underscore');
 
 var ICafeNodeExplorer = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],

@@ -8,22 +8,22 @@
 
 import './Workspace.less';
 
-import _ from 'underscore';
-import Async from '../lib/Async.js';
+let _ = require('underscore');
+let Async = require('../lib/Async.js');
 import HeadToolBar from'./HeadToolBar.jsx'; //상단 네비게이션 UI
-import ToolNavigation from './ToolNavigation.jsx';
+let ToolNavigation = require('./ToolNavigation.jsx');
 
-import ContextStage from './ContextStage.jsx'; //중앙 컨텐츠 영역 UI
-import FootStatusBar from './FootStatusBar.jsx'; //하단 상태 표시줄 UI
-import Modal from './Modal.jsx'; //Modal UI
-import FloatingMenuBox from './FloatingMenuBox.jsx'; //StageContextMenu
-import NotificationSystem from './NotificationSystem.jsx'; //PushMessage
-import SubWindowSystem from './SubWindowSystem/SubWindowSystem.jsx';
-import ResourceUploadArea from './ResourceUploadArea.jsx';
+let ContextStage = require('./ContextStage.jsx'); //중앙 컨텐츠 영역 UI
+let FootStatusBar = require('./FootStatusBar.jsx'); //하단 상태 표시줄 UI
+let Modal = require('./Modal.jsx'); //Modal UI
+let FloatingMenuBox = require('./FloatingMenuBox.jsx'); //StageContextMenu
+let NotificationSystem = require('./NotificationSystem.jsx'); //PushMessage
+let SubWindowSystem = require('./SubWindowSystem/SubWindowSystem.jsx');
+let ResourceUploadArea = require('./ResourceUploadArea.jsx');
 
-import React from 'react';
-import cookie from 'js-cookie';
-import EventDistributor from './reactMixin/EventDistributor.js';
+let React = require('react');
+let cookie = require('js-cookie');
+let EventDistributor = require('./reactMixin/EventDistributor.js');
 
 /**
  * UIService

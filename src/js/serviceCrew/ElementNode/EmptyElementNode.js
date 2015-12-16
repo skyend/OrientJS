@@ -1,5 +1,6 @@
-import TagBaseElementNode from './TagBaseElementNode.js';
-import _ from 'underscore';
+"use strict";
+let TagBaseElementNode = require('./TagBaseElementNode.js');
+let _ = require('underscore');
 
 class EmptyElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -130,4 +131,4 @@ class EmptyElementNode extends TagBaseElementNode {
   }
 }
 
-export default EmptyElementNode;
+module.exports = EmptyElementNode;

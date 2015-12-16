@@ -1,4 +1,5 @@
-import React from 'react';
+"use strict";
+let React = require('react');
 
 export default React.createClass({
   getDefaultProps(){

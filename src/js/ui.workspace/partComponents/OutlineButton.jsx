@@ -1,5 +1,5 @@
 import './OutlineButton.less';
-import React from "react";
+let React = require("react");
 
 var OutlineButton = React.createClass({
   getDefaultProps(){

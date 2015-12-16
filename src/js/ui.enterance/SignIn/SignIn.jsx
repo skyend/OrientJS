@@ -1,5 +1,5 @@
-import React from 'react';
-import EventDistributor from "../../ui.workspace/reactMixin/EventDistributor.js";
+let React = require('react');
+let EventDistributor = require("../../ui.workspace/reactMixin/EventDistributor.js");
 
 var SignIn = React.createClass({
   mixins: [EventDistributor],

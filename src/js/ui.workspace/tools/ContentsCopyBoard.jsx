@@ -1,8 +1,8 @@
-import React from "react";
+let React = require("react");
 import './ContentsCopyBoard.less';
-import OutlineButton from '../partComponents/OutlineButton.jsx';
-import GridBox from "../partComponents/GridBox.jsx";
-import Copy2Clipboard from 'copy-to-clipboard';
+let OutlineButton = require('../partComponents/OutlineButton.jsx');
+let GridBox = require("../partComponents/GridBox.jsx");
+let Copy2Clipboard = require('copy-to-clipboard');
 var ContentsCopyBoard = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
 
@@ -42,4 +42,4 @@ var ContentsCopyBoard = React.createClass({
   }
 });
 
-export default ContentsCopyBoard;
+module.exports =  ContentsCopyBoard;

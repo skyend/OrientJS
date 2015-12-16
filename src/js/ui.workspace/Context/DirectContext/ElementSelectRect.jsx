@@ -1,4 +1,4 @@
-import React from "react";
+let React = require("react");
 import './ElementSelectRect.less';
 
 var ElementSelectRect = React.createClass({

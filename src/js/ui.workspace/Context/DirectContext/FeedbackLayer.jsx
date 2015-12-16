@@ -1,4 +1,4 @@
-import React from 'react';
+let React = require('react');
 import './FeedbackLayer.less';
 
 var FeedbackLayer = React.createClass({

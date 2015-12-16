@@ -1,7 +1,7 @@
-import React from 'react';
-import CheckBox from '../../partComponents/CheckBox.jsx';
-import ICafeResultTable from '../../partComponents/ICafeResultTable.jsx';
-import _ from 'underscore';
+let React = require('react');
+let CheckBox = require('../../partComponents/CheckBox.jsx');
+let ICafeResultTable = require('../../partComponents/ICafeResultTable.jsx');
+let _ = require('underscore');
 
 import './Request.less';
 

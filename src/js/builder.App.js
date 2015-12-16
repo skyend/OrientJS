@@ -7,18 +7,18 @@
  * Requires(JS) : builder.StageContext.js, builder.UI.js
  */
 
-import UISupervisor from './builder.UISupervisor.js';
-import ProjectManager from './builder.ProjectManager.js';
-import ServiceManager from './builder.ServiceManager.js';
-import UserManager from './builder.UserManager.js';
-import Session from './builder.Session.js';
-import Cookie from 'js-cookie';
-import GelateriaRequest from './builder.GelateriaRequest.js';
-import _ from 'underscore';
+let UISupervisor = require('./builder.UISupervisor.js');
+let ProjectManager = require('./builder.ProjectManager.js');
+let ServiceManager = require('./builder.ServiceManager.js');
+let UserManager = require('./builder.UserManager.js');
+let Session = require('./builder.Session.js');
+let Cookie = require('js-cookie');
+let GelateriaRequest = require('./builder.GelateriaRequest.js');
+let _ = require('underscore');
 
-import Viewer from './serviceCrew/Viewer.js';
-import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
-import React from 'react';
+let Viewer = require('./serviceCrew/Viewer.js');
+let PreviewScene = require('./ui.workspace/Context/PageContext/PreviewScene.jsx');
+let React = require('react');
 
 var App = function() {
   window.app = this;

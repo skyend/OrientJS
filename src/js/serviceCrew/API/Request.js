@@ -1,7 +1,8 @@
-import _ from 'underscore';
-import Identifier from '../../util/Identifier.js';
+"use strict";
+let _ = require('underscore');
+let Identifier = require('../../util/Identifier.js');
 
-export default class Request {
+module.exports = class Request {
   constructor(_requestData) {
 
     this.import(_requestData);

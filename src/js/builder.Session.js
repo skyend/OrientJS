@@ -10,7 +10,7 @@
 
 var RequestToServer = require('./util/RequestToServer.js');
 var ComponentPool = require('./builder.ComponentPool.js');
-import Cookie from 'js-cookie';
+let Cookie = require('js-cookie');
 
 //var ComponentSupporter = require('./builder.ComponentSupporter.js');
 

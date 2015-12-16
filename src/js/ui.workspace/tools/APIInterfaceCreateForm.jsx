@@ -1,8 +1,8 @@
-import React from "react";
+let React = require("react");
 import './APIInterfaceCreateForm.less';
-import HorizonField from '../partComponents/HorizonField.jsx';
-import OutlineButton from '../partComponents/OutlineButton.jsx';
-import GridBox from "../partComponents/GridBox.jsx";
+let HorizonField = require('../partComponents/HorizonField.jsx');
+let OutlineButton = require('../partComponents/OutlineButton.jsx');
+let GridBox = require("../partComponents/GridBox.jsx");
 
 var APIInterfaceCreateForm = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],

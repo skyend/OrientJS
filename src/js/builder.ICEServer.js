@@ -1,6 +1,6 @@
-import request from 'superagent';
-import _ from "underscore";
-//import Request from './serviceCrew/Request.js';
+let request = require('superagent');
+let _ = require("underscore");
+//let Request = require('./serviceCrew/Request.js');
 
 let instance = null;
 
@@ -175,4 +175,4 @@ class ICEServer {
   }
 }
 
-export default ICEServer;
+module.exports =  ICEServer;

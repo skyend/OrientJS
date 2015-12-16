@@ -1,4 +1,5 @@
-export default class ContextController {
+"use strict";
+module.exports = class ContextController {
   constructor() {
 
   }

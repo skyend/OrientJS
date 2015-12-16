@@ -1,4 +1,4 @@
-import React from 'react';
+let React = require('react');
 import './APISourceMappingHelper.less';
 
 export default React.createClass({

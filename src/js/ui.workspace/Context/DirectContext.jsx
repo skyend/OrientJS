@@ -1,11 +1,11 @@
-import IFrameStage from '../partComponents/IFrameStage.jsx';
-import _ from 'underscore';
-import React from 'react';
-import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
-import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
-import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
+let IFrameStage = require('../partComponents/IFrameStage.jsx');
+let _ = require('underscore');
+let React = require('react');
+let FeedbackLayer = require('./DirectContext/FeedbackLayer.jsx');
+let ElementSelectRect = require('./DirectContext/ElementSelectRect.jsx');
+let ElementRemoteControl = require('./DirectContext/ElementRemoteControl.jsx');
 import './DirectContext.less';
-import Returns from "../../Returns.js";
+let Returns = require("../../Returns.js");
 
 let sharedElementCopyData = null;
 

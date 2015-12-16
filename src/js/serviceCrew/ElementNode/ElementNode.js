@@ -1,8 +1,9 @@
-import React from 'react';
-import Returns from "../../Returns.js";
-import _ from 'underscore';
-import Factory from './Factory.js';
-import Identifier from '../../util/Identifier.js';
+"use strict";
+let React = require('react');
+let Returns = require("../../Returns.js");
+let _ = require('underscore');
+let Factory = require('./Factory.js');
+let Identifier = require('../../util/Identifier.js');
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -711,4 +712,4 @@ class ElementNode {
 }
 
 
-export default ElementNode;
+module.exports = ElementNode;

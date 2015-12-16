@@ -1,5 +1,5 @@
 import _ from 'underscore'
-import React from 'react';
+let React = require('react');
 import './ToolNest.less';
 
 var ToolNest = React.createClass({

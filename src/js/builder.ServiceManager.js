@@ -3,17 +3,17 @@
  *
  *
  */
-import _ from 'underscore';
-import request from 'superagent';
+let _ = require('underscore');
+let request = require('superagent');
 
-import PageContextController from './serviceCrew/PageContextController.js';
-import DocumentContextController from './serviceCrew/DocumentContextController.js';
-import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
-//import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
-import ICEServerDriver from './builder.ICEServer.js';
-import ObjectExplorer from './util/ObjectExplorer.js';
-import Viewer from './serviceCrew/Viewer.js';
-import ICEAPISource from './serviceCrew/ICEAPISource.js';
+let PageContextController = require('./serviceCrew/PageContextController.js');
+let DocumentContextController = require('./serviceCrew/DocumentContextController.js');
+let ICEAPISourceContextController = require('./serviceCrew/ICEAPISourceContextController.js');
+//let ApiInterfaceContextController = require('./serviceCrew/ApiInterfaceContextController.js');
+let ICEServerDriver = require('./builder.ICEServer.js');
+let ObjectExplorer = require('./util/ObjectExplorer.js');
+let Viewer = require('./serviceCrew/Viewer.js');
+let ICEAPISource = require('./serviceCrew/ICEAPISource.js');
 
 
 class ServiceManager {
@@ -422,4 +422,4 @@ class ServiceManager {
 }
 
 
-export default ServiceManager;
+module.exports = ServiceManager;

@@ -1,16 +1,16 @@
-import React from "react";
+let React = require("react");
 import './ElementNodeEditor.less';
 
-import BasicButton from '../partComponents/BasicButton.jsx';
-import InputBoxWithSelector from '../partComponents/InputBoxWithSelector.jsx';
-import HorizonField from '../partComponents/HorizonField.jsx';
-import HorizonFieldSet from '../partComponents/HorizonFieldSet.jsx';
-import htmlTag from './toolsData/htmlTag.json';
+let BasicButton = require('../partComponents/BasicButton.jsx');
+let InputBoxWithSelector = require('../partComponents/InputBoxWithSelector.jsx');
+let HorizonField = require('../partComponents/HorizonField.jsx');
+let HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
+let htmlTag = require('./toolsData/htmlTag.json');
 
-import ElementProfile from './ElementNodeEditor/ElementProfile.jsx';
-import HTMLDOMSpec from './ElementNodeEditor/HTMLDOMSpec.jsx';
-import EmptyTypeElementNode from './ElementNodeEditor/EmptyTypeElementNode.jsx';
-import ReactTypeElementNode from './ElementNodeEditor/ReactTypeElementNode.jsx';
+let ElementProfile = require('./ElementNodeEditor/ElementProfile.jsx');
+let HTMLDOMSpec = require('./ElementNodeEditor/HTMLDOMSpec.jsx');
+let EmptyTypeElementNode = require('./ElementNodeEditor/EmptyTypeElementNode.jsx');
+let ReactTypeElementNode = require('./ElementNodeEditor/ReactTypeElementNode.jsx');
 
 let ElementNodeEditor = React.createClass({
   mixins: [

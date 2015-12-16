@@ -1,7 +1,7 @@
-import React from 'react';
-import HorizonField from '../partComponents/HorizonField.jsx';
-import OutlineButton from '../partComponents/OutlineButton.jsx';
-import GridBox from "../partComponents/GridBox.jsx";
+let React = require('react');
+let HorizonField = require('../partComponents/HorizonField.jsx');
+let OutlineButton = require('../partComponents/OutlineButton.jsx');
+let GridBox = require("../partComponents/GridBox.jsx");
 import './FragmentSelector.less';
 
 

@@ -1,6 +1,6 @@
-import Async from './lib/Async.js';
-import React from 'react';
-import _ from 'underscore';
+let Async = require('./lib/Async.js');
+let React = require('react');
+let _ = require('underscore');
 
 var ToolFactory = function(_session, _toolsMap) {
   this.session = _session;

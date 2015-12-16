@@ -1,9 +1,9 @@
-import React from 'react';
-import _ from 'underscore';
-import ToggleColumns from '../partComponents/ToggleColumns.jsx';
-import Request from './API/Request.jsx';
+let React = require('react');
+let _ = require('underscore');
+let ToggleColumns = require('../partComponents/ToggleColumns.jsx');
+let Request = require('./API/Request.jsx');
 
-//import Request from './APISourceContext/Request.jsx';
+//let Request = require('./APISourceContext/Request.jsx');
 require('./ICEAPISourceContext.less');
 
 export default React.createClass({

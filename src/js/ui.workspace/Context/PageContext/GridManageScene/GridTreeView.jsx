@@ -1,6 +1,6 @@
-import React from 'react';
+let React = require('react');
 import './GridTreeView.less';
-import OutlineButton from '../../../partComponents/OutlineButton.jsx';
+let OutlineButton = require('../../../partComponents/OutlineButton.jsx');
 
 let sharedCopyData = {};
 sharedCopyData.grid = null;

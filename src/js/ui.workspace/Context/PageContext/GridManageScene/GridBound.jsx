@@ -1,7 +1,7 @@
-import React from 'react';
+let React = require('react');
 import './GridBound.less';
-import GridElementBox from './GridBound/GridElementBox.jsx';
-import OutlineButton from '../../../partComponents/OutlineButton.jsx';
+let GridElementBox = require('./GridBound/GridElementBox.jsx');
+let OutlineButton = require('../../../partComponents/OutlineButton.jsx');
 
 export default React.createClass({
   mixins:[require('../../../reactMixin/EventDistributor.js')],

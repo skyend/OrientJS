@@ -1,12 +1,13 @@
-import HTMLElementNode from './ElementNode/HTMLElementNode.js';
-import StringElementNode from './ElementNode/StringElementNode.js';
-import EmptyElementNode from './ElementNode/EmptyElementNode.js';
-import ReactElementNode from './ElementNode/ReactElementNode.js';
-import GridElementNode from './ElementNode/GridElementNode.js';
-import ElementNodeFactory from './ElementNode/Factory.js';
+"use strict";
+let HTMLElementNode = require('./ElementNode/HTMLElementNode.js');
+let StringElementNode = require('./ElementNode/StringElementNode.js');
+let EmptyElementNode = require('./ElementNode/EmptyElementNode.js');
+let ReactElementNode = require('./ElementNode/ReactElementNode.js');
+let GridElementNode = require('./ElementNode/GridElementNode.js');
+let ElementNodeFactory = require('./ElementNode/Factory.js');
 
-import _ from 'underscore';
-import ObjectExplorer from '../util/ObjectExplorer.js';
+let _ = require('underscore');
+let ObjectExplorer = require('../util/ObjectExplorer.js');
 
 var Document = function(_contextController, _documentParams, _documentDataObject) {
   //////////////

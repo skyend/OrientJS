@@ -9,9 +9,9 @@
 
 import './DocumentCSSEditor.less';
 
-import React from "react";
-import HorizonField from '../partComponents/HorizonField.jsx';
-import _ from 'underscore';
+let React = require("react");
+let HorizonField = require('../partComponents/HorizonField.jsx');
+let _ = require('underscore');
 
 var DocumentCSSEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
