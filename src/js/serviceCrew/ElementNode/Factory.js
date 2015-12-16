@@ -6,13 +6,14 @@ let StringElementNode = require('./StringElementNode.js');
 let EmptyElementNode = require('./EmptyElementNode.js');
 
 
-class Factory {
-  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _environment) {
+class Factory
+
+module.exports = {
+  takeElementNode: function(_elementNodeDataObject, _preInsectProps, _type, _environment) {
     var elementNode;
     let elementNodeCLASS;
     let elementNodeDataObject = _elementNodeDataObject || {};
     let type = elementNodeDataObject.type || _type;
-    console.log(_elementNodeDataObject, _type, _environment);
 
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
@@ -28,6 +29,4 @@ class Factory {
 
     return elementNode;
   }
-}
-
-module.exports = Factory;
+};
