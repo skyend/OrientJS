@@ -1,7 +1,7 @@
 "use strict";
 let TagBaseElementNode = require('./TagBaseElementNode.js');
 let React = require('react');
-let ReactComponentErrorBox = require('../jsx/ReactComponentErrorBox.jsx');
+//let ReactComponentErrorBox = require('../jsx/ReactComponentErrorBox.jsx');
 let _ = require('underscore');
 
 class ReactElementNode extends TagBaseElementNode {
@@ -141,14 +141,14 @@ class ReactElementNode extends TagBaseElementNode {
 
         }
 
-        React.render(React.createElement(ReactComponentErrorBox, {
-          componentKey: componentKey,
-          packageKey: packageKey,
-          error: _e,
-          maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.',
-          width: "100%",
-          height: "100%"
-        }), this.realization);
+        // React.render(React.createElement(ReactComponentErrorBox, {
+        //   componentKey: componentKey,
+        //   packageKey: packageKey,
+        //   error: _e,
+        //   maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.',
+        //   width: "100%",
+        //   height: "100%"
+        // }), this.realization);
       }
 
 
