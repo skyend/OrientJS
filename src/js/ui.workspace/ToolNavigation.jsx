@@ -1,7 +1,7 @@
 import './ToolNavigation.less';
-import React from 'react';
-import EventDistributor from './reactMixin/EventDistributor.js';
-import ToolNest from './ToolNest.jsx';
+let React = require('react');
+let EventDistributor = require('./reactMixin/EventDistributor.js');
+let ToolNest = require('./ToolNest.jsx');
 
 var ToolNavigation = React.createClass({
   mixins: [EventDistributor],

@@ -1,4 +1,5 @@
-import LZString from '../lib/lz-string.js';
+"use strict";
+let LZString = require('../lib/lz-string.js');
 var revisionCounter = 0;
 
 class Revision {
@@ -257,4 +258,4 @@ class DocumentRevisionManager {
   }
 }
 
-export default DocumentRevisionManager;
+module.exports = DocumentRevisionManager;

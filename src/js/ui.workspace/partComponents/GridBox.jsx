@@ -1,5 +1,5 @@
 import './GridBox.less';
-import React from "react";
+let React = require("react");
 
 var GridBox = React.createClass({
   getDefaultProps(){

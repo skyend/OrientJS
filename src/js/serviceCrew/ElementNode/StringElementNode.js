@@ -1,5 +1,6 @@
-import ElementNode from './ElementNode.js';
-import _ from 'underscore';
+"use strict";
+let ElementNode = require('./ElementNode.js');
+let _ = require('underscore');
 
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -98,4 +99,4 @@ class StringElementNode extends ElementNode {
   }
 }
 
-export default StringElementNode;
+module.exports = StringElementNode;

@@ -1,8 +1,9 @@
-import HTMLElementNode from './HTMLElementNode.js';
-import GridElementNode from './GridElementNode.js';
-import ReactElementNode from './ReactElementNode.js';
-import StringElementNode from './StringElementNode.js';
-import EmptyElementNode from './EmptyElementNode.js';
+"use strict";
+let HTMLElementNode = require('./HTMLElementNode.js');
+let GridElementNode = require('./GridElementNode.js');
+let ReactElementNode = require('./ReactElementNode.js');
+let StringElementNode = require('./StringElementNode.js');
+let EmptyElementNode = require('./EmptyElementNode.js');
 
 
 class Factory {
@@ -12,6 +13,7 @@ class Factory {
     let elementNodeDataObject = _elementNodeDataObject || {};
     let type = elementNodeDataObject.type || _type;
     console.log(_elementNodeDataObject, _type, _environment);
+
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
     else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
@@ -28,4 +30,4 @@ class Factory {
   }
 }
 
-export default Factory;
+module.exports = Factory;

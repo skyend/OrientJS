@@ -1,8 +1,8 @@
-import React from "react";
+let React = require("react");
 import "./ICafeNodeExplorer.less";
-import OutlineButton from '../partComponents/OutlineButton.jsx';
-import GridBox from "../partComponents/GridBox.jsx";
-import _ from 'underscore';
+let OutlineButton = require('../partComponents/OutlineButton.jsx');
+let GridBox = require("../partComponents/GridBox.jsx");
+let _ = require('underscore');
 
 var ICafeNodeExplorer = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
@@ -44,9 +44,7 @@ var ICafeNodeExplorer = React.createClass({
         this.setState({stayForServer: false, message: "API Source를 등록하는중 오류가 발견되었습니다."});
         return;
       }
-
-      console.log("ALL success");
-      this.emit("UpdateAPISourceList");
+      this.props.params['success-notice']();
       this.emit("Close");
     }
   },

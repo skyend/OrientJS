@@ -6,6 +6,15 @@ var ElemenEventControl = React.createClass({
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      _storedState:{
+        elementNode: null,
+        contextController: null
+      }
+    };
+  },
+
   getInitialState(){
     return {
       elementNode: null
@@ -36,7 +45,7 @@ var ElemenEventControl = React.createClass({
   render() {
     var rootClasses = ['ElemenEventControl', this.props.config.theme, this.getMySizeClass()];
 
-    var elementNode = this.state.elementNode;
+    var elementNode = this.props._storedState.elementNode;
 
     return (
       <div className={rootClasses.join(' ')}>

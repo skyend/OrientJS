@@ -18,6 +18,13 @@ var DocumentConfig = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      _storedState:{
+        document: null
+      }
+    };
+  },
 
   getInitialState(){
     return {
@@ -27,7 +34,6 @@ var DocumentConfig = React.createClass({
 
   // 변경되는 값에따라 바로바로 ElementNode에 반영하고 랜더링을 진행한다.
   onThrowCatcherChangedValue(_eventData, _pass){
-    var elementNode = this.state.elementNode;
     var changedData = _eventData.data;
 
 
@@ -57,7 +63,7 @@ var DocumentConfig = React.createClass({
   },
 
   renderDocument(){
-    var targetDocument = this.state.document;
+    var targetDocument = this.props._storedState.document;
 
     return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/>;
   },
@@ -65,7 +71,7 @@ var DocumentConfig = React.createClass({
   render() {
     var rootClasses = ['DocumentConfig', this.props.config.theme, this.getMySizeClass()];
 
-    var targetDocument = this.state.document;
+    var targetDocument = this.props._storedState.document;
 
 
     return (

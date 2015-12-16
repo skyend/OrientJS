@@ -12,7 +12,31 @@
 
 .DocumentCSSEditor
 {
+    //
+    font-family: 'Open Sans';
+
     width: 100%;
     height: 100%;
-    //
+    &.error
+    {
+        text-align: center;
+
+        color: #fff;
+
+        &::before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+
+        > span
+        {
+            vertical-align: middle;
+        }
+    }
 }

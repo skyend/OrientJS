@@ -1,9 +1,9 @@
-import React from 'react';
+let React = require('react');
 import './PageContext.less';
-import IFrameStage from '../partComponents/IFrameStage.jsx';
-import PreviewScene from './PageContext/PreviewScene.jsx';
-import GridManageScene from './PageContext/GridManageScene.jsx';
-import MetaBoardScene from './PageContext/MetaBoardScene.jsx';
+let IFrameStage = require('../partComponents/IFrameStage.jsx');
+let PreviewScene = require('./PageContext/PreviewScene.jsx');
+let GridManageScene = require('./PageContext/GridManageScene.jsx');
+let MetaBoardScene = require('./PageContext/MetaBoardScene.jsx');
 
 export default React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
@@ -306,13 +306,15 @@ export default React.createClass({
 
 
     var style = {
-      display: 'none',
       width: this.props.width,
       height: this.props.height
     };
 
     if (this.props.runningState) {
-      style.display = 'block';
+      style.opacity = 1;
+    } else {
+      style.opacity = 0;
+      style.pointerEvents = 'none';
     }
 
 

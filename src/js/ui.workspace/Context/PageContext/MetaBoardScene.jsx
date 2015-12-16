@@ -1,7 +1,7 @@
-import React from 'react';
+let React = require('react');
 import './MetaBoardScene.less';
-import HorizonField from '../../partComponents/HorizonField.jsx';
-import _ from 'underscore';
+let HorizonField = require('../../partComponents/HorizonField.jsx');
+let _ = require('underscore');
 
 let ApiSourceRequest = React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],

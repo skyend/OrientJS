@@ -9,13 +9,21 @@
 
 import './DocumentCSSEditor.less';
 
-import React from "react";
-import HorizonField from '../partComponents/HorizonField.jsx';
-import _ from 'underscore';
+let React = require("react");
+let HorizonField = require('../partComponents/HorizonField.jsx');
+let _ = require('underscore');
 
 var DocumentCSSEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
+
+  getDefaultProps(){
+    return {
+      document: null,
+      contextController:null
+    };
+  },
+
 
   getInitialState(){
     return {
@@ -30,7 +38,7 @@ var DocumentCSSEditor = React.createClass({
   },
 
   renderEditor(){
-    var targetDocument = this.state.document;
+    var targetDocument = this.props.document;
 
     return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/>;
   },
@@ -38,11 +46,11 @@ var DocumentCSSEditor = React.createClass({
   render() {
     var rootClasses = ['DocumentCSSEditor', this.props.theme, this.getMySizeClass()];
 
-    if( this.state.contextController === null ) return <div>Not Found ContextController</div>;
+    if( this.props.contextController === null ) return <div className='DocumentCSSEditor error' ><span>Not Found ContextController</span></div>;
 
-    var targetDocument = this.state.contextController.document;
+    var targetDocument = this.props.contextController.document;
 
-    if (targetDocument === null) return <div>No focused a Document</div>;
+    if (targetDocument === null) return <div className='DocumentCSSEditor error' ><span>No focused a Document</span></div>;
 
     return (
       <div className={rootClasses.join(' ')}>

@@ -1,6 +1,6 @@
-import request from 'superagent';
-import _ from "underscore";
-import Request from './serviceCrew/Request.js';
+let request = require('superagent');
+let _ = require("underscore");
+//let Request = require('./serviceCrew/Request.js');
 
 let instance = null;
 
@@ -85,7 +85,7 @@ class ICEServer {
       .end(function(err, res) {
         var result = res.body;
 
-
+        console.log(result);
         self.getPropertytypesByTid(result.nt_tid, function(pt_res) {
 
           result.propertytype = pt_res.propertytypes;
@@ -153,17 +153,13 @@ class ICEServer {
       });
   }
 
-  requestNodeType(_method, _nt_tid, _crud, _headerData, _fieldsData, _end) {
+  requestNodeType(_method, _nt_tid, _crud, _headerData, _fields, _end) {
     var fields = {};
-
-    _fieldsData.map(function(_field) {
-      fields[_field.name] = _field.testValue || _field.value;
-    });
 
 
     if (_method === 'get' || _method == undefined) {
       request.get(this.host + "/api/" + _nt_tid + "/" + _crud + ".json")
-        .query(fields)
+        .query(_fields)
         .end(function(err, res) {
           if (res === undefined) {
             _end({
@@ -173,8 +169,10 @@ class ICEServer {
             _end(res.body);
           }
         });
+    } else if (_method === 'post') {
+
     }
   }
 }
 
-export default ICEServer;
+module.exports =  ICEServer;

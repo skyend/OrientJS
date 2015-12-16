@@ -1,0 +1,642 @@
+
+.okselect
+{
+    -webkit-user-select: all;
+       -moz-user-select: all;
+        -ms-user-select: all;
+            user-select: all;
+
+    -webkit-touch-callout: all;
+     -khtml-user-select: all;
+}
+
+
+
+.APISourceContext
+{
+    font-family: 'Open Sans';
+
+    position: absolute;
+
+    overflow: auto;
+
+    width: 100%;
+    height: 100%;
+
+    transition: all .3s;
+    //.okselect;
+
+
+
+
+
+
+    &.dark
+    {
+        color: #626f80;
+        background-color: #e9e9e9;
+
+
+        .node-render-zone
+        {
+            > .node-wrapper
+            {
+                > .json-renderer
+                {
+                    .child-list
+                    {
+                        > li
+                        {
+                            .node-display
+                            {
+                                .content
+                                {
+                                    > .key
+                                    {
+                                        color: #66a6ec;
+
+                                        &::after
+                                        {
+                                            content: ' : ';
+                                        }
+                                    }
+
+                                    > .node
+                                    {
+                                        display: inline-block;
+
+                                        > .string
+                                        {
+                                            color: #8ee874;
+                                            &::before,
+                                            &::after
+                                            {
+                                                color: #e5e6e3;
+                                            }
+                                        }
+
+                                        > .number
+                                        {
+                                            color: #fb22d3;
+                                        }
+
+                                        > .boolean
+                                        {
+                                            color: #b3f1f9;
+                                        }
+                                    }
+                                }
+
+                                &:hover
+                                {
+                                    color: #fff;
+                                    background-color: #000;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .interface-info
+    {
+        width: 100%;
+        > h1
+        {
+            font-size: 22px;
+
+            margin: 0;
+            padding: 20px;
+
+            border-bottom: 1px solid #ccc;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,.2);
+
+            &:before
+            {
+                content: 'Interface : ';
+
+                color: #595e69;
+            }
+        }
+    }
+
+    .nodetype-spec-info
+    {
+        font-family: 'Open Sans';
+
+        width: 100%;
+        > h1
+        {
+            font-size: 22px;
+            font-weight: normal;
+
+            margin: 0;
+            padding: 20px;
+
+            border-bottom: 1px solid #ccc;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,.2);
+            > img,
+            i
+            {
+                font-size: .8em;
+
+                height: 1em;
+                margin-right: 5px;
+            }
+            &:before
+            {
+                content: 'NODETYPE : ';
+
+                color: #999;
+            }
+
+            > small
+            {
+                margin-left: 20px;
+
+                color: #777;
+
+                &:before
+                {
+                    color: #bbb;
+                }
+
+
+                &.tid
+                {
+                    &:before
+                    {
+                        content: 'TID : ';
+                    }
+                }
+
+                &.nid
+                {
+                    &:before
+                    {
+                        content: 'NID : ';
+                    }
+                }
+            }
+        }
+
+        .detail
+        {
+            position: relative;
+
+            min-height: 50px;
+            padding: 10px;
+
+            border-bottom: 1px solid #ccc;
+
+
+            > .loading
+            {
+                font-size: 22px;
+
+                position: absolute;
+                top: 50%;
+                left: 50%;
+
+                margin-top: -11px;
+                margin-left: -11px;
+
+                color: #6fa3e8;
+            }
+
+            > .nodetype-list
+            {
+                width: 100%;
+                .item
+                {
+                    font-size: 14px;
+
+                    width: 100%;
+
+                    > .item-title
+                    {
+                        > .title
+                        {
+                            display: inline-block;
+
+                            padding: 5px 10px;
+
+                            text-align: center;
+                        }
+                    }
+
+                    > .item-description
+                    {
+                        .block
+                        {
+                            display: inline-block;
+
+                            margin: 3px;
+                            margin-right: 5px;
+                            padding: 5px;
+
+                            transition: all .4s;
+                            text-align: center;
+
+                            border-radius: 7px;
+                            background-color: #fff;
+
+                            &.display-field
+                            {
+                                color: #3d76e8;
+                                &:hover
+                                {
+                                    color: #3d76e8 + 111;
+                                }
+                            }
+
+                            &.value-field
+                            {
+                                color: #8a8989;
+                                &:hover
+                                {
+                                    color: #8a8989 + 111;
+                                }
+                            }
+
+                            &.nid-field
+                            {
+                                color: #ff9553;
+                                &:hover
+                                {
+                                    color: #ff9553 + 111;
+                                }
+                            }
+
+                            &.type-field
+                            {
+                                color: #30af59;
+
+                                &:hover
+                                {
+                                    color: #30af59 + 111;
+                                }
+                            }
+
+                            &:last-child
+                            {
+                                margin: 0;
+                            }
+
+                            &.plus-button
+                            {
+                                width: 20px;
+
+                                cursor: pointer;
+                            }
+
+                            &.select-box-width-plus
+                            {
+                                width: 200px;
+
+                                > select
+                                {
+                                    width: 80%;
+
+                                    color: inherit;
+                                    border-color: transparent;
+                                    outline: none;
+                                    background-color: transparent;
+                                }
+
+                                > button
+                                {
+                                    font-family: 'Open Sans';
+
+                                    width: 10%;
+
+                                    cursor: pointer;
+
+                                    color: inherit;
+                                    border: 0;
+                                    outline: none;
+                                    background-color: transparent;
+
+                                    &:hover
+                                    {
+                                        color: #fff;
+                                    }
+                                }
+                            }
+                        }
+
+
+
+                        .block-merge
+                        {
+                            display: inline-block;
+
+                            margin: 3px;
+                            > .block
+                            {
+                                margin: 0;
+
+                                border-radius: 0;
+
+                                &:last-child
+                                {
+                                    border-top-right-radius: 7px;
+                                    border-bottom-right-radius: 7px;
+                                }
+
+                                &:first-child
+                                {
+                                    border-top-left-radius: 7px;
+                                    border-bottom-left-radius: 7px;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .requests-editor
+    {
+        position: relative;
+
+        width: 100%;
+
+        > .loading
+        {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 30px;
+
+            text-align: center;
+            vertical-align: middle;
+
+            color: #6fa3e8;
+            .loading-text
+            {
+                //
+                vertical-align: middle;
+            }
+
+            i
+            {
+                font-size: 32px;
+
+                vertical-align: middle;
+            }
+        }
+
+
+
+
+        .new-form
+        {
+            position: relative;
+
+            box-sizing: border-box;
+            width: 100%;
+            height: 50px;
+
+            text-align: center;
+
+            border-bottom: 1px solid #fff;
+            > *
+            {
+                margin-right: 10px;
+            }
+
+            > *:last-child
+            {
+                margin-right: 0;
+            }
+
+            .field-name
+            {
+                font-size: 13px;
+
+                display: inline-block;
+
+                height: 18px;
+                margin-left: 15px;
+
+                vertical-align: middle;
+
+                color: #999;
+            }
+
+            > .right-button-area
+            {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                height: 100%;
+            }
+
+            &:before
+            {
+                display: inline-block;
+
+                width: 0;
+                height: 100%;
+
+                content: ' ';
+                vertical-align: middle;
+            }
+
+            input,
+            select
+            {
+                font-size: 14px;
+                line-height: 1;
+
+                box-sizing: border-box;
+                width: 300px;
+                height: 30px;
+                padding: 5px 10px;
+
+                vertical-align: middle;
+
+                color: #427dc9;
+                border: 1px solid #aaa;
+                border-radius: 5px;
+                outline: none;
+                background-color: #fff;
+
+                & + button
+                {
+                    margin-left: 5px;
+                }
+            }
+
+            button
+            {
+                font-family: 'Open Sans';
+                font-size: 14px;
+
+                display: inline-block;
+
+                box-sizing: border-box;
+                height: 100%;
+                margin: 0;
+                padding: 0 20px;
+
+                transition: all .3s;
+
+                color: #fff;
+                border: 0;
+                outline: none;
+                background-color: #3479d3;
+                // &:before
+                // {
+                //     display: inline-block;
+                //
+                //     width: 0;
+                //     height: 100%;
+                //
+                //     content: ' ';
+                //     vertical-align: middle;
+                // }
+
+                &.right
+                {
+                    float: right;
+                }
+
+                & + button
+                {
+                    margin-left: 5px;
+                }
+
+                &:hover
+                {
+                    background-color: #4692f5;
+                }
+
+                &:active
+                {
+                    background-color: #144482;
+                }
+            }
+        }
+
+        .request-list
+        {
+            width: 100%;
+        }
+
+        .request-navigation
+        {
+            position: absolute;
+            top: 0;
+            right: 0;
+
+            width: 100px;
+            height: 100%;
+
+            background-color: #fff;
+        }
+    }
+
+    .node-render-zone
+    {
+        > .node-wrapper
+        {
+            > .json-renderer
+            {
+                position: relative;
+
+                .child-list
+                {
+                    margin: 0;
+                    padding: 0;
+
+                    &.array
+                    {
+                        // &::before
+                        // {
+                        //     content: '[';
+                        // }
+                        // &::after
+                        // {
+                        //     content: ']';
+                        // }
+                    }
+
+                    &.map
+                    {
+                        // &::before
+                        // {
+                        //     content: '{';
+                        // }
+                        // &::after
+                        // {
+                        //     content: '}';
+                        // }
+                    }
+
+
+                    > li
+                    {
+                        margin: 0;
+                        padding: 0;
+
+                        .node-display
+                        {
+                            .indent-box
+                            {
+                                display: inline-block;
+
+                                width: 20px;
+                                height: 12px;
+                            }
+
+                            .content
+                            {
+                                line-height: 1;
+
+                                display: inline-block;
+
+                                box-sizing: border-box;
+                                padding: 3px ;
+                                > .key
+                                {
+                                    display: inline-block;
+
+                                    &::after
+                                    {
+                                        content: ' : ';
+                                    }
+                                }
+
+                                > .node
+                                {
+                                    display: inline-block;
+
+                                    > .string
+                                    {
+                                        &::before,
+                                        &::after
+                                        {
+                                            content: '"';
+                                        }
+                                    }
+                                }
+                            }
+
+                            &:hover
+                            {
+                                //
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

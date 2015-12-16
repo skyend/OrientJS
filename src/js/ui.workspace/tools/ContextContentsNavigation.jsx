@@ -7,6 +7,14 @@ var ContextContentsNavigation = React.createClass({
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
+  getDefaultProps(){
+    return {
+      elementNode: null,
+      runningContext: null
+    };
+  },
+
+
   getInitialState(){
     return {
       elementNode: null,
@@ -148,7 +156,7 @@ var ContextContentsNavigation = React.createClass({
     }
 
     let selectedClass = '';
-    if (this.state.selectedElementNode === _elementNode) {
+    if (this.props.selectedElementNode === _elementNode) {
       selectedClass = 'focused';
     }
 
@@ -179,6 +187,7 @@ var ContextContentsNavigation = React.createClass({
 
   renderElementNodePool(_elementNodes){
     var self = this;
+    // 탭으로 구현하기
     return (
       <div>
         <label> ElementNodes </label>
@@ -198,8 +207,8 @@ var ContextContentsNavigation = React.createClass({
 
   renderTreeWrapper(){
 
-    if (this.state.runningContext === null) return <div/>;
-    var runningContext = this.state.runningContext;
+    if (this.props.runningContext === null) return <div/>;
+    var runningContext = this.props.runningContext;
     var elementNode;
     var elementNodes;
 
@@ -212,14 +221,14 @@ var ContextContentsNavigation = React.createClass({
 
     return (
       <div className='tree-wrapper'>
-        <div className='context-info'>
+        {/*<div className='context-info'>
           <span className='context-type'>{runningContext.contextType}</span>
           <span className='context-name'>{runningContext.contextName}</span>
-        </div>
+        </div>*/}
+
         <ul>
           { elementNode !== null ? this.renderElementNode(elementNode, 0) : <div/> }
         </ul>
-        { this.renderElementNodePool(elementNodes) }
       </div>
     );
   },
@@ -232,6 +241,17 @@ var ContextContentsNavigation = React.createClass({
       <div className={rootClasses.join(' ')}>
         <div className='wrapper'>
           <div className='body'>
+            <ul className='tree-tab'>
+              <li className='selected'>
+                <span>Main Tree</span>
+              </li>
+              <li>
+                <span>Sub Tree #22</span>
+              </li>
+              <li>
+                <span>Sub Tree #37</span>
+              </li>
+            </ul>
 
             { this.renderTreeWrapper() }
 

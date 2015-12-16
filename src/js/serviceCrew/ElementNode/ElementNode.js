@@ -1,7 +1,9 @@
-import React from 'react';
-import Returns from "../../Returns.js";
-import _ from 'underscore';
-import Factory from './Factory.js';
+"use strict";
+let React = require('react');
+let Returns = require("../../Returns.js");
+let _ = require('underscore');
+let Factory = require('./Factory.js');
+let Identifier = require('../../util/Identifier.js');
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -675,7 +677,7 @@ class ElementNode {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   import (_elementNodeDataObject) {
-    this.id = _elementNodeDataObject.id;
+    this.id = _elementNodeDataObject.id || Identifier.genUUID();
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
@@ -710,4 +712,4 @@ class ElementNode {
 }
 
 
-export default ElementNode;
+module.exports = ElementNode;

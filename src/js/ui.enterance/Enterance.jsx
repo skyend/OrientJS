@@ -1,11 +1,11 @@
-import React from 'react';
-import CSS from './Enterance.useable.css';
-import EventDistributor from "../ui.workspace/reactMixin/EventDistributor.js";
+let React = require('react');
+let CSS = require('./Enterance.useable.css');
+let EventDistributor = require("../ui.workspace/reactMixin/EventDistributor.js");
 
-import avatarImage from '../../images/avatar.jpg';
-import SignUp from './SignUp/SignUp.jsx';
-import Lobby from './Lobby/Lobby.jsx';
-import SignIn from './SignIn/SignIn.jsx';
+let avatarImage = require('../../images/avatar.jpg');
+let SignUp = require('./SignUp/SignUp.jsx');
+let Lobby = require('./Lobby/Lobby.jsx');
+let SignIn = require('./SignIn/SignIn.jsx');
 //console.log(avatarImage);
 
 var Enterance = React.createClass({

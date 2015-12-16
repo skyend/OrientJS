@@ -3,17 +3,17 @@
  *
  *
  */
-import _ from 'underscore';
-import request from 'superagent';
+let _ = require('underscore');
+let request = require('superagent');
 
-import PageContextController from './serviceCrew/PageContextController.js';
-import DocumentContextController from './serviceCrew/DocumentContextController.js';
-import ApiSourceContextController from './serviceCrew/ApiSourceContextController.js';
-import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
-import ICEServerDriver from './builder.ICEServer.js';
-import ObjectExplorer from './util/ObjectExplorer.js';
-import Viewer from './serviceCrew/Viewer.js';
-import APISource from './serviceCrew/APISource.js';
+let PageContextController = require('./serviceCrew/PageContextController.js');
+let DocumentContextController = require('./serviceCrew/DocumentContextController.js');
+let ICEAPISourceContextController = require('./serviceCrew/ICEAPISourceContextController.js');
+//let ApiInterfaceContextController = require('./serviceCrew/ApiInterfaceContextController.js');
+let ICEServerDriver = require('./builder.ICEServer.js');
+let ObjectExplorer = require('./util/ObjectExplorer.js');
+let Viewer = require('./serviceCrew/Viewer.js');
+let ICEAPISource = require('./serviceCrew/ICEAPISource.js');
 
 
 class ServiceManager {
@@ -34,12 +34,6 @@ class ServiceManager {
     this.sampleDatas = {};
 
     this.chechedApiResources = {};
-  }
-
-  //http://dcsf-dev03.i-on.net:8081/api/broadcast_series/list.json?t=api
-  getNodeTypeData(_nodeTypeId) {
-
-    return this.app.session.certifiedRequestJSON(this.iceHost + "/api/" + _nodeTypeId + "/list.json?t=api");
   }
 
   createDocument(_title, _type, _complete) {
@@ -121,6 +115,8 @@ class ServiceManager {
   }
 
   getApisourceList(_complete) {
+    let self = this;
+
     this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.title.localeCompare(_b.title) > 0) {
@@ -130,8 +126,24 @@ class ServiceManager {
         }
       });
 
+      // _result.list = _result.list.map(function(_apiSource) {
+      //   return new ICEAPISource(_apiSource, self);
+      // });
+
       _complete(_result);
     });
+  }
+
+  getApisourceObjectList(_complete) {
+    let self = this;
+    this.getApisourceList(function(_result) {
+
+      _result.list = _result.list.map(function(_apiSource) {
+        return new ICEAPISource(_apiSource, self);
+      });
+
+      _complete(_result);
+    })
   }
 
   getApiSourceListWithInterface(_complete) {
@@ -144,7 +156,7 @@ class ServiceManager {
         let apiInterfaceList = _aiResult.list;
 
         apiSourceList = apiSourceList.map(function(_apiSource) {
-          return new APISource(self.app, _apiSource, apiInterfaceList);
+          return new ICEAPISource(_apiSource, self);
         });
 
         _complete(apiSourceList);
@@ -153,10 +165,26 @@ class ServiceManager {
   }
 
   getAPISourceWithInterfaces(_apisource_id, _complete) {
+    let self = this;
 
+    this.app.gelateriaRequest.loadApisource(this.service_id, _apisource_id, function(_result) {
+      if (_result.result === 'success') {
+        self.getApiinterfaceList(function(_aiResult) {
+          let apiInterfaceList = _aiResult.list;
+
+          //let apiSource = new APISource(_result.apisource, apiInterfaceList, self);
+
+          _complete(_result.apisource, apiInterfaceList);
+        });
+      } else {
+        alert("Fail API Source load :" + _apisource_id);
+      }
+
+    });
   }
 
   saveAPISource(_apisource_id, _apisourceDataObject, _complete) {
+    console.log(_apisourceDataObject);
     this.app.gelateriaRequest.saveAPISource(this.service_id, _apisource_id, _apisourceDataObject, function(_result) {
       _complete(_result);
     });
@@ -250,27 +278,6 @@ class ServiceManager {
     throw new Error("Not found context Controller");
   }
 
-  // Deprecated
-  // loadDocumentByMeta(_documentMeta) {
-  //   var documentURL = "/BuildingProjectData/Services/" + this.serviceKey + "/Documents/" + _documentMeta.key + ".json";
-  //
-  //   var documentJSON = this.session.certifiedRequestJSON(documentURL);
-  //
-  //   return documentJSON;
-  // };
-
-  getICafeAPIDataOfField(_dataPath) {
-    var apiResourceKey = _dataPath.split('/')[0];
-
-    if (this.chechedApiResources[apiResourceKey] === undefined) {
-      this.chechedApiResources[apiResourceKey] = this.getNodeTypeData(apiResourceKey);
-    }
-
-
-    return ObjectExplorer.getValueByKeyPath(this.chechedApiResources, _dataPath);
-  }
-
-
 
 
   getDocumentContextController(_documentId, _complete) {
@@ -322,17 +329,22 @@ class ServiceManager {
     }
   }
 
-  getApiSourceContextController(_apiSourceId, _complete) {
+  getICEAPISourceContextController(_ICEAPISourceId, _complete) {
     var self = this;
-    if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
-      this.app.gelateriaRequest.loadApisource(this.service_id, _apiSourceId, function(_result) {
 
-        if (_result.result === 'success') {
-          var apiSourceContextController = new ApiSourceContextController(_result.apisource, self.app.session, self);
+    if (this.apiSourceContextControllers[_ICEAPISourceId] === undefined) {
 
-          self.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
 
-          _complete(self.apiSourceContextControllers[_apiSourceId]);
+
+      this.getAPISourceWithInterfaces(_ICEAPISourceId, function(_apiSource, _interfaces) {
+
+        if (_apiSource !== null) {
+          _apiSource.interfaceObjects = _interfaces;
+          var apiSourceContextController = new ICEAPISourceContextController(_apiSource, self);
+
+          self.apiSourceContextControllers[_ICEAPISourceId] = apiSourceContextController;
+
+          _complete(self.apiSourceContextControllers[_ICEAPISourceId]);
         } else {
           alert("apisource 로드 실패. " + _result.reason);
         }
@@ -410,4 +422,4 @@ class ServiceManager {
 }
 
 
-export default ServiceManager;
+module.exports = ServiceManager;

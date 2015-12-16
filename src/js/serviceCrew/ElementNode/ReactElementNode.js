@@ -1,7 +1,8 @@
-import TagBaseElementNode from './TagBaseElementNode.js';
-import React from 'react';
-import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';
-import _ from 'underscore';
+"use strict";
+let TagBaseElementNode = require('./TagBaseElementNode.js');
+let React = require('react');
+let ReactComponentErrorBox = require('../jsx/ReactComponentErrorBox.jsx');
+let _ = require('underscore');
 
 class ReactElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -203,4 +204,4 @@ class ReactElementNode extends TagBaseElementNode {
   }
 }
 
-export default ReactElementNode;
+module.exports = ReactElementNode;

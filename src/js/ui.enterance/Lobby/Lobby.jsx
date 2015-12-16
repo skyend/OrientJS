@@ -1,7 +1,7 @@
-import React from 'react';
-import EventDistributor from "../../ui.workspace/reactMixin/EventDistributor.js";
-import CSS from './Lobby.useable.less';
-import avatarImage from '../../../images/avatar.jpg';
+let React = require('react');
+let EventDistributor = require("../../ui.workspace/reactMixin/EventDistributor.js");
+let CSS = require('./Lobby.useable.less');
+let avatarImage = require('../../../images/avatar.jpg');
 
 var Lobby = React.createClass({
   mixins: [EventDistributor],

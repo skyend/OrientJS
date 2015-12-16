@@ -10,17 +10,17 @@
 var React = require("react");
 
 // Supporters
-import EventDistributor from './ui.workspace/reactMixin/EventDistributor.js';
-import ToolFactory from './builder.ToolFactory.js';
-import APISource from "./serviceCrew/APISource.js";
+let EventDistributor = require('./ui.workspace/reactMixin/EventDistributor.js');
+let ToolFactory = require('./builder.ToolFactory.js');
+//let APISource = require("./serviceCrew/APISource.js");
 
 // Sub UI Classes
-import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
-import LoginService from './ui.workspace/LoginService.jsx';
-import Enterance from './ui.enterance/Enterance.jsx';
+let BuilderWorkSpace = require('./ui.workspace/Workspace.jsx');
+let LoginService = require('./ui.workspace/LoginService.jsx');
+let Enterance = require('./ui.enterance/Enterance.jsx');
 
 // Data
-import DefaultBuilderConfig from "../config/DefaultBuilderConfig.json";
+let DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
 
 // UI Supervisor
 var UI = function(_window, _session, _app) {
@@ -377,17 +377,17 @@ UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
   });
 };
 
-UI.prototype.onThrowCatcherBringApiSourceContext = function(_eventData) {
+UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
   var self = this;
   var apiSource = _eventData.apiSource;
 
   // Document Meta 정보로 DocumentContextController를 얻는다
-  var apiSourceContextController = this.app.serviceManager.getApiSourceContextController(apiSource.id, function(_apisourceContextController) {
+  var apiSourceContextController = this.app.serviceManager.getICEAPISourceContextController(apiSource._id, function(_apisourceContextController) {
 
     self.rootUIInstance.openStageContext({
-      apiSourceID: apiSource.id,
-      contextID: 'apiSource#' + apiSource.id,
+      apiSourceID: apiSource._id,
+      contextID: 'apiSource#' + apiSource._id,
       contextTitle: apiSource.title,
       contextType: 'apiSource',
       contextController: _apisourceContextController,
@@ -436,7 +436,7 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
         contextTitle: documentMeta.title,
         contextType: 'document',
         contextController: _documentContextController,
-        iconClass: 'fa-file-text-o'
+        iconClass: 'fa-html5'
       });
     });
 
@@ -600,23 +600,24 @@ UI.prototype.onThrowCatcherUpdateAPISourceList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
   var self = this;
-
-  this.app.serviceManager.getApisourceList(function(_asResult) {
-    let apiSourceList = _asResult.list;
-
-    self.app.serviceManager.getApiinterfaceList(function(_aiResult) {
-      let apiInterfaceList = _aiResult.list;
-
-      apiSourceList = apiSourceList.map(function(_apiSource) {
-        return new APISource(self.app, _apiSource, apiInterfaceList);
-      });
-
-      _eventData.path[0].setState({
-        apisourceList: apiSourceList
-      });
+  this.app.serviceManager.getApisourceList(function(_result) {
+    _eventData.path[0].setState({
+      apisourceList: _result.list
     });
   });
 };
+
+UI.prototype.onThrowCatcherNeedAPISourceObjectList = function(_eventData) {
+  var self = this;
+
+  this.app.serviceManager.getApisourceObjectList(function(_result) {
+    _eventData.path[0].setState({
+      apisourceList: _result.list
+    });
+  });
+};
+
+
 //
 // UI.prototype.onThrowCatcherUpdateAPIInterfaceList = function(_eventData) {
 //   var self = this;
@@ -709,15 +710,15 @@ UI.prototype.onThrowCatcherNeedRequestResult = function(_eventData) {
   });
 };
 
-UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
-  let nid = _eventData.nodeTypeNID;
-
-  this.app.serviceManager.iceDriver.getNodeType(nid, function(_result) {
-    _eventData.path[0].setState({
-      nodeTypeData: _result
-    });
-  });
-}
+// UI.prototype.onThrowCatcherNeedNodeTypeData = function(_eventData) {
+//   let nid = _eventData.nodeTypeNID;
+//
+//   this.app.serviceManager.iceDriver.getNodeType(nid, function(_result) {
+//     _eventData.path[0].setState({
+//       nodeTypeData: _result
+//     });
+//   });
+// }
 
 UI.prototype.onThrowCatcherChangeContextControllerState = function(_eventData) {
   this.rootUIInstance.forceUpdate();
@@ -787,6 +788,45 @@ UI.prototype.onThrowCatcherServiceBuilderRun = function(_eventData) {
   console.log(serviceId, "Start building");
 
   this.app.startServiceBuilding(serviceId);
+}
+
+UI.prototype.onThrowCatcherShowServiceResourceCopyBoard = function(_eventData) {
+  let self = this;
+
+  if (_eventData.resourceName === 'ICEAPISource') {
+    this.app.serviceManager.getApisourceList(function(_result) {
+
+      self.toolFactory.getToolEgg('ContentsCopyBoard', {
+        "copyableContents": JSON.stringify(_result.list),
+        'dataInfo': "ALL " + _eventData.resourceName
+      }, function(__egg) {
+
+        self.rootUIInstance.attachTool('ModalWindow', {}, __egg)
+      });
+    });
+  } else if (_eventData.resourceName === 'Fragment') {
+    this.loadDocumentList(function(_result) {
+
+      self.toolFactory.getToolEgg('ContentsCopyBoard', {
+        "copyableContents": JSON.stringify(_result.list),
+        'dataInfo': "ALL " + _eventData.resourceName
+      }, function(__egg) {
+
+        self.rootUIInstance.attachTool('ModalWindow', {}, __egg)
+      });
+    });
+  } else if (_eventData.resourceName === 'Page') {
+    this.loadPageList(function(_result) {
+
+      self.toolFactory.getToolEgg('ContentsCopyBoard', {
+        "copyableContents": JSON.stringify(_result.list),
+        'dataInfo': "ALL " + _eventData.resourceName
+      }, function(__egg) {
+
+        self.rootUIInstance.attachTool('ModalWindow', {}, __egg)
+      });
+    });
+  }
 }
 
 /****************************************************************/

@@ -1,5 +1,6 @@
-import ElementNode from './ElementNode.js';
-import _ from 'underscore';
+"use strict";
+let ElementNode = require('./ElementNode.js');
+let _ = require('underscore');
 
 class TagBaseElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -372,4 +373,4 @@ class TagBaseElementNode extends ElementNode {
   }
 }
 
-export default TagBaseElementNode;
+module.exports = TagBaseElementNode;

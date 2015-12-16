@@ -9,9 +9,9 @@
 
 import './GridElementNodeEditor.less';
 
-import React from "react";
-import HorizonFieldSet from '../partComponents/HorizonFieldSet.jsx';
-import _ from 'underscore';
+let React = require("react");
+let HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
+let _ = require('underscore');
 
 var GridElementNodeEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
@@ -19,28 +19,22 @@ var GridElementNodeEditor = React.createClass({
 
   getDefaultProps(){
     return {
-
-    };
-  },
-
-  getInitialState(){
-    return {
       gridElementNode: null,
       contextController: null
     };
   },
 
   onThrowCatcherChangedValue(_eventData){
-    let targetId = this.state.gridElementNode.getId();
+    let targetId = this.props.gridElementNode.getId();
     let fieldName = _eventData.name;
     let data = _eventData.data;
 
 
     if( fieldName === 'name' ){
-      this.state.contextController.modifyGridProperty(targetId, 'name', data);
+      this.props.contextController.modifyGridProperty(targetId, 'name', data);
     } else {
 
-      this.state.contextController.modifyGridRect(targetId,{
+      this.props.contextController.modifyGridRect(targetId,{
         width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
         minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
         maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
@@ -51,16 +45,15 @@ var GridElementNodeEditor = React.createClass({
     }
   },
 
-  renderInfoFields(){
-    let gridElementNode = this.state.gridElementNode;
+  renderInfoFields(_gridElementNode){
 
-    if( gridElementNode === null ) return "No selected gridElementNode";
+
 
     let fieldSet = [];
     fieldSet.push({
       "name": "name",
       title: "Name",
-      "initialValue": gridElementNode.getName(),
+      "initialValue": _gridElementNode.getName(),
       type: "input",
       "enterable": true
     });
@@ -70,11 +63,11 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
-  renderSizingFields(){
-    let gridElementNode = this.state.gridElementNode;
+  renderSizingFields(_gridElementNode){
 
-    if( gridElementNode === null ) return "No selected gridElementNode";
-    let elementRect = gridElementNode.getCurrentRectangle();
+
+    let elementRect = _gridElementNode.getCurrentRectangle();
+
     console.log(elementRect);
     let fieldSet = [];
     fieldSet.push({
@@ -125,11 +118,10 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
-  renderPositioningFields(){
-    let gridElementNode = this.state.gridElementNode;
+  renderPositioningFields(_gridElementNode){
 
-    if( gridElementNode === null ) return "No selected gridElementNode";
-    let elementRect = gridElementNode.getCurrentRectangle();
+
+    let elementRect = _gridElementNode.getCurrentRectangle();
 
     let fieldSet = [];
     fieldSet.push({
@@ -179,17 +171,14 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
-  renderRenderingFields(){
-    let gridElementNode = this.state.gridElementNode;
-
-    if( gridElementNode === null ) return "No selected gridElementNode";
-    let elementRect = gridElementNode.getCurrentRectangle();
+  renderRenderingFields(_gridElementNode){
+    let elementRect = _gridElementNode.getCurrentRectangle();
 
     let fieldSet = [];
     fieldSet.push({
       "name": "zIndex",
       title: "Order",
-      "initialValue": gridElementNode.zIndex,
+      "initialValue": _gridElementNode.zIndex,
       type: "input",
       "enterable": true
     });
@@ -207,16 +196,27 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
+  renderParts(){
+    let gridElementNode = this.props.gridElementNode;
+
+    if( gridElementNode === null || gridElementNode === undefined ) return "No selected gridElementNode";
+    let type = gridElementNode.getType();
+    if( type === 'string' ) return "not available";
+    return [
+      this.renderInfoFields(gridElementNode),
+      this.renderSizingFields(gridElementNode),
+      this.renderPositioningFields(gridElementNode),
+      this.renderRenderingFields(gridElementNode)
+    ];
+  },
+
   render() {
     var rootClasses = ['GridElementNodeEditor', this.getMySizeClass()];
 
     return (
       <div className={rootClasses.join(' ')}>
         <div className='wrapper'>
-          { this.renderInfoFields()}
-          { this.renderSizingFields()}
-          { this.renderPositioningFields()}
-          { this.renderRenderingFields()}
+          { this.renderParts()}
         </div>
       </div>
     );

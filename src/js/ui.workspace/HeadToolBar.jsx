@@ -8,9 +8,9 @@
  */
 
 import './HeadToolBar.less';
-import React from "react";
-import OutlineButton from "./partComponents/OutlineButton.jsx";
-import GridBox from "./partComponents/GridBox.jsx";
+let React = require("react");
+let OutlineButton = require("./partComponents/OutlineButton.jsx");
+let GridBox = require("./partComponents/GridBox.jsx");
 
 var HeadToolBar = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],

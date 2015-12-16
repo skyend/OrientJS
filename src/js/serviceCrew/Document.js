@@ -1,12 +1,13 @@
-import HTMLElementNode from './ElementNode/HTMLElementNode.js';
-import StringElementNode from './ElementNode/StringElementNode.js';
-import EmptyElementNode from './ElementNode/EmptyElementNode.js';
-import ReactElementNode from './ElementNode/ReactElementNode.js';
-import GridElementNode from './ElementNode/GridElementNode.js';
-import ElementNodeFactory from './ElementNode/Factory.js';
+"use strict";
+let HTMLElementNode = require('./ElementNode/HTMLElementNode.js');
+let StringElementNode = require('./ElementNode/StringElementNode.js');
+let EmptyElementNode = require('./ElementNode/EmptyElementNode.js');
+let ReactElementNode = require('./ElementNode/ReactElementNode.js');
+let GridElementNode = require('./ElementNode/GridElementNode.js');
+let ElementNodeFactory = require('./ElementNode/Factory.js');
 
-import _ from 'underscore';
-import ObjectExplorer from '../util/ObjectExplorer.js';
+let _ = require('underscore');
+let ObjectExplorer = require('../util/ObjectExplorer.js');
 
 var Document = function(_contextController, _documentParams, _documentDataObject) {
   //////////////
@@ -252,11 +253,6 @@ Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectP
 
   let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
 
-  // id가 제대로 부여되어 있지 않으면 새로운 id를 부여한다.
-  if (!/^\d+$/.test(elementNode.getId())) {
-    elementNode.setId(this.getNewElementNodeId());
-  }
-
   return elementNode;
 };
 
@@ -318,9 +314,9 @@ Document.prototype.cloneElement = function(_elementNode) {
   return newClonedElementNode;
 };
 
-Document.prototype.getNewElementNodeId = function() {
-  return ++(this.lastElementId);
-};
+// Document.prototype.getNewElementNodeId = function() {
+//   return ++(this.lastElementId);
+// };
 
 Document.prototype.getElementNodeFromPool = function(_id) {
   var index = _.findIndex(this.elementNodes, function(__elementNode) {

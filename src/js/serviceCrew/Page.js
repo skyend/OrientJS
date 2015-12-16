@@ -1,6 +1,7 @@
-import _ from 'underscore';
-import Factory from './ElementNode/Factory.js';
-import DocumentContextController from './DocumentContextController.js';
+"use strict";
+let _ = require('underscore');
+let Factory = require('./ElementNode/Factory.js');
+let DocumentContextController = require('./DocumentContextController.js');
 
 class Page {
   constructor(_contextController, _pageDataObject, _serviceManager) {
@@ -108,9 +109,9 @@ class Page {
     return this.paramSupplies[index];
   }
 
-  getNewGridId() {
-    return ++this.lastGridId;
-  }
+  // getNewGridId() {
+  //   return ++this.lastGridId;
+  // }
 
   getHTMLDocument() {
     return this.htmlDocument;
@@ -149,7 +150,7 @@ class Page {
 
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
-    newGridNode.setId(this.getNewGridId());
+    //newGridNode.setId(this.getNewGridId());
     newGridNode.behavior = _behavior;
 
     // 초기 rectangle은 width, height 모두 auto로 지정한다.
@@ -428,4 +429,4 @@ class Page {
   }
 }
 
-export default Page;
+module.exports = Page;

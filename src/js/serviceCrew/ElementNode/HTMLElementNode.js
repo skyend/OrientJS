@@ -1,7 +1,8 @@
-import TagBaseElementNode from './TagBaseElementNode.js';
-import Factory from './Factory.js';
-import _ from 'underscore';
-import React from 'react';
+"use strict";
+let TagBaseElementNode = require('./TagBaseElementNode.js');
+let Factory = require('./Factory.js');
+let _ = require('underscore');
+let React = require('react');
 
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -173,9 +174,9 @@ class HTMLElementNode extends TagBaseElementNode {
       var newChildElementNode;
 
       if (child_.nodeName === '#text') {
-        newChildElementNode = this.environment.newElementNode(undefined, {}, 'string');
+        newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
       } else {
-        newChildElementNode = this.environment.newElementNode(undefined, {}, 'html');
+        newChildElementNode = Factory.takeElementNode(undefined, {}, 'html', this.environment);
       }
 
       newChildElementNode.buildByElement(child_);
@@ -235,9 +236,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let child;
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
-      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment); // ID가 없는 ElementNode는 계속 ID가 없다.
-      //child = this.environment.newElementNode(elementNodeData, preInsectProps); // ID가 없는 ElementNode의 경우 생성 후 ID를 부여한다.
-
+      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment);
       child.setParent(this);
       list.push(child);
     }
@@ -274,4 +273,4 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 }
 
-export default HTMLElementNode;
+module.exports = HTMLElementNode;

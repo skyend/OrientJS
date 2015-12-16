@@ -9,8 +9,8 @@
 
 
 import './Modal.less';
-import React from "react";
-import ToolNest from './ToolNest.jsx';
+let React = require("react");
+let ToolNest = require('./ToolNest.jsx');
 
 var Modal = React.createClass({
   mixins: [require('./reactMixin/EventDistributor.js')],

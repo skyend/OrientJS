@@ -6,18 +6,18 @@
  * Requires(js)  :
  * Requires(css) :
  */
-import _ from 'underscore';
+let _ = require('underscore');
 
 
 import './ContextStage.less';
 
-import IFrameStage from './partComponents/IFrameStage.jsx';
-import DirectContext from './Context/DirectContext.jsx';
-import PageContext from './Context/PageContext.jsx';
-import APISourceContext from './Context/APISourceContext.jsx';
-import VDomController from '../virtualdom/VDomController.js';
-import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
-import React from "react";
+let IFrameStage = require('./partComponents/IFrameStage.jsx');
+let DirectContext = require('./Context/DirectContext.jsx');
+let PageContext = require('./Context/PageContext.jsx');
+let ICEAPISourceContext = require('./Context/ICEAPISourceContext.jsx');
+let VDomController = require('../virtualdom/VDomController.js');
+let ElementNodeDropSupporter = require('./ElementNodeDropSupporter.jsx');
+let React = require("react");
 
 var ContextStage = React.createClass({
 
@@ -919,29 +919,29 @@ var ContextStage = React.createClass({
 
   componentDidUpdate(_prevProps, _prevState) {
 
-    if (this.getCurrentRunningContext()) {
-      var context = this.getCurrentRunningContext();
-
-      if (context.getContextType() === 'document' || context.getContextType() === 'page') {
-        // this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
-
-        switch (this.state.stageMode) {
-          case "desktop":
-            context.setState({
-              sizing: 'desktop',
-              stageWidth: this.state.width,
-              stageHeight: this.state.height - this.getTabContextOffsetTopByDS()
-            });
-            break;
-          case "tablet":
-            context.setState({sizing: 'tablet', stageWidth: 1040, stageHeight: 693});
-            break;
-          case "mobile":
-            context.setState({sizing: 'mobile', stageWidth: 360, stageHeight: 578});
-            break;
-        }
-      }
-    }
+    // if (this.getCurrentRunningContext()) {
+    //   var context = this.getCurrentRunningContext();
+    // 
+    //   if (context.getContextType() === 'document' || context.getContextType() === 'page') {
+    //     // this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
+    //
+    //     switch (this.state.stageMode) {
+    //       case "desktop":
+    //         context.setState({
+    //           sizing: 'desktop',
+    //           stageWidth: this.state.width,
+    //           stageHeight: this.state.height - this.getTabContextOffsetTopByDS()
+    //         });
+    //         break;
+    //       case "tablet":
+    //         context.setState({sizing: 'tablet', stageWidth: 1040, stageHeight: 693});
+    //         break;
+    //       case "mobile":
+    //         context.setState({sizing: 'mobile', stageWidth: 360, stageHeight: 578});
+    //         break;
+    //     }
+    //   }
+    // }
   },
 
   componentDidMount() {
@@ -994,6 +994,7 @@ var ContextStage = React.createClass({
 
     var running = false;
     if (this.state.runningContextID === _contextSpec.contextID) {
+      console.log(this.state.runningContextID, 'context running');
       running = true;
     }
 
@@ -1002,9 +1003,27 @@ var ContextStage = React.createClass({
       ContextClass = DirectContext;
     } else if( _contextSpec.contextType === 'page'){
       ContextClass = PageContext;
-    } else if (_contextSpec.contextType === 'apiSource' || _contextSpec.contextType === 'apiInterface') {
-      ContextClass = APISourceContext;
+    } else if (_contextSpec.contextType === 'apiSource') {
+      ContextClass = ICEAPISourceContext;
     }
+
+    let renderStageWidth, renderStageHeight;
+
+    switch (this.state.stageMode) {
+      case "desktop":
+        renderStageWidth = this.state.width;
+        renderStageHeight = this.state.height - this.getTabContextOffsetTopByDS();
+        break;
+      case "tablet":
+        renderStageWidth = 1040;
+        renderStageHeight = 693;
+        break;
+      case "mobile":
+        renderStageWidth = 360;
+        renderStageHeight = 578;
+        break;
+    }
+
 
     return <ContextClass ref={_contextSpec.contextID}
                          width={this.state.width}
@@ -1012,6 +1031,9 @@ var ContextStage = React.createClass({
                          contextId={_contextSpec.contextId}
                          contextType={_contextSpec.contextType}
                          runningState={running}
+                         renderStageWidth={renderStageWidth}
+                         renderStageHeight={renderStageHeight}
+                         renderStageMode={this.state.stageMode}
                          contextController={ _contextSpec.contextController }/>;
   },
 
