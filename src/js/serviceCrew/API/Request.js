@@ -8,11 +8,7 @@ export default class Request {
   }
 
   get crudPoint() {
-    if (this.crud === '*') {
-      return this.customCrud + '.json';
-    } else {
-      return this.crud + '.json';
-    }
+    return this.crudType + '.json';
   }
 
   get crudType() {

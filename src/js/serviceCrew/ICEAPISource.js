@@ -195,6 +195,65 @@ export default class ICEAPISource {
     }
   }
 
+  executeTestRequestAsDataFrame(_requestId, _complete) {
+    let self = this;
+    this.executeTestRequest(_requestId, function(_result) {
+      let dataframe = self.createResultDataFrame(_result, self.nodeTypeMeta.propertytype);
+      console.log(dataframe);
+      _complete(dataframe);
+    });
+
+  }
+
+  createResultDataFrame(_resultData, _propertytpye) {
+    let dataFrame = {};
+
+    if (_resultData.items !== undefined) {
+      dataFrame.items = this.makeFrame_item_field(_resultData.items, _propertytpye);
+      dataFrame.count = _resultData.count;
+    }
+
+    if (_resultData.page !== undefined) {
+      dataFrame.page = _resultData.page;
+      dataFrame.page.pages = [_resultData.page.pages[0]];
+    }
+
+    if (_resultData.read == 1) {
+      Object.keys(_propertytpye).map(function(_ptkey) {
+        dataFrame[_ptkey] = _resultData[_ptkey] || _ptkey;
+      });
+    }
+
+    if (_resultData.result !== undefined) {
+      dataFrame.result = _resultData.result;
+    }
+
+    if (_resultData.success !== undefined) {
+      dataFrame.success = _resultData.success;
+    }
+
+    return dataFrame;
+  }
+
+  makeFrame_item_field(_items, _propertytpye) {
+    let sampleItems = [];
+
+    let sampleItem = {};
+
+    let itemData = _items[0] || {};
+
+    Object.keys(_propertytpye).map(function(_ptkey) {
+      let pt = _propertytpye[_ptkey];
+
+      sampleItem[_ptkey] = itemData[_ptkey];
+    });
+
+    sampleItems.push(sampleItem);
+
+    return sampleItems;
+  }
+
+
   import (_ICEAPISourceData) {
     let ICEAPISourceData = _ICEAPISourceData || {};
 

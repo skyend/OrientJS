@@ -13,7 +13,7 @@ import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextCont
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
 import Viewer from './serviceCrew/Viewer.js';
-//import APISource from './serviceCrew/APISource.js';
+import ICEAPISource from './serviceCrew/ICEAPISource.js';
 
 
 class ServiceManager {
@@ -115,6 +115,8 @@ class ServiceManager {
   }
 
   getApisourceList(_complete) {
+    let self = this;
+
     this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.title.localeCompare(_b.title) > 0) {
@@ -124,8 +126,24 @@ class ServiceManager {
         }
       });
 
+      // _result.list = _result.list.map(function(_apiSource) {
+      //   return new ICEAPISource(_apiSource, self);
+      // });
+
       _complete(_result);
     });
+  }
+
+  getApisourceObjectList(_complete) {
+    let self = this;
+    this.getApisourceList(function(_result) {
+
+      _result.list = _result.list.map(function(_apiSource) {
+        return new ICEAPISource(_apiSource, self);
+      });
+
+      _complete(_result);
+    })
   }
 
   getApiSourceListWithInterface(_complete) {
@@ -138,7 +156,7 @@ class ServiceManager {
         let apiInterfaceList = _aiResult.list;
 
         apiSourceList = apiSourceList.map(function(_apiSource) {
-          return new APISource(_apiSource, apiInterfaceList, self);
+          return new ICEAPISource(_apiSource, self);
         });
 
         _complete(apiSourceList);

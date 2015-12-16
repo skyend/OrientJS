@@ -146,15 +146,17 @@
                                 //
 
 
-                                li
+
+                                > li
                                 {
+                                    background-color: rgba(255,255,255,.2);
                                     //
                                     .item
                                     {
                                         display: inline-block;
 
+                                        width: 100%;
                                         max-width: 100%;
-                                        margin: 3px;
 
                                         > .key
                                         {
@@ -165,9 +167,6 @@
                                             padding: 5px;
 
                                             vertical-align: middle;
-
-                                            color: #fff;
-                                            background-color: #20457d;
                                         }
 
                                         > .value
@@ -182,8 +181,6 @@
                                             vertical-align: middle;
                                             word-break: break-all;
 
-                                            color: #6b5112;
-                                            background-color: #eae3d2;
                                             > .wrapper
                                             {
                                                 display: inline-block;
@@ -195,7 +192,46 @@
                                             }
                                         }
 
+                                        > .indent
+                                        {
+                                            position: relative;
 
+                                            display: table-cell;
+
+                                            width: 15px;
+                                            height: 10px;
+
+                                            // &.guide
+                                            // {
+                                            //     &::before
+                                            //     {
+                                            //         position: absolute;
+                                            //         left: 7.5px;
+                                            //
+                                            //         display: inline-block;
+                                            //
+                                            //         height: 100%;
+                                            //
+                                            //         content: ' ';
+                                            //
+                                            //         border-left: 1px solid #fff;
+                                            //     }
+                                            //     &::after
+                                            //     {
+                                            //         position: absolute;
+                                            //         top: 13.5px;
+                                            //         left: 7.5px;
+                                            //
+                                            //         display: inline-block;
+                                            //
+                                            //         width: 50%;
+                                            //
+                                            //         content: ' ';
+                                            //
+                                            //         border-bottom: 1px solid #fff;
+                                            //     }
+                                            // }
+                                        }
 
 
                                         > :first-child
@@ -209,6 +245,11 @@
                                             border-top-right-radius: 10px;
                                             border-bottom-right-radius: 10px;
                                         }
+
+                                        &:hover
+                                        {
+                                            background-color: #5486c7;
+                                        }
                                     }
 
                                     &.number
@@ -217,7 +258,7 @@
                                         {
                                             > .value
                                             {
-                                                color: #6b5112;
+                                                color: #fff;
                                             }
                                         }
                                     }
@@ -228,7 +269,7 @@
                                         {
                                             > .value
                                             {
-                                                color: #6b5112;
+                                                color: #fff;
                                                 > .wrapper
                                                 {
                                                     &:before
@@ -250,7 +291,7 @@
                                         {
                                             > .value
                                             {
-                                                color: #6b5112;
+                                                color: #fff;
                                             }
                                         }
                                     }
@@ -261,7 +302,7 @@
                                         {
                                             > .value
                                             {
-                                                color: #6b5112;
+                                                color: #fff;
                                                 &:before
                                                 {
                                                     content: '[';
@@ -280,7 +321,7 @@
                                         {
                                             > .value
                                             {
-                                                color: #6b5112;
+                                                color: #fff;
 
                                                 &:before
                                                 {
@@ -293,18 +334,24 @@
                                             }
                                         }
                                     }
+
+
+                                    // &:last-child
+                                    // {
+                                    //     //
+                                    //     .item
+                                    //     {
+                                    //         > .indent.guide
+                                    //         {
+                                    //             &::before
+                                    //             {
+                                    //                 height: 50%;
+                                    //             }
+                                    //         }
+                                    //     }
+                                    // }
                                 }
                             }
-
-                            > ul
-                            {
-                                padding-left: 5px;
-                            }
-                        }
-
-                        &:last-child
-                        {
-                            margin: 0;
                         }
                     }
                 }

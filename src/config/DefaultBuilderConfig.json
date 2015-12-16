@@ -220,6 +220,10 @@
     "GridElementNodeEditor": {
       "jsxPath": "GridElementNodeEditor",
       "title": "Grid ElementNode Editor"
+    },
+    "ContentsCopyBoard": {
+      "jsxPath": "ContentsCopyBoard",
+      "title": "Contents Copy Board"
     }
   }
 }
