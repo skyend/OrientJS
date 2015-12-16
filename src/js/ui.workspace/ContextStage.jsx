@@ -6,18 +6,18 @@
  * Requires(js)  :
  * Requires(css) :
  */
-let _ = require('underscore');
+import _ from 'underscore';
 
 
 import './ContextStage.less';
 
-let IFrameStage = require('./partComponents/IFrameStage.jsx');
-let DirectContext = require('./Context/DirectContext.jsx');
-let PageContext = require('./Context/PageContext.jsx');
-let ICEAPISourceContext = require('./Context/ICEAPISourceContext.jsx');
-let VDomController = require('../virtualdom/VDomController.js');
-let ElementNodeDropSupporter = require('./ElementNodeDropSupporter.jsx');
-let React = require("react");
+import IFrameStage from './partComponents/IFrameStage.jsx';
+import DirectContext from './Context/DirectContext.jsx';
+import PageContext from './Context/PageContext.jsx';
+import ICEAPISourceContext from './Context/ICEAPISourceContext.jsx';
+import VDomController from '../virtualdom/VDomController.js';
+import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
+import React from "react";
 
 var ContextStage = React.createClass({
 

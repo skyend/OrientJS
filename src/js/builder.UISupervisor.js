@@ -10,17 +10,17 @@
 var React = require("react");
 
 // Supporters
-let EventDistributor = require('./ui.workspace/reactMixin/EventDistributor.js');
-let ToolFactory = require('./builder.ToolFactory.js');
-//let APISource = require("./serviceCrew/APISource.js");
+import EventDistributor from './ui.workspace/reactMixin/EventDistributor.js';
+import ToolFactory from './builder.ToolFactory.js';
+//import APISource from "./serviceCrew/APISource.js";
 
 // Sub UI Classes
-let BuilderWorkSpace = require('./ui.workspace/Workspace.jsx');
-let LoginService = require('./ui.workspace/LoginService.jsx');
-let Enterance = require('./ui.enterance/Enterance.jsx');
+import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
+import LoginService from './ui.workspace/LoginService.jsx';
+import Enterance from './ui.enterance/Enterance.jsx';
 
 // Data
-let DefaultBuilderConfig = require("../config/DefaultBuilderConfig.json");
+import DefaultBuilderConfig from "../config/DefaultBuilderConfig.json";
 
 // UI Supervisor
 var UI = function(_window, _session, _app) {

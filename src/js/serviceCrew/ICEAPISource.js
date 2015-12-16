@@ -1,8 +1,7 @@
-"use strict";
-let Request = require('./API/Request.js');
-let _ = require('underscore');
+import Request from './API/Request.js';
+import _ from 'underscore';
 
-module.exports = class ICEAPISource {
+export default class ICEAPISource {
   constructor(_ICEAPISourceData, _serviceManager) {
     this.serviceManager = _serviceManager;
 

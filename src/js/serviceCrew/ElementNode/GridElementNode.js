@@ -1,6 +1,5 @@
-"use strict";
-let HTMLElementNode = require('./HTMLElementNode.js');
-let Document = require('../Document.js');
+import HTMLElementNode from './HTMLElementNode.js';
+import Document from '../Document.js';
 
 class GridElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -387,4 +386,4 @@ class GridElementNode extends HTMLElementNode {
   }
 }
 
-module.exports = GridElementNode;
+export default GridElementNode;

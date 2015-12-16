@@ -1,4 +1,4 @@
-let React = require("react");
+import React from "react";
 import "./CheckBox.less";
 
 var CheckBox = React.createClass({

@@ -1,8 +1,7 @@
-"use strict";
 var Document = require('./Document.js');
 var jsDiff = require('diff');
-let LZString = require('../lib/lz-string.js');
-let DocumentRevisionManager = require('./DocumentRevisionManager.js');
+import LZString from '../lib/lz-string.js';
+import DocumentRevisionManager from './DocumentRevisionManager.js';
 
 class DocumentContextController {
   constructor(_document, _params, _serviceManager) {
@@ -820,4 +819,4 @@ class DocumentContextController {
 }
 
 
-module.exports = DocumentContextController;
+export default DocumentContextController;

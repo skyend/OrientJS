@@ -1,5 +1,5 @@
-let Cookie = require("js-cookie");
-let request = require('superagent');
+import Cookie from "js-cookie";
+import request from 'superagent';
 
 class GelateriaRequest {
   constructor() {
@@ -475,4 +475,4 @@ class GelateriaRequest {
   }
 }
 
-module.exports =  GelateriaRequest;
+export default GelateriaRequest;

@@ -1,19 +1,17 @@
-"use strict";
-let HTMLElementNode = require('./HTMLElementNode.js');
-let GridElementNode = require('./GridElementNode.js');
-let ReactElementNode = require('./ReactElementNode.js');
-let StringElementNode = require('./StringElementNode.js');
-let EmptyElementNode = require('./EmptyElementNode.js');
+import HTMLElementNode from './HTMLElementNode.js';
+import GridElementNode from './GridElementNode.js';
+import ReactElementNode from './ReactElementNode.js';
+import StringElementNode from './StringElementNode.js';
+import EmptyElementNode from './EmptyElementNode.js';
 
 
-class Factory
-
-module.exports = {
-  takeElementNode: function(_elementNodeDataObject, _preInsectProps, _type, _environment) {
+class Factory {
+  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _environment) {
     var elementNode;
     let elementNodeCLASS;
     let elementNodeDataObject = _elementNodeDataObject || {};
     let type = elementNodeDataObject.type || _type;
+    console.log(_elementNodeDataObject, _type, _environment);
 
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
@@ -29,4 +27,6 @@ module.exports = {
 
     return elementNode;
   }
-};
+}
+
+export default Factory;

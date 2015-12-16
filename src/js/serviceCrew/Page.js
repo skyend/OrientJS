@@ -1,7 +1,6 @@
-"use strict";
-let _ = require('underscore');
-let Factory = require('./ElementNode/Factory.js');
-let DocumentContextController = require('./DocumentContextController.js');
+import _ from 'underscore';
+import Factory from './ElementNode/Factory.js';
+import DocumentContextController from './DocumentContextController.js';
 
 class Page {
   constructor(_contextController, _pageDataObject, _serviceManager) {
@@ -429,4 +428,4 @@ class Page {
   }
 }
 
-module.exports = Page;
+export default Page;

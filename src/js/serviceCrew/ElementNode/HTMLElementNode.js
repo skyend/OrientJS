@@ -1,8 +1,7 @@
-"use strict";
-let TagBaseElementNode = require('./TagBaseElementNode.js');
-let Factory = require('./Factory.js');
-let _ = require('underscore');
-let React = require('react');
+import TagBaseElementNode from './TagBaseElementNode.js';
+import Factory from './Factory.js';
+import _ from 'underscore';
+import React from 'react';
 
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -273,4 +272,4 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 }
 
-module.exports = HTMLElementNode;
+export default HTMLElementNode;

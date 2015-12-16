@@ -9,9 +9,9 @@
 
 import './GridElementNodeEditor.less';
 
-let React = require("react");
-let HorizonFieldSet = require('../partComponents/HorizonFieldSet.jsx');
-let _ = require('underscore');
+import React from "react";
+import HorizonFieldSet from '../partComponents/HorizonFieldSet.jsx';
+import _ from 'underscore';
 
 var GridElementNodeEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),

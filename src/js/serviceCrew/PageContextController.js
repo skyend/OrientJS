@@ -1,5 +1,4 @@
-"use strict";
-let Page = require('./Page.js');
+import Page from './Page.js';
 
 class PageContextController {
   constructor(_page, _session, _serviceManager) {
@@ -224,4 +223,4 @@ class PageContextController {
 
 
 
-module.exports = PageContextController;
+export default PageContextController;

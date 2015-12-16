@@ -1,9 +1,9 @@
-let React = require('react');
+import React from 'react';
 import './PageContext.less';
-let IFrameStage = require('../partComponents/IFrameStage.jsx');
-let PreviewScene = require('./PageContext/PreviewScene.jsx');
-let GridManageScene = require('./PageContext/GridManageScene.jsx');
-let MetaBoardScene = require('./PageContext/MetaBoardScene.jsx');
+import IFrameStage from '../partComponents/IFrameStage.jsx';
+import PreviewScene from './PageContext/PreviewScene.jsx';
+import GridManageScene from './PageContext/GridManageScene.jsx';
+import MetaBoardScene from './PageContext/MetaBoardScene.jsx';
 
 export default React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],

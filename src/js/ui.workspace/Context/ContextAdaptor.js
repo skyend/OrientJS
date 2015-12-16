@@ -1,4 +1,4 @@
-module.exports =  {
+export default {
   save: function() {
     this.props.contextController.save();
   },

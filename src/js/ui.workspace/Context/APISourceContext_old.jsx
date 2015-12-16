@@ -1,6 +1,6 @@
-let React = require('react');
-let _ = require('underscore');
-let Request = require('./APISourceContext/Request.jsx');
+import React from 'react';
+import _ from 'underscore';
+import Request from './APISourceContext/Request.jsx';
 require('./APISourceContext.less');
 
 var APISourceContext = React.createClass({

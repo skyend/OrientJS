@@ -1,7 +1,7 @@
 import "./APISourcePalette.less"
-let React = require('react');
-let _ = require('underscore');
-//let APISource = require('../../serviceCrew/APISource.js');
+import React from 'react';
+import _ from 'underscore';
+//import APISource from '../../serviceCrew/APISource.js';
 
 let Request = React.createClass({
   mixins: [ require('../reactMixin/EventDistributor.js') ],
@@ -257,7 +257,7 @@ let APISourceItem = React.createClass({
 });
 
 
-module.exports =  React.createClass({
+export default React.createClass({
   mixins: [
     require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],

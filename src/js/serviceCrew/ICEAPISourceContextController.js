@@ -1,7 +1,6 @@
-"use strict";
-let ContextController = require('./ContextController.js');
-let ICEAPISource = require('./ICEAPISource.js');
-let _ = require('underscore');
+import ContextController from './ContextController.js';
+import ICEAPISource from './ICEAPISource.js';
+import _ from 'underscore';
 
 export default class ICEAPISourceContextController extends ContextController {
   constructor(_ICEAPISourceData, _serviceManager) {

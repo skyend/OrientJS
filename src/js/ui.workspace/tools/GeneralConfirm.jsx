@@ -1,8 +1,8 @@
-let React = require("react");
+import React from "react";
 import './GeneralConfirm.less';
-let HorizonField = require('../partComponents/HorizonField.jsx');
-let OutlineButton = require('../partComponents/OutlineButton.jsx');
-let GridBox = require("../partComponents/GridBox.jsx");
+import HorizonField from '../partComponents/HorizonField.jsx';
+import OutlineButton from '../partComponents/OutlineButton.jsx';
+import GridBox from "../partComponents/GridBox.jsx";
 
 var PageCUForm = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],

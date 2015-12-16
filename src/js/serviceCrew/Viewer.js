@@ -1,4 +1,3 @@
-"use strict";
 class Viewer {
   constructor(_serviceManager) {
     this.serviceManager = _serviceManager;
@@ -126,4 +125,4 @@ class Viewer {
   }
 }
 
-module.exports = Viewer;
+export default Viewer;

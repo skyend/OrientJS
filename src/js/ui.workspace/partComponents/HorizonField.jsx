@@ -1,9 +1,9 @@
 require('./HorizonField.less');
 
-let React = require("react");
-let brace = require('brace');
-let AceEditor = require('react-ace');
-let InputBoxWithSelector = require('./InputBoxWithSelector.jsx');
+import React from "react";
+import brace from 'brace';
+import AceEditor from 'react-ace';
+import InputBoxWithSelector from './InputBoxWithSelector.jsx';
 
 require('brace/mode/css')
 require('brace/mode/javascript')

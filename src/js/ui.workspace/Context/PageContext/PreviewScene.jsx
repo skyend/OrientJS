@@ -1,6 +1,6 @@
-let React = require('react');
+import React from 'react';
 import './PreviewScene.less';
-let IFrameStage = require('../../partComponents/IFrameStage.jsx');
+import IFrameStage from '../../partComponents/IFrameStage.jsx';
 
 let PreviewScene = React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],

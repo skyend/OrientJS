@@ -1,8 +1,8 @@
-let React = require('react');
+import React from 'react';
 import './GridManageScene.less';
-//let GridManager = require('../ContextCommon/GridManager.jsx');
-let GridBound = require('./GridManageScene/GridBound.jsx');
-let GridTreeView = require('./GridManageScene/GridTreeView.jsx');
+//import GridManager from '../ContextCommon/GridManager.jsx';
+import GridBound from './GridManageScene/GridBound.jsx';
+import GridTreeView from './GridManageScene/GridTreeView.jsx';
 
 let GridManageScene = React.createClass({
   mixins:[require('../../reactMixin/EventDistributor.js')],
