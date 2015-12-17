@@ -57,6 +57,34 @@ class Page {
     this._preparedAPISourceList = _preparedAPISourceList;
   }
 
+  set displayTitle(_displayTitle) {
+    this._displayTitle = _displayTitle;
+  }
+
+  set metaList(_metaList) {
+    this._metaList = _metaList;
+  }
+
+  set refScriptIdList(_refScriptIdList) {
+    this._refScriptIdList = _refScriptIdList;
+  }
+
+  set refStyleIdList(_refStyleIdList) {
+    this._refStyleIdList = _refStyleIdList;
+  }
+
+  addMeta(_meta) {
+    this.metaList.push(_meta);
+  }
+
+  addStyleId(_styleId) {
+    this.refStyleIdList.push(_styleId);
+  }
+
+  addScriptId(_scriptId) {
+    this.refScriptIdList.push(_scriptId);
+  }
+
   setHTMLDocument(_htmlDocument) {
     this.htmlDocument = _htmlDocument;
   }
@@ -99,6 +127,23 @@ class Page {
 
   get preparedAPISourceList() {
     return this._preparedAPISourceList || null;
+  }
+
+
+  get displayTitle() {
+    return this._displayTitle;
+  }
+
+  get metaList() {
+    return this._metaList;
+  }
+
+  get refScriptIdList() {
+    return this._refScriptIdList;
+  }
+
+  get refStyleIdList() {
+    return this._refStyleIdList;
   }
 
   getParamSupply(_NS) {
@@ -405,8 +450,11 @@ class Page {
     if (data._id === undefined || data._id === '') throw new Error("아이디를 가지지 않은 Page는 객체로 import 될 수 없습니다.");
 
     this.id = data._id;
-    this.lastGridId = data.lastGridId || -1
     this.title = data.title || 'Untitled';
+    this.displayTitle = data.displayTitle;
+    this.metaList = data.metaList || [];
+    this.refStyleIdList = data.refStyleIdList || [];
+    this.refScriptIdList = data.refScriptIdList || [];
     this.created = data.created;
     this.updated = data.updated || undefined;
     this.accessPoint = data.accessPoint;
@@ -419,7 +467,10 @@ class Page {
     return {
       //_id: this.id,
       title: this.title,
-      lastGridId: this.lastGridId,
+      displayTitle: this.displayTitle,
+      metaList: this.metaList,
+      refStyleIdList: this.refStyleIdList,
+      refScriptIdList: this.refScriptIdList,
       created: this.created,
       updated: this.updated,
       accessPoint: this.accessPoint,
