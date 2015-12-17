@@ -485,7 +485,7 @@ class Page {
       updated: this.updated,
       accessPoint: this.accessPoint,
       paramSupplies: this.paramSupplies,
-      rootGridElement: _.clone(this._rootGridElement.export())
+      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined
     };
   }
 }
