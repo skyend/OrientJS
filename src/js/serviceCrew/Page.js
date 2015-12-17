@@ -73,6 +73,10 @@ class Page {
     this._refStyleIdList = _refStyleIdList;
   }
 
+  set favicon(_favicon) {
+    this._favicon = _favicon;
+  }
+
   addMeta(_meta) {
     this.metaList.push(_meta);
   }
@@ -144,6 +148,10 @@ class Page {
 
   get refStyleIdList() {
     return this._refStyleIdList;
+  }
+
+  get favicon() {
+    return this._favicon;
   }
 
   getParamSupply(_NS) {
@@ -451,6 +459,7 @@ class Page {
 
     this.id = data._id;
     this.title = data.title || 'Untitled';
+    this.favicon = data.favicon;
     this.displayTitle = data.displayTitle;
     this.metaList = data.metaList || [];
     this.refStyleIdList = data.refStyleIdList || [];
@@ -467,6 +476,7 @@ class Page {
     return {
       //_id: this.id,
       title: this.title,
+      favicon: this.favicon,
       displayTitle: this.displayTitle,
       metaList: this.metaList,
       refStyleIdList: this.refStyleIdList,
