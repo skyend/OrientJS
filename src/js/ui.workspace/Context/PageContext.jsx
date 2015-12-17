@@ -280,8 +280,8 @@ export default React.createClass({
   },
 
   renderScene(){
-    var sceneWidth = (this.state.stageWidth > this.props.width) ? this.props.width : this.state.stageWidth;
-    var sceneHeight = (this.state.stageHeight > this.props.height) ? this.props.height : this.state.stageHeight;
+    var sceneWidth = (this.props.renderStageWidth > this.props.width) ? this.props.width : this.props.renderStageWidth;
+    var sceneHeight = (this.props.renderStageHeight > this.props.height) ? this.props.height : this.props.renderStageHeight;
     sceneWidth -= 10;
     sceneHeight -= 10;
     var stageX = ( this.props.width - sceneWidth ) / 2;

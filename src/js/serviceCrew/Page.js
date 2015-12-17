@@ -11,6 +11,7 @@ class Page {
 
     // runtime
     this._screenSize = {};
+    this.screenMode = _contextController.screenSizing;
   }
 
   set title(_title) {
@@ -39,6 +40,10 @@ class Page {
     if (this.rootGridElement !== null) {
       this.rootGridElement.screenSize = this._screenSize;
     }
+  }
+
+  set screenMode(_screenMode) {
+    this._screenMode = _screenMode;
   }
 
   set fragmentContext(_fragmentContext) {
@@ -115,6 +120,10 @@ class Page {
 
   get screenSize() {
     return this._screenSize;
+  }
+
+  get screenMode() {
+    return this._screenMode;
   }
 
   get fragmentContext() {

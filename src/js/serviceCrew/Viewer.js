@@ -91,6 +91,7 @@ class Viewer {
       self.window.document.body.innerHTML = '';
 
       self.page.screenSize = _screenSize;
+      self.page.screenMode = 'desktop';
 
       self.page.setHTMLDocument(self.window.document);
       self.page.rootGridElement.realize({

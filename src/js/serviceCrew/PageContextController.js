@@ -193,6 +193,7 @@ class PageContextController {
   setScreenSizing(_sizing) {
 
     this.screenSizing = _sizing;
+    this.page.screenMode = _sizing;
   }
 
   getScreenSizing() {
