@@ -1,3 +1,4 @@
+"use strict";
 var Document = require('./Document.js');
 var jsDiff = require('diff');
 import LZString from '../lib/lz-string.js';

@@ -1,3 +1,4 @@
+"use strict";
 import _ from 'underscore';
 import Factory from './ElementNode/Factory.js';
 import DocumentContextController from './DocumentContextController.js';
@@ -10,6 +11,7 @@ class Page {
 
     // runtime
     this._screenSize = {};
+    this.screenMode = _contextController.screenSizing;
   }
 
   set title(_title) {
@@ -40,6 +42,10 @@ class Page {
     }
   }
 
+  set screenMode(_screenMode) {
+    this._screenMode = _screenMode;
+  }
+
   set fragmentContext(_fragmentContext) {
     this._fragmentContext = _fragmentContext;
   }
@@ -54,6 +60,38 @@ class Page {
 
   set preparedAPISourceList(_preparedAPISourceList) {
     this._preparedAPISourceList = _preparedAPISourceList;
+  }
+
+  set displayTitle(_displayTitle) {
+    this._displayTitle = _displayTitle;
+  }
+
+  set metaList(_metaList) {
+    this._metaList = _metaList;
+  }
+
+  set refScriptIdList(_refScriptIdList) {
+    this._refScriptIdList = _refScriptIdList;
+  }
+
+  set refStyleIdList(_refStyleIdList) {
+    this._refStyleIdList = _refStyleIdList;
+  }
+
+  set favicon(_favicon) {
+    this._favicon = _favicon;
+  }
+
+  addMeta(_meta) {
+    this.metaList.push(_meta);
+  }
+
+  addStyleId(_styleId) {
+    this.refStyleIdList.push(_styleId);
+  }
+
+  addScriptId(_scriptId) {
+    this.refScriptIdList.push(_scriptId);
   }
 
   setHTMLDocument(_htmlDocument) {
@@ -84,6 +122,10 @@ class Page {
     return this._screenSize;
   }
 
+  get screenMode() {
+    return this._screenMode;
+  }
+
   get fragmentContext() {
     return this._fragmentContext;
   }
@@ -98,6 +140,27 @@ class Page {
 
   get preparedAPISourceList() {
     return this._preparedAPISourceList || null;
+  }
+
+
+  get displayTitle() {
+    return this._displayTitle;
+  }
+
+  get metaList() {
+    return this._metaList;
+  }
+
+  get refScriptIdList() {
+    return this._refScriptIdList;
+  }
+
+  get refStyleIdList() {
+    return this._refStyleIdList;
+  }
+
+  get favicon() {
+    return this._favicon;
   }
 
   getParamSupply(_NS) {
@@ -404,8 +467,12 @@ class Page {
     if (data._id === undefined || data._id === '') throw new Error("아이디를 가지지 않은 Page는 객체로 import 될 수 없습니다.");
 
     this.id = data._id;
-    this.lastGridId = data.lastGridId || -1
     this.title = data.title || 'Untitled';
+    this.favicon = data.favicon;
+    this.displayTitle = data.displayTitle;
+    this.metaList = data.metaList || [];
+    this.refStyleIdList = data.refStyleIdList || [];
+    this.refScriptIdList = data.refScriptIdList || [];
     this.created = data.created;
     this.updated = data.updated || undefined;
     this.accessPoint = data.accessPoint;
@@ -418,12 +485,16 @@ class Page {
     return {
       //_id: this.id,
       title: this.title,
-      lastGridId: this.lastGridId,
+      favicon: this.favicon,
+      displayTitle: this.displayTitle,
+      metaList: this.metaList,
+      refStyleIdList: this.refStyleIdList,
+      refScriptIdList: this.refScriptIdList,
       created: this.created,
       updated: this.updated,
       accessPoint: this.accessPoint,
       paramSupplies: this.paramSupplies,
-      rootGridElement: _.clone(this._rootGridElement.export())
+      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined
     };
   }
 }

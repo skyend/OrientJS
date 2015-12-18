@@ -1,7 +1,7 @@
 import "./APISourcePalette.less"
 import React from 'react';
 import _ from 'underscore';
-import APISource from '../../serviceCrew/APISource.js';
+//import APISource from '../../serviceCrew/APISource.js';
 
 let Request = React.createClass({
   mixins: [ require('../reactMixin/EventDistributor.js') ],
@@ -54,16 +54,17 @@ let Request = React.createClass({
   componentDidUpdate(){
     let self = this;
     if( this.state.showItemTree && this.state.dataFrame === null ){
-      this.props.apiSource.executeTestRequest(this.props.request.name, function(_result){
-        self.setState({dataFrame: self.props.request.testDataFrame});
+      this.props.apiSource.executeTestRequestAsDataFrame(this.props.request.id, function(_result){
+        self.setState({dataFrame: _result});
       });
     }
   },
 
 
-  renderDataFrameUnit(_key, _object, _parentPath){
+  renderDataFrameUnit(_key, _object, _parentPath, _depth){
     let self = this;
     let type = typeof _object;
+    let indentArray = _.range(_depth);
 
     switch(type){
       case "boolean":
@@ -71,6 +72,12 @@ let Request = React.createClass({
       case "number":
         return <li className={type}>
           <div className='item' draggable={true} onDragStart={function(_e){self.onDragStart(_e, (_parentPath+"/"+_key));}}>
+            { indentArray.map(function(_, _i){
+              if( _i == _depth-1 ){
+                return <span className='indent guide'/>;
+              }
+              return <span className='indent'/>;
+            })}
             <span className='key'>{_key}</span>
             <span className='value'>
               <span className='wrapper' title={_object}>
@@ -85,6 +92,12 @@ let Request = React.createClass({
         return (
           <li className={typeDetail}>
             <div className='item' draggable={true} onDragStart={function(_e){self.onDragStart(_e, (_parentPath+"/"+_key));}}>
+              { indentArray.map(function(_, _i){
+                if( _i == _depth-1 ){
+                  return <span className='indent guide'/>;
+                }
+                return <span className='indent'/>;
+              })}
               <span className='key'>{_key}</span>
               <span className='value'> </span>
             </div>
@@ -92,7 +105,7 @@ let Request = React.createClass({
               {Object.keys(_object).map(function(__key) {
 
 
-                return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+_key)
+                return self.renderDataFrameUnit(__key, _object[__key], _parentPath+'/'+_key, _depth+1)
               })}
             </ul>
           </li>
@@ -109,9 +122,9 @@ let Request = React.createClass({
         </div>
       )
     }
-    console.log(this.state.dataFrame);
+
     return Object.keys(this.state.dataFrame).map(function(_key) {
-      return self.renderDataFrameUnit(_key, self.state.dataFrame[_key], '');
+      return self.renderDataFrameUnit(_key, self.state.dataFrame[_key], '', 0);
     });
   },
 
@@ -137,7 +150,7 @@ let Request = React.createClass({
           {this.props.name}
           <small> {this.state.dataFrame !== null? <i className="fa fa-inbox"/>:''}</small>
 
-        
+
         </div>
         { this.state.showItemTree? this.renderBindingItemTree():''}
       </div>
@@ -180,27 +193,25 @@ let APISourceItem = React.createClass({
 
   componentDidUpdate(){
     let self = this;
-    if( this.state.active && !this.props.apiSource.hasNodeTypeData ){
+    if( this.state.active && this.props.apiSource.nodeTypeMeta === null ){
       console.log(this.props.apiSource);
 
-      this.props.apiSource.prepareNodeTypeData(function(_result){
-        if( _result ){
-          self.forceUpdate();
-        }
+      this.props.apiSource.prepareNodeTypeMeta(function(_result){
+        self.forceUpdate();
       });
     }
   },
 
-  renderRequest(_name, _request){
+  renderRequest(_request){
     return (
-      <Request request={_request} name={_name} apiSource={this.props.apiSource}/>
+      <Request request={_request} name={_request.name} apiSource={this.props.apiSource}/>
     );
   },
 
   renderRequests(){
     let self = this;
 
-    if( !this.props.apiSource.hasNodeTypeData ){
+    if( this.props.apiSource.nodeTypeMeta === null ){
       return <div className='loading'>
         <i className="fa fa-spinner fa-pulse"/> Node type Loading...
       </div>
@@ -208,34 +219,11 @@ let APISourceItem = React.createClass({
 
     let requestElements = [];
 
-    let requestKeys = Object.keys(this.props.apiSource.requests || {});
-    console.log( this.props.apiSource.requests);
-    // ~source 의 request~
-    if( requestKeys.length > 0 ){
-      requestKeys.map(function (_requestKey) {
-        requestElements.push( self.renderRequest(_requestKey, self.props.apiSource.requests[_requestKey]) );
-      });
-    }
 
-    // // interface 의 request
-    // if( (this.props.apiSource.interfaces || 0).length > 0){
-    //   if( this.props.interfaces !== null ){
-    //     this.props.apiSource.interfaces.map(function(_interfaceId){
-    //
-    //       let index = _.findIndex(self.props.interfaces, function(_interface){
-    //         return _interface._id === _interfaceId;
-    //       });
-    //
-    //       let interfaceObj = self.props.interfaces[index];
-    //
-    //       Object.keys(interfaceObj.requests || {}).map(function(_key){
-    //         let request = interfaceObj.requests[_key];
-    //
-    //         requestElements.push( self.renderRequest(_key, request) );
-    //       });
-    //     });
-    //   }
-    // }
+
+    requestElements = this.props.apiSource.requests.map(function(_req){
+      return self.renderRequest(_req);
+    });
 
 
     if (requestElements.length > 0) {
@@ -289,7 +277,7 @@ export default React.createClass({
 
   componentDidMount(){
     this.emit("NeedICEHost");
-    this.emit("NeedAPISourceList");
+    this.emit("NeedAPISourceObjectList");
     this.emit("NeedAPIInterfaceList");
   },
 

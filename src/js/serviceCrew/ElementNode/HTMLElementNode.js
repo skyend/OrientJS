@@ -1,3 +1,4 @@
+"use strict";
 import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
 import _ from 'underscore';
@@ -51,7 +52,6 @@ class HTMLElementNode extends TagBaseElementNode {
     let realization = this.realization;
 
   }
-
 
   appendChild(_elementNode) {
     if (this.getType() === 'string') {
@@ -124,7 +124,6 @@ class HTMLElementNode extends TagBaseElementNode {
     return this.children.map(_processFunc);
   }
 
-
   clearRealizationChildren() {
     if (this.realization === null) return;
 
@@ -132,7 +131,6 @@ class HTMLElementNode extends TagBaseElementNode {
       this.realization.removeChild(this.realization.childNodes[0]);
     }
   }
-
 
   buildByComponent(_component) {
     super.buildByComponent(_component);
@@ -185,7 +183,6 @@ class HTMLElementNode extends TagBaseElementNode {
     }
     // 재귀끝  //
     ////////////
-
 
     this.children = children;
   }

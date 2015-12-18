@@ -1,0 +1,68 @@
+.ContentsCopyBoard
+{
+    overflow: auto;
+
+    width: 768px;
+    height: 520px;
+
+    .data-info
+    {
+        font-size: 14px;
+
+        width: 100%;
+        height: 30px;
+
+        text-align: center;
+
+        color: #eee;
+        &::before
+        {
+            display: inline-block;
+
+            width: 0;
+            height: 100%;
+
+            content: ' ';
+            vertical-align: middle;
+        }
+
+        > span
+        {
+            vertical-align: middle;
+        }
+    }
+
+    .board
+    {
+        box-sizing: border-box;
+        width: 100%;
+        height: 520px - 60 - 30;
+        padding: 10px 10px 0 10px;
+
+        > textarea
+        {
+            overflow: hidden;
+
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+
+            resize: none;
+
+            color: #eee;
+            border: 0;
+            border-radius: 10px;
+            outline: none;
+            background-color: #7a828c;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, .49);
+        }
+    }
+
+    .buttons
+    {
+        box-sizing: border-box;
+        height: 60px;
+        padding: 10px;
+    }
+}

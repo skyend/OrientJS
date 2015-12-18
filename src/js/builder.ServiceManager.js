@@ -8,12 +8,12 @@ import request from 'superagent';
 
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
-import ApiSourceContextController from './serviceCrew/ApiSourceContextController.js';
-import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
+import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
+//import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
 import Viewer from './serviceCrew/Viewer.js';
-import APISource from './serviceCrew/APISource.js';
+import ICEAPISource from './serviceCrew/ICEAPISource.js';
 
 
 class ServiceManager {
@@ -115,6 +115,8 @@ class ServiceManager {
   }
 
   getApisourceList(_complete) {
+    let self = this;
+
     this.app.gelateriaRequest.getApisourceList(this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.title.localeCompare(_b.title) > 0) {
@@ -124,8 +126,24 @@ class ServiceManager {
         }
       });
 
+      // _result.list = _result.list.map(function(_apiSource) {
+      //   return new ICEAPISource(_apiSource, self);
+      // });
+
       _complete(_result);
     });
+  }
+
+  getApisourceObjectList(_complete) {
+    let self = this;
+    this.getApisourceList(function(_result) {
+
+      _result.list = _result.list.map(function(_apiSource) {
+        return new ICEAPISource(_apiSource, self);
+      });
+
+      _complete(_result);
+    })
   }
 
   getApiSourceListWithInterface(_complete) {
@@ -138,7 +156,7 @@ class ServiceManager {
         let apiInterfaceList = _aiResult.list;
 
         apiSourceList = apiSourceList.map(function(_apiSource) {
-          return new APISource(_apiSource, apiInterfaceList, self);
+          return new ICEAPISource(_apiSource, self);
         });
 
         _complete(apiSourceList);
@@ -154,9 +172,9 @@ class ServiceManager {
         self.getApiinterfaceList(function(_aiResult) {
           let apiInterfaceList = _aiResult.list;
 
-          let apiSource = new APISource(_result.apisource, apiInterfaceList, self);
+          //let apiSource = new APISource(_result.apisource, apiInterfaceList, self);
 
-          _complete(apiSource);
+          _complete(_result.apisource, apiInterfaceList);
         });
       } else {
         alert("Fail API Source load :" + _apisource_id);
@@ -311,17 +329,22 @@ class ServiceManager {
     }
   }
 
-  getApiSourceContextController(_apiSourceId, _complete) {
+  getICEAPISourceContextController(_ICEAPISourceId, _complete) {
     var self = this;
-    if (this.apiSourceContextControllers[_apiSourceId] === undefined) {
-      this.getAPISourceWithInterfaces(_apiSourceId, function(_apiSource) {
+
+    if (this.apiSourceContextControllers[_ICEAPISourceId] === undefined) {
+
+
+
+      this.getAPISourceWithInterfaces(_ICEAPISourceId, function(_apiSource, _interfaces) {
 
         if (_apiSource !== null) {
-          var apiSourceContextController = new ApiSourceContextController(_apiSource, self.app.session, self);
+          _apiSource.interfaceObjects = _interfaces;
+          var apiSourceContextController = new ICEAPISourceContextController(_apiSource, self);
 
-          self.apiSourceContextControllers[_apiSourceId] = apiSourceContextController;
+          self.apiSourceContextControllers[_ICEAPISourceId] = apiSourceContextController;
 
-          _complete(self.apiSourceContextControllers[_apiSourceId]);
+          _complete(self.apiSourceContextControllers[_ICEAPISourceId]);
         } else {
           alert("apisource 로드 실패. " + _result.reason);
         }

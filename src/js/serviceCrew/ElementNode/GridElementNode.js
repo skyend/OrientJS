@@ -1,3 +1,4 @@
+"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import Document from '../Document.js';
 
@@ -79,8 +80,8 @@ class GridElementNode extends HTMLElementNode {
     let self = this;
     super.realize(_realizeOptions);
 
-    console.log(this.realization);
-    let containerSize = this.calcContainerSize();
+    console.log(this.realization, this.environment, this.environment.screenMode);
+    let containerSize = this.calcContainerSize(this.environment.screenMode);
     //this.realization.style.width = containerSize.width;
     //this.realization.style.height = containerSize.height;
     if (this.behavior === 'row') {

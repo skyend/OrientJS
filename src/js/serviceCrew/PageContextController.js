@@ -1,3 +1,4 @@
+"use strict";
 import Page from './Page.js';
 
 class PageContextController {
@@ -192,6 +193,7 @@ class PageContextController {
   setScreenSizing(_sizing) {
 
     this.screenSizing = _sizing;
+    this.page.screenMode = _sizing;
   }
 
   getScreenSizing() {

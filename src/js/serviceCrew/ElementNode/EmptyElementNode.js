@@ -1,3 +1,4 @@
+"use strict";
 import TagBaseElementNode from './TagBaseElementNode.js';
 import _ from 'underscore';
 

@@ -1,3 +1,4 @@
+"use strict";
 import HTMLElementNode from './ElementNode/HTMLElementNode.js';
 import StringElementNode from './ElementNode/StringElementNode.js';
 import EmptyElementNode from './ElementNode/EmptyElementNode.js';

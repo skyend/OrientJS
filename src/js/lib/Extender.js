@@ -7,18 +7,17 @@
  *
  */
 
-(function () {
-    exports.extends = function (_source, _target, _arguments) {
-        var F = function () {
-            return _source.apply(this, _arguments);
-        }
 
-        F.prototype = _source.prototype;
+exports.extends = function(_source, _target, _arguments) {
+  var F = function() {
+    return _source.apply(this, _arguments);
+  }
 
-        var inst = new F();
+  F.prototype = _source.prototype;
 
-        for (attr in inst) {
-            _target[attr] = inst[attr];
-        }
-    }
-})();
+  var inst = new F();
+
+  for (attr in inst) {
+    _target[attr] = inst[attr];
+  }
+}

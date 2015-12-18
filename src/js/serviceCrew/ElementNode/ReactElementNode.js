@@ -1,6 +1,7 @@
+"use strict";
 import TagBaseElementNode from './TagBaseElementNode.js';
 import React from 'react';
-import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';
+//import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';
 import _ from 'underscore';
 
 class ReactElementNode extends TagBaseElementNode {
@@ -140,14 +141,14 @@ class ReactElementNode extends TagBaseElementNode {
 
         }
 
-        React.render(React.createElement(ReactComponentErrorBox, {
-          componentKey: componentKey,
-          packageKey: packageKey,
-          error: _e,
-          maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.',
-          width: "100%",
-          height: "100%"
-        }), this.realization);
+        // React.render(React.createElement(ReactComponentErrorBox, {
+        //   componentKey: componentKey,
+        //   packageKey: packageKey,
+        //   error: _e,
+        //   maybe: "Expect [" + expectedProblemProps.join(',') + '] property have any problems.',
+        //   width: "100%",
+        //   height: "100%"
+        // }), this.realization);
       }
 
 

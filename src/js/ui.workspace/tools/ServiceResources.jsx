@@ -58,6 +58,50 @@
       });
     },
 
+    clickExportFragments(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'Fragment'
+      });
+    },
+
+    clickExportPages(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'Page'
+      });
+    },
+
+    clickExportCasecadeStyleSheets(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'CasecadeStyleSheet'
+      });
+    },
+
+    clickExportJavascripts(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'Javascript'
+      });
+    },
+
+    clickExportAPIInterfaces(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'APIInterfaces'
+      });
+    },
+
+    clickExportAPISources(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'ICEAPISource'
+      });
+    },
+
+    clickExportMashupAPIs(){
+      this.emit("ShowServiceResourceCopyBoard", {
+        resourceName: 'MashupAPI'
+      });
+    },
+
+
+
     documentDragEnd(_e){
       console.log('drag end document', _e.nativeEvent);
     },
@@ -113,12 +157,12 @@
       )
     },
 
-    renderAPISourceItem(_apiSource){
+    renderICEAPISourceItem(_apiSource){
       var iconClass = 'fa-database';
 
       var self = this;
       var click = function () {
-        self.emit("BringApiSourceContext", {
+        self.emit("BringICEAPISourceContext", {
           apiSource: _apiSource,
           iconClass: iconClass
         });
@@ -128,7 +172,7 @@
       //console.log("API context ", this.props.runningContext, _apiSourceMeta);
       if (this.props.runningContext !== null) {
         if (this.props.runningContext.contextType === "apiSource") {
-          if (this.props.runningContext.apiSourceID == _apiSource.id) {
+          if (this.props.runningContext.apiSourceID == _apiSource._id) {
 
             contextIsRunning = true;
           }
@@ -206,6 +250,12 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-file-text'></i> Pages
+            <span className='import-button' onClick={this.clickExportAPISources}>
+              <i className='fa fa-upload'></i>
+            </span>
+            <span className='export-button' onClick={this.clickExportPages}>
+              <i className='fa fa-download'></i>
+            </span>
             <span className='add-button' onClick={this.clickNewPage}>
               <i className='fa fa-plus'/>
             </span>
@@ -224,6 +274,13 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-html5'></i> Fragments
+
+            <span className='import-button' onClick={this.clickExportAPISources}>
+              <i className='fa fa-upload'></i>
+            </span>
+            <span className='export-button' onClick={this.clickExportFragments}>
+              <i className='fa fa-download'></i>
+            </span>
             <span className='add-button' onClick={this.clickNewDocument}>
               <i className='fa fa-plus'/>
             </span>
@@ -240,6 +297,12 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-css3'></i> Cascading Style Sheets
+            <span className='import-button' onClick={this.clickExportAPISources}>
+              <i className='fa fa-upload'></i>
+            </span>
+            <span className='export-button' onClick={this.clickExportCasecadeStyleSheets}>
+              <i className='fa fa-download'></i>
+            </span>
             <span className='add-button' onClick={this.clickNewDocument}>
               <i className='fa fa-plus'></i>
             </span>
@@ -256,6 +319,12 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-gg'></i> Javascripts
+              <span className='import-button' onClick={this.clickExportAPISources}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportJavascripts}>
+                <i className='fa fa-download'></i>
+              </span>
             <span className='add-button' onClick={this.clickNewDocument}>
               <i className='fa fa-plus'></i>
             </span>
@@ -273,6 +342,12 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-plug'></i> API Interfaces
+              <span className='import-button' onClick={this.clickExportAPISources}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportAPIInterfaces}>
+                <i className='fa fa-download'></i>
+              </span>
               <span className='add-button' onClick={this.clickAddAPIInterface}>
                 <i className='fa fa-plus'></i>
               </span>
@@ -290,12 +365,18 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-database'></i> ICE API Sources
+              <span className='import-button' onClick={this.clickExportAPISources}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportAPISources}>
+                <i className='fa fa-download'></i>
+              </span>
               <span className='add-button' onClick={this.clickAddAPISource}>
                 <i className='fa fa-plus'></i>
               </span>
           </label>
           <ul>
-            { this.state.apisourceList.map(this.renderAPISourceItem) }
+            { this.state.apisourceList.map(this.renderICEAPISourceItem) }
           </ul>
         </div>
       )
@@ -307,6 +388,12 @@
         <div className="resourceList">
           <label className='listLabel'>
             <i className='fa fa-share-alt-square'></i> Mashup APIs
+              <span className='import-button' onClick={this.clickExportAPISources}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportMashupAPIs}>
+                <i className='fa fa-download'></i>
+              </span>
               <span className='add-button' onClick={this.clickAddAPISource}>
                 <i className='fa fa-plus'></i>
               </span>
