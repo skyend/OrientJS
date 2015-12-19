@@ -232,6 +232,11 @@ class ServiceManager {
     });
   }
 
+  findPageByAccessPoint(_accessPoint, _complate) {
+    this.app.gelateriaRequest.findPageBy(this.service_id, 'accessPoint', _accessPoint, function(_result) {
+      _complate(_result);
+    });
+  }
 
 
   // Deprecated
@@ -377,44 +382,66 @@ class ServiceManager {
   }
 
 
-  navigatePage(_navigateParamList) {
-    if (!/publish=/.test(window.location.search)) {
+  navigateService(_navigateCMDString) {
+    /*
+      Page Navigate : P@[PageAccessPoint]?[params]#[hash]
+      Resource View : S@[StaticResourceID]
+    */
+    let self = this;
+    let matches = _navigateCMDString.match(/^(\w?)@([^?^#^@]+?)(?:\?([^#]+))?(?:#(.+))?$/);
+    let navigateType = matches[1];
+    let publishType;
+    let target = matches[2];
+    let params = matches[3] || '';
+    let hash = matches[4] || '';
 
-      let self = this;
-      this.getPageList(function(_list) {
-        let targetPageIndex = _.findIndex(_list.list, {
-          accessPoint: _navigateParamList[0]
-        });
-
-        if (targetPageIndex > -1) {
-          self.app.uiSupervisor.openPageContext(_list.list[targetPageIndex], 'fa-newspaper-o');
-        } else {
-          alert("존재하지 않는 페이지 입니다.");
-        }
-
-
-      })
-
-      return;
+    if (navigateType === 'P') {
+      publishType = 'page';
+    } else if (navigateType === 'S') {
+      publishType = 'staticResource'
     }
 
-    let list = [];
-    list.push("publish=");
-    _navigateParamList.map(function(_param, _i) {
+    console.log(_navigateCMDString, matches[0], navigateType, target, params, hash);
 
-      if (_i == 0) list.push('page=' + _param);
-      else
-        list.push(_param);
+    if (!/publish=/.test(window.location.search)) {
+      // non publish mode == building Mode
 
-      console.log('navi params', _navigateParamList);
-    });
+      let self = this;
+      if (navigateType === 'page') {
+        this.findPageByAccessPoint(target, function(_result) {
 
-    list.push("serviceId=" + this.service_id);
+          if (_result !== null) {
+            self.app.uiSupervisor.openPageContext(_result, 'fa-newspaper-o');
+          } else {
+            alert("존재하지 않는 페이지 입니다.");
+          }
+        });
+      } else if (navigateType === 'staticResource') {
 
-    console.log(list.join("&"));
+        alert("현재 미지원 기능입니다. ServiceManager.navigateService");
+      }
+    } else {
+      // publish mode
+      let paramParts = params.split("&");
+      let list = [];
+      list.push("publish=" + navigateType);
+      list.push("page=" + target);
+      list.push("serviceId=" + this.service_id);
 
-    window.location.href = location.origin + "/?" + list.join("&");
+      if (publishType === 'page') {
+        paramParts.map(function(_paramPart) {
+          list.push(_paramPart)
+        });
+
+        window.location.href = location.origin + "/?" + list.join("&");
+      } else if (navigateType === 'staticResource') {
+
+        alert("현재 미지원 기능입니다. ServiceManager.navigateService");
+      }
+    }
   }
+
+
 
   newViewer() {
     return new Viewer(this);

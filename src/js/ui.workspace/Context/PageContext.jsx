@@ -56,7 +56,7 @@ export default React.createClass({
   },
 
   publish(){
-    let httpParams = ['publish='];
+    let httpParams = ['publish=page'];
     let accessPoint = this.props.contextController.page.accessPoint;
 
     if( accessPoint === '' ){

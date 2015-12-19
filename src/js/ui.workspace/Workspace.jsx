@@ -621,7 +621,7 @@ var Workspace = React.createClass({
 
 
           <ToolNavigation ref="LeftNavigation"
-                          defaultToolSize={310}
+                          defaultToolSize={350}
                           maxSize={700}
                           naviSize={45}
                           fontSize={22}

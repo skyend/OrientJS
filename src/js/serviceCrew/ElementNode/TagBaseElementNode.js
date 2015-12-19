@@ -205,10 +205,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
   navigateHandling(_navigate) {
-
-    let splited = _navigate.split('&');
-
-    this.environment.contextController.serviceManager.navigatePage(splited);
+    this.environment.contextController.serviceManager.navigateService(_navigate);
   }
 
   valueWithUnitSeperator(_value) {

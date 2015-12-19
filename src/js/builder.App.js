@@ -54,7 +54,7 @@ var App = function() {
 };
 
 App.prototype.startPublishPage = function(_params) {
-  let projectId = _params['projectId'];
+  let publish = _params['publish'];
   let serviceId = _params['serviceId'];
   let pageId = _params['pageId'];
   let pageAccessPointName = _params['page'];
@@ -64,61 +64,28 @@ App.prototype.startPublishPage = function(_params) {
     headChildren[i].remove();
   }
   // Main Page
-  // http://localhost:8081/?publish=on&serviceId=565e7e1d4d00580a00e5becd&projectId=56193d447acb5b7b633dc8eb&pageId=566116414d00580a00e5bef4
-
   let serviceManager = new ServiceManager(this, serviceId);
   this.serviceManager = serviceManager;
-  // serviceManager.getPageList(function(_result) {
-  //   console.log(_result);
-  //
-  //   let pageIdx = _.findIndex(_result.list, {
-  //     _id: pageId
-  //   });
-  //
-  //   let page = _result.list[pageIdx];
-  //
-  //   console.log(page);
-  // });
 
-  serviceManager.getPageList(function(_list) {
-    let index = _.findIndex(_list.list, {
-      accessPoint: pageAccessPointName
+
+  if (publish === 'page') {
+    this.serviceManager.findPageByAccessPoint(pageAccessPointName, function(_result) {
+      serviceManager.getPageContextController(_result._id, function(_contextController) {
+        console.log(_contextController);
+
+
+        let viewer = new Viewer(serviceManager);
+        viewer.page = _contextController.page;
+        viewer.window = window;
+        viewer.rendering({
+          width: window.clientWidth,
+          height: window.clientHeight
+        }, false);
+      });
     });
-
-    if (index > -1) {
-      let page = _list.list[index];
-      pageId = page._id;
-    }
-
-    serviceManager.getPageContextController(pageId, function(_contextController) {
-      console.log(_contextController);
-
-      // let previewScene = React.render(React.createElement(PreviewScene, {
-      //   width: '100%',
-      //   height: '100%'
-      // }), window.document.body);
-
-      let viewer = new Viewer(serviceManager);
-      viewer.page = _contextController.page;
-      viewer.window = window;
-      viewer.rendering({
-        width: window.clientWidth,
-        height: window.clientHeight
-      }, false);
-
-      //previewScene.setViewer(viewer)
-      //viewer.window =
-
-    });
-  });
-
-
-
-
-
-  //window.document.body.innerHTML = "<iframe id='publish-zone' width='100%' height='100%' style='border'></iframe>";
-
-
+  } else if (publish === 'staticResource') {
+    alert("Static Resource 는 아직 지원하지 않습니다.");
+  }
 };
 
 App.prototype.startServiceBuilding = function(_service_id) {

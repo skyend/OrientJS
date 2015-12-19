@@ -246,9 +246,7 @@ class GelateriaRequest {
         console.log(err, res);
         if (err !== null) throw new Error("page load fail");
 
-        var dataObject = JSON.parse(res.text);
-
-        _complete(dataObject);
+        _complete(res.body);
       });
 
     // request.get("http://localhost:8080/" + ["documents", _serviceIdx, _docId, "retrieve"].join("/"))
@@ -261,6 +259,17 @@ class GelateriaRequest {
     //
     //     _complete(dataObject);
     //   });
+  }
+
+  findPageBy(_serviceId, _field, _value, _complete) {
+
+    request.get("http://localhost:8080/" + ["pages", _serviceId, "findBy", _field, _value].join("/"))
+      //.withCredentials()
+      .end(function(err, res) {
+        if (err !== null) throw new Error("page load fail");
+
+        _complete(res.body);
+      });
   }
 
   savePage(_serviceId, _page_id, _pageDataObject, _complete) {
