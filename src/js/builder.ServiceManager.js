@@ -5,7 +5,7 @@
  */
 import _ from 'underscore';
 import request from 'superagent';
-
+import async from 'async';
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
@@ -18,7 +18,8 @@ import ICEAPISource from './serviceCrew/ICEAPISource.js';
 
 class ServiceManager {
 
-  constructor(_app, _service_id) {
+  constructor(_app, _service_id, _readyCallback) {
+    let self = this;
     this.app = _app;
     this.service_id = _service_id;
 
@@ -30,10 +31,39 @@ class ServiceManager {
     //this.iceHost = "http://icedev.i-on.net";
     this.iceHost = 'http://125.131.88.75:8080';
     this.iceDriver = new ICEServerDriver(this.iceHost);
-
+    this.gelateriaHost = window.gelateriaHost;
     this.sampleDatas = {};
 
     this.chechedApiResources = {};
+
+
+
+    this.preparedCSSList = null;
+    this.preparedJSList = null;
+    self.preparedStaticList = null;
+    async.parallel([
+      function(_cb) {
+        self.getCSSList(function(_result) {
+          self.preparedCSSList = _result.list;
+          _cb();
+        });
+      },
+      function(_cb) {
+        self.getJSList(function(_result) {
+          self.preparedJSList = _result.list;
+          _cb();
+        });
+      },
+      function(_cb) {
+        self.getStaticList(function(_result) {
+          self.preparedStaticList = _result.list;
+          console.log(self.preparedStaticList);
+          _cb();
+        });
+      }
+    ], function end() {
+      _readyCallback();
+    });
   }
 
   createDocument(_title, _type, _complete) {
@@ -110,6 +140,58 @@ class ServiceManager {
     //console.log('create ', _title, _type);
 
     this.app.gelateriaRequest.createApisource(this.service_id, _title, _nt_tid, _icon, _nid, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getCSSList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getCSSList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedCSSList = _result.list;
+      _complete(_result);
+    });
+  }
+
+  getJSList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getJSList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedJSList = _result.list;
+      _complete(_result);
+    });
+  }
+
+
+  getStaticList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getStaticList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedStaticList = _result.list;
       _complete(_result);
     });
   }
@@ -382,6 +464,8 @@ class ServiceManager {
   }
 
 
+
+
   navigateService(_navigateCMDString) {
     /*
       Page Navigate : P@[PageAccessPoint]?[params]#[hash]
@@ -390,15 +474,14 @@ class ServiceManager {
     let self = this;
     let matches = _navigateCMDString.match(/^(\w?)@([^?^#^@]+?)(?:\?([^#]+))?(?:#(.+))?$/);
     let navigateType = matches[1];
-    let publishType;
     let target = matches[2];
     let params = matches[3] || '';
     let hash = matches[4] || '';
 
     if (navigateType === 'P') {
-      publishType = 'page';
+      navigateType = 'page';
     } else if (navigateType === 'S') {
-      publishType = 'staticResource'
+      navigateType = 'staticResource'
     }
 
     console.log(_navigateCMDString, matches[0], navigateType, target, params, hash);
@@ -421,6 +504,7 @@ class ServiceManager {
         alert("현재 미지원 기능입니다. ServiceManager.navigateService");
       }
     } else {
+
       // publish mode
       let paramParts = params.split("&");
       let list = [];
@@ -428,7 +512,7 @@ class ServiceManager {
       list.push("page=" + target);
       list.push("serviceId=" + this.service_id);
 
-      if (publishType === 'page') {
+      if (navigateType === 'page') {
         paramParts.map(function(_paramPart) {
           list.push(_paramPart)
         });
@@ -445,6 +529,26 @@ class ServiceManager {
 
   newViewer() {
     return new Viewer(this);
+  }
+
+
+
+  getScriptURLByName(_name) {
+    return "http://" + this.gelateriaHost + "/js/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
+  }
+
+  getStyleURLByName(_name) {
+    return "http://" + this.gelateriaHost + "/css/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
+  }
+
+  getImageURLByName(_name) {
+    let staticIndex = _.findIndex(this.preparedStaticList, function(_static) {
+      return _static.type === 'image' && _static.name === _name;
+    });
+
+    let staticResource = this.preparedStaticList[staticIndex];
+
+    return "http://" + this.gelateriaHost + "/static/image/" + staticResource.filename;
   }
 }
 

@@ -408,76 +408,52 @@ Document.prototype.valueResolve = function(_sign) {
     image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
   };
 
-  if (!/^(\*?)(.*)$/.test(_sign)) {
-    return '`Error: Interpret Syntax Error`';
+  if (/^(\*?)([^:^*]*)$/.test(_sign)) {
+    let matched = _sign.match(/^(\*?)(.*)$/);
+    let firstMark = matched[1];
+    let refValue = matched[2];
+
+
+    if (firstMark === '*') {
+
+      let splited = refValue.split(/\//);
+      let ns = splited.shift();
+      let detail = splited.length > 0 ? splited.join('/') : undefined;
+
+      let param = self.getParam(ns);
+      if (param === undefined) {
+        return '`Error: No Param NS: ' + ns + '`';
+      }
+      //console.log(detail, param, splited, _refValue);
+      ///css/contents-retrieve-by-name/custom?serviceId=56755571b88a6c2ffd90e8e9
+      if (detail !== undefined) {
+        return ObjectExplorer.getValueByKeyPath(param, detail) || '`Error: No Param ' + detail + ' in ' + ns + '`';
+      } else {
+        return param;
+      }
+    }
+
+    return '`Error: Interpret Error`';
+  } else if (/^\w+:.*$/.test(_sign)) {
+    let matches = _sign.match(/^(\w+):(.*)$/);
+    let kind = matches[1];
+    let target = matches[2];
+
+    if (kind === 'script') {
+      let url = this.contextController.serviceManager.getScriptURLByName(target);
+
+      return url;
+    } else if (kind === 'style') {
+      let url = this.contextController.serviceManager.getStyleURLByName(target);
+
+      return url;
+    } else if (kind === 'image') {
+      let url = this.contextController.serviceManager.getImageURLByName(target);
+
+      return url;
+    }
   }
-
-  let matched = _sign.match(/^(\*?)(.*)$/);
-  let firstMark = matched[1];
-  let refValue = matched[2];
-
-
-  if (firstMark === '*') {
-
-    let splited = refValue.split(/\//);
-    let ns = splited.shift();
-    let detail = splited.length > 0 ? splited.join('/') : undefined;
-
-    let param = self.getParam(ns);
-    if (param === undefined) {
-      return '`Error: No Param NS: ' + ns + '`';
-    }
-    //console.log(detail, param, splited, _refValue);
-
-    if (detail !== undefined) {
-      return ObjectExplorer.getValueByKeyPath(param, detail) || '`Error: No Param ' + detail + ' in ' + ns + '`';
-    } else {
-      return param;
-    }
-  } else {
-    let splited = refValue.split(':');
-    let category = splited[0];
-    let name = splited[1];
-
-    if (category === 'resource') {
-      return sampleResourceMap[name];
-    }
-  }
-
-  return '`Error: Interpret Error`';
-
-  // return _sign.replace(/^(\*?)(.*)$/, function(_m, _firstMark, _refValue) {
-  //   console.log('$$$$==', arguments);
-  //   // Param
-  //   if (_firstMark === '*') {
-  //
-  //     let splited = _refValue.split(/\//);
-  //     let ns = splited.shift();
-  //     let detail = splited.length > 0 ? splited.join('/') : undefined;
-  //
-  //     let param = self.getParam(ns);
-  //     if (param === undefined) {
-  //       return '`No Param NS: ' + ns + '`';
-  //     }
-  //     console.log(detail, param, splited, _refValue);
-  //     console.log(ObjectExplorer.getValueByKeyPath(param, detail), "-------", detail, param);
-  //     if (detail !== undefined) {
-  //       return ObjectExplorer.getValueByKeyPath(param, detail) || '`No Param ' + detail + ' in ' + ns + '`';
-  //     } else {
-  //       return param;
-  //     }
-  //   } else {
-  //     let splited = _refValue.split(':');
-  //     let category = splited[0];
-  //     let name = splited[1];
-  //
-  //     if (category === 'resource') {
-  //       return sampleResourceMap[name];
-  //     }
-  //   }
-  //
-  //   return 'Interpret Error';
-  // });
+  return '`Error: Interpret Syntax Error`';
 };
 
 

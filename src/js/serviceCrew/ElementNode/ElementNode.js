@@ -200,7 +200,7 @@ class ElementNode {
 
     this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
 
-    console.log('Realize options', this, _realizeOptions);
+    //console.log('Realize options', this, _realizeOptions);
   }
 
 

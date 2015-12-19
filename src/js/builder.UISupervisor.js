@@ -365,17 +365,22 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
   _eventData.return(null, loadedComponent);
 };
 
-UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
-  var who = _eventData.path[0];
-  console.log(this.projectManager);
-  this.app.serviceManager.loadMetaData(function(__meta) {
-    who.setState({
-      pageMetaList: __meta.pages,
-      documentMetaList: __meta.documents,
-      apiSourceMetaList: __meta.apiSources
-    });
-  });
-};
+// UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
+//   var who = _eventData.path[0];
+//   console.log(this.projectManager);
+//   this.app.serviceManager.loadMetaData(function(__meta) {
+//     who.setState({
+//       pageMetaList: __meta.pages,
+//       documentMetaList: __meta.documents,
+//       apiSourceMetaList: __meta.apiSources
+//     });
+//   });
+// };
+
+UI.prototype.onThrowCatcherBringCSSContext = function(_eventData) {
+  let self = this;
+  let api
+}
 
 UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
@@ -394,8 +399,6 @@ UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
       iconClass: _eventData.iconClass
     });
   });
-
-
 };
 
 
@@ -603,6 +606,24 @@ UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
   this.app.serviceManager.getApisourceList(function(_result) {
     _eventData.path[0].setState({
       apisourceList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedCSSList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.getCSSList(function(_result) {
+    _eventData.path[0].setState({
+      cssList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedJSList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.getJSList(function(_result) {
+    _eventData.path[0].setState({
+      jsList: _result.list
     });
   });
 };

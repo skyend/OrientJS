@@ -20,12 +20,14 @@ import Viewer from './serviceCrew/Viewer.js';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
+window.gelateriaHost = 'localhost:8080';
+
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 1.01;
+  window.gelateriaVersion = 1.02;
 
   this.session = new Session();
-  this.gelateriaRequest = new GelateriaRequest();
+  this.gelateriaRequest = new GelateriaRequest(window.gelateriaHost);
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);
 
@@ -54,7 +56,8 @@ var App = function() {
 };
 
 App.prototype.startPublishPage = function(_params) {
-  let publish = _params['publish'];
+  let self = this;
+  let publish = _params['publish']; // navigateType : page || staticResource
   let serviceId = _params['serviceId'];
   let pageId = _params['pageId'];
   let pageAccessPointName = _params['page'];
@@ -64,36 +67,40 @@ App.prototype.startPublishPage = function(_params) {
     headChildren[i].remove();
   }
   // Main Page
-  let serviceManager = new ServiceManager(this, serviceId);
-  this.serviceManager = serviceManager;
+  let serviceManager = new ServiceManager(this, serviceId, function readyFunc() {
+    // 빌더 시작
+    self.serviceManager = serviceManager;
 
 
-  if (publish === 'page') {
-    this.serviceManager.findPageByAccessPoint(pageAccessPointName, function(_result) {
-      serviceManager.getPageContextController(_result._id, function(_contextController) {
-        console.log(_contextController);
+    if (publish === 'page') {
+      self.serviceManager.findPageByAccessPoint(pageAccessPointName, function(_result) {
+        serviceManager.getPageContextController(_result._id, function(_contextController) {
+          console.log(_contextController);
 
 
-        let viewer = new Viewer(serviceManager);
-        viewer.page = _contextController.page;
-        viewer.window = window;
-        viewer.rendering({
-          width: window.clientWidth,
-          height: window.clientHeight
-        }, false);
+          let viewer = new Viewer(serviceManager);
+          viewer.page = _contextController.page;
+          viewer.window = window;
+          viewer.rendering({
+            width: window.clientWidth,
+            height: window.clientHeight
+          }, false);
+        });
       });
-    });
-  } else if (publish === 'staticResource') {
-    alert("Static Resource 는 아직 지원하지 않습니다.");
-  }
+    } else if (publish === 'staticResource') {
+      alert("Static Resource 는 아직 지원하지 않습니다.");
+    }
+  });
+
 };
 
 App.prototype.startServiceBuilding = function(_service_id) {
+  let self = this;
   // 서비스 매니저 생성
-  this.serviceManager = new ServiceManager(this, _service_id);
-
-  // 빌더 시작
-  this.initBuilder();
+  this.serviceManager = new ServiceManager(this, _service_id, function readyFunc() {
+    // 빌더 시작
+    self.initBuilder();
+  });
 };
 
 App.prototype.finishServiceBuilding = function() {

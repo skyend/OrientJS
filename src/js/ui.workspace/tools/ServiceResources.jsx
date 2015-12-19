@@ -23,6 +23,8 @@
         iceHost: '',
         apisourceList: [],
         apiinterfaceList: [],
+        cssList:[],
+        jsList:[],
         filterSet:new Set()
       };
     },
@@ -244,6 +246,62 @@
       )
     },
 
+    renderCSSItem(_css){
+      var iconClass = 'fa-css3';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringCSSContext", {
+          css: _css,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'css') {
+          if (this.props.runningContext.cssID == _css._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _css.name } </span>
+        </li>
+      )
+    },
+
+    renderJSItem(_js){
+      var iconClass = 'fa-gg';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringJSContext", {
+          js: _js,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'js') {
+          if (this.props.runningContext.jsID == _js._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _js.name } </span>
+        </li>
+      )
+    },
+
     renderPageList(){
 
       return (
@@ -308,7 +366,7 @@
             </span>
           </label>
           <ul>
-
+            { this.state.cssList.map(this.renderCSSItem) }
           </ul>
         </div>
       )
@@ -330,7 +388,7 @@
             </span>
           </label>
           <ul>
-
+            { this.state.jsList.map(this.renderJSItem) }
           </ul>
         </div>
       )
@@ -431,6 +489,8 @@
       self.emit("NeedICEHost");
       self.emit("NeedDocumentList");
       self.emit("NeedPageList");
+      self.emit("NeedCSSList");
+      self.emit("NeedJSList");
       self.emit("NeedAPISourceList");
       self.emit("NeedAPIInterfaceList");
     },
