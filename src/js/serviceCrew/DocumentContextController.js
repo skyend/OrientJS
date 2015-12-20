@@ -414,6 +414,7 @@ class DocumentContextController {
   beginRender(_realizeOptions) {
     var self = this;
 
+    console.log("Begin Render");
 
     // resource convert
     this.convertToScriptElements(this.document.refScriptIdList || [], function(_scriptElements) {
@@ -458,7 +459,7 @@ class DocumentContextController {
 
   rerenderingElementNode(_elementNode, _realizeOptions) {
     let realizeOptions = _realizeOptions || {};
-
+    console.log('rerenderingElementNode !!');
     if (_elementNode === null) {
       this.clearSuperElement();
       return;
@@ -475,6 +476,8 @@ class DocumentContextController {
     } else {
       this.clearSuperElement();
       _elementNode.linkHierarchyRealizaion();
+
+      console.log('슈퍼 엘리멑느', this.superElement);
       this.superElement.appendChild(_elementNode.realization);
     }
 
@@ -498,7 +501,7 @@ class DocumentContextController {
   }
 
   rootRender(_realizeOptions) {
-
+    console.log("Root Render");
     this.updateRenderCSS();
     this.rerenderingElementNode(this.document.rootElementNode, _realizeOptions);
   }
