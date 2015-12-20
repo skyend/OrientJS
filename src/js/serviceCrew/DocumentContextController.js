@@ -416,29 +416,37 @@ class DocumentContextController {
 
 
     // resource convert
-    var jsElements = this.convertToScriptElement(this.document.getScriptResources() || []);
-    var styleElements = this.convertToStyleElements(this.document.getStyleResources() || []);
-
-    // script element block 을 적용한다.
-    jsElements.map(function(_jsElement) {
-
-      /*
-      if (_jsElement.getAttribute('src') !== undefined) {
-        _jsElement.onload = function() {
-          console.log('loaded', _jsElement);
-
-          console.log(self.context.getWindow());
-        }
-      }*/
-
-      self.context.applyScriptElement(_jsElement);
-
+    this.convertToScriptElements(this.document.refScriptIdList || [], function(_scriptElements) {
+      // script element block을 적용한다.
+      _scriptElements.map(function(_scriptElement) {
+        self.context.applyScriptElement(_scriptElement);
+      });
     });
 
-    // style element block을 적용한다.
-    styleElements.map(function(_styleElement) {
-      self.context.applyStyleElement(_styleElement);
+    this.convertToStyleElements(this.document.refStyleIdList || [], function(_styleElements) {
+      // style element block을 적용한다.
+      _styleElements.map(function(_styleElement) {
+        self.context.applyStyleElement(_styleElement);
+      });
     });
+
+    // // script element block 을 적용한다.
+    // jsElements.map(function(_jsElement) {
+    //
+    //   /*
+    //   if (_jsElement.getAttribute('src') !== undefined) {
+    //     _jsElement.onload = function() {
+    //       console.log('loaded', _jsElement);
+    //
+    //       console.log(self.context.getWindow());
+    //     }
+    //   }*/
+    //
+    //   self.context.applyScriptElement(_jsElement);
+    //
+    // });
+
+
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.document.rootElementNode !== null) {
@@ -566,27 +574,34 @@ class DocumentContextController {
    * Style Object 리스트를 실제 window.document 내의 Style 요소로 변환한다.
    *
    */
-  convertToStyleElements(_styleObjects) {
+  convertToStyleElements(_styleIdList, _complete) {
     var baseWindow = this.context.getWindow();
+    let self = this;
+    let styleElements = _styleIdList.map(function(_styleId) {
+      let url = self.serviceManager.getStyleURLById(_styleId);
 
-    return _styleObjects.map(function(_styleObject) {
-      if (_styleObject.ext === 'css') {
-        if (typeof _styleObject.url !== 'undefined') {
-          var linkE = baseWindow.document.createElement('link');
-          linkE.setAttribute('type', 'text/css');
-          linkE.setAttribute('rel', 'stylesheet');
-          linkE.setAttribute('href', _styleObject.url);
+      let element;
 
-          return linkE;
-        } else {
-          var styleE = baseWindow.document.createElement('style');
-          linkE.setAttribute('type', 'text/css');
-          linkE.innerHTML = _styleObject.css;
 
-          return styleE;
-        }
+      if (url !== null) {
+        element = baseWindow.document.createElement('style');
+        let style = self.serviceManager.getStyleContents(_styleId);
+
+        element.innerHTML = self.document.interpret(style);
+
+        //linkE.setAttribute('href', url);
+      } else {
+        element = baseWindow.document.createElement('link');
+        element.setAttribute('href', _styleId);
       }
+
+      element.setAttribute('type', 'text/css');
+      element.setAttribute('rel', 'stylesheet');
+
+      return element;
     });
+
+    _complete(styleElements);
   }
 
   /**
@@ -594,27 +609,52 @@ class DocumentContextController {
    * script Object 리스트를 실제 window.document 내의 script 요소로 변환한다.
    *
    */
-  convertToScriptElement(_scriptObjects) {
+  convertToScriptElements(_scriptIdList, _complete) {
     var baseWindow = this.context.getWindow();
+    let self = this;
+    let scriptElements = _scriptIdList.map(function(_scriptId) {
+      let url = self.serviceManager.getScriptURLById(_scriptId);
 
-    return _scriptObjects.map(function(__scriptObject) {
-      if (__scriptObject.ext === 'js') {
-        var scriptE = baseWindow.document.createElement('script');
+      let element = baseWindow.document.createElement('script');;
 
-        scriptE.setAttribute('type', 'text/javascript');
+      element.setAttribute('type', 'text/javascript');
+      element.setAttribute('rel', 'javascript');
 
-        if (typeof __scriptObject.url !== 'undefined') {
-          scriptE.setAttribute('src', __scriptObject.url);
-        } else {
-
-          // resolve String : data binding and i18n processing
-          scriptE.innerHTML = this.resolveRenderText(__scriptObject.script);
-        }
-
-        return scriptE;
+      if (url !== null) {
+        let script = self.serviceManager.getScriptContents(_scriptId);
+        element.innerHTML = self.document.interpret(script);
+        //linkE.setAttribute('href', url);
+      } else {
+        element.setAttribute('src', _scriptId);
       }
+
+      return element;
     });
+
+    _complete(scriptElements);
   }
+
+  // convertToScriptElement(_scriptIdList) {
+  //   var baseWindow = this.context.getWindow();
+  //
+  //   return _scriptObjects.map(function(__scriptObject) {
+  //     if (__scriptObject.ext === 'js') {
+  //       var scriptE = baseWindow.document.createElement('script');
+  //
+  //       scriptE.setAttribute('type', 'text/javascript');
+  //
+  //       if (typeof __scriptObject.url !== 'undefined') {
+  //         scriptE.setAttribute('src', __scriptObject.url);
+  //       } else {
+  //
+  //         // resolve String : data binding and i18n processing
+  //         scriptE.innerHTML = this.resolveRenderText(__scriptObject.script);
+  //       }
+  //
+  //       return scriptE;
+  //     }
+  //   });
+  // }
 
   existsUndoHistory() {
 

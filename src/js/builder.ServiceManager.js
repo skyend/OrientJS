@@ -537,8 +537,92 @@ class ServiceManager {
     return "http://" + this.gelateriaHost + "/js/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
   }
 
+  getScriptURLById(_id) {
+    let scriptIndex = _.findIndex(this.preparedJSList, {
+      _id: _id
+    });
+
+    if (scriptIndex !== -1) {
+      let script = this.preparedJSList[scriptIndex];
+
+      return "http://" + this.gelateriaHost + "/js/contents-retrieve-by-name/" + script.name + "?serviceId=" + this.service_id;
+    } else {
+      return null;
+    }
+  }
+
+  getScriptContents(_id) {
+    let scriptIndex = _.findIndex(this.preparedJSList, {
+      _id: _id
+    });
+
+    if (scriptIndex !== -1) {
+      let script = this.preparedJSList[scriptIndex];
+
+      return script.js;
+    } else {
+      return null;
+    }
+  }
+
   getStyleURLByName(_name) {
     return "http://" + this.gelateriaHost + "/css/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
+  }
+
+  getStyleURLById(_id) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      _id: _id
+    });
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return "http://" + this.gelateriaHost + "/css/contents-retrieve-by-name/" + style.name + "?serviceId=" + this.service_id;
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContents(_id) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      _id: _id
+    });
+    // import 구문은 자동으로 임포트 하여 처리한다.
+    // @import url(${style:font-awesome.min.css});
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return this.getStyleContentsByStyle(style);
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContentsByName(_name) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      name: _name
+    });
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return this.getStyleContentsByStyle(style);
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContentsByStyle(_style) {
+    let self = this;
+    let css = _style.css;
+
+    css = css.replace(/@import url\(\${style:(.*?)}\);/g, function(_match, _name) {
+
+      return "\n" + self.getStyleContentsByName(_name) + '\n';
+    });
+
+    return css;
   }
 
   getImageURLByName(_name) {
@@ -549,6 +633,16 @@ class ServiceManager {
     let staticResource = this.preparedStaticList[staticIndex];
 
     return "http://" + this.gelateriaHost + "/static/image/" + staticResource.filename;
+  }
+
+  getImageStaticByName(_name) {
+    let staticIndex = _.findIndex(this.preparedStaticList, function(_static) {
+      return _static.name === _name;
+    });
+
+    let staticResource = this.preparedStaticList[staticIndex];
+
+    return "http://" + this.gelateriaHost + "/static/" + staticResource.type + "/" + staticResource.filename;
   }
 }
 

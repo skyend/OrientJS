@@ -29,9 +29,6 @@ var Document = function(_contextController, _documentParams, _documentDataObject
   this.elementNodes;
   this.pageCSS;
 
-  // document require resources
-  this.usingResources;
-
   // for runtime
   // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
   this.runtimeHTMLCSSRepo = {};
@@ -59,8 +56,8 @@ var Document = function(_contextController, _documentParams, _documentDataObject
 
     this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
     this.pageCSS = _documentDataObject.pageCSS;
-    this.usingResources = _documentDataObject.usingResources || {};
-
+    this.refScriptIdList = _documentDataObject.refScriptIdList;
+    this.refStyleIdList = _documentDataObject.refStyleIdList;
 
   } else {
     // 새 도큐먼트가 생성된것이다.
@@ -68,7 +65,8 @@ var Document = function(_contextController, _documentParams, _documentDataObject
     this.lastElementId = 0;
     this.elementNodes = [];
     this.rootElementNode = null;
-    this.usingResources = {};
+    this.refScriptIdList = [];
+    this.refStyleIdList = [];
     this.pageCSS = '';
   }
 };
@@ -127,16 +125,6 @@ Document.prototype.getDocumentUpdate = function() {
 // lastElementId
 Document.prototype.getLastElementId = function() {
   return this.lastElementId;
-};
-// usingResources
-Document.prototype.getUsingResources = function() {
-  return this.usingResources;
-};
-Document.prototype.getScriptResources = function() {
-  return this.usingResources.js;
-};
-Document.prototype.getStyleResources = function() {
-  return this.usingResources.style;
 };
 // elementNodes
 Document.prototype.getElementNodes = function() {
@@ -390,7 +378,7 @@ Document.prototype.interpret = function(_text) {
       return self.valueResolve(_signString);
     });
 
-    return valuesResolved.replace(/({.*?})/g, function(_matched) {
+    return valuesResolved.replace(/(%{.*?})/g, function(_matched) {
       return self.processingFormularBlock(_matched);
     });
   }
@@ -438,7 +426,7 @@ Document.prototype.valueResolve = function(_sign) {
     let matches = _sign.match(/^(\w+):(.*)$/);
     let kind = matches[1];
     let target = matches[2];
-
+    console.log(matches);
     if (kind === 'script') {
       let url = this.contextController.serviceManager.getScriptURLByName(target);
 
@@ -449,6 +437,10 @@ Document.prototype.valueResolve = function(_sign) {
       return url;
     } else if (kind === 'image') {
       let url = this.contextController.serviceManager.getImageURLByName(target);
+
+      return url;
+    } else if (kind === 'static') {
+      let url = this.contextController.serviceManager.getImageStaticByName(target);
 
       return url;
     }
@@ -542,7 +534,8 @@ Document.prototype.export = function(_withoutElementNodes) {
       return _elementNode.export();
     }),
     pageCSS: this.getPageCSS(),
-    usingResources: this.getUsingResources()
+    refStyleIdList: this.refStyleIdList,
+    refScriptIdList: this.refScriptIdList
   };
 };
 
