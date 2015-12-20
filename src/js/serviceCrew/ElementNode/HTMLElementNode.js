@@ -171,6 +171,17 @@ class HTMLElementNode extends TagBaseElementNode {
       var newChildElementNode;
 
       if (child_.nodeName === '#text') {
+        if (child_.parentNode !== null) {
+
+          // 부모 태그가  pre 태그의 경우 공백과 탭 줄바꿈을 그대로 유지하여 랜더링 함으로 그대로 생성을 진행 하도록 한다.
+          // 부모 태그가 pre 태그가 아닌 경우 text노드의 nodeValue 즉 내용이 공백과 줄바꿈 탭으로만 이루어 져 있을 경우 택스트 노드 생성을 스킵하도록 한다.
+          if (child_.parentNode.nodeName.toLowerCase() === "pre") {
+            if (/^\s+$/.test(_child.nodeValue)) {
+              continue;
+            }
+          }
+        }
+
         newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
       } else {
         newChildElementNode = Factory.takeElementNode(undefined, {}, 'html', this.environment);
