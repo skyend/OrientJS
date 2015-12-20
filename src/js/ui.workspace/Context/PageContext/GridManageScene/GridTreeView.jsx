@@ -38,7 +38,7 @@ export default React.createClass({
 
   clcikSetting(_e, _gridNode){
     _e.stopPropagation();
-    this.emit("OpenGridElementNodeSetting", {
+    this.emit("OpenElementNodeGeometryEditor", {
       gridElementNode: _gridNode
     });
 

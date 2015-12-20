@@ -426,7 +426,7 @@ Document.prototype.valueResolve = function(_sign) {
     let matches = _sign.match(/^(\w+):(.*)$/);
     let kind = matches[1];
     let target = matches[2];
-    console.log(matches);
+    //console.log(matches);
     if (kind === 'script') {
       let url = this.contextController.serviceManager.getScriptURLByName(target);
 
@@ -452,8 +452,8 @@ Document.prototype.valueResolve = function(_sign) {
 
 Document.prototype.processingFormularBlock = function(_blockString) {
 
-  console.log('processingFormularBlock');
-  console.log(_blockString);
+  //console.log('processingFormularBlock');
+  //console.log(_blockString);
 
 
   return _blockString;

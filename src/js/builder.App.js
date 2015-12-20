@@ -66,6 +66,7 @@ App.prototype.startPublishPage = function(_params) {
   for (let i = 0; i < headChildren.length; i++) {
     headChildren[i].remove();
   }
+
   // Main Page
   let serviceManager = new ServiceManager(this, serviceId, function readyFunc() {
     // 빌더 시작
@@ -74,18 +75,37 @@ App.prototype.startPublishPage = function(_params) {
 
     if (publish === 'page') {
       self.serviceManager.findPageByAccessPoint(pageAccessPointName, function(_result) {
-        serviceManager.getPageContextController(_result._id, function(_contextController) {
-          console.log(_contextController);
 
+        if (_result === null) {
+          self.serviceManager.findPageByAccessPoint('404', function(_result) {
 
-          let viewer = new Viewer(serviceManager);
-          viewer.page = _contextController.page;
-          viewer.window = window;
-          viewer.rendering({
-            width: window.clientWidth,
-            height: window.clientHeight
-          }, false);
-        });
+            if (_result !== null) {
+              serviceManager.getPageContextController(_result._id, function(_contextController) {
+
+                let viewer = new Viewer(serviceManager);
+                viewer.page = _contextController.page;
+                viewer.window = window;
+                viewer.rendering({
+                  width: window.clientWidth,
+                  height: window.clientHeight
+                }, false);
+              });
+            } else {
+              window.document.body.innerHTML = "404 Not Found.";
+            }
+          });
+        } else {
+          serviceManager.getPageContextController(_result._id, function(_contextController) {
+
+            let viewer = new Viewer(serviceManager);
+            viewer.page = _contextController.page;
+            viewer.window = window;
+            viewer.rendering({
+              width: window.clientWidth,
+              height: window.clientHeight
+            }, false);
+          });
+        }
       });
     } else if (publish === 'staticResource') {
       alert("Static Resource 는 아직 지원하지 않습니다.");

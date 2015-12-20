@@ -103,7 +103,7 @@ class DocumentContextController {
     let parentElementNode = null;
     let treeRefresh = false;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.document.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
@@ -175,7 +175,7 @@ class DocumentContextController {
     let parentElementNode = null;
     let treeRefresh = false;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.document.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
@@ -204,7 +204,7 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.document.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
@@ -251,7 +251,7 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.document.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
@@ -276,7 +276,7 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.document.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;

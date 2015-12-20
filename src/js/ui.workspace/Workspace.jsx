@@ -464,10 +464,10 @@ var Workspace = React.createClass({
     this.refs['ContextStage'].forceUpdate();
   },
 
-  onThrowCatcherOpenGridElementNodeSetting(_eventData){
+  onThrowCatcherOpenElementNodeGeometryEditor(_eventData){
     this.emit('RequestAttachTool', {
       where: "RightNavigation",
-      toolKey: "GridElementNodeEditor"
+      toolKey: "ElementNodeGeometryEditor"
     });
   },
 
@@ -477,8 +477,8 @@ var Workspace = React.createClass({
   },
 
   noticeSelectedGridElementToTools(_gridELementNode, _contextController){
-    this.applyToolStates("GridElementNodeEditor", {
-      gridElementNode: _gridELementNode,
+    this.applyToolStates("ElementNodeGeometryEditor", {
+      elementNode: _gridELementNode,
       contextController:_contextController
     });
   },

@@ -7,66 +7,44 @@
  * Requires(css) :
  */
 
-import './GridElementNodeEditor.less';
+import './ElementNodeGeometryEditor.less';
 
 import React from "react";
 import HorizonFieldSet from '../partComponents/HorizonFieldSet.jsx';
 import _ from 'underscore';
 
-var GridElementNodeEditor = React.createClass({
+var ElementNodeGeometryEditor = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'),
     require('./mixins/WidthRuler.js')],
 
   getDefaultProps(){
     return {
-      gridElementNode: null,
+      elementNode: null,
       contextController: null
     };
   },
 
   onThrowCatcherChangedValue(_eventData){
-    let targetId = this.props.gridElementNode.getId();
+    let targetId = this.props.elementNode.getId();
     let fieldName = _eventData.name;
     let data = _eventData.data;
 
 
-    if( fieldName === 'name' ){
-      this.props.contextController.modifyGridProperty(targetId, 'name', data);
-    } else {
-
-      this.props.contextController.modifyGridRect(targetId,{
-        width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
-        minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
-        maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
-        height: fieldName === 'height' ? data : this.refs['sizing'].getFieldValue('height'),
-        minHeight: fieldName === 'min-height' ? data : this.refs['sizing'].getFieldValue('min-height'),
-        maxHeight: fieldName === 'max-height' ? data : this.refs['sizing'].getFieldValue('max-height')
-      });
-    }
-  },
-
-  renderInfoFields(_gridElementNode){
-
-
-
-    let fieldSet = [];
-    fieldSet.push({
-      "name": "name",
-      title: "Name",
-      "initialValue": _gridElementNode.getName(),
-      type: "input",
-      "enterable": true
+    this.props.contextController.modifyGeometryRect(targetId,{
+      width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
+      minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
+      maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
+      height: fieldName === 'height' ? data : this.refs['sizing'].getFieldValue('height'),
+      minHeight: fieldName === 'min-height' ? data : this.refs['sizing'].getFieldValue('min-height'),
+      maxHeight: fieldName === 'max-height' ? data : this.refs['sizing'].getFieldValue('max-height')
     });
 
-    return (
-      <HorizonFieldSet title="Info" theme={ "dark" } nameWidth={130} fields={ fieldSet } ref='sizing'/>
-    )
   },
 
-  renderSizingFields(_gridElementNode){
+  renderSizingFields(_elementNode){
 
 
-    let elementRect = _gridElementNode.getCurrentRectangle();
+    let elementRect = _elementNode.getCurrentRectangle();
 
     console.log(elementRect);
     let fieldSet = [];
@@ -118,10 +96,10 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
-  renderPositioningFields(_gridElementNode){
+  renderPositioningFields(_elementNode){
 
 
-    let elementRect = _gridElementNode.getCurrentRectangle();
+    let elementRect = _elementNode.getCurrentRectangle();
 
     let fieldSet = [];
     fieldSet.push({
@@ -171,14 +149,14 @@ var GridElementNodeEditor = React.createClass({
     )
   },
 
-  renderRenderingFields(_gridElementNode){
-    let elementRect = _gridElementNode.getCurrentRectangle();
+  renderRenderingFields(_elementNode){
+    let elementRect = _elementNode.getCurrentRectangle();
 
     let fieldSet = [];
     fieldSet.push({
       "name": "zIndex",
       title: "Order",
-      "initialValue": _gridElementNode.zIndex,
+      "initialValue": _elementNode.zIndex,
       type: "input",
       "enterable": true
     });
@@ -197,21 +175,20 @@ var GridElementNodeEditor = React.createClass({
   },
 
   renderParts(){
-    let gridElementNode = this.props.gridElementNode;
+    let elementNode = this.props.elementNode;
 
-    if( gridElementNode === null || gridElementNode === undefined ) return "No selected gridElementNode";
-    let type = gridElementNode.getType();
+    if( elementNode === null || elementNode === undefined ) return "No selected elementNode";
+    let type = elementNode.getType();
     if( type === 'string' ) return "not available";
     return [
-      this.renderInfoFields(gridElementNode),
-      this.renderSizingFields(gridElementNode),
-      this.renderPositioningFields(gridElementNode),
-      this.renderRenderingFields(gridElementNode)
+      this.renderSizingFields(elementNode),
+      this.renderPositioningFields(elementNode),
+      this.renderRenderingFields(elementNode)
     ];
   },
 
   render() {
-    var rootClasses = ['GridElementNodeEditor', this.getMySizeClass()];
+    var rootClasses = ['ElementNodeGeometryEditor', this.getMySizeClass()];
 
     return (
       <div className={rootClasses.join(' ')}>
@@ -223,4 +200,4 @@ var GridElementNodeEditor = React.createClass({
   }
 });
 
-export default GridElementNodeEditor;
+export default ElementNodeGeometryEditor;

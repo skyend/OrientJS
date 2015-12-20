@@ -99,7 +99,7 @@ class PageContextController {
     this.changedContent();
   }
 
-  modifyGridRect(_targetId, _rect) {
+  modifyGeometryRect(_targetId, _rect) {
     console.log(_rect, 'rect');
     this.page.modifyGridRect(_targetId, _rect);
     this.changedContent();
@@ -131,7 +131,7 @@ class PageContextController {
   modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
     let targetElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
@@ -159,7 +159,7 @@ class PageContextController {
   modifyElementAttribute(_elementIdorElement, _attrKey, _attrValue) {
     let targetElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
+    if (typeof _elementIdorElement === 'string') {
       targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
