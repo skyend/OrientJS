@@ -267,6 +267,7 @@ class GridElementNode extends HTMLElementNode {
 
       let self = this;
 
+
       let fragment = this.environment.serviceManager.getDocument(this.followingFragment, function(_fragment) {
 
         self.loadedFollowingFragmentObject = _fragment.document;

@@ -370,7 +370,9 @@ class Page {
     this.serviceManager.getDocument(_fragmentId, function(_page, _context) {
       console.log('loaded', _page);
 
-      _complete(new DocumentContextController(_page.document, self.params, self.serviceManager));
+      _complete(new DocumentContextController(_page.document, self.params, self.serviceManager, {
+        enableNavigate: true
+      }));
     });
 
   }

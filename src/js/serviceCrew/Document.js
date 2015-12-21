@@ -11,7 +11,7 @@ import ObjectExplorer from '../util/ObjectExplorer.js';
 
 class Document {
 
-  constructor(_contextController, _documentParams, _documentDataObject) {
+  constructor(_contextController, _documentParams, _documentDataObject, _fragmentOption) {
     //////////////
     // 필드 정의
     ////////////////////////
@@ -33,10 +33,11 @@ class Document {
 
     // for runtime
     // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
+    let fragmentOption = _fragmentOption || {};
     this.runtimeHTMLCSSRepo = {};
     this.runtimReactCSSRepo = {};
     this.contextController = _contextController;
-
+    this.enableNavigate = fragmentOption.enableNavigate || false;
 
     this.params = _documentParams || {};
 
@@ -408,8 +409,10 @@ class Document {
         return self.valueResolve(_signString);
       });
 
-      return valuesResolved.replace(/(%{.*?})/g, function(_matched) {
-        return self.processingFormularBlock(_matched);
+      return valuesResolved.replace(/(%{{(.*?)}})/g, function(_matched, _matched2, _formularString) {
+
+        console.log(arguments);
+        return self.processingFormularBlock(_formularString);
       });
     }
   }
@@ -481,12 +484,14 @@ class Document {
 
 
   processingFormularBlock(_blockString) {
+    let formularResult;
+    try {
+      formularResult = eval(formularResult);
+    } catch (_e) {
+      formularResult = false;
+    }
 
-    //console.log('processingFormularBlock');
-    //console.log(_blockString);
-
-
-    return _blockString;
+    return formularResult;
   }
 
 

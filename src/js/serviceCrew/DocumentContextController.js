@@ -6,7 +6,7 @@ import DocumentRevisionManager from './DocumentRevisionManager.js';
 import HasElementNodeContextController from './HasElementNodeContextController.js';
 
 class DocumentContextController extends HasElementNodeContextController {
-  constructor(_document, _params, _serviceManager) {
+  constructor(_document, _params, _serviceManager, _fragmentOption) {
     super();
 
     this.attached = false;
@@ -27,11 +27,11 @@ class DocumentContextController extends HasElementNodeContextController {
     // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
     if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-      this.subject = new Document(this, _params, _document);
+      this.subject = new Document(this, _params, _document, _fragmentOption);
     } else {
 
       // 없다면 새로운 Document를 생성한다.
-      this.subject = new Document(this, {});
+      this.subject = new Document(this, {}, undefined, _fragmentOption);
     }
 
 

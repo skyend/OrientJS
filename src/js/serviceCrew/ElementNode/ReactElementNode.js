@@ -171,7 +171,9 @@ class ReactElementNode extends TagBaseElementNode {
         child.onclick = function(_e) {
           console.log("React click");
           _e.preventDefault();
-          self.navigateHandling(navigate);
+          if (self.environment.enableNavigate) {
+            self.navigateHandling(navigate);
+          }
         };
       }
     }
