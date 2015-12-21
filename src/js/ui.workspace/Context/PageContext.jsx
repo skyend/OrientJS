@@ -236,6 +236,12 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  onThrowCatcherMetaChangedParamSupply(_e){
+    this.props.contextController.modifySupplyParam(_e.ns, _e.type, _e.name, _e.value );
+    
+    this.forceUpdate();
+  },
+
   updateFollowingFragmentsBindEnoughState(_complete) {
 
     this.props.contextController.checkFollowingFragmentsBindEnoughState(function(_result){

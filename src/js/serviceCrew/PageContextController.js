@@ -197,6 +197,12 @@ class PageContextController extends HasElementNodeContextController {
     this.changedContent();
   }
 
+
+  modifySupplyParam(_ns, _type, _name, _value) {
+    this.subject.modifySupplyParam(_ns, _type, _name, _value);
+    this.changedContent();
+  }
+
   getRootGridElement() {
     return this.subject.rootGridElement;
   }

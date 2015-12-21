@@ -170,7 +170,11 @@ class Page {
       ns: _NS
     });
 
-    return this.paramSupplies[index];
+    if (index !== -1) {
+      return this.paramSupplies[index]
+    }
+
+    return {};
   }
 
   // getNewGridId() {
@@ -291,6 +295,48 @@ class Page {
     }
   }
 
+  modifySupplyParam(_ns, _type, _name, _value) {
+    let paramIndex = _.findIndex(this.paramSupplies, {
+      ns: _ns
+    });
+
+    let paramSupply = null;
+
+    if (paramIndex === -1) {
+      paramSupply = {
+        ns: _ns
+      };
+      this.paramSupplies.push(paramSupply);
+    } else {
+      paramSupply = this.paramSupplies[paramIndex];
+    }
+
+    if (_type === 'single') {
+      paramSupply[_name] = _value;
+    } else if (_type === 'fields') {
+      let fields = paramSupply.fields;
+      if (fields === undefined) {
+        fields = paramSupply.fields = [];
+      }
+
+      let fieldIndex = _.findIndex(fields, {
+        name: _name
+      });
+
+      if (fieldIndex !== -1) {
+        fields[fieldIndex] = {
+          name: _name,
+          value: _value
+        };
+      } else {
+        fields.push({
+          name: _name,
+          value: _value
+        });
+      }
+    }
+  }
+
   checkPrepareParamSupply(_ns) {
     let paramSupply = this.getParamSupply(_ns);
 
@@ -365,6 +411,27 @@ class Page {
     });
   }
 
+  getSupplyNSList(_complete) {
+    let followingFragmentList = this.detectFollowingFragments();
+
+    // fragment list 로드
+    this.loadFragments(followingFragmentList, function(_fragments) {
+      let allFragmentsBinderNSSet = new Set();
+
+      // Fragment 별 바인딩 셋을 구함
+      let bindedFragmentStateSet = _fragments.map(function(_fragment) {
+
+        let binderSet = _fragment.getAllBinderNSSet();
+
+        binderSet.forEach(function(value) {
+          allFragmentsBinderNSSet.add(value);
+        });
+      });
+
+      _complete(allFragmentsBinderNSSet);
+    });
+  }
+
   // 상태 체크
   checkFollowingFragmentsBindEnoughState(_complete) {
     // page 가 사용하는 fragment id 리스트를 구함
@@ -378,7 +445,7 @@ class Page {
         let binderSet = _fragment.getAllBinderNSSet();
 
         // param Supply 를 확인하여 값이 적당히 채워져 있다면 enough 를 true로 하여 반환한다.
-
+        // 해야함
 
         return {
           enough: false,
