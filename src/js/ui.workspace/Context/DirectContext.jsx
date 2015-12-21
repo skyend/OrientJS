@@ -831,6 +831,12 @@ var DirectContext = React.createClass({
               </li>
 
               <li>
+                <button onClick={this.createComponent}>
+                  <i className='fa fa-cubes'/> <span className='title'>Create Component</span>
+                </button>
+              </li>
+
+              <li>
                 <button onClick={this.useElementRemoteControl}>
                   <i className='fa fa-share-square-o'/> <span className='title'>Change RemoteControl</span>
                 </button>
