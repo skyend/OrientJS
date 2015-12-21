@@ -46,6 +46,7 @@ class Document {
     //////////////////////////
     // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
     if (typeof _documentDataObject !== 'undefined') {
+      this.id = _documentDataObject._id;
       this.documentID = _documentDataObject._id;
       this.documentName = _documentDataObject.name;
       this.documentTitle = _documentDataObject.title;
@@ -497,6 +498,45 @@ class Document {
   //
   // }
 
+  // elementNodeAnalysisBlockSetList 를 반환함
+  detectElementBinders() {
+    let elementNodeAnalysisBlockSetList = [];
+
+
+    if (this.rootElementNode !== null) {
+      this.rootElementNode.treeExplore(function(_elementNode) {
+        let bindBlockSetList = _elementNode.detectInterpret();
+
+        if (bindBlockSetList !== undefined) {
+
+          elementNodeAnalysisBlockSetList.push({
+            id: _elementNode.getId(),
+            bindBlockSetList: bindBlockSetList
+          });
+        }
+      });
+    }
+
+    return elementNodeAnalysisBlockSetList;
+  }
+
+  getAllBinderNSSet() {
+    let elementBinderSet = this.detectElementBinders();
+
+    let nsSet = new Set();
+
+    elementBinderSet.map(function(_elementNodeAnalysis) {
+
+      _elementNodeAnalysis.bindBlockSetList.map(function(_blockSet) {
+
+        // 바인더에 네임스페이스를 추출하여 nsSet에 보관한다.
+        let extractNS = _blockSet.binder.replace(/^\$\{\*([^\/]+)(\/.*)?}$/, '$1');
+        nsSet.add(extractNS);
+      });
+    });
+
+    return nsSet;
+  }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -552,7 +592,7 @@ class Document {
   // export methods
   export (_withoutElementNodes) {
     return {
-      //_id: this.getDocumentID(),
+      //_id: this.id,
       name: this.getDocumentName(),
       title: this.getDocumentTitle(),
       //created: this.getDocumentCreate(),
@@ -569,40 +609,6 @@ class Document {
   }
 }
 
-
-function objectExplore(_object, _explorer) {
-  let oType = typeof _object;
-
-  if (oType === 'undefined') {
-    return;
-  } else if (oType === 'number') {
-    _explorer(_object);
-  } else if (oType === 'boolean') {
-    _explorer(_object);
-  } else if (oType === 'string') {
-    _explorer(_object);
-  } else if (oType === 'object') {
-    if (_object === null) {
-      return;
-    } else if (_object.length !== undefined && typeof _object.length === 'number') {
-      let item;
-      for (let i = 0; i < _object.length; i++) {
-        item = _object[i];
-
-        objectExplore(item, _explorer);
-      }
-    } else {
-      let keys = Object.keys(_object);
-      let key;
-      for (let i = 0; i < keys.length; i++) {
-        key = keys[i];
-
-        objectExplore(_object[key], _explorer);
-      }
-    }
-  }
-}
-
 // Static Method
 Document.analysisData = function(_data) {
   // ${ } *()
@@ -610,7 +616,7 @@ Document.analysisData = function(_data) {
 
   let analysisResult = {};
 
-  objectExplore(_data, function(_fieldData) {
+  ObjectExplorer.explore(_data, function(_fieldData) {
 
     // find Bind
     if (/\$\{\*.+?(\/.+?)?\}/.test(_fieldData)) {

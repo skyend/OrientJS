@@ -236,6 +236,13 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  updateFollowingFragmentsBindEnoughState(_complete) {
+
+    this.props.contextController.checkFollowingFragmentsBindEnoughState(function(_result){
+      _complete(_result);
+    });
+  },
+
   componentWillUpdate(_nextProps, _nextState){
     this.state.prevStageWidth = this.state.stageWidth;
     this.state.prevStageHeight = this.state.stageHeight;
@@ -275,6 +282,12 @@ export default React.createClass({
     // contextController 연결
     this.contextController = this.getContextController();
     this.contextController.setContext(this);
+
+    this.updateFollowingFragmentsBindEnoughState(function(_result){
+      console.log(_result);
+    });
+
+
 
     if (this.props.runningState) {
       this.goingToContextRunning();

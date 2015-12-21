@@ -3,6 +3,7 @@ import Page from './Page.js';
 import ContextController from './ContextController.js';
 import HasElementNodeContextController from './HasElementNodeContextController.js';
 
+
 class PageContextController extends HasElementNodeContextController {
   constructor(_page, _session, _serviceManager) {
     super();
@@ -228,8 +229,12 @@ class PageContextController extends HasElementNodeContextController {
 
 
 
+  checkFollowingFragmentsBindEnoughState(_complete) {
 
-
+    this.subject.checkFollowingFragmentsBindEnoughState(function(_result) {
+      _complete(_result);
+    });
+  }
 
 };
 

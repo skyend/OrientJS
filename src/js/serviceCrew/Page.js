@@ -2,6 +2,8 @@
 import _ from 'underscore';
 import Factory from './ElementNode/Factory.js';
 import DocumentContextController from './DocumentContextController.js';
+import async from 'async';
+import Document from './Document.js';
 
 class Page {
   constructor(_contextController, _pageDataObject, _serviceManager) {
@@ -330,6 +332,66 @@ class Page {
   addFragmentParamSupply() {
     this.paramSupplies.push({});
   }
+
+  // fragment 를 참조하는 gridElement를 찾아 참조하는 fragment의 id를 리스트로 반환한다.
+  detectFollowingFragments() {
+    let followingFragmentList = [];
+
+    if (this.rootGridElement !== null) {
+      this.rootGridElement.treeExplore(function(_gridElementNode) {
+        if (_gridElementNode.followingFragment !== null) {
+          followingFragmentList.push(_gridElementNode.followingFragment);
+        }
+      });
+    }
+
+    return followingFragmentList;
+  }
+
+  // fragment 리스트를 로드하여 객체로 변환한뒤 콜백으로 전달한다.
+  loadFragments(_list, _complete) {
+    let self = this;
+    let fragments = [];
+
+    async.eachSeries(_list, function iterator(_item, _next) {
+
+      self.contextController.serviceManager.getDocument(_item, function(_result) {
+
+        fragments.push(new Document(null, null, _result.document));
+        _next();
+      });
+    }, function done(_err) {
+      _complete(fragments);
+    });
+  }
+
+  // 상태 체크
+  checkFollowingFragmentsBindEnoughState(_complete) {
+    // page 가 사용하는 fragment id 리스트를 구함
+    let followingFragmentList = this.detectFollowingFragments();
+
+    // fragment list 로드
+    this.loadFragments(followingFragmentList, function(_fragments) {
+      // Fragment 별 바인딩 셋을 구함
+      let bindedFragmentStateSet = _fragments.map(function(_fragment) {
+
+        let binderSet = _fragment.getAllBinderNSSet();
+
+        // param Supply 를 확인하여 값이 적당히 채워져 있다면 enough 를 true로 하여 반환한다.
+
+
+        return {
+          enough: false,
+          fragmentId: _fragment.id
+        };
+      });
+
+      _complete(bindedFragmentStateSet);
+    });
+  }
+
+
+
 
   prepareParams(_complete) {
 

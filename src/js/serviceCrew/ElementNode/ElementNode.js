@@ -4,6 +4,7 @@ import Returns from "../../Returns.js";
 import _ from 'underscore';
 import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
+import ObjectExplorer from '../../util/ObjectExplorer.js';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -606,6 +607,106 @@ class ElementNode {
         break;
     }
   }
+
+  // 모든 ElementNode type 의 Interpret작업이 필요한 항목들을 감지한다.
+  // bindBlockSetList를 반환함.
+  detectInterpret() {
+    let bindBlockSetList = [];
+    let self = this;
+
+    let extractedBlocks;
+    ObjectExplorer.explore(this.controls, function(_key, _data) {
+      extractedBlocks = self.extractBindBlocks(_data);
+
+      if (extractedBlocks !== null) {
+        extractedBlocks.map(function(_block) {
+          bindBlockSetList.push({
+            key: _key,
+            binder: _block
+          });
+        })
+      }
+    }, 'controls');
+
+    switch (this.getType()) {
+      case "string":
+        extractedBlocks = self.extractBindBlocks(this.getText());
+
+        if (extractedBlocks !== null) {
+          extractedBlocks.map(function(_block) {
+            bindBlockSetList.push({
+              key: 'text',
+              binder: _block
+            });
+          })
+        }
+        break;
+      case "react":
+        ObjectExplorer.explore(this.attributes, function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'attributes');
+
+        ObjectExplorer.explore(this.getReactComponentProps(), function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'reactComponentProps');
+
+        break;
+      case "empty":
+      case "grid":
+      case "html":
+        ObjectExplorer.explore(this.attributes, function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'attributes');
+        break;
+    }
+
+    if (bindBlockSetList.length > 0) {
+      return bindBlockSetList;
+    } else {
+      return undefined;
+    }
+  }
+
+  // ${*XXXX}형식의 문자열을 감지하여 리스트로 반환한다.
+  // 감지된 문자열이 없으면 null을 반환한다.
+  extractBindBlocks(_string) {
+    let bindBlocks = [];
+
+    let matched = _string.match(/\$\{\*[^\{^\}]+\}/g);
+
+    return matched;
+  }
+
+
+
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

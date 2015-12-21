@@ -124,6 +124,20 @@ class HTMLElementNode extends TagBaseElementNode {
     return this.children.map(_processFunc);
   }
 
+  // HTML 엘리먼트 기반의 요소 기준으로 Tree를 탐색한다.
+  // 탐색은 사용자가 정의 할 수 있으며 treeExplore 메소드를 호출 할 때 인자로 탐색 클로져를 넘겨준다.
+  treeExplore(_explorerFunc) {
+    _explorerFunc(this);
+
+    if (/^html|grid$/.test(this.getType()))
+      this.childrenIteration(function(_child) {
+        if (/^html|grid$/.test(_child.getType()))
+          _child.treeExplore(_explorerFunc);
+        else
+          _explorerFunc(_child);
+      });
+  }
+
   clearRealizationChildren() {
     if (this.realization === null) return;
 
@@ -254,8 +268,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.children = this.inspireChildren(_elementNodeDataObject.children);
-
+    this.children = this.inspireChildren(_elementNodeDataObject.children || []);
   }
 
   export (_withoutId) {

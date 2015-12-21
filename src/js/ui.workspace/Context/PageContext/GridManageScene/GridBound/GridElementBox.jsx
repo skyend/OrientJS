@@ -148,7 +148,10 @@ let GridElementBox = React.createClass({
           this.props.gridElement.loadFollowingFragmentObject(function(_fragmentData){
             self.fragmentLoading = false;
             self.props.gridElement.analysisFollowingFragmentData();
+
             self.setState({fragmentObject:_fragmentData});
+
+
           });
         }
       }
