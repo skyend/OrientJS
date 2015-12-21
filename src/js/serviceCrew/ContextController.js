@@ -33,7 +33,6 @@ export default class ContextController {
   // }
 
   changedContent() {
-    this.context.feedChangedElementState();
     if (this.unsaved) return;
     this.unsaved = true;
     this.context.feedSaveStateChange();

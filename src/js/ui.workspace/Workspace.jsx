@@ -448,7 +448,6 @@ var Workspace = React.createClass({
     });
   },
 
-
   onThrowCatcherMouseEnterElementNode(_eventData, _pass){
     this.refs['ContextStage'].mouseEnterElement(_eventData.elementNode);
   },
@@ -467,9 +466,9 @@ var Workspace = React.createClass({
     this.refs['ContextStage'].forceUpdate();
   },
 
-  // ElementNode 가 변경 되었을 떄 발생하여 툴과 컨텍스트에 실시간으로 값을 반영하여 피드백 하도록 한다.
-  onThrowCatcherChangedElementState(_eventData){
-    this.forceUpdate();
+
+  onThrowCatcherRefreshContextStage(){
+    this.refs['ContextStage'].forceUpdate();
   },
 
   onThrowCatcherOpenElementNodeGeometryEditor(_eventData){

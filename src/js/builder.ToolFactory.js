@@ -93,6 +93,11 @@ ToolFactory.prototype.getToolEgg = function(_toolKey, _params, _givingEgg) {
   _givingEgg(egg);
 };
 
+ToolFactory.prototype.refreshTools = function() {
+  for (let nest of this.nests)
+    nest.birdUpdate();
+};
+
 ToolFactory.prototype.toolClassLoad = function(_toolKey, _loadedCB) {
 
   var toolMap = this.toolsMap[_toolKey];

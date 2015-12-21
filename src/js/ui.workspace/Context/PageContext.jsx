@@ -52,10 +52,6 @@ export default React.createClass({
     this.forceUpdate();
   },
 
-  feedChangedElementState: function() {
-    this.emit('ChangedElementState');
-  },
-
   save(){
     this.getContextController().save();
   },
@@ -238,7 +234,7 @@ export default React.createClass({
 
   onThrowCatcherMetaChangedParamSupply(_e){
     this.props.contextController.modifySupplyParam(_e.ns, _e.type, _e.name, _e.value );
-    
+
     this.forceUpdate();
   },
 

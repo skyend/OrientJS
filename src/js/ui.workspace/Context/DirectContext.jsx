@@ -54,10 +54,6 @@ var DirectContext = React.createClass({
     this.emit("ChangedSaveState");
   },
 
-  feedChangedElementState: function() {
-    this.emit('ChangedElementState');
-  },
-
   appendElementToBody(_element){
     return this.getIFrameStage().insertElementToInLastBySelector('body', _element);
   },
@@ -305,7 +301,8 @@ var DirectContext = React.createClass({
     } else {
       this.emit("SuccessfullyElementNodeSelected", {
         elementNode: _elementNode,
-        contextController: this.props.contextController
+        contextController: this.props.contextController,
+        screenMode:this.props.renderStageMode
       });
     }
 
@@ -567,6 +564,8 @@ var DirectContext = React.createClass({
     this.props.contextController.modifyElementGeometry(elNode, "rectangle",  modifiedRect, this.props.renderStageMode);
 
     this.forceUpdate();
+
+    this.emit("RefreshTools");
   },
 
   onThrowCatcherElementResizingEnd(_eventData){

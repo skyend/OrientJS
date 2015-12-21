@@ -39,6 +39,8 @@ var ElementNodeGeometryEditor = React.createClass({
       minHeight: fieldName === 'min-height' ? data : this.refs['sizing'].getFieldValue('min-height'),
       maxHeight: fieldName === 'max-height' ? data : this.refs['sizing'].getFieldValue('max-height')
     }, this.props.screenMode);
+
+    this.emit("RefreshContextStage");
   },
 
   renderSizingFields(_elementNode){

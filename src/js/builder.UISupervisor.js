@@ -346,8 +346,11 @@ UI.prototype.loadPageList = function(_complete) {
 /****************************************************************/
 /**************************** Builder Logic *********************/
 /****************************************************************/
+UI.prototype.onThrowCatcherRefreshTools = function() {
+  this.toolFactory.refreshTools();
+};
 
-UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
+UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData) {
 
   if (_eventData.refPath[0] === 'ComponentPalette') {
 
@@ -357,7 +360,7 @@ UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
   }
 };
 
-UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
+UI.prototype.onThrowCatcherGetComponent = function(_eventData) {
   var key = _eventData.componentKey;
   //console.log(_eventData, 'get');
   var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
