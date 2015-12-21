@@ -9,6 +9,7 @@ import async from 'async';
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
+import ComponentContextController from './serviceCrew/ComponentContextController.js';
 //import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
@@ -27,6 +28,7 @@ class ServiceManager {
     this.docContextControllers = {};
     this.apiSourceContextControllers = {};
     this.apiInterfaceContextControllers = {};
+    this.componentContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
     this.iceHost = 'http://125.131.88.75:8080';
@@ -41,6 +43,7 @@ class ServiceManager {
     this.preparedCSSList = null;
     this.preparedJSList = null;
     self.preparedStaticList = null;
+    self.preparedComponentList = null;
     async.parallel([
       function(_cb) {
         self.getCSSList(function(_result) {
@@ -195,6 +198,42 @@ class ServiceManager {
       _complete(_result);
     });
   }
+
+  createComponent(_name, _script, _css, _propStruct, _complete) {
+    this.app.gelateriaRequest.createComponent(this.app.currentProjectId, _name, _script, _css, _propStruct, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getComponentList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getComponentList(this.app.currentProjectId, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedComponentList = _result.list;
+      _complete(_result);
+    });
+  }
+
+  getComponent(_id, _complete) {
+    this.app.gelateriaRequest.getComponent(this.app.currentProjectId, _id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  saveComponent(_componentId, _componentJSON, _complete) {
+    this.app.gelateriaRequest.saveComponent(this.app.currentProjectId, _componentId, _componentJSON, function(_result) {
+      _complete(_result);
+    });
+  }
+
 
   getApisourceList(_complete) {
     let self = this;
@@ -362,6 +401,10 @@ class ServiceManager {
       return delete this.apiInterfaceContextControllers[_context.apiInterfaceID];
     }
 
+    if (_context.contextType === 'component') {
+      return delete this.componentContextControllers[_context.componentID];
+    }
+
     throw new Error("Not found context Controller");
   }
 
@@ -463,6 +506,27 @@ class ServiceManager {
     }
   }
 
+  getComponentContextController(_componentId, _complete) {
+    var self = this;
+
+    if (this.componentContextControllers[_componentId] === undefined) {
+      this.getComponent(_componentId, function(_result) {
+
+        if (_result.result === 'success') {
+          var componentContextController = new ComponentContextController(_result.component, self);
+
+          self.componentContextControllers[_componentId] = componentContextController;
+
+          _complete(self.componentContextControllers[_componentId]);
+        } else {
+          alert("component 로드 실패. " + _result.reason);
+        }
+
+      });
+    } else {
+      _complete(this.componentContextControllers[_componentId]);
+    }
+  }
 
 
 

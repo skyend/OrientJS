@@ -15,6 +15,7 @@ import IFrameStage from './partComponents/IFrameStage.jsx';
 import DirectContext from './Context/DirectContext.jsx';
 import PageContext from './Context/PageContext.jsx';
 import ICEAPISourceContext from './Context/ICEAPISourceContext.jsx';
+import ComponentContext from './Context/ComponentContext.jsx';
 import VDomController from '../virtualdom/VDomController.js';
 import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
 import React from "react";
@@ -921,7 +922,7 @@ var ContextStage = React.createClass({
 
     // if (this.getCurrentRunningContext()) {
     //   var context = this.getCurrentRunningContext();
-    // 
+    //
     //   if (context.getContextType() === 'document' || context.getContextType() === 'page') {
     //     // this.iframeStageBoundingRect = context.getIFrameStageBoundingRect();
     //
@@ -1005,6 +1006,8 @@ var ContextStage = React.createClass({
       ContextClass = PageContext;
     } else if (_contextSpec.contextType === 'apiSource') {
       ContextClass = ICEAPISourceContext;
+    } else if ( _contextSpec.contextType === 'component'){
+      ContextClass = ComponentContext;
     }
 
     let renderStageWidth, renderStageHeight;

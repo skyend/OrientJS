@@ -30,7 +30,7 @@ var App = function() {
   this.gelateriaRequest = new GelateriaRequest(window.gelateriaHost);
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);
-
+  this.currentProjectId = undefined;
 
   /** 임시 퍼블리싱 로직 **/
   let searchParam = window.location.search;

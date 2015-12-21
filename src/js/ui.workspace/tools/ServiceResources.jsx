@@ -25,6 +25,8 @@
         apiinterfaceList: [],
         cssList:[],
         jsList:[],
+        componentList:[],
+
         filterSet:new Set()
       };
     },
@@ -126,6 +128,20 @@
       this.emit("RequestAttachTool", {
         "toolKey": "DocumentCUForm",
         "where": "ModalWindow"
+      });
+    },
+
+    clickNewComponent(){
+      console.log("new component");
+      let self = this;
+      this.emit("RequestAttachTool", {
+        "toolKey": "ComponentCreateForm",
+        "where": "ModalWindow",
+        "params": {
+          "success-notice": function(){
+            self.emit("NeedComponentList");
+          }
+        }
       });
     },
 
@@ -298,6 +314,34 @@
       return (
         <li onClick={ click } className={contextIsRunning? 'running':''}>
           <i className={'fa ' + iconClass}></i> <span> { _js.name } </span>
+        </li>
+      )
+    },
+
+    renderComponentItem(_component){
+      var iconClass = 'fa-cube';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringComponentContext", {
+          component: _component,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'component') {
+          if (this.props.runningContext.componentID == _component._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _component.name } </span>
         </li>
       )
     },
@@ -480,7 +524,7 @@
               </span>
           </label>
           <ul>
-
+            { this.state.componentList.map(this.renderComponentItem) }
           </ul>
         </div>
       )
@@ -518,6 +562,7 @@
       self.emit("NeedJSList");
       self.emit("NeedAPISourceList");
       self.emit("NeedAPIInterfaceList");
+      self.emit("NeedComponentList");
     },
 
     renderLists(){
@@ -529,6 +574,9 @@
         }
         if( this.state.filterSet.has('fragment') ){
           renderList.push( this.renderDocumentList() );
+        }
+        if( this.state.filterSet.has('Component') ){
+          renderList.push( this.renderComponentList() );
         }
         if( this.state.filterSet.has('css') ){
           renderList.push( this.renderCSSList() );
@@ -545,18 +593,15 @@
         if( this.state.filterSet.has('MashupAPISource') ){
           renderList.push( this.renderMashupAPISourceList() );
         }
-        if( this.state.filterSet.has('Component') ){
-          renderList.push( this.renderComponentList() );
-        }
       } else {
         renderList.push( this.renderPageList() );
         renderList.push( this.renderDocumentList() );
+        renderList.push( this.renderComponentList() );
         renderList.push( this.renderCSSList() );
         renderList.push( this.renderJSList() );
         renderList.push( this.renderAPIInterfaceList() );
         renderList.push( this.renderICEAPISourceList() );
         renderList.push( this.renderMashupAPISourceList() );
-        renderList.push( this.renderComponentList() );
       }
 
       return renderList;
@@ -581,6 +626,9 @@
                 <li className={this.state.filterSet.has('fragment')? 'selected':''} onClick={function(){self.toggleFilterItem('fragment')}}>
                   <i className="fa fa-html5"/>
                 </li>
+                <li className={this.state.filterSet.has('Component')? 'selected':''} onClick={function(){self.toggleFilterItem('Component')}}>
+                  <i className="fa fa-cubes"/>
+                </li>
                 <li className={this.state.filterSet.has('css')? 'selected':''} onClick={function(){self.toggleFilterItem('css')}}>
                   <i className="fa fa-css3"/>
                 </li>
@@ -595,9 +643,6 @@
                 </li>
                 <li className={this.state.filterSet.has('MashupAPISource')? 'selected':''} onClick={function(){self.toggleFilterItem('MashupAPISource')}}>
                   <i className="fa fa-share-alt-square"/>
-                </li>
-                <li className={this.state.filterSet.has('Component')? 'selected':''} onClick={function(){self.toggleFilterItem('Component')}}>
-                  <i className="fa fa-cubes"/>
                 </li>
               </ul>
             </div>

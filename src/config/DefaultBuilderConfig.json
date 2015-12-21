@@ -224,6 +224,10 @@
     "ContentsCopyBoard": {
       "jsxPath": "ContentsCopyBoard",
       "title": "Contents Copy Board"
+    },
+    "ComponentCreateForm": {
+      "jsxPath": "ComponentCreateForm",
+      "title": "Component Create"
     }
   }
 }

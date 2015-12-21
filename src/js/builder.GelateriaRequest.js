@@ -341,6 +341,72 @@ class GelateriaRequest {
       });
   }
 
+  getComponentList(_projectId, _complete) {
+    request.get("http://" + this.host + "/" + ['components', 'list'].join('/') + "?projectId=" + _projectId)
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load get component list");
+
+        _complete(res.body);
+      });
+  }
+
+  createComponent(_projectId, _name, _script, _css, _propStruct, _complete) {
+    request.post("http://" + this.host + "/" + ["components", 'create'].join("/"))
+      .type('form')
+      .send({
+        projectId: _projectId,
+        name: _name,
+        script: _script,
+        css: _css,
+        propStruct: _propStruct
+      })
+      .end(function(err, res) {
+
+        if (err !== null) throw new Error("create component fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getComponent(_projectId, _id, _complete) {
+
+    request.post("http://" + this.host + "/components/" + ["retrieve"].join("/"))
+      .type('form')
+      .send({
+        'projectId': _projectId,
+        'id': _id
+      })
+      .end(function(err, res) {
+        console.log(err, res);
+        if (err !== null) throw new Error("component load fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  saveComponent(_projectId, _id, _componentJSON, _complete) {
+    request.post("http://" + this.host + "/" + ["components", 'save'].join("/"))
+      .type('form')
+      .send({
+        projectId: _projectId,
+        id: _id,
+        componentJSON: JSON.stringify(_componentJSON)
+      })
+      .end(function(err, res) {
+
+
+        if (err !== null) throw new Error("save component fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
   getApisourceList(_serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['apisources', 'list'].join('/'))
       .type('form')
