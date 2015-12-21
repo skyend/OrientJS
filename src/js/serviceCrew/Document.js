@@ -9,535 +9,566 @@ import ElementNodeFactory from './ElementNode/Factory.js';
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
 
-var Document = function(_contextController, _documentParams, _documentDataObject) {
-  //////////////
-  // 필드 정의
-  ////////////////////////
-  // document profile
-  this.documentName;
-  this.documentTitle;
+class Document {
 
-  // date fields
-  this.documentCreate;
-  this.documentUpdate;
+  constructor(_contextController, _documentParams, _documentDataObject) {
+    //////////////
+    // 필드 정의
+    ////////////////////////
+    // document profile
+    this.documentName;
+    this.documentTitle;
 
-  // elementLastId
-  this.lastElementId;
+    // date fields
+    this.documentCreate;
+    this.documentUpdate;
 
-  // document elements
-  this.rootElementNode = null;
-  this.elementNodes;
-  this.pageCSS;
+    // elementLastId
+    this.lastElementId;
 
-  // for runtime
-  // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
-  this.runtimeHTMLCSSRepo = {};
-  this.runtimReactCSSRepo = {};
-  this.contextController = _contextController;
-
-
-  this.params = _documentParams || {};
-
-  console.log('Document Map', _documentDataObject);
-  //////////////////////////
-  // 처리로직
-  //////////////////////////
-  // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
-  if (typeof _documentDataObject !== 'undefined') {
-    this.documentID = _documentDataObject._id;
-    this.documentName = _documentDataObject.name;
-    this.documentTitle = _documentDataObject.title;
-    this.documentCreate = _documentDataObject.created;
-    this.documentUpdate = _documentDataObject.updated;
-    this.lastElementId = _documentDataObject.lastElementId || 0;
-
-    this.rootElementNode = (_documentDataObject.rootElementNode !== null && _documentDataObject.rootElementNode !== undefined) ?
-      this.newElementNode(_documentDataObject.rootElementNode) : null;
-
-    this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
-    this.pageCSS = _documentDataObject.pageCSS;
-    this.refScriptIdList = _documentDataObject.refScriptIdList;
-    this.refStyleIdList = _documentDataObject.refStyleIdList;
-
-  } else {
-    // 새 도큐먼트가 생성된것이다.
-    this.documentCreate = new Date();
-    this.lastElementId = 0;
-    this.elementNodes = [];
+    // document elements
     this.rootElementNode = null;
-    this.refScriptIdList = [];
-    this.refStyleIdList = [];
-    this.pageCSS = '';
-  }
-};
+    this.elementNodes;
+    this.pageCSS;
 
-Document.prototype.setParam = function(_paramNS, _data) {
-  this.params[_paramNS] = _data;
-};
-
-////////////////////
-// Setters
-// documentName
-Document.prototype.setDocumentName = function(_documentName) {
-  this.documentName = _documentName;
-};
-// documentTitle
-Document.prototype.setDocumentTitle = function(_documentTitle) {
-  this.documentTitle = _documentTitle;
-};
-// pageCSS
-Document.prototype.setPageCSS = function(_pageCSS) {
-  this.pageCSS = _pageCSS;
-};
-// type
-Document.prototype.setType = function(_type) {
-  this.type = _type;
-};
-// rootElementNode
-Document.prototype.setRootElementNode = function(_elementNode) {
-  this.rootElementNode = _elementNode;
-};
-////////////////////
-// Getters
-Document.prototype.getParam = function(_paramNS) {
-  return this.params[_paramNS];
-};
-
-// documentID
-Document.prototype.getDocumentID = function() {
-  return this.documentID;
-};
-// documentName
-Document.prototype.getDocumentName = function() {
-  return this.documentName;
-};
-// documentTitle
-Document.prototype.getDocumentTitle = function() {
-  return this.documentTitle;
-};
-Document.prototype.getDocumentCreate = function() {
-  return this.documentCreate;
-};
-// documentTitle
-Document.prototype.getDocumentUpdate = function() {
-  return this.documentUpdate;
-};
-// lastElementId
-Document.prototype.getLastElementId = function() {
-  return this.lastElementId;
-};
-// elementNodes
-Document.prototype.getElementNodes = function() {
-  return this.elementNodes;
-};
-// rootElementNode
-Document.prototype.getRootElementNode = function() {
-  return this.rootElementNode;
-};
-// pageCSS
-Document.prototype.getPageCSS = function() {
-  return this.pageCSS || '';
-};
-// type
-Document.prototype.getType = function() {
-  return this.type;
-};
-
-Document.prototype.getHTMLDocument = function() {
-  return this.contextController.context.getDocument();
-};
-
-///////////////////////
-// documentUpdate
-Document.prototype.documentUpdated = function() {
-  this.documentUpdate = new Date();
-};
-
-////////////////
-// removeRootElementNode
-Document.prototype.removeRootElementNode = function() {
-  this.setRootElementNode(null);
-  this.contextController.rootRender();
-}
-
-////////////////////
-/****************
- * getReactTypeComponent
- *
- */
-Document.prototype.getReactTypeComponent = function(_packageKey, _componentKey, _syncWindowContext) {
-  return this.contextController.getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext);
-};
-
-////////////////////
-/****************
- * getMyDirector ( getContextController )
- * 자신(Document)의 ContextController를 반환한다.
- */
-Document.prototype.getMyDirector = Document.prototype.getContextController = function() {
-  return this.contextController;
-};
+    // for runtime
+    // 런타임중 변하는 HTML타입 컴포넌트의 CSS조각들을 중복되지 않게 모으기위함
+    this.runtimeHTMLCSSRepo = {};
+    this.runtimReactCSSRepo = {};
+    this.contextController = _contextController;
 
 
-///////////
-/******************
- * appendHTMLElementNodeCSS
- *
- */
-Document.prototype.appendHTMLElementNodeCSS = function(_key, _css) {
-  this.runtimeHTMLCSSRepo[_key] = _css;
-};
+    this.params = _documentParams || {};
 
-///////////
-/******************
- * appendReactElementNodeCSS
- *
- */
-Document.prototype.appendReactElementNodeCSS = function(_key, _css) {
-  this.runtimReactCSSRepo[_key] = _css;
-};
+    console.log('Document Map', _documentDataObject);
+    //////////////////////////
+    // 처리로직
+    //////////////////////////
+    // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
+    if (typeof _documentDataObject !== 'undefined') {
+      this.documentID = _documentDataObject._id;
+      this.documentName = _documentDataObject.name;
+      this.documentTitle = _documentDataObject.title;
+      this.documentCreate = _documentDataObject.created;
+      this.documentUpdate = _documentDataObject.updated;
+      this.lastElementId = _documentDataObject.lastElementId || 0;
 
-/*******
- * getHTMLElementNodeCSSLines
- * 모든 저장된 HTML타입의 요소를의 CSS를 모아서 문자열로 반환한다.
- *
- */
-Document.prototype.getHTMLElementNodeCSSLines = function() {
-  var keys = Object.keys(this.runtimeHTMLCSSRepo);
-  var lines = "/* HTML Element Type Component CSS */\n";
+      this.rootElementNode = (_documentDataObject.rootElementNode !== null && _documentDataObject.rootElementNode !== undefined) ?
+        this.newElementNode(_documentDataObject.rootElementNode) : null;
 
-  for (var i = 0; i < keys.length; i++) {
-    lines += "/* :" + keys[i] + " */\n";
-    lines += this.runtimeHTMLCSSRepo[keys[i]] + "\n";
+      this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
+      this.pageCSS = _documentDataObject.pageCSS;
+      this.refScriptIdList = _documentDataObject.refScriptIdList;
+      this.refStyleIdList = _documentDataObject.refStyleIdList;
+
+    } else {
+      // 새 도큐먼트가 생성된것이다.
+      this.documentCreate = new Date();
+      this.lastElementId = 0;
+      this.elementNodes = [];
+      this.rootElementNode = null;
+      this.refScriptIdList = [];
+      this.refStyleIdList = [];
+      this.pageCSS = '';
+    }
   }
 
-  return lines;
-};
-
-/*******
- * getReactElementNodeCSSLines
- * 모든 저장된 React타입의 요소를의 CSS를 모아서 문자열로 반환한다.
- *
- */
-Document.prototype.getReactElementNodeCSSLines = function() {
-  var keys = Object.keys(this.runtimReactCSSRepo);
-  var lines = "/* React Element Type Component CSS */\n";
-
-  for (var i = 0; i < keys.length; i++) {
-    lines += "/* :" + keys[i] + " */\n";
-    lines += this.runtimReactCSSRepo[keys[i]] + "\n";
+  setParam(_paramNS, _data) {
+    this.params[_paramNS] = _data;
   }
 
-  return lines;
-};
+  ////////////////////
+  // Setters
+  // documentName
+  setDocumentName(_documentName) {
+    this.documentName = _documentName;
+  }
+
+  // documentTitle
+  setDocumentTitle(_documentTitle) {
+    this.documentTitle = _documentTitle;
+  }
+
+  // pageCSS
+  setPageCSS(_pageCSS) {
+    this.pageCSS = _pageCSS;
+  }
+
+  // type
+  setType(_type) {
+    this.type = _type;
+  }
+
+  // rootElementNode
+  setRootElementNode(_elementNode) {
+    this.rootElementNode = _elementNode;
+  }
+
+  ////////////////////
+  // Getters
+  getParam(_paramNS) {
+    return this.params[_paramNS];
+  }
+
+  // documentID
+  getDocumentID() {
+    return this.documentID;
+  }
+
+  // documentName
+  getDocumentName() {
+    return this.documentName;
+  }
+
+  // documentTitle
+  getDocumentTitle() {
+    return this.documentTitle;
+  }
+
+  getDocumentCreate() {
+    return this.documentCreate;
+  }
+
+  // documentTitle
+  getDocumentUpdate() {
+    return this.documentUpdate;
+  }
+
+  // lastElementId
+  getLastElementId() {
+    return this.lastElementId;
+  }
+
+  // elementNodes
+  getElementNodes() {
+    return this.elementNodes;
+  }
+
+  // rootElementNode
+  getRootElementNode() {
+    return this.rootElementNode;
+  }
+
+  // pageCSS
+  getPageCSS() {
+    return this.pageCSS || '';
+  }
+
+  // type
+  getType() {
+    return this.type;
+  }
+
+  getHTMLDocument() {
+    return this.contextController.context.getDocument();
+  }
+
+  ///////////////////////
+  // documentUpdate
+  documentUpdated() {
+    this.documentUpdate = new Date();
+  }
+
+  ////////////////
+  // removeRootElementNode
+  removeRootElementNode() {
+    this.setRootElementNode(null);
+    this.contextController.rootRender();
+  }
+
+  ////////////////////
+  /****************
+   * getReactTypeComponent
+   *
+   */
+  getReactTypeComponent(_packageKey, _componentKey, _syncWindowContext) {
+    return this.contextController.getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext);
+  }
+
+  ////////////////////
+  /****************
+   * getMyDirector ( getContextController )
+   * 자신(Document)의 ContextController를 반환한다.
+   */
+  getContextController() {
+    return this.contextController;
+  }
 
 
-///////////////
-/************
- * newElementNode
- * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
- */
-Document.prototype.newElementNode = function(_elementNodeDataObject, _preInsectProps, _type) {
 
-  let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
+  modifyElementGeometry(_elementNode, _key, _value, _screenMode) {
 
-  return elementNode;
-};
+    if (_key === 'rectangle') {
+      let keys = Object.keys(_value);
 
-Document.prototype.newElementNodeFromComponent = function(_component) {
+      keys.map(function(_key) {
+        _elementNode.setRectanglePartWithScreenMode(_key, _value[_key], _screenMode);
+      });
+    }
 
-  var newElementNode = this.newElementNode(undefined, {}, _component.elementType);
-  newElementNode.buildByComponent(_component);
+  }
 
-  return newElementNode;
-};
+  ///////////
+  /******************
+   * appendHTMLElementNodeCSS
+   *
+   */
+  appendHTMLElementNodeCSS(_key, _css) {
+    this.runtimeHTMLCSSRepo[_key] = _css;
+  }
 
-Document.prototype.findById = function(_elementNodeId) {
+  ///////////
+  /******************
+   * appendReactElementNodeCSS
+   *
+   */
+  appendReactElementNodeCSS(_key, _css) {
+    this.runtimReactCSSRepo[_key] = _css;
+  }
 
-  var treeSearchResult = this.findRecursive(this.rootElementNode, function(__e) {
-    return __e.id == _elementNodeId;
-  });
+  /*******
+   * getHTMLElementNodeCSSLines
+   * 모든 저장된 HTML타입의 요소를의 CSS를 모아서 문자열로 반환한다.
+   *
+   */
+  getHTMLElementNodeCSSLines() {
+    var keys = Object.keys(this.runtimeHTMLCSSRepo);
+    var lines = "/* HTML Element Type Component CSS */\n";
 
-  if (treeSearchResult) return treeSearchResult;
+    for (var i = 0; i < keys.length; i++) {
+      lines += "/* :" + keys[i] + " */\n";
+      lines += this.runtimeHTMLCSSRepo[keys[i]] + "\n";
+    }
 
-  for (var i = 0; i < this.elementNodes.length; i++) {
-    treeSearchResult = this.findRecursive(this.elementNodes[i], function(__e) {
+    return lines;
+  }
+
+  /*******
+   * getReactElementNodeCSSLines
+   * 모든 저장된 React타입의 요소를의 CSS를 모아서 문자열로 반환한다.
+   *
+   */
+  getReactElementNodeCSSLines() {
+    var keys = Object.keys(this.runtimReactCSSRepo);
+    var lines = "/* React Element Type Component CSS */\n";
+
+    for (var i = 0; i < keys.length; i++) {
+      lines += "/* :" + keys[i] + " */\n";
+      lines += this.runtimReactCSSRepo[keys[i]] + "\n";
+    }
+
+    return lines;
+  }
+
+
+  ///////////////
+  /************
+   * newElementNode
+   * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
+   */
+  newElementNode(_elementNodeDataObject, _preInsectProps, _type) {
+
+    let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
+
+    return elementNode;
+  }
+
+  newElementNodeFromComponent(_component) {
+
+    var newElementNode = this.newElementNode(undefined, {}, _component.elementType);
+    newElementNode.buildByComponent(_component);
+
+    return newElementNode;
+  }
+
+  findById(_elementNodeId) {
+
+    var treeSearchResult = this.findRecursive(this.rootElementNode, function(__e) {
       return __e.id == _elementNodeId;
     });
 
     if (treeSearchResult) return treeSearchResult;
+
+    for (var i = 0; i < this.elementNodes.length; i++) {
+      treeSearchResult = this.findRecursive(this.elementNodes[i], function(__e) {
+        return __e.id == _elementNodeId;
+      });
+
+      if (treeSearchResult) return treeSearchResult;
+    }
+
+    return false;
   }
 
-  return false;
-};
-
-Document.prototype.findRecursive = function(_t, _finder) {
-  var result = _finder(_t);
-  if (result) {
-    return _t;
-  } else {
-    if (_t.children !== undefined) {
-      for (var i = 0; i < _t.children.length; i++) {
-        var recvResult = this.findRecursive(_t.children[i], _finder);
-        if (recvResult) {
-          return recvResult;
+  findRecursive(_t, _finder) {
+    var result = _finder(_t);
+    if (result) {
+      return _t;
+    } else {
+      if (_t.children !== undefined) {
+        for (var i = 0; i < _t.children.length; i++) {
+          var recvResult = this.findRecursive(_t.children[i], _finder);
+          if (recvResult) {
+            return recvResult;
+          }
         }
       }
+
     }
 
+    return false;
   }
 
-  return false;
-};
+  ///////////
+  /********
+   * cloneElement
+   * 요소를 복제한다
+   */
+  cloneElement(_elementNode) {
+    var elementNodeExportObject = _elementNode.export(true);
+    var newClonedElementNode = this.newElementNode(elementNodeExportObject);
 
-///////////
-/********
- * cloneElement
- * 요소를 복제한다
- */
-Document.prototype.cloneElement = function(_elementNode) {
-  var elementNodeExportObject = _elementNode.export(true);
-  var newClonedElementNode = this.newElementNode(elementNodeExportObject);
-
-  return newClonedElementNode;
-};
-
-// Document.prototype.getNewElementNodeId = function() {
-//   return ++(this.lastElementId);
-// };
-
-Document.prototype.getElementNodeFromPool = function(_id) {
-  var index = _.findIndex(this.elementNodes, function(__elementNode) {
-
-    return __elementNode.getId() == _id;
-  });
-
-  return this.elementNodes[index];
-};
-
-
-Document.prototype.getServiceManager = function() {
-  return this.contextController.serviceManager;
-};
-
-/////////////////
-/***************
- * insertElementNode
- * @Param _insertType : 'appendChild' | 'insertBefore' | 'insertAfter'
- * @Param _elementNode
- * @Param _baseElementNode
- * @Return ElementNode{} : 생성된 ElementNode
- */
-Document.prototype.insertElementNode = function(_insertType, _elementNode, _baseElementNode) {
-
-  if (_insertType === 'appendChild') {
-
-    // Empty Type의 ElementNode에 appendChild를 하려고 할때 ElementNode를 따로 저장하고 드롭 대상 ElementNode에 참조를 설정한다.
-    if (_baseElementNode.getType() === 'empty') {
-      // Empty Type Element의 참조 Type을 새로운 ElementNode로 동일하게 설정하고
-      // 해당 요소의 Id를 참조 Target으로 설정한다.
-      _baseElementNode.setRefferenceType(_elementNode.getType());
-      _baseElementNode.setRefferenceTarget(_elementNode.getId());
-      this.elementNodes.push(_elementNode);
-    } else {
-      _baseElementNode.appendChild(_elementNode);
-    }
-  } else if (_insertType === 'insertBefore') {
-    if (_baseElementNode.getParent() === null) return null;
-
-    _baseElementNode.insertBefore(_elementNode);
-  } else if (_insertType === 'insertAfter') {
-    if (_baseElementNode.getParent() === null) return null;
-
-    _baseElementNode.insertAfter(_elementNode);
+    return newClonedElementNode;
   }
 
-  return _elementNode;
-};
+  // getNewElementNodeId() {
+  //   return ++(this.lastElementId);
+  // };
 
+  getElementNodeFromPool(_id) {
+    var index = _.findIndex(this.elementNodes, function(__elementNode) {
 
-/********
- * Interpret
- *  텍스트를 분석하여 특정 패턴으로 제작된 문자열을 추출하고 해당 문자열 내의 내용을 해석하여 패턴과 해석결과를 치환 한다.
- * ${url:...} / ${field:... } / ${title:...}
- */
-Document.prototype.interpret = function(_text) {
-  var self = this;
-
-
-  // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
-  // 객체를 보존하여 반환하도록 한다.
-  if (/^\$\{.*?\}$/.test(_text)) {
-    let matched = _text.match(/(\${(.*?)})/);
-
-    let signString = matched[2];
-
-    return this.valueResolve(signString);
-  } else {
-    let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
-      return self.valueResolve(_signString);
+      return __elementNode.getId() == _id;
     });
 
-    return valuesResolved.replace(/(%{.*?})/g, function(_matched) {
-      return self.processingFormularBlock(_matched);
-    });
+    return this.elementNodes[index];
   }
-};
-
-Document.prototype.valueResolve = function(_sign) {
-  let self = this;
-  var sampleResourceMap = {
-    image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
-    image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
-    image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
-    image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
-    image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
-    image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
-    image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
-  };
-
-  if (/^(\*?)([^:^*]*)$/.test(_sign)) {
-    let matched = _sign.match(/^(\*?)(.*)$/);
-    let firstMark = matched[1];
-    let refValue = matched[2];
 
 
-    if (firstMark === '*') {
+  getServiceManager() {
+    return this.contextController.serviceManager;
+  }
 
-      let splited = refValue.split(/\//);
-      let ns = splited.shift();
-      let detail = splited.length > 0 ? splited.join('/') : undefined;
+  /////////////////
+  /***************
+   * insertElementNode
+   * @Param _insertType : 'appendChild' | 'insertBefore' | 'insertAfter'
+   * @Param _elementNode
+   * @Param _baseElementNode
+   * @Return ElementNode{} : 생성된 ElementNode
+   */
+  insertElementNode(_insertType, _elementNode, _baseElementNode) {
 
-      let param = self.getParam(ns);
-      if (param === undefined) {
-        return '`Error: No Param NS: ' + ns + '`';
-      }
-      //console.log(detail, param, splited, _refValue);
-      ///css/contents-retrieve-by-name/custom?serviceId=56755571b88a6c2ffd90e8e9
-      if (detail !== undefined) {
-        return ObjectExplorer.getValueByKeyPath(param, detail) || '`Error: No Param ' + detail + ' in ' + ns + '`';
+    if (_insertType === 'appendChild') {
+
+      // Empty Type의 ElementNode에 appendChild를 하려고 할때 ElementNode를 따로 저장하고 드롭 대상 ElementNode에 참조를 설정한다.
+      if (_baseElementNode.getType() === 'empty') {
+        // Empty Type Element의 참조 Type을 새로운 ElementNode로 동일하게 설정하고
+        // 해당 요소의 Id를 참조 Target으로 설정한다.
+        _baseElementNode.setRefferenceType(_elementNode.getType());
+        _baseElementNode.setRefferenceTarget(_elementNode.getId());
+        this.elementNodes.push(_elementNode);
       } else {
-        return param;
+        _baseElementNode.appendChild(_elementNode);
       }
+    } else if (_insertType === 'insertBefore') {
+      if (_baseElementNode.getParent() === null) return null;
+
+      _baseElementNode.insertBefore(_elementNode);
+    } else if (_insertType === 'insertAfter') {
+      if (_baseElementNode.getParent() === null) return null;
+
+      _baseElementNode.insertAfter(_elementNode);
     }
 
-    return '`Error: Interpret Error`';
-  } else if (/^\w+:.*$/.test(_sign)) {
-    let matches = _sign.match(/^(\w+):(.*)$/);
-    let kind = matches[1];
-    let target = matches[2];
-    //console.log(matches);
-    if (kind === 'script') {
-      let url = this.contextController.serviceManager.getScriptURLByName(target);
+    return _elementNode;
+  }
 
-      return url;
-    } else if (kind === 'style') {
-      let url = this.contextController.serviceManager.getStyleURLByName(target);
 
-      return url;
-    } else if (kind === 'image') {
-      let url = this.contextController.serviceManager.getImageURLByName(target);
+  /********
+   * Interpret
+   *  텍스트를 분석하여 특정 패턴으로 제작된 문자열을 추출하고 해당 문자열 내의 내용을 해석하여 패턴과 해석결과를 치환 한다.
+   * ${url:...} / ${field:... } / ${title:...}
+   */
+  interpret(_text) {
+    var self = this;
 
-      return url;
-    } else if (kind === 'static') {
-      let url = this.contextController.serviceManager.getImageStaticByName(target);
 
-      return url;
+    // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
+    // 객체를 보존하여 반환하도록 한다.
+    if (/^\$\{.*?\}$/.test(_text)) {
+      let matched = _text.match(/(\${(.*?)})/);
+
+      let signString = matched[2];
+
+      return this.valueResolve(signString);
+    } else {
+      let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
+        return self.valueResolve(_signString);
+      });
+
+      return valuesResolved.replace(/(%{.*?})/g, function(_matched) {
+        return self.processingFormularBlock(_matched);
+      });
     }
   }
-  return '`Error: Interpret Syntax Error`';
-};
+
+  valueResolve(_sign) {
+    let self = this;
+    var sampleResourceMap = {
+      image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
+      image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
+      image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
+      image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
+      image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
+      image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
+      image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
+    }
+
+    if (/^(\*?)([^:^*]*)$/.test(_sign)) {
+      let matched = _sign.match(/^(\*?)(.*)$/);
+      let firstMark = matched[1];
+      let refValue = matched[2];
+
+
+      if (firstMark === '*') {
+
+        let splited = refValue.split(/\//);
+        let ns = splited.shift();
+        let detail = splited.length > 0 ? splited.join('/') : undefined;
+
+        let param = self.getParam(ns);
+        if (param === undefined) {
+          return '`Error: No Param NS: ' + ns + '`';
+        }
+        //console.log(detail, param, splited, _refValue);
+        ///css/contents-retrieve-by-name/custom?serviceId=56755571b88a6c2ffd90e8e9
+        if (detail !== undefined) {
+          return ObjectExplorer.getValueByKeyPath(param, detail) || '`Error: No Param ' + detail + ' in ' + ns + '`';
+        } else {
+          return param;
+        }
+      }
+
+      return '`Error: Interpret Error`';
+    } else if (/^\w+:.*$/.test(_sign)) {
+      let matches = _sign.match(/^(\w+):(.*)$/);
+      let kind = matches[1];
+      let target = matches[2];
+      //console.log(matches);
+      if (kind === 'script') {
+        let url = this.contextController.serviceManager.getScriptURLByName(target);
+
+        return url;
+      } else if (kind === 'style') {
+        let url = this.contextController.serviceManager.getStyleURLByName(target);
+
+        return url;
+      } else if (kind === 'image') {
+        let url = this.contextController.serviceManager.getImageURLByName(target);
+
+        return url;
+      } else if (kind === 'static') {
+        let url = this.contextController.serviceManager.getImageStaticByName(target);
+
+        return url;
+      }
+    }
+    return '`Error: Interpret Syntax Error`';
+  }
 
 
 
-Document.prototype.processingFormularBlock = function(_blockString) {
+  processingFormularBlock(_blockString) {
 
-  //console.log('processingFormularBlock');
-  //console.log(_blockString);
+    //console.log('processingFormularBlock');
+    //console.log(_blockString);
 
 
-  return _blockString;
+    return _blockString;
+  }
+
+
+  // analysisNeedBind() {
+  //   console.log('analysis -', this.export());
+  //
+  //
+  //
+  //
+  // }
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /* ------------------ Event Handing Methods ------------------------------------------------------------------------------------- */
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // 동기 이벤트 핸들링
+  // Base Method
+  onEventTernel(_eventName, _eventData, __ORIGIN__) {
+    var eventName = _eventName;
+    var eventData = _eventData;
+
+    var eventCatcherKey = "onElementEvent_" + eventName;
+
+    if (typeof this[eventCatcherKey] !== 'function') {
+      console.warn("Document 는 " + eventName + " ElementNode 이벤트를 처리 할 수 없습니다. \n처리자(" + eventCatcherKey + ")가 존재하지 않음.");
+      return;
+    }
+
+    // 처리 시작
+    var result = this[eventCatcherKey](eventData, __ORIGIN__);
+
+    return result;
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //////////////////////////
+  // import methods
+  /*************
+   * inspireElementNodes
+   * ElementNode Data객체 리스트를 실제 ElementNode 객체 리스트로 변환한다.
+   * @Param _elementNodeDataList : JSON Array
+   */
+  inspireElementNodes(_elementNodeDataList) {
+    if (typeof _elementNodeDataList === 'undefined' || _elementNodeDataList === null) return []; // object가 아니면 빈 배열을 리턴한다.
+    if (typeof _elementNodeDataList.length !== 'number') throw new Error("element nodes is not Array.");
+    var list = [];
+
+    for (var i = 0; i < _elementNodeDataList.length; i++) {
+      list.push(this.newElementNode(_elementNodeDataList[i]));
+    }
+
+    return list;
+  }
+
+  //////////////////////////
+  // export methods
+  export (_withoutElementNodes) {
+    return {
+      //_id: this.getDocumentID(),
+      name: this.getDocumentName(),
+      title: this.getDocumentTitle(),
+      //created: this.getDocumentCreate(),
+      updated: this.getDocumentUpdate(),
+      lastElementId: this.getLastElementId(),
+      rootElementNode: (this.rootElementNode !== null ? this.rootElementNode.export() : null),
+      elementNodes: this.elementNodes.map(function(_elementNode) {
+        return _elementNode.export();
+      }),
+      pageCSS: this.getPageCSS(),
+      refStyleIdList: this.refStyleIdList,
+      refScriptIdList: this.refScriptIdList
+    }
+  }
 }
 
-
-// Document.prototype.analysisNeedBind = function() {
-//   console.log('analysis -', this.export());
-//
-//
-//
-//
-// }
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* ------------------ Event Handing Methods ------------------------------------------------------------------------------------- */
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// 동기 이벤트 핸들링
-// Base Method
-Document.prototype.onEventTernel = function(_eventName, _eventData, __ORIGIN__) {
-  var eventName = _eventName;
-  var eventData = _eventData;
-
-  var eventCatcherKey = "onElementEvent_" + eventName;
-
-  if (typeof this[eventCatcherKey] !== 'function') {
-    console.warn("Document 는 " + eventName + " ElementNode 이벤트를 처리 할 수 없습니다. \n처리자(" + eventCatcherKey + ")가 존재하지 않음.");
-    return;
-  }
-
-  // 처리 시작
-  var result = this[eventCatcherKey](eventData, __ORIGIN__);
-
-  return result;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////
-// import methods
-/*************
- * inspireElementNodes
- * ElementNode Data객체 리스트를 실제 ElementNode 객체 리스트로 변환한다.
- * @Param _elementNodeDataList : JSON Array
- */
-Document.prototype.inspireElementNodes = function(_elementNodeDataList) {
-  if (typeof _elementNodeDataList === 'undefined' || _elementNodeDataList === null) return []; // object가 아니면 빈 배열을 리턴한다.
-  if (typeof _elementNodeDataList.length !== 'number') throw new Error("element nodes is not Array.");
-  var list = [];
-
-  for (var i = 0; i < _elementNodeDataList.length; i++) {
-    list.push(this.newElementNode(_elementNodeDataList[i]));
-  }
-
-  return list;
-};
-
-//////////////////////////
-// export methods
-Document.prototype.export = function(_withoutElementNodes) {
-  return {
-    //_id: this.getDocumentID(),
-    name: this.getDocumentName(),
-    title: this.getDocumentTitle(),
-    //created: this.getDocumentCreate(),
-    updated: this.getDocumentUpdate(),
-    lastElementId: this.getLastElementId(),
-    rootElementNode: (this.rootElementNode !== null ? this.rootElementNode.export() : null),
-    elementNodes: this.elementNodes.map(function(_elementNode) {
-      return _elementNode.export();
-    }),
-    pageCSS: this.getPageCSS(),
-    refStyleIdList: this.refStyleIdList,
-    refScriptIdList: this.refScriptIdList
-  };
-};
 
 function objectExplore(_object, _explorer) {
   let oType = typeof _object;

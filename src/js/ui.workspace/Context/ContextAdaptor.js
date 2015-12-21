@@ -3,6 +3,11 @@ export default {
     this.props.contextController.save();
   },
 
+
+  feedChangedElementState: function() {
+    this.emit('ChangedElementState');
+  },
+
   feedSaveStateChange: function() {
     this.emit("ChangedSaveState");
     this.forceUpdate();

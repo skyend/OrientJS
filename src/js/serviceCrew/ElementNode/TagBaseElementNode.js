@@ -126,9 +126,9 @@ class TagBaseElementNode extends ElementNode {
     this.attributes = _attributes;
   }
 
-  setRectanglePart(_partValue, _partName) {
-    var rectangleRef = this.getCurrentRectangle();
-
+  setRectanglePartWithScreenMode(_partName, _partValue, _screenMode) {
+    var rectangleRef = this.getRectangleByScreenMode(_screenMode);
+    console.log(arguments);
     // 단순화
     rectangleRef[_partName] = _partValue;
 

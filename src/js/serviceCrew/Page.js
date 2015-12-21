@@ -210,6 +210,15 @@ class Page {
     targetNode.setOneChild(this.newGridNode(_behavior));
   }
 
+  findById(_id) {
+    if (this.rootGridElement !== null) {
+      return this.rootGridElement.findById(_id);
+    }
+
+    return false;
+  }
+
+
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
     //newGridNode.setId(this.getNewGridId());
@@ -260,18 +269,17 @@ class Page {
     }
   }
 
-  modifyGridRect(_targetId, _rect) {
-    let targetNode = this.rootGridElement.findById(_targetId);
+  modifyElementGeometry(_elementNode, _key, _value, _screenMode) {
 
-    targetNode.setRectanglePart(_rect.width, 'width');
-    targetNode.setRectanglePart(_rect.height, 'height');
+    if (_key === 'rectangle') {
+      let keys = Object.keys(_value);
 
-    targetNode.setRectanglePart(_rect.minWidth, 'minWidth');
-    targetNode.setRectanglePart(_rect.minHeight, 'minHeight');
+      keys.map(function(_key) {
+        _elementNode.setRectanglePartWithScreenMode(_key, _value[_key], _screenMode);
+      });
+    }
 
-    targetNode.setRectanglePart(_rect.maxWidth, 'maxWidth');
-    targetNode.setRectanglePart(_rect.maxHeight, 'maxHeight');
-  }
+  };
 
   modifyGridProperty(_targetId, _name, _value) {
     let targetNode = this.rootGridElement.findById(_targetId);

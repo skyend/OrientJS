@@ -238,7 +238,6 @@ var Workspace = React.createClass({
 
   onThrowCatcherUnfocusedContext(_eventData){
     this.noticeSelectedElementToTools(null, null);
-    this.noticeSelectedGridElementToTools(null, null);
   },
 
   onThrowCatcherNewContext(_eventData){
@@ -409,16 +408,14 @@ var Workspace = React.createClass({
 
   // 성공적으로 요소가 선택되었을 때
   onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
-    this.noticeSelectedElementToTools(_eventData.elementNode, _eventData.contextController);
-    this.noticeSelectedGridElementToTools(_eventData.elementNode, _eventData.contextController);
+    this.noticeSelectedElementToTools(_eventData.elementNode, _eventData.contextController, _eventData.screenMode);
   },
 
   onThrowCatcherCancelSelectElementNode(_eventData, _pass){
     this.noticeSelectedElementToTools(null, null);
-    this.noticeSelectedGridElementToTools(null, null);
   },
 
-  noticeSelectedElementToTools(_selectedElementNode, _contextController){
+  noticeSelectedElementToTools(_selectedElementNode, _contextController, _screenMode){
     this.applyToolStates("ElementNodeEditor", {
       elementNode: _selectedElementNode,
       contextController: _contextController
@@ -443,6 +440,12 @@ var Workspace = React.createClass({
       selectedElementNode: _selectedElementNode,
       contextController: _contextController
     });
+
+    this.applyToolStates("ElementNodeGeometryEditor", {
+      elementNode: _selectedElementNode,
+      contextController:_contextController,
+      screenMode: _screenMode
+    });
   },
 
 
@@ -464,25 +467,17 @@ var Workspace = React.createClass({
     this.refs['ContextStage'].forceUpdate();
   },
 
+  // ElementNode 가 변경 되었을 떄 발생하여 툴과 컨텍스트에 실시간으로 값을 반영하여 피드백 하도록 한다.
+  onThrowCatcherChangedElementState(_eventData){
+    this.forceUpdate();
+  },
+
   onThrowCatcherOpenElementNodeGeometryEditor(_eventData){
     this.emit('RequestAttachTool', {
       where: "RightNavigation",
       toolKey: "ElementNodeGeometryEditor"
     });
   },
-
-  onThrowCatcherSelectGridElementNode(_eventData){
-    this.noticeSelectedGridElementToTools(_eventData.gridElementNode, _eventData.contextController);
-    this.noticeSelectedElementToTools(_eventData.gridElementNode, _eventData.contextController);
-  },
-
-  noticeSelectedGridElementToTools(_gridELementNode, _contextController){
-    this.applyToolStates("ElementNodeGeometryEditor", {
-      elementNode: _gridELementNode,
-      contextController:_contextController
-    });
-  },
-
 
   // 저장
   onThrowCatcherSaveCurrentContext(_eventData, _pass){

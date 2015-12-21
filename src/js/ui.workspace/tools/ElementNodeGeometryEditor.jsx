@@ -19,6 +19,7 @@ var ElementNodeGeometryEditor = React.createClass({
 
   getDefaultProps(){
     return {
+      screenMode: 'desktop',
       elementNode: null,
       contextController: null
     };
@@ -30,23 +31,22 @@ var ElementNodeGeometryEditor = React.createClass({
     let data = _eventData.data;
 
 
-    this.props.contextController.modifyGeometryRect(targetId,{
+    this.props.contextController.modifyElementGeometry(targetId, 'rectangle',{
       width: fieldName === 'width' ? data : this.refs['sizing'].getFieldValue('width'),
       minWidth: fieldName === 'min-width' ? data : this.refs['sizing'].getFieldValue('min-width'),
       maxWidth: fieldName === 'max-width' ? data : this.refs['sizing'].getFieldValue('max-width'),
       height: fieldName === 'height' ? data : this.refs['sizing'].getFieldValue('height'),
       minHeight: fieldName === 'min-height' ? data : this.refs['sizing'].getFieldValue('min-height'),
       maxHeight: fieldName === 'max-height' ? data : this.refs['sizing'].getFieldValue('max-height')
-    });
-
+    }, this.props.screenMode);
   },
 
   renderSizingFields(_elementNode){
 
 
-    let elementRect = _elementNode.getCurrentRectangle();
-
+    let elementRect = _elementNode.getRectangleByScreenMode(this.props.screenMode);
     console.log(elementRect);
+
     let fieldSet = [];
     fieldSet.push({
       "name": "width",
@@ -97,7 +97,6 @@ var ElementNodeGeometryEditor = React.createClass({
   },
 
   renderPositioningFields(_elementNode){
-
 
     let elementRect = _elementNode.getCurrentRectangle();
 
@@ -189,7 +188,7 @@ var ElementNodeGeometryEditor = React.createClass({
 
   render() {
     var rootClasses = ['ElementNodeGeometryEditor', this.getMySizeClass()];
-
+    console.log( this.props);
     return (
       <div className={rootClasses.join(' ')}>
         <div className='wrapper'>

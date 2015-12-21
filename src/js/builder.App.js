@@ -83,7 +83,7 @@ App.prototype.startPublishPage = function(_params) {
               serviceManager.getPageContextController(_result._id, function(_contextController) {
 
                 let viewer = new Viewer(serviceManager);
-                viewer.page = _contextController.page;
+                viewer.page = _contextController.subject;
                 viewer.window = window;
                 viewer.rendering({
                   width: window.clientWidth,
@@ -98,7 +98,7 @@ App.prototype.startPublishPage = function(_params) {
           serviceManager.getPageContextController(_result._id, function(_contextController) {
 
             let viewer = new Viewer(serviceManager);
-            viewer.page = _contextController.page;
+            viewer.page = _contextController.subject;
             viewer.window = window;
             viewer.rendering({
               width: window.clientWidth,

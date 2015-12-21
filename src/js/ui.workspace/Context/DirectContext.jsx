@@ -31,7 +31,6 @@ var DirectContext = React.createClass({
       showElementNavigator: false,
       showElementMiniOptionSet:true,
       showElementRemoteControl:false,
-      sizing: 'desktop'
     };
   },
 
@@ -47,12 +46,16 @@ var DirectContext = React.createClass({
     this.contextController.resume();
 
     this.emit("DocumentFocused", {
-      document: this.contextController.document
+      document: this.contextController.subject
     });
   },
 
   feedSaveStateChange(){
     this.emit("ChangedSaveState");
+  },
+
+  feedChangedElementState: function() {
+    this.emit('ChangedElementState');
   },
 
   appendElementToBody(_element){
@@ -534,12 +537,12 @@ var DirectContext = React.createClass({
     // boxSizing에 따라 padding과 border의 넓이를 제외한다.
     switch (computedStyle.boxSizing) {
       case "content-box":
-        nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-        nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+        if( nextWidth !== undefined ) nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+        if( nextHeight !== undefined ) nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
 
       case "padding-box":
-        nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
-        nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
+        if( nextWidth !== undefined ) nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
+        if( nextHeight !== undefined ) nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
         break;
     }
 
@@ -547,15 +550,22 @@ var DirectContext = React.createClass({
     if (nextWidth < 0) nextWidth = 0;
     if (nextHeight < 0) nextHeight = 0;
 
+    let modifiedRect = {};
+    if( nextLeft !== undefined){
+      modifiedRect.left = nextLeft;
+    }
+    if( nextTop !== undefined){
+      modifiedRect.top = nextTop;
+    }
+    if( nextWidth !== undefined ){
+      modifiedRect.width = nextWidth;
+    }
+    if( nextHeight !== undefined ){
+      modifiedRect.height = nextHeight;
+    }
+    console.log(modifiedRect);
+    this.props.contextController.modifyElementGeometry(elNode, "rectangle",  modifiedRect, this.props.renderStageMode);
 
-    this.props.contextController.modifyElementProperty(elNode, "rectangle", {
-      left: nextLeft,
-      top: nextTop,
-      width: nextWidth,
-      height: nextHeight
-    });
-
-    //elNode.document.getContextController().rootRender();
     this.forceUpdate();
   },
 

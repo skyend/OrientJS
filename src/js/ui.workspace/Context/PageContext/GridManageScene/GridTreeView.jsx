@@ -42,8 +42,8 @@ export default React.createClass({
       gridElementNode: _gridNode
     });
 
-    this.emit("SelectGridElementNode", {
-      gridElementNode: _gridNode
+    this.emit("SuccessfullyElementNodeSelected", {
+      elementNode: _gridNode
     });
   },
 
@@ -183,8 +183,8 @@ export default React.createClass({
     }
 
     let selectGridNode = function(){
-      self.emit("SelectGridElementNode",{
-        gridElementNode:_gridElement
+      self.emit("SuccessfullyElementNodeSelected",{
+        elementNode:_gridElement
       });
     }
       console.log('TreeView')

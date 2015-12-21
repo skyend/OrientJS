@@ -3,9 +3,12 @@ var Document = require('./Document.js');
 var jsDiff = require('diff');
 import LZString from '../lib/lz-string.js';
 import DocumentRevisionManager from './DocumentRevisionManager.js';
+import HasElementNodeContextController from './HasElementNodeContextController.js';
 
-class DocumentContextController {
+class DocumentContextController extends HasElementNodeContextController {
   constructor(_document, _params, _serviceManager) {
+    super();
+
     this.attached = false;
     this.context = null;
     this.running = false;
@@ -24,11 +27,11 @@ class DocumentContextController {
     // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
     if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-      this.document = new Document(this, _params, _document);
+      this.subject = new Document(this, _params, _document);
     } else {
 
       // 없다면 새로운 Document를 생성한다.
-      this.document = new Document(this, {});
+      this.subject = new Document(this, {});
     }
 
 
@@ -39,10 +42,6 @@ class DocumentContextController {
     this.componentCSSHolders = {};
 
   }
-
-
-
-
 
   /*********
    * Attach / Pause / Resume
@@ -59,41 +58,17 @@ class DocumentContextController {
     this.beginRender();
   }
 
-  pause() {
-    this.running = false;
-
-    /* processing */
-
-  }
-
-  resume() {
-    this.running = true;
-
-    /* processing */
-
-  }
-
   save() {
     var self = this;
-    var docjson = this.document.export();
-    this.serviceManager.saveDocument(this.document.getDocumentID(), docjson, function(_result) {
+    var docjson = this.subject.export();
+    this.serviceManager.saveDocument(this.subject.getDocumentID(), docjson, function(_result) {
       self.unsaved = false;
       self.context.feedSaveStateChange();
     });
   }
 
-  changedContent() {
-    if (this.unsaved) return;
-    this.unsaved = true;
-    this.context.feedSaveStateChange();
-  }
-
-  get isUnsaved() {
-    return this.unsaved;
-  }
-
   modifyDocumentCSS(_cssText) {
-    this.document.setPageCSS(_cssText);
+    this.subject.setPageCSS(_cssText);
     this.updatePageCSS();
     this.changedContent();
   }
@@ -104,7 +79,7 @@ class DocumentContextController {
     let treeRefresh = false;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -176,7 +151,7 @@ class DocumentContextController {
     let treeRefresh = false;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -205,7 +180,7 @@ class DocumentContextController {
     let parentElementNode = null;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -252,7 +227,7 @@ class DocumentContextController {
     let parentElementNode = null;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -272,12 +247,49 @@ class DocumentContextController {
     this.changedContent();
   }
 
+  modifyElementGeometry(_elementIdorElement, _key, _value, _screenMode) {
+
+    // 타겟 노드와 타겟노드의 부모 노느 찾기
+    let targetElementNode = null;
+    let parentElementNode = null;
+
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    // 편집
+    this.subject.modifyElementGeometry(targetElementNode, _key, _value, _screenMode);
+
+    // 화면 업데이트
+    if (parentElementNode !== null) {
+
+      parentElementNode.children.map((_childElementNode) => {
+        _childElementNode.realize();
+      });
+
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkHierarchyRealizaion();
+
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.rootRender();
+    }
+
+    this.changedContent();
+  }
+
   modifyElementTree(_elementIdorElement, _action, _object) {
     let targetElementNode = null;
     let parentElementNode = null;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -294,7 +306,7 @@ class DocumentContextController {
         if (parentElementNode !== null) {
           returns = parentElementNode.detachChild(targetElementNode);
         } else {
-          this.document.rootElementNode = null;
+          this.subject.rootElementNode = null;
         }
 
         break;
@@ -302,34 +314,34 @@ class DocumentContextController {
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
           if (targetElementNode === null) {
-            this.document.setRootElementNode(newElementNode);
+            this.subject.setRootElementNode(newElementNode);
           } else {
-            this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+            this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
           }
         }.apply(this);
         break;
       case "insertBeforeComponent":
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
-          this.document.insertElementNode("insertBefore", newElementNode, targetElementNode);
+          this.subject.insertElementNode("insertBefore", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "insertAfterComponent":
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
-          this.document.insertElementNode("insertAfter", newElementNode, targetElementNode);
+          this.subject.insertElementNode("insertAfter", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "cloneAndInsertAfter":
         returns = () => {
-          let clonedElementNode = this.document.cloneElement(targetElementNode);
-          this.document.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
+          let clonedElementNode = this.subject.cloneElement(targetElementNode);
+          this.subject.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
         }.apply(this);
         break;
       case "pasteIn":
         returns = () => {
-          var newElementNode = this.document.newElementNode(_object);
-          this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+          var newElementNode = this.subject.newElementNode(_object);
+          this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "default":
@@ -387,7 +399,7 @@ class DocumentContextController {
 
 
   convertToElementNodeFromComponent(_component) {
-    return this.document.newElementNodeFromComponent(_component);
+    return this.subject.newElementNodeFromComponent(_component);
   }
 
   setScreenSizing(_sizing) {
@@ -417,14 +429,14 @@ class DocumentContextController {
     console.log("Begin Render");
 
     // resource convert
-    this.convertToScriptElements(this.document.refScriptIdList || [], function(_scriptElements) {
+    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
       // script element block을 적용한다.
       _scriptElements.map(function(_scriptElement) {
         self.context.applyScriptElement(_scriptElement);
       });
     });
 
-    this.convertToStyleElements(this.document.refStyleIdList || [], function(_styleElements) {
+    this.convertToStyleElements(this.subject.refStyleIdList || [], function(_styleElements) {
       // style element block을 적용한다.
       _styleElements.map(function(_styleElement) {
         self.context.applyStyleElement(_styleElement);
@@ -450,11 +462,11 @@ class DocumentContextController {
 
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
-    if (this.document.rootElementNode !== null) {
+    if (this.subject.rootElementNode !== null) {
       this.rootRender(_realizeOptions);
     }
 
-    //console.log(this.document.rootElementNode);
+    //console.log(this.subject.rootElementNode);
   }
 
   rerenderingElementNode(_elementNode, _realizeOptions) {
@@ -503,7 +515,7 @@ class DocumentContextController {
   rootRender(_realizeOptions) {
     console.log("Root Render");
     this.updateRenderCSS();
-    this.rerenderingElementNode(this.document.rootElementNode, _realizeOptions);
+    this.rerenderingElementNode(this.subject.rootElementNode, _realizeOptions);
   }
 
   applyComponentCSS(_cssIdentifier, _cssText) {
@@ -544,13 +556,13 @@ class DocumentContextController {
 
 
     // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.document.interpret(this.document.getPageCSS()) + this.extractComponentsStyleSheet();
+    this.pageCSSBlock.innerHTML = this.subject.interpret(this.subject.getPageCSS()) + this.extractComponentsStyleSheet();
 
   }
 
   updateRenderCSS() {
     // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
-    //this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+    //this.updateHTMLTypeElementNodeCSS(this.subject.getHTMLElementNodeCSSLines() + this.subject.getReactElementNodeCSSLines());
     this.updatePageCSS();
   }
 
@@ -562,7 +574,7 @@ class DocumentContextController {
   attachRootRealElementToSuperElement() {
 
     // rootRealElement 를 지정된 superElement에 랜더링한다.
-    this.superElement.appendChild(this.document.rootElementNode.getRealization());
+    this.superElement.appendChild(this.subject.rootElementNode.getRealization());
   }
 
   clearSuperElement() {
@@ -590,7 +602,7 @@ class DocumentContextController {
         element = baseWindow.document.createElement('style');
         let style = self.serviceManager.getStyleContents(_styleId);
 
-        element.innerHTML = self.document.interpret(style);
+        element.innerHTML = self.subject.interpret(style);
 
         //linkE.setAttribute('href', url);
       } else {
@@ -625,7 +637,7 @@ class DocumentContextController {
 
       if (url !== null) {
         let script = self.serviceManager.getScriptContents(_scriptId);
-        element.innerHTML = self.document.interpret(script);
+        element.innerHTML = self.subject.interpret(script);
         //linkE.setAttribute('href', url);
       } else {
         element.setAttribute('src', _scriptId);
@@ -762,7 +774,7 @@ class DocumentContextController {
   }
 
   snapshot(_elementNode, _present, _past, _type) {
-    // var compressedDoc = LZString.compress(JSON.stringify(this.document.export()));
+    // var compressedDoc = LZString.compress(JSON.stringify(this.subject.export()));
     // console.log(compressedDoc.length);
     //
     // var compressedDiff = jsDiff.diffChars(this.prev, compressedDoc);
@@ -851,12 +863,12 @@ class DocumentContextController {
 
 
   isDropableToRoot() {
-    return this.document.rootElementNode === null;
+    return this.subject.rootElementNode === null;
   }
 
 
   testSave() {
-    console.log(JSON.stringify(this.document.export()));
+    console.log(JSON.stringify(this.subject.export()));
   }
 
 

@@ -10,7 +10,8 @@ let GridManageScene = React.createClass({
   getDefaultProps(){
     return {
       rootGridElement: null,
-      selectedGridNode: null
+      selectedGridNode: null,
+      selectedScreenMode: 'desktop'
     };
   },
 
@@ -116,9 +117,9 @@ let GridManageScene = React.createClass({
 
     let divideWidth = (this.props.width-(foldGrids*30)) / (4-foldGrids);
 
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
     returnElements.push(<GridTreeView rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.treeViewFold? 30:divideWidth} height={this.props.height} left={divideWidth * 3} folding={this.state.treeViewFold}/>);
     return returnElements;
   },

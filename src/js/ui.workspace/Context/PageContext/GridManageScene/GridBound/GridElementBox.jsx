@@ -88,11 +88,12 @@ let GridElementBox = React.createClass({
   },
 
   click(_e){
-    console.log('click', _e.target);
+    console.log('click', _e.target, this.props.screenMode);
     _e.stopPropagation();
 
-    this.emit("SelectGridElementNode", {
-      gridElementNode: this.props.gridElement
+    this.emit("SuccessfullyElementNodeSelected", {
+      elementNode: this.props.gridElement,
+      screenMode:this.props.screenMode
     });
   },
 

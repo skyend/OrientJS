@@ -1,8 +1,12 @@
 "use strict";
 import Page from './Page.js';
+import ContextController from './ContextController.js';
+import HasElementNodeContextController from './HasElementNodeContextController.js';
 
-class PageContextController {
+class PageContextController extends HasElementNodeContextController {
   constructor(_page, _session, _serviceManager) {
+    super();
+
     this._superDOMElement;
     this.attached = false;
     this.context = null;
@@ -18,9 +22,9 @@ class PageContextController {
     this.screenSizing = 'desktop'; // desktop, tablet, mobile
 
     if (_page !== undefined) {
-      this.page = new Page(this, _page, _serviceManager);
+      this.subject = new Page(this, _page, _serviceManager);
     } else {
-      this.page = new Page(this, undefined, _serviceManager);
+      this.subject = new Page(this, undefined, _serviceManager);
     }
   }
 
@@ -30,95 +34,106 @@ class PageContextController {
     this.context = _context;
   }
 
-  pause() {
-
-  }
-
-  resume() {
-
-  }
-
   save() {
     let self = this;
-    let pageJSON = this.page.export();
+    let pageJSON = this.subject.export();
 
-    this.serviceManager.savePage(this.page.id, pageJSON, function(_result) {
+    this.serviceManager.savePage(this.subject.id, pageJSON, function(_result) {
       self.unsaved = false;
       self.context.feedSaveStateChange();
     });
   }
 
-  changedContent() {
-    if (this.unsaved) return;
-    this.unsaved = true;
-    this.context.feedSaveStateChange();
-  }
 
   updateVisual() {
     this.context.forceUpdate();
   }
 
   modifyCreateRootGrid() {
-    this.page.createRootGridElement();
+    this.subject.createRootGridElement();
 
     this.changedContent();
   }
 
   modifyAppendNewGrid(_targetId, _behavior) {
-    this.page.appendNewGrid(_targetId, _behavior);
+    this.subject.appendNewGrid(_targetId, _behavior);
     this.changedContent();
   }
 
   modifyAppendBeforeNewGrid(_targetId, _behavior) {
-    this.page.appendBeforeNewGrid(_targetId, _behavior);
+    this.subject.appendBeforeNewGrid(_targetId, _behavior);
     this.changedContent();
   }
 
   modifyAppendAfterNewGrid(_targetId, _behavior) {
-    this.page.appendAfterNewGrid(_targetId, _behavior);
+    this.subject.appendAfterNewGrid(_targetId, _behavior);
     this.changedContent();
   }
 
   modifySetNewGrid(_targetId, _behavior) {
-    this.page.setNewGrid(_targetId, _behavior);
+    this.subject.setNewGrid(_targetId, _behavior);
     this.changedContent();
   }
 
   modifyClearGridElement(_targetId) {
-    this.page.clearElementNode(_targetId);
+    this.subject.clearElementNode(_targetId);
     this.changedContent();
   }
 
   modifyRemoveGridElement(_targetId) {
-    this.page.removeElementNode(_targetId);
+    this.subject.removeElementNode(_targetId);
     this.changedContent();
   }
 
   modifyGridElementProp(_targetId, _fieldName, _value) {
-    this.page.modiftyGridElementProp(_targetId, _fieldName, _value);
+    this.subject.modiftyGridElementProp(_targetId, _fieldName, _value);
     this.changedContent();
   }
 
-  modifyGeometryRect(_targetId, _rect) {
-    console.log(_rect, 'rect');
-    this.page.modifyGridRect(_targetId, _rect);
+  modifyElementGeometry(_elementIdorElement, _key, _value, _screenMode) {
+
+    // 타겟 노드와 타겟노드의 부모 노느 찾기
+    let targetElementNode = null;
+    let parentElementNode = null;
+
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    // 편집
+    this.subject.modifyElementGeometry(targetElementNode, _key, _value, _screenMode);
+
     this.changedContent();
     this.updateVisual();
   }
 
-  modifyGridProperty(_targetId, _name, _value) {
-    this.page.modifyGridProperty(_targetId, _name, _value);
-    this.changedContent();
-    this.updateVisual();
-  }
+  //
+  // modifyGeometryRect(_targetId, _rect, _screenMode) {
+  //   console.log(_rect, 'rect');
+  //   this.subject.modifyGeometryRect(_targetId, _rect, _screenMode);
+  //   this.changedContent();
+  //   this.updateVisual();
+  // }
+  //
+  // modifyGridProperty(_targetId, _name, _value) {
+  //   this.subject.modifyGridProperty(_targetId, _name, _value);
+  //   this.changedContent();
+  //   this.updateVisual();
+  // }
 
   modifyAccessPoint(_accessPoint) {
-    this.page.accessPoint = _accessPoint;
+    this.subject.accessPoint = _accessPoint;
     this.changedContent();
   }
 
   modifyAddFragmentParamSupply() {
-    this.page.addFragmentParamSupply();
+    this.subject.addFragmentParamSupply();
     this.changedContent();
   }
 
@@ -132,7 +147,7 @@ class PageContextController {
     let targetElementNode = null;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
+      targetElementNode = this.subject.rootGridElement.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -160,7 +175,7 @@ class PageContextController {
     let targetElementNode = null;
 
     if (typeof _elementIdorElement === 'string') {
-      targetElementNode = this.page.rootGridElement.findById(_elementIdorElement);
+      targetElementNode = this.subject.rootGridElement.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -182,18 +197,14 @@ class PageContextController {
   }
 
   getRootGridElement() {
-    return this.page.rootGridElement;
-  }
-
-  get isUnsaved() {
-    return this.unsaved;
+    return this.subject.rootGridElement;
   }
 
 
   setScreenSizing(_sizing) {
 
     this.screenSizing = _sizing;
-    this.page.screenMode = _sizing;
+    this.subject.screenMode = _sizing;
   }
 
   getScreenSizing() {
@@ -206,7 +217,7 @@ class PageContextController {
       height: _height
     };
 
-    this.page.screenSize = this._screenSize;
+    this.subject.screenSize = this._screenSize;
 
     console.log(this._screenSize, '---------------size');
   }

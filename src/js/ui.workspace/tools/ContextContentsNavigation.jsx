@@ -214,8 +214,8 @@ var ContextContentsNavigation = React.createClass({
 
     //console.log(runningContext);
     if (runningContext.contextType === 'document') {
-      elementNode = runningContext.contextController.document.rootElementNode;
-      elementNodes = runningContext.contextController.document.elementNodes;
+      elementNode = runningContext.contextController.subject.rootElementNode;
+      elementNodes = runningContext.contextController.subject.elementNodes;
     }
 
 

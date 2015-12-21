@@ -463,6 +463,31 @@
       )
     },
 
+    renderComponentList(){
+
+      return (
+        <div className="resourceList">
+          <label className='listLabel'>
+            <i className='fa fa-cubes'></i> Components
+              <span className='import-button' onClick={this.clickExportComponents}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportComponents}>
+                <i className='fa fa-download'></i>
+              </span>
+              <span className='add-button' onClick={this.clickNewComponent}>
+                <i className='fa fa-plus'></i>
+              </span>
+          </label>
+          <ul>
+
+          </ul>
+        </div>
+      )
+    },
+
+
+
     toggleFilterItem(_name){
       let filterSet = this.state.filterSet;
 
@@ -520,6 +545,9 @@
         if( this.state.filterSet.has('MashupAPISource') ){
           renderList.push( this.renderMashupAPISourceList() );
         }
+        if( this.state.filterSet.has('Component') ){
+          renderList.push( this.renderComponentList() );
+        }
       } else {
         renderList.push( this.renderPageList() );
         renderList.push( this.renderDocumentList() );
@@ -528,6 +556,7 @@
         renderList.push( this.renderAPIInterfaceList() );
         renderList.push( this.renderICEAPISourceList() );
         renderList.push( this.renderMashupAPISourceList() );
+        renderList.push( this.renderComponentList() );
       }
 
       return renderList;
@@ -566,6 +595,9 @@
                 </li>
                 <li className={this.state.filterSet.has('MashupAPISource')? 'selected':''} onClick={function(){self.toggleFilterItem('MashupAPISource')}}>
                   <i className="fa fa-share-alt-square"/>
+                </li>
+                <li className={this.state.filterSet.has('Component')? 'selected':''} onClick={function(){self.toggleFilterItem('Component')}}>
+                  <i className="fa fa-cubes"/>
                 </li>
               </ul>
             </div>
