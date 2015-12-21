@@ -508,55 +508,49 @@ class Page {
   }
 
   paramProcessing(_paramSupply, _complete) {
+    let self = this;
     let keys = Object.keys(_paramSupply);
-    let fields = [];
     let result;
-    let key;
 
-    for (let i = 0; i < keys.length; i++) {
-      key = keys[i];
-
-      if (/^field_/.test(key)) {
-        fields.push({
-          name: key.replace(/^field_/, ''),
-          value: this.interpret(_paramSupply[key])
-        });
-      }
-    }
-
-
-    console.log('처리해 ', _paramSupply, fields);
-    console.log(fields);
 
     if (_paramSupply.method === 'request') {
       let apiSourceId = _paramSupply.apiSourceId;
-      let requestName = _paramSupply.requestName;
+      let requestId = _paramSupply.requestId;
 
       let apiSourceIndex = _.findIndex(this.preparedAPISourceList, {
         id: apiSourceId
       });
 
       let apiSource = this.preparedAPISourceList[apiSourceIndex];
-
-      console.log('자 이걸 처리해야되', apiSource, requestName);
-      console.log('요청', apiSource.requests[requestName], fields);
-
-      // 불필요한 필드가 삽입되어 있을 때를 대비하여 request parameter 리스트에서 제거한다.
-      fields = fields.filter(function(_field) {
-        let name = _field.name;
-        let index = _.findIndex(apiSource.requests[requestName].fieldList, {
-          name: name
-        });
-
-        if (index < 0) {
-          return false;
-        }
-        return true;
+      if (apiSource === undefined) {
+        alert("API Source " + apiSourceId + " 를 찾지 못 했습니다. ");
+        return;
+      }
+      let requestIndex = _.findIndex(apiSource.requests, {
+        id: requestId
       });
 
-      apiSource.executeRequest(requestName, fields, undefined, function(_result) {
+      if (requestIndex === -1) {
+        alert("API Source 의 요청을 찾지 못했습니다. ICEAPISource[" + apiSource.title + "] 의 설정을 확인하여 주세요.");
+        return;
+      }
+
+      let request = apiSource.requests[requestIndex];
+
+
+      let fields = {};
+      request.fields.map(function(_requestField) {
+        let index = _.findIndex(_paramSupply.fields, {
+          name: _requestField.key
+        });
+
+        if (index !== -1) {
+          fields[_requestField.key] = self.interpret(_paramSupply.fields[index].value || '');
+        }
+      });
+
+      apiSource.executeRequest(requestId, fields, undefined, function(_result) {
         result = _result;
-        console.log("받았다", _result);
 
         _complete(result);
       });
@@ -631,7 +625,8 @@ class Page {
       updated: this.updated,
       accessPoint: this.accessPoint,
       paramSupplies: this.paramSupplies,
-      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined
+      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined,
+      requiredNSCache: [], // 추후에 불필요한 ParamSupply 가 호출되는것을 막기 위해 page를 저장 할 때 마다 이 필드를 갱신한다. // 갱신방법으로는 page가 필요한 NameSpace 바인딩을 얻어와 갱신 하는 방법이 있다.
     };
   }
 }
