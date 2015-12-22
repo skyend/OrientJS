@@ -124,7 +124,8 @@ class GridElementNode extends HTMLElementNode {
 
   fragmentRender(_realizeOptions) {
     this.realization.innerHTML = '';
-    this.fragmentContextController.attach(this.environment.fragmentContext, this.realization);
+    this.fragmentContextController.attach(this.environment.fragmentContext);
+    this.fragmentContextController.setSuperElement(this.realization);
     this.fragmentContextController.beginRender(_realizeOptions);
   }
 

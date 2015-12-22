@@ -133,7 +133,7 @@ class DocumentContextController extends HasElementNodeContextController {
       parentElementNode.linkHierarchyRealizaion();
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -163,7 +163,7 @@ class DocumentContextController extends HasElementNodeContextController {
       parentElementNode.linkHierarchyRealizaion();
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -209,7 +209,7 @@ class DocumentContextController extends HasElementNodeContextController {
         parentElementNode.linkHierarchyRealizaion();
       } else {
         // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-        this.rootRender();
+        this.context.renderRefresh();
       }
     }
 
@@ -272,7 +272,7 @@ class DocumentContextController extends HasElementNodeContextController {
 
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -359,7 +359,7 @@ class DocumentContextController extends HasElementNodeContextController {
 
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -757,7 +757,7 @@ class DocumentContextController extends HasElementNodeContextController {
     if (liveElementNode === false) throw new Error("링크중인 ElementNode를 찾을 수 없음.");
 
     liveElementNode.import(importSource);
-    this.rootRender();
+    this.context.renderRefresh();
     this.context.updatedHistory();
   }
 
