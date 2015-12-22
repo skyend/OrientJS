@@ -845,19 +845,21 @@ var DirectContext = React.createClass({
                   <i className='fa fa-pencil-square'/> <span className='title'>Paste In</span>
                 </button>
               </li>
-
-              <li>
-                <button onClick={this.removeElement}>
-                  <i className='fa fa-trash'/> <span className='title'>Remove</span>
-                </button>
-              </li>
-
               <li>
                 <button onClick={this.createComponent}>
                   <i className='fa fa-cubes'/> <span className='title'>Create Component</span>
                 </button>
               </li>
-
+              <li>
+                <button onClick={this.makeBindSubject}>
+                  <i className='fa fa-tasks'/> <span className='title'>Make Bind Subject</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={this.removeElement}>
+                  <i className='fa fa-trash'/> <span className='title'>Remove</span>
+                </button>
+              </li>
               <li>
                 <button onClick={this.useElementRemoteControl}>
                   <i className='fa fa-share-square-o'/> <span className='title'>Change RemoteControl</span>
