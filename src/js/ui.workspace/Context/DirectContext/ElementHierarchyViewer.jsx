@@ -11,6 +11,10 @@ export default React.createClass({
     }
   },
 
+  renderElementNodeFriends(_elementNode){
+    return "renderElementNodeFriends";
+  },
+
   renderElementNodeBlock(_elementNode, _reversedIndex, _isLast){
     let that = this;
     let type = _elementNode.getType();
@@ -36,8 +40,17 @@ export default React.createClass({
       });
     }
 
+    function contextMenuFunc(_e){
+      _e.preventDefault();
+
+      // 선택된 요소의 같은 레벨에 있는 요소를 세로 리스트로 랜더링한다.
+      // 나중에 개발
+      that.setState({showFriends:_elementNode});
+      return false;
+    }
+ 
     if(type === 'string'){
-      return <li className='string' style={style} onMouseEnter={mouseEnterFunc} onMouseLeave={mouseLeaveFunc} onClick={clickFunc}>
+      return <li className='string' style={style} onMouseEnter={mouseEnterFunc} onMouseLeave={mouseLeaveFunc} onClick={clickFunc} onContextMenu={contextMenuFunc}>
         <span className='type'>STRING</span>
       </li>;
     }
@@ -48,7 +61,7 @@ export default React.createClass({
 
 
 
-    return <li className='tag-based' style={style} onMouseEnter={mouseEnterFunc} onMouseLeave={mouseLeaveFunc} onClick={clickFunc}>
+    return <li className='tag-based' style={style} onMouseEnter={mouseEnterFunc} onMouseLeave={mouseLeaveFunc} onClick={clickFunc} onContextMenu={contextMenuFunc}>
       {type !== 'html' ? <span className='type'>{type}</span>:''}
       <span className='tagName'>
         {_elementNode.getTagName()}
