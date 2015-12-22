@@ -397,55 +397,6 @@ class ElementNode {
     return elementNode;
   };
 
-  // .deprecated
-  // applyAttributesToRealDOM(_escapeResolve) {
-  //
-  //   //console.log("Do you think i must escape resolving?", _escapeResolve);
-  //
-  //   var realElement = this.getRealization();
-  //   if (this.getType() === 'string') {
-  //     // resolve String : data binding and i18n processing
-  //     //console.log(this.getText());
-  //     realElement.nodeValue = _escapeResolve ? this.getText() : this.interpret(this.getText());
-  //
-  //   } else {
-  //     var currentRect = this.getCurrentRectangle();
-  //     var elementAttributes = this.getAttributes();
-  //     var keys = Object.keys(elementAttributes);
-  //
-  //     for (var i = 0; i < keys.length; i++) {
-  //
-  //       if (keys[i] !== 'tagName') {
-  //         // resolve String : data binding and i18n processing
-  //         realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.interpret(elementAttributes[keys[i]]));
-  //       }
-  //     }
-  //
-  //
-  //     if (/^\d+/.test(currentRect.left)) {
-  //       realElement.style.left = currentRect.left;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.top)) {
-  //       realElement.style.top = currentRect.top;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.width)) {
-  //       realElement.style.width = currentRect.width;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.height)) {
-  //       realElement.style.height = currentRect.height;
-  //     }
-  //
-  //     if (this.isTextEditMode()) {
-  //       realElement.setAttribute('contenteditable', true);
-  //     }
-  //   }
-  // }
-
-
-
 
   isDropableComponent(_dropType) {
     var criterionElementNode;
@@ -540,7 +491,17 @@ class ElementNode {
   }
 
 
+  getParentList() {
+    let current = this;
+    let parentList = [];
 
+    while (current.parent !== null) {
+      parentList.unshift(current.parent);
+      current = current.parent;
+    }
+
+    return parentList;
+  }
 
   executeSnapshot(_type) {
     //var presentRevision = this.export();

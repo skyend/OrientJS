@@ -4,6 +4,7 @@ import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
 import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
+import ElementHierarchyViewer from './DirectContext/ElementHierarchyViewer.jsx';
 import './DirectContext.less';
 import Returns from "../../Returns.js";
 
@@ -288,7 +289,7 @@ var DirectContext = React.createClass({
 
     this.setState({
       showElementNavigator: false,
-      selectedElement: null
+      selectedElementNode: null
     });
 
 
@@ -701,12 +702,15 @@ var DirectContext = React.createClass({
   },
 
   render(){
-    var iframeStageWidth = (this.props.renderStageWidth > this.props.width) ? this.props.width : this.props.renderStageWidth;
-    var iframeStageHeight = (this.props.renderStageHeight > this.props.height) ? this.props.height : this.props.renderStageHeight;
+    let width = this.props.width;
+    let height = this.props.height - 30;
+
+    var iframeStageWidth = (this.props.renderStageWidth > width) ? width : this.props.renderStageWidth;
+    var iframeStageHeight = (this.props.renderStageHeight > height) ? height : this.props.renderStageHeight;
     iframeStageWidth -= 10;
     iframeStageHeight -= 10;
-    var stageX = ( this.props.width - iframeStageWidth ) / 2;
-    var stageY = ( this.props.height - iframeStageHeight ) / 2;
+    var stageX = ( width - iframeStageWidth ) / 2;
+    var stageY = ( height - iframeStageHeight ) / 2;
     this.stageX = stageX;
     this.stageY = stageY;
 
@@ -750,8 +754,8 @@ var DirectContext = React.createClass({
       }
 
       var elNavX = boundingBox.left + stageX;
-      if (elNavX + 300 > this.props.width) {
-        elNavX = this.props.width - 300;
+      if (elNavX + 300 > width) {
+        elNavX = width - 300;
       }
 
       elementNavigatorStyle = {
@@ -880,6 +884,8 @@ var DirectContext = React.createClass({
                            editModeHighlight={this.state.editModeElementNode !== null }/>
 
         {this.state.showElementRemoteControl && this.state.showElementNavigator? <ElementRemoteControl defaultLeft={stageX + (iframeStageWidth/2)} defaultTop={stageY + (iframeStageHeight/3)}/>:''}
+
+        <ElementHierarchyViewer selectedElementNode={this.state.selectedElementNode}/>
       </div>
 
     );
