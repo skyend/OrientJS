@@ -65,7 +65,7 @@ class ServiceManager {
         });
       }
     ], function end() {
-      _readyCallback();
+      _readyCallback(self);
     });
   }
 

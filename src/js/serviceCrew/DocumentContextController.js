@@ -566,10 +566,6 @@ class DocumentContextController extends HasElementNodeContextController {
     this.updatePageCSS();
   }
 
-  getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext) {
-
-    return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey, _syncWindowContext);
-  }
 
   attachRootRealElementToSuperElement() {
 

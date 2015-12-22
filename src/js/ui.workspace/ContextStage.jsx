@@ -463,14 +463,17 @@ var ContextStage = React.createClass({
 
           }
 
+          self.clearAim();
         }
+
+
       });
 
 
-      this.clearAim();
+
     }
 
-    this.clearAim();
+    //this.clearAim();
     // VDomController Destroy
     this.liveVDomController = null;
   },

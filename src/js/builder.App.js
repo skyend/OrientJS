@@ -68,7 +68,9 @@ App.prototype.startPublishPage = function(_params) {
   }
 
   // Main Page
-  let serviceManager = new ServiceManager(this, serviceId, function readyFunc() {
+  let serviceManager = new ServiceManager(this, serviceId, function readyFunc(_serviceManager) {
+    self.session.setServiceManager(_serviceManager);
+
     // 빌더 시작
     self.serviceManager = serviceManager;
 
@@ -117,7 +119,8 @@ App.prototype.startPublishPage = function(_params) {
 App.prototype.startServiceBuilding = function(_service_id) {
   let self = this;
   // 서비스 매니저 생성
-  this.serviceManager = new ServiceManager(this, _service_id, function readyFunc() {
+  this.serviceManager = new ServiceManager(this, _service_id, function readyFunc(_serviceManager) {
+    self.session.setServiceManager(_serviceManager);
     // 빌더 시작
     self.initBuilder();
   });

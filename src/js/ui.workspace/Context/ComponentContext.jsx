@@ -22,7 +22,7 @@ export default React.createClass({
 
     if( field === 'script' ){
       this.props.contextController.modifyScript(value);
-    } else if (field === 'style' ){
+    } else if (field === 'css' ){
       this.props.contextController.modifyStyle(value);
     }
   },

@@ -350,22 +350,15 @@ UI.prototype.onThrowCatcherRefreshTools = function() {
   this.toolFactory.refreshTools();
 };
 
-UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData) {
-
-  if (_eventData.refPath[0] === 'ComponentPalette') {
-
-    _eventData.path[0].setState({
-      previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey, _eventData.syncWindowContext)
-    });
-  }
-};
 
 UI.prototype.onThrowCatcherGetComponent = function(_eventData) {
   var key = _eventData.componentKey;
   //console.log(_eventData, 'get');
-  var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
+  var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey, undefined, function(_result) {
+    _eventData.return(null, _result);
+  });
 
-  _eventData.return(null, loadedComponent);
+
 };
 
 // UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {

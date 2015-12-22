@@ -44,6 +44,9 @@ var DirectContext = React.createClass({
 
   goingToContextRunning(){
     this.contextController.resume();
+    console.log("DirectCOntext GOGO");
+
+    this.props.contextController.rootRender();
 
     this.emit("DocumentFocused", {
       document: this.contextController.subject

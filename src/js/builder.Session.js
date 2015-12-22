@@ -25,6 +25,9 @@ var Session = function() {
   this.readCookie();
 };
 
+Session.prototype.setServiceManager = function(_serviceManager) {
+  this.componentPool.serviceManager = _serviceManager;
+};
 
 Session.prototype.getComponentPool = function() {
   return this.componentPool;

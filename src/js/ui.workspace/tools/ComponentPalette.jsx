@@ -13,7 +13,8 @@
 
     getInitialState(){
       return {
-        availableComponentPackageMeta: []
+        availableComponentPackageMeta: [],
+        componentList:null
       }
     },
 
@@ -73,7 +74,7 @@
 
     componentDidMount(){
       //this.refs['ComponentPreviewer'].displayComponent(InputBoxWithSelector, "reactClass");
-
+      this.emit("NeedComponentList");
       this.emit('NeedStateComponentPackageMeta');
     },
 
@@ -85,15 +86,37 @@
       }
     },
 
+    renderCustomPackageComponentList(){
+      if( this.state.componentList === null ){
+        return <li>
+          <i className='fa fa-spin fa-spinner'/>
+        </li>
+      }
+      let self = this;
+      return this.state.componentList.map(function(_component){
+        return self.renderComponentMeta(_component, 'CUSTOM');
+      });
+    },
+
     renderComponentMeta(_componentMeta, _packageKey){
       var self = this;
 
-      return (
-        <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} }
-            onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
-          <i className='fa fa-cube'></i> { _componentMeta.name }
-        </li>
-      )
+      if( _packageKey === 'CUSTOM' ){
+        return (
+          <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta._id, _packageKey)} }
+              onMouseDown={ function(){ self.mouseDownTo(_componentMeta._id, _packageKey) }}>
+            <i className='fa fa-cube'></i> { _componentMeta.name }
+          </li>
+        );
+      } else {
+        return (
+          <li onMouseOver={ function(){ self.mouseOverListItem(_componentMeta.key, _packageKey)} }
+              onMouseDown={ function(){ self.mouseDownTo(_componentMeta.key, _packageKey) }}>
+            <i className='fa fa-cube'></i> { _componentMeta.name }
+          </li>
+        )
+      }
+
     },
 
     renderPackageMeta(_packageMeta){
@@ -127,6 +150,13 @@
 
               <div className='package-list-area'>
                 <ul className='package-list'>
+                  <li className='package'>
+                    <label> <i className='fa fa-gift'></i> Custom Package </label>
+                    <ul>
+                      { this.renderCustomPackageComponentList()}
+                    </ul>
+                  </li>
+
                   {this.state.availableComponentPackageMeta.map(this.renderPackageMeta)}
                 </ul>
               </div>

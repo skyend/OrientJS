@@ -13,6 +13,8 @@
 
     this.session = Session;
 
+    this.serviceManager = null;
+
     this.metaData;
     this.cachedComponent = {}; // 한번로드된 컴포넌트를 캐싱
     this.cachedSupporters = {};
@@ -123,13 +125,48 @@
   };
 
 
-  ComponentPool.prototype.getComponentFromRemote = function(_componentKey, _packageKey, _syncWindowContext) {
+  ComponentPool.prototype.getComponentFromRemote = function(_componentKey, _packageKey, _syncWindowContext, _complete) {
 
 
     var self = this;
     var contextWindow = _syncWindowContext || window;
     var componentKey = _componentKey;
     var packageKey = _packageKey;
+
+
+    if (_packageKey === 'CUSTOM') {
+      console.log("Component Pool Custom load");
+
+      console.log(self.serviceManager);
+      self.serviceManager.getComponent(_componentKey, function(_result) {
+        if (_result.result !== 'success') throw new Error("Load Fail");
+        let component = _result.component;
+        let componentScript = component.componentScript;
+        let componentStyle = component.componentCSS;
+
+        // 컴포넌트 스크립트 jsx컴파일
+        var compiledComponentScript = ReactTools.transform(componentScript);
+
+        var executorBody = "\nvar module = { 'exports' : {} }; var exports = module.exports;\n" + compiledComponentScript + ";return module;";
+
+        var scriptExecutor = new contextWindow.Function("session", "React", "using", executorBody);
+
+        let reactComponentObject = scriptExecutor(undefined, React, undefined).exports;
+
+        // CSS 삽입
+        reactComponentObject.CSS = componentStyle;
+
+        // 컴포넌트 모듈에 componentName을 지정해둔다.
+        reactComponentObject.componentName = componentName;
+        reactComponentObject.componentKey = _componentKey;
+        reactComponentObject.packageKey = _packageKey;
+
+        _complete(reactComponentObject);
+      });
+
+      return;
+    }
+
 
     if (arguments.length == 1) {
       console.log('인자', arguments);
@@ -233,6 +270,9 @@
     this.cachedComponent[componentName].componentKey = componentKey;
     this.cachedComponent[componentName].packageKey = packageKey;
 
+    if (typeof _complete === 'function') {
+      _complete(this.cachedComponent[componentName]);
+    }
     return this.cachedComponent[componentName];
   };
 
