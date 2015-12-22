@@ -87,7 +87,7 @@ var HTMLDOMSpec = React.createClass({
         "name": "Classes",
         title: "클래스",
         "initialValue": elementNode.getClasses() || '',
-        type: "input",
+        type: "textarea",
         "enterable": true
       });
 
@@ -126,7 +126,7 @@ var HTMLDOMSpec = React.createClass({
           name: _attrSpec.n,
           title: _attrSpec.title || _attrSpec.n,
           initialValue: elementNode.getAttribute(_attrSpec.n) || '',
-          type: 'input',
+          type: 'textarea',
           enterable: true
         };
 
@@ -176,7 +176,7 @@ var HTMLDOMSpec = React.createClass({
         "initialValue": elementNode.getText() || '',
         type: "textarea",
         "enterable": true,
-        height: 50
+        height: 100
       }];
     }
 

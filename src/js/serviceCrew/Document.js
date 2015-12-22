@@ -405,13 +405,24 @@ class Document {
 
       return this.valueResolve(signString);
     } else {
-      let valuesResolved = _text.replace(/(\${(.*?)})/g, function(_matched, _matched2, _signString) {
-        return self.valueResolve(_signString);
+      let valuesResolved = _text.replace(/\${(.*?)}(?:(\.[a-z]+))?/g, function(_matched, _signString, _optionString) {
+        let rsvResult = self.valueResolve(_signString);
+
+        // ${...}.optionString 과 같은 형식을 사용 하였을 때 유효한 옵션이면 옵션처리 결과를 반환하며
+        // 유효하지 않은 옵션은 signString의 리졸브 결과와 optionString형식으로 입력된 문자열을 살려서 반환한다.
+        // 추후에 함수 형식도 지원
+        switch (_optionString) {
+          case ".count":
+            return rsvResult.length;
+        }
+        if (_optionString !== undefined)
+          return rsvResult + (_optionString || '');
+        else
+          return rsvResult;
       });
 
-      return valuesResolved.replace(/(%{{(.*?)}})/g, function(_matched, _matched2, _formularString) {
+      return valuesResolved.replace(/(\%\((.*?)\))/g, function(_matched, _matched2, _formularString) {
 
-        console.log(arguments);
         return self.processingFormularBlock(_formularString);
       });
     }
@@ -419,15 +430,6 @@ class Document {
 
   valueResolve(_sign) {
     let self = this;
-    var sampleResourceMap = {
-      image01: 'http://html5up.net/uploads/demos/strongly-typed/images/pic01.jpg',
-      image02: 'http://html5up.net/uploads/demos/strongly-typed/images/pic02.jpg',
-      image03: 'http://html5up.net/uploads/demos/strongly-typed/images/pic03.jpg',
-      image04: 'http://html5up.net/uploads/demos/strongly-typed/images/pic04.jpg',
-      image05: 'http://html5up.net/uploads/demos/strongly-typed/images/pic05.jpg',
-      image06: 'http://html5up.net/uploads/demos/strongly-typed/images/pic06.jpg',
-      image07: 'http://html5up.net/uploads/demos/strongly-typed/images/pic07.jpg'
-    }
 
     if (/^(\*?)([^:^*]*)$/.test(_sign)) {
       let matched = _sign.match(/^(\*?)(.*)$/);
@@ -459,7 +461,7 @@ class Document {
       let matches = _sign.match(/^(\w+):(.*)$/);
       let kind = matches[1];
       let target = matches[2];
-      //console.log(matches);
+
       if (kind === 'script') {
         let url = this.contextController.serviceManager.getScriptURLByName(target);
 
@@ -485,8 +487,9 @@ class Document {
 
   processingFormularBlock(_blockString) {
     let formularResult;
+
     try {
-      formularResult = eval(formularResult);
+      formularResult = eval(_blockString);
     } catch (_e) {
       formularResult = false;
     }
