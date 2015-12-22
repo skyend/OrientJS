@@ -94,6 +94,15 @@ var Request = React.createClass({
     });
   },
 
+  changeCustomURL(_e){
+    let value = _e.target.value;
+
+    this.emit("ChangedRequestCustomURL", {
+      requestId : this.props.request.id,
+      value: value
+    });
+  },
+
   changeMethod(_e){
     let value = _e.target.value;
 
@@ -200,6 +209,42 @@ var Request = React.createClass({
     this.executeTest();
   },
 
+  renderCRUD(){
+
+    return (
+      <div className='data'>
+        <div className='top'>
+          { this.props.request.crud === '*' ? (
+            <div className='accessible-input'>
+              <label><span>Input CRUD</span></label>
+              <input onChange={this.changeCustomCRUD} value={this.props.request.customCrud} placeholder='Custom CRUD Type'/>
+            </div> ):''}
+
+          <select onChange={this.changeCRUD} value={this.props.request.crud}>
+            {this.props.contextController.getAvailableCRUDs().map(function(_crud){
+              return (
+                <option value={_crud.type}>{_crud.type + " ("+_crud.name+")"}</option>
+              );
+            })}
+          </select>
+        </div>
+
+        <div className='row'>
+          {this.props.request.crud === '**' ? (
+              <div className='accessible-input fill-row'>
+                <label><span>사용자 정의 URL</span></label>
+                <input onChange={this.changeCustomURL} value={this.props.request.customURL} placeholder='Input Custom URL'/>
+              </div>
+            ):(
+              <label>
+                {this.props.contextController.instance.getRequestLocation(this.props.request.id)}
+              </label>
+            )}
+        </div>
+      </div>
+    )
+  },
+
   renderEditPart(_width){
     let self = this;
     let style = {
@@ -210,31 +255,9 @@ var Request = React.createClass({
       <div className='part' style={style}>
         <div className='section'>
           <div className='title'>
-            <span>CRUD</span>
+            <span>API 유형</span>
           </div>
-          <div className='data'>
-            <div className='top'>
-              { this.props.request.crud === '*' ? (
-                <div className='accessible-input'>
-                  <label><span>Input CRUD</span></label>
-                  <input onChange={this.changeCustomCRUD} value={this.props.request.customCrud} placeholder='Custom CRUD Type'/>
-                </div> ):''}
-
-              <select onChange={this.changeCRUD} value={this.props.request.crud}>
-                {this.props.contextController.getAvailableCRUDs().map(function(_crud){
-                  return (
-                    <option value={_crud.type}>{_crud.type + " ("+_crud.name+")"}</option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div className='row'>
-              <label>
-                {this.props.contextController.instance.getRequestLocation(this.props.request.id)}
-              </label>
-            </div>
-          </div>
+          { this.renderCRUD() }
         </div>
 
         <div className='section'>

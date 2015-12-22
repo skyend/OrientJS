@@ -66,6 +66,7 @@ export default class Request {
     this.method = requestData.method || 'get';
     this.crud = requestData.crud;
     this.customCrud = requestData.customCrud;
+    this.customURL = requestData.customURL;
     this.fields = requestData.fields || [];
     this.isVirtual = requestData.isVirtual;
   }
@@ -77,6 +78,7 @@ export default class Request {
       method: this.method,
       crud: this.crud,
       customCrud: this.customCrud,
+      customURL: this.customURL,
       fields: _.clone(this.fields),
       isVirtual: this.isVirtual
     };

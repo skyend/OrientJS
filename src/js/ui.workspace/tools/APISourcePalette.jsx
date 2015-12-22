@@ -55,6 +55,7 @@ let Request = React.createClass({
     let self = this;
     if( this.state.showItemTree && this.state.dataFrame === null ){
       this.props.apiSource.executeTestRequestAsDataFrame(this.props.request.id, function(_result){
+        console.log(_result);
         self.setState({dataFrame: _result});
       });
     }
