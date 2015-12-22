@@ -691,6 +691,9 @@ var DirectContext = React.createClass({
     this.contextController = this.props.contextController;
     this.contextController.attach(this);
 
+    // 샘플 프래그먼트 파라메터를 입력하도록 한다.
+    this.contextController.supplySampleBindingParams();
+
     if (this.props.runningState) {
       this.goingToContextRunning();
     } else {

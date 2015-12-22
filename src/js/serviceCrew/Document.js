@@ -79,6 +79,10 @@ class Document {
     this.params[_paramNS] = _data;
   }
 
+  setParams(_params) {
+    this.params = _params;
+  }
+
   ////////////////////
   // Setters
   // documentName

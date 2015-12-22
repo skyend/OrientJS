@@ -1,6 +1,7 @@
 "use strict";
 var Document = require('./Document.js');
 var jsDiff = require('diff');
+import _ from 'underscore';
 import LZString from '../lib/lz-string.js';
 import DocumentRevisionManager from './DocumentRevisionManager.js';
 import HasElementNodeContextController from './HasElementNodeContextController.js';
@@ -58,6 +59,49 @@ class DocumentContextController extends HasElementNodeContextController {
     this.serviceManager.saveDocument(this.subject.getDocumentID(), docjson, function(_result) {
       self.unsaved = false;
       self.context.feedSaveStateChange();
+    });
+  }
+
+  changedContent() {
+    super.changedContent();
+    this.supplySampleBindingParams();
+  }
+
+  supplySampleBindingParams() {
+    let nsSet = this.subject.getAllBinderNSSet();
+    let that = this;
+
+    nsSet.forEach(function(_ns) {
+      // fragment에 param이 undefined 라면 요청을 진행하여 fragment에 공급한다.
+      if (that.subject.getParam(_ns) !== undefined) return;
+      let apiSourceNT_Tid = _ns.split('-')[0];
+      let requestName = _ns.split('-')[1];
+
+      that.serviceManager.getApiSourceListWithInterface(function(_result) {
+        let index = _.findIndex(_result, {
+          nt_tid: apiSourceNT_Tid
+        });
+
+        if (index === -1) return console.warn(apiSourceNT_Tid + " tid 를 가지는 ICE API Source 리소스가 서비스에 존재하지 않습니다.");
+
+        let apiSource = _result[index];
+        let requestIndex = _.findIndex(apiSource.requests, {
+          name: requestName
+        });
+
+        if (requestIndex === -1) return console.warn(requestName + " 라는 이름의 요청이 " + apiSource.title + " ICEAPISource 상에 존재하지 않습니다.");
+        let request = apiSource.requests[requestIndex];
+        apiSource.executeTestRequest(request.id, function(_result) {
+
+          // Param 을 입력하고
+          that.subject.setParam(_ns, _result);
+
+          // 랜더링을 리프레시 한다.
+          that.context.renderRefresh();
+        });
+
+      });
+
     });
   }
 

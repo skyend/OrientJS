@@ -14,6 +14,7 @@ class Page {
     // runtime
     this._screenSize = {};
     this.screenMode = _contextController.screenSizing;
+    this.params = {};
   }
 
   set title(_title) {
@@ -365,14 +366,59 @@ class Page {
   }
 
   getFragment(_fragmentId, _complete) {
-    let self = this;
+    let that = this;
     console.log("Fragment Load", _fragmentId);
     this.serviceManager.getDocument(_fragmentId, function(_page, _context) {
       console.log('loaded', _page);
 
-      _complete(new DocumentContextController(_page.document, self.params, self.serviceManager, {
+      let fragmentContextController = new DocumentContextController(_page.document, that.params, that.serviceManager, {
         enableNavigate: true
-      }));
+      });
+
+      let nsSet = fragmentContextController.subject.getAllBinderNSSet();
+      let nsList = [];
+      nsSet.forEach(function(_value) {
+        nsList.push(_value)
+      });
+
+      // page 가 가진 param 리스트에 fragment가 필요한 ns가 입력되어 있지 않는 경우
+      // page는 ns에 해당하는 APISource와 Request를 찾아 기본 데이터를 로드하여 적재한 후 fragment에 입력하여 최종적으로 fragment를 반환한다.
+      async.eachSeries(nsList, function(_ns, _next) {
+
+        if (that.params[_ns] !== undefined) return _next();
+
+        let apiSourceNT_Tid = _ns.split('-')[0];
+        let requestName = _ns.split('-')[1];
+
+        that.serviceManager.getApiSourceListWithInterface(function(_result) {
+          let index = _.findIndex(_result, {
+            nt_tid: apiSourceNT_Tid
+          });
+
+          if (index === -1) return console.warn(apiSourceNT_Tid + " tid 를 가지는 ICE API Source 리소스가 서비스에 존재하지 않습니다.");
+
+          let apiSource = _result[index];
+          let requestIndex = _.findIndex(apiSource.requests, {
+            name: requestName
+          });
+
+          if (requestIndex === -1) return console.warn(requestName + " 라는 이름의 요청이 " + apiSource.title + " ICEAPISource 상에 존재하지 않습니다.");
+          let request = apiSource.requests[requestIndex];
+
+          console.log("Execute")
+          apiSource.executeTestRequest(request.id, function(_result) {
+            console.log("Success");
+            // Param 을 입력하고
+            that.params[_ns] = _result;
+            _next();
+          });
+
+        });
+      }, function done(_err) {
+        fragmentContextController.subject.setParams(that.params);
+        _complete(fragmentContextController);
+      });
+
     });
 
   }

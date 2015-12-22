@@ -68,6 +68,15 @@ export default React.createClass({
     let name = this.refs['new-request-name-input'].getDOMNode().value;
     let crud = this.refs['new-request-type-input'].getDOMNode().value;
 
+    if(/[\s-]/.test(name)){
+      this.emit('NoticeMessage', {
+        title: "요청 추가 실패",
+        message: "요청 이름에 공백문자와 하이픈(-)을 사용 하실 수 없습니다. 대신 언더바( _ ) 를 사용 해 주세요.",
+        level: "error"
+      });
+
+      return;
+    }
 
     if (name === '') {
       this.emit('NoticeMessage', {
