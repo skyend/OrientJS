@@ -46,7 +46,6 @@ var DirectContext = React.createClass({
     this.contextController.resume();
     console.log("DirectCOntext GOGO");
 
-    this.props.contextController.rootRender();
 
     this.emit("DocumentFocused", {
       document: this.contextController.subject
@@ -630,6 +629,22 @@ var DirectContext = React.createClass({
     });
   },
 
+  loadedIFrame(_iframe){
+    // iframe 이 load되면 contextController에 슈퍼 엘리먼트를 설정하고
+    // 최초 랜더링 과정을 수행한다.
+
+    this.props.contextController.setSuperElement(this.getDocument().body);
+
+    this.props.contextController.beginRender();
+  },
+
+  renderRefresh(){
+
+    // iframe의 location을 reload하여 iframe을 리셋한다.
+    // reload가 완료되면 loadedIFrame 메소드가 호출된다.
+    this.getDocument().location.reload(true);
+  },
+
   iframeStageTransitionEnd(){
     // transition완료후의 달라진 요소의 Rect를 추적하기 위해 최종 업데이트
     this.forceUpdate();
@@ -650,7 +665,7 @@ var DirectContext = React.createClass({
     this.scrollY = this.getIFrameStageScrollY();
 
     if (this.mustRedrawStage) {
-      this.props.contextController.rootRender();
+      this.renderRefresh();
       this.mustRedrawStage = false;
     }
 
@@ -673,7 +688,7 @@ var DirectContext = React.createClass({
 
     // contextController 연결
     this.contextController = this.props.contextController;
-    this.contextController.attach(this, this.getDocument().body);
+    this.contextController.attach(this);
 
     if (this.props.runningState) {
       this.goingToContextRunning();
@@ -787,7 +802,7 @@ var DirectContext = React.createClass({
       <div className='DirectContext theme-white' style={style}>
         <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX }
-                     top={ stageY }/>
+                     top={ stageY } onLoadIFrame={this.loadedIFrame}/>
 
         <div className={elementNavigatorClasses.join(' ')} ref='element-navigator'
              style={elementNavigatorStyle}>

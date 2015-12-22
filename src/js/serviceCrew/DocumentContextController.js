@@ -50,12 +50,6 @@ class DocumentContextController extends HasElementNodeContextController {
   attach(_context, _superDOMElement) {
     this.attached = true;
     this.context = _context;
-    this.setSuperElement(_superDOMElement);
-    /* processing */
-
-
-
-    this.beginRender();
   }
 
   save() {
@@ -243,7 +237,7 @@ class DocumentContextController extends HasElementNodeContextController {
       default:
     }
 
-    this.rootRender();
+    this.context.renderRefresh();
     this.changedContent();
   }
 
@@ -425,8 +419,6 @@ class DocumentContextController extends HasElementNodeContextController {
    */
   beginRender(_realizeOptions) {
     var self = this;
-
-    console.log("Begin Render");
 
     // resource convert
     this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
