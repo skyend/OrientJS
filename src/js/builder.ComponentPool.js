@@ -154,14 +154,21 @@
         let reactComponentObject = scriptExecutor(undefined, React, undefined).exports;
 
         // CSS 삽입
-        reactComponentObject.CSS = componentStyle;
+        // less 컴파일 후에 완료
+        less.render(componentStyle, function(_e, _output) {
+          if (_e === null) {
+            reactComponentObject.CSS = _output.css;
+            // 컴포넌트 모듈에 componentName을 지정해둔다.
+            reactComponentObject.componentName = componentName;
+            reactComponentObject.componentKey = _componentKey;
+            reactComponentObject.packageKey = _packageKey;
 
-        // 컴포넌트 모듈에 componentName을 지정해둔다.
-        reactComponentObject.componentName = componentName;
-        reactComponentObject.componentKey = _componentKey;
-        reactComponentObject.packageKey = _packageKey;
+            _complete(reactComponentObject);
+          } else {
+            throw new Error("Could not compile to less");
+          }
+        });
 
-        _complete(reactComponentObject);
       });
 
       return;

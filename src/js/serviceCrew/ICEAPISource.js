@@ -186,6 +186,7 @@ export default class ICEAPISource {
         SuperAgent.get(req.customURL)
           .query(_fields)
           .end(function(err, res) {
+            console.log(err, res);
             if (res === null) {
               _complete(null);
             } else {
@@ -198,6 +199,7 @@ export default class ICEAPISource {
           .type('form')
           .send(_fields)
           .end(function(err, res) {
+            console.log(err, res);
             if (res === null) {
               _complete(null);
             } else {
