@@ -16,7 +16,8 @@ export default React.createClass({
       screenMode:'desktop',
       folding:false, // 접기
       rootGridElement: null,
-      selectedGridElement: null
+      selectedGridElement: null,
+      selectedScreenMode:'desktop'
     };
   },
 
@@ -245,6 +246,7 @@ export default React.createClass({
       <div className='top-area'>
         <div className='title'>
           {this.props.screenMode}
+          { this.props.selectedScreenMode === this.props.screenMode ? ' (Focused)':''}
         </div>
 
 
@@ -284,6 +286,7 @@ export default React.createClass({
   },
 
   render(){
+    let classes = ['GridBound'];
     let style = {
       width: this.props.width,
       height: this.props.height,
@@ -291,8 +294,12 @@ export default React.createClass({
       top: this.props.top
     };
 
+    if( this.props.selectedScreenMode === this.props.screenMode ){
+      classes.push("mode-selected")
+    }
+
     return (
-      <div className='GridBound' style={style}>
+      <div className={classes.join(' ')} style={style}>
         {this.renderTopArea()}
         {this.props.folding? '':this.renderGridElement()}
         {this.props.folding? this.renderFoldingHolder():''}

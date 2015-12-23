@@ -48,7 +48,7 @@ var DocumentCSSEditor = React.createClass({
 
     if( this.props.contextController === null ) return <div className='DocumentCSSEditor error' ><span>Not Found ContextController</span></div>;
 
-    var targetDocument = this.props.contextController.document;
+    var targetDocument = this.props.contextController.subject;
 
     if (targetDocument === null) return <div className='DocumentCSSEditor error' ><span>No focused a Document</span></div>;
 

@@ -184,24 +184,7 @@
 
                     border-radius: 10px;
                     background-color: #fff;
-                    > .top,
-                    > .row
-                    {
-                        box-sizing: border-box;
-                        width: 100%;
-                        padding: 10px;
 
-                        border-bottom: 1px solid #4991f1;
-                        &:last-child
-                        {
-                            border-bottom: 0;
-                        }
-
-                        > *
-                        {
-                            vertical-align: middle;
-                        }
-                    }
 
 
 
@@ -271,6 +254,7 @@
                             font-size: 14px;
 
                             position: relative;
+                            position: absolute;
 
                             display: inline-block;
 
@@ -283,7 +267,7 @@
 
                             color: #fff;
                             border: 0;
-                            border-radius: 4px 0 0 4px;
+                            border-radius: 4px 0 0 4px ;
                             background-color: #4991f1;
                             &::before
                             {
@@ -305,18 +289,46 @@
                         input,
                         select
                         {
+                            width: 100%;
                             height: 100%;
+                            padding-left: 150px;
 
                             vertical-align: middle;
 
                             border: 0;
-                            border-radius: 0 4px 4px 0;
+                            border-radius: 4px;
                         }
 
                         &:last-child
                         {
                             margin-right: 0;
                             margin-bottom: 0;
+                        }
+                    }
+
+
+                    > .top,
+                    > .row
+                    {
+                        box-sizing: border-box;
+                        width: 100%;
+                        padding: 10px;
+
+                        border-bottom: 1px solid #4991f1;
+                        &:last-child
+                        {
+                            border-bottom: 0;
+                        }
+
+                        > *
+                        {
+                            vertical-align: middle;
+                        }
+
+
+                        > .fill-row
+                        {
+                            width: 100%;
                         }
                     }
                 }

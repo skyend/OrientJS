@@ -39,8 +39,9 @@ var ReactTypeElementNode = React.createClass({
         title: prop.title,
         initialValue: elementNode.getReactComponentProp(_propKey) || '',
         enterable: true,
+        height: 50,
 //        type:'selectable',
-        type:'input',
+        type:'textarea',
         options:[{value:1, title:"Hello"}, {value:2, title:'everyone'}]
       };
     });

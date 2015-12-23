@@ -20,15 +20,17 @@ import Viewer from './serviceCrew/Viewer.js';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
+window.gelateriaHost = 'localhost:8080';
+
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 1.01;
+  window.gelateriaVersion = 1.02;
 
   this.session = new Session();
-  this.gelateriaRequest = new GelateriaRequest();
+  this.gelateriaRequest = new GelateriaRequest(window.gelateriaHost);
   this.userManager = new UserManager(this);
   this.projectManager = new ProjectManager(this);
-
+  this.currentProjectId = undefined;
 
   /** 임시 퍼블리싱 로직 **/
   let searchParam = window.location.search;
@@ -54,7 +56,8 @@ var App = function() {
 };
 
 App.prototype.startPublishPage = function(_params) {
-  let projectId = _params['projectId'];
+  let self = this;
+  let publish = _params['publish']; // navigateType : page || staticResource
   let serviceId = _params['serviceId'];
   let pageId = _params['pageId'];
   let pageAccessPointName = _params['page'];
@@ -63,70 +66,64 @@ App.prototype.startPublishPage = function(_params) {
   for (let i = 0; i < headChildren.length; i++) {
     headChildren[i].remove();
   }
+
   // Main Page
-  // http://localhost:8081/?publish=on&serviceId=565e7e1d4d00580a00e5becd&projectId=56193d447acb5b7b633dc8eb&pageId=566116414d00580a00e5bef4
+  let serviceManager = new ServiceManager(this, serviceId, function readyFunc(_serviceManager) {
+    self.session.setServiceManager(_serviceManager);
 
-  let serviceManager = new ServiceManager(this, serviceId);
-  this.serviceManager = serviceManager;
-  // serviceManager.getPageList(function(_result) {
-  //   console.log(_result);
-  //
-  //   let pageIdx = _.findIndex(_result.list, {
-  //     _id: pageId
-  //   });
-  //
-  //   let page = _result.list[pageIdx];
-  //
-  //   console.log(page);
-  // });
+    // 빌더 시작
+    self.serviceManager = serviceManager;
 
-  serviceManager.getPageList(function(_list) {
-    let index = _.findIndex(_list.list, {
-      accessPoint: pageAccessPointName
-    });
 
-    if (index > -1) {
-      let page = _list.list[index];
-      pageId = page._id;
+    if (publish === 'page') {
+      self.serviceManager.findPageByAccessPoint(pageAccessPointName, function(_result) {
+
+        if (_result === null) {
+          self.serviceManager.findPageByAccessPoint('404', function(_result) {
+
+            if (_result !== null) {
+              serviceManager.getPageContextController(_result._id, function(_contextController) {
+
+                let viewer = new Viewer(serviceManager);
+                viewer.page = _contextController.subject;
+                viewer.window = window;
+                viewer.rendering({
+                  width: window.clientWidth,
+                  height: window.clientHeight
+                }, false);
+              });
+            } else {
+              window.document.body.innerHTML = "404 Not Found.";
+            }
+          });
+        } else {
+          serviceManager.getPageContextController(_result._id, function(_contextController) {
+
+            let viewer = new Viewer(serviceManager);
+            viewer.page = _contextController.subject;
+            viewer.window = window;
+            viewer.rendering({
+              width: window.clientWidth,
+              height: window.clientHeight
+            }, false);
+          });
+        }
+      });
+    } else if (publish === 'staticResource') {
+      alert("Static Resource 는 아직 지원하지 않습니다.");
     }
-
-    serviceManager.getPageContextController(pageId, function(_contextController) {
-      console.log(_contextController);
-
-      // let previewScene = React.render(React.createElement(PreviewScene, {
-      //   width: '100%',
-      //   height: '100%'
-      // }), window.document.body);
-
-      let viewer = new Viewer(serviceManager);
-      viewer.page = _contextController.page;
-      viewer.window = window;
-      viewer.rendering({
-        width: window.clientWidth,
-        height: window.clientHeight
-      }, false);
-
-      //previewScene.setViewer(viewer)
-      //viewer.window =
-
-    });
   });
-
-
-
-
-
-  //window.document.body.innerHTML = "<iframe id='publish-zone' width='100%' height='100%' style='border'></iframe>";
-
 
 };
 
 App.prototype.startServiceBuilding = function(_service_id) {
+  let self = this;
   // 서비스 매니저 생성
-  this.serviceManager = new ServiceManager(this, _service_id);
-
-  // 빌더 시작
-  this.initBuilder();
+  this.serviceManager = new ServiceManager(this, _service_id, function readyFunc(_serviceManager) {
+    self.session.setServiceManager(_serviceManager);
+    // 빌더 시작
+    self.initBuilder();
+  });
 };
 
 App.prototype.finishServiceBuilding = function() {

@@ -31,6 +31,15 @@ class Viewer {
     return this.window.document;
   }
 
+  setPageTitle(_title) {
+    let titleElement = this.window.document.querySelector('title');
+    if (titleElement === null) {
+      titleElement = this.window.document.createElement('title');
+      this.window.document.head.appendChild(titleElement);
+    }
+    titleElement.innerHTML = _title;
+  }
+
   applyStyleElement(_styleElement) {
     console.log('applyStyleElement');
     console.log(_styleElement);
@@ -51,6 +60,8 @@ class Viewer {
 
   rendering(_screenSize, _blockClick) {
     let self = this;
+
+    this.setPageTitle(this.page.displayTitle);
 
     // this.window.onunload = function(_e) {
     //   return self.pageUnload(_e);

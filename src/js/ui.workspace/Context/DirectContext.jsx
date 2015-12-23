@@ -4,6 +4,7 @@ import React from 'react';
 import FeedbackLayer from './DirectContext/FeedbackLayer.jsx';
 import ElementSelectRect from './DirectContext/ElementSelectRect.jsx';
 import ElementRemoteControl from './DirectContext/ElementRemoteControl.jsx';
+import ElementHierarchyViewer from './DirectContext/ElementHierarchyViewer.jsx';
 import './DirectContext.less';
 import Returns from "../../Returns.js";
 
@@ -31,7 +32,6 @@ var DirectContext = React.createClass({
       showElementNavigator: false,
       showElementMiniOptionSet:true,
       showElementRemoteControl:false,
-      sizing: 'desktop'
     };
   },
 
@@ -45,9 +45,11 @@ var DirectContext = React.createClass({
 
   goingToContextRunning(){
     this.contextController.resume();
+    console.log("DirectCOntext GOGO");
+    this.renderRefresh();
 
     this.emit("DocumentFocused", {
-      document: this.contextController.document
+      document: this.contextController.subject
     });
   },
 
@@ -287,7 +289,7 @@ var DirectContext = React.createClass({
 
     this.setState({
       showElementNavigator: false,
-      selectedElement: null
+      selectedElementNode: null
     });
 
 
@@ -302,7 +304,8 @@ var DirectContext = React.createClass({
     } else {
       this.emit("SuccessfullyElementNodeSelected", {
         elementNode: _elementNode,
-        contextController: this.props.contextController
+        contextController: this.props.contextController,
+        screenMode:this.props.renderStageMode
       });
     }
 
@@ -534,12 +537,12 @@ var DirectContext = React.createClass({
     // boxSizing에 따라 padding과 border의 넓이를 제외한다.
     switch (computedStyle.boxSizing) {
       case "content-box":
-        nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-        nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+        if( nextWidth !== undefined ) nextWidth -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+        if( nextHeight !== undefined ) nextHeight -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
 
       case "padding-box":
-        nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
-        nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
+        if( nextWidth !== undefined ) nextWidth -= parseFloat(computedStyle.borderLeftWidth) + parseFloat(computedStyle.borderRightWidth);
+        if( nextHeight !== undefined ) nextHeight -= parseFloat(computedStyle.borderBottomWidth) + parseFloat(computedStyle.borderTopWidth);
         break;
     }
 
@@ -547,16 +550,25 @@ var DirectContext = React.createClass({
     if (nextWidth < 0) nextWidth = 0;
     if (nextHeight < 0) nextHeight = 0;
 
+    let modifiedRect = {};
+    if( nextLeft !== undefined){
+      modifiedRect.left = nextLeft;
+    }
+    if( nextTop !== undefined){
+      modifiedRect.top = nextTop;
+    }
+    if( nextWidth !== undefined ){
+      modifiedRect.width = nextWidth;
+    }
+    if( nextHeight !== undefined ){
+      modifiedRect.height = nextHeight;
+    }
+    console.log(modifiedRect);
+    this.props.contextController.modifyElementGeometry(elNode, "rectangle",  modifiedRect, this.props.renderStageMode);
 
-    this.props.contextController.modifyElementProperty(elNode, "rectangle", {
-      left: nextLeft,
-      top: nextTop,
-      width: nextWidth,
-      height: nextHeight
-    });
-
-    //elNode.document.getContextController().rootRender();
     this.forceUpdate();
+
+    this.emit("RefreshTools");
   },
 
   onThrowCatcherElementResizingEnd(_eventData){
@@ -618,6 +630,22 @@ var DirectContext = React.createClass({
     });
   },
 
+  loadedIFrame(_iframe){
+    // iframe 이 load되면 contextController에 슈퍼 엘리먼트를 설정하고
+    // 최초 랜더링 과정을 수행한다.
+
+    this.props.contextController.setSuperElement(this.getDocument().body);
+
+    this.props.contextController.beginRender();
+  },
+
+  renderRefresh(){
+
+    // iframe의 location을 reload하여 iframe을 리셋한다.
+    // reload가 완료되면 loadedIFrame 메소드가 호출된다.
+    this.getDocument().location.reload(true);
+  },
+
   iframeStageTransitionEnd(){
     // transition완료후의 달라진 요소의 Rect를 추적하기 위해 최종 업데이트
     this.forceUpdate();
@@ -638,7 +666,7 @@ var DirectContext = React.createClass({
     this.scrollY = this.getIFrameStageScrollY();
 
     if (this.mustRedrawStage) {
-      this.props.contextController.rootRender();
+      this.renderRefresh();
       this.mustRedrawStage = false;
     }
 
@@ -661,7 +689,10 @@ var DirectContext = React.createClass({
 
     // contextController 연결
     this.contextController = this.props.contextController;
-    this.contextController.attach(this, this.getDocument().body);
+    this.contextController.attach(this);
+
+    // 샘플 프래그먼트 파라메터를 입력하도록 한다.
+    this.contextController.supplySampleBindingParams();
 
     if (this.props.runningState) {
       this.goingToContextRunning();
@@ -674,12 +705,15 @@ var DirectContext = React.createClass({
   },
 
   render(){
-    var iframeStageWidth = (this.props.renderStageWidth > this.props.width) ? this.props.width : this.props.renderStageWidth;
-    var iframeStageHeight = (this.props.renderStageHeight > this.props.height) ? this.props.height : this.props.renderStageHeight;
+    let width = this.props.width;
+    let height = this.props.height - 30;
+
+    var iframeStageWidth = (this.props.renderStageWidth > width) ? width : this.props.renderStageWidth;
+    var iframeStageHeight = (this.props.renderStageHeight > height) ? height : this.props.renderStageHeight;
     iframeStageWidth -= 10;
     iframeStageHeight -= 10;
-    var stageX = ( this.props.width - iframeStageWidth ) / 2;
-    var stageY = ( this.props.height - iframeStageHeight ) / 2;
+    var stageX = ( width - iframeStageWidth ) / 2;
+    var stageY = ( height - iframeStageHeight ) / 2;
     this.stageX = stageX;
     this.stageY = stageY;
 
@@ -723,8 +757,8 @@ var DirectContext = React.createClass({
       }
 
       var elNavX = boundingBox.left + stageX;
-      if (elNavX + 300 > this.props.width) {
-        elNavX = this.props.width - 300;
+      if (elNavX + 300 > width) {
+        elNavX = width - 300;
       }
 
       elementNavigatorStyle = {
@@ -775,7 +809,7 @@ var DirectContext = React.createClass({
       <div className='DirectContext theme-white' style={style}>
         <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX }
-                     top={ stageY }/>
+                     top={ stageY } onLoadIFrame={this.loadedIFrame}/>
 
         <div className={elementNavigatorClasses.join(' ')} ref='element-navigator'
              style={elementNavigatorStyle}>
@@ -814,13 +848,21 @@ var DirectContext = React.createClass({
                   <i className='fa fa-pencil-square'/> <span className='title'>Paste In</span>
                 </button>
               </li>
-
+              <li>
+                <button onClick={this.createComponent}>
+                  <i className='fa fa-cubes'/> <span className='title'>Create Component</span>
+                </button>
+              </li>
+              <li>
+                <button onClick={this.makeBindSubject}>
+                  <i className='fa fa-tasks'/> <span className='title'>Make Bind Subject</span>
+                </button>
+              </li>
               <li>
                 <button onClick={this.removeElement}>
                   <i className='fa fa-trash'/> <span className='title'>Remove</span>
                 </button>
               </li>
-
               <li>
                 <button onClick={this.useElementRemoteControl}>
                   <i className='fa fa-share-square-o'/> <span className='title'>Change RemoteControl</span>
@@ -847,6 +889,8 @@ var DirectContext = React.createClass({
                            editModeHighlight={this.state.editModeElementNode !== null }/>
 
         {this.state.showElementRemoteControl && this.state.showElementNavigator? <ElementRemoteControl defaultLeft={stageX + (iframeStageWidth/2)} defaultTop={stageY + (iframeStageHeight/3)}/>:''}
+
+        <ElementHierarchyViewer selectedElementNode={this.state.selectedElementNode}/>
       </div>
 
     );

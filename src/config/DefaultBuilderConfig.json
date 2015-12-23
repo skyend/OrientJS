@@ -62,10 +62,10 @@
         "icon": "magic",
         "equipToolKey": "ElemenEffectControl"
       }, {
-        "key": "grid-setting",
-        "title": "GridSetting",
-        "icon": "th",
-        "equipToolKey": "GridElementNodeEditor"
+        "key": "element-node-geometry",
+        "title": "ElementNodeGeometryEditor",
+        "icon": "object-group",
+        "equipToolKey": "ElementNodeGeometryEditor"
       }]
     }]
   },
@@ -217,13 +217,17 @@
       "jsxPath": "FragmentSelector",
       "title": "Select Fragment"
     },
-    "GridElementNodeEditor": {
-      "jsxPath": "GridElementNodeEditor",
-      "title": "Grid ElementNode Editor"
+    "ElementNodeGeometryEditor": {
+      "jsxPath": "ElementNodeGeometryEditor",
+      "title": "ElementNode Geometry Editor"
     },
     "ContentsCopyBoard": {
       "jsxPath": "ContentsCopyBoard",
       "title": "Contents Copy Board"
+    },
+    "ComponentCreateForm": {
+      "jsxPath": "ComponentCreateForm",
+      "title": "Component Create"
     }
   }
 }

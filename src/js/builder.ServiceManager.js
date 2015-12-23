@@ -5,10 +5,11 @@
  */
 import _ from 'underscore';
 import request from 'superagent';
-
+import async from 'async';
 import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
+import ComponentContextController from './serviceCrew/ComponentContextController.js';
 //import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
@@ -18,7 +19,8 @@ import ICEAPISource from './serviceCrew/ICEAPISource.js';
 
 class ServiceManager {
 
-  constructor(_app, _service_id) {
+  constructor(_app, _service_id, _readyCallback) {
+    let self = this;
     this.app = _app;
     this.service_id = _service_id;
 
@@ -26,14 +28,45 @@ class ServiceManager {
     this.docContextControllers = {};
     this.apiSourceContextControllers = {};
     this.apiInterfaceContextControllers = {};
+    this.componentContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
-    this.iceHost = 'http://125.131.88.75:8080';
+    this.iceHost = 'http://125.131.88.77:8080';
     this.iceDriver = new ICEServerDriver(this.iceHost);
-
+    this.gelateriaHost = window.gelateriaHost;
     this.sampleDatas = {};
 
     this.chechedApiResources = {};
+
+
+
+    this.preparedCSSList = null;
+    this.preparedJSList = null;
+    self.preparedStaticList = null;
+    self.preparedComponentList = null;
+    async.parallel([
+      function(_cb) {
+        self.getCSSList(function(_result) {
+          self.preparedCSSList = _result.list;
+          _cb();
+        });
+      },
+      function(_cb) {
+        self.getJSList(function(_result) {
+          self.preparedJSList = _result.list;
+          _cb();
+        });
+      },
+      function(_cb) {
+        self.getStaticList(function(_result) {
+          self.preparedStaticList = _result.list;
+          console.log(self.preparedStaticList);
+          _cb();
+        });
+      }
+    ], function end() {
+      _readyCallback(self);
+    });
   }
 
   createDocument(_title, _type, _complete) {
@@ -113,6 +146,94 @@ class ServiceManager {
       _complete(_result);
     });
   }
+
+  getCSSList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getCSSList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedCSSList = _result.list;
+      _complete(_result);
+    });
+  }
+
+  getJSList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getJSList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedJSList = _result.list;
+      _complete(_result);
+    });
+  }
+
+
+  getStaticList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getStaticList(this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedStaticList = _result.list;
+      _complete(_result);
+    });
+  }
+
+  createComponent(_name, _script, _css, _propStruct, _complete) {
+    this.app.gelateriaRequest.createComponent(this.app.currentProjectId, _name, _script, _css, _propStruct, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getComponentList(_complete) {
+    let self = this;
+
+    this.app.gelateriaRequest.getComponentList(this.app.currentProjectId, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.name.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      self.preparedComponentList = _result.list;
+      _complete(_result);
+    });
+  }
+
+  getComponent(_id, _complete) {
+    this.app.gelateriaRequest.getComponent(this.app.currentProjectId, _id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  saveComponent(_componentId, _componentJSON, _complete) {
+    this.app.gelateriaRequest.saveComponent(this.app.currentProjectId, _componentId, _componentJSON, function(_result) {
+      _complete(_result);
+    });
+  }
+
 
   getApisourceList(_complete) {
     let self = this;
@@ -232,6 +353,11 @@ class ServiceManager {
     });
   }
 
+  findPageByAccessPoint(_accessPoint, _complate) {
+    this.app.gelateriaRequest.findPageBy(this.service_id, 'accessPoint', _accessPoint, function(_result) {
+      _complate(_result);
+    });
+  }
 
 
   // Deprecated
@@ -273,6 +399,10 @@ class ServiceManager {
 
     if (_context.contextType === 'apiInterface') {
       return delete this.apiInterfaceContextControllers[_context.apiInterfaceID];
+    }
+
+    if (_context.contextType === 'component') {
+      return delete this.componentContextControllers[_context.componentID];
     }
 
     throw new Error("Not found context Controller");
@@ -376,48 +506,207 @@ class ServiceManager {
     }
   }
 
+  getComponentContextController(_componentId, _complete) {
+    var self = this;
 
-  navigatePage(_navigateParamList) {
-    if (!/publish=/.test(window.location.search)) {
+    if (this.componentContextControllers[_componentId] === undefined) {
+      this.getComponent(_componentId, function(_result) {
 
-      let self = this;
-      this.getPageList(function(_list) {
-        let targetPageIndex = _.findIndex(_list.list, {
-          accessPoint: _navigateParamList[0]
-        });
+        if (_result.result === 'success') {
+          var componentContextController = new ComponentContextController(_result.component, self);
 
-        if (targetPageIndex > -1) {
-          self.app.uiSupervisor.openPageContext(_list.list[targetPageIndex], 'fa-newspaper-o');
+          self.componentContextControllers[_componentId] = componentContextController;
+
+          _complete(self.componentContextControllers[_componentId]);
         } else {
-          alert("존재하지 않는 페이지 입니다.");
+          alert("component 로드 실패. " + _result.reason);
         }
 
+      });
+    } else {
+      _complete(this.componentContextControllers[_componentId]);
+    }
+  }
 
-      })
 
-      return;
+
+  navigateService(_navigateCMDString) {
+    /*
+      Page Navigate : P@[PageAccessPoint]?[params]#[hash]
+      Resource View : S@[StaticResourceID]
+    */
+    let self = this;
+    let matches = _navigateCMDString.match(/^(\w?)@([^?^#^@]+?)(?:\?([^#]+))?(?:#(.+))?$/);
+    let navigateType = matches[1];
+    let target = matches[2];
+    let params = matches[3] || '';
+    let hash = matches[4] || '';
+
+    if (navigateType === 'P') {
+      navigateType = 'page';
+    } else if (navigateType === 'S') {
+      navigateType = 'staticResource'
     }
 
-    let list = [];
-    list.push("publish=");
-    _navigateParamList.map(function(_param, _i) {
+    console.log(_navigateCMDString, matches[0], navigateType, target, params, hash);
 
-      if (_i == 0) list.push('page=' + _param);
-      else
-        list.push(_param);
+    if (!/publish=/.test(window.location.search)) {
+      // non publish mode == building Mode
 
-      console.log('navi params', _navigateParamList);
-    });
+      let self = this;
+      if (navigateType === 'page') {
+        this.findPageByAccessPoint(target, function(_result) {
 
-    list.push("serviceId=" + this.service_id);
+          if (_result !== null) {
+            self.app.uiSupervisor.openPageContext(_result, 'fa-newspaper-o');
+          } else {
+            alert("존재하지 않는 페이지 입니다.");
+          }
+        });
+      } else if (navigateType === 'staticResource') {
 
-    console.log(list.join("&"));
+        alert("현재 미지원 기능입니다. ServiceManager.navigateService");
+      }
+    } else {
 
-    window.location.href = location.origin + "/?" + list.join("&");
+      // publish mode
+      let paramParts = params.split("&");
+      let list = [];
+      list.push("publish=" + navigateType);
+      list.push("page=" + target);
+      list.push("serviceId=" + this.service_id);
+
+      if (navigateType === 'page') {
+        paramParts.map(function(_paramPart) {
+          list.push(_paramPart)
+        });
+
+        window.location.href = location.origin + "/?" + list.join("&");
+      } else if (navigateType === 'staticResource') {
+
+        alert("현재 미지원 기능입니다. ServiceManager.navigateService");
+      }
+    }
   }
+
+
 
   newViewer() {
     return new Viewer(this);
+  }
+
+
+
+  getScriptURLByName(_name) {
+    return "http://" + this.gelateriaHost + "/js/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
+  }
+
+  getScriptURLById(_id) {
+    let scriptIndex = _.findIndex(this.preparedJSList, {
+      _id: _id
+    });
+
+    if (scriptIndex !== -1) {
+      let script = this.preparedJSList[scriptIndex];
+
+      return "http://" + this.gelateriaHost + "/js/contents-retrieve-by-name/" + script.name + "?serviceId=" + this.service_id;
+    } else {
+      return null;
+    }
+  }
+
+  getScriptContents(_id) {
+    let scriptIndex = _.findIndex(this.preparedJSList, {
+      _id: _id
+    });
+
+    if (scriptIndex !== -1) {
+      let script = this.preparedJSList[scriptIndex];
+
+      return script.js;
+    } else {
+      return null;
+    }
+  }
+
+  getStyleURLByName(_name) {
+    return "http://" + this.gelateriaHost + "/css/contents-retrieve-by-name/" + _name + "?serviceId=" + this.service_id;
+  }
+
+  getStyleURLById(_id) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      _id: _id
+    });
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return "http://" + this.gelateriaHost + "/css/contents-retrieve-by-name/" + style.name + "?serviceId=" + this.service_id;
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContents(_id) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      _id: _id
+    });
+    // import 구문은 자동으로 임포트 하여 처리한다.
+    // @import url(${style:font-awesome.min.css});
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return this.getStyleContentsByStyle(style);
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContentsByName(_name) {
+    let styleIndex = _.findIndex(this.preparedCSSList, {
+      name: _name
+    });
+
+    if (styleIndex !== -1) {
+      let style = this.preparedCSSList[styleIndex];
+
+      return this.getStyleContentsByStyle(style);
+    } else {
+      return null;
+    }
+  }
+
+  getStyleContentsByStyle(_style) {
+    let self = this;
+    let css = _style.css;
+
+    css = css.replace(/@import url\(\${style:(.*?)}\);/g, function(_match, _name) {
+
+      return "\n" + self.getStyleContentsByName(_name) + '\n';
+    });
+
+    return css;
+  }
+
+  getImageURLByName(_name) {
+    let staticIndex = _.findIndex(this.preparedStaticList, function(_static) {
+      return _static.type === 'image' && _static.name === _name;
+    });
+
+    let staticResource = this.preparedStaticList[staticIndex];
+
+    return "http://" + this.gelateriaHost + "/static/image/" + staticResource.filename;
+  }
+
+  getImageStaticByName(_name) {
+    let staticIndex = _.findIndex(this.preparedStaticList, function(_static) {
+      return _static.name === _name;
+    });
+
+    let staticResource = this.preparedStaticList[staticIndex];
+
+    return "http://" + this.gelateriaHost + "/static/" + staticResource.type + "/" + staticResource.filename;
   }
 }
 

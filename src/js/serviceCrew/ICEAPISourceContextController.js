@@ -58,6 +58,14 @@ export default class ICEAPISourceContextController extends ContextController {
     }
   }
 
+  modifyRequestCustomURL(_requestId, _customURL) {
+    if (this.instance.changeRequestCustomURL(_requestId, _customURL)) {
+      this.changedContent();
+    } else {
+      this.builderNotify("커스텀URL을 변경 할 수 없습니다.", "해당 요청이 존재하는지 확인하여 주세요.");
+    }
+  }
+
   modifyRequestMethod(_requestId, _method) {
     if (this.instance.changeRequestMethod(_requestId, _method)) {
       this.changedContent();
@@ -167,7 +175,12 @@ export default class ICEAPISourceContextController extends ContextController {
 
     cruds.push({
       type: "*",
-      name: "CRUD Free"
+      name: "요청 유형 자유 입력"
+    });
+
+    cruds.push({
+      type: "**",
+      name: "요청 URL 직접 입력"
     });
 
     return cruds;

@@ -48,13 +48,14 @@ let Request = React.createClass({
   onDragStart(_e, _path){
 
     let dragEvent = _e.nativeEvent;
-    dragEvent.dataTransfer.setData("text/plain", "${*"+this.props.apiSource.nt_tid+_path+"}");
+    dragEvent.dataTransfer.setData("text/plain", "${*"+(this.props.apiSource.nt_tid+"-"+this.props.request.name)+_path+"}");
   },
 
   componentDidUpdate(){
     let self = this;
     if( this.state.showItemTree && this.state.dataFrame === null ){
       this.props.apiSource.executeTestRequestAsDataFrame(this.props.request.id, function(_result){
+        console.log(_result);
         self.setState({dataFrame: _result});
       });
     }

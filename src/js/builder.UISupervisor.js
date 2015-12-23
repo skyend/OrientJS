@@ -346,36 +346,37 @@ UI.prototype.loadPageList = function(_complete) {
 /****************************************************************/
 /**************************** Builder Logic *********************/
 /****************************************************************/
-
-UI.prototype.onThrowCatcherIMustPreviewComponent = function(_eventData, _pass) {
-
-  if (_eventData.refPath[0] === 'ComponentPalette') {
-
-    _eventData.path[0].setState({
-      previewComponent: this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey, _eventData.syncWindowContext)
-    });
-  }
+UI.prototype.onThrowCatcherRefreshTools = function() {
+  this.toolFactory.refreshTools();
 };
 
-UI.prototype.onThrowCatcherGetComponent = function(_eventData, _pass) {
+
+UI.prototype.onThrowCatcherGetComponent = function(_eventData) {
   var key = _eventData.componentKey;
   //console.log(_eventData, 'get');
-  var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey);
-
-  _eventData.return(null, loadedComponent);
-};
-
-UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
-  var who = _eventData.path[0];
-  console.log(this.projectManager);
-  this.app.serviceManager.loadMetaData(function(__meta) {
-    who.setState({
-      pageMetaList: __meta.pages,
-      documentMetaList: __meta.documents,
-      apiSourceMetaList: __meta.apiSources
-    });
+  var loadedComponent = this.session.componentPool.getComponentFromRemote(_eventData.componentKey, _eventData.packageKey, undefined, function(_result) {
+    _eventData.return(null, _result);
   });
+
+
 };
+
+// UI.prototype.onThrowCatcherNeedServiceResourcesMeta = function(_eventData) {
+//   var who = _eventData.path[0];
+//   console.log(this.projectManager);
+//   this.app.serviceManager.loadMetaData(function(__meta) {
+//     who.setState({
+//       pageMetaList: __meta.pages,
+//       documentMetaList: __meta.documents,
+//       apiSourceMetaList: __meta.apiSources
+//     });
+//   });
+// };
+
+UI.prototype.onThrowCatcherBringCSSContext = function(_eventData) {
+  let self = this;
+  //let api
+}
 
 UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
   console.log('BringApiSourceContext', _eventData);
@@ -394,8 +395,6 @@ UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {
       iconClass: _eventData.iconClass
     });
   });
-
-
 };
 
 
@@ -441,6 +440,26 @@ UI.prototype.onThrowCatcherBringDocumentContext = function(_eventData) {
     });
 
 };
+
+UI.prototype.onThrowCatcherBringComponentContext = function(_eventData) {
+  var componentMeta = _eventData.component;
+  console.log(componentMeta);
+
+  var self = this;
+  // Document Meta 정보로 DocumentContextController를 얻는다
+  this.app.serviceManager
+    .getComponentContextController(componentMeta._id, function(_componentContextController) {
+
+      self.rootUIInstance.openStageContext({
+        componentID: componentMeta._id,
+        contextID: 'component#' + componentMeta._id,
+        contextTitle: componentMeta.name,
+        contextType: 'component',
+        contextController: _componentContextController,
+        iconClass: 'fa-cube'
+      });
+    });
+}
 
 
 UI.prototype.openPageContext = function(_page, _iconClass) {
@@ -576,6 +595,19 @@ UI.prototype.onThrowCatcherCreateNewAPIInterface = function(_eventData) {
   });
 };
 
+
+UI.prototype.onThrowCatcherCreateNewComponent = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.createComponent(_eventData.name, _eventData.script, _eventData.css, _eventData.propStruct, function(_result) {
+
+    if (_result.result === 'success') {
+      _eventData.path[0].successComponentCreate();
+    } else {
+      _eventData.path[0].failComponentCreate();
+    }
+  });
+};
+
 UI.prototype.onThrowCatcherNeedICEHost = function(_eventData) {
   var self = this;
 
@@ -603,6 +635,33 @@ UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
   this.app.serviceManager.getApisourceList(function(_result) {
     _eventData.path[0].setState({
       apisourceList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedCSSList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.getCSSList(function(_result) {
+    _eventData.path[0].setState({
+      cssList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedJSList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.getJSList(function(_result) {
+    _eventData.path[0].setState({
+      jsList: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedComponentList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.getComponentList(function(_result) {
+    _eventData.path[0].setState({
+      componentList: _result.list
     });
   });
 };
@@ -778,8 +837,10 @@ UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
   });
 };
 
+
 UI.prototype.onThrowCatcherSelectProject = function(_eventData) {
   console.log("Select project : ", _eventData.project_real_id);
+  this.app.currentProjectId = _eventData.project_real_id;
   this.app.projectManager.use(_eventData.project_real_id);
 };
 

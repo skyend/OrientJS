@@ -1,4 +1,5 @@
 "use strict";
+
 export default class ContextController {
   constructor() {
 
@@ -35,6 +36,7 @@ export default class ContextController {
     if (this.unsaved) return;
     this.unsaved = true;
     this.context.feedSaveStateChange();
+
   }
 
   get isUnsaved() {

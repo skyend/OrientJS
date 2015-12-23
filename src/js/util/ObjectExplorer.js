@@ -61,7 +61,41 @@ function stringReplacement(_string, _dicObject, _replacePointBracketString) {
   return resultString;
 }
 
+function objectExplore(_object, _explorer, _key) {
+  let oType = typeof _object;
+
+  if (oType === 'undefined') {
+    return;
+  } else if (oType === 'number') {
+    _explorer(_key, _object);
+  } else if (oType === 'boolean') {
+    _explorer(_key, _object);
+  } else if (oType === 'string') {
+    _explorer(_key, _object);
+  } else if (oType === 'object') {
+    if (_object === null) {
+      return;
+    } else if (_object.length !== undefined && typeof _object.length === 'number') {
+      let item;
+      for (let i = 0; i < _object.length; i++) {
+        item = _object[i];
+
+        objectExplore(item, _explorer, _key + '/' + i);
+      }
+    } else {
+      let keys = Object.keys(_object);
+      let key;
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+
+        objectExplore(_object[key], _explorer, _key + '/' + key);
+      }
+    }
+  }
+}
+
 module.exports = {
   stringReplacement: stringReplacement,
-  getValueByKeyPath: getValueByKeyPath
+  getValueByKeyPath: getValueByKeyPath,
+  explore: objectExplore
 };

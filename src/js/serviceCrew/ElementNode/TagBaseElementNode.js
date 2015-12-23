@@ -126,9 +126,9 @@ class TagBaseElementNode extends ElementNode {
     this.attributes = _attributes;
   }
 
-  setRectanglePart(_partValue, _partName) {
-    var rectangleRef = this.getCurrentRectangle();
-
+  setRectanglePartWithScreenMode(_partName, _partValue, _screenMode) {
+    var rectangleRef = this.getRectangleByScreenMode(_screenMode);
+    console.log(arguments);
     // 단순화
     rectangleRef[_partName] = _partValue;
 
@@ -157,7 +157,7 @@ class TagBaseElementNode extends ElementNode {
   createRealizationNode() {
     let htmlDoc = this.environment.getHTMLDocument();
     this.realization = htmlDoc.createElement(this.getTagName() || 'div');
-    console.log(this.getTagName());
+    //console.log(this.getTagName());
     this.realization.___en = this;
     this.realization.setAttribute('___id___', this.id);
   }
@@ -194,21 +194,22 @@ class TagBaseElementNode extends ElementNode {
         _e.preventDefault();
 
         let targetNavigate = _e.target.getAttribute('data-navigate');
+        console.log(self.environment);
+        if (self.environment.enableNavigate) {
 
-        self.navigateHandling(targetNavigate);
+          self.navigateHandling(targetNavigate);
+        }
       }
     } else {
       this.realization.onclick = function(_e) {
         _e.preventDefault();
       }
     }
+
   }
 
   navigateHandling(_navigate) {
-
-    let splited = _navigate.split('&');
-
-    this.environment.contextController.serviceManager.navigatePage(splited);
+    this.environment.contextController.serviceManager.navigateService(_navigate);
   }
 
   valueWithUnitSeperator(_value) {

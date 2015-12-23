@@ -144,11 +144,17 @@ export default React.createClass({
                 </button>]
             ]
           }  width='150' height='80'/>
-
-
           <GridBox placements={
             [
               [
+                <button className='option' onClick={this.makeBindSubject}>
+                  <i className='fa fa-tasks'/>
+                  <span className='title'>Make Bind Subject</span>
+                </button>,
+                <button className='option' onClick={this.createComponent}>
+                  <i className='fa fa-cubes'/>
+                  <span className='title'>Create Component</span>
+                </button>,
                 <button className='option' onClick={this.returnSelect}>
                   <i className='fa fa-times'/>
                   <span className='title'>Return Select</span>

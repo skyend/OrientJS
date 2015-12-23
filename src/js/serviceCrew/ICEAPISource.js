@@ -1,6 +1,7 @@
 "use strict";
 import Request from './API/Request.js';
 import _ from 'underscore';
+import SuperAgent from 'superagent';
 
 export default class ICEAPISource {
   constructor(_ICEAPISourceData, _serviceManager) {
@@ -69,6 +70,17 @@ export default class ICEAPISource {
 
     if (req !== undefined) {
       req.customCrud = _value;
+      return true;
+    }
+
+    return false;
+  }
+
+  changeRequestCustomURL(_reqId, _value) {
+    let req = this.findRequest(_reqId);
+
+    if (req !== undefined) {
+      req.customURL = _value;
       return true;
     }
 
@@ -167,11 +179,44 @@ export default class ICEAPISource {
   executeRequest(_requestId, _fields, _heads, _complete) {
     _fields.t = 'api';
     let req = this.findRequest(_requestId);
+    console.log(_requestId, req);
 
-    this.serviceManager.iceDriver.requestNodeType(req.method, this.nt_tid, req.crudType, _heads, _fields, function(_result) {
+    if (req.crud === '**') {
+      if (req.method === 'get') {
+        SuperAgent.get(req.customURL)
+          .query(_fields)
+          .end(function(err, res) {
+            console.log(err, res);
+            if (res === null) {
+              _complete(null);
+            } else {
+              _complete(res.body);
+            }
 
-      _complete(_result);
-    });
+          });
+      } else if (req.method === 'post') {
+        SuperAgent.post(req.customURL)
+          .type('form')
+          .send(_fields)
+          .end(function(err, res) {
+            console.log(err, res);
+            if (res === null) {
+              _complete(null);
+            } else {
+              _complete(res.body);
+            }
+          });
+      } else {
+        alert("Custom URL 요청에서는 아직 지원하지 않는 HTTP Method 입니다.");
+      }
+    } else {
+      this.serviceManager.iceDriver.requestNodeType(req.method, this.nt_tid, req.crudType, _heads, _fields, function(_result) {
+
+        _complete(_result);
+      });
+    }
+
+
   }
 
   executeTestRequest(_requestId, _complete) {
@@ -199,9 +244,21 @@ export default class ICEAPISource {
   executeTestRequestAsDataFrame(_requestId, _complete) {
     let self = this;
     this.executeTestRequest(_requestId, function(_result) {
-      let dataframe = self.createResultDataFrame(_result, self.nodeTypeMeta.propertytype);
-      console.log(dataframe);
-      _complete(dataframe);
+
+      let reqIndex = _.findIndex(self.requests, {
+        id: _requestId
+      });
+
+      let req = self.requests[reqIndex];
+
+      if (req.crud === '**') {
+        _complete(_result);
+      } else {
+        let dataframe = self.createResultDataFrame(_result, self.nodeTypeMeta.propertytype);
+        console.log(dataframe);
+        _complete(dataframe);
+      }
+
     });
 
   }

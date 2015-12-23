@@ -11,9 +11,16 @@ require('./IFrameStage.less');
 var IFrameStage = React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js')],
 
-  getInitialState() {
+  getDefaultProps() {
     return {
       src: "about:blank"
+    };
+  },
+
+
+  getInitialState() {
+    return {
+      src: undefined
     };
   },
 
@@ -155,15 +162,18 @@ var IFrameStage = React.createClass({
     return this.insertElementToAfterBySelector('[__vid__="' + _baseTargetVid + '"]', _element);
   },
 
-  onIframeLoaded(_iframe) {
+  onIframeLoaded(_e) {
+    let iframe = _e.target;
+    console.log(_e);
     var self = this;
 // 임시 차후에 EditorStageContext 에서 처리되어야 함
-    var iwindow = _iframe.contentWindow || _iframe.contentDocument;
+    var iwindow = iframe.contentWindow || iframe.contentDocument;
     var innerDocument = iwindow.document;
     this.currentIframeDocument = innerDocument;
 
-    this.bindContextMenuTrigger(_iframe);
+    this.bindContextMenuTrigger(iframe);
     console.log('iframe loaded');
+
     innerDocument.addEventListener('click', function (_ev) {
       console.log('click element');
       self.onMouseClickAtStage(_ev);
@@ -184,6 +194,10 @@ var IFrameStage = React.createClass({
     innerDocument.addEventListener('drop', function (_ev) {
       console.log(_ev, 'drop in iframeStage');
     }, false);
+
+    if( typeof this.props.onLoadIFrame === 'function' ){
+      this.props.onLoadIFrame(iframe);
+    }
   },
 
   /**
@@ -320,17 +334,17 @@ var IFrameStage = React.createClass({
     var self = this;
     var iframe = this.refs['iframe'].getDOMNode();
 
-    iframe.onload = function (_e) {
-      self.onIframeLoaded(iframe);
-    };
+    // iframe.onload = function (_e) {
+    //   self.onIframeLoaded(iframe);
+    // };
 
   },
 
   componentDidMount() {
     var iframe = this.refs['iframe'].getDOMNode();
-    this.onIframeLoaded(iframe);
+    //this.onIframeLoaded(iframe);
 
-    if (this.state.src === 'undefined') {
+    if (this.state.src === undefined) {
       this.setState({
         src: this.props.src
       });
@@ -352,7 +366,7 @@ var IFrameStage = React.createClass({
         left: this.props.left || 'auto',
         top: this.props.top || 'auto'
       }}>
-        <iframe ref='iframe' src={this.state.src}/>
+        <iframe ref='iframe' onLoad={this.onIframeLoaded} src={this.state.src}/>
       </div>
     );
   }

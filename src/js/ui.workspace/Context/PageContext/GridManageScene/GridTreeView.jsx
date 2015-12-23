@@ -38,12 +38,12 @@ export default React.createClass({
 
   clcikSetting(_e, _gridNode){
     _e.stopPropagation();
-    this.emit("OpenGridElementNodeSetting", {
+    this.emit("OpenElementNodeGeometryEditor", {
       gridElementNode: _gridNode
     });
 
-    this.emit("SelectGridElementNode", {
-      gridElementNode: _gridNode
+    this.emit("SuccessfullyElementNodeSelected", {
+      elementNode: _gridNode
     });
   },
 
@@ -183,8 +183,8 @@ export default React.createClass({
     }
 
     let selectGridNode = function(){
-      self.emit("SelectGridElementNode",{
-        gridElementNode:_gridElement
+      self.emit("SuccessfullyElementNodeSelected",{
+        elementNode:_gridElement
       });
     }
       console.log('TreeView')
@@ -219,12 +219,12 @@ export default React.createClass({
           </div>
           <div className="info" style={infoStyle}>
             <span className='behavior'>{_gridElement.behavior}</span>
-            <span className='id'>{_gridElement.getId()}</span>
+            {/*<span className='id'>{_gridElement.getId()}</span>*/}
             <div className='foot-info'>
               { this.renderGridElementFootInfo(_gridElement)}
             </div>
 
-            { _gridElement.followingFragment !== null ? <span className='attached-fragment'> <i className='fa fa-chain'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment} </span>:''}
+            { _gridElement.followingFragment !== null ? <span className='attached-fragment'><i className='fa fa-chain fa-spin'/><span className='fragment'><i className='fa fa-html5'/>{_gridElement.loadedFollowingFragmentObject !== null ? _gridElement.loadedFollowingFragmentObject.title:this.followingFragment}</span></span>:''}
 
             <div className='options'>
               <li className='interface' title="Setting me" onClick={function(_e){self.clcikSetting(_e, _gridElement)}}>
@@ -268,7 +268,7 @@ export default React.createClass({
     //     <i className='fa fa-clipboard'/> Copy
     //   </li>
     // );
-    // 
+    //
     // renderItems.push(
     //   <li className='button text' onClick={this.pasteRows}>
     //     <i className='fa fa-clipboard'/> Copy children

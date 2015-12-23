@@ -101,9 +101,35 @@ class ReactElementNode extends TagBaseElementNode {
     let realizeOptions = _realizeOptions || {};
 
     if (realizeOptions.skipControl !== true) {
+      let self = this;
+
       let packageKey = this.getReactPackageKey();
       let componentKey = this.getReactComponentKey();
-      let component = this.environment.contextController.serviceManager.app.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
+
+      let component;
+      console.log("REact realize ", packageKey, componentKey);
+      if (packageKey === 'CUSTOM') {
+        // 커스텀은 Gelateria서버에서 로드하는 컴포넌트로 내장 컴포넌트와는 다르게 동작을 구성하였다.
+        // 추후에 컴포넌트 시스템을 다시 설계해야한다.
+        console.log(this.environment.contextController.serviceManager);
+        component = this.environment.contextController.serviceManager.app.session.getComponentPool().getComponentFromRemote(componentKey, packageKey, undefined, function(_result) {
+          self.loadedComponent = _result;
+
+          console.log("여기", _result);
+          let reactProperties = self.getReactComponentPropsWithResolve();
+          let reactElement = React.createElement(_result.class, reactProperties);
+
+          React.render(reactElement, self.realization);
+
+          self.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, _result.CSS);
+        });
+
+        return;
+      } else {
+
+        component = this.environment.contextController.serviceManager.app.session.getComponentPool().getComponentFromRemote(componentKey, packageKey);
+      }
+
 
       this.loadedComponent = component;
       //console.log('Loaded Component', this.loadedComponent.CSS);
@@ -171,7 +197,9 @@ class ReactElementNode extends TagBaseElementNode {
         child.onclick = function(_e) {
           console.log("React click");
           _e.preventDefault();
-          self.navigateHandling(navigate);
+          if (self.environment.enableNavigate) {
+            self.navigateHandling(navigate);
+          }
         };
       }
     }

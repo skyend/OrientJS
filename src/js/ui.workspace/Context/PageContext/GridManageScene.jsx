@@ -10,7 +10,8 @@ let GridManageScene = React.createClass({
   getDefaultProps(){
     return {
       rootGridElement: null,
-      selectedGridNode: null
+      selectedGridNode: null,
+      selectedScreenMode: 'desktop'
     };
   },
 
@@ -23,17 +24,6 @@ let GridManageScene = React.createClass({
       treeViewFold:false
     };
   },
-
-  // createRootGrid(){
-  //   let self = this;
-  //
-  //   this.setState({placeholderDisappear:true});
-  //
-  //   setTimeout(function(){
-  //     self.emit("CreateRootGrid");
-  //     self.setState({placeholderDisappear:false});
-  //   }, 500);
-  // },
 
   onThrowCatcherUnfold(_e){
     let targetMode = _e.path[0].props.screenMode;
@@ -67,35 +57,6 @@ let GridManageScene = React.createClass({
     this.setState({treeViewFold:true});
   },
 
-  renderAreaPlaceholder(){
-    let buttonStyle = {};
-    let svgStyle = {};
-    if( this.state.placeholderDisappear ){
-      svgStyle.opacity = 0;
-
-      buttonStyle.width = this.props.width;
-      buttonStyle.height = this.props.height;
-      buttonStyle.left = buttonStyle.top = 0;
-      buttonStyle.margin = 0;
-      buttonStyle.backgroundColor = 'transparent';
-      buttonStyle.color = 'transparent';
-      buttonStyle.pointerEvents = 'none';
-    }
-
-    return (
-      <div className='grid-placeholder' >
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width={this.props.width} height={this.props.height} style={svgStyle} >
-          <desc>Created with Raphaël</desc>
-          <defs></defs>
-          <path fill="none" stroke="#423F36" d={"M0,0L"+this.props.width+","+this.props.height} strokeWidth="5"></path>
-          <path fill="none" stroke="#423F36" d={"M"+this.props.width+",0L0,"+this.props.height} strokeWidth="5"></path>
-        </svg>
-
-        <button style={buttonStyle} onClick={this.createRootGrid}>Create Root Grid</button>
-      </div>
-    );
-  },
-
   renderMainArea(){
     let returnElements = [];
 
@@ -116,9 +77,9 @@ let GridManageScene = React.createClass({
 
     let divideWidth = (this.props.width-(foldGrids*30)) / (4-foldGrids);
 
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
-    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.desktopGridFold? 30:divideWidth} height={this.props.height} left={0} screenMode="desktop" folding={this.state.desktopGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.tabletGridFold? 30:divideWidth} height={this.props.height} left={divideWidth} screenMode="tablet" folding={this.state.tabletGridFold}/>);
+    returnElements.push(<GridBound rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} selectedScreenMode={this.props.selectedScreenMode} width={this.state.mobileGridFold? 30:divideWidth} height={this.props.height} left={divideWidth * 2} screenMode="mobile" folding={this.state.mobileGridFold}/>);
     returnElements.push(<GridTreeView rootGridElement={this.props.rootGridElement} selectedGridElement={this.props.selectedGridNode} width={this.state.treeViewFold? 30:divideWidth} height={this.props.height} left={divideWidth * 3} folding={this.state.treeViewFold}/>);
     return returnElements;
   },

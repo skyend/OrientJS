@@ -24,6 +24,11 @@ export default React.createClass({
     this.forceUpdate();
   },
 
+  onThrowCatcherChangedRequestCustomURL(_e){
+    this.props.contextController.modifyRequestCustomURL(_e.requestId, _e.value);
+    this.forceUpdate();
+  },
+
   onThrowCatcherChangedRequestMethod(_e){
     this.props.contextController.modifyRequestMethod(_e.requestId, _e.value);
     this.forceUpdate();
@@ -63,6 +68,15 @@ export default React.createClass({
     let name = this.refs['new-request-name-input'].getDOMNode().value;
     let crud = this.refs['new-request-type-input'].getDOMNode().value;
 
+    if(/[\s-]/.test(name)){
+      this.emit('NoticeMessage', {
+        title: "요청 추가 실패",
+        message: "요청 이름에 공백문자와 하이픈(-)을 사용 하실 수 없습니다. 대신 언더바( _ ) 를 사용 해 주세요.",
+        level: "error"
+      });
+
+      return;
+    }
 
     if (name === '') {
       this.emit('NoticeMessage', {
@@ -122,11 +136,11 @@ export default React.createClass({
       <div className='body'>
         <div className='request-control'>
           <label>
-            Name
+            이름
           </label>
           <input type='text' ref='new-request-name-input' />
           <label>
-            CRUD
+            API 유형
           </label>
           <select ref='new-request-type-input'>
             {this.props.contextController.getAvailableCRUDs().map(function(_crud){
@@ -136,7 +150,7 @@ export default React.createClass({
             })}
           </select>
           <button onClick={this.newRequest}>
-            New Request
+            새 요청 추가
           </button>
         </div>
         {/*<div className="horizontal">
@@ -172,7 +186,7 @@ export default React.createClass({
       <div className='summary'>
         <div className='section'>
           <div className='name'>
-            <span>Parent Nodetype</span>
+            <span>상위 노드 타입</span>
           </div>
           <div className='data'>
             <span className='block-merge'>
@@ -204,7 +218,7 @@ export default React.createClass({
         </div>
         <div className='section'>
           <div className='name'>
-            <span>Propertytypes</span>
+            <span>속성 목록</span>
           </div>
           <div className='data'>
             {Object.keys(this.props.contextController.instance.nodeTypeMeta.propertytype).map(function (_key) {
@@ -223,7 +237,7 @@ export default React.createClass({
 
         <div className='section'>
           <div className='name'>
-            <span>CRUD</span>
+            <span>지원 API 유형 목록</span>
           </div>
           <div className='data'>
             {this.props.contextController.instance.nodeTypeMeta.crud.map(function (_crud) {

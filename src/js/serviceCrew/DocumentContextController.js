@@ -1,11 +1,15 @@
 "use strict";
 var Document = require('./Document.js');
 var jsDiff = require('diff');
+import _ from 'underscore';
 import LZString from '../lib/lz-string.js';
 import DocumentRevisionManager from './DocumentRevisionManager.js';
+import HasElementNodeContextController from './HasElementNodeContextController.js';
 
-class DocumentContextController {
-  constructor(_document, _params, _serviceManager) {
+class DocumentContextController extends HasElementNodeContextController {
+  constructor(_document, _params, _serviceManager, _fragmentOption) {
+    super();
+
     this.attached = false;
     this.context = null;
     this.running = false;
@@ -24,11 +28,11 @@ class DocumentContextController {
     // 입력된 document가 있다면 그것을 실제 Document Object로 변환하고
     if (typeof _document !== 'undefined' && Object.keys(_document).length != 0) {
 
-      this.document = new Document(this, _params, _document);
+      this.subject = new Document(this, _params, _document, _fragmentOption);
     } else {
 
       // 없다면 새로운 Document를 생성한다.
-      this.document = new Document(this, {});
+      this.subject = new Document(this, {}, undefined, _fragmentOption);
     }
 
 
@@ -40,10 +44,6 @@ class DocumentContextController {
 
   }
 
-
-
-
-
   /*********
    * Attach / Pause / Resume
    *
@@ -51,49 +51,62 @@ class DocumentContextController {
   attach(_context, _superDOMElement) {
     this.attached = true;
     this.context = _context;
-    this.setSuperElement(_superDOMElement);
-    /* processing */
-
-
-
-    this.beginRender();
-  }
-
-  pause() {
-    this.running = false;
-
-    /* processing */
-
-  }
-
-  resume() {
-    this.running = true;
-
-    /* processing */
-
   }
 
   save() {
     var self = this;
-    var docjson = this.document.export();
-    this.serviceManager.saveDocument(this.document.getDocumentID(), docjson, function(_result) {
+    var docjson = this.subject.export();
+    this.serviceManager.saveDocument(this.subject.getDocumentID(), docjson, function(_result) {
       self.unsaved = false;
       self.context.feedSaveStateChange();
     });
   }
 
   changedContent() {
-    if (this.unsaved) return;
-    this.unsaved = true;
-    this.context.feedSaveStateChange();
+    super.changedContent();
+    this.supplySampleBindingParams();
   }
 
-  get isUnsaved() {
-    return this.unsaved;
+  supplySampleBindingParams() {
+    let nsSet = this.subject.getAllBinderNSSet();
+    let that = this;
+
+    nsSet.forEach(function(_ns) {
+      // fragment에 param이 undefined 라면 요청을 진행하여 fragment에 공급한다.
+      if (that.subject.getParam(_ns) !== undefined) return;
+      let apiSourceNT_Tid = _ns.split('-')[0];
+      let requestName = _ns.split('-')[1];
+
+      that.serviceManager.getApiSourceListWithInterface(function(_result) {
+        let index = _.findIndex(_result, {
+          nt_tid: apiSourceNT_Tid
+        });
+
+        if (index === -1) return console.warn(apiSourceNT_Tid + " tid 를 가지는 ICE API Source 리소스가 서비스에 존재하지 않습니다.");
+
+        let apiSource = _result[index];
+        let requestIndex = _.findIndex(apiSource.requests, {
+          name: requestName
+        });
+
+        if (requestIndex === -1) return console.warn(requestName + " 라는 이름의 요청이 " + apiSource.title + " ICEAPISource 상에 존재하지 않습니다.");
+        let request = apiSource.requests[requestIndex];
+        apiSource.executeTestRequest(request.id, function(_result) {
+
+          // Param 을 입력하고
+          that.subject.setParam(_ns, _result);
+
+          // 랜더링을 리프레시 한다.
+          that.context.renderRefresh();
+        });
+
+      });
+
+    });
   }
 
   modifyDocumentCSS(_cssText) {
-    this.document.setPageCSS(_cssText);
+    this.subject.setPageCSS(_cssText);
     this.updatePageCSS();
     this.changedContent();
   }
@@ -103,8 +116,8 @@ class DocumentContextController {
     let parentElementNode = null;
     let treeRefresh = false;
 
-    if (typeof _elementIdorElement === 'number') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -164,7 +177,7 @@ class DocumentContextController {
       parentElementNode.linkHierarchyRealizaion();
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -175,8 +188,8 @@ class DocumentContextController {
     let parentElementNode = null;
     let treeRefresh = false;
 
-    if (typeof _elementIdorElement === 'number') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -194,7 +207,7 @@ class DocumentContextController {
       parentElementNode.linkHierarchyRealizaion();
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -204,8 +217,8 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -240,7 +253,7 @@ class DocumentContextController {
         parentElementNode.linkHierarchyRealizaion();
       } else {
         // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-        this.rootRender();
+        this.context.renderRefresh();
       }
     }
 
@@ -251,8 +264,8 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -268,7 +281,44 @@ class DocumentContextController {
       default:
     }
 
-    this.rootRender();
+    this.context.renderRefresh();
+    this.changedContent();
+  }
+
+  modifyElementGeometry(_elementIdorElement, _key, _value, _screenMode) {
+
+    // 타겟 노드와 타겟노드의 부모 노느 찾기
+    let targetElementNode = null;
+    let parentElementNode = null;
+
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
+    } else {
+      targetElementNode = _elementIdorElement;
+    }
+
+    if (targetElementNode !== null) {
+      parentElementNode = targetElementNode.getParent();
+    }
+
+    // 편집
+    this.subject.modifyElementGeometry(targetElementNode, _key, _value, _screenMode);
+
+    // 화면 업데이트
+    if (parentElementNode !== null) {
+
+      parentElementNode.children.map((_childElementNode) => {
+        _childElementNode.realize();
+      });
+
+      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+      parentElementNode.linkHierarchyRealizaion();
+
+    } else {
+      // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
+      this.context.renderRefresh();
+    }
+
     this.changedContent();
   }
 
@@ -276,8 +326,8 @@ class DocumentContextController {
     let targetElementNode = null;
     let parentElementNode = null;
 
-    if (typeof _elementIdorElement === 'number') {
-      targetElementNode = this.document.findById(_elementIdorElement);
+    if (typeof _elementIdorElement === 'string') {
+      targetElementNode = this.subject.findById(_elementIdorElement);
     } else {
       targetElementNode = _elementIdorElement;
     }
@@ -294,7 +344,7 @@ class DocumentContextController {
         if (parentElementNode !== null) {
           returns = parentElementNode.detachChild(targetElementNode);
         } else {
-          this.document.rootElementNode = null;
+          this.subject.rootElementNode = null;
         }
 
         break;
@@ -302,34 +352,34 @@ class DocumentContextController {
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
           if (targetElementNode === null) {
-            this.document.setRootElementNode(newElementNode);
+            this.subject.setRootElementNode(newElementNode);
           } else {
-            this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+            this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
           }
         }.apply(this);
         break;
       case "insertBeforeComponent":
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
-          this.document.insertElementNode("insertBefore", newElementNode, targetElementNode);
+          this.subject.insertElementNode("insertBefore", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "insertAfterComponent":
         returns = () => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
-          this.document.insertElementNode("insertAfter", newElementNode, targetElementNode);
+          this.subject.insertElementNode("insertAfter", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "cloneAndInsertAfter":
         returns = () => {
-          let clonedElementNode = this.document.cloneElement(targetElementNode);
-          this.document.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
+          let clonedElementNode = this.subject.cloneElement(targetElementNode);
+          this.subject.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
         }.apply(this);
         break;
       case "pasteIn":
         returns = () => {
-          var newElementNode = this.document.newElementNode(_object);
-          this.document.insertElementNode("appendChild", newElementNode, targetElementNode);
+          var newElementNode = this.subject.newElementNode(_object);
+          this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
         }.apply(this);
         break;
       case "default":
@@ -353,7 +403,7 @@ class DocumentContextController {
 
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
-      this.rootRender();
+      this.context.renderRefresh();
     }
 
     this.changedContent();
@@ -387,7 +437,7 @@ class DocumentContextController {
 
 
   convertToElementNodeFromComponent(_component) {
-    return this.document.newElementNodeFromComponent(_component);
+    return this.subject.newElementNodeFromComponent(_component);
   }
 
   setScreenSizing(_sizing) {
@@ -414,43 +464,50 @@ class DocumentContextController {
   beginRender(_realizeOptions) {
     var self = this;
 
-
     // resource convert
-    var jsElements = this.convertToScriptElement(this.document.getScriptResources() || []);
-    var styleElements = this.convertToStyleElements(this.document.getStyleResources() || []);
-
-    // script element block 을 적용한다.
-    jsElements.map(function(_jsElement) {
-
-      /*
-      if (_jsElement.getAttribute('src') !== undefined) {
-        _jsElement.onload = function() {
-          console.log('loaded', _jsElement);
-
-          console.log(self.context.getWindow());
-        }
-      }*/
-
-      self.context.applyScriptElement(_jsElement);
-
+    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
+      // script element block을 적용한다.
+      _scriptElements.map(function(_scriptElement) {
+        self.context.applyScriptElement(_scriptElement);
+      });
     });
 
-    // style element block을 적용한다.
-    styleElements.map(function(_styleElement) {
-      self.context.applyStyleElement(_styleElement);
+    this.convertToStyleElements(this.subject.refStyleIdList || [], function(_styleElements) {
+      // style element block을 적용한다.
+      _styleElements.map(function(_styleElement) {
+        self.context.applyStyleElement(_styleElement);
+      });
     });
+
+    // // script element block 을 적용한다.
+    // jsElements.map(function(_jsElement) {
+    //
+    //   /*
+    //   if (_jsElement.getAttribute('src') !== undefined) {
+    //     _jsElement.onload = function() {
+    //       console.log('loaded', _jsElement);
+    //
+    //       console.log(self.context.getWindow());
+    //     }
+    //   }*/
+    //
+    //   self.context.applyScriptElement(_jsElement);
+    //
+    // });
+
+
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
-    if (this.document.rootElementNode !== null) {
+    if (this.subject.rootElementNode !== null) {
       this.rootRender(_realizeOptions);
     }
 
-    //console.log(this.document.rootElementNode);
+    //console.log(this.subject.rootElementNode);
   }
 
   rerenderingElementNode(_elementNode, _realizeOptions) {
     let realizeOptions = _realizeOptions || {};
-
+    console.log('rerenderingElementNode !!');
     if (_elementNode === null) {
       this.clearSuperElement();
       return;
@@ -467,6 +524,8 @@ class DocumentContextController {
     } else {
       this.clearSuperElement();
       _elementNode.linkHierarchyRealizaion();
+
+      console.log('슈퍼 엘리멑느', this.superElement);
       this.superElement.appendChild(_elementNode.realization);
     }
 
@@ -490,9 +549,9 @@ class DocumentContextController {
   }
 
   rootRender(_realizeOptions) {
-
+    console.log("Root Render");
     this.updateRenderCSS();
-    this.rerenderingElementNode(this.document.rootElementNode, _realizeOptions);
+    this.rerenderingElementNode(this.subject.rootElementNode, _realizeOptions);
   }
 
   applyComponentCSS(_cssIdentifier, _cssText) {
@@ -533,25 +592,21 @@ class DocumentContextController {
 
 
     // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.document.interpret(this.document.getPageCSS()) + this.extractComponentsStyleSheet();
+    this.pageCSSBlock.innerHTML = this.subject.interpret(this.subject.getPageCSS()) + this.extractComponentsStyleSheet();
 
   }
 
   updateRenderCSS() {
     // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
-    //this.updateHTMLTypeElementNodeCSS(this.document.getHTMLElementNodeCSSLines() + this.document.getReactElementNodeCSSLines());
+    //this.updateHTMLTypeElementNodeCSS(this.subject.getHTMLElementNodeCSSLines() + this.subject.getReactElementNodeCSSLines());
     this.updatePageCSS();
   }
 
-  getReactComponentFromSession(_packageKey, _componentKey, _syncWindowContext) {
-
-    return this.session.getComponentPool().getComponentFromRemote(_componentKey, _packageKey, _syncWindowContext);
-  }
 
   attachRootRealElementToSuperElement() {
 
     // rootRealElement 를 지정된 superElement에 랜더링한다.
-    this.superElement.appendChild(this.document.rootElementNode.getRealization());
+    this.superElement.appendChild(this.subject.rootElementNode.getRealization());
   }
 
   clearSuperElement() {
@@ -566,27 +621,34 @@ class DocumentContextController {
    * Style Object 리스트를 실제 window.document 내의 Style 요소로 변환한다.
    *
    */
-  convertToStyleElements(_styleObjects) {
+  convertToStyleElements(_styleIdList, _complete) {
     var baseWindow = this.context.getWindow();
+    let self = this;
+    let styleElements = _styleIdList.map(function(_styleId) {
+      let url = self.serviceManager.getStyleURLById(_styleId);
 
-    return _styleObjects.map(function(_styleObject) {
-      if (_styleObject.ext === 'css') {
-        if (typeof _styleObject.url !== 'undefined') {
-          var linkE = baseWindow.document.createElement('link');
-          linkE.setAttribute('type', 'text/css');
-          linkE.setAttribute('rel', 'stylesheet');
-          linkE.setAttribute('href', _styleObject.url);
+      let element;
 
-          return linkE;
-        } else {
-          var styleE = baseWindow.document.createElement('style');
-          linkE.setAttribute('type', 'text/css');
-          linkE.innerHTML = _styleObject.css;
 
-          return styleE;
-        }
+      if (url !== null) {
+        element = baseWindow.document.createElement('style');
+        let style = self.serviceManager.getStyleContents(_styleId);
+
+        element.innerHTML = self.subject.interpret(style);
+
+        //linkE.setAttribute('href', url);
+      } else {
+        element = baseWindow.document.createElement('link');
+        element.setAttribute('href', _styleId);
       }
+
+      element.setAttribute('type', 'text/css');
+      element.setAttribute('rel', 'stylesheet');
+
+      return element;
     });
+
+    _complete(styleElements);
   }
 
   /**
@@ -594,27 +656,52 @@ class DocumentContextController {
    * script Object 리스트를 실제 window.document 내의 script 요소로 변환한다.
    *
    */
-  convertToScriptElement(_scriptObjects) {
+  convertToScriptElements(_scriptIdList, _complete) {
     var baseWindow = this.context.getWindow();
+    let self = this;
+    let scriptElements = _scriptIdList.map(function(_scriptId) {
+      let url = self.serviceManager.getScriptURLById(_scriptId);
 
-    return _scriptObjects.map(function(__scriptObject) {
-      if (__scriptObject.ext === 'js') {
-        var scriptE = baseWindow.document.createElement('script');
+      let element = baseWindow.document.createElement('script');;
 
-        scriptE.setAttribute('type', 'text/javascript');
+      element.setAttribute('type', 'text/javascript');
+      element.setAttribute('rel', 'javascript');
 
-        if (typeof __scriptObject.url !== 'undefined') {
-          scriptE.setAttribute('src', __scriptObject.url);
-        } else {
-
-          // resolve String : data binding and i18n processing
-          scriptE.innerHTML = this.resolveRenderText(__scriptObject.script);
-        }
-
-        return scriptE;
+      if (url !== null) {
+        let script = self.serviceManager.getScriptContents(_scriptId);
+        element.innerHTML = self.subject.interpret(script);
+        //linkE.setAttribute('href', url);
+      } else {
+        element.setAttribute('src', _scriptId);
       }
+
+      return element;
     });
+
+    _complete(scriptElements);
   }
+
+  // convertToScriptElement(_scriptIdList) {
+  //   var baseWindow = this.context.getWindow();
+  //
+  //   return _scriptObjects.map(function(__scriptObject) {
+  //     if (__scriptObject.ext === 'js') {
+  //       var scriptE = baseWindow.document.createElement('script');
+  //
+  //       scriptE.setAttribute('type', 'text/javascript');
+  //
+  //       if (typeof __scriptObject.url !== 'undefined') {
+  //         scriptE.setAttribute('src', __scriptObject.url);
+  //       } else {
+  //
+  //         // resolve String : data binding and i18n processing
+  //         scriptE.innerHTML = this.resolveRenderText(__scriptObject.script);
+  //       }
+  //
+  //       return scriptE;
+  //     }
+  //   });
+  // }
 
   existsUndoHistory() {
 
@@ -714,12 +801,12 @@ class DocumentContextController {
     if (liveElementNode === false) throw new Error("링크중인 ElementNode를 찾을 수 없음.");
 
     liveElementNode.import(importSource);
-    this.rootRender();
+    this.context.renderRefresh();
     this.context.updatedHistory();
   }
 
   snapshot(_elementNode, _present, _past, _type) {
-    // var compressedDoc = LZString.compress(JSON.stringify(this.document.export()));
+    // var compressedDoc = LZString.compress(JSON.stringify(this.subject.export()));
     // console.log(compressedDoc.length);
     //
     // var compressedDiff = jsDiff.diffChars(this.prev, compressedDoc);
@@ -808,12 +895,12 @@ class DocumentContextController {
 
 
   isDropableToRoot() {
-    return this.document.rootElementNode === null;
+    return this.subject.rootElementNode === null;
   }
 
 
   testSave() {
-    console.log(JSON.stringify(this.document.export()));
+    console.log(JSON.stringify(this.subject.export()));
   }
 
 

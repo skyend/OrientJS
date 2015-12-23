@@ -23,6 +23,10 @@
         iceHost: '',
         apisourceList: [],
         apiinterfaceList: [],
+        cssList:[],
+        jsList:[],
+        componentList:[],
+
         filterSet:new Set()
       };
     },
@@ -124,6 +128,20 @@
       this.emit("RequestAttachTool", {
         "toolKey": "DocumentCUForm",
         "where": "ModalWindow"
+      });
+    },
+
+    clickNewComponent(){
+      console.log("new component");
+      let self = this;
+      this.emit("RequestAttachTool", {
+        "toolKey": "ComponentCreateForm",
+        "where": "ModalWindow",
+        "params": {
+          "success-notice": function(){
+            self.emit("NeedComponentList");
+          }
+        }
       });
     },
 
@@ -244,6 +262,90 @@
       )
     },
 
+    renderCSSItem(_css){
+      var iconClass = 'fa-css3';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringCSSContext", {
+          css: _css,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'css') {
+          if (this.props.runningContext.cssID == _css._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _css.name } </span>
+        </li>
+      )
+    },
+
+    renderJSItem(_js){
+      var iconClass = 'fa-gg';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringJSContext", {
+          js: _js,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'js') {
+          if (this.props.runningContext.jsID == _js._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _js.name } </span>
+        </li>
+      )
+    },
+
+    renderComponentItem(_component){
+      var iconClass = 'fa-cube';
+
+      var self = this;
+      var click = function () {
+        self.emit("BringComponentContext", {
+          component: _component,
+          iconClass: iconClass
+        });
+      };
+
+      var contextIsRunning = false;
+
+      if (this.props.runningContext !== null) {
+        if (this.props.runningContext.contextType === 'component') {
+          if (this.props.runningContext.componentID == _component._id) {
+            contextIsRunning = true;
+          }
+        }
+      }
+
+      return (
+        <li onClick={ click } className={contextIsRunning? 'running':''}>
+          <i className={'fa ' + iconClass}></i> <span> { _component.name } </span>
+        </li>
+      )
+    },
+
     renderPageList(){
 
       return (
@@ -308,7 +410,7 @@
             </span>
           </label>
           <ul>
-
+            { this.state.cssList.map(this.renderCSSItem) }
           </ul>
         </div>
       )
@@ -330,7 +432,7 @@
             </span>
           </label>
           <ul>
-
+            { this.state.jsList.map(this.renderJSItem) }
           </ul>
         </div>
       )
@@ -405,6 +507,31 @@
       )
     },
 
+    renderComponentList(){
+
+      return (
+        <div className="resourceList">
+          <label className='listLabel'>
+            <i className='fa fa-cubes'></i> Components
+              <span className='import-button' onClick={this.clickExportComponents}>
+                <i className='fa fa-upload'></i>
+              </span>
+              <span className='export-button' onClick={this.clickExportComponents}>
+                <i className='fa fa-download'></i>
+              </span>
+              <span className='add-button' onClick={this.clickNewComponent}>
+                <i className='fa fa-plus'></i>
+              </span>
+          </label>
+          <ul>
+            { this.state.componentList.map(this.renderComponentItem) }
+          </ul>
+        </div>
+      )
+    },
+
+
+
     toggleFilterItem(_name){
       let filterSet = this.state.filterSet;
 
@@ -431,8 +558,11 @@
       self.emit("NeedICEHost");
       self.emit("NeedDocumentList");
       self.emit("NeedPageList");
+      self.emit("NeedCSSList");
+      self.emit("NeedJSList");
       self.emit("NeedAPISourceList");
       self.emit("NeedAPIInterfaceList");
+      self.emit("NeedComponentList");
     },
 
     renderLists(){
@@ -444,6 +574,9 @@
         }
         if( this.state.filterSet.has('fragment') ){
           renderList.push( this.renderDocumentList() );
+        }
+        if( this.state.filterSet.has('Component') ){
+          renderList.push( this.renderComponentList() );
         }
         if( this.state.filterSet.has('css') ){
           renderList.push( this.renderCSSList() );
@@ -463,6 +596,7 @@
       } else {
         renderList.push( this.renderPageList() );
         renderList.push( this.renderDocumentList() );
+        renderList.push( this.renderComponentList() );
         renderList.push( this.renderCSSList() );
         renderList.push( this.renderJSList() );
         renderList.push( this.renderAPIInterfaceList() );
@@ -491,6 +625,9 @@
                 </li>
                 <li className={this.state.filterSet.has('fragment')? 'selected':''} onClick={function(){self.toggleFilterItem('fragment')}}>
                   <i className="fa fa-html5"/>
+                </li>
+                <li className={this.state.filterSet.has('Component')? 'selected':''} onClick={function(){self.toggleFilterItem('Component')}}>
+                  <i className="fa fa-cubes"/>
                 </li>
                 <li className={this.state.filterSet.has('css')? 'selected':''} onClick={function(){self.toggleFilterItem('css')}}>
                   <i className="fa fa-css3"/>

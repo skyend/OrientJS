@@ -4,6 +4,7 @@ import Returns from "../../Returns.js";
 import _ from 'underscore';
 import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
+import ObjectExplorer from '../../util/ObjectExplorer.js';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -200,7 +201,7 @@ class ElementNode {
 
     this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
 
-    console.log('Realize options', this, _realizeOptions);
+    //console.log('Realize options', this, _realizeOptions);
   }
 
 
@@ -396,55 +397,6 @@ class ElementNode {
     return elementNode;
   };
 
-  // .deprecated
-  // applyAttributesToRealDOM(_escapeResolve) {
-  //
-  //   //console.log("Do you think i must escape resolving?", _escapeResolve);
-  //
-  //   var realElement = this.getRealization();
-  //   if (this.getType() === 'string') {
-  //     // resolve String : data binding and i18n processing
-  //     //console.log(this.getText());
-  //     realElement.nodeValue = _escapeResolve ? this.getText() : this.interpret(this.getText());
-  //
-  //   } else {
-  //     var currentRect = this.getCurrentRectangle();
-  //     var elementAttributes = this.getAttributes();
-  //     var keys = Object.keys(elementAttributes);
-  //
-  //     for (var i = 0; i < keys.length; i++) {
-  //
-  //       if (keys[i] !== 'tagName') {
-  //         // resolve String : data binding and i18n processing
-  //         realElement.setAttribute(keys[i], _escapeResolve ? elementAttributes[keys[i]] : this.interpret(elementAttributes[keys[i]]));
-  //       }
-  //     }
-  //
-  //
-  //     if (/^\d+/.test(currentRect.left)) {
-  //       realElement.style.left = currentRect.left;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.top)) {
-  //       realElement.style.top = currentRect.top;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.width)) {
-  //       realElement.style.width = currentRect.width;
-  //     }
-  //
-  //     if (/^\d+/.test(currentRect.height)) {
-  //       realElement.style.height = currentRect.height;
-  //     }
-  //
-  //     if (this.isTextEditMode()) {
-  //       realElement.setAttribute('contenteditable', true);
-  //     }
-  //   }
-  // }
-
-
-
 
   isDropableComponent(_dropType) {
     var criterionElementNode;
@@ -539,7 +491,17 @@ class ElementNode {
   }
 
 
+  getParentList() {
+    let current = this;
+    let parentList = [];
 
+    while (current.parent !== null) {
+      parentList.unshift(current.parent);
+      current = current.parent;
+    }
+
+    return parentList;
+  }
 
   executeSnapshot(_type) {
     //var presentRevision = this.export();
@@ -606,6 +568,106 @@ class ElementNode {
         break;
     }
   }
+
+  // 모든 ElementNode type 의 Interpret작업이 필요한 항목들을 감지한다.
+  // bindBlockSetList를 반환함.
+  detectInterpret() {
+    let bindBlockSetList = [];
+    let self = this;
+
+    let extractedBlocks;
+    ObjectExplorer.explore(this.controls, function(_key, _data) {
+      extractedBlocks = self.extractBindBlocks(_data);
+
+      if (extractedBlocks !== null) {
+        extractedBlocks.map(function(_block) {
+          bindBlockSetList.push({
+            key: _key,
+            binder: _block
+          });
+        })
+      }
+    }, 'controls');
+
+    switch (this.getType()) {
+      case "string":
+        extractedBlocks = self.extractBindBlocks(this.getText());
+
+        if (extractedBlocks !== null) {
+          extractedBlocks.map(function(_block) {
+            bindBlockSetList.push({
+              key: 'text',
+              binder: _block
+            });
+          })
+        }
+        break;
+      case "react":
+        ObjectExplorer.explore(this.attributes, function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'attributes');
+
+        ObjectExplorer.explore(this.getReactComponentProps(), function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'reactComponentProps');
+
+        break;
+      case "empty":
+      case "grid":
+      case "html":
+        ObjectExplorer.explore(this.attributes, function(_key, _data) {
+          extractedBlocks = self.extractBindBlocks(_data);
+
+          if (extractedBlocks !== null) {
+            extractedBlocks.map(function(_block) {
+              bindBlockSetList.push({
+                key: _key,
+                binder: _block
+              });
+            })
+          }
+        }, 'attributes');
+        break;
+    }
+
+    if (bindBlockSetList.length > 0) {
+      return bindBlockSetList;
+    } else {
+      return undefined;
+    }
+  }
+
+  // ${*XXXX}형식의 문자열을 감지하여 리스트로 반환한다.
+  // 감지된 문자열이 없으면 null을 반환한다.
+  extractBindBlocks(_string) {
+    let bindBlocks = [];
+
+    let matched = _string.match(/\$\{\*[^\{^\}]+\}/g);
+
+    return matched;
+  }
+
+
+
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

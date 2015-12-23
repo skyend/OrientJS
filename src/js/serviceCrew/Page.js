@@ -2,6 +2,8 @@
 import _ from 'underscore';
 import Factory from './ElementNode/Factory.js';
 import DocumentContextController from './DocumentContextController.js';
+import async from 'async';
+import Document from './Document.js';
 
 class Page {
   constructor(_contextController, _pageDataObject, _serviceManager) {
@@ -12,6 +14,7 @@ class Page {
     // runtime
     this._screenSize = {};
     this.screenMode = _contextController.screenSizing;
+    this.params = {};
   }
 
   set title(_title) {
@@ -168,7 +171,11 @@ class Page {
       ns: _NS
     });
 
-    return this.paramSupplies[index];
+    if (index !== -1) {
+      return this.paramSupplies[index]
+    }
+
+    return {};
   }
 
   // getNewGridId() {
@@ -209,6 +216,15 @@ class Page {
     if (targetNode === false) throw new Error("Not found targetGridNode");
     targetNode.setOneChild(this.newGridNode(_behavior));
   }
+
+  findById(_id) {
+    if (this.rootGridElement !== null) {
+      return this.rootGridElement.findById(_id);
+    }
+
+    return false;
+  }
+
 
   newGridNode(_behavior) {
     let newGridNode = Factory.takeElementNode(undefined, undefined, 'grid', this);
@@ -260,24 +276,65 @@ class Page {
     }
   }
 
-  modifyGridRect(_targetId, _rect) {
-    let targetNode = this.rootGridElement.findById(_targetId);
+  modifyElementGeometry(_elementNode, _key, _value, _screenMode) {
 
-    targetNode.setRectanglePart(_rect.width, 'width');
-    targetNode.setRectanglePart(_rect.height, 'height');
+    if (_key === 'rectangle') {
+      let keys = Object.keys(_value);
 
-    targetNode.setRectanglePart(_rect.minWidth, 'minWidth');
-    targetNode.setRectanglePart(_rect.minHeight, 'minHeight');
+      keys.map(function(_key) {
+        _elementNode.setRectanglePartWithScreenMode(_key, _value[_key], _screenMode);
+      });
+    }
 
-    targetNode.setRectanglePart(_rect.maxWidth, 'maxWidth');
-    targetNode.setRectanglePart(_rect.maxHeight, 'maxHeight');
-  }
+  };
 
   modifyGridProperty(_targetId, _name, _value) {
     let targetNode = this.rootGridElement.findById(_targetId);
 
     if (_name === 'name') {
       targetNode.setName(_value);
+    }
+  }
+
+  modifySupplyParam(_ns, _type, _name, _value) {
+    let paramIndex = _.findIndex(this.paramSupplies, {
+      ns: _ns
+    });
+
+    let paramSupply = null;
+
+    if (paramIndex === -1) {
+      paramSupply = {
+        ns: _ns
+      };
+      this.paramSupplies.push(paramSupply);
+    } else {
+      paramSupply = this.paramSupplies[paramIndex];
+    }
+
+    if (_type === 'single') {
+      paramSupply[_name] = _value;
+    } else if (_type === 'fields') {
+      let fields = paramSupply.fields;
+      if (fields === undefined) {
+        fields = paramSupply.fields = [];
+      }
+
+      let fieldIndex = _.findIndex(fields, {
+        name: _name
+      });
+
+      if (fieldIndex !== -1) {
+        fields[fieldIndex] = {
+          name: _name,
+          value: _value
+        };
+      } else {
+        fields.push({
+          name: _name,
+          value: _value
+        });
+      }
     }
   }
 
@@ -309,12 +366,59 @@ class Page {
   }
 
   getFragment(_fragmentId, _complete) {
-    let self = this;
+    let that = this;
     console.log("Fragment Load", _fragmentId);
     this.serviceManager.getDocument(_fragmentId, function(_page, _context) {
       console.log('loaded', _page);
 
-      _complete(new DocumentContextController(_page.document, self.params, self.serviceManager));
+      let fragmentContextController = new DocumentContextController(_page.document, that.params, that.serviceManager, {
+        enableNavigate: true
+      });
+
+      let nsSet = fragmentContextController.subject.getAllBinderNSSet();
+      let nsList = [];
+      nsSet.forEach(function(_value) {
+        nsList.push(_value)
+      });
+
+      // page 가 가진 param 리스트에 fragment가 필요한 ns가 입력되어 있지 않는 경우
+      // page는 ns에 해당하는 APISource와 Request를 찾아 기본 데이터를 로드하여 적재한 후 fragment에 입력하여 최종적으로 fragment를 반환한다.
+      async.eachSeries(nsList, function(_ns, _next) {
+
+        if (that.params[_ns] !== undefined) return _next();
+
+        let apiSourceNT_Tid = _ns.split('-')[0];
+        let requestName = _ns.split('-')[1];
+
+        that.serviceManager.getApiSourceListWithInterface(function(_result) {
+          let index = _.findIndex(_result, {
+            nt_tid: apiSourceNT_Tid
+          });
+
+          if (index === -1) return console.warn(apiSourceNT_Tid + " tid 를 가지는 ICE API Source 리소스가 서비스에 존재하지 않습니다.");
+
+          let apiSource = _result[index];
+          let requestIndex = _.findIndex(apiSource.requests, {
+            name: requestName
+          });
+
+          if (requestIndex === -1) return console.warn(requestName + " 라는 이름의 요청이 " + apiSource.title + " ICEAPISource 상에 존재하지 않습니다.");
+          let request = apiSource.requests[requestIndex];
+
+          console.log("Execute")
+          apiSource.executeTestRequest(request.id, function(_result) {
+            console.log("Success");
+            // Param 을 입력하고
+            that.params[_ns] = _result;
+            _next();
+          });
+
+        });
+      }, function done(_err) {
+        fragmentContextController.subject.setParams(that.params);
+        _complete(fragmentContextController);
+      });
+
     });
 
   }
@@ -322,6 +426,87 @@ class Page {
   addFragmentParamSupply() {
     this.paramSupplies.push({});
   }
+
+  // fragment 를 참조하는 gridElement를 찾아 참조하는 fragment의 id를 리스트로 반환한다.
+  detectFollowingFragments() {
+    let followingFragmentList = [];
+
+    if (this.rootGridElement !== null) {
+      this.rootGridElement.treeExplore(function(_gridElementNode) {
+        if (_gridElementNode.followingFragment !== null) {
+          followingFragmentList.push(_gridElementNode.followingFragment);
+        }
+      });
+    }
+
+    return followingFragmentList;
+  }
+
+  // fragment 리스트를 로드하여 객체로 변환한뒤 콜백으로 전달한다.
+  loadFragments(_list, _complete) {
+    let self = this;
+    let fragments = [];
+
+    async.eachSeries(_list, function iterator(_item, _next) {
+
+      self.contextController.serviceManager.getDocument(_item, function(_result) {
+
+        fragments.push(new Document(null, null, _result.document));
+        _next();
+      });
+    }, function done(_err) {
+      _complete(fragments);
+    });
+  }
+
+  getSupplyNSList(_complete) {
+    let followingFragmentList = this.detectFollowingFragments();
+
+    // fragment list 로드
+    this.loadFragments(followingFragmentList, function(_fragments) {
+      let allFragmentsBinderNSSet = new Set();
+
+      // Fragment 별 바인딩 셋을 구함
+      let bindedFragmentStateSet = _fragments.map(function(_fragment) {
+
+        let binderSet = _fragment.getAllBinderNSSet();
+
+        binderSet.forEach(function(value) {
+          allFragmentsBinderNSSet.add(value);
+        });
+      });
+
+      _complete(allFragmentsBinderNSSet);
+    });
+  }
+
+  // 상태 체크
+  checkFollowingFragmentsBindEnoughState(_complete) {
+    // page 가 사용하는 fragment id 리스트를 구함
+    let followingFragmentList = this.detectFollowingFragments();
+
+    // fragment list 로드
+    this.loadFragments(followingFragmentList, function(_fragments) {
+      // Fragment 별 바인딩 셋을 구함
+      let bindedFragmentStateSet = _fragments.map(function(_fragment) {
+
+        let binderSet = _fragment.getAllBinderNSSet();
+
+        // param Supply 를 확인하여 값이 적당히 채워져 있다면 enough 를 true로 하여 반환한다.
+        // 해야함
+
+        return {
+          enough: false,
+          fragmentId: _fragment.id
+        };
+      });
+
+      _complete(bindedFragmentStateSet);
+    });
+  }
+
+
+
 
   prepareParams(_complete) {
 
@@ -371,55 +556,49 @@ class Page {
   }
 
   paramProcessing(_paramSupply, _complete) {
+    let self = this;
     let keys = Object.keys(_paramSupply);
-    let fields = [];
     let result;
-    let key;
 
-    for (let i = 0; i < keys.length; i++) {
-      key = keys[i];
-
-      if (/^field_/.test(key)) {
-        fields.push({
-          name: key.replace(/^field_/, ''),
-          value: this.interpret(_paramSupply[key])
-        });
-      }
-    }
-
-
-    console.log('처리해 ', _paramSupply, fields);
-    console.log(fields);
 
     if (_paramSupply.method === 'request') {
       let apiSourceId = _paramSupply.apiSourceId;
-      let requestName = _paramSupply.requestName;
+      let requestId = _paramSupply.requestId;
 
       let apiSourceIndex = _.findIndex(this.preparedAPISourceList, {
         id: apiSourceId
       });
 
       let apiSource = this.preparedAPISourceList[apiSourceIndex];
-
-      console.log('자 이걸 처리해야되', apiSource, requestName);
-      console.log('요청', apiSource.requests[requestName], fields);
-
-      // 불필요한 필드가 삽입되어 있을 때를 대비하여 request parameter 리스트에서 제거한다.
-      fields = fields.filter(function(_field) {
-        let name = _field.name;
-        let index = _.findIndex(apiSource.requests[requestName].fieldList, {
-          name: name
-        });
-
-        if (index < 0) {
-          return false;
-        }
-        return true;
+      if (apiSource === undefined) {
+        alert("API Source " + apiSourceId + " 를 찾지 못 했습니다. ");
+        return;
+      }
+      let requestIndex = _.findIndex(apiSource.requests, {
+        id: requestId
       });
 
-      apiSource.executeRequest(requestName, fields, undefined, function(_result) {
+      if (requestIndex === -1) {
+        alert("API Source 의 요청을 찾지 못했습니다. ICEAPISource[" + apiSource.title + "] 의 설정을 확인하여 주세요.");
+        return;
+      }
+
+      let request = apiSource.requests[requestIndex];
+
+
+      let fields = {};
+      request.fields.map(function(_requestField) {
+        let index = _.findIndex(_paramSupply.fields, {
+          name: _requestField.key
+        });
+
+        if (index !== -1) {
+          fields[_requestField.key] = self.interpret(_paramSupply.fields[index].value || '');
+        }
+      });
+
+      apiSource.executeRequest(requestId, fields, undefined, function(_result) {
         result = _result;
-        console.log("받았다", _result);
 
         _complete(result);
       });
@@ -494,7 +673,8 @@ class Page {
       updated: this.updated,
       accessPoint: this.accessPoint,
       paramSupplies: this.paramSupplies,
-      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined
+      rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined,
+      requiredNSCache: [], // 추후에 불필요한 ParamSupply 가 호출되는것을 막기 위해 page를 저장 할 때 마다 이 필드를 갱신한다. // 갱신방법으로는 page가 필요한 NameSpace 바인딩을 얻어와 갱신 하는 방법이 있다.
     };
   }
 }

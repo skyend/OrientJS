@@ -12,6 +12,7 @@ export default React.createClass({
       stageWidth:1024,
       stageHeight:768,
       selectedGridNode: null,
+      selectedScreenMode: 'desktop',
       currentScene:'grid'
     };
   },
@@ -56,8 +57,8 @@ export default React.createClass({
   },
 
   publish(){
-    let httpParams = ['publish='];
-    let accessPoint = this.props.contextController.page.accessPoint;
+    let httpParams = ['publish=page'];
+    let accessPoint = this.props.contextController.subject.accessPoint;
 
     if( accessPoint === '' ){
       this.emit("NoticeMessage", {
@@ -71,7 +72,7 @@ export default React.createClass({
 
     httpParams.push("page="+accessPoint);
     httpParams.push('serviceId='+this.props.contextController.serviceManager.service_id);
-    //httpParams.push("pageId="+this.contextController.page.id);
+    //httpParams.push("pageId="+this.contextController.subject.id);
 
     window.open(window.location.origin+'/?'+httpParams.join('&'));
   },
@@ -195,15 +196,14 @@ export default React.createClass({
     console.log(_eventData);
   },
 
-  onThrowCatcherSelectGridElementNode(_eventData, _pass){
+  onThrowCatcherSuccessfullyElementNodeSelected(_eventData, _pass){
     _eventData.contextController = this.getContextController();
-    this.setState({selectedGridNode:_eventData.gridElementNode});
-    // if( this.state.selectedGridNode === _eventData.gridElementNode ){
-    //   this.setState({selectedGridNode:null});
-    //   _eventData.gridElementNode = null;
-    // } else {
-    //   this.setState({selectedGridNode:_eventData.gridElementNode});
-    // }
+
+    if( _eventData.screenMode === undefined  ){
+        _eventData.screenMode = this.state.selectedScreenMode;
+    }
+
+    this.setState({selectedGridNode:_eventData.elementNode, selectedScreenMode:_eventData.screenMode});
 
     _pass();
   },
@@ -230,6 +230,19 @@ export default React.createClass({
     this.getContextController().modifyUpdatedParamSupply();
 
     this.forceUpdate();
+  },
+
+  onThrowCatcherMetaChangedParamSupply(_e){
+    this.props.contextController.modifySupplyParam(_e.ns, _e.type, _e.name, _e.value );
+
+    this.forceUpdate();
+  },
+
+  updateFollowingFragmentsBindEnoughState(_complete) {
+
+    this.props.contextController.checkFollowingFragmentsBindEnoughState(function(_result){
+      _complete(_result);
+    });
   },
 
   componentWillUpdate(_nextProps, _nextState){
@@ -272,6 +285,12 @@ export default React.createClass({
     this.contextController = this.getContextController();
     this.contextController.setContext(this);
 
+    this.updateFollowingFragmentsBindEnoughState(function(_result){
+      console.log(_result);
+    });
+
+
+
     if (this.props.runningState) {
       this.goingToContextRunning();
     } else {
@@ -293,12 +312,12 @@ export default React.createClass({
       this.props.contextController.setScreenSize(sceneWidth, sceneHeight-40);
 
       return <div className="grid-manage-scene">
-        <GridManageScene selectedGridNode={this.state.selectedGridNode} rootGridElement={this.getContextController().getRootGridElement()} left={ 5 } top={ 45 } width={this.props.width - 10} height={this.props.height-50}/>
+        <GridManageScene selectedGridNode={this.state.selectedGridNode} selectedScreenMode={this.state.selectedScreenMode} rootGridElement={this.getContextController().getRootGridElement()} left={ 5 } top={ 45 } width={this.props.width - 10} height={this.props.height-50}/>
       </div>
     } else if( this.state.currentScene === 'meta' ){
-      return <MetaBoardScene page={this.getContextController().page}/>
+      return <MetaBoardScene page={this.getContextController().subject}/>
     } else if( this.state.currentScene === 'preview' ){
-      return <PreviewScene left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40} page={this.props.contextController.page}/>
+      return <PreviewScene left={ stageX } top={ stageY+40 } width={sceneWidth} height={sceneHeight-40} page={this.props.contextController.subject}/>
     }
   },
 
