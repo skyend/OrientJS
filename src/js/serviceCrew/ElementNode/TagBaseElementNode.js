@@ -167,14 +167,10 @@ class TagBaseElementNode extends ElementNode {
     super.realize(_realizeOptions);
     this.createRealizationNode();
 
-
-
     let realizeOptions = _realizeOptions || {};
 
     // attribute 매핑
     this.mappingAttributes(realizeOptions.skipResolve);
-
-
 
 
     // 이벤트 매핑

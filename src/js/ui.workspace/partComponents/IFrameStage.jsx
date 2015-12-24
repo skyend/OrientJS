@@ -198,6 +198,10 @@ var IFrameStage = React.createClass({
       console.log(_ev, 'drop in iframeStage');
     }, false);
 
+    // iwindow.onbeforeunload = function(){
+    //     return false; // This will stop the redirecting.
+    // }
+
     if( typeof this.props.onLoadIFrame === 'function' ){
       this.props.onLoadIFrame(iframe);
     }
@@ -373,7 +377,8 @@ var IFrameStage = React.createClass({
         left: this.props.left || 'auto',
         top: this.props.top || 'auto'
       }}>
-        <iframe ref='iframe' onLoad={this.onIframeLoaded} src={this.state.src}/>
+
+        <iframe seamless sandbox="allow-same-origin allow-pointer-lock allow-scripts allow-popups allow-forms" ref='iframe' onLoad={this.onIframeLoaded} src={this.state.src}/>
       </div>
     );
   }

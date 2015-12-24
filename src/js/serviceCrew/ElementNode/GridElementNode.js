@@ -94,8 +94,9 @@ class GridElementNode extends HTMLElementNode {
     //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
     this.realization.setAttribute("behavior", this.behavior);
 
-
     if (this.followingFragment !== null) {
+      this.realization.setAttribute('fragment-id', this.followingFragment);
+
       this.environment.getFragment(this.followingFragment, function(_fragmentContextController) {
         self.setFragmentCC(_fragmentContextController);
         self.fragmentRender(_realizeOptions);
@@ -124,6 +125,8 @@ class GridElementNode extends HTMLElementNode {
 
   fragmentRender(_realizeOptions) {
     this.realization.innerHTML = '';
+    this.realization.setAttribute('fragment-name', this.fragmentContextController.subject.documentName);
+
     this.fragmentContextController.attach(this.environment.fragmentContext);
     this.fragmentContextController.setSuperElement(this.realization);
     this.fragmentContextController.beginRender(_realizeOptions);

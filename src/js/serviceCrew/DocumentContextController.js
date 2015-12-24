@@ -464,14 +464,6 @@ class DocumentContextController extends HasElementNodeContextController {
   beginRender(_realizeOptions) {
     var self = this;
 
-    // resource convert
-    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
-      // script element block을 적용한다.
-      _scriptElements.map(function(_scriptElement) {
-        self.context.applyScriptElement(_scriptElement);
-      });
-    });
-
     this.convertToStyleElements(this.subject.refStyleIdList || [], function(_styleElements) {
       // style element block을 적용한다.
       _styleElements.map(function(_styleElement) {
@@ -495,12 +487,22 @@ class DocumentContextController extends HasElementNodeContextController {
     //
     // });
 
+    // resource convert
+    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
+      // script element block을 적용한다.
+      _scriptElements.map(function(_scriptElement) {
+        self.context.applyScriptElement(_scriptElement);
+      });
+    });
 
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.subject.rootElementNode !== null) {
       this.rootRender(_realizeOptions);
     }
+
+
+
 
     //console.log(this.subject.rootElementNode);
   }

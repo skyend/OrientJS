@@ -62,7 +62,9 @@ class Viewer {
     let self = this;
 
     this.setPageTitle(this.page.displayTitle);
-
+    let html = self.window.document.querySelector('html');
+    html.setAttribute('page-id', this.page.id);
+    html.setAttribute('page-name', this.page.title);
     // this.window.onunload = function(_e) {
     //   return self.pageUnload(_e);
     // }
