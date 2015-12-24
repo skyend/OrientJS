@@ -68,16 +68,19 @@ var IFrameStage = React.createClass({
       styleLines += this.styles[styleKeys[i]];
     }
 
-    if (typeof this.componentStyleElement === 'undefined') {
-      var styleTag = this.getIFrameInnerDoc().createElement('style');
-      styleTag.type = 'text/css';
-      this.getInnerHead().appendChild(styleTag);
 
-      this.componentStyleElement = styleTag;
+    let styleBlock = this.getIFrameInnerDoc().getElementById('#style_'+_key);
+
+    if ( styleBlock === null) {
+      styleBlock = this.getIFrameInnerDoc().createElement('style');
+      styleBlock.type = 'text/css';
+      styleBlock.id = 'style_'+_key;
+      this.getInnerHead().appendChild(styleBlock);
     }
 
-    this.componentStyleElement.innerHTML = styleLines;
+    styleBlock.innerHTML = styleLines;
   },
+
 
   removeStyle(_key) {
     if (typeof this.styles !== 'object')
@@ -198,6 +201,10 @@ var IFrameStage = React.createClass({
     if( typeof this.props.onLoadIFrame === 'function' ){
       this.props.onLoadIFrame(iframe);
     }
+  },
+
+  reload(){
+    this.getIframeInnerWindow().location.reload();
   },
 
   /**

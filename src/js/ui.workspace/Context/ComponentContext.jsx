@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import Column from './ComponentContext/Column.jsx';
 import HorizonField from '../partComponents/HorizonField.jsx';
+import IFrameStage from '../partComponents/IFrameStage.jsx';
 
 require('./ComponentContext.less');
 
@@ -12,7 +13,7 @@ export default React.createClass({
     return {
       scriptCanvasFold:false,
       cssCanvasFold:true,
-      previewFold:true
+      previewFold:false
     };
   },
 
@@ -24,6 +25,11 @@ export default React.createClass({
       this.props.contextController.modifyScript(value);
     } else if (field === 'css' ){
       this.props.contextController.modifyStyle(value);
+    }
+
+
+    if(this.refs['preview-stage'] !== undefined){
+      this.refs['preview-stage'].reload();
     }
   },
 
@@ -53,6 +59,23 @@ export default React.createClass({
     } else if( name === 'preview' ){
       this.setState({previewFold:true})
     }
+  },
+
+  loadedIFrame(_iframe){
+    let that = this;
+    this.props.contextController.subject.getConvertedCSS(function(_css){
+      that.refs['preview-stage'].addStyle('component-style',_css);
+    });
+
+    this.props.contextController.subject.parseComponentScript(function(_script){
+      let iframeDoc = that.refs['preview-stage'].getIFrameInnerDoc();
+
+      React.render(React.createElement(_script.class), iframeDoc.body);
+    });
+  },
+
+  renderPreview(){
+    return <IFrameStage width='100%' height='100%' onLoadIFrame={this.loadedIFrame} ref="preview-stage"/>
   },
 
   renderScriptEditor(){
@@ -90,7 +113,7 @@ export default React.createClass({
 
     returnElements.push(<Column reactElement={this.renderScriptEditor()} width={this.state.scriptCanvasFold? 30:divideWidth} icon="gg" height={this.props.height} left={divideWidth * 0} name="scriptCanvas" folding={this.state.scriptCanvasFold}/>);
     returnElements.push(<Column reactElement={this.renderCSSEditor()} width={this.state.cssCanvasFold? 30:divideWidth} icon="css3" height={this.props.height} left={divideWidth * 1} name="cssCanvas" folding={this.state.cssCanvasFold}/>);
-    returnElements.push(<Column reactElement={<div>C</div>} width={this.state.previewFold? 30:divideWidth} icon="rocket" height={this.props.height} left={divideWidth * 2} name="preview" folding={this.state.previewFold}/>);
+    returnElements.push(<Column reactElement={this.renderPreview()} width={this.state.previewFold? 30:divideWidth} icon="rocket" height={this.props.height} left={divideWidth * 2} name="preview" folding={this.state.previewFold}/>);
     return returnElements;
   },
 
