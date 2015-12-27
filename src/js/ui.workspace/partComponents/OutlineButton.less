@@ -4,6 +4,8 @@
 
     box-sizing: border-box;
     padding: 2px;
+
+    vertical-align: top;
     > button
     {
         font-family: 'Open Sans', sans-serif;
@@ -30,6 +32,14 @@
         .icon
         {
             font-size: 18px;
+        }
+
+        &:active
+        {
+            padding-top: 3px;
+            padding-bottom: 0;
+
+            box-shadow: 0 3px 0 rgba(0,0,0,.5) inset;
         }
     }
 
@@ -79,6 +89,20 @@
 
                 color: #555;
                 background-color: #333;
+            }
+        }
+    }
+
+    &.color-deep-blue
+    {
+        > button
+        {
+            color: #fff;
+            background-color: #0d88d0;
+
+            &:hover
+            {
+                background-color: #0d88d0+#0a0a0a;
             }
         }
     }

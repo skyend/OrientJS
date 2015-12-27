@@ -357,7 +357,7 @@ export default React.createClass({
               </li>
               <li onClick={this.publish}>
                 <i className='fa fa-rocket'/>
-                <div className='title'>Publish</div>
+                <div className='title'>Light Publish</div>
               </li>
             </ul>
           </div>

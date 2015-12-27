@@ -228,6 +228,10 @@
     "ComponentCreateForm": {
       "jsxPath": "ComponentCreateForm",
       "title": "Component Create"
+    },
+    "StandAlonePublisher": {
+      "jsxPath": "StandAlonePublisher",
+      "title": "Stand Alone Publish"
     }
   }
 }

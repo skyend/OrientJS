@@ -23,6 +23,13 @@ var HeadToolBar = React.createClass({
     }
   },
 
+  publish(){
+    this.emit("RequestAttachTool", {
+      "toolKey": "StandAlonePublisher",
+      "where": "ModalWindow"
+    });
+  },
+
   clickSave(){
     this.emit('SaveCurrentContext');
   },
@@ -134,7 +141,8 @@ var HeadToolBar = React.createClass({
           </li>
 
           <li className='right'>
-              <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='blue'/>
+            <OutlineButton icon='ship' title="Publish" color='deep-blue' onClick={this.publish}/>
+            <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='blue'/>
           </li>
 
           <li className='right'>
