@@ -7,8 +7,14 @@ module.exports =  {
 
       // 예시
       render: function () {
+        var style = {
+          width:'100%',
+          height:'100%',
+          backgroundColor:'#fff'
+        };
+
         return (
-          <div className='wrapper'>
+          <div className='wrapper' style={style}>
 
           </div>
         )

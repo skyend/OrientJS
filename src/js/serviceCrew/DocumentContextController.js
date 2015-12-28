@@ -113,10 +113,7 @@ class DocumentContextController extends HasElementNodeContextController {
     this.subject.setPageCSS(_cssText);
     this.changedContent();
 
-    let self = this;
-    this.lazyTimer.set("refresh", 1000, function() {
-      self.context.renderRefresh();
-    });
+    this.updatePageCSS();
   }
 
   modifyDocumentScript(_scriptText) {
@@ -590,7 +587,7 @@ class DocumentContextController extends HasElementNodeContextController {
   getPageCSSElement() {
     var baseWindow = this.context.getWindow();
     var styleElement = baseWindow.document.createElement('style');
-    styleElement.setAttribute("page-css", '');
+    styleElement.setAttribute("id", 'fragment-css');
 
     // 변경된 css반영
     styleElement.innerHTML = this.subject.interpret(this.subject.getPageCSS() || '') + this.extractComponentsStyleSheet();
@@ -598,10 +595,16 @@ class DocumentContextController extends HasElementNodeContextController {
     return styleElement;
   }
 
+  updatePageCSS() {
+    var baseWindow = this.context.getWindow();
+    let styleElement = baseWindow.document.getElementById('fragment-css');
+    styleElement.innerHTML = this.subject.interpret(this.subject.getPageCSS() || '') + this.extractComponentsStyleSheet();
+  }
+
   getPageScriptElement() {
     var baseWindow = this.context.getWindow();
     var scriptElement = baseWindow.document.createElement('script');
-    scriptElement.setAttribute("page-script", '');
+    scriptElement.setAttribute("fragment-script", '');
 
     // 변경된 css반영
     scriptElement.innerHTML = this.subject.interpret(this.subject.getPageScript() || '');
