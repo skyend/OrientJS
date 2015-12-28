@@ -50,7 +50,7 @@ class Viewer {
   applyScriptElement(_scriptElement) {
     console.log('applyScriptElement');
     console.log(_scriptElement);
-    this.window.document.head.appendChild(_scriptElement);
+    this.window.document.body.appendChild(_scriptElement);
   }
 
   attach(_window) {

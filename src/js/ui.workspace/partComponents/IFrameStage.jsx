@@ -103,6 +103,10 @@ var IFrameStage = React.createClass({
     this.getIFrameInnerDoc().head.appendChild(_element);
   },
 
+  appendScriptElementToBodyTail(_element){
+    this.getIFrameInnerDoc().body.appendChild(_element);
+  },
+
   appendScriptElementToHTML(_element){
     this.getIFrameInnerDoc().head.parentElement.appendChild(_element);
   },

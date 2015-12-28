@@ -1,6 +1,7 @@
 "use strict";
 var Document = require('./Document.js');
 var jsDiff = require('diff');
+import async from 'async';
 import _ from 'underscore';
 import LZString from '../lib/lz-string.js';
 import DocumentRevisionManager from './DocumentRevisionManager.js';
@@ -487,14 +488,6 @@ class DocumentContextController extends HasElementNodeContextController {
     //
     // });
 
-    // resource convert
-    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
-      // script element block을 적용한다.
-      _scriptElements.map(function(_scriptElement) {
-        self.context.applyScriptElement(_scriptElement);
-      });
-    });
-
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.subject.rootElementNode !== null) {
@@ -502,7 +495,26 @@ class DocumentContextController extends HasElementNodeContextController {
     }
 
 
+    // resource convert
+    this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
+      // script element block을 적용한다.
+      async.eachSeries(_scriptElements, function iterator(_element, _next) {
 
+        self.context.applyScriptElement(_element);
+
+        if (_element.getAttribute('src')) {
+          _element.onload = function() {
+            _next();
+          }
+        } else {
+          _next();
+        }
+
+
+      }, function done() {
+
+      });
+    });
 
     //console.log(this.subject.rootElementNode);
   }

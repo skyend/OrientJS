@@ -396,7 +396,7 @@ var DirectContext = React.createClass({
   },
 
   applyScriptElement(_element){
-    this.getIFrameStage().appendScriptElementToHead(_element);
+    this.getIFrameStage().appendScriptElementToBodyTail(_element);
   },
 
   getWindow(){

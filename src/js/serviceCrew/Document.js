@@ -352,7 +352,6 @@ class Document {
   // getNewElementNodeId() {
   //   return ++(this.lastElementId);
   // };
-
   getElementNodeFromPool(_id) {
     var index = _.findIndex(this.elementNodes, function(__elementNode) {
 
@@ -410,7 +409,6 @@ class Document {
    */
   interpret(_text) {
     var self = this;
-
 
     // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
     // 객체를 보존하여 반환하도록 한다.
