@@ -180,12 +180,13 @@ class GelateriaRequest {
       });
   }
 
-  getDocumentList(_serviceId, _complete) {
+  getDocumentList(_withContent, _serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['documents', 'list'].join('/'))
       .type('form')
       .withCredentials()
       .send({
         serviceId: _serviceId,
+        wc: (_withContent ? 'true' : 'false')
       })
       .end(function(err, res) {
         if (err !== null) throw new Error("fail load get document list");
@@ -314,8 +315,8 @@ class GelateriaRequest {
       });
   }
 
-  getCSSList(_serviceId, _complete) {
-    request.get("http://" + this.host + "/" + ['css', 'list'].join('/') + "?serviceId=" + _serviceId)
+  getCSSList(_withContent, _serviceId, _complete) {
+    request.get("http://" + this.host + "/" + ['css', 'list'].join('/') + "?serviceId=" + _serviceId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {
         if (err !== null) throw new Error("fail load get CSS list");
 
@@ -323,8 +324,8 @@ class GelateriaRequest {
       });
   }
 
-  getJSList(_serviceId, _complete) {
-    request.get("http://" + this.host + "/" + ['js', 'list'].join('/') + "?serviceId=" + _serviceId)
+  getJSList(_withContent, _serviceId, _complete) {
+    request.get("http://" + this.host + "/" + ['js', 'list'].join('/') + "?serviceId=" + _serviceId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {
         if (err !== null) throw new Error("fail load get JS list");
 
@@ -341,8 +342,8 @@ class GelateriaRequest {
       });
   }
 
-  getComponentList(_projectId, _complete) {
-    request.get("http://" + this.host + "/" + ['components', 'list'].join('/') + "?projectId=" + _projectId)
+  getComponentList(_withContent, _projectId, _complete) {
+    request.get("http://" + this.host + "/" + ['components', 'list'].join('/') + "?projectId=" + _projectId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {
         if (err !== null) throw new Error("fail load get component list");
 

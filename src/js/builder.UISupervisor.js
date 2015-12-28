@@ -316,8 +316,8 @@ UI.prototype.setProjectManager = function(_projectManager) {
   });
 };
 
-UI.prototype.loadDocumentList = function(_complete) {
-  self.app.serviceManager.getDocumentList(function(_result) {
+UI.prototype.loadDocumentList = function(_withContent, _complete) {
+  self.app.serviceManager.getDocumentList(_withContent, function(_result) {
     if (_result.result === 'success') {
       console.log('load document list', _result);
       _complete(_result);
@@ -526,7 +526,7 @@ UI.prototype.onThrowCatcherCreateNewDocument = function(_eventData) {
     if (_result.result === 'success') {
       _eventData.path[0].successDocumentCreate();
 
-      self.loadDocumentList(function(_result) {
+      self.loadDocumentList(false, function(_result) {
         console.log('loaded', _result);
 
         self.toolFactory.storeToolState("ServiceResources", {
@@ -641,7 +641,7 @@ UI.prototype.onThrowCatcherNeedAPISourceList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedCSSList = function(_eventData) {
   var self = this;
-  this.app.serviceManager.getCSSList(function(_result) {
+  this.app.serviceManager.getCSSList(false, function(_result) {
     _eventData.path[0].setState({
       cssList: _result.list
     });
@@ -650,7 +650,7 @@ UI.prototype.onThrowCatcherNeedCSSList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedJSList = function(_eventData) {
   var self = this;
-  this.app.serviceManager.getJSList(function(_result) {
+  this.app.serviceManager.getJSList(false, function(_result) {
     _eventData.path[0].setState({
       jsList: _result.list
     });
@@ -659,7 +659,7 @@ UI.prototype.onThrowCatcherNeedJSList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedComponentList = function(_eventData) {
   var self = this;
-  this.app.serviceManager.getComponentList(function(_result) {
+  this.app.serviceManager.getComponentList(false, function(_result) {
     _eventData.path[0].setState({
       componentList: _result.list
     });
@@ -702,7 +702,7 @@ UI.prototype.onThrowCatcherNeedAPIInterfaceList = function(_eventData) {
 
 UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
   var self = this;
-  this.loadDocumentList(function(_result) {
+  this.loadDocumentList(false, function(_result) {
     console.log('loaded', _result);
 
     self.toolFactory.storeToolState("ServiceResources", {
@@ -866,7 +866,7 @@ UI.prototype.onThrowCatcherShowServiceResourceCopyBoard = function(_eventData) {
       });
     });
   } else if (_eventData.resourceName === 'Fragment') {
-    this.loadDocumentList(function(_result) {
+    this.loadDocumentList(true, function(_result) {
 
       self.toolFactory.getToolEgg('ContentsCopyBoard', {
         "copyableContents": JSON.stringify(_result.list),

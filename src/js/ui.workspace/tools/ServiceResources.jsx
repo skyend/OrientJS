@@ -13,19 +13,19 @@
     getDefaultProps(){
       return {
         runningContext: null,
-        documentList: [],
-        pageList: [],
+        documentList: null,
+        pageList: null,
       };
     },
 
     getInitialState(){
       return {
         iceHost: '',
-        apisourceList: [],
-        apiinterfaceList: [],
-        cssList:[],
-        jsList:[],
-        componentList:[],
+        apisourceList: null,
+        apiinterfaceList: null,
+        cssList:null,
+        jsList:null,
+        componentList:null,
 
         filterSet:new Set()
       };
@@ -363,7 +363,7 @@
             </span>
           </label>
           <ul>
-            { this.props.pageList.map(this.renderPageItem) }
+            { this.props.pageList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.props.pageList.map(this.renderPageItem) }
           </ul>
         </div>
       )
@@ -388,7 +388,7 @@
             </span>
           </label>
           <ul>
-            { this.props.documentList.map(this.renderDocumentItem) }
+            { this.props.documentList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.props.documentList.map(this.renderDocumentItem) }
           </ul>
         </div>
       )
@@ -410,7 +410,7 @@
             </span>
           </label>
           <ul>
-            { this.state.cssList.map(this.renderCSSItem) }
+            { this.state.cssList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.state.cssList.map(this.renderCSSItem) }
           </ul>
         </div>
       )
@@ -432,7 +432,7 @@
             </span>
           </label>
           <ul>
-            { this.state.jsList.map(this.renderJSItem) }
+            { this.state.jsList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.state.jsList.map(this.renderJSItem) }
           </ul>
         </div>
       )
@@ -455,7 +455,7 @@
               </span>
           </label>
           <ul>
-            { this.state.apiinterfaceList.map(this.renderAPIInterfaceItem) }
+            { this.state.apiinterfaceList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.state.apiinterfaceList.map(this.renderAPIInterfaceItem) }
           </ul>
         </div>
       )
@@ -478,7 +478,7 @@
               </span>
           </label>
           <ul>
-            { this.state.apisourceList.map(this.renderICEAPISourceItem) }
+            { this.state.apisourceList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.state.apisourceList.map(this.renderICEAPISourceItem) }
           </ul>
         </div>
       )
@@ -524,7 +524,7 @@
               </span>
           </label>
           <ul>
-            { this.state.componentList.map(this.renderComponentItem) }
+            { this.state.componentList === null ? <li className='load-holder'><i className='fa fa-pulse fa-spinner'/></li>:this.state.componentList.map(this.renderComponentItem) }
           </ul>
         </div>
       )

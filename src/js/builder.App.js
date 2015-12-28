@@ -130,6 +130,10 @@ App.prototype.finishServiceBuilding = function() {
   this.initEnterance();
 };
 
+App.prototype.renderPrepareFeedBack = function() {
+  this.uiSupervisor.clearRender();
+};
+
 App.prototype.initBuilder = function() {
   this.uiSupervisor.clearRender();
   this.uiSupervisor.builderRender();

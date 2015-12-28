@@ -46,13 +46,13 @@ class ServiceManager {
     self.preparedComponentList = null;
     async.parallel([
       function(_cb) {
-        self.getCSSList(function(_result) {
+        self.getCSSList(true, function(_result) {
           self.preparedCSSList = _result.list;
           _cb();
         });
       },
       function(_cb) {
-        self.getJSList(function(_result) {
+        self.getJSList(true, function(_result) {
           self.preparedJSList = _result.list;
           _cb();
         });
@@ -77,8 +77,8 @@ class ServiceManager {
     });
   }
 
-  getDocumentList(_complete) {
-    this.app.gelateriaRequest.getDocumentList(this.service_id, function(_result) {
+  getDocumentList(_withContent, _complete) {
+    this.app.gelateriaRequest.getDocumentList(_withContent, this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.title.localeCompare(_b.title) > 0) {
           return 1;
@@ -147,10 +147,10 @@ class ServiceManager {
     });
   }
 
-  getCSSList(_complete) {
+  getCSSList(_withContent, _complete) {
     let self = this;
 
-    this.app.gelateriaRequest.getCSSList(this.service_id, function(_result) {
+    this.app.gelateriaRequest.getCSSList(_withContent, this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.name.localeCompare(_b.title) > 0) {
           return 1;
@@ -164,10 +164,10 @@ class ServiceManager {
     });
   }
 
-  getJSList(_complete) {
+  getJSList(_withContent, _complete) {
     let self = this;
 
-    this.app.gelateriaRequest.getJSList(this.service_id, function(_result) {
+    this.app.gelateriaRequest.getJSList(_withContent, this.service_id, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.name.localeCompare(_b.title) > 0) {
           return 1;
@@ -205,10 +205,10 @@ class ServiceManager {
     });
   }
 
-  getComponentList(_complete) {
+  getComponentList(_withContent, _complete) {
     let self = this;
 
-    this.app.gelateriaRequest.getComponentList(this.app.currentProjectId, function(_result) {
+    this.app.gelateriaRequest.getComponentList(_withContent, this.app.currentProjectId, function(_result) {
       _result.list = _result.list.sort(function(_a, _b) {
         if (_a.name.localeCompare(_b.title) > 0) {
           return 1;
