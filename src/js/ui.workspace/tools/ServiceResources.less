@@ -168,6 +168,8 @@
                 {
                     font-family: 'Open Sans', sans-serif;
 
+                    position: relative;
+
                     box-sizing: border-box;
                     width: 100%;
                     margin-top: 0;
@@ -186,6 +188,31 @@
                         padding-top: 5px;
 
                         text-align: center;
+                    }
+
+
+                    > .item-options
+                    {
+                        position: absolute;
+                        top: 0;
+                        right: 5px;
+
+                        display: inline-block;
+
+                        height: 100%;
+
+                        > .option
+                        {
+                            font-size: inherit;
+
+                            height: 100%;
+
+                            cursor: pointer;
+
+                            border: 0;
+                            outline: none;
+                            background-color: transparent;
+                        }
                     }
                 }
             }
@@ -253,7 +280,14 @@
                     {
                         //transition: all .5s;
                         color: rgb(135,143,162);
+                        border-bottom: 1px solid #43464a;
                         background-color: #30363e;
+
+                        &:last-child
+                        {
+                            border-bottom: 0;
+                        }
+
                         &:hover
                         {
                             color: rgb(155,163,182);
@@ -269,6 +303,27 @@
                         &.load-holer
                         {
                             color: #fff;
+                        }
+
+                        > .item-options
+                        {
+                            position: absolute;
+                            top: 0;
+                            right: 5px;
+
+                            display: inline-block;
+
+                            height: 100%;
+
+                            > .option
+                            {
+                                color: rgb(135,143,162);
+
+                                &:hover
+                                {
+                                    color: #fff;
+                                }
+                            }
                         }
                     }
                 }

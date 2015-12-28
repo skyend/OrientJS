@@ -244,6 +244,22 @@
         });
       };
 
+      var clickOption = function (_e) {
+        _e.stopPropagation();
+
+        self.emit("RequestAttachTool", {
+          "toolKey": "FragmentSetting",
+          "where": "ModalWindow",
+          "params": {
+            "success-notice": function(){
+              self.emit("NeedDocumentList");
+            },
+            fragmentId: _document._id
+          }
+        });
+      };
+
+
       var contextIsRunning = false;
 
       if (this.props.runningContext !== null) {
@@ -257,7 +273,13 @@
       return (
         <li onClick={ click } className={contextIsRunning? 'running':''} draggable={true}
             onDragEnd={this.documentDragEnd} onDragOver={this.documentDragOver}>
-          <i className={'fa ' + iconClass}></i> <span> { _document.title } </span>
+          <i className={'fa ' + iconClass}/>
+          <span> { _document.title }</span>
+          <div className='item-options'>
+            <button className='option' onClick={clickOption}>
+              <i className='fa fa-cog'/>
+            </button>
+          </div>
         </li>
       )
     },

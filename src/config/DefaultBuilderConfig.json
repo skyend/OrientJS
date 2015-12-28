@@ -235,6 +235,10 @@
     "StandAlonePublisher": {
       "jsxPath": "StandAlonePublisher",
       "title": "Stand Alone Publish"
+    },
+    "FragmentSetting": {
+      "jsxPath": "FragmentSetting",
+      "title": "Fragment Setting"
     }
   }
 }
