@@ -159,7 +159,6 @@ class ServiceManager {
         }
       });
 
-      self.preparedCSSList = _result.list;
       _complete(_result);
     });
   }
@@ -176,7 +175,6 @@ class ServiceManager {
         }
       });
 
-      self.preparedJSList = _result.list;
       _complete(_result);
     });
   }
@@ -194,7 +192,6 @@ class ServiceManager {
         }
       });
 
-      self.preparedStaticList = _result.list;
       _complete(_result);
     });
   }
@@ -217,7 +214,6 @@ class ServiceManager {
         }
       });
 
-      self.preparedComponentList = _result.list;
       _complete(_result);
     });
   }
