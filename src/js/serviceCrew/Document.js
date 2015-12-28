@@ -60,6 +60,7 @@ class Document {
 
       this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
       this.pageCSS = _documentDataObject.pageCSS;
+      this.pageScript = _documentDataObject.pageScript;
       this.refScriptIdList = _documentDataObject.refScriptIdList;
       this.refStyleIdList = _documentDataObject.refStyleIdList;
 
@@ -72,6 +73,7 @@ class Document {
       this.refScriptIdList = [];
       this.refStyleIdList = [];
       this.pageCSS = '';
+      this.pageScript = '';
     }
   }
 
@@ -98,6 +100,11 @@ class Document {
   // pageCSS
   setPageCSS(_pageCSS) {
     this.pageCSS = _pageCSS;
+  }
+
+  // pageScript
+  setPageScript(_pageScript) {
+    this.pageScript = _pageScript;
   }
 
   // type
@@ -158,6 +165,11 @@ class Document {
   // pageCSS
   getPageCSS() {
     return this.pageCSS || '';
+  }
+
+  // pageScript
+  getPageScript() {
+    return this.pageScript;
   }
 
   // type
@@ -615,6 +627,7 @@ class Document {
         return _elementNode.export();
       }),
       pageCSS: this.getPageCSS(),
+      pageScript: this.getPageScript(),
       refStyleIdList: this.refStyleIdList,
       refScriptIdList: this.refScriptIdList
     }
