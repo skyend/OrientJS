@@ -76,17 +76,17 @@
       "menuItems": [{
         "key": "document-css-editor",
         "title": "Fragment CSS",
-        "icon": "cube",
+        "icon": "css3",
         "equipToolKey": "DocumentCSSEditor"
       }, {
         "key": "document-js-editor",
         "title": "Fragment Script",
-        "icon": "fire",
-        "equipToolKey": "DocumentScriptEditor"
+        "icon": "gg",
+        "equipToolKey": "FragmentScriptEditor"
       }, {
         "key": "document-body-editor",
         "title": "Fragment Body",
-        "icon": "code",
+        "icon": "html5",
         "equipToolKey": "DocumentBodyEditor"
       }]
     }, {
@@ -176,7 +176,10 @@
       "jsxPath": "DocumentCSSEditor",
       "title": "Fragment CSS Editor"
     },
-
+    "FragmentScriptEditor": {
+      "jsxPath": "FragmentScriptEditor",
+      "title": "Fragment Script Editor"
+    },
     "DocumentCUForm": {
       "jsxPath": "DocumentCUForm",
       "title": "Create a Fragment"

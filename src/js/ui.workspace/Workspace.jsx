@@ -215,28 +215,11 @@ var Workspace = React.createClass({
 
 
   onThrowCatcherFocusedContext(_eventData){
-    this.applyToolStates("ServiceResources", {
-      runningContext: _eventData.contextItem
-    });
-
-    this.applyToolStates("ContextContentsNavigation", {
-      runningContext: _eventData.contextItem.contextType === 'document'? _eventData.contextItem:null
-    });
-
-    this.applyToolStates("DocumentCSSEditor", {
-      contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
-    });
-
-    this.applyToolStates("APISourceMappingHelper", {
-      contextController: _eventData.contextItem.contextType === 'document'? _eventData.contextItem.contextController:null
-    });
-    console.log(_eventData);
-    this.refs['HeadToolBar'].setState({
-      contextItem: _eventData.contextItem
-    });
+    this.noticeSelectedContextItemToTools(_eventData.contextItem);
   },
 
   onThrowCatcherUnfocusedContext(_eventData){
+    this.noticeSelectedContextItemToTools(null);
     this.noticeSelectedElementToTools(null, null);
   },
 
@@ -248,6 +231,8 @@ var Workspace = React.createClass({
     this.emit("DestroyContext", {
       context: _eventData.contextItem
     });
+
+    this.noticeSelectedContextItemToTools(null);
   },
 
 
@@ -445,6 +430,44 @@ var Workspace = React.createClass({
       elementNode: _selectedElementNode,
       contextController:_contextController,
       screenMode: _screenMode
+    });
+  },
+
+  noticeSelectedContextItemToTools(_selectedContextItem, _screenMode){
+
+
+    this.applyToolStates("ServiceResources", {
+      runningContext: _selectedContextItem
+    });
+
+    if( _selectedContextItem !== null ){
+      this.applyToolStates("ContextContentsNavigation", {
+        runningContext: _selectedContextItem.contextType === 'document'? _selectedContextItem:null
+      });
+
+      this.applyToolStates("DocumentCSSEditor", {
+        contextController: _selectedContextItem.contextType === 'document'? _selectedContextItem.contextController:null
+      });
+
+      this.applyToolStates("FragmentScriptEditor", {
+        contextController: _selectedContextItem.contextType === 'document'? _selectedContextItem.contextController:null
+      });
+    } else {
+      this.applyToolStates("ContextContentsNavigation", {
+        runningContext: null
+      });
+
+      this.applyToolStates("DocumentCSSEditor", {
+        contextController: null
+      });
+
+      this.applyToolStates("FragmentScriptEditor", {
+        contextController: null
+      });
+    }
+
+    this.refs['HeadToolBar'].setState({
+      contextItem: _selectedContextItem
     });
   },
 

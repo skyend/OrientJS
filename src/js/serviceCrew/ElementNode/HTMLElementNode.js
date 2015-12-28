@@ -17,8 +17,6 @@ class HTMLElementNode extends TagBaseElementNode {
     super.realize(_realizeOptions);
     let realizeOptions = _realizeOptions || {};
 
-    this.realization.setAttribute('async', 'true');
-
     this.childrenRealize(realizeOptions);
   }
 

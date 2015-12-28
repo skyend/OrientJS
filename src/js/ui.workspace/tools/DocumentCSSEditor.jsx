@@ -19,28 +19,14 @@ var DocumentCSSEditor = React.createClass({
 
   getDefaultProps(){
     return {
-      document: null,
       contextController:null
     };
   },
 
 
-  getInitialState(){
-    return {
-      document: null,
-      contextController:null
-    }
-  },
-
   onThrowCatcherChangedValue(_eventData, _pass){
 
-    this.state.contextController.modifyDocumentCSS(_eventData.data);
-  },
-
-  renderEditor(){
-    var targetDocument = this.props.document;
-
-    return <DocumentFieldSets targetDocument={targetDocument} ref={targetDocument.getDocumentName()}/>;
+    this.props.contextController.modifyDocumentCSS(_eventData.data);
   },
 
   render() {

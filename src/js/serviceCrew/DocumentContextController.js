@@ -3,7 +3,10 @@ var Document = require('./Document.js');
 var jsDiff = require('diff');
 import async from 'async';
 import _ from 'underscore';
+
 import LZString from '../lib/lz-string.js';
+import LazyTimer from '../util/LazyTimer.js';
+
 import DocumentRevisionManager from './DocumentRevisionManager.js';
 import HasElementNodeContextController from './HasElementNodeContextController.js';
 
@@ -42,7 +45,7 @@ class DocumentContextController extends HasElementNodeContextController {
     this.revisionHistoryQueue = [];
     this.revisionManager = new DocumentRevisionManager();
     this.componentCSSHolders = {};
-
+    this.lazyTimer = new LazyTimer();
   }
 
   /*********
@@ -108,8 +111,22 @@ class DocumentContextController extends HasElementNodeContextController {
 
   modifyDocumentCSS(_cssText) {
     this.subject.setPageCSS(_cssText);
-    this.updatePageCSS();
     this.changedContent();
+
+    let self = this;
+    this.lazyTimer.set("refresh", 1000, function() {
+      self.context.renderRefresh();
+    });
+  }
+
+  modifyDocumentScript(_scriptText) {
+    this.subject.setPageScript(_scriptText);
+    this.changedContent();
+
+    let self = this;
+    this.lazyTimer.set("refresh", 1000, function() {
+      self.context.renderRefresh();
+    });
   }
 
   modifyElementProperty(_elementIdorElement, _propKey, _propValue) {
@@ -466,37 +483,24 @@ class DocumentContextController extends HasElementNodeContextController {
     var self = this;
 
     this.convertToStyleElements(this.subject.refStyleIdList || [], function(_styleElements) {
+
+      _styleElements.push(self.getPageCSSElement());
+
       // style element block을 적용한다.
       _styleElements.map(function(_styleElement) {
         self.context.applyStyleElement(_styleElement);
       });
     });
 
-    // // script element block 을 적용한다.
-    // jsElements.map(function(_jsElement) {
-    //
-    //   /*
-    //   if (_jsElement.getAttribute('src') !== undefined) {
-    //     _jsElement.onload = function() {
-    //       console.log('loaded', _jsElement);
-    //
-    //       console.log(self.context.getWindow());
-    //     }
-    //   }*/
-    //
-    //   self.context.applyScriptElement(_jsElement);
-    //
-    // });
-
-
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.subject.rootElementNode !== null) {
       this.rootRender(_realizeOptions);
     }
 
-
     // resource convert
     this.convertToScriptElements(this.subject.refScriptIdList || [], function(_scriptElements) {
+      _scriptElements.push(self.getPageScriptElement());
+
       // script element block을 적용한다.
       async.eachSeries(_scriptElements, function iterator(_element, _next) {
 
@@ -509,7 +513,6 @@ class DocumentContextController extends HasElementNodeContextController {
         } else {
           _next();
         }
-
 
       }, function done() {
 
@@ -557,14 +560,9 @@ class DocumentContextController extends HasElementNodeContextController {
         }
       }
     }
-
-
-
   }
 
   rootRender(_realizeOptions) {
-    console.log("Root Render");
-    this.updateRenderCSS();
     this.rerenderingElementNode(this.subject.rootElementNode, _realizeOptions);
   }
 
@@ -589,32 +587,28 @@ class DocumentContextController extends HasElementNodeContextController {
     return cssLines;
   }
 
-  /********
-   * updateHTMLTypeElementNodeCSS
-   * ElementNodeCSS를 랜더링 중인 화면에 적용한다.
-   *
-   */
-  updatePageCSS() {
-
-    // 현재 생성되어 있는 스타일블럭이 없다면 생성
-    if (typeof this.pageCSSBlock === 'undefined') {
-      var baseWindow = this.context.getWindow();
-      var styleBlock = baseWindow.document.createElement('style');
-      this.context.applyStyleElement(styleBlock);
-      this.pageCSSBlock = styleBlock;
-    }
-
+  getPageCSSElement() {
+    var baseWindow = this.context.getWindow();
+    var styleElement = baseWindow.document.createElement('style');
+    styleElement.setAttribute("page-css", '');
 
     // 변경된 css반영
-    this.pageCSSBlock.innerHTML = this.subject.interpret(this.subject.getPageCSS()) + this.extractComponentsStyleSheet();
+    styleElement.innerHTML = this.subject.interpret(this.subject.getPageCSS() || '') + this.extractComponentsStyleSheet();
 
+    return styleElement;
   }
 
-  updateRenderCSS() {
-    // document에서 HTMLType, ReactType ElementNode의 종합 css를 얻어온다.
-    //this.updateHTMLTypeElementNodeCSS(this.subject.getHTMLElementNodeCSSLines() + this.subject.getReactElementNodeCSSLines());
-    this.updatePageCSS();
+  getPageScriptElement() {
+    var baseWindow = this.context.getWindow();
+    var scriptElement = baseWindow.document.createElement('script');
+    scriptElement.setAttribute("page-script", '');
+
+    // 변경된 css반영
+    scriptElement.innerHTML = this.subject.interpret(this.subject.getPageScript() || '');
+
+    return scriptElement;
   }
+
 
 
   attachRootRealElementToSuperElement() {
