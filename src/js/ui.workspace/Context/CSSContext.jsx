@@ -1,10 +1,9 @@
 import React from 'react';
 import _ from 'underscore';
 import Column from './ComponentContext/Column.jsx';
-import HorizonField from '../partComponents/HorizonField.jsx';
-import IFrameStage from '../partComponents/IFrameStage.jsx';
+import HorizonField from '../partComponents/HorizonField.jsx'; 
 
-require('./ComponentContext.less');
+require('./CSSContext.less');
 
 export default React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'), require("./ContextAdaptor.js")],
@@ -87,11 +86,7 @@ export default React.createClass({
   },
 
   renderCSSEditor(){
-    return <HorizonField fieldName='css' title='Component Stylesheet' theme="dark" enterable={true} type={'ace'}
-                  ref={'css-field'} onChange={ this.onChange }
-                  defaultValue={this.props.contextController.subject.componentCSS} height='100%' lang='css'
-                  editorId={'css-editor-'+this.props.contextController.subject.id}
-                  nameWidth={0}/>
+    return
   },
 
   renderMainArea(){
@@ -122,7 +117,11 @@ export default React.createClass({
 
     return (
       <div className='ComponentContext' style={this.getRootBaseStyle()}>
-        {this.renderMainArea()}
+        <HorizonField fieldName='css' title='Component Stylesheet' theme="dark" enterable={true} type={'ace'}
+                      ref={'css-field'} onChange={ this.onChange }
+                      defaultValue={this.props.contextController.subject.componentCSS} height='100%' lang='css'
+                      editorId={'css-editor-'+this.props.contextController.subject.id}
+                      nameWidth={0}/>
       </div>
     );
   }

@@ -239,6 +239,14 @@
     "FragmentSetting": {
       "jsxPath": "FragmentSetting",
       "title": "Fragment Setting"
+    },
+    "CSSCreate": {
+      "jsxPath": "CSSCreate",
+      "title": "CSS Create"
+    },
+    "JSCreate": {
+      "jsxPath": "CSSCreate",
+      "title": "CSS Create"
     }
   }
 }

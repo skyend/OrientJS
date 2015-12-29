@@ -112,6 +112,7 @@ class Viewer {
       });
       self.page.rootGridElement.linkHierarchyRealizaion();
       self.window.document.body.style.margin = 0;
+      console.log(self.page.rootGridElement.realization);
       self.window.document.body.appendChild(self.page.rootGridElement.realization);
 
       // if (_blockClick) {
