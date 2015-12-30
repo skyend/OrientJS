@@ -330,6 +330,39 @@ class GelateriaRequest {
       });
   }
 
+  saveCSS(_serviceId, _cssId, _cssDataObject, _complete) {
+    request.post("http://" + this.host + "/" + ["css", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        id: _cssId,
+        css: JSON.stringify(_cssDataObject)
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("save css fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getCSS(_serviceId, _id, _complete) {
+    request.get("http://" + this.host + "/" + ['css', 'retrieve'].join('/'))
+      .query({
+        serviceId: _serviceId
+      })
+      .query({
+        id: _id
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load CSS ");
+
+        _complete(res.body);
+      });
+  }
+
   getCSSList(_withContent, _serviceId, _complete) {
     request.get("http://" + this.host + "/" + ['css', 'list'].join('/') + "?serviceId=" + _serviceId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {

@@ -16,6 +16,8 @@ import DirectContext from './Context/DirectContext.jsx';
 import PageContext from './Context/PageContext.jsx';
 import ICEAPISourceContext from './Context/ICEAPISourceContext.jsx';
 import ComponentContext from './Context/ComponentContext.jsx';
+import CSSContext from './Context/CSSContext.jsx';
+
 import VDomController from '../virtualdom/VDomController.js';
 import ElementNodeDropSupporter from './ElementNodeDropSupporter.jsx';
 import React from "react";
@@ -1011,6 +1013,8 @@ var ContextStage = React.createClass({
       ContextClass = ICEAPISourceContext;
     } else if ( _contextSpec.contextType === 'component'){
       ContextClass = ComponentContext;
+    } else if ( _contextSpec.contextType === 'css'){
+      ContextClass = CSSContext;
     }
 
     let renderStageWidth, renderStageHeight;

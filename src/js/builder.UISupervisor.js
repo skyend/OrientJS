@@ -374,8 +374,23 @@ UI.prototype.onThrowCatcherGetComponent = function(_eventData) {
 // };
 
 UI.prototype.onThrowCatcherBringCSSContext = function(_eventData) {
-  let self = this;
+  let that = this;
+  let css = _eventData.css;
+  console.log(css);
   //let api
+
+  var cssContextController = this.app.serviceManager.getCSSContextController(css._id, function(_cssContextController) {
+
+    that.rootUIInstance.openStageContext({
+      cssID: css._id,
+      contextID: 'css#' + css._id,
+      contextTitle: css.name,
+      contextType: 'css',
+      contextController: _cssContextController,
+      iconClass: _eventData.iconClass
+    });
+  });
+
 }
 
 UI.prototype.onThrowCatcherBringICEAPISourceContext = function(_eventData) {

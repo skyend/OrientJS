@@ -8,19 +8,22 @@ export default React.createClass({
     return {
       width:0,
       height:0,
-      left:0,
       top:0,
-      name:'scriptCanvas',
+      name:'column',
       folding:false, // 접기
     };
   },
 
   fold(){
-    this.emit("Fold");
+    this.emit("Fold", {
+      name: this.props.name
+    });
   },
 
   unfold(){
-    this.emit("Unfold")
+    this.emit("Unfold", {
+      name: this.props.name
+    });
   },
 
   renderReactElement(){
@@ -76,7 +79,6 @@ export default React.createClass({
     let style = {
       width: this.props.width,
       height: this.props.height,
-      //left: this.props.left,
       top: this.props.top
     };
 
@@ -85,7 +87,6 @@ export default React.createClass({
         {this.renderTopArea()}
         {this.props.folding? this.renderFoldingHolder():''}
         {this.renderReactElement()}
-
       </div>
     )
   }

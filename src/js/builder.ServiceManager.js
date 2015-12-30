@@ -10,6 +10,8 @@ import PageContextController from './serviceCrew/PageContextController.js';
 import DocumentContextController from './serviceCrew/DocumentContextController.js';
 import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
 import ComponentContextController from './serviceCrew/ComponentContextController.js';
+import CSSContextController from './serviceCrew/CSSContextController.js';
+
 //import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
 import ObjectExplorer from './util/ObjectExplorer.js';
@@ -29,6 +31,7 @@ class ServiceManager {
     this.apiSourceContextControllers = {};
     this.apiInterfaceContextControllers = {};
     this.componentContextControllers = {};
+    this.cssContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
     this.iceHost = 'http://125.131.88.77:8080';
@@ -149,6 +152,20 @@ class ServiceManager {
 
   createCSS(_name, _complete) {
     this.app.gelateriaRequest.createCSS(this.service_id, _name, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getCSS(_id, _complete) {
+    this.app.gelateriaRequest.getCSS(this.service_id, _id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  saveCSS(_cssId, _cssDataObject, _complete) {
+    console.log("Save CSS", _cssId, _cssDataObject);
+
+    this.app.gelateriaRequest.saveCSS(this.service_id, _cssId, _cssDataObject, function(_result) {
       _complete(_result);
     });
   }
@@ -536,7 +553,27 @@ class ServiceManager {
     }
   }
 
+  getCSSContextController(_cssId, _complete) {
+    var self = this;
 
+    if (this.cssContextControllers[_cssId] === undefined) {
+      this.getCSS(_cssId, function(_result) {
+
+        if (_result.result === 'success') {
+          var cssContextController = new CSSContextController(_result.css, self);
+
+          self.cssContextControllers[_cssId] = cssContextController;
+
+          _complete(self.cssContextControllers[_cssId]);
+        } else {
+          alert("component 로드 실패. " + _result.reason);
+        }
+
+      });
+    } else {
+      _complete(this.cssContextControllers[_cssId]);
+    }
+  }
 
   navigateService(_navigateCMDString) {
     /*
