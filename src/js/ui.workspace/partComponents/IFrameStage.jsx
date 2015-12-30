@@ -13,7 +13,9 @@ var IFrameStage = React.createClass({
 
   getDefaultProps() {
     return {
-      src: "about:blank"
+      src: "about:blank",
+      allowScripts: true,
+      allowForms: true
     };
   },
 
@@ -373,6 +375,16 @@ var IFrameStage = React.createClass({
     classes.push(this.props.color);
     classes.push(this.props.size);
 
+
+    let sandBoxOptions = ['allow-same-origin','allow-pointer-lock','allow-popups'];
+    if( this.props.allowScripts ){
+      sandBoxOptions.push('allow-scripts');
+    }
+
+    if( this.props.allowForms ){
+      sandBoxOptions.push('allow-forms');
+    }
+
     return (
       <div className={classes.join(' ')}
            style={{
@@ -382,7 +394,7 @@ var IFrameStage = React.createClass({
         top: this.props.top || 'auto'
       }}>
 
-        <iframe seamless sandbox="allow-same-origin allow-pointer-lock allow-scripts allow-popups allow-forms" ref='iframe' onLoad={this.onIframeLoaded} src={this.state.src}/>
+        <iframe seamless sandbox={sandBoxOptions.join(' ')} ref='iframe' onLoad={this.onIframeLoaded} src={this.state.src}/>
       </div>
     );
   }
