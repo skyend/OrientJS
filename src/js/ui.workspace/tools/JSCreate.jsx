@@ -7,7 +7,7 @@ var CSSCreate = React.createClass({
 
   getInitialState(){
     return {
-      message: '생성할 CSS의 이름을 정해주세요.(확장자명 .css 제외)',
+      message: '생성할 Javascript의 이름을 정해주세요.(확장자명 .js 제외)',
       savedName: ''
     }
   },
@@ -21,14 +21,14 @@ var CSSCreate = React.createClass({
       return;
     }
 
-    this.emit("CreateNewCSS", {
-      name: name + ".css",
+    this.emit("CreateNewJS", {
+      name: name + ".js",
       'success-notice':function(){
         that.emit("Close");
         that.props.params['success-notice']();
       },
       'fail-notice': function(){
-        alert("Fail create css");
+        alert("Fail create js");
       }
     });
   },
@@ -37,7 +37,7 @@ var CSSCreate = React.createClass({
     return (
       <InputModalFrame message={this.state.message} submitName='Create' onSubmit={this.create}>
         <div className='fields'>
-          <HorizonField fieldName='name' title='CSS Name' theme="dark" enterable={true} type='input'
+          <HorizonField fieldName='name' title='JS Name' theme="dark" enterable={true} type='input'
                         onChange={ this.onChange }
                         defaultValue={this.state.savedName} height={40} ref='name'
                         nameWidth={150}/>

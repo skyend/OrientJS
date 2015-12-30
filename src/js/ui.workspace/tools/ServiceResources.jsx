@@ -145,6 +145,33 @@
       });
     },
 
+    clickNewCSS(){
+      let that = this;
+      this.emit("RequestAttachTool", {
+        "toolKey": "CSSCreate",
+        "where": "ModalWindow",
+        "params": {
+          "success-notice": function(){
+            that.emit("NeedCSSList");
+          }
+        }
+      });
+    },
+
+    clickNewScript(){
+      let that = this;
+
+      this.emit("RequestAttachTool", {
+        "toolKey": "JSCreate",
+        "where": "ModalWindow",
+        "params": {
+          "success-notice": function(){
+            that.emit("NeedJSList");
+          }
+        }
+      });
+    },
+
     renderAPIInterfaceItem(_apiInterface){
       var iconClass = 'fa-plug';
 
@@ -427,7 +454,7 @@
             <span className='export-button' onClick={this.clickExportCasecadeStyleSheets}>
               <i className='fa fa-download'></i>
             </span>
-            <span className='add-button' onClick={this.clickNewDocument}>
+            <span className='add-button' onClick={this.clickNewCSS}>
               <i className='fa fa-plus'></i>
             </span>
           </label>
@@ -449,7 +476,7 @@
               <span className='export-button' onClick={this.clickExportJavascripts}>
                 <i className='fa fa-download'></i>
               </span>
-            <span className='add-button' onClick={this.clickNewDocument}>
+            <span className='add-button' onClick={this.clickNewScript}>
               <i className='fa fa-plus'></i>
             </span>
           </label>

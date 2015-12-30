@@ -559,6 +559,33 @@ UI.prototype.onThrowCatcherCreateNewPage = function(_eventData) {
   });
 };
 
+
+UI.prototype.onThrowCatcherCreateNewCSS = function(_eventData) {
+  let that = this;
+  let name = _eventData.name;
+
+  self.app.serviceManager.createCSS(name, function(_result) {
+    if (_result.result === 'success') {
+      _eventData['success-notice']();
+    } else {
+      _eventData['fail-notice']();
+    }
+  });
+};
+
+UI.prototype.onThrowCatcherCreateNewJS = function(_eventData) {
+  let that = this;
+  let name = _eventData.name;
+
+  self.app.serviceManager.createJS(name, function(_result) {
+    if (_result.result === 'success') {
+      _eventData['success-notice']();
+    } else {
+      _eventData['fail-notice']();
+    }
+  });
+};
+
 UI.prototype.onThrowCatcherAddNodeType = function(_eventData) {
   var self = this;
 

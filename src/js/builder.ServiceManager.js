@@ -147,6 +147,12 @@ class ServiceManager {
     });
   }
 
+  createCSS(_name, _complete) {
+    this.app.gelateriaRequest.createCSS(this.service_id, _name, function(_result) {
+      _complete(_result);
+    });
+  }
+
   getCSSList(_withContent, _complete) {
     let self = this;
 
@@ -159,6 +165,12 @@ class ServiceManager {
         }
       });
 
+      _complete(_result);
+    });
+  }
+
+  createJS(_name, _complete) {
+    this.app.gelateriaRequest.createJS(this.service_id, _name, function(_result) {
       _complete(_result);
     });
   }

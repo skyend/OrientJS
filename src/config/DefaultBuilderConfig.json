@@ -245,8 +245,8 @@
       "title": "CSS Create"
     },
     "JSCreate": {
-      "jsxPath": "CSSCreate",
-      "title": "CSS Create"
+      "jsxPath": "JSCreate",
+      "title": "Javascript Create"
     }
   }
 }

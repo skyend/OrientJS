@@ -315,10 +315,40 @@ class GelateriaRequest {
       });
   }
 
+  createCSS(_serviceId, _name, _complete) {
+    request.post("http://" + this.host + "/" + ['css', 'create'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        name: _name
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail create CSS ");
+
+        _complete(res.body);
+      });
+  }
+
   getCSSList(_withContent, _serviceId, _complete) {
     request.get("http://" + this.host + "/" + ['css', 'list'].join('/') + "?serviceId=" + _serviceId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {
         if (err !== null) throw new Error("fail load get CSS list");
+
+        _complete(res.body);
+      });
+  }
+
+  createJS(_serviceId, _name, _complete) {
+    request.post("http://" + this.host + "/" + ['js', 'create'].join('/'))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        name: _name
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail create JS ");
 
         _complete(res.body);
       });
