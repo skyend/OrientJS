@@ -387,6 +387,39 @@ class GelateriaRequest {
       });
   }
 
+  saveJS(_serviceId, _jsId, _jsDataObject, _complete) {
+    request.post("http://" + this.host + "/" + ["js", 'save'].join("/"))
+      .type('form')
+      .withCredentials()
+      .send({
+        serviceId: _serviceId,
+        id: _jsId,
+        js: JSON.stringify(_jsDataObject)
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("save js fail");
+
+        var dataObject = JSON.parse(res.text);
+
+        _complete(dataObject);
+      });
+  }
+
+  getJS(_serviceId, _id, _complete) {
+    request.get("http://" + this.host + "/" + ['js', 'retrieve'].join('/'))
+      .query({
+        serviceId: _serviceId
+      })
+      .query({
+        id: _id
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load JS ");
+
+        _complete(res.body);
+      });
+  }
+
   getJSList(_withContent, _serviceId, _complete) {
     request.get("http://" + this.host + "/" + ['js', 'list'].join('/') + "?serviceId=" + _serviceId + '&wc=' + (_withContent ? 'true' : 'false'))
       .end(function(err, res) {

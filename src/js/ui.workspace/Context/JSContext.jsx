@@ -4,8 +4,6 @@ import _ from 'underscore';
 import HorizonField from '../partComponents/HorizonField.jsx';
 import AverageColumns from '../partComponents/AverageColumns.jsx';
 
-require('./CSSContext.less');
-
 export default React.createClass({
   mixins: [require('../reactMixin/EventDistributor.js'), require("./ContextAdaptor.js")],
 
@@ -21,10 +19,10 @@ export default React.createClass({
 
   renderCodeCanvas(){
     return (
-      <HorizonField fieldName='code' title='css' theme="dark" enterable={true} type={'ace'}
-                    ref={'css-field'}
-                    defaultValue={this.props.contextController.subject.css} height='100%' lang='css'
-                    editorId={'css-editor-'+this.props.contextController.subject.id}
+      <HorizonField fieldName='code' title='javascript' theme="dark" enterable={true} type={'ace'}
+                    ref={'js-field'}
+                    defaultValue={this.props.contextController.subject.js} height='100%' lang='javascript'
+                    editorId={'js-editor-'+this.props.contextController.subject.id}
                     nameWidth={0}/>
     );
   },

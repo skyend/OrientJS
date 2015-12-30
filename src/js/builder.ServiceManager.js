@@ -11,6 +11,7 @@ import DocumentContextController from './serviceCrew/DocumentContextController.j
 import ICEAPISourceContextController from './serviceCrew/ICEAPISourceContextController.js';
 import ComponentContextController from './serviceCrew/ComponentContextController.js';
 import CSSContextController from './serviceCrew/CSSContextController.js';
+import JSContextController from './serviceCrew/JSContextController.js';
 
 //import ApiInterfaceContextController from './serviceCrew/ApiInterfaceContextController.js';
 import ICEServerDriver from './builder.ICEServer.js';
@@ -32,6 +33,7 @@ class ServiceManager {
     this.apiInterfaceContextControllers = {};
     this.componentContextControllers = {};
     this.cssContextControllers = {};
+    this.jsContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
     this.iceHost = 'http://125.131.88.77:8080';
@@ -188,6 +190,19 @@ class ServiceManager {
 
   createJS(_name, _complete) {
     this.app.gelateriaRequest.createJS(this.service_id, _name, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  getJS(_id, _complete) {
+    this.app.gelateriaRequest.getJS(this.service_id, _id, function(_result) {
+      _complete(_result);
+    });
+  }
+
+  saveJS(_jsId, _jsDataObject, _complete) {
+
+    this.app.gelateriaRequest.saveJS(this.service_id, _jsId, _jsDataObject, function(_result) {
       _complete(_result);
     });
   }
@@ -430,6 +445,14 @@ class ServiceManager {
       return delete this.componentContextControllers[_context.componentID];
     }
 
+    if (_context.contextType === 'css') {
+      return delete this.cssContextControllers[_context.cssID];
+    }
+
+    if (_context.contextType === 'js') {
+      return delete this.jsContextControllers[_context.jsID];
+    }
+
     throw new Error("Not found context Controller");
   }
 
@@ -572,6 +595,28 @@ class ServiceManager {
       });
     } else {
       _complete(this.cssContextControllers[_cssId]);
+    }
+  }
+
+  getJSContextController(_jsId, _complete) {
+    var self = this;
+
+    if (this.jsContextControllers[_jsId] === undefined) {
+      this.getJS(_jsId, function(_result) {
+
+        if (_result.result === 'success') {
+          var cssContextController = new JSContextController(_result.js, self);
+
+          self.jsContextControllers[_jsId] = cssContextController;
+
+          _complete(self.jsContextControllers[_jsId]);
+        } else {
+          alert("component 로드 실패. " + _result.reason);
+        }
+
+      });
+    } else {
+      _complete(this.jsContextControllers[_jsId]);
     }
   }
 
