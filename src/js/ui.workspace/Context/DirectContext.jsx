@@ -254,12 +254,13 @@ var DirectContext = React.createClass({
     let targetElementNode = this.state.selectedElementNode;
 
     if( this.state.selectedElementNode.type === 'string' ){
-      targetElementNode = targetElementNode.getParent();
-
-      this.selectElement(targetElementNode.getRealization());
+      this.toggleTextEditMode(targetElementNode);
+    } else {
+      this.errorNotice(
+        "요소 편집 불가",
+        "String 타입의 요소만 문서상 편집이 가능합니다."
+      );
     }
-
-    this.toggleTextEditMode(targetElementNode);
   },
 
   jumpToParentElement(){
@@ -501,6 +502,14 @@ var DirectContext = React.createClass({
     _pass();
   },
 
+  onThrowCatcherHoverElementInStage(_eventData){
+    let dom = _eventData.targetDOMNode;
+
+    let feedbackLayer = this.refs['feedback-layer'];
+
+    feedbackLayer.setState({hoverElement: dom});
+  },
+
   onThrowCatcherElementResizingStart(_eventData){
     this.setState({selectedElementResizg: true});
   },
@@ -734,6 +743,7 @@ var DirectContext = React.createClass({
     var selectedSelectRect = {};
     var selectedElementResizable = false;
     var elementNavigatorClasses = ['element-navigator'];
+
     if (!this.state.showElementNavigator) {
       elementNavigatorClasses.push('off');
 
@@ -807,7 +817,7 @@ var DirectContext = React.createClass({
      */
     return (
       <div className='DirectContext theme-white' style={style}>
-        <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY }/>
+        <FeedbackLayer width={iframeStageWidth} height={iframeStageHeight} left={ stageX } top={ stageY } contextController={this.props.contextController} ref='feedback-layer'/>
         <IFrameStage ref='iframe-stage' width={iframeStageWidth} height={iframeStageHeight} left={ stageX }
                      top={ stageY } onLoadIFrame={this.loadedIFrame}/>
 

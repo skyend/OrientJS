@@ -3,7 +3,7 @@ import HTMLElementNode from './HTMLElementNode.js';
 import GridElementNode from './GridElementNode.js';
 import ReactElementNode from './ReactElementNode.js';
 import StringElementNode from './StringElementNode.js';
-import EmptyElementNode from './EmptyElementNode.js';
+import RefElementNode from './RefElementNode.js';
 
 
 class Factory {
@@ -16,7 +16,8 @@ class Factory {
 
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
-    else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
+    //else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
+    else if (type === 'ref') elementNodeCLASS = RefElementNode;
     else if (type === 'react') elementNodeCLASS = ReactElementNode;
     else if (type === 'grid') elementNodeCLASS = GridElementNode;
     else {

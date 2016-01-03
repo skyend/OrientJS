@@ -14,31 +14,31 @@ class StringElementNode extends ElementNode {
     return this.text;
   }
 
-  getBoundingRect() {
-
-    var boundingRect;
-    var realElement = this.getRealization();
-
-    if (realElement.nodeValue === '') {
-
-      boundingRect = {
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0
-      }
-
-    } else {
-
-      var range = document.createRange();
-      range.selectNodeContents(realElement);
-      boundingRect = range.getClientRects()[0];
-    }
-
-
-
-    return boundingRect;
-  }
+  // getBoundingRect() {
+  //
+  //   var boundingRect;
+  //   var realElement = this.getRealization();
+  //
+  //   if (realElement.nodeValue === '') {
+  //
+  //     boundingRect = {
+  //       left: 0,
+  //       top: 0,
+  //       width: 0,
+  //       height: 0
+  //     }
+  // 
+  //   } else {
+  //
+  //     var range = document.createRange();
+  //     range.selectNodeContents(realElement);
+  //     boundingRect = range.getClientRects()[0];
+  //   }
+  //
+  //
+  //
+  //   return boundingRect;
+  // }
 
   setText(_text) {
     this.text = _text;
@@ -47,8 +47,10 @@ class StringElementNode extends ElementNode {
   createRealizationNode() {
 
     let htmlDoc = this.environment.getHTMLDocument();
-    this.realization = htmlDoc.createTextNode('');
+    this.realization = htmlDoc.createElement('span');
     this.realization.___en = this;
+    this.realization.setAttribute('___id___', this.id);
+    this.realization.setAttribute('en-type', 'string');
   }
 
   realize(_realizeOptions) {
@@ -58,16 +60,22 @@ class StringElementNode extends ElementNode {
     let realizeOptions = _realizeOptions || {};
 
     if (realizeOptions.skipResolve === true) {
-      this.realization.nodeValue = this.getText();
+      this.realization.innerHTML = this.getText();
     } else {
-      this.realization.nodeValue = this.interpret(this.getText());
+      this.realization.innerHTML = this.interpret(this.getText());
+    }
+
+    if (this.isTextEditMode()) {
+      this.realization.setAttribute('contenteditable', true);
+      this.realization.focus();
     }
   }
 
-  linkHierarchyRealizaion() {
-    super.linkHierarchyRealizaion();
-    this.realization.appendChild(this.environment.findById(this.getRefferenceTarget()).getRealization());
-  }
+  //
+  // linkHierarchyRealizaion() {
+  //   super.linkHierarchyRealizaion();
+  //   //this.realization.appendChild(this.environment.findById(this.getRefferenceTarget()).getRealization());
+  // }
 
 
   buildByComponent(_component) {
@@ -83,7 +91,23 @@ class StringElementNode extends ElementNode {
 
 
 
+  isTextEditMode() {
+    return this.mode === 'textEdit';
+  }
 
+  changeTextEditMode() {
+    this.mode = 'textEdit';
+    //this.getRealization().setAttribute("contenteditable", 'true');
+  }
+
+  changeNormalMode() {
+    if (this.isTextEditMode()) {
+      this.setText(this.realization.innerHTML);
+    }
+
+    this.mode = 'normal';
+    this.getRealization().removeAttribute("contenteditable");
+  }
 
 
   import (_elementNodeDataObject) {

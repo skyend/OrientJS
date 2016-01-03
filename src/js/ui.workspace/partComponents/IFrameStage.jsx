@@ -196,6 +196,10 @@ var IFrameStage = React.createClass({
       self.onMouseDownAtStage(_ev);
     }, false);
 
+    innerDocument.addEventListener('mouseover', function (_ev) {
+      self.onMouseOverAtStage(_ev);
+    }, false);
+
     innerDocument.addEventListener('scroll', function (_ev) {
       self.onScrollAtStage(_ev);
     }, false);
@@ -225,6 +229,10 @@ var IFrameStage = React.createClass({
     this.elementClick(_e.target, _e);
   },
 
+  onMouseOverAtStage(_e){
+    this.elementHover(_e.target, _e);
+  },
+
   onMouseDoubleClickAtStage(_e){
     this.elementDClick(_e.target, _e);
   },
@@ -236,7 +244,7 @@ var IFrameStage = React.createClass({
 
 
   elementClick(_target, _e){
-    let element = this.searchClickedDOM(_target, _e.x, _e.y);
+    let element = this.searchPointedDOM(_target, _e.x, _e.y);
     console.log(element);
 
     this.emit("ClickElementInStage", {
@@ -244,13 +252,26 @@ var IFrameStage = React.createClass({
     });
   },
 
-  elementDClick(_target, _e){
-    this.emit("DClickElementInStage", {
-      targetDOMNode: this.searchClickedDOM(_target, _e.x, _e.y)
+  elementHover(_target, _e){
+    let element = this.searchPointedDOM(_target, _e.x, _e.y);
+    console.log(element);
+
+    if( element.nodeName === '#text' ){
+      element = element.parentNode;
+    }
+
+    this.emit("HoverElementInStage", {
+      targetDOMNode: element
     });
   },
 
-  searchClickedDOM(_target, _mx, _my){
+  elementDClick(_target, _e){
+    this.emit("DClickElementInStage", {
+      targetDOMNode: this.searchPointedDOM(_target, _e.x, _e.y)
+    });
+  },
+
+  searchPointedDOM(_target, _mx, _my){
     var targetNode = _target;
     var childNodes = targetNode.childNodes;
 

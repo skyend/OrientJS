@@ -213,24 +213,9 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-  changeTextEditMode() {
-    this.mode = 'textEdit';
-    //this.getRealization().setAttribute("contenteditable", 'true');
-  }
 
 
-  changeNormalMode() {
-    if (this.mode === 'textEdit') {
-      this.updateSyncDOMChanged();
-    }
 
-    this.mode = 'normal';
-    this.getRealization().removeAttribute("contenteditable");
-  }
-
-  isTextEditMode() {
-    return this.mode === 'textEdit';
-  }
 
   ///////////
   // Remove Attribute
@@ -311,9 +296,7 @@ class TagBaseElementNode extends ElementNode {
       this.realization.style.textTransform = 'none';
     }
 
-    if (this.isTextEditMode()) {
-      this.realization.setAttribute('contenteditable', true);
-    }
+
   }
 
   mappingAttribute(_attrName, _skipResolve) {

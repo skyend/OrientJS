@@ -206,9 +206,15 @@ class ElementNode {
 
 
 
+  getBoundingRect() {
 
+    var boundingRect;
+    var realElement = this.getRealization();
 
+    boundingRect = realElement.getBoundingClientRect();
 
+    return boundingRect;
+  }
 
   // realControl
   isUsingBind(_controlName) {
@@ -267,7 +273,7 @@ class ElementNode {
 
     let realDOMElement = this.getRealization();
 
-    let childNodes = realDOMElement.childNodes;
+    let childNodes = realDOMElement.children;
 
     let newChildren = [];
 
@@ -290,8 +296,6 @@ class ElementNode {
   updated() {
     this.updateDate = new Date();
   }
-
-
 
 
 
@@ -375,27 +379,31 @@ class ElementNode {
         // elementNode.setTagName(_realization.nodeName);
       }
 
-      let newChildren = [];
-      //  console.log(_realElement.childNodes, 'here');
+      if (elementNode.getType() === 'string') {
+        elementNode.setText(_realization.innerHTML);
+      } else {
+        let newChildren = [];
+        //  console.log(_realElement.childNodes, 'here');
 
-      for (var i = 0; i < _realization.childNodes.length; i++) {
+        for (var i = 0; i < _realization.childNodes.length; i++) {
 
 
-        let afterRealize = this.extractAndRealizeElementNode(_realization.childNodes[i]);
-        afterRealize.setParent(elementNode);
+          let afterRealize = this.extractAndRealizeElementNode(_realization.childNodes[i]);
+          afterRealize.setParent(elementNode);
 
-        //console.log(_realElement.childNodes[i]);
+          //console.log(_realElement.childNodes[i]);
 
-        if (afterRealize !== null) {
-          newChildren.push(afterRealize);
+          if (afterRealize !== null) {
+            newChildren.push(afterRealize);
+          }
         }
-      }
 
-      elementNode.children = newChildren;
+        elementNode.children = newChildren;
+      }
     }
 
     return elementNode;
-  };
+  }
 
 
   isDropableComponent(_dropType) {

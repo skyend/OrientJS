@@ -9,9 +9,9 @@
       "name": "RootWrapper",
       "path": "BasicFramePackage/RootWrapper.jsx"
     }, {
-      "key": "empty-type-element",
-      "name": "Empty Type Element",
-      "path": "BasicFramePackage/EmptyTypeElement.jsx"
+      "key": "ref-type-element",
+      "name": "Refference Type Element",
+      "path": "BasicFramePackage/RefTypeElement.jsx"
     }, {
       "key": "string-type-element",
       "name": "String Type Element",
