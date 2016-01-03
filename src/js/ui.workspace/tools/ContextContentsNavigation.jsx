@@ -97,9 +97,9 @@ var ContextContentsNavigation = React.createClass({
             <span className='en-type'>
               {type}
             </span>
-            <span className='en-id'>
+            {/*<span className='en-id'>
               {_elementNode.id}
-            </span>
+            </span>*/}
           { type !== 'string'? (_elementNode.attributes.class !== undefined ? (
             <span className='en-class'>
               {_elementNode.attributes.class}
