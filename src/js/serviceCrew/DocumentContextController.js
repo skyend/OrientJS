@@ -181,6 +181,12 @@ class DocumentContextController extends HasElementNodeContextController {
       case "tagName":
         targetElementNode.setTagName(_propValue);
         break;
+      case "refType":
+        targetElementNode.refType = _propValue;
+        break;
+      case "refTargetId":
+        targetElementNode.refTargetId = _propValue;
+        break;
       default:
         console.error("No matched property key");
     }

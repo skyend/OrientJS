@@ -58,7 +58,24 @@ var FeedbackLayer = React.createClass({
     this.boundingRect = this.getDOMNode().getBoundingClientRect();
   },
 
+  renderSummaryElementType(_type){
+    if( _type === 'string' ){
+      return <i className='fa fa-font'/>;
+    } else if( _type === 'ref') {
+      return <i className='fa fa-chain'/>;
+    } else if( _type === 'react') {
+      return <i className='fa fa-cube'/>;
+    } else if( _type === 'html') {
+      return <i className='fa fa-sticky-note'/>;
+    }
+  },
+
   renderDynamicElementSummary(_elemntNode){
+    let detectedInterpret = _elemntNode.detectInterpret();
+    if( detectedInterpret === undefined ){
+      if( _elemntNode.getType() !== 'ref' ) return;
+    }
+
     let boundingRect = _elemntNode.getBoundingRect();
     let type = _elemntNode.getType();
     let style = this.calcSummaryPositionStyle(boundingRect.left, boundingRect.top, boundingRect.width, boundingRect.height, true);
@@ -67,7 +84,7 @@ var FeedbackLayer = React.createClass({
 
     return (
       <div className='summary' style={style}>
-        <i className='fa fa-question'/>
+        { this.renderSummaryElementType(type) }
         <span className='type'>{type}</span>
         {type !== 'string' && _elemntNode.getAttribute('id') ? <span className='id'>{_elemntNode.getAttribute('id')}</span>:''}
         {type !== 'string' && _elemntNode.getAttribute('class') ? <span className='class'>{_elemntNode.getAttribute('class')}</span>:''}
@@ -82,20 +99,18 @@ var FeedbackLayer = React.createClass({
     let rootElementNode = this.props.contextController.subject.rootElementNode;
     if( rootElementNode.realization === null ) return '';
 
-    let dynamicElementSpec;
+    let dynamicElementSummaryReactElement;
     if( typeof rootElementNode.treeExplore !== 'function' ){
-      dynamicElementSpec = rootElementNode.detectInterpret();
+      dynamicElementSummaryReactElement = this.renderDynamicElementSummary(rootElementNode);
 
-      if( dynamicElementSpec === undefined ) return '';
-
-      return this.renderDynamicElementSummary(rootElementNode, dynamicElementSpec);
+      return dynamicElementSummary || '';
     } else {
       rootElementNode.treeExplore(function(_elemntNode){
-        dynamicElementSpec = _elemntNode.detectInterpret();
-        console.log(dynamicElementSpec);
-        if( dynamicElementSpec === undefined ) return '';
+        dynamicElementSummaryReactElement = that.renderDynamicElementSummary(_elemntNode);
 
-        summaryElements.push(that.renderDynamicElementSummary(_elemntNode, dynamicElementSpec));
+        if( dynamicElementSummaryReactElement === null ) return '';
+
+        summaryElements.push(dynamicElementSummaryReactElement);
       });
     }
 
@@ -156,22 +171,10 @@ var FeedbackLayer = React.createClass({
     rectStyle.width = boundingRect.width;
     rectStyle.height = boundingRect.height;
 
-    let typeIcon;
-
-    if( type === 'string' ){
-      typeIcon = <i className='fa fa-font'/>;
-    } else if( type === 'ref') {
-      typeIcon = <i className='fa fa-chain'/>;
-    } else if( type === 'react') {
-      typeIcon = <i className='fa fa-cube'/>;
-    } else if( type === 'html') {
-      typeIcon = <i className='fa fa-sticky-note'/>;
-    }
-
     return(
       <div className="hover-guide-rect" style={rectStyle}>
         <div className='summary' style={this.calcSummaryPositionStyle(boundingRect.left, boundingRect.top, boundingRect.width, boundingRect.height)}>
-          {typeIcon}
+          {this.renderSummaryElementType(type)}
           <span className='type'>{elementNode.getType()}</span>
           {type !== 'string' && elementNode.getAttribute('id') ? <span className='id'>{elementNode.getAttribute('id')}</span>:''}
           {type !== 'string' && elementNode.getAttribute('class') ? <span className='class'>{elementNode.getAttribute('class')}</span>:''}

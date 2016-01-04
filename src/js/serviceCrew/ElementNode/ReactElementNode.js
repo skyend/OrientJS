@@ -119,9 +119,12 @@ class ReactElementNode extends TagBaseElementNode {
           let reactProperties = self.getReactComponentPropsWithResolve();
           let reactElement = React.createElement(_result.class, reactProperties);
 
-          React.render(reactElement, self.realization);
+          let reactComponent = React.render(reactElement, self.realization);
 
           self.environment.contextController.applyComponentCSS(packageKey + '/' + componentKey, _result.CSS);
+
+          // self.setRealization(reactComponent.getDOMNode());
+          // self.parent.linkHierarchyRealizaion();
         });
 
         return;

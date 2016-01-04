@@ -763,12 +763,33 @@ UI.prototype.onThrowCatcherNeedDocumentList = function(_eventData) {
   this.loadDocumentList(false, function(_result) {
     console.log('loaded', _result);
 
+    if (typeof _eventData.callback === 'function') {
+      _eventData.callback(_result.list);
+      return;
+    }
+
     self.toolFactory.storeToolState("ServiceResources", {
       documentList: _result.list
     });
 
     _eventData.path[0].setState({
       fragments: _result.list
+    });
+  });
+};
+
+UI.prototype.onThrowCatcherNeedSharedElementNodeList = function(_eventData) {
+  var self = this;
+  this.app.serviceManager.loadSharedElementNodeList(false, function(_result) {
+    console.log('loaded', _result);
+
+    if (typeof _eventData.callback === 'function') {
+      _eventData.callback(_result.list);
+      return;
+    }
+
+    _eventData.path[0].setState({
+      sharedElementNodeList: _result.list
     });
   });
 };

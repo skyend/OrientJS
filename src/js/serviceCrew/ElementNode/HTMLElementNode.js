@@ -17,6 +17,8 @@ class HTMLElementNode extends TagBaseElementNode {
     super.realize(_realizeOptions);
     let realizeOptions = _realizeOptions || {};
 
+    //this.realization.setAttribute('async', 'true');
+
     this.childrenRealize(realizeOptions);
   }
 
@@ -35,14 +37,14 @@ class HTMLElementNode extends TagBaseElementNode {
 
       self.realization.appendChild(_child.realization);
 
-      if (/^(html|react|empty|grid)$/.test(_child.type)) _child.linkHierarchyRealizaion();
+      if (_child.type !== 'string') _child.linkHierarchyRealizaion();
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {
 
           self.realization.appendChild(_cloneChild.realization);
 
-          if (_cloneChild.type === 'html') _cloneChild.linkHierarchyRealizaion();
+          if (/^(html|ref|grid)$/.test(_cloneChild.type)) _cloneChild.linkHierarchyRealizaion();
         });
       }
     });
@@ -168,7 +170,7 @@ class HTMLElementNode extends TagBaseElementNode {
   buildByElement(_domElement) {
     super.buildByElement(_domElement);
 
-    this.setType('html');
+    // this.setType('html');
 
     //////////////////
     // 자식노드 재귀처리 //

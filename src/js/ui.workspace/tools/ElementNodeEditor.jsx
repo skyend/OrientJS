@@ -11,6 +11,7 @@ import ElementProfile from './ElementNodeEditor/ElementProfile.jsx';
 import HTMLDOMSpec from './ElementNodeEditor/HTMLDOMSpec.jsx';
 import EmptyTypeElementNode from './ElementNodeEditor/EmptyTypeElementNode.jsx';
 import ReactTypeElementNode from './ElementNodeEditor/ReactTypeElementNode.jsx';
+import RefTypeElementNode from './ElementNodeEditor/RefTypeElementNode.jsx';
 
 let ElementNodeEditor = React.createClass({
   mixins: [
@@ -100,7 +101,18 @@ let ElementNodeEditor = React.createClass({
             break;
         }
       }
-    } else if (_eventData.refPath[2] === 'ReactTypeElementNode' ){
+    } else if (_eventData.refPath[2] === 'RefTypeElementNode') {
+      if (_eventData.refPath[1] === 'refComponentProps') {
+        switch (_eventData.name) {
+          case "refType" :
+            this.props.contextController.modifyElementProperty(elementNode.id, 'refType', changedData);
+            break;
+          case "refTargetId" :
+            this.props.contextController.modifyElementProperty(elementNode.id, 'refTargetId', changedData);
+            break;
+        }
+      }
+    }else if (_eventData.refPath[2] === 'ReactTypeElementNode' ){
       if(_eventData.refPath[1] === 'reactComponentProps' ){
         let propKey = _eventData.name;
         this.props.contextController.modifyReactElementProperty(elementNode.id, propKey, changedData);
@@ -118,6 +130,8 @@ let ElementNodeEditor = React.createClass({
       return <EmptyTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='EmptyTypeElementNode'/>;
     } else if ( type === 'react' ){
       return <ReactTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='ReactTypeElementNode'/>;
+    } else if ( type === 'ref' ){
+      return <RefTypeElementNode elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='RefTypeElementNode'/>;
     } else {
       return '';
     }
@@ -131,7 +145,7 @@ let ElementNodeEditor = React.createClass({
 
         <HTMLDOMSpec elementNode={_elementNode} width={this.props.width} theme={this.props.config.theme} ref='HTMLDOMSpec'/>
 
-       { this.renderSpecialPartByType(_elementNode) }
+        { this.renderSpecialPartByType(_elementNode) }
       </div>
     );
   },

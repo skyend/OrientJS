@@ -393,6 +393,20 @@ class ServiceManager {
     });
   }
 
+  loadSharedElementNodeList(_withContent, _complete) {
+    this.app.gelateriaRequest.loadSharedElementNodeList(_withContent, this.service_id, function(_result) {
+      _result.list = _result.list.sort(function(_a, _b) {
+        if (_a.title.localeCompare(_b.title) > 0) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+
+      _complete(_result);
+    });
+  }
+
   findPageByAccessPoint(_accessPoint, _complate) {
     this.app.gelateriaRequest.findPageBy(this.service_id, 'accessPoint', _accessPoint, function(_result) {
       _complate(_result);

@@ -632,6 +632,20 @@ class GelateriaRequest {
       });
   }
 
+  loadSharedElementNodeList(_withContent, _serviceId, _complete) {
+    request.get("http://" + this.host + "/" + ['shared-element-node', 'list'].join('/'))
+      .query({
+        serviceId: _serviceId,
+        wc: (_withContent ? 'true' : 'false')
+      })
+      .end(function(err, res) {
+        if (err !== null) throw new Error("fail load shared elementNode list");
+
+        var dataObject = JSON.parse(res.text);
+        _complete(dataObject);
+      });
+  }
+
 
   registerUser(_userspec, _complete) {
     request.post("http://" + this.host + "/" + ["users", 'register'].join("/"))

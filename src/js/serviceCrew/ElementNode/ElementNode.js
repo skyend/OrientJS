@@ -18,7 +18,7 @@ class ElementNode {
 
     // environment profile
     this.id;
-    this.type; // html / string / react / grid
+    this.type; // html / string / react / grid / ref
     this.name; // 참고용 이름
 
     this.componentName;
@@ -188,6 +188,13 @@ class ElementNode {
     this.comment = _comment;
   }
 
+  setRealization(_realization) {
+    this.realization = _realization;
+    this.realization.___en = this;
+    this.realization.setAttribute('___id___', this.id);
+    this.realization.setAttribute('en-type', this.type);
+  }
+
   realize(_realizeOptions) {
 
     // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
@@ -355,7 +362,7 @@ class ElementNode {
   buildByComponent(_component) {
     //console.log('빌드해라', _component);
     var elementNodeType = _component.elementType;
-    this.setType(elementNodeType);
+    // this.setType(elementNodeType);
   }
 
 

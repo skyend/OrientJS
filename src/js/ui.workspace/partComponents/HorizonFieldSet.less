@@ -84,14 +84,19 @@
 
             box-sizing: border-box;
             height: 25px;
-            padding: 6px;
+            padding: 0;
 
             cursor: default;
 
             .noselect;
             > label
             {
-                //line-height: 0;
+                font-family: Open Sans;
+
+                padding-left: 8px;
+
+                vertical-align: middle;
+                letter-spacing: 1px;
             }
 
             > ul.options
@@ -120,6 +125,17 @@
                         cursor: pointer;
                     }
                 }
+            }
+
+            &::before
+            {
+                display: inline-block;
+
+                width: 0;
+                height: 100%;
+
+                content: ' ';
+                vertical-align: middle;
             }
         }
 

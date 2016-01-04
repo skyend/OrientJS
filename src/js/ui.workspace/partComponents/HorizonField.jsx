@@ -396,6 +396,7 @@ var HorizonField = React.createClass({
                onDoubleClick={this.nameDoubleClick}>
             <div className='vertical-standard'></div>
             { fieldNameRender }
+            { this.props.loading ? <i className='loading fa fa-pulse fa-spinner'/>:''}
           </div>
 
         </div>

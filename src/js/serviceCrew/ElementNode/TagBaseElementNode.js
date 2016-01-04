@@ -156,10 +156,8 @@ class TagBaseElementNode extends ElementNode {
 
   createRealizationNode() {
     let htmlDoc = this.environment.getHTMLDocument();
-    this.realization = htmlDoc.createElement(this.getTagName() || 'div');
-    //console.log(this.getTagName());
-    this.realization.___en = this;
-    this.realization.setAttribute('___id___', this.id);
+
+    this.setRealization(htmlDoc.createElement(this.getTagName() || 'div'))
   }
 
   // realize

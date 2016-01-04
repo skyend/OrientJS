@@ -12,8 +12,8 @@ module.exports =  {
         };
 
         return (
-          <div className='ref' style={style}>
-            Empty
+          <div style={style}>
+
           </div>
         )
       }

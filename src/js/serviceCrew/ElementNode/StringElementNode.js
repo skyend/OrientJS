@@ -27,7 +27,7 @@ class StringElementNode extends ElementNode {
   //       width: 0,
   //       height: 0
   //     }
-  // 
+  //
   //   } else {
   //
   //     var range = document.createRange();
@@ -47,10 +47,7 @@ class StringElementNode extends ElementNode {
   createRealizationNode() {
 
     let htmlDoc = this.environment.getHTMLDocument();
-    this.realization = htmlDoc.createElement('span');
-    this.realization.___en = this;
-    this.realization.setAttribute('___id___', this.id);
-    this.realization.setAttribute('en-type', 'string');
+    this.setRealization(htmlDoc.createElement('span'));
   }
 
   realize(_realizeOptions) {
