@@ -2,6 +2,7 @@
 {
     position: absolute;
     z-index: 2;
+    //overflow: hidden;
     //display: none;
 
     width: 100%;
@@ -28,32 +29,41 @@
             font-family: Open Sans;
             font-size: 13px;
 
-            position: absolute;
+            position: fixed;
 
             display: inline-block;
 
             box-sizing: border-box;
-            min-width: 100px;
             height: 20px;
             padding: 0 5px;
 
             color: rgba(12, 210, 234, .8);
 
-            &.pos-out
-            {
-                top: -20px;
-            }
-
-            &.pos-in
-            {
-                top: 0;
-            }
 
             > .type
             {
                 padding-left: 5px;
 
                 text-transform: uppercase;
+            }
+
+            .id
+            {
+                padding-left: 5px;
+
+                &:before
+                {
+                    content: '#';
+                }
+            }
+
+            .class
+            {
+                padding-left: 5px;
+                &:before
+                {
+                    content: '.';
+                }
             }
         }
     }

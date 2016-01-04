@@ -254,8 +254,7 @@ var IFrameStage = React.createClass({
 
   elementHover(_target, _e){
     let element = this.searchPointedDOM(_target, _e.x, _e.y);
-    console.log(element);
-
+   
     if( element.nodeName === '#text' ){
       element = element.parentNode;
     }
