@@ -507,6 +507,15 @@ var DirectContext = React.createClass({
 
     let feedbackLayer = this.refs['feedback-layer'];
 
+
+    // dom 의 ___en 필드가 undefined 이고 data-reactid 어트리뷰트가 존재 할 때 react type element의 하위 요소로 간주
+    // 계속 상위노드를 검사하여 ___en 필드가 존재하는 요소를 선택하도록 함
+    if( dom.___en === undefined && dom.getAttribute('data-reactid') !== null){
+      while( dom.___en === undefined ){
+        dom = dom.parentNode;
+      }
+    }
+
     feedbackLayer.setState({hoverElement: dom});
   },
 

@@ -638,7 +638,7 @@ class ElementNode {
         }, 'reactComponentProps');
 
         break;
-      case "empty":
+      case "ref":
       case "grid":
       case "html":
         ObjectExplorer.explore(this.attributes, function(_key, _data) {

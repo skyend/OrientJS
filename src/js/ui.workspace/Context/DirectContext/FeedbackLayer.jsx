@@ -14,8 +14,12 @@ var FeedbackLayer = React.createClass({
     }
   },
 
-  calcSummaryPositionStyle(_criteriaLeft, _criteriaTop, _criteriaWidth, _criteriaHeight){
+  calcSummaryPositionStyle(_criteriaLeft, _criteriaTop, _criteriaWidth, _criteriaHeight, _overflowIgnore){
     let style = {};
+
+    if( _criteriaTop < 0 ){
+      if( _overflowIgnore ) return null;
+    }
 
     if( _criteriaTop < 20 ){
       // top overflow -> fixed layer top
@@ -36,11 +40,11 @@ var FeedbackLayer = React.createClass({
 
     if( absLeft < absRight ){
       // left
-      style.left = this.boundingRect.left + absLeft;
+      style.left = Math.max(this.boundingRect.left + absLeft,this.boundingRect.left);
     } else {
       let layerAbsRight = window.innerWidth - (this.boundingRect.left + this.boundingRect.width);
       // right
-      style.right = layerAbsRight + absRight;
+      style.right = Math.max(layerAbsRight + absRight, layerAbsRight);
     }
 
     return style;
@@ -52,6 +56,50 @@ var FeedbackLayer = React.createClass({
 
   componentDidUpdate(){
     this.boundingRect = this.getDOMNode().getBoundingClientRect();
+  },
+
+  renderDynamicElementSummary(_elemntNode){
+    let boundingRect = _elemntNode.getBoundingRect();
+    let type = _elemntNode.getType();
+    let style = this.calcSummaryPositionStyle(boundingRect.left, boundingRect.top, boundingRect.width, boundingRect.height, true);
+
+    if( style === null ) return;
+
+    return (
+      <div className='summary' style={style}>
+        <i className='fa fa-question'/>
+        <span className='type'>{type}</span>
+        {type !== 'string' && _elemntNode.getAttribute('id') ? <span className='id'>{_elemntNode.getAttribute('id')}</span>:''}
+        {type !== 'string' && _elemntNode.getAttribute('class') ? <span className='class'>{_elemntNode.getAttribute('class')}</span>:''}
+      </div>
+    );
+  },
+
+  renderDynamicElementSummaries(){
+    let summaryElements = [];
+    let that = this;
+    if( this.props.contextController.subject.rootElementNode === null ) return '';
+    let rootElementNode = this.props.contextController.subject.rootElementNode;
+    if( rootElementNode.realization === null ) return '';
+
+    let dynamicElementSpec;
+    if( typeof rootElementNode.treeExplore !== 'function' ){
+      dynamicElementSpec = rootElementNode.detectInterpret();
+
+      if( dynamicElementSpec === undefined ) return '';
+
+      return this.renderDynamicElementSummary(rootElementNode, dynamicElementSpec);
+    } else {
+      rootElementNode.treeExplore(function(_elemntNode){
+        dynamicElementSpec = _elemntNode.detectInterpret();
+        console.log(dynamicElementSpec);
+        if( dynamicElementSpec === undefined ) return '';
+
+        summaryElements.push(that.renderDynamicElementSummary(_elemntNode, dynamicElementSpec));
+      });
+    }
+
+    return summaryElements;
   },
 
   renderHoverUnknownElementGuide(_nodeName){
@@ -141,6 +189,7 @@ var FeedbackLayer = React.createClass({
     return (
       <div className='FeedbackLayer' style={style}>
         { this.state.hoverElement !== null ? this.renderHoverElementGuide():''}
+        { this.renderDynamicElementSummaries() }
       </div>
     )
   }
