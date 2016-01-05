@@ -70,6 +70,13 @@ var FeedbackLayer = React.createClass({
     }
   },
 
+  renderRefSummaryParts(){
+    let partElements = [];
+
+
+    return partElements;
+  },
+
   renderDynamicElementSummary(_elemntNode){
     let detectedInterpret = _elemntNode.detectInterpret();
     if( detectedInterpret === undefined ){
@@ -88,6 +95,7 @@ var FeedbackLayer = React.createClass({
         <span className='type'>{type}</span>
         {type !== 'string' && _elemntNode.getAttribute('id') ? <span className='id'>{_elemntNode.getAttribute('id')}</span>:''}
         {type !== 'string' && _elemntNode.getAttribute('class') ? <span className='class'>{_elemntNode.getAttribute('class')}</span>:''}
+        { type === 'ref' ? this.renderRefSummaryParts():''}
       </div>
     );
   },
