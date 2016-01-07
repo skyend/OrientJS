@@ -3,8 +3,8 @@ import async from 'async';
 //import RefElementNode from './ElementNode/RefElementNode';
 import Factory from '../ElementNode/Factory.js';
 
-const fragmentSpecStartSignString = "<!--@FragmentSpec";
-const fragmentSpecEndSignString = "@FragmentSpecEnd-->";
+const fragmentSpecStartSignString = "<!--@FragmentMeta";
+const fragmentSpecEndSignString = "@FragmentMetaEnd-->";
 
 
 class Fragment {
