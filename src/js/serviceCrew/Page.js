@@ -15,6 +15,7 @@ class Page {
     this._screenSize = {};
     this.screenMode = _contextController.screenSizing;
     this.params = {};
+
   }
 
   set title(_title) {
@@ -164,6 +165,10 @@ class Page {
 
   get favicon() {
     return this._favicon;
+  }
+
+  getScreenSizing() {
+    return this.screenMode;
   }
 
   getParamSupply(_NS) {

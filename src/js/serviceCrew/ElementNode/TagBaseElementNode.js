@@ -19,6 +19,8 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
+
+
   // Getters
   // element.tagName -> getTagName()
   getTagName() {
@@ -162,20 +164,47 @@ class TagBaseElementNode extends ElementNode {
   }
 
   // realize
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-    this.createRealizationNode();
+  realize(_realizeOptions, _complete) {
+    let that = this;
 
-    let realizeOptions = _realizeOptions || {};
+    super.realize(_realizeOptions, function() {
+      that.createRealizationNode();
 
-    // attribute 매핑
-    this.mappingAttributes(realizeOptions.skipResolve);
+      let realizeOptions = _realizeOptions || {};
 
+      // attribute 매핑
+      that.mappingAttributes(realizeOptions.skipResolve);
 
-    // 이벤트 매핑
-    this.mappingEvent();
+      // 이벤트 매핑
+      that.mappingEvent();
 
-    this.mappingNavigate();
+      that.mappingNavigate();
+
+      _complete();
+    });
+  }
+
+  // 번외 처리
+  linkHierarchyRealizaion() {
+    if (this.dynamicContext && this.isDynamicContextOwner) {
+      if (this.dynamicContext.isLoading) {
+        //let computedStyle = window.getComputedStyle(this.realization);
+
+        //console.log(computedStyle.getPropertyValue('position'));
+        //if (computedStyle.getPropertyValue('position') === "static") {
+        //console.log('this static');
+        this.realization.setAttribute('fix-placeholder', '');
+        //}
+
+        let placeholder = this.environment.getHTMLDocument().createElement('div');
+
+        placeholder.setAttribute('is-dynamic-context-placeholder', '');
+
+        placeholder.innerHTML = '<i class="fa fa-spin fa-sun-o"/>';
+
+        this.realization.appendChild(placeholder);
+      }
+    }
   }
 
   mappingNavigate() {
@@ -238,12 +267,35 @@ class TagBaseElementNode extends ElementNode {
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type'], _ignoreAttrFields || []);
+    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns'], _ignoreAttrFields || []);
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
 
-    this.setId(_domElement.getAttribute('en-id'));
+
+
+    if (_domElement.getAttribute('repeat-n') !== null)
+      this.setControl('repeat-n', _domElement.getAttribute('repeat-n'));
+
+    if (_domElement.getAttribute('name') !== null)
+      this.setName(_domElement.getAttribute('name'));
+
+    if (_domElement.getAttribute('en-dynamic-context') !== null)
+      this.isDynamicContext = _domElement.getAttribute('en-dynamic-context');
+
+    if (_domElement.getAttribute('en-dc-source-id') !== null)
+      this.dynamicContextSID = _domElement.getAttribute('en-dc-source-id');
+
+    if (_domElement.getAttribute('en-dc-request-id') !== null)
+      this.dynamicContextRID = _domElement.getAttribute('en-dc-request-id');
+
+    if (_domElement.getAttribute('en-dc-ns') !== null)
+      this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
+
+    if (this.isDynamicContext === 'true') {
+      this.buildDynamicContext();
+    }
   }
+
 
 
   copyAllAtrributeFromDOMElement(_domElement, _ignoreAttrFields) {
@@ -300,6 +352,21 @@ class TagBaseElementNode extends ElementNode {
       this.realization.style.textTransform = 'none';
     }
 
+
+    this.realization.setAttribute('en-id', this.getId())
+
+    if (this.getControl('repeat-n'))
+      this.realization.setAttribute('repeat-n', this.getControl('repeat-n'))
+    if (this.getName())
+      this.realization.setAttribute('name', this.getName())
+    if (this.isDynamicContext)
+      this.realization.setAttribute('en-dynamic-context', this.isDynamicContext);
+    if (this.dynamicContextSID)
+      this.realization.setAttribute('en-dc-source-id', this.dynamicContextSID);
+    if (this.dynamicContextRID)
+      this.realization.setAttribute('en-dc-source-id', this.dynamicContextRID);
+    if (this.dynamicContextNS)
+      this.realization.setAttribute('en-dc-request-id', this.dynamicContextNS);
 
   }
 

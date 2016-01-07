@@ -2,6 +2,8 @@
 import HTMLElementNode from './HTMLElementNode.js';
 import _ from 'underscore';
 import SALoader from '../StandAloneLib/Loader.js';
+import Factory from './Factory';
+import async from 'async';
 
 let RefferenceType = Object.freeze({
   ElementNode: 'ElementNode',
@@ -15,6 +17,7 @@ class RefElementNode extends HTMLElementNode {
     super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'ref';
 
+    this.refInstance = null;
   }
 
   get refType() {
@@ -33,20 +36,31 @@ class RefElementNode extends HTMLElementNode {
     this._refTargetId = _refTargetId;
   }
 
-  // realize(_realizeOptions) {
-  //   super.realize(_realizeOptions);
-  // }
+  realize(_realizeOptions, _complete) {
+    let that = this;
+    super.realize(_realizeOptions, function() {
+      // StandAlone 의 Environment 라면 sa 방식으로 로드한다.
+      console.log(that.environment);
+      if (that.environment.standAlone) {
+        that._sa_renderRefferenced(function() {
+          console.log('refererd lrenderd');
+          _complete();
+        });
+      } else {
+        _complete();
+      }
+    });
+  }
 
-  // linkHierarchyRealizaion() {
-  //   this.clearRealizationChildren();
-  //
-  //
-  // }
 
   buildByElement(_domElement) {
-    super.buildByElement(_domElement, ['refType', 'refTargetId']);
-    this.refType = _domElement.getAttribute('refType');
-    this.refTargetId = _domElement.getAttribute('refTargetId');
+    super.buildByElement(_domElement, ['ref-type', 'ref-target-id']);
+
+    if (_domElement.getAttribute('ref-type') !== null)
+      this.refType = _domElement.getAttribute('ref-type');
+
+    if (_domElement.getAttribute('ref-target-id') !== null)
+      this.refTargetId = _domElement.getAttribute('ref-target-id');
 
   }
 
@@ -69,14 +83,14 @@ class RefElementNode extends HTMLElementNode {
   }
 
   _sa_renderFragment(_complete) {
+    let that = this;
+    SALoader.loadFragment(this.refTargetId, function(_fragmentText) {
 
-    SALoader.loadFragment(this.refTargetId, (_fragmentText) => {
-
-      let fragment = new Fragment(this.refTargetId, _fragmentText, this.realization);
+      let fragment = new Fragment(that.refTargetId, _fragmentText, that.realization);
       fragment.render();
 
       fragment.renderRefElements(() => {
-        this.rendered = true;
+        that.rendered = true;
 
         _complete();
       });
@@ -84,10 +98,28 @@ class RefElementNode extends HTMLElementNode {
   }
 
   _sa_renderSharedElementNode(_complete) {
-    SALoader.loadSharedElementNode(this.refTargetId, (_sharedElementNodeText) => {
-      this.realization.innerHTML = _sharedElementNodeText;
-      this.rendered = true;
-      _complete();
+    let that = this;
+    SALoader.loadSharedElementNode(this.refTargetId, function(_sharedElementNodeText) {
+      that.realization.innerHTML = _sharedElementNodeText;
+      that.rendered = true;
+      let children = [];
+
+      for (let i = 0; i < that.realization.children.length; i++) {
+        let elementNode = Factory.takeElementNode(undefined, {}, 'html', that.environment, that.dynamicContext);
+        elementNode.buildByElement(that.realization.children[i]);
+        children.push(elementNode);
+      }
+
+      that.children = children;
+
+      async.eachSeries(that.children, function(_child, _next) {
+        _child.realize(undefined, function() {
+          _next();
+        })
+      }, function() {
+        _complete();
+      })
+
     });
   }
 

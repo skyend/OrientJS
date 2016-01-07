@@ -14,6 +14,8 @@ class Fragment {
     this.fragmentText = _fragmentText;
     this.fragmentSpec = this.getFragmentSpec(_fragmentText);
 
+    this.rootElementNodes = null;
+
     this.rendered = false;
 
     this.appendFragmentStyles();
@@ -38,7 +40,39 @@ class Fragment {
 
   render() {
     this.parentElement.innerHTML = this.fragmentText;
+
     this.rendered = true;
+  }
+
+  buildElementNode() {
+    this.rootElementNodes = [];
+
+    for (let i = 0; i < this.parentElement.children.length; i++) {
+      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', Gelato.one().page, undefined);
+      elementNode.buildByElement(this.parentElement.children[i]);
+      console.log(elementNode);
+
+      this.rootElementNodes.push(elementNode);
+    }
+  }
+
+  renderByRootElementNodes(_complete) {
+
+
+    async.eachSeries(this.rootElementNodes, (_rootElementNode, _next) => {
+      _rootElementNode.realize(undefined, () => {
+        _rootElementNode.linkHierarchyRealizaion();
+        _next();
+      })
+    }, () => {
+      this.parentElement.innerHTML = '';
+
+      this.rootElementNodes.map((_rootElementNode) => {
+
+        this.parentElement.appendChild(_rootElementNode.realization);
+      })
+      _complete();
+    })
   }
 
   findRefferenceElement() {
