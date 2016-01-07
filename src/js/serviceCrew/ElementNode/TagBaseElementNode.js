@@ -3,8 +3,8 @@ import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 
 class TagBaseElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.tagName;
     this.attributes;
     this.css;
@@ -236,13 +236,14 @@ class TagBaseElementNode extends ElementNode {
     this.applyAttributesToRealDOM();
   }
 
-  buildByElement(_domElement) {
-    this.copyAllAtrributeFromDOMElement(_domElement);
+  buildByElement(_domElement, _ignoreAttrFields) {
+    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type'], _ignoreAttrFields || []);
 
+    this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
   }
 
 
-  copyAllAtrributeFromDOMElement(_domElement) {
+  copyAllAtrributeFromDOMElement(_domElement, _ignoreAttrFields) {
     this.setTagName(_domElement.nodeName);
 
     // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
@@ -251,7 +252,9 @@ class TagBaseElementNode extends ElementNode {
     let attrValue;
     for (var i = 0; i < attributes.length; i++) {
       attrName = attributes[i].name;
-      if (/^__vid__$/.test(attrName)) continue;
+      if (_.findIndex(_ignoreAttrFields, (_name) => {
+          return attrName.toLowerCase() === _name.toLowerCase();
+        }) != -1) continue;
 
       this.setAttribute(attributes[i].name, attributes[i].nodeValue);
     }

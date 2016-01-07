@@ -3,8 +3,8 @@ import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 
 class StringElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'string';
     this.text;
 

@@ -1,6 +1,7 @@
 "use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import _ from 'underscore';
+import SALoader from '../StandAloneLib/Loader.js';
 
 let RefferenceType = Object.freeze({
   ElementNode: 'ElementNode',
@@ -10,8 +11,8 @@ let RefferenceType = Object.freeze({
 
 
 class RefElementNode extends HTMLElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'ref';
 
   }
@@ -42,6 +43,14 @@ class RefElementNode extends HTMLElementNode {
   //
   // }
 
+  buildByElement(_domElement) {
+    super.buildByElement(_domElement, ['refType', 'refTargetId']);
+    this.refType = _domElement.getAttribute('refType');
+    this.refTargetId = _domElement.getAttribute('refTargetId');
+
+    this.realization = _domElement;
+  }
+
   appendChild(_elementNode) {
     this.children = [];
     super.appendChild(_elementNode);
@@ -49,6 +58,38 @@ class RefElementNode extends HTMLElementNode {
     this.refTargetId = _elementNode.id;
 
     return true;
+  }
+
+  _sa_renderRefferenced(_complete) {
+
+    if (this.refType === 'ElementNode') {
+      this._sa_renderSharedElementNode(_complete);
+    } else if (this.refType === 'Fragment') {
+      this._sa_renderFragment(_complete);
+    }
+  }
+
+  _sa_renderFragment(_complete) {
+
+    SALoader.loadFragment(this.refTargetId, (_fragmentText) => {
+
+      let fragment = new Fragment(this.refTargetId, _fragmentText, this.realization);
+      fragment.render();
+
+      fragment.renderRefElements(() => {
+        this.rendered = true;
+
+        _complete();
+      });
+    });
+  }
+
+  _sa_renderSharedElementNode(_complete) {
+    SALoader.loadSharedElementNode(this.refTargetId, (_sharedElementNodeText) => {
+      this.realization.innerHTML = _sharedElementNodeText;
+      this.rendered = true;
+      _complete();
+    });
   }
 
   import (_elementNodeDataObject) {

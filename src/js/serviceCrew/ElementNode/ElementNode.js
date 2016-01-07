@@ -7,7 +7,7 @@ import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 
 class ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -52,6 +52,7 @@ class ElementNode {
 
     this.environment = _environment;
     this.mode = 'normal';
+    this.dynamicContext = _dynamicContext;
 
     //////////////////////////
     // 처리로직

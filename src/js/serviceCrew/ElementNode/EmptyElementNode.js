@@ -3,8 +3,8 @@ import TagBaseElementNode from './TagBaseElementNode.js';
 import _ from 'underscore';
 
 class EmptyElementNode extends TagBaseElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'empty';
 
     this.refferenceType; // react | document | ...

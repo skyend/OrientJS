@@ -3,8 +3,8 @@ import HTMLElementNode from './HTMLElementNode.js';
 import Document from '../Document.js';
 
 class GridElementNode extends HTMLElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'grid';
 
     this.screenSize = {

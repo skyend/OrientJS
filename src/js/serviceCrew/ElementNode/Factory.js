@@ -7,7 +7,7 @@ import RefElementNode from './RefElementNode.js';
 
 
 class Factory {
-  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _environment) {
+  static takeElementNode(_elementNodeDataObject, _preInsectProps, _type, _environment, _dynamicContext) {
     var elementNode;
     let elementNodeCLASS;
     let elementNodeDataObject = _elementNodeDataObject || {};
@@ -25,7 +25,7 @@ class Factory {
     }
 
 
-    elementNode = new elementNodeCLASS(_environment, elementNodeDataObject, _preInsectProps);
+    elementNode = new elementNodeCLASS(_environment, elementNodeDataObject, _preInsectProps, _dynamicContext);
 
     return elementNode;
   }

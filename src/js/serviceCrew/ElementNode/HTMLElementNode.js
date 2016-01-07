@@ -5,8 +5,8 @@ import _ from 'underscore';
 import React from 'react';
 
 class HTMLElementNode extends TagBaseElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    super(_environment, _elementNodeDataObject, _preInsectProps);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'html';
 
     // children
@@ -167,8 +167,9 @@ class HTMLElementNode extends TagBaseElementNode {
    * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
    * child는 재귀로 호출한다.
    */
-  buildByElement(_domElement) {
-    super.buildByElement(_domElement);
+  buildByElement(_domElement, _ignoreAttrFields) {
+    let ignoreAttrFields = _.union([], _ignoreAttrFields || []);
+    super.buildByElement(_domElement, ignoreAttrFields);
 
     // this.setType('html');
 
