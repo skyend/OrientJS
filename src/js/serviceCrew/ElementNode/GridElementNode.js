@@ -76,32 +76,38 @@ class GridElementNode extends HTMLElementNode {
     this._fragmentAnalysisResult = _fragmentAnalysisResult;
   }
 
-  realize(_realizeOptions) {
-    let self = this;
-    super.realize(_realizeOptions);
+  realize(_realizeOptions, _complete) {
+    let that = this;
+    super.realize(_realizeOptions, function() {
 
-    console.log(this.realization, this.environment, this.environment.screenMode);
-    let containerSize = this.calcContainerSize(this.environment.screenMode);
-    //this.realization.style.width = containerSize.width;
-    //this.realization.style.height = containerSize.height;
-    if (this.behavior === 'row') {
+      console.log(that.realization, that.environment, that.environment.screenMode);
+      let containerSize = that.calcContainerSize(that.environment.screenMode);
+      //this.realization.style.width = containerSize.width;
+      //this.realization.style.height = containerSize.height;
+      if (that.behavior === 'row') {
 
-    } else if (this.behavior === 'column') {
-      this.realization.style.float = 'left';
+      } else if (that.behavior === 'column') {
+        that.realization.style.float = 'left';
 
-    }
+      }
 
-    //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
-    this.realization.setAttribute("behavior", this.behavior);
+      //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
+      that.realization.setAttribute("behavior", that.behavior);
 
-    if (this.followingFragment !== null) {
-      this.realization.setAttribute('fragment-id', this.followingFragment);
+      if (that.followingFragment !== null) {
+        that.realization.setAttribute('fragment-id', that.followingFragment);
 
-      this.environment.getFragment(this.followingFragment, function(_fragmentContextController) {
-        self.setFragmentCC(_fragmentContextController);
-        self.fragmentRender(_realizeOptions);
-      });
-    }
+        that.environment.getFragment(that.followingFragment, function(_fragmentContextController) {
+          that.setFragmentCC(_fragmentContextController);
+          that.fragmentRender(_realizeOptions, function() {
+
+            _complete()
+          });
+        });
+      } else {
+        _complete();
+      }
+    });
   }
 
   linkHierarchyRealizaion() {
@@ -123,13 +129,15 @@ class GridElementNode extends HTMLElementNode {
     console.log(this.fragmentContextController);
   }
 
-  fragmentRender(_realizeOptions) {
+  fragmentRender(_realizeOptions, _complete) {
     this.realization.innerHTML = '';
     this.realization.setAttribute('fragment-name', this.fragmentContextController.subject.documentName);
 
     this.fragmentContextController.attach(this.environment.fragmentContext);
     this.fragmentContextController.setSuperElement(this.realization);
-    this.fragmentContextController.beginRender(_realizeOptions);
+    this.fragmentContextController.beginRender(_realizeOptions, function() {
+      _complete();
+    });
   }
 
   resetTemporaryDecrementRectSize() {

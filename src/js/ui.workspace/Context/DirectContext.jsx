@@ -654,7 +654,9 @@ var DirectContext = React.createClass({
 
     this.props.contextController.setSuperElement(this.getDocument().body);
 
-    this.props.contextController.beginRender();
+    this.props.contextController.beginRender(undefined, function(){
+
+    });
   },
 
   renderRefresh(){

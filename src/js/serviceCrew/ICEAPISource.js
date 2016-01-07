@@ -177,43 +177,42 @@ export default class ICEAPISource {
   }
 
   executeRequest(_requestId, _fields, _heads, _complete) {
-    _fields.t = 'api';
+    let fields = _fields || [];
+    fields.t = 'api';
     let req = this.findRequest(_requestId);
-    console.log(_requestId, req);
+    let url;
 
     if (req.crud === '**') {
-      if (req.method === 'get') {
-        SuperAgent.get(req.customURL)
-          .query(_fields)
-          .end(function(err, res) {
-            console.log(err, res);
-            if (res === null) {
-              _complete(null);
-            } else {
-              _complete(res.body);
-            }
-
-          });
-      } else if (req.method === 'post') {
-        SuperAgent.post(req.customURL)
-          .type('form')
-          .send(_fields)
-          .end(function(err, res) {
-            console.log(err, res);
-            if (res === null) {
-              _complete(null);
-            } else {
-              _complete(res.body);
-            }
-          });
-      } else {
-        alert("Custom URL 요청에서는 아직 지원하지 않는 HTTP Method 입니다.");
-      }
+      url = req.customURL;
     } else {
-      this.serviceManager.iceDriver.requestNodeType(req.method, this.nt_tid, req.crudType, _heads, _fields, function(_result) {
 
-        _complete(_result);
-      });
+      url = 'http://' + this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
+    }
+
+    if (req.method === 'get') {
+      SuperAgent.get(url)
+        .query(fields)
+        .end(function(err, res) {
+          console.log(err, res);
+          if (res === null) {
+            _complete(null);
+          } else {
+            _complete(res.body);
+          }
+
+        });
+    } else if (req.method === 'post') {
+      SuperAgent.post(url)
+        .type('form')
+        .send(fields)
+        .end(function(err, res) {
+          console.log(err, res);
+          if (res === null) {
+            _complete(null);
+          } else {
+            _complete(res.body);
+          }
+        });
     }
 
 

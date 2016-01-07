@@ -5,9 +5,14 @@ import _ from 'underscore';
 import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
+import DynamicContext from './DynamicContext';
+import async from 'async';
+
+import Events from 'events';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+    Object.assign(this, Events.EventEmitter.prototype);
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -66,6 +71,38 @@ class ElementNode {
       this.controls = {};
       this.comment = '';
     }
+  }
+
+  get isDynamicContext() {
+    return this._isDynamicContext;
+  }
+
+  get dynamicContextSID() {
+    return this._dynamicContextSID;
+  }
+
+  get dynamicContextRID() {
+    return this._dynamicContextRID
+  }
+
+  get dynamicContextNS() {
+    return this._dynamicContextNS
+  }
+
+  set isDynamicContext(_isDynamicContext) {
+    this._isDynamicContext = _isDynamicContext;
+  }
+
+  set dynamicContextSID(_dynamicContextSID) {
+    this._dynamicContextSID = _dynamicContextSID;
+  }
+
+  set dynamicContextRID(_dynamicContextRID) {
+    this._dynamicContextRID = _dynamicContextRID;
+  }
+
+  set dynamicContextNS(_dynamicContextNS) {
+    this._dynamicContextNS = _dynamicContextNS;
   }
 
   ////////////////////
@@ -192,11 +229,15 @@ class ElementNode {
   setRealization(_realization) {
     this.realization = _realization;
     this.realization.___en = this;
-    this.realization.setAttribute('___id___', this.id);
+    if (_domElement.getAttribute('en-id') !== null)
+      this.setId(_domElement.getAttribute('en-id'));
     this.realization.setAttribute('en-type', this.type);
   }
 
-  realize(_realizeOptions) {
+  realize(_realizeOptions, _complete) {
+    if (this.isDynamicContext === 'true') {
+      this.buildDynamicContext();
+    }
 
     // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
     this.clonePool = [];
@@ -207,19 +248,40 @@ class ElementNode {
     let isGhostizePoint = realizeOptions.ghostOrder !== undefined;
     // let ghostOrder = realizeOptions.ghostOrder;
 
-    this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint);
+    this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint, function() {
+      _complete();
+    });
 
     //console.log('Realize options', this, _realizeOptions);
+  }
+
+  buildDynamicContext() {
+    let that = this;
+    this.isDynamicContextOwner = true;
+
+    this.dynamicContext = new DynamicContext(this.environment, this.dynamicContext, {
+      sourceID: this.dynamicContextSID,
+      requestID: this.dynamicContextRID,
+      namespace: this.dynamicContextNS
+    });
+    this.dynamicContext.ready(function() {
+      that.dynamicContext.start(function() {
+        if (that.type !== 'string') this.realize(undefined, function() {});
+
+      })
+    });
+
   }
 
 
 
   getBoundingRect() {
 
-    var boundingRect;
+    var boundingRect = null;
     var realElement = this.getRealization();
 
-    boundingRect = realElement.getBoundingClientRect();
+    if (realElement !== null)
+      boundingRect = realElement.getBoundingClientRect();
 
     return boundingRect;
   }
@@ -234,10 +296,10 @@ class ElementNode {
     return this.getParent() !== null;
   }
 
-  modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint) {
-    if (_skipControl) return;
+  modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint, _complete) {
+    if (_skipControl) return _complete();
     let repeatOption;
-
+    let that = this;
     // rendering 사이클에 개입되는 control 처리
     // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
     if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !_isGhostizePoint) {
@@ -245,30 +307,36 @@ class ElementNode {
       this.isRepeated = true;
       this.repeatOrder = 0;
 
-      for (let i = 0; i < repeatOption - 1; i++) {
-
+      async.eachSeries(_.range(repeatOption - 1), function iterator(_i, _next) {
         // clone ElementNode 생성
-        let cloned = Factory.takeElementNode(this.export(), {
+        let cloned = Factory.takeElementNode(that.export(), {
           isGhost: true,
-          repeatOrder: i + 1,
+          repeatOrder: _i + 1,
           isRepeated: true
-        }, this.getType(), this.environment);
+        }, that.getType(), that.environment, that.dynamicContext);
 
-        cloned.setParent(this.getParent());
+        cloned.setParent(that.getParent());
 
         // clone ElementNode realize
         cloned.realize({
-          ghostOrder: i + 1,
+          ghostOrder: _i + 1,
           skipControl: _skipControl,
           skipResolve: _skipResolve
-        });
+        }, function() {
 
-        this.clonePool.push(cloned);
-      }
+          that.clonePool.push(cloned);
+          _next();
+        });
+      }, function done() {
+        _complete();
+      });
+
     } else {
       if (this.clonePool.length > 0) {
         this.clonePool = [];
+
       }
+      _complete();
     }
   }
 
@@ -519,16 +587,16 @@ class ElementNode {
     return parentList;
   }
 
-  executeSnapshot(_type) {
-    //var presentRevision = this.export();
-    //  console.log(presentRevision);
-    this.emitToParent("Snapshot", {
-      present: this.export(),
-      past: this.pastRevision,
-      type: _type || 'diff'
-    });
+  climbParents(_climber) {
+    let current = this;
 
-    this.pastRevision = this.export();
+    while (current.parent !== null) {
+      if (_climber(current.parent) === null) {
+        break;
+      }
+
+      current = current.parent;
+    }
   }
 
 
@@ -542,16 +610,24 @@ class ElementNode {
       return self.pretreatment(_firstMatch);
     });
 
-
-    // resolve String : data binding and i18n processing
+    return _seedText;
 
     // environment 가 있을 때 environment의 interpret를 진행
-    if (this.environment !== undefined) {
+    // if (this.dynamicContext !== undefined) {
+    //
+    //   return this.dynamicContext.interpret(preResolvedText);
+    // } else {
+    //   return preResolvedText;
+    // }
 
-      return this.dynamicContext.interpret(preResolvedText);
-    } else {
-      return preResolvedText;
-    }
+    // resolve String : data binding and i18n processing
+    // if (this.environment !== undefined) {
+    //
+    //   return this.environment.interpret(preResolvedText);
+    // } else {
+    //   return preResolvedText;
+    // }
+
   }
 
   // 전처리
@@ -565,9 +641,20 @@ class ElementNode {
         if (_namespace === 'attr') {
           var attributeValue = self.getAttribute(_want);
 
-          return attributeValue !== undefined ? self.interpret(attributeValue) : self.emitToParent("GetResolvedAttribute", {
-            attr: _want
-          });
+          if (attributeValue !== undefined) {
+            return self.interpret(attributeValue);
+          } else {
+            let parentAttribute;
+            self.climbParents(function(_parent) {
+              var value = this.getAttribute(_eventData.attr);
+              if (value !== undefined) {
+                parentAttribute = this.interpret(value);
+                return null;
+              }
+            });
+
+            return parentAttribute;
+          }
         }
       });
     }
@@ -579,7 +666,16 @@ class ElementNode {
           return this.repeatOrder;
         } else {
           // 자신의 부모로부터 반복 순번을 얻음
-          return this.emitToParent("GetRepeatN");
+          let repeatN;
+
+          this.climbParents(function(_parent) {
+            if (_parent.isRepeated) {
+              repeatN = _parent.repeatOrder;
+              return null;
+            }
+          });
+
+          return repeatN;
         }
         break;
     }
@@ -691,62 +787,62 @@ class ElementNode {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // 동기 이벤트 핸들링
   // Base Method
-  onEventTernel(_eventName, _eventData, __ORIGIN__) {
-    var eventName = _eventName;
-    var eventData = _eventData;
-    //var origin = _eventData.origin;
-
-    var eventCatcherKey = "onEC_" + eventName;
-
-
-    var result = this[eventCatcherKey](eventData, __ORIGIN__);
-
-    if (result === false) {
-
-      // 결과 타입이 boolean이고 값이 false 일 때 부모로 이벤트를 넘겨준다.
-      return this.emitToParent(eventName, eventData, __ORIGIN__);
-    } else {
-      // false 가 아니라면 이벤트 처리 결과를 반환한다.
-      return result;
-    }
-  }
-
-  // Base Method
-  emitToParent(_eventName, _eventData, __ORIGIN__) {
-    if (this.parent === null) {
-
-      // 이벤트를 듣는 부모가 없다면 이벤트를 environment로 전송한다.
-      return this.environment.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
-    }
-
-    return this.parent.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
-
-
-    // return this.parent.onEventTernel(_eventName, {
-    //   eventName: _eventName,
-    //   eventData: _eventData,
-    //   origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
-    // });
-  }
-
-  onEC_GetRepeatN(_eventData, _origin) {
-    if (this.isRepeated) {
-      return this.repeatOrder;
-    } else {
-      return false;
-    }
-  }
-
-
-  onEC_GetResolvedAttribute(_eventData, _origin) {
-
-    var value = this.getAttribute(_eventData.attr);
-    if (value !== undefined) {
-      return this.interpret(value);
-    }
-
-    return false;
-  }
+  // onEventTernel(_eventName, _eventData, __ORIGIN__) {
+  //   var eventName = _eventName;
+  //   var eventData = _eventData;
+  //   //var origin = _eventData.origin;
+  //
+  //   var eventCatcherKey = "onEC_" + eventName;
+  //
+  //
+  //   var result = this[eventCatcherKey](eventData, __ORIGIN__);
+  //
+  //   if (result === false) {
+  //
+  //     // 결과 타입이 boolean이고 값이 false 일 때 부모로 이벤트를 넘겨준다.
+  //     return this.emitToParent(eventName, eventData, __ORIGIN__);
+  //   } else {
+  //     // false 가 아니라면 이벤트 처리 결과를 반환한다.
+  //     return result;
+  //   }
+  // }
+  //
+  // // Base Method
+  // emitToParent(_eventName, _eventData, __ORIGIN__) {
+  //   if (this.parent === null) {
+  //
+  //     // 이벤트를 듣는 부모가 없다면 이벤트를 environment로 전송한다.
+  //     return this.environment.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
+  //   }
+  //
+  //   return this.parent.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
+  //
+  //
+  //   // return this.parent.onEventTernel(_eventName, {
+  //   //   eventName: _eventName,
+  //   //   eventData: _eventData,
+  //   //   origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
+  //   // });
+  // }
+  //
+  // onEC_GetRepeatN(_eventData, _origin) {
+  //   if (this.isRepeated) {
+  //     return this.repeatOrder;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+  //
+  //
+  // onEC_GetResolvedAttribute(_eventData, _origin) {
+  //
+  //   var value = this.getAttribute(_eventData.attr);
+  //   if (value !== undefined) {
+  //     return this.interpret(value);
+  //   }
+  //
+  //   return false;
+  // }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -758,6 +854,11 @@ class ElementNode {
     this.id = _elementNodeDataObject.id || Identifier.genUUID();
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
+
+    this.isDynamicContext = _elementNodeDataObject.isDynamicContext;
+    this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
+    this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
+    this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
 
     this.componentName = _elementNodeDataObject.componentName;
 
@@ -783,7 +884,10 @@ class ElementNode {
       createDate: (new Date(this.createDate)).toString(),
       updateDate: (new Date(this.updateDate)).toString(),
     }
-
+    exportObject.isDynamicContext = this.isDynamicContext;
+    exportObject.dynamicContextSID = this.dynamicContextSID;
+    exportObject.dynamicContextRID = this.dynamicContextRID;
+    exportObject.dynamicContextNS = this.dynamicContextNS;
     return exportObject;
   }
 

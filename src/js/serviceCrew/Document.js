@@ -576,22 +576,22 @@ class Document {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // 동기 이벤트 핸들링
   // Base Method
-  onEventTernel(_eventName, _eventData, __ORIGIN__) {
-    var eventName = _eventName;
-    var eventData = _eventData;
-
-    var eventCatcherKey = "onElementEvent_" + eventName;
-
-    if (typeof this[eventCatcherKey] !== 'function') {
-      console.warn("Document 는 " + eventName + " ElementNode 이벤트를 처리 할 수 없습니다. \n처리자(" + eventCatcherKey + ")가 존재하지 않음.");
-      return;
-    }
-
-    // 처리 시작
-    var result = this[eventCatcherKey](eventData, __ORIGIN__);
-
-    return result;
-  }
+  // onEventTernel(_eventName, _eventData, __ORIGIN__) {
+  //   var eventName = _eventName;
+  //   var eventData = _eventData;
+  //
+  //   var eventCatcherKey = "onElementEvent_" + eventName;
+  //
+  //   if (typeof this[eventCatcherKey] !== 'function') {
+  //     console.warn("Document 는 " + eventName + " ElementNode 이벤트를 처리 할 수 없습니다. \n처리자(" + eventCatcherKey + ")가 존재하지 않음.");
+  //     return;
+  //   }
+  //
+  //   // 처리 시작
+  //   var result = this[eventCatcherKey](eventData, __ORIGIN__);
+  //
+  //   return result;
+  // }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

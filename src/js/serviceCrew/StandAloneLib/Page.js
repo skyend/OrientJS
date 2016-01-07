@@ -22,6 +22,9 @@ class Page {
 
     let rootGridElement = this.findRootGrid();
     this.rootGridElement = rootGridElement;
+
+
+    this.standAlone = true;
   }
 
   getHTMLDocument() {
@@ -34,6 +37,10 @@ class Page {
 
   getPageSpec() {
     return JSON.parse(this.doc.getElementById('page-meta').innerHTML);
+  }
+
+  setConfig(_config) {
+    this.iceHost = _config['ice-host'];
   }
 
   appendPageStyles() {
@@ -127,58 +134,69 @@ class Page {
 
   // 프래그먼트를 참조하는 요소를 프래그먼트로 채운다.
   static fillElementThatReferToTheFragmentByFragment(_element, _complete) {
-    let fragmentName = _element.getAttribute('fragment-name');
+      let fragmentName = _element.getAttribute('fragment-name');
 
-    Loader.loadFragment(fragmentName, function(_fragmentText) {
-      let fragment = new Fragment(fragmentName, _fragmentText, _element);
+      Loader.loadFragment(fragmentName, function(_fragmentText) {
+        let fragment = new Fragment(fragmentName, _fragmentText, _element);
 
-      fragment.render();
+        fragment.render();
 
-      _complete(fragment);
-    });
-  }
+        fragment.buildElementNode();
 
-  renderRefElementsOfFragments(_complete) {
+        fragment.renderByRootElementNodes(function() {
 
-    async.eachSeries(this.runningFragments, (_fragment, _next) => {
-      _fragment.renderRefElements((_result) => {
-        _next();
-      });
-    }, (_err) => {
-      _complete();
-    })
-  }
-
-  runAllDynamicContext(_complete) {
-
-    let asyncTasks = this.selectAllDynamicContexts().map((_dynamicContext) => {
-      return (_cb) => {
-        _dynamicContext.processing(() => {
-          _cb();
+          _complete(fragment);
         });
-      }
-    });
+      });
+    }
+    //
+    // renderRefElementsOfFragments(_complete) {
+    //
+    //   async.eachSeries(this.runningFragments, (_fragment, _next) => {
+    //     _fragment.renderRefElements((_result) => {
+    //       _next();
+    //     });
+    //   }, (_err) => {
+    //     _complete();
+    //   })
+    // }
+    //
+    // runAllDynamicContext(_complete) {
+    //
+    //   let asyncTasks = this.selectAllDynamicContexts().map((_dynamicContext) => {
+    //     return (_cb) => {
+    //       _dynamicContext.processing(() => {
+    //         _cb();
+    //       });
+    //     }
+    //   });
+    //
+    //   async.parallel(asyncTasks, () => {
+    //     _complete();
+    //   });
+    // }
+    //
+    // selectAllDynamicContexts() {
+    //   let dynamicContexts = [];
+    //
+    //   Gelato.one().GD.exploreBody((_element) => {
+    //     if (_element.getAttribute('dynamic-context') === 'true') {
+    //       dynamicContexts.push(this.createDynamicContext(_element));
+    //       return null;
+    //     }
+    //   });
+    //
+    //   return dynamicContexts;
+    // }
+    //
+    // createDynamicContext(_element) {
+    //   return new DynamicContext(_element, this);
+    // }
 
-    async.parallel(asyncTasks, () => {
-      _complete();
-    });
-  }
+  findRunningDynamicContext() {
+    this.runningFragments.map(function(_fragment) {
 
-  selectAllDynamicContexts() {
-    let dynamicContexts = [];
-
-    Gelato.one().GD.exploreBody((_element) => {
-      if (_element.getAttribute('dynamic-context') === 'true') {
-        dynamicContexts.push(this.createDynamicContext(_element));
-        return null;
-      }
-    });
-
-    return dynamicContexts;
-  }
-
-  createDynamicContext(_element) {
-    return new DynamicContext(_element, this);
+    })
   }
 }
 

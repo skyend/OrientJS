@@ -1,7 +1,7 @@
 import async from 'async';
 import request from 'superagent';
 import Sizzle from 'Sizzle';
-
+import Loader from './Loader';
 import Page from './Page';
 import GelatoDocument from './GelatoDocument';
 import Cookie from './Cookie';
@@ -35,7 +35,12 @@ class Gelato {
   startup() {
 
     async.waterfall([
-      (_cb) => { // fragment attach
+      (_cb) => {
+        Loader.loadConfig((_result) => {
+          this.page.setConfig(_result);
+          _cb();
+        })
+      }, (_cb) => { // fragment attach
         let fragmentFollowingGrids = this.page.analysisFragmentFollowing();
 
         // gridElement 에 Fragment 를 채운다.
@@ -43,15 +48,11 @@ class Gelato {
           console.log("Attached All Fragments");
           _cb();
         });
-      }, (_cb) => { // ref element filling
-        this.page.renderRefElementsOfFragments(() => {
-          _cb();
-        });
       }, (_cb) => {
-        // 바인딩
-        this.page.runAllDynamicContext(() => {
-          _cb()
-        });
+        // 다이나믹 컨텍스트 찾기.
+        this.page.findRunningDynamicContext();
+        _cb();
+
       }, (_cb) => {
         this.page.appendPageScripts(() => {
 

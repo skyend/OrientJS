@@ -109,11 +109,14 @@ class Viewer {
       self.page.setHTMLDocument(self.window.document);
       self.page.rootGridElement.realize({
         clickBlock: _blockClick || false
+      }, function() {
+        console.log(self.page.rootGridElement);
+        self.page.rootGridElement.linkHierarchyRealizaion();
+        self.window.document.body.style.margin = 0;
+        console.log(self.page.rootGridElement.realization);
+        self.window.document.body.appendChild(self.page.rootGridElement.realization);
       });
-      self.page.rootGridElement.linkHierarchyRealizaion();
-      self.window.document.body.style.margin = 0;
-      console.log(self.page.rootGridElement.realization);
-      self.window.document.body.appendChild(self.page.rootGridElement.realization);
+
 
       // if (_blockClick) {
       //   console.log("Block Click");

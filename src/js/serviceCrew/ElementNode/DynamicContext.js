@@ -1,16 +1,27 @@
 import Factory from './Factory';
 import Sizzle from 'sizzle';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
+import SALoader from '../StandAloneLib/Loader';
+import async from 'async';
+import Events from 'events';
+import ICEAPISource from '../ICEAPISource';
+import _ from 'underscore';
 
 class DynamicContext {
-  constructor(_element, _page, _parentDynamicContext) {
-    this.element = _element;
-    this.page = _page;
-    this.parentDynamicContext = _parentDynamicContext || null;
-    this.elementNode = Factory.takeElementNode(undefined, undefined, 'html', _page, this);
-    this.elementNode.buildByElement(_element);
+  constructor(_environment, _parentDynamicContext, _data) {
+    Object.assign(this, Events.EventEmitter.prototype);
 
+    this.environment = _environment;
+
+    this.parentDynamicContext = _parentDynamicContext || null;
     this.params = {};
+
+    this.sourceIDs = _data.sourceID;
+    this.requestIDs = _data.requestID;
+    this.namespaces = _data.namespace;
+
+    this.apisources = [];
+    this.isLoading = false;
   }
 
   get parentDynamicContext() {
@@ -25,29 +36,54 @@ class DynamicContext {
     return this.params[_ns];
   }
 
-  processing(_complete) {
-    this.feedbackLoadState();
+  ready(_complete) {
+    let that = this;
 
-    this.elementNode.realize();
+    this.isLoading = true;
+    let sourceIdList = this.sourceIDs.split(',');
+    async.eachSeries(sourceIdList, function(_id, _next) {
+      SALoader.loadAPISource(_id, function(_apiSource) {
+        let apiSource = new ICEAPISource(_apiSource);
+        apiSource.host = that.environment.iceHost;
 
-    this.endFeedBack();
-    _complete();
+        that.apisources.push(apiSource);
+        _next();
+      })
+
+    }, function done() {
+      _complete();
+    });
+  }
+
+  start(_complete) {
+    let that = this;
+    let sourceIdList = this.sourceIDs.split(',');
+    let requestIdList = this.requestIDs.split(',');
+    let namespaceList = this.namespaces.split(',');
+
+    async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
+      let apiSourceOrder = _.findIndex(sourceIdList, function(_id) {
+        return _apiSource.nt_tid == _id;
+      });
+
+      console.log(_apiSource, apiSourceOrder, sourceIdList);
+      // 없으므로 next
+      if (apiSourceOrder == -1) _next()
+      else {
+        _apiSource.executeRequest(requestIdList[apiSourceOrder], undefined, undefined, function(_result) {
+          console.log('result ', _result);
+          that.params[namespaceList[apiSourceOrder]] = _result;
+          that.isLoading = false;
+          _next();
+        });
+      }
+    }, function done() {
+      _complete();
+    })
   }
 
   feedbackLoadState() {
-    let computedStyle = window.getComputedStyle(this.element);
 
-    if (computedStyle.position === 'static') {
-      this.element.setAttribute('fix-placeholder', '');
-    }
-
-    let placeholder = this.page.doc.createElement('div');
-
-    placeholder.setAttribute('is-dynamic-context-placeholder', '');
-
-    placeholder.innerHTML = '<i class="fa fa-spin fa-sun-o"/>';
-
-    this.element.appendChild(placeholder);
   }
 
   endFeedBack() {

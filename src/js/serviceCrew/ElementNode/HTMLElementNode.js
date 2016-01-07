@@ -3,6 +3,7 @@ import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
 import _ from 'underscore';
 import React from 'react';
+import async from 'async';
 
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -13,19 +14,30 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children;
   }
 
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-    let realizeOptions = _realizeOptions || {};
+  realize(_realizeOptions, _complete) {
+    let that = this;
 
-    //this.realization.setAttribute('async', 'true');
+    super.realize(_realizeOptions, function() {
 
-    this.childrenRealize(realizeOptions);
+      let realizeOptions = _realizeOptions || {};
+
+      //this.realization.setAttribute('async', 'true');
+
+      that.childrenRealize(realizeOptions, function() {
+        _complete();
+      });
+    });
   }
 
-  childrenRealize(_realizeOptions) {
+  childrenRealize(_realizeOptions, _complete) {
 
-    this.children.map(function(_child) {
-      _child.realize(_realizeOptions);
+    async.eachSeries(this.children, function iterator(_child, _next) {
+      _child.realize(_realizeOptions, function() {
+        _next();
+      });
+    }, function done() {
+
+      _complete()
     });
   }
 
@@ -48,6 +60,8 @@ class HTMLElementNode extends TagBaseElementNode {
         });
       }
     });
+
+    super.linkHierarchyRealizaion();
   }
 
   hookingLink() {
@@ -201,7 +215,8 @@ class HTMLElementNode extends TagBaseElementNode {
 
         newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment, this.dynamicContext);
       } else {
-        newChildElementNode = Factory.takeElementNode(undefined, {}, 'html', this.environment, this.dynamicContext);
+
+        newChildElementNode = Factory.takeElementNode(undefined, {}, child_.getAttribute('en-type') || 'html', this.environment, this.dynamicContext);
       }
 
       newChildElementNode.buildByElement(child_);
@@ -271,6 +286,9 @@ class HTMLElementNode extends TagBaseElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
+    if (this.isDynamicContext === 'true') {
+      this.buildDynamicContext();
+    }
     this.children = this.inspireChildren(_elementNodeDataObject.children || []);
   }
 

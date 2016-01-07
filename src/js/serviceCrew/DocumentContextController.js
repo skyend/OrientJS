@@ -191,9 +191,10 @@ class DocumentContextController extends HasElementNodeContextController {
 
 
     if (parentElementNode !== null) {
-      targetElementNode.realize();
-      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkHierarchyRealizaion();
+      targetElementNode.realize(function() {
+        // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+        parentElementNode.linkHierarchyRealizaion();
+      });
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
       this.context.renderRefresh();
@@ -221,9 +222,10 @@ class DocumentContextController extends HasElementNodeContextController {
     targetElementNode.setReactComponentProp(_propKey, _propValue);
 
     if (parentElementNode !== null) {
-      targetElementNode.realize();
-      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkHierarchyRealizaion();
+      targetElementNode.realize(function() {
+        // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+        parentElementNode.linkHierarchyRealizaion();
+      });
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
       this.context.renderRefresh();
@@ -267,9 +269,10 @@ class DocumentContextController extends HasElementNodeContextController {
       targetElementNode.mappingAttributes();
     } else {
       if (parentElementNode !== null) {
-        targetElementNode.realize();
-        // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-        parentElementNode.linkHierarchyRealizaion();
+        targetElementNode.realize(function() {
+          // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+          parentElementNode.linkHierarchyRealizaion();
+        });
       } else {
         // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
         this.context.renderRefresh();
@@ -327,11 +330,11 @@ class DocumentContextController extends HasElementNodeContextController {
     if (parentElementNode !== null) {
 
       parentElementNode.children.map((_childElementNode) => {
-        _childElementNode.realize();
+        _childElementNode.realize(function() {
+          // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
+          parentElementNode.linkHierarchyRealizaion();
+        });
       });
-
-      // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkHierarchyRealizaion();
 
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
@@ -414,12 +417,12 @@ class DocumentContextController extends HasElementNodeContextController {
     if (parentElementNode !== null) {
 
       parentElementNode.children.map((_childElementNode) => {
-        _childElementNode.realize();
+        _childElementNode.realize(function() {
+          parentElementNode.linkHierarchyRealizaion();
+        });
       });
 
       // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
-      parentElementNode.linkHierarchyRealizaion();
-
     } else {
       // 상위노드가 없다면 rootElementNode 또는 ElementNodeList에 존재하는 노드일수도 있다.
       this.context.renderRefresh();
@@ -429,10 +432,13 @@ class DocumentContextController extends HasElementNodeContextController {
   }
 
   leaveTextEditMode(_elementNode) {
+    let that = this;
     this.editMode = false;
     _elementNode.changeNormalMode();
-    this.rerenderingElementNode(_elementNode);
-    this.changedContent();
+    this.rerenderingElementNode(_elementNode, undefined, function() {
+      that.changedContent();
+    });
+
   }
 
   enterTextEditMode(_elementNode /*, _changeNotice*/ ) {
@@ -442,9 +448,12 @@ class DocumentContextController extends HasElementNodeContextController {
             _changeNotice(_text);
           }*/
     );
+
     this.rerenderingElementNode(_elementNode, {
       skipControl: true,
       skipResolve: true
+    }, function() {
+
     });
   }
 
@@ -482,7 +491,7 @@ class DocumentContextController extends HasElementNodeContextController {
    * context 의 iframeStage에 현재 Document의 내용을 랜더링한다.
    *
    */
-  beginRender(_realizeOptions) {
+  beginRender(_realizeOptions, _complete) {
     var self = this;
 
     this.convertToStyleElements(this.subject.refStyleIdList || [], function(_styleElements) {
@@ -497,7 +506,11 @@ class DocumentContextController extends HasElementNodeContextController {
 
     // rootElementNode 가 null이 아닌경우 랜더링을 수행한다.
     if (this.subject.rootElementNode !== null) {
-      this.rootRender(_realizeOptions);
+      this.rootRender(_realizeOptions, function() {
+        _complete();
+      });
+    } else {
+      _complete();
     }
 
     // resource convert
@@ -525,7 +538,14 @@ class DocumentContextController extends HasElementNodeContextController {
     //console.log(this.subject.rootElementNode);
   }
 
-  rerenderingElementNode(_elementNode, _realizeOptions) {
+  rootRender(_realizeOptions, _complete) {
+    this.rerenderingElementNode(this.subject.rootElementNode, _realizeOptions, function() {
+      _complete();
+    });
+  }
+
+  rerenderingElementNode(_elementNode, _realizeOptions, _complete) {
+    let that = this;
     let realizeOptions = _realizeOptions || {};
     console.log('rerenderingElementNode !!');
     if (_elementNode === null) {
@@ -535,39 +555,43 @@ class DocumentContextController extends HasElementNodeContextController {
 
     let parentElementNode = _elementNode.getParent();
 
-    _elementNode.realize(realizeOptions);
+    _elementNode.realize(realizeOptions, function() {
+      _complete();
 
-    if (parentElementNode !== null) {
+      if (parentElementNode !== null) {
 
-      parentElementNode.linkHierarchyRealizaion();
+        parentElementNode.linkHierarchyRealizaion();
 
-    } else {
-      this.clearSuperElement();
-      _elementNode.linkHierarchyRealizaion();
+      } else {
+        that.clearSuperElement();
+        _elementNode.linkHierarchyRealizaion();
 
-      console.log('슈퍼 엘리멑느', this.superElement);
-      this.superElement.appendChild(_elementNode.realization);
-    }
+        console.log('슈퍼 엘리멑느', that.superElement);
+        that.superElement.appendChild(_elementNode.realization);
+      }
 
-    if (realizeOptions.clickBlock) {
-      let elements = this.superElement.querySelectorAll('*');
-      let elementNavigateAttr;
+      if (realizeOptions.clickBlock) {
+        let elements = that.superElement.querySelectorAll('*');
+        let elementNavigateAttr;
 
-      for (let i = 0; i < elements.length; i++) {
-        elementNavigateAttr = elements[i].getAttribute("data-navigate");
+        for (let i = 0; i < elements.length; i++) {
+          elementNavigateAttr = elements[i].getAttribute("data-navigate");
 
-        if (elementNavigateAttr === undefined || elementNavigateAttr === null) {
-          elements[i].onclick = function(_e) {
-            _e.preventDefault();
-          };
+          if (elementNavigateAttr === undefined || elementNavigateAttr === null) {
+            elements[i].onclick = function(_e) {
+              _e.preventDefault();
+            };
+          }
         }
       }
-    }
+
+
+    });
+
+
   }
 
-  rootRender(_realizeOptions) {
-    this.rerenderingElementNode(this.subject.rootElementNode, _realizeOptions);
-  }
+
 
   applyComponentCSS(_cssIdentifier, _cssText) {
     this.componentCSSHolders[_cssIdentifier] = _cssText;

@@ -50,22 +50,27 @@ class StringElementNode extends ElementNode {
     this.setRealization(htmlDoc.createElement('span'));
   }
 
-  realize(_realizeOptions) {
-    super.realize(_realizeOptions);
-    this.createRealizationNode();
+  realize(_realizeOptions, _complete) {
+    let that = this;
 
-    let realizeOptions = _realizeOptions || {};
+    super.realize(_realizeOptions, function() {
+      that.createRealizationNode();
 
-    if (realizeOptions.skipResolve === true) {
-      this.realization.innerHTML = this.getText();
-    } else {
-      this.realization.innerHTML = this.interpret(this.getText());
-    }
+      let realizeOptions = _realizeOptions || {};
 
-    if (this.isTextEditMode()) {
-      this.realization.setAttribute('contenteditable', true);
-      this.realization.focus();
-    }
+      if (realizeOptions.skipResolve === true) {
+        that.realization.innerHTML = that.getText();
+      } else {
+        that.realization.innerHTML = that.interpret(that.getText());
+      }
+
+      if (that.isTextEditMode()) {
+        that.realization.setAttribute('contenteditable', true);
+        that.realization.focus();
+      }
+
+      _complete();
+    });
   }
 
   //
