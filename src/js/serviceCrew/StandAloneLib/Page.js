@@ -24,6 +24,14 @@ class Page {
     this.rootGridElement = rootGridElement;
   }
 
+  getHTMLDocument() {
+    return this.doc;
+  }
+
+  getScreenSizing() {
+    return 'desktop';
+  }
+
   getPageSpec() {
     return JSON.parse(this.doc.getElementById('page-meta').innerHTML);
   }
@@ -170,7 +178,7 @@ class Page {
   }
 
   createDynamicContext(_element) {
-    return new DynamicContext(_element);
+    return new DynamicContext(_element, this);
   }
 }
 

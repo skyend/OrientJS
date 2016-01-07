@@ -113,15 +113,6 @@ var HeadToolBar = React.createClass({
         saveDisabled = false;
       }
 
-      if (this.state.contextItem.contextType === 'document'/* || this.state.contextItem.contextType === 'page'*/) {
-        if (this.state.contextItem.contextController.existsUndoHistory()) {
-          undoDisabled = false;
-        }
-
-        if (this.state.contextItem.contextController.existsRedoHistory()) {
-          redoDisabled = false;
-        }
-      }
     }
 
     return (

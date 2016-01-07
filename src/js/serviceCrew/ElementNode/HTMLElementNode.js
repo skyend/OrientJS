@@ -199,9 +199,9 @@ class HTMLElementNode extends TagBaseElementNode {
           }
         }
 
-        newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
+        newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment, this.dynamicContext);
       } else {
-        newChildElementNode = Factory.takeElementNode(undefined, {}, 'html', this.environment);
+        newChildElementNode = Factory.takeElementNode(undefined, {}, 'html', this.environment, this.dynamicContext);
       }
 
       newChildElementNode.buildByElement(child_);
@@ -260,7 +260,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let child;
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
-      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment);
+      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment, this.dynamicContext);
       child.setParent(this);
       list.push(child);
     }

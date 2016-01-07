@@ -66,7 +66,8 @@ class TagBaseElementNode extends ElementNode {
 
   getCurrentRectangle() {
     //    console.log(this);
-    switch (this.environment.contextController.getScreenSizing()) {
+    //switch (this.environment.contextController.getScreenSizing()) {
+    switch (this.environment.getScreenSizing()) {
       case "desktop":
         return this.rectangle['desktop'];
       case "tablet":
@@ -238,10 +239,10 @@ class TagBaseElementNode extends ElementNode {
 
   buildByElement(_domElement, _ignoreAttrFields) {
     let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type'], _ignoreAttrFields || []);
-
+    this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
 
-    this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
+    this.setId(_domElement.getAttribute('en-id'));
   }
 
 

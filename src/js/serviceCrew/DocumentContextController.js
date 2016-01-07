@@ -1,10 +1,8 @@
 "use strict";
 var Document = require('./Document.js');
-var jsDiff = require('diff');
 import async from 'async';
 import _ from 'underscore';
 
-import LZString from '../lib/lz-string.js';
 import LazyTimer from '../util/LazyTimer.js';
 
 import DocumentRevisionManager from './DocumentRevisionManager.js';
@@ -464,6 +462,8 @@ class DocumentContextController extends HasElementNodeContextController {
   setScreenSizing(_sizing) {
 
     this.screenSizing = _sizing;
+
+    this.subject.setScreenSizing(_sizing);
   }
 
   getScreenSizing() {
@@ -720,169 +720,169 @@ class DocumentContextController extends HasElementNodeContextController {
   //   });
   // }
 
-  existsUndoHistory() {
-
-    if (this.revisionManager.present === null) {
-      return false;
-    } else {
-      if (this.revisionManager.present === this.revisionManager.rootRevision && !this.revisionManager.present.isExecuted) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  existsRedoHistory() {
-    if (this.revisionManager.present === null) {
-      return false;
-    } else {
-      if (this.revisionManager.present === this.revisionManager.lastRevision && this.revisionManager.present.isExecuted) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  // Undo
-  gotoPast() {
-    var present = this.revisionManager.present;
-
-    if (present === null) return false;
-
-    // 현재 리비전이 실행된 상태라면 이전으로 돌아가기 위해 before 필드를 사용하여 복구를 한다.
-    if (present.isExecuted) {
-      var targetElementNode = present.elementNode;
-      var before = present.before;
-
-      // 실제적인 복구 메소드 호출
-      this.applyRevision(present, "backward");
-      present.undo(); // 언두됨으로 상태를 변경한다.
-    } else {
-      // 현재 리비전이 언두 된 상태라면 이전 리비전이 있는지 확인 후 이전으로 리비전을 옮겨간 후
-      // 이 메소드(gotoPast)를 한번더 호출한다.
-      if (present.prev !== null) {
-        this.revisionManager.moveToBack();
-        return this.gotoPast();
-      } else {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  // Redo
-  gotoFuture() {
-    var present = this.revisionManager.present;
-
-    if (present === null) return false;
-
-    if (present.isExecuted) {
-
-      if (present.next !== null) {
-        this.revisionManager.moveToFore();
-        return this.gotoFuture();
-      } else {
-        return false;
-      }
-    } else {
-      var targetElementNode = present.elementNode;
-      var after = present.after;
-
-      this.applyRevision(present, 'forward');
-      present.executed(); // 실행됨으로 상태를 변경한다.
-    }
-    return true;
-  }
-
-  applyRevision(_revision, _direction) {
-    var importSource;
-
-    if (_direction === 'forward') {
-
-      // forward 에는 after 필드를 사용하고
-      importSource = _revision.after;
-      //console.log('redo', importSource, _revision);
-    } else {
-
-      // backward에는 before필드를 사용한다.
-      importSource = _revision.before;
-      //console.log('undo', importSource, _revision);
-    }
-
-    var targetId = _revision.elementNode.id;
-    var baseDoc = _revision.elementNode.document;
-    var liveElementNode = baseDoc.findById(targetId);
-
-    if (liveElementNode === false) throw new Error("링크중인 ElementNode를 찾을 수 없음.");
-
-    liveElementNode.import(importSource);
-    this.context.renderRefresh();
-    this.context.updatedHistory();
-  }
-
-  snapshot(_elementNode, _present, _past, _type) {
-    // var compressedDoc = LZString.compress(JSON.stringify(this.subject.export()));
-    // console.log(compressedDoc.length);
-    //
-    // var compressedDiff = jsDiff.diffChars(this.prev, compressedDoc);
-    // console.log(compressedDiff);
-    // // 압축결과 diff
-    // this.prev = compressedDoc;
-    //
-    // return;
-    var nodePresent = _present;
-    var presentRevision;
-
-    // // 현재 리비전이 플러시된 상태라면
-    // // 이것은 리비전을 이동하여 플러시된 리비전으로 이동 했을 때 해당 리비전에 덮어씌어지는것을 방지하기 위함이다.
-    // if (this.revisionManager.present.isFlushed) {
-    //   // 한번더 플러시를 진행하여 새로운 리비전을 생성한다.
-    //   this.revisionManager.flushRevision();
-    // }
-
-    if (_type === 'diff') {
-      var presentContinuationRevision;
-      var diff = jsDiff.diffChars(JSON.stringify(_past), JSON.stringify(_present));
-
-      presentRevision = {
-        elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
-        before: _past,
-        after: _present,
-        type: 'all'
-      };
-
-      // //var presentRevision = this.revisionManager.present;
-      // // 현재에 연속되는중인 리비전
-      // presentContinuationRevision = this.revisionManager.present;
-      // //var presentContinuationChangeLog = presentContinuationRevision.changeLog;
-      //
-      // if (_elementNode.id == presentContinuationRevision.elementNode.id) {
-      //   var presentContinuationChangeLog = presentContinuationRevision.changeLog;
-      //   if ()
-      // }
-
-
-
-    } else if (_type === 'all') {
-
-      presentRevision = {
-        elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
-        before: _past,
-        after: _present,
-        type: 'all'
-      };
-      //console.log(_past, _present);
-      this.revisionManager.appendNewRevision(presentRevision);
-
-      //
-      // this.revisionManager.writeHistory(presentChangeLog);
-      // this.revisionManager.flushRevision();
-    }
-
-    this.context.updatedHistory();
-  }
+  // existsUndoHistory() {
+  //
+  //   if (this.revisionManager.present === null) {
+  //     return false;
+  //   } else {
+  //     if (this.revisionManager.present === this.revisionManager.rootRevision && !this.revisionManager.present.isExecuted) {
+  //       return false;
+  //     }
+  //   }
+  //
+  //   return true;
+  // }
+  //
+  // existsRedoHistory() {
+  //   if (this.revisionManager.present === null) {
+  //     return false;
+  //   } else {
+  //     if (this.revisionManager.present === this.revisionManager.lastRevision && this.revisionManager.present.isExecuted) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
+  //
+  // // Undo
+  // gotoPast() {
+  //   var present = this.revisionManager.present;
+  //
+  //   if (present === null) return false;
+  //
+  //   // 현재 리비전이 실행된 상태라면 이전으로 돌아가기 위해 before 필드를 사용하여 복구를 한다.
+  //   if (present.isExecuted) {
+  //     var targetElementNode = present.elementNode;
+  //     var before = present.before;
+  //
+  //     // 실제적인 복구 메소드 호출
+  //     this.applyRevision(present, "backward");
+  //     present.undo(); // 언두됨으로 상태를 변경한다.
+  //   } else {
+  //     // 현재 리비전이 언두 된 상태라면 이전 리비전이 있는지 확인 후 이전으로 리비전을 옮겨간 후
+  //     // 이 메소드(gotoPast)를 한번더 호출한다.
+  //     if (present.prev !== null) {
+  //       this.revisionManager.moveToBack();
+  //       return this.gotoPast();
+  //     } else {
+  //       return false;
+  //     }
+  //   }
+  //
+  //   return true;
+  // }
+  //
+  // // Redo
+  // gotoFuture() {
+  //   var present = this.revisionManager.present;
+  //
+  //   if (present === null) return false;
+  //
+  //   if (present.isExecuted) {
+  //
+  //     if (present.next !== null) {
+  //       this.revisionManager.moveToFore();
+  //       return this.gotoFuture();
+  //     } else {
+  //       return false;
+  //     }
+  //   } else {
+  //     var targetElementNode = present.elementNode;
+  //     var after = present.after;
+  //
+  //     this.applyRevision(present, 'forward');
+  //     present.executed(); // 실행됨으로 상태를 변경한다.
+  //   }
+  //   return true;
+  // }
+  //
+  // applyRevision(_revision, _direction) {
+  //   var importSource;
+  //
+  //   if (_direction === 'forward') {
+  //
+  //     // forward 에는 after 필드를 사용하고
+  //     importSource = _revision.after;
+  //     //console.log('redo', importSource, _revision);
+  //   } else {
+  //
+  //     // backward에는 before필드를 사용한다.
+  //     importSource = _revision.before;
+  //     //console.log('undo', importSource, _revision);
+  //   }
+  //
+  //   var targetId = _revision.elementNode.id;
+  //   var baseDoc = _revision.elementNode.document;
+  //   var liveElementNode = baseDoc.findById(targetId);
+  //
+  //   if (liveElementNode === false) throw new Error("링크중인 ElementNode를 찾을 수 없음.");
+  //
+  //   liveElementNode.import(importSource);
+  //   this.context.renderRefresh();
+  //   this.context.updatedHistory();
+  // }
+  //
+  // snapshot(_elementNode, _present, _past, _type) {
+  //   // var compressedDoc = LZString.compress(JSON.stringify(this.subject.export()));
+  //   // console.log(compressedDoc.length);
+  //   //
+  //   // var compressedDiff = jsDiff.diffChars(this.prev, compressedDoc);
+  //   // console.log(compressedDiff);
+  //   // // 압축결과 diff
+  //   // this.prev = compressedDoc;
+  //   //
+  //   // return;
+  //   var nodePresent = _present;
+  //   var presentRevision;
+  //
+  //   // // 현재 리비전이 플러시된 상태라면
+  //   // // 이것은 리비전을 이동하여 플러시된 리비전으로 이동 했을 때 해당 리비전에 덮어씌어지는것을 방지하기 위함이다.
+  //   // if (this.revisionManager.present.isFlushed) {
+  //   //   // 한번더 플러시를 진행하여 새로운 리비전을 생성한다.
+  //   //   this.revisionManager.flushRevision();
+  //   // }
+  //
+  //   if (_type === 'diff') {
+  //     var presentContinuationRevision;
+  //     var diff = jsDiff.diffChars(JSON.stringify(_past), JSON.stringify(_present));
+  //
+  //     presentRevision = {
+  //       elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
+  //       before: _past,
+  //       after: _present,
+  //       type: 'all'
+  //     };
+  //
+  //     // //var presentRevision = this.revisionManager.present;
+  //     // // 현재에 연속되는중인 리비전
+  //     // presentContinuationRevision = this.revisionManager.present;
+  //     // //var presentContinuationChangeLog = presentContinuationRevision.changeLog;
+  //     //
+  //     // if (_elementNode.id == presentContinuationRevision.elementNode.id) {
+  //     //   var presentContinuationChangeLog = presentContinuationRevision.changeLog;
+  //     //   if ()
+  //     // }
+  //
+  //
+  //
+  //   } else if (_type === 'all') {
+  //
+  //     presentRevision = {
+  //       elementNode: _elementNode, // 실제 ElementNode 의 참조를 저장
+  //       before: _past,
+  //       after: _present,
+  //       type: 'all'
+  //     };
+  //     //console.log(_past, _present);
+  //     this.revisionManager.appendNewRevision(presentRevision);
+  //
+  //     //
+  //     // this.revisionManager.writeHistory(presentChangeLog);
+  //     // this.revisionManager.flushRevision();
+  //   }
+  //
+  //   this.context.updatedHistory();
+  // }
 
   // resolveRenderText(_seedText) {
   //   // resolve String : data binding and i18n processing

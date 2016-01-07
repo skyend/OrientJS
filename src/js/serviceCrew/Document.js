@@ -38,7 +38,7 @@ class Document {
     this.runtimReactCSSRepo = {};
     this.contextController = _contextController;
     this.enableNavigate = fragmentOption.enableNavigate || false;
-
+    this.screenSizing = 'desktop';
     this.params = _documentParams || {};
 
     console.log('Document Map', _documentDataObject);
@@ -117,6 +117,11 @@ class Document {
     this.rootElementNode = _elementNode;
   }
 
+
+  setScreenSizing(_sizing) {
+    this.screenSizing = _sizing;
+  }
+
   ////////////////////
   // Getters
   getParam(_paramNS) {
@@ -179,6 +184,10 @@ class Document {
 
   getHTMLDocument() {
     return this.contextController.context.getDocument();
+  }
+
+  getScreenSizing() {
+    return this.screenSizing;
   }
 
   ///////////////////////
