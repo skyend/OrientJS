@@ -48,7 +48,6 @@ class RefElementNode extends HTMLElementNode {
     this.refType = _domElement.getAttribute('refType');
     this.refTargetId = _domElement.getAttribute('refTargetId');
 
-    this.realization = _domElement;
   }
 
   appendChild(_elementNode) {
