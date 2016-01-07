@@ -39,10 +39,10 @@ class ElementNode {
     // parent refference
     this.parent = null;
 
-    () => {
-      this.realization = null;
-      this.clonePool = []; // repeated
-    }()
+
+    this.realization = null;
+    this.clonePool = []; // repeated
+
 
 
     // Repeat by parent's Repeat Control
