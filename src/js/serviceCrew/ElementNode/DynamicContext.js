@@ -7,6 +7,8 @@ class DynamicContext {
     this.element = _element;
 
     this.elementNode = Factory.takeElementNode(undefined, undefined, 'html', undefined, undefined);
+    this.elementNode.buildByElement(_element);
+    console.log(this.elementNode);
   }
 
   processing(_complete) {

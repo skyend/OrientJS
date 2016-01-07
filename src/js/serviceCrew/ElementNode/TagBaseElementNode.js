@@ -238,7 +238,7 @@ class TagBaseElementNode extends ElementNode {
 
   buildByElement(_domElement, _ignoreAttrFields) {
     let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type'], _ignoreAttrFields || []);
-
+    this.realization = _domElement;
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
   }
 

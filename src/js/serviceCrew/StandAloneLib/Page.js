@@ -131,7 +131,7 @@ class Page {
   }
 
   renderRefElementsOfFragments(_complete) {
-    console.log('running frag', this.runningFragments);
+
     async.eachSeries(this.runningFragments, (_fragment, _next) => {
       _fragment.renderRefElements((_result) => {
         _next();
@@ -142,7 +142,7 @@ class Page {
   }
 
   runAllDynamicContext(_complete) {
-    console.log(this.doc);
+
     let asyncTasks = this.selectAllDynamicContexts().map((_dynamicContext) => {
       return (_cb) => {
         _dynamicContext.processing(() => {
