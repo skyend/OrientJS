@@ -184,28 +184,6 @@ class TagBaseElementNode extends ElementNode {
     });
   }
 
-  // 번외 처리
-  linkHierarchyRealizaion() {
-    if (this.dynamicContext && this.isDynamicContextOwner) {
-      if (this.dynamicContext.isLoading) {
-        //let computedStyle = window.getComputedStyle(this.realization);
-
-        //console.log(computedStyle.getPropertyValue('position'));
-        //if (computedStyle.getPropertyValue('position') === "static") {
-        //console.log('this static');
-        this.realization.setAttribute('fix-placeholder', '');
-        //}
-
-        let placeholder = this.environment.getHTMLDocument().createElement('div');
-
-        placeholder.setAttribute('is-dynamic-context-placeholder', '');
-
-        placeholder.innerHTML = '<i class="fa fa-spin fa-sun-o"/>';
-
-        this.realization.appendChild(placeholder);
-      }
-    }
-  }
 
   mappingNavigate() {
     // navigate
@@ -271,7 +249,8 @@ class TagBaseElementNode extends ElementNode {
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
 
-
+    if (_domElement.getAttribute('en-id') !== null)
+      this.setId(_domElement.getAttribute('en-id'));
 
     if (_domElement.getAttribute('repeat-n') !== null)
       this.setControl('repeat-n', _domElement.getAttribute('repeat-n'));
@@ -291,9 +270,8 @@ class TagBaseElementNode extends ElementNode {
     if (_domElement.getAttribute('en-dc-ns') !== null)
       this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
 
-    if (this.isDynamicContext === 'true') {
+    if (this.isDynamicContext === 'true')
       this.buildDynamicContext();
-    }
   }
 
 
@@ -353,7 +331,6 @@ class TagBaseElementNode extends ElementNode {
     }
 
 
-    this.realization.setAttribute('en-id', this.getId())
 
     if (this.getControl('repeat-n'))
       this.realization.setAttribute('repeat-n', this.getControl('repeat-n'))

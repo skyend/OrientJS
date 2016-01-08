@@ -84,9 +84,11 @@ class RefElementNode extends HTMLElementNode {
 
   _sa_renderFragment(_complete) {
     let that = this;
-    SALoader.loadFragment(this.refTargetId, function(_fragmentText) {
+    let refTargetId = this.interpret(this.refTargetId);
 
-      let fragment = new Fragment(that.refTargetId, _fragmentText, that.realization);
+    SALoader.loadFragment(refTargetId, function(_fragmentText) {
+
+      let fragment = new Fragment(refTargetId, _fragmentText, that.realization);
       fragment.render();
 
       fragment.renderRefElements(() => {
@@ -99,7 +101,9 @@ class RefElementNode extends HTMLElementNode {
 
   _sa_renderSharedElementNode(_complete) {
     let that = this;
-    SALoader.loadSharedElementNode(this.refTargetId, function(_sharedElementNodeText) {
+    let refTargetId = this.interpret(this.refTargetId);
+
+    SALoader.loadSharedElementNode(refTargetId, function(_sharedElementNodeText) {
       that.realization.innerHTML = _sharedElementNodeText;
       that.rendered = true;
       let children = [];

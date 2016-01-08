@@ -192,6 +192,33 @@ class Page {
     // createDynamicContext(_element) {
     //   return new DynamicContext(_element, this);
     // }
+  processingAllDynamicContextInstances() {
+
+    this.runningFragments.map((_fragment) => {
+      _fragment.rootElementNodes.map((_rootElementNode) => {
+        this.progressElementDynamicContext(_rootElementNode);
+      });
+    });
+  }
+
+  progressElementDynamicContext(_elementNode) {
+    let that = this;
+
+    if (typeof _elementNode.treeExplore === 'function') {
+      _elementNode.treeExplore((_subElementNode) => {
+        if (_subElementNode.isDynamicContext === 'true') {
+          _subElementNode.dynamicContext.ready(function() {
+            _subElementNode.dynamicContext.start(function done() {
+              _subElementNode.childrenIteration((_child) => {
+                that.progressElementDynamicContext(_child);
+              });
+            });
+          })
+          return null;
+        }
+      });
+    }
+  }
 
   findRunningDynamicContext() {
     this.runningFragments.map(function(_fragment) {

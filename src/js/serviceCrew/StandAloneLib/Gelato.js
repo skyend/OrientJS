@@ -50,7 +50,7 @@ class Gelato {
         });
       }, (_cb) => {
         // 다이나믹 컨텍스트 찾기.
-        this.page.findRunningDynamicContext();
+        this.page.processingAllDynamicContextInstances();
         _cb();
 
       }, (_cb) => {

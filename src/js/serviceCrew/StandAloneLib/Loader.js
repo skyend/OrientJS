@@ -5,8 +5,12 @@ class ServiceResourceLoader {
     request.get('./config/config.json')
       .end(function(_err, _result) {
         //  console.log(_err, _result);
-        if (_err !== null) throw new Error('Fail load a config.');
-        _complete(_result.body);
+        if (_err !== null) {
+          console.warn(_err);
+          _complete(null);
+        } else {
+          _complete(_result.body);
+        }
       });
   }
 
@@ -14,8 +18,12 @@ class ServiceResourceLoader {
     request.get('./fragments/' + _name + '.html')
       .end(function(_err, _result) {
         //  console.log(_err, _result);
-        if (_err !== null) throw new Error('Fail load a fragment [' + _name + ']');
-        _complete(_result.text);
+        if (_err !== null) {
+          console.warn(_err);
+          _complete(null);
+        } else {
+          _complete(_result.text);
+        }
       });
   }
 
@@ -23,7 +31,7 @@ class ServiceResourceLoader {
     request.get('./fragments/shared/' + _name + '.html')
       .end(function(_err, _result) {
         // console.log(_err, _result);
-        if (_err !== null) throw new Error('Fail load a shared [' + _name + ']');
+        //if (_err !== null) throw new Error('Fail load a shared [' + _name + ']');
         _complete(_result.text);
       });
   }
@@ -32,8 +40,14 @@ class ServiceResourceLoader {
     request.get('./apisources/' + _name + '.json')
       .end(function(_err, _result) {
         // console.log(_err, _result);
-        if (_err !== null) throw new Error('Fail load a apisource [' + _name + ']');
-        _complete(_result.body);
+        if (_err !== null) {
+          console.warn(_err);
+          _complete(null);
+        } else {
+          _complete(_result.body);
+        }
+
+
       });
   }
 }

@@ -16,9 +16,9 @@ class DynamicContext {
     this.parentDynamicContext = _parentDynamicContext || null;
     this.params = {};
 
-    this.sourceIDs = _data.sourceID;
-    this.requestIDs = _data.requestID;
-    this.namespaces = _data.namespace;
+    this.sourceIDs = _data.sourceIDs;
+    this.requestIDs = _data.requestIDs;
+    this.namespaces = _data.namespaces;
 
     this.apisources = [];
     this.isLoading = false;
@@ -40,6 +40,8 @@ class DynamicContext {
     let that = this;
 
     this.isLoading = true;
+    this.emit("begin-load");
+
     let sourceIdList = this.sourceIDs.split(',');
     async.eachSeries(sourceIdList, function(_id, _next) {
       SALoader.loadAPISource(_id, function(_apiSource) {
@@ -73,12 +75,14 @@ class DynamicContext {
         _apiSource.executeRequest(requestIdList[apiSourceOrder], undefined, undefined, function(_result) {
           console.log('result ', _result);
           that.params[namespaceList[apiSourceOrder]] = _result;
-          that.isLoading = false;
+
           _next();
         });
       }
     }, function done() {
       _complete();
+      that.isLoading = false;
+      that.emit('complete-load');
     })
   }
 

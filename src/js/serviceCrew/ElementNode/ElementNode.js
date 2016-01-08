@@ -229,15 +229,13 @@ class ElementNode {
   setRealization(_realization) {
     this.realization = _realization;
     this.realization.___en = this;
-    if (_domElement.getAttribute('en-id') !== null)
-      this.setId(_domElement.getAttribute('en-id'));
+
+    this.realization.setAttribute('en-id', this.getId())
     this.realization.setAttribute('en-type', this.type);
   }
 
   realize(_realizeOptions, _complete) {
-    if (this.isDynamicContext === 'true') {
-      this.buildDynamicContext();
-    }
+
 
     // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
     this.clonePool = [];
@@ -255,23 +253,71 @@ class ElementNode {
     //console.log('Realize options', this, _realizeOptions);
   }
 
+  // 번외 처리
+  linkHierarchyRealizaion() {
+    if (this.dynamicContext && this.isDynamicContextOwner) {
+      if (this.dynamicContext.isLoading) {
+        //let computedStyle = window.getComputedStyle(this.realization);
+
+        //console.log(computedStyle.getPropertyValue('position'));
+        //if (computedStyle.getPropertyValue('position') === "static") {
+        //console.log('this static');
+        this.realization.setAttribute('fix-placeholder', '');
+        //}
+
+        let placeholder = this.environment.getHTMLDocument().createElement('div');
+
+        placeholder.setAttribute('is-dynamic-context-placeholder', '');
+
+        placeholder.innerHTML = '<i class="fa fa-spin fa-sun-o"/>';
+
+        this.realization.appendChild(placeholder);
+      }
+    }
+  }
+
+
   buildDynamicContext() {
     let that = this;
     this.isDynamicContextOwner = true;
+    let newDynamicContext;
+    let makeNew = false;
 
-    this.dynamicContext = new DynamicContext(this.environment, this.dynamicContext, {
-      sourceID: this.dynamicContextSID,
-      requestID: this.dynamicContextRID,
-      namespace: this.dynamicContextNS
-    });
-    this.dynamicContext.ready(function() {
-      that.dynamicContext.start(function() {
-        if (that.type !== 'string') this.realize(undefined, function() {});
+    if (this.isDynamicContext !== 'true') throw new Error("this is not DynamicContext!");
 
-      })
-    });
+    // 현재 다이나믹 컨텍스트가 입력되어 있다면
+    if (this.dynamicContext) {
 
+      // 현재 다이나믹컨텍스트의 메타 정보가 자신이 가지고 있는 메타정보와 같은지 비교하고 하나라도 다른 정보가 존재한다면
+      // 부모로 부터 입력된 다이나믹컨텍스트이므로
+      if ((this.dynamicContext.sourceIDs !== this.dynamicContextSID || this.dynamicContext.requestIDs !== this.dynamicContextRID) || this.dynamicContext.namespaces !== this.dynamicContextNS) {
+        // 자신이 가진 메타정보로 다이나믹컨텍스트를 생성하고 이전에 가지고 있던 다이나믹컨텍스트를 자신의 다이나믹컨텍스트의 부모로 입력한다.
+        makeNew = true;
+      }
+    } else {
+      makeNew = true;
+      // 새 다이나믹 컨텍스트 생성
+    }
+
+    if (makeNew) {
+      this.dynamicContext = new DynamicContext(this.environment, this.dynamicContext, {
+        sourceIDs: this.dynamicContextSID,
+        requestIDs: this.dynamicContextRID,
+        namespaces: this.dynamicContextNS
+      });
+
+      this.dynamicContext.on("begin-load", function() {
+        that.emit('link-me');
+      });
+
+      this.dynamicContext.on("complete-load", function() {
+        that.realize(undefined, function() {
+          that.emit('link-me');
+        })
+      });
+    }
   }
+
 
 
 
@@ -610,24 +656,24 @@ class ElementNode {
       return self.pretreatment(_firstMatch);
     });
 
-    return _seedText;
-
     // environment 가 있을 때 environment의 interpret를 진행
-    // if (this.dynamicContext !== undefined) {
-    //
-    //   return this.dynamicContext.interpret(preResolvedText);
-    // } else {
-    //   return preResolvedText;
-    // }
+    if (this.dynamicContext) {
 
-    // resolve String : data binding and i18n processing
-    // if (this.environment !== undefined) {
-    //
-    //   return this.environment.interpret(preResolvedText);
-    // } else {
-    //   return preResolvedText;
-    // }
+      return this.dynamicContext.interpret(preResolvedText);
+    } else {
+      return preResolvedText;
+    }
 
+    // 임시 빌더상 바인딩 처리
+    //resolve String : data binding and i18n processing
+    if (this.environment !== undefined) {
+      if (typeof this.environment.interpret === 'function')
+        return this.environment.interpret(preResolvedText);
+      else
+        return preResolvedText;
+    } else {
+      return preResolvedText;
+    }
   }
 
   // 전처리
@@ -868,6 +914,9 @@ class ElementNode {
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
+
+    if (this.isDynamicContext === 'true')
+      this.buildDynamicContext();
   }
 
 

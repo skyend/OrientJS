@@ -76,6 +76,8 @@ class HTMLElementNode extends TagBaseElementNode {
 
     _elementNode.setParent(this);
 
+    this.setChildListeners(_elementNode);
+
     this.children.push(_elementNode);
 
     return true;
@@ -143,13 +145,14 @@ class HTMLElementNode extends TagBaseElementNode {
   // HTML 엘리먼트 기반의 요소 기준으로 Tree를 탐색한다.
   // 탐색은 사용자가 정의 할 수 있으며 treeExplore 메소드를 호출 할 때 인자로 탐색 클로져를 넘겨준다.
   treeExplore(_explorerFunc) {
-    _explorerFunc(this);
+    if (_explorerFunc(this) === null)
+      return;
 
-    if (/^html|grid$/.test(this.getType()))
+    if (/^html|grid|ref$/.test(this.getType()))
       this.childrenIteration(function(_child) {
-        if (/^html|grid$/.test(_child.getType()))
+        if (/^html|grid|ref$/.test(_child.getType()))
           _child.treeExplore(_explorerFunc);
-        else
+        else // string type
           _explorerFunc(_child);
       });
   }
@@ -221,6 +224,8 @@ class HTMLElementNode extends TagBaseElementNode {
 
       newChildElementNode.buildByElement(child_);
 
+      this.setChildListeners(newChildElementNode);
+
       children.push(newChildElementNode);
       newChildElementNode.setParent(this);
     }
@@ -251,7 +256,13 @@ class HTMLElementNode extends TagBaseElementNode {
 
     sortedArray.push(this.children[targetIndex]);
     this.children = sortedArray;
-    console.log("Index :", targetIndex);
+  }
+
+  setChildListeners(_child) {
+    let that = this;
+    _child.on('link-me', function() {
+      that.linkHierarchyRealizaion();
+    })
   }
 
   //////////////////////////
@@ -277,7 +288,10 @@ class HTMLElementNode extends TagBaseElementNode {
       elementNodeData = _childrenDataList[i];
       child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment, this.dynamicContext);
       child.setParent(this);
+
       list.push(child);
+
+      this.setChildListeners(child);
     }
 
     return list;
@@ -286,9 +300,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    if (this.isDynamicContext === 'true') {
-      this.buildDynamicContext();
-    }
+
     this.children = this.inspireChildren(_elementNodeDataObject.children || []);
   }
 
