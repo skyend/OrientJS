@@ -34,6 +34,7 @@
     "react-notification-system": "^0.1.14",
     "react-tools": "^0.13.3",
     "sha1-hex": "^1.0.0",
+    "sizzle": "^2.3.0",
     "style-loader": "^0.12.3",
     "superagent": "^1.4.0",
     "underscore": "^1.8.3",

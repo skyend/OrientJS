@@ -94,10 +94,10 @@ class DocumentContextController extends HasElementNodeContextController {
         if (requestIndex === -1) return console.warn(requestName + " 라는 이름의 요청이 " + apiSource.title + " ICEAPISource 상에 존재하지 않습니다.");
         let request = apiSource.requests[requestIndex];
         apiSource.executeTestRequest(request.id, function(_result) {
-
+          console.log('setParam', _result);
           // Param 을 입력하고
           that.subject.setParam(_ns, _result);
-
+          console.log(that.subject);
           // 랜더링을 리프레시 한다.
           that.context.renderRefresh();
         });

@@ -317,7 +317,9 @@ class ServiceManager {
         let apiInterfaceList = _aiResult.list;
 
         apiSourceList = apiSourceList.map(function(_apiSource) {
-          return new ICEAPISource(_apiSource, self);
+          let apiSource = new ICEAPISource(_apiSource, self);
+          apiSource.setHost(self.iceHost);
+          return apiSource;
         });
 
         _complete(apiSourceList);

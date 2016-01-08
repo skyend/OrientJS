@@ -10,6 +10,7 @@ export default class ICEAPISourceContextController extends ContextController {
     this.serviceManager = _serviceManager;
     this.nodeTypeMeta = null;
     this.instance = new ICEAPISource(_ICEAPISourceData, _serviceManager);
+    this.instance.setHost(_serviceManager.iceHost);
   }
 
   save() {

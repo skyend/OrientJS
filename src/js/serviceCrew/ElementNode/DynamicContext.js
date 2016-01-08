@@ -46,7 +46,7 @@ class DynamicContext {
     async.eachSeries(sourceIdList, function(_id, _next) {
       SALoader.loadAPISource(_id, function(_apiSource) {
         let apiSource = new ICEAPISource(_apiSource);
-        apiSource.host = that.environment.iceHost;
+        apiSource.setHost(that.environment.iceHost);
 
         that.apisources.push(apiSource);
         _next();

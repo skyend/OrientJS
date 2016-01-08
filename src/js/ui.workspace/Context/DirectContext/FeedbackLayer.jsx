@@ -82,6 +82,8 @@ var FeedbackLayer = React.createClass({
     if( detectedInterpret === undefined ){
       if( _elemntNode.getType() !== 'ref' ) return;
     }
+    
+    if( _elemntNode.realization === null ) return;
 
     let boundingRect = _elemntNode.getBoundingRect();
     let type = _elemntNode.getType();

@@ -660,13 +660,10 @@ class ElementNode {
     if (this.dynamicContext) {
 
       return this.dynamicContext.interpret(preResolvedText);
-    } else {
-      return preResolvedText;
     }
-
     // 임시 빌더상 바인딩 처리
     //resolve String : data binding and i18n processing
-    if (this.environment !== undefined) {
+    if (this.environment) {
       if (typeof this.environment.interpret === 'function')
         return this.environment.interpret(preResolvedText);
       else

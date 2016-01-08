@@ -8,11 +8,13 @@ export default class ICEAPISource {
     this.serviceManager = _serviceManager;
 
     this.nodeTypeMeta = null;
-
+    this.host = '';
     this.import(_ICEAPISourceData);
   }
 
-
+  setHost(_iceHost) {
+    this.host = _iceHost;
+  }
 
   loadNodeTypeMeta(_complete) {
     let self = this;
@@ -186,7 +188,7 @@ export default class ICEAPISource {
       url = req.customURL;
     } else {
 
-      url = 'http://' + this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
+      url = this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
     }
 
     if (req.method === 'get') {
@@ -194,7 +196,7 @@ export default class ICEAPISource {
         .query(fields)
         .end(function(err, res) {
           console.log(err, res);
-          if (res === null) {
+          if (err !== null) {
             _complete(null);
           } else {
             _complete(res.body);
