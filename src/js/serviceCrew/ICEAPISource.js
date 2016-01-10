@@ -179,10 +179,12 @@ export default class ICEAPISource {
   }
 
   executeRequest(_requestId, _fields, _heads, _complete) {
-    let fields = _fields || [];
+    let fields = _fields || {};
     fields.t = 'api';
     let req = this.findRequest(_requestId);
     let url;
+
+    fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
 
     if (req.crud === '**') {
       url = req.customURL;
@@ -195,7 +197,6 @@ export default class ICEAPISource {
       SuperAgent.get(url)
         .query(fields)
         .end(function(err, res) {
-          console.log(err, res);
           if (err !== null) {
             _complete(null);
           } else {
@@ -208,7 +209,6 @@ export default class ICEAPISource {
         .type('form')
         .send(fields)
         .end(function(err, res) {
-          console.log(err, res);
           if (res === null) {
             _complete(null);
           } else {

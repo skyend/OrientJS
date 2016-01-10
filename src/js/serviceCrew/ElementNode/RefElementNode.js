@@ -40,10 +40,10 @@ class RefElementNode extends HTMLElementNode {
     let that = this;
     super.realize(_realizeOptions, function() {
       // StandAlone 의 Environment 라면 sa 방식으로 로드한다.
-      console.log(that.environment);
+
       if (that.environment.standAlone) {
         that._sa_renderRefferenced(function() {
-          console.log('refererd lrenderd');
+
           _complete();
         });
       } else {

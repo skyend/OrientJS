@@ -1,6 +1,7 @@
 "use strict";
 import _ from 'underscore';
 import Identifier from '../../util/Identifier.js';
+import DataResolver from '../DataResolver/Resolver';
 
 export default class Request {
   constructor(_requestData) {
@@ -48,6 +49,18 @@ export default class Request {
   changeFieldTestValue(_fieldId, _value) {
     this.findField(_fieldId).testValue = _value;
   }
+
+  getFieldsObjectWithResolve() {
+    let dataResolver = new DataResolver();
+
+    let object = {};
+    for (let i = 0; i < this.fields.length; i++) {
+      object[this.fields[i].key] = dataResolver.resolve(this.fields[i].value || this.fields[i].testValue);
+    }
+
+    return object;
+  }
+
 
   removeField(_fieldId) {
     let fields = [];

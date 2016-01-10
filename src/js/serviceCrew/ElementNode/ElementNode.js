@@ -349,7 +349,6 @@ class ElementNode {
     // rendering 사이클에 개입되는 control 처리
     // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
     if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !_isGhostizePoint) {
-      console.log("_________________RESOLVE_____REPEAT_N", this.getControlWithResolve('repeat-n'), this.getControl('repeat-n'));
       this.isRepeated = true;
       this.repeatOrder = 0;
 
@@ -649,79 +648,87 @@ class ElementNode {
 
   /////////////
   // String Resolve
-  interpret(_seedText) {
-    var self = this;
+  interpret(_matterText) {
+    if (_matterText === undefined) return;
 
-    var preResolvedText = (_seedText + "").replace(/\*\(([\w\.\-\:]+)\)/g, function(_tested, _firstMatch) {
-      return self.pretreatment(_firstMatch);
-    });
+    let text = _matterText;
 
-    // environment 가 있을 때 environment의 interpret를 진행
+    text = this.preInterpretOnTree(text);
+
     if (this.dynamicContext) {
-
-      return this.dynamicContext.interpret(preResolvedText);
-    }
-    // 임시 빌더상 바인딩 처리
-    //resolve String : data binding and i18n processing
-    if (this.environment) {
-      if (typeof this.environment.interpret === 'function')
-        return this.environment.interpret(preResolvedText);
-      else
-        return preResolvedText;
+      return this.dynamicContext.interpret(text);
     } else {
-      return preResolvedText;
+      return text;
     }
   }
 
   // 전처리
-  pretreatment(_resolveKey) {
-    var self = this;
-    var WhatThings = /^(\w+):([\w-\.]+)$/;
+  // ElementNode상의 가능한 인터프리팅을 진행한다.
+  preInterpretOnTree(_matterText) {
+    let that = this;
+    let text = _matterText;
+    var WhatThings = /\*\((\w+):([\w-_\.]+)\)/g;
 
-    if (WhatThings.test(_resolveKey)) {
+    text = text.replace(WhatThings, function(_match, _mean, _submean) {
+      if (_mean === 'repeat-n') {
+        return that.getRepeatNOnTree();
+      } else if (_mean === 'attr') {
+        return that.getAttrOnTree(_submean);
+      }
+    });
 
-      return _resolveKey.replace(WhatThings, function(_tested, _namespace, _want) {
-        if (_namespace === 'attr') {
-          var attributeValue = self.getAttribute(_want);
+    return text;
+  }
 
-          if (attributeValue !== undefined) {
-            return self.interpret(attributeValue);
-          } else {
-            let parentAttribute;
-            self.climbParents(function(_parent) {
-              var value = this.getAttribute(_eventData.attr);
-              if (value !== undefined) {
-                parentAttribute = this.interpret(value);
-                return null;
-              }
-            });
+  getRepeatNOnTree() {
+    if (this.isRepeated) {
+      return this.repeatOrder;
+    } else {
+      // 자신의 부모로부터 반복 순번을 얻음
+      let repeatNumber = -1;
 
-            return parentAttribute;
-          }
+      this.climbParents(function(_parent) {
+        if (_parent.isRepeated) {
+          repeatNumber = _parent.repeatOrder;
+          return null;
         }
       });
+
+      if (repeatNumber !== -1) {
+        return repeatNumber;
+      } else {
+        return undefined;
+      }
+    }
+  }
+
+  getAttrOnTree(_attrName) {
+
+    if (_.isFunction(this.getAttribute)) {
+      // 먼저 자신에게서 구한다.
+      var attributeValue = this.getAttribute(_attrName);
+
+      if (attributeValue !== undefined) {
+        return self.interpret(attributeValue);
+      }
     }
 
-    switch (_resolveKey) {
-      case "repeat-n":
-        // 자신이 반복자이면 자신의 repeatOrder를 반환하고 자신이 반복자가 아니라면 부모로부터 얻는다.
-        if (this.isRepeated) {
-          return this.repeatOrder;
-        } else {
-          // 자신의 부모로부터 반복 순번을 얻음
-          let repeatN;
+    let parentAttribute = null;
+    this.climbParents(function(_parent) {
+      var value = _parent.getAttribute(_attrName);
 
-          this.climbParents(function(_parent) {
-            if (_parent.isRepeated) {
-              repeatN = _parent.repeatOrder;
-              return null;
-            }
-          });
+      if (value !== undefined) {
+        parentAttribute = _parent.interpret(value);
+        return null;
+      }
+    });
 
-          return repeatN;
-        }
-        break;
+    if (parentAttribute !== null) {
+      return parentAttribute;
+    } else {
+      return '`' + _attrName + '`is null';
     }
+
   }
 
   // 모든 ElementNode type 의 Interpret작업이 필요한 항목들을 감지한다.

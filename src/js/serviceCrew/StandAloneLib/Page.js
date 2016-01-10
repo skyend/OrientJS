@@ -139,7 +139,7 @@ class Page {
       Loader.loadFragment(fragmentName, function(_fragmentText) {
         let fragment = new Fragment(fragmentName, _fragmentText, _element);
 
-        fragment.render();
+        //fragment.render();
 
         fragment.buildElementNode();
 

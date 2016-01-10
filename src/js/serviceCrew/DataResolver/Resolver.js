@@ -1,117 +1,91 @@
-import Factory from './Factory';
-import Sizzle from 'sizzle';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
-import SALoader from '../StandAloneLib/Loader';
-import async from 'async';
-import Events from 'events';
-import ICEAPISource from '../ICEAPISource';
-import _ from 'underscore';
-import DataResolver from '../DataResolver/Resolver';
 
-class DynamicContext {
-  constructor(_environment, _parentDynamicContext, _data) {
-    Object.assign(this, Events.EventEmitter.prototype);
 
-    this.environment = _environment;
+/**
+  데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
+*/
 
-    this.parentDynamicContext = _parentDynamicContext || null;
-    this.params = {};
 
-    this.sourceIDs = _data.sourceIDs;
-    this.requestIDs = _data.requestIDs;
-    this.namespaces = _data.namespaces;
+class Resolver {
+  constructor() {
 
-    this.apisources = [];
-    this.isLoading = false;
+    this.dataSpace = {};
   }
 
-  get parentDynamicContext() {
-    return this._parentDynamicContext;
+  setNS(_ns, _data) {
+    this.dataSpace[_ns] = _data;
   }
 
-  set parentDynamicContext(_parentDynamicContext) {
-    this._parentDynamicContext = _parentDynamicContext;
+  getNS(_ns) {
+    return this.dataSpace[_ns];
   }
 
-  getParam(_ns) {
-    return this.params[_ns];
+  resolve(_matter) {
+    return this.interpret2(_matter);
   }
 
-  ready(_complete) {
+  interpret2(_matter) {
+    let solved = _matter;
     let that = this;
 
-    this.isLoading = true;
-    this.emit("begin-load");
-
-    let sourceIdList = this.sourceIDs.split(',');
-    async.eachSeries(sourceIdList, function(_id, _next) {
-      SALoader.loadAPISource(_id, function(_apiSource) {
-        let apiSource = new ICEAPISource(_apiSource);
-        apiSource.setHost(that.environment.iceHost);
-
-        that.apisources.push(apiSource);
-        _next();
-      })
-
-    }, function done() {
-      _complete();
-    });
-  }
-
-  start(_complete) {
-    let that = this;
-    let sourceIdList = this.sourceIDs.split(',');
-    let requestIdList = this.requestIDs.split(',');
-    let namespaceList = this.namespaces.split(',');
-
-    async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
-      let apiSourceOrder = _.findIndex(sourceIdList, function(_id) {
-        return _apiSource.nt_tid == _id;
-      });
-
-      // 없으므로 next
-      if (apiSourceOrder == -1) _next()
-      else {
-        _apiSource.executeRequest(requestIdList[apiSourceOrder], undefined, undefined, function(_result) {
-          that.params[namespaceList[apiSourceOrder]] = _result;
-
-          _next();
-        });
+    /*
+      ${*....} // NS
+      ${http-param:....} // HTTP
+      ${cookie:.....} // Cookie
+    */
+    solved = _matter.replace(/\$\{(\*|[\w-]+:)([^\{^\}^\(^\)]*)\}/g, function(_matched, _intentKey, _description) {
+      if (_intentKey === '*') {
+        return that.resolveWithNS(_description);
+      } else if (_intentKey === 'http-param:') {
+        return that.resolveWithHttpParam(_description);
+      } else if (_intentKey === 'cookie:') {
+        return that.resolveWithCookie(_description);
       }
-    }, function done() {
-      _complete();
-      that.isLoading = false;
-      that.emit('complete-load');
-    })
+    });
+
+    /*
+      %{....}
+    */
+    solved = solved.replace(/%\{([^\{^\}]+)\}/g, function(_matched, _formularString) {
+
+    });
+
+    return solved;
   }
 
-  feedbackLoadState() {
+  resolveWithNS(_description) {
 
   }
 
-  endFeedBack() {
-    this.element.removeAttribute('fix-placeholder', '');
+  resolveWithHttpParam(_description) {
 
-    let placeholder = Sizzle('[is-dynamic-context-placeholder]', this.element)[0];
-    placeholder.remove();
   }
+
+  resolveWithCookie(_description) {
+
+  }
+
 
 
   interpret(_text) {
     var self = this;
 
+
+
+
+
     // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
     // 객체를 보존하여 반환하도록 한다.
     if (/^\$\{.*?\}$/.test(_text)) {
       let matched = _text.match(/(\${(.*?)})/);
-
+      console.log("ARGS", arguments);
       let signString = matched[2];
 
       return this.valueResolve(signString);
     } else {
       let valuesResolved = _text.replace(/\${(.*?)}(?:(\.[a-z]+))?/g, function(_matched, _signString, _optionString) {
         let rsvResult = self.valueResolve(_signString);
-
+        console.log("ARGS", arguments);
         // ${...}.optionString 과 같은 형식을 사용 하였을 때 유효한 옵션이면 옵션처리 결과를 반환하며
         // 유효하지 않은 옵션은 signString의 리졸브 결과와 optionString형식으로 입력된 문자열을 살려서 반환한다.
         // 추후에 함수 형식도 지원
@@ -139,7 +113,7 @@ class DynamicContext {
       let matched = _sign.match(/^(\*?)(.*)$/);
       let firstMark = matched[1];
       let refValue = matched[2];
-
+      console.log(firstMark);
 
       if (firstMark === '*') {
 
@@ -147,7 +121,7 @@ class DynamicContext {
         let ns = splited.shift();
         let detail = splited.length > 0 ? splited.join('/') : undefined;
 
-        let param = self.getParam(ns);
+        let param = self.getNS(ns);
         if (param === undefined) {
           return '`Error: No Param NS: ' + ns + '`';
         }
@@ -200,6 +174,7 @@ class DynamicContext {
 
     return formularResult;
   }
+
 }
 
-export default DynamicContext;
+export default Resolver;
