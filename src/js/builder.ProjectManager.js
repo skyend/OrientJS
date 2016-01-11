@@ -5,6 +5,7 @@
  *
  *
  */
+
 var ServiceManager = require('./builder.ServiceManager.js');
 
 
@@ -40,8 +41,9 @@ class ProjectManager {
 
   }
 
-  createService(_name, _complete) {
-    this.app.gelateriaRequest.createService(this.useProjectId, _name, function(_result) {
+  createService(_name, _publishZipFile, _complete) {
+
+    this.app.gelateriaRequest.createService(this.useProjectId, _name, _publishZipFile, function(_result) {
       _complete(_result);
     });
   }

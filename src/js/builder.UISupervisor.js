@@ -904,6 +904,7 @@ UI.prototype.onThrowCatcherCreateNewProject = function(_eventData) {
   console.log(name);
   this.app.projectManager.create(name, function(_result) {
     console.log('created project', _result);
+    _eventData.success();
   });
 };
 
@@ -911,8 +912,9 @@ UI.prototype.onThrowCatcherCreateNewService = function(_eventData) {
   var name = _eventData.name;
   console.log(name);
 
-  this.app.projectManager.createService(name, function(_result) {
+  this.app.projectManager.createService(name, _eventData.publishZip, function(_result) {
     console.log('created project', _result);
+    _eventData.success();
   });
 };
 

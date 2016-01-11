@@ -11,7 +11,9 @@ var Lobby = React.createClass({
       'project-list': [],
       'service-list': [],
       'message': undefined,
-      selectedProject: null
+      selectedProject: null,
+      creatingProject:false,
+      creatingService:false
     };
   },
 
@@ -31,25 +33,43 @@ var Lobby = React.createClass({
 
   newProject(){
     var name = this.refs['field-new-project-name'].getDOMNode().value;
+    let that = this;
     if (!/^[\w\s]+$/.test(name)) return this.setState({message: '프로젝트명을 입력해 주세요.'});
+    if( this.state.creatingProject ) return;
 
+    this.setState({creatingProject:true});
 
     this.emit("CreateNewProject", {
-      name: name
-    });
+      name: name,
+      success: function(){
 
-    this.requestNeedData(['project-list']);
+        that.setState({creatingProject:false});
+        that.requestNeedData(['project-list']);
+      }
+    });
   },
 
   newService(){
     var name = this.refs['field-new-service-name'].getDOMNode().value;
+    var publishZipInput = this.refs['field-new-service-zip'].getDOMNode();
+
+    let that = this;
     if (!/^[\w\s]+$/.test(name)) return this.setState({message: '서비스명을 입력해 주세요.'});
+    if( this.state.creatingService ) return;
+
+    var file = publishZipInput.files[0];
+
+    this.setState({creatingService:true});
 
     this.emit("CreateNewService", {
-      name: name
+      name: name,
+      publishZip: file,
+      success: function(){
+        that.setState({creatingService:false});
+        that.requestNeedData(['service-list']);
+      }
     });
 
-    this.requestNeedData(['service-list']);
   },
 
   setData(_fieldName, _data){
@@ -129,7 +149,7 @@ var Lobby = React.createClass({
                      ref="field-new-project-name"/>
             </div>
             <ul className="actions">
-              <li><a href="#" className="button" onClick={this.newProject}>add new Project</a></li>
+              <li><a href="#" className="button" onClick={this.newProject}>{ this.state.creatingProject ? <i className='fa fa-paw fa-spin'/>:'add new Project'}</a></li>
             </ul>
           </form>
         </div>
@@ -150,11 +170,11 @@ var Lobby = React.createClass({
         <div className='row-division'>
           <form method="post" action="#">
             <div className="field">
-              <input type="text" name="new-service-name" placeholder="Service Name"
-                     ref="field-new-service-name"/>
+              <input type="text" name="new-service-name" placeholder="Service Name"  ref="field-new-service-name"/>
+              <input type="file" name="new-service-name" ref="field-new-service-zip" placeholder="Input zip" accept=".zip"/>
             </div>
             <ul className="actions">
-              <li><a href="#" className="button" onClick={this.newService}>add new Service</a></li>
+              <li><a href="#" className="button" onClick={this.newService}>{ this.state.creatingService ? <i className='fa fa-paw fa-spin'/>:'add new Service'}</a></li>
             </ul>
           </form>
         </div>

@@ -45,16 +45,17 @@ class GelateriaRequest {
       });
   }
 
-  createService(_project_real_id, _name, _complete) {
+  createService(_project_real_id, _name, _publishZipFile, _complete) {
 
+
+    var formData = new FormData();
+    formData.append('publishZipFile', _publishZipFile);
+    formData.append('project_real_id', _project_real_id);
+    formData.append('name', _name);
 
     request.post("http://" + this.host + "/services/" + ["create"].join("/"))
-      .type('form')
       .withCredentials()
-      .send({
-        'project_real_id': _project_real_id,
-        name: _name
-      })
+      .send(formData)
       .end(function(err, res) {
 
         if (err !== null) throw new Error("Service create fail");
