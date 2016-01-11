@@ -49,7 +49,13 @@ class HTMLElementNode extends TagBaseElementNode {
 
       self.realization.appendChild(_child.realization);
 
-      if (_child.type !== 'string') _child.linkHierarchyRealizaion();
+      if (_child.type !== 'string') {
+        _child.linkHierarchyRealizaion();
+      } else {
+        if (_child.isTextEditMode()) {
+          _child.realization.focus();
+        }
+      }
 
       if (_child.clonePool.length > 0) {
         _child.clonePool.map(function(_cloneChild) {
