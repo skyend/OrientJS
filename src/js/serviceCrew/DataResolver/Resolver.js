@@ -1,5 +1,5 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
-
+import JSCookie from 'js-cookie';
 
 /**
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
@@ -58,11 +58,21 @@ class Resolver {
   }
 
   resolveWithHttpParam(_description) {
+    let httpParamPairs = window.location.search.replace(/^\?/, '').split('&');
+    let httpParams = {};
 
+    let kv;
+    for (let i = 0; i < httpParamPairs.length; i++) {
+      kv = httpParamPairs[i].split('=');
+      console.log(kv, _description);
+      if (kv[0] === _description) return kv[1];
+    }
+
+    return undefined;
   }
 
   resolveWithCookie(_description) {
-
+    return JSCookie.get(_description) || undefined;
   }
 
 
