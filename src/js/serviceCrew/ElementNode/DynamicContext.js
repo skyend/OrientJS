@@ -74,6 +74,7 @@ class DynamicContext {
       if (apiSourceOrder == -1) _next()
       else {
         _apiSource.executeRequest(requestIdList[apiSourceOrder], undefined, undefined, function(_result) {
+
           that.dataResolver.setNS(namespaceList[apiSourceOrder], _result);
           //
           // that.params[namespaceList[apiSourceOrder]] = _result;

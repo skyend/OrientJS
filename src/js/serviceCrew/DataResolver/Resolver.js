@@ -57,8 +57,27 @@ class Resolver {
   }
 
   resolveWithNS(_description) {
-    //console.log("resolveWithNS", _description, ObjectExplorer.getValueByKeyPath(this.dataSpace, _description));
-    return ObjectExplorer.getValueByKeyPath(this.dataSpace, _description);
+    /*
+      문법 설명
+      
+      값을 그대로 가져와 반환하는 형태 ${*broadcast_series/count}
+
+      가져온 값을 가공하여 반환하는 형태 ${broadcast_series/items:MethodName}
+      지원 Methods
+        * length : ${broadcast_series/items:length}
+    */
+    let splitPathAndMethod = _description.split(':');
+
+    let result = ObjectExplorer.getValueByKeyPath(this.dataSpace, splitPathAndMethod[0]);
+
+    if (splitPathAndMethod.length === 2 && result !== undefined) {
+      switch (splitPathAndMethod[1]) {
+        case "length":
+          return result.length;
+      }
+    }
+
+    return result
   }
 
   resolveWithHttpParam(_description) {

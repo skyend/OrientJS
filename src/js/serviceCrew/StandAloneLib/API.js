@@ -10,7 +10,7 @@ class API {
   request(_sourceId, _requestId, _fields, _complete) {
 
     if (arguments.length === 3) {
-      this.requestArg3(_sourceId, _requestId, _complete);
+      this.requestArg3(_sourceId, _requestId, _fields);
     } else if (arguments.length === 4) {
       this.requestArg4(_sourceId, _requestId, _fields, _complete);
     }
