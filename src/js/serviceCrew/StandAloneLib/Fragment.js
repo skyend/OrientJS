@@ -33,8 +33,17 @@ class Fragment {
 
   appendFragmentStyles() {
     let gelato = Gelato.one();
-    this.fragmentSpec.css.map((_refString) => {
+    (this.fragmentSpec.styles || []).map((_refString) => {
       gelato.page.appendStyleRef(_refString);
+    })
+  }
+
+  appendFragmentScripts() {
+    console.warn("Todo appendFragmentScripts");
+    return;
+    let gelato = Gelato.one();
+    (this.fragmentSpec.scripts || []).map((_refString) => {
+      gelato.page.appendScriptRef(_refString);
     })
   }
 

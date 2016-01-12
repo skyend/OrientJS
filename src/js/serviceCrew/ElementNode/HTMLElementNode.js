@@ -267,6 +267,7 @@ class HTMLElementNode extends TagBaseElementNode {
   setChildListeners(_child) {
     let that = this;
     _child.on('link-me', function() {
+      console.log('linking');
       that.linkHierarchyRealizaion();
     })
   }

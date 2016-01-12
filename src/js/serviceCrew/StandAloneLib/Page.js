@@ -220,10 +220,9 @@ class Page {
     }
   }
 
-  findRunningDynamicContext() {
-    this.runningFragments.map(function(_fragment) {
+  bindTag(_element, _apiSourceId, _requestId, _fields) {
 
-    })
+    document.body.innerHTML = '<div> Hello </div>';
   }
 }
 

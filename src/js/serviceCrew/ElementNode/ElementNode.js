@@ -311,6 +311,7 @@ class ElementNode {
       });
 
       this.dynamicContext.on("complete-load", function() {
+        console.log('loaded');
         that.realize(undefined, function() {
           that.emit('link-me');
         })
@@ -644,8 +645,6 @@ class ElementNode {
     }
   }
 
-
-
   /////////////
   // String Resolve
   interpret(_matterText) {
@@ -667,10 +666,13 @@ class ElementNode {
   preInterpretOnTree(_matterText) {
     let that = this;
     let text = _matterText;
-    var WhatThings = /\*\((\w+):([\w-_\.]+)\)/g;
+
+    var WhatThings = /\*\(([\w-]+)\:?([\w-_\.]+)?\)/g;
 
     text = text.replace(WhatThings, function(_match, _mean, _submean) {
+      //console.log('repeat-n', _match, _mean, _submean, _matterText);
       if (_mean === 'repeat-n') {
+        console.log('get repeat-n');
         return that.getRepeatNOnTree();
       } else if (_mean === 'attr') {
         return that.getAttrOnTree(_submean);

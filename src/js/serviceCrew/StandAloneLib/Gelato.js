@@ -5,6 +5,7 @@ import Loader from './Loader.js';
 import Page from './Page';
 import GelatoDocument from './GelatoDocument';
 import Cookie from './Cookie';
+import API from './API';
 
 let instance = null;
 
@@ -28,6 +29,8 @@ class Gelato {
     this.cookie = new Cookie();
     // page 객체가 생성될 때 Page의 사양을 파악한다.
     this.page = new Page(document);
+
+    this.api = new API();
   }
 
   // 서비스를 시작함
