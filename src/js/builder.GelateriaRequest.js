@@ -1,6 +1,7 @@
 import Cookie from "js-cookie";
 import request from 'superagent';
 
+
 class GelateriaRequest {
   constructor(_host) {
     this.host = _host;
@@ -10,6 +11,9 @@ class GelateriaRequest {
   createProject(_name, _complete) {
     request.post("http://" + this.host + "/projects/" + ["new"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         projectName: _name
@@ -31,6 +35,9 @@ class GelateriaRequest {
   loadProjectList(_complete) {
     request.post("http://" + this.host + "/projects/" + ["list"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send()
       .end(function(err, res) {
@@ -45,16 +52,20 @@ class GelateriaRequest {
       });
   }
 
-  createService(_project_real_id, _name, _complete) {
+  createService(_project_real_id, _name, _publishZipFile, _complete) {
 
+
+    var formData = new FormData();
+    formData.append('publishZipFile', _publishZipFile);
+    formData.append('project_real_id', _project_real_id);
+    formData.append('name', _name);
 
     request.post("http://" + this.host + "/services/" + ["create"].join("/"))
-      .type('form')
-      .withCredentials()
-      .send({
-        'project_real_id': _project_real_id,
-        name: _name
+      .query({
+        'at': Cookie.get('at')
       })
+      .withCredentials()
+      .send(formData)
       .end(function(err, res) {
 
         if (err !== null) throw new Error("Service create fail");
@@ -68,6 +79,9 @@ class GelateriaRequest {
   loadServiceList(_project_real_id, _complete) {
     request.post("http://" + this.host + "/projects/" + ["service-list"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         'project_real_id': _project_real_id
@@ -112,6 +126,9 @@ class GelateriaRequest {
     console.log("Service REAL ID", _service_real_id);
     request.post("http://" + this.host + "/documents/" + ["retrieve"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         'service_real_id': _service_real_id,
@@ -142,6 +159,9 @@ class GelateriaRequest {
   saveDocument(_serviceId, _document_id, _documentDataObject, _complete) {
     request.post("http://" + this.host + "/" + ["documents", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         service_real_id: _serviceId,
@@ -163,6 +183,9 @@ class GelateriaRequest {
     console.log('create');
     request.post("http://" + this.host + "/" + ["documents", 'create'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -183,6 +206,9 @@ class GelateriaRequest {
   getDocumentList(_withContent, _serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['documents', 'list'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -203,6 +229,9 @@ class GelateriaRequest {
     console.log('create');
     request.post("http://" + this.host + "/" + ["pages", 'create'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -222,6 +251,9 @@ class GelateriaRequest {
   getPageList(_serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['pages', 'list'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -238,6 +270,9 @@ class GelateriaRequest {
     console.log("Service REAL ID", _service_real_id);
     request.post("http://" + this.host + "/pages/" + ["retrieve"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         'service_real_id': _service_real_id,
@@ -265,7 +300,10 @@ class GelateriaRequest {
   findPageBy(_serviceId, _field, _value, _complete) {
 
     request.get("http://" + this.host + "/" + ["pages", _serviceId, "findBy", _field, _value].join("/"))
-      //.withCredentials()
+      .query({
+        'at': Cookie.get('at')
+      })
+      .withCredentials()
       .end(function(err, res) {
         if (err !== null) throw new Error("page load fail");
 
@@ -277,6 +315,9 @@ class GelateriaRequest {
     console.log('do save');
     request.post("http://" + this.host + "/" + ["pages", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         service_real_id: _serviceId,
@@ -296,6 +337,9 @@ class GelateriaRequest {
 
     request.post("http://" + this.host + "/" + ["apisources", 'create'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -318,6 +362,9 @@ class GelateriaRequest {
   createCSS(_serviceId, _name, _complete) {
     request.post("http://" + this.host + "/" + ['css', 'create'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -333,6 +380,9 @@ class GelateriaRequest {
   saveCSS(_serviceId, _cssId, _cssDataObject, _complete) {
     request.post("http://" + this.host + "/" + ["css", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -375,6 +425,9 @@ class GelateriaRequest {
   createJS(_serviceId, _name, _complete) {
     request.post("http://" + this.host + "/" + ['js', 'create'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -390,6 +443,9 @@ class GelateriaRequest {
   saveJS(_serviceId, _jsId, _jsDataObject, _complete) {
     request.post("http://" + this.host + "/" + ["js", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -507,6 +563,9 @@ class GelateriaRequest {
   getApisourceList(_serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['apisources', 'list'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -524,6 +583,9 @@ class GelateriaRequest {
     console.log("Service REAL ID", _service_real_id);
     request.post("http://" + this.host + "/apisources/" + ["retrieve"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         'service_real_id': _service_real_id,
@@ -542,6 +604,9 @@ class GelateriaRequest {
   saveAPISource(_service_real_id, _apisource_id, _apisourceDataObject, _complete) {
     request.post("http://" + this.host + "/" + ["apisources", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         service_real_id: _service_real_id,
@@ -562,6 +627,9 @@ class GelateriaRequest {
     console.log('create');
     request.post("http://" + this.host + "/" + ["apiinterfaces", 'create'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -580,6 +648,9 @@ class GelateriaRequest {
   getAPIInterfaceList(_serviceId, _complete) {
     request.post("http://" + this.host + "/" + ['apiinterfaces', 'list'].join('/'))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         serviceId: _serviceId,
@@ -597,6 +668,9 @@ class GelateriaRequest {
     console.log("Service REAL ID", _service_real_id);
     request.post("http://" + this.host + "/apiinterfaces/" + ["retrieve"].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         'service_real_id': _service_real_id,
@@ -615,6 +689,9 @@ class GelateriaRequest {
   saveAPIInterface(_service_real_id, _apiinterface_id, _apiinterfaceDataObject, _complete) {
     request.post("http://" + this.host + "/" + ["apiinterfaces", 'save'].join("/"))
       .type('form')
+      .query({
+        'at': Cookie.get('at')
+      })
       .withCredentials()
       .send({
         service_real_id: _service_real_id,
@@ -676,9 +753,15 @@ class GelateriaRequest {
   }
 
   loadUserData(_complete) {
+    console.log(Cookie.get('at'));
+
     request.post("http://" + this.host + "/" + ["users", 'read'].join("/"))
       .type('form')
-      .withCredentials()
+      .query({
+        'at': Cookie.get('at')
+      })
+
+    .withCredentials()
       .send()
       .end(function(err, res) {
         if (err !== null) throw new Error("UserData Load fail");
