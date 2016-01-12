@@ -36,7 +36,7 @@ class ServiceManager {
     this.jsContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
-    this.iceHost = 'http://125.131.88.77:8080';
+    this.iceHost = 'http://125.131.88.75:8080';
     this.iceDriver = new ICEServerDriver(this.iceHost);
     this.gelateriaHost = window.gelateriaHost;
     this.sampleDatas = {};
