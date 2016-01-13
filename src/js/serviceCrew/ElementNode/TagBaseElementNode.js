@@ -193,7 +193,7 @@ class TagBaseElementNode extends ElementNode {
       let self = this;
 
       this.realization.onclick = function(_e) {
-        _e.preventDefault();
+        //_e.preventDefault();
 
         let targetNavigate = _e.target.getAttribute('data-navigate');
         console.log(self.environment);
@@ -204,7 +204,7 @@ class TagBaseElementNode extends ElementNode {
       }
     } else {
       this.realization.onclick = function(_e) {
-        _e.preventDefault();
+        //_e.preventDefault();
       }
     }
 
