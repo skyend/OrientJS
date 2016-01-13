@@ -55,21 +55,35 @@ class StringElementNode extends ElementNode {
 
     super.realize(_realizeOptions, function(_result) {
       if (_result === false) return _complete(_result);
-
-      that.createRealizationNode();
-
       let realizeOptions = _realizeOptions || {};
+      let textData;
+      let includedTag = false;
 
-      if (realizeOptions.skipResolve === true) {
-        that.realization.innerHTML = that.getText();
+      textData = that.getText();
+      if (realizeOptions.skipResolve !== true) {
+        textData = that.interpret(textData);
+      }
+
+      // text 내용에 태그가 들어 있는지 확인
+      if (/\<[^\<^\>]*\>/.test(textData)) {
+        includedTag = true;
+      }
+
+      // environment 에 stripStringEN 가 활성화 되어 있다면 text 를 span으로 감싸지 않고 랜더링 하며
+      // text 내에 태그가 들어 있다면 span태그로 감싸서 랜더링 하도록 한다.
+      if (that.environment.stripStringEN && !includedTag) {
+        that.realization = that.environment.getHTMLDocument().createTextNode(textData);
       } else {
-        that.realization.innerHTML = that.interpret(that.getText());
+        that.createRealizationNode();
+        that.realization.innerHTML = textData;
+
+        if (that.isTextEditMode()) {
+          that.realization.setAttribute('contenteditable', true);
+          that.realization.focus();
+        }
       }
 
-      if (that.isTextEditMode()) {
-        that.realization.setAttribute('contenteditable', true);
-        that.realization.focus();
-      }
+
 
       _complete();
     });

@@ -23,7 +23,7 @@ class Page {
     let rootGridElement = this.findRootGrid();
     this.rootGridElement = rootGridElement;
 
-
+    this.stripStringEN = true;
     this.standAlone = true;
   }
 
