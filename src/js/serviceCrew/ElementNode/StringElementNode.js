@@ -53,7 +53,9 @@ class StringElementNode extends ElementNode {
   realize(_realizeOptions, _complete) {
     let that = this;
 
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) return _complete(_result);
+
       that.createRealizationNode();
 
       let realizeOptions = _realizeOptions || {};
@@ -88,6 +90,11 @@ class StringElementNode extends ElementNode {
 
   buildByElement(_textNode) {
     this.setType('string');
+
+    // null을 반환한 ElementNode는 유효하지 않은 ElementNode로 상위 ElementNode의 자식으로 편입되지 못 한다.
+    // 공백과 줄바꿈으로만 이루어진 TextNode는 필요하지 않은 요소이다.
+    if (/^[\s\n]+$/.test(_textNode.nodeValue)) return null;
+
     this.setText(_textNode.nodeValue)
   }
 

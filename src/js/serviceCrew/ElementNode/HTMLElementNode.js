@@ -17,7 +17,8 @@ class HTMLElementNode extends TagBaseElementNode {
   realize(_realizeOptions, _complete) {
     let that = this;
 
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) return _complete(_result);
 
       let realizeOptions = _realizeOptions || {};
 
@@ -46,7 +47,7 @@ class HTMLElementNode extends TagBaseElementNode {
     this.clearRealizationChildren();
 
     this.children.map(function(_child) {
-
+      if (_child.realization === null) return;
       self.realization.appendChild(_child.realization);
 
       if (_child.type !== 'string') {
@@ -228,7 +229,7 @@ class HTMLElementNode extends TagBaseElementNode {
         newChildElementNode = Factory.takeElementNode(undefined, {}, child_.getAttribute('en-type') || 'html', this.environment, this.dynamicContext);
       }
 
-      newChildElementNode.buildByElement(child_);
+      if (newChildElementNode.buildByElement(child_) === null) continue;
 
       this.setChildListeners(newChildElementNode);
 

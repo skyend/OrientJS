@@ -167,7 +167,12 @@ class TagBaseElementNode extends ElementNode {
   realize(_realizeOptions, _complete) {
     let that = this;
 
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) {
+        that.realization = null;
+        return _complete(_result);
+      }
+
       that.createRealizationNode();
 
       let realizeOptions = _realizeOptions || {};
@@ -203,9 +208,9 @@ class TagBaseElementNode extends ElementNode {
         }
       }
     } else {
-      this.realization.onclick = function(_e) {
-        _e.preventDefault();
-      }
+      // this.realization.onclick = function(_e) {
+      //   _e.preventDefault();
+      // }
     }
 
   }
@@ -245,15 +250,19 @@ class TagBaseElementNode extends ElementNode {
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns'], _ignoreAttrFields || []);
+    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns', 'en-ctrl-repeat-n', 'en-ctrl-hidden'], _ignoreAttrFields || []);
+
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
 
     if (_domElement.getAttribute('en-id') !== null)
       this.setId(_domElement.getAttribute('en-id'));
 
-    if (_domElement.getAttribute('repeat-n') !== null)
-      this.setControl('repeat-n', _domElement.getAttribute('repeat-n'));
+    if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
+      this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
+
+    if (_domElement.getAttribute('en-ctrl-hidden') !== null)
+      this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
     if (_domElement.getAttribute('name') !== null)
       this.setName(_domElement.getAttribute('name'));

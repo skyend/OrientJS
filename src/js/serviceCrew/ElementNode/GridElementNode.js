@@ -78,7 +78,8 @@ class GridElementNode extends HTMLElementNode {
 
   realize(_realizeOptions, _complete) {
     let that = this;
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) return _complete(_result);
 
       console.log(that.realization, that.environment, that.environment.screenMode);
       let containerSize = that.calcContainerSize(that.environment.screenMode);

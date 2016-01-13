@@ -1,7 +1,6 @@
 "use strict";
 import HTMLElementNode from './ElementNode/HTMLElementNode.js';
 import StringElementNode from './ElementNode/StringElementNode.js';
-import EmptyElementNode from './ElementNode/EmptyElementNode.js';
 import ReactElementNode from './ElementNode/ReactElementNode.js';
 import GridElementNode from './ElementNode/GridElementNode.js';
 import ElementNodeFactory from './ElementNode/Factory.js';

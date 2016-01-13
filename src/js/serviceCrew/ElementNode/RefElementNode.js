@@ -38,7 +38,8 @@ class RefElementNode extends HTMLElementNode {
 
   realize(_realizeOptions, _complete) {
     let that = this;
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) return _complete(_result);
       // StandAlone 의 Environment 라면 sa 방식으로 로드한다.
 
       if (that.environment.standAlone) {

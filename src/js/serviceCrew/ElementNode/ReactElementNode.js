@@ -99,7 +99,9 @@ class ReactElementNode extends TagBaseElementNode {
   realize(_realizeOptions, _complete) {
     let that = this;
 
-    super.realize(_realizeOptions, function() {
+    super.realize(_realizeOptions, function(_result) {
+      if (_result === false) return _complete(_result);
+
       let realizeOptions = _realizeOptions || {};
 
       if (that.getReactPackageKey())

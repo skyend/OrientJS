@@ -50,7 +50,7 @@ class Resolver {
       %{....}
     */
     solved = solved.replace(/%\{([^\{^\}]+)\}/g, function(_matched, _formularString) {
-
+      return eval(_formularString);
     });
 
     return solved;
@@ -59,7 +59,7 @@ class Resolver {
   resolveWithNS(_description) {
     /*
       문법 설명
-      
+
       값을 그대로 가져와 반환하는 형태 ${*broadcast_series/count}
 
       가져온 값을 가공하여 반환하는 형태 ${broadcast_series/items:MethodName}

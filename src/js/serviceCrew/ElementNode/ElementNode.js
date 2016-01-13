@@ -7,6 +7,7 @@ import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import DynamicContext from './DynamicContext';
 import async from 'async';
+import DataResolver from '../DataResolver/Resolver';
 
 import Events from 'events';
 
@@ -34,7 +35,8 @@ class ElementNode {
     this.controls;
     /**
     Controls {
-        repeat-n: number or ${...}
+        repeat-n: number or ${...},
+        hidden: "true|false" or interpert
     } **/
 
     // date fields
@@ -58,6 +60,7 @@ class ElementNode {
     this.environment = _environment;
     this.mode = 'normal';
     this.dynamicContext = _dynamicContext;
+    this.defaultResolver = new DataResolver();
 
     //////////////////////////
     // 처리로직
@@ -235,7 +238,10 @@ class ElementNode {
   }
 
   realize(_realizeOptions, _complete) {
-
+    if (this.getControlWithResolve('hidden') === 'true') {
+      console.log('hidden element', this);
+      return _complete(false);
+    }
 
     // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
     this.clonePool = [];
@@ -657,7 +663,7 @@ class ElementNode {
     if (this.dynamicContext) {
       return this.dynamicContext.interpret(text);
     } else {
-      return text;
+      return this.defaultResolver.resolve(text);
     }
   }
 
@@ -914,7 +920,10 @@ class ElementNode {
 
     this.componentName = _elementNodeDataObject.componentName;
 
-    this.controls = _elementNodeDataObject.controls || {};
+    this.controls = _elementNodeDataObject.controls || {
+      'repeat-n': '',
+      'hidden': ''
+    };
 
     this.comment = _elementNodeDataObject.comment || '';
 
