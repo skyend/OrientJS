@@ -35,8 +35,8 @@ class Resolver {
       ${http-param:....} // HTTP
       ${cookie:.....} // Cookie
     */
-    solved = _matter.replace(/\$\{(\*|[\w-]+:)([^\{^\}^\(^\)]*)\}/g, function(_matched, _intentKey, _description) {
-      //console.log('--this', _intentKey, _description);
+    solved = _matter.replace(/\$\{(\*|[\w-]+:)([^\{^\}]*)\}/g, function(_matched, _intentKey, _description) {
+      console.log('Resolve ${}', _intentKey, _description);
       if (_intentKey === '*') {
         return that.resolveWithNS(_description);
       } else if (_intentKey === 'http-param:') {
@@ -49,8 +49,14 @@ class Resolver {
     /*
       %{....}
     */
-    solved = solved.replace(/%\{([^\{^\}]+)\}/g, function(_matched, _formularString) {
-      return eval(_formularString);
+    solved = solved.replace(/\%\{([^\{^\}]+)\}/g, function(_matched, _formularString) {
+      console.log('FormularString', _formularString);
+
+      try {
+        return eval(_formularString);
+      } catch (_e) {
+        return _matched;
+      }
     });
 
     return solved;
