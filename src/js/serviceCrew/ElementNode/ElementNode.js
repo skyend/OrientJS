@@ -241,7 +241,7 @@ class ElementNode {
     this.realization = _realization;
     this.realization.___en = this;
 
-    this.realization.setAttribute('en-id', this.getId())
+    this.realization.setAttribute('en-id', this.getId());
     this.realization.setAttribute('en-type', this.type);
   }
 
