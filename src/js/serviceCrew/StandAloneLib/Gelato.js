@@ -6,6 +6,10 @@ import Page from './Page';
 import GelatoDocument from './GelatoDocument';
 import Cookie from './Cookie';
 import API from './API';
+import DataResolver from '../DataResolver/Resolver';
+import React from 'react';
+import ReactDom from 'react-dom';
+import _ from 'underscore';
 
 let instance = null;
 
@@ -15,6 +19,7 @@ class Gelato {
   }
 
   constructor() {
+    // Gelato가 둘 이상 생성되는 것을 방지 한다.
     (() => {
       if (instance !== null) throw new Error("Gelato is aleady running. Call Gelato.one() if you need to the gelato instance.");
       instance = this;
@@ -31,6 +36,16 @@ class Gelato {
     this.page = new Page(document);
 
     this.api = new API();
+
+    this.resolver = new DataResolver();
+
+    // underscore provide
+    this._ = _; // underscore 제공
+
+    // react provide
+    this.react = React;
+    this.reactDom = ReactDom;
+    this.jsxCompiler = null; // jsxCompiler 객체를 제공해야함
   }
 
   // 서비스를 시작함
@@ -65,6 +80,9 @@ class Gelato {
 
   }
 
+  newDataResolver() {
+    return new DataResolver();
+  }
 
   // loadConfig(_config) {
   //   request.get('./config/config.json')

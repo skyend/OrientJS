@@ -278,6 +278,9 @@ class TagBaseElementNode extends ElementNode {
     if (_domElement.getAttribute('en-dc-request-id') !== null)
       this.dynamicContextRID = _domElement.getAttribute('en-dc-request-id');
 
+    if (_domElement.getAttribute('en-dc-inject-params') !== null)
+      this.dynamicContextInjectParams = _domElement.getAttribute('en-dc-inject-params');
+
     if (_domElement.getAttribute('en-dc-ns') !== null)
       this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
 
@@ -344,18 +347,21 @@ class TagBaseElementNode extends ElementNode {
 
 
     if (this.getControl('repeat-n'))
-      this.realization.setAttribute('repeat-n', this.getControl('repeat-n'))
+      this.realization.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+    if (this.getControl('hidden'))
+      this.realization.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
     if (this.getName())
-      this.realization.setAttribute('name', this.getName())
+      this.realization.setAttribute('en-name', this.getName());
     if (this.isDynamicContext)
       this.realization.setAttribute('en-dynamic-context', this.isDynamicContext);
     if (this.dynamicContextSID)
       this.realization.setAttribute('en-dc-source-id', this.dynamicContextSID);
     if (this.dynamicContextRID)
-      this.realization.setAttribute('en-dc-source-id', this.dynamicContextRID);
+      this.realization.setAttribute('en-dc-request-id', this.dynamicContextRID);
     if (this.dynamicContextNS)
-      this.realization.setAttribute('en-dc-request-id', this.dynamicContextNS);
-
+      this.realization.setAttribute('en-dc-ns', this.dynamicContextNS);
+    if (this.dynamicContextInjectParams)
+      this.realization.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
   }
 
   mappingAttribute(_attrName, _skipResolve) {

@@ -18,9 +18,12 @@ class DynamicContext {
     this.parentDynamicContext = _parentDynamicContext || null;
     this.params = {};
 
+    // 모든 다중 요청의 구분은 콤마(,)로 한다.
+    // 다중요청을 사용 할 때 모든 필드의 순서를 맞추어 주어야 한다.
     this.sourceIDs = _data.sourceIDs;
     this.requestIDs = _data.requestIDs;
     this.namespaces = _data.namespaces;
+    this.injectParams = _data.injectParams;
 
     this.apisources = [];
     this.isLoading = false;
@@ -64,6 +67,7 @@ class DynamicContext {
     let sourceIdList = this.sourceIDs.split(',');
     let requestIdList = this.requestIDs.split(',');
     let namespaceList = this.namespaces.split(',');
+    let injectParams = (this.injectParams || '').split(',');
 
     async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
       let apiSourceOrder = _.findIndex(sourceIdList, function(_id) {
@@ -73,7 +77,10 @@ class DynamicContext {
       // 없으므로 next
       if (apiSourceOrder == -1) _next()
       else {
-        _apiSource.executeRequest(requestIdList[apiSourceOrder], undefined, undefined, function(_result) {
+        let paramsString = injectParams[apiSourceOrder] || '';
+        let paramObject = that.parseParamString(paramsString);
+
+        _apiSource.executeRequest(requestIdList[apiSourceOrder], paramObject, undefined, function(_result) {
 
           that.dataResolver.setNS(namespaceList[apiSourceOrder], _result);
           //
@@ -87,6 +94,24 @@ class DynamicContext {
       that.isLoading = false;
       that.emit('complete-load');
     })
+  }
+
+  parseParamString(_paramString) {
+    let paramsPairs = _paramString.split('&');
+    let paramObject = {};
+
+    let pair;
+    for (let i = 0; i < paramsPairs.length; i++) {
+      pair = paramsPairs[i].split('=');
+
+      let key = pair[0];
+      let value = pair[1];
+
+      value = this.dataResolver.resolve(value || '');
+      paramObject[key] = value;
+    }
+
+    return paramObject;
   }
 
   feedbackLoadState() {

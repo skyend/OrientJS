@@ -92,6 +92,10 @@ class ElementNode {
     return this._dynamicContextNS
   }
 
+  get dynamicContextInjectParams() {
+    return this._dynamicContextInjectParams;
+  }
+
   set isDynamicContext(_isDynamicContext) {
     this._isDynamicContext = _isDynamicContext;
   }
@@ -106,6 +110,10 @@ class ElementNode {
 
   set dynamicContextNS(_dynamicContextNS) {
     this._dynamicContextNS = _dynamicContextNS;
+  }
+
+  set dynamicContextInjectParams(_dynamicContextInjectParams) {
+    this._dynamicContextInjectParams = _dynamicContextInjectParams;
   }
 
   ////////////////////
@@ -309,7 +317,8 @@ class ElementNode {
       this.dynamicContext = new DynamicContext(this.environment, this.dynamicContext, {
         sourceIDs: this.dynamicContextSID,
         requestIDs: this.dynamicContextRID,
-        namespaces: this.dynamicContextNS
+        namespaces: this.dynamicContextNS,
+        injectParams: this.dynamicContextInjectParams
       });
 
       this.dynamicContext.on("begin-load", function() {
@@ -917,6 +926,7 @@ class ElementNode {
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
+    this.dynamicContextInjectParams = _elementNodeDataObject.dynamicContextInjectParams;
 
     this.componentName = _elementNodeDataObject.componentName;
 
@@ -948,10 +958,13 @@ class ElementNode {
       createDate: (new Date(this.createDate)).toString(),
       updateDate: (new Date(this.updateDate)).toString(),
     }
+
     exportObject.isDynamicContext = this.isDynamicContext;
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;
+    exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
+
     return exportObject;
   }
 
