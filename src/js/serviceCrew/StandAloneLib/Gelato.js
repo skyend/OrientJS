@@ -10,6 +10,7 @@ import DataResolver from '../DataResolver/Resolver';
 import React from 'react';
 import ReactDom from 'react-dom';
 import _ from 'underscore';
+import accounting from 'accounting';
 
 let instance = null;
 
@@ -46,6 +47,8 @@ class Gelato {
     this.react = React;
     this.reactDom = ReactDom;
     this.jsxCompiler = null; // jsxCompiler 객체를 제공해야함
+
+    this.format = accounting;
   }
 
   // 서비스를 시작함

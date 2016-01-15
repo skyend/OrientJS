@@ -245,6 +245,73 @@ class ElementNode {
     this.realization.setAttribute('en-type', this.type);
   }
 
+  /*
+    constructDOM
+    Parameters
+      0. _options
+      1. _complete Callback
+    Returns by arguments of Callback
+      0. DOMNode or NULL
+  */
+  constructDOM(_options, _complete) { // Controls : Hidden, Repeat-n
+    // [
+    //  [0] Before Controls
+    //  [1] Node 생성
+    //  [2] Attribute and text 매핑
+    //  [3] Children Construct
+    //  [4] Children Link
+    //  [5] After Controls
+    // ]
+
+    // Before Control
+    // * hidden
+
+    // [0] Before Controls
+    if (this.getControlWithResolve('hidden') === 'true') {
+      _complete(null);
+    }
+
+    // [1] Node 생성
+    let node = this.createNode();
+
+    // [2] Attribute and text 매핑
+    this.mappingAttributes(dom);
+
+    // [3] Children Construct
+    if (this.type !== 'string') {
+      this.childrenConstruct(_options, _complete); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
+    }
+
+  }
+
+  /*
+    CreateNode
+      HTMLElement 또는 TextNode 를 생성한다.
+
+    return DOMNode
+  */
+  createNode() {
+
+  }
+
+  /*
+    MappingAttributes
+      인자로 들어온 DOMNode에 Attribute 또는 nodeValue(text) 를 입력한다.
+    return Nothing
+  */
+  mappingAttributes(_domNode) {
+
+  }
+
+  /*
+    ChildrenConstruct
+
+
+  */
+  childrenConstruct(_options) {
+
+  }
+
   realize(_realizeOptions, _complete) {
     if (this.getControlWithResolve('hidden') === 'true') {
       console.log('hidden element', this);
