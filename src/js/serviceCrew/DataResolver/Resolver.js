@@ -1,10 +1,9 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import JSCookie from 'js-cookie';
-
+import Accounting from 'accounting';
 /**
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
 */
-
 
 class Resolver {
   constructor() {
@@ -100,21 +99,23 @@ class Resolver {
     */
 
     // ':' 기준으로 내용을 분리하여 배열로 담아낸다.
-    let splitPathAndMethod = _description.split(':');
+    let splited = _description.split(':');
 
     // splitPathAndMethod[0] Main 데이터 패스
-    let result = ObjectExplorer.getValueByKeyPath(this.dataSpace, splitPathAndMethod[0]);
+    let result = this.getNSData(splited.shift());
+    console.log(result);
+    // 메인 데이터패스가 제외된 splited 배열의 길이가 2이며 메인 데이터가 undefined 가 아닐 때 메소드 처리를 거친다.
+    // 0번째 요소는 메소드명이며
+    // 1번째 이상 요소는 메소드의 인자로 사용된다.
+    // ~인자는 NS데이터 패스가 될 수 있다.~
+    if (splited.length >= 1 && result !== undefined) {
+      let methodName = splited[0];
 
-    // : 로 나누어진 값이 2와 같거나 보다 많을 때 Method처리를 진행한다.
-    // 2번째 값은 메소드명
-    // 3번째 이상 값은 인자이며. 인자값이 * 로 시작 할 때 NS Data의 Path 로 인식하여 실제 Data 문자열 로 대체된다.
-    //
-    if (splitPathAndMethod.length >= 2 && result !== undefined) {
-      switch (splitPathAndMethod[1]) {
+      switch (methodName) {
         case "length":
           return result.length;
         case "currency":
-          return result.length;
+          return Accounting.formatMoney(result, splited[1] || '', splited[2], splited[3]);
       }
     } else if (result !== undefined) {
       return result;
@@ -141,16 +142,18 @@ class Resolver {
   resolveWithCookie(_description) {
     return JSCookie.get(_description) || undefined;
   }
-}
 
+  /*
+    GetNSData
+    Parameters
+      0. pathWithNS : *ns/path/to/data or ns/path/to/data
 
-class DataConverter {
-  static toCurrency(_number) {
-    let numberString = String(_number);
-    let result = '';
+    Return
+      Took a data[String|Object] from path
+  */
+  getNSData(_pathWithNS) {
 
-
-
+    return ObjectExplorer.getValueByKeyPath(this.dataSpace, _pathWithNS.replace(/^\*/, ''));
   }
 }
 
