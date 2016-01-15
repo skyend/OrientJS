@@ -89,6 +89,15 @@ class StringElementNode extends ElementNode {
     });
   }
 
+  /*
+    CreateNode
+      HTMLNode를 생성한다.
+  */
+  createNode(_options) {
+    let htmlDoc = this.environment.getHTMLDocument();
+    return htmlDoc.createElement('span');
+  }
+
   //
   // linkHierarchyRealizaion() {
   //   super.linkHierarchyRealizaion();

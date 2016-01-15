@@ -163,6 +163,60 @@ class TagBaseElementNode extends ElementNode {
     this.setRealization(htmlDoc.createElement(this.getTagName() || 'div'))
   }
 
+  mappingAttributes2(_domNode, _options) {
+    let attributes = this.getAttributes();
+
+    let attributeKeys = Object.keys(attributes);
+    let key;
+
+    for (let i = 0; i < attributeKeys.length; i++) {
+      key = attributeKeys[i];
+      switch (key) {
+        case "tagName":
+          break;
+        default:
+          this.mappingAttribute2(key, _options);
+      }
+    }
+
+    var currentRect = this.getCurrentRectangle();
+    let rectKeys = Object.keys(currentRect);
+    let rectKey;
+    for (let i = 0; i < rectKeys.length; i++) {
+      rectKey = rectKeys[i];
+      if (/^\d+/.test(currentRect[rectKey])) {
+        this.realization.style[rectKey] = currentRect[rectKey];
+      }
+    }
+
+    if (this.getControl('repeat-n'))
+      this.realization.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+    if (this.getControl('hidden'))
+      this.realization.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+    if (this.getName())
+      this.realization.setAttribute('en-name', this.getName());
+    if (this.isDynamicContext)
+      this.realization.setAttribute('en-dynamic-context', this.isDynamicContext);
+    if (this.dynamicContextSID)
+      this.realization.setAttribute('en-dc-source-id', this.dynamicContextSID);
+    if (this.dynamicContextRID)
+      this.realization.setAttribute('en-dc-request-id', this.dynamicContextRID);
+    if (this.dynamicContextNS)
+      this.realization.setAttribute('en-dc-ns', this.dynamicContextNS);
+    if (this.dynamicContextInjectParams)
+      this.realization.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+  }
+
+  /*
+    CreateNode
+      HTMLNode를 생성한다.
+  */
+  createNode() {
+    let htmlDoc = this.environment.getHTMLDocument();
+
+    return htmlDoc.createElement(this.getTagName() || 'div');
+  }
+
   // realize
   realize(_realizeOptions, _complete) {
     let that = this;
@@ -366,6 +420,12 @@ class TagBaseElementNode extends ElementNode {
 
   mappingAttribute(_attrName, _skipResolve) {
     this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
+  }
+
+  mappingAttribute2(_attrName, _options) {
+    let options = _options || {};
+
+    this.realization.setAttribute(_attrName, options.skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
   }
 
 
