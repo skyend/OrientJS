@@ -68,13 +68,25 @@ class Fragment {
   }
 
   renderByRootElementNodes(_complete) {
+    let that = this;
+    this.parentElement.innerHTML = '';
 
 
     async.eachSeries(this.rootElementNodes, (_rootElementNode, _next) => {
       _rootElementNode.realize(undefined, () => {
         _rootElementNode.linkHierarchyRealizaion();
         _next();
-      })
+      });
+
+      // _rootElementNode.constructDOM({}, function(_element) {
+      //   console.log(_element);
+      //   if (_element !== null) {
+      //     that.parentElement.appendChild(_element);
+      //     _next();
+      //   } else {
+      //     throw new Error("element is null");
+      //   }
+      // });
     }, () => {
       this.parentElement.innerHTML = '';
 

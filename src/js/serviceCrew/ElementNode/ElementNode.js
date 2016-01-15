@@ -258,7 +258,7 @@ class ElementNode {
     //  [0] Before Controls
     //  [1] Node 생성
     //  [2] Attribute and text 매핑
-    //  [3] Children Construct
+    //  [3] Children Construct & Link
     //  [4] Children Link
     //  [5] After Controls
     // ]
@@ -272,44 +272,52 @@ class ElementNode {
     }
 
     // [1] Node 생성
-    let node = this.createNode();
+    let htmlNode = this.createNode(_options);
 
+    console.log(this, htmlNode);
     // [2] Attribute and text 매핑
-    this.mappingAttributes(dom);
+    this.mappingAttributes2(htmlNode, _options);
 
     // [3] Children Construct
     if (this.type !== 'string') {
-      this.childrenConstruct(_options, _complete); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
+      this.childrenConstructAndLink(_options, _complete); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
     }
 
+    _complete(htmlNode);
   }
 
   /*
+    각 ElementType Class 에서 메소드를 구현하여야 한다.
+
     CreateNode
       HTMLElement 또는 TextNode 를 생성한다.
 
     return DOMNode
   */
   createNode() {
-
+    throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
   /*
+    각 ElementType Class 에서 메소드를 구현하여야 한다.
+
     MappingAttributes
       인자로 들어온 DOMNode에 Attribute 또는 nodeValue(text) 를 입력한다.
     return Nothing
   */
   mappingAttributes(_domNode) {
-
+    throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
   /*
-    ChildrenConstruct
+    각 ElementType Class 에서 메소드를 구현하여야 한다.
 
-
+    ChildrenConstructAndLink
+      String Element를 제외한 모든 ElementNode Type에 대해서 자식을 생성하고 링크한다.
+      repeatN Control 옵션에 따라서 복제를 수행하여 완료한다.
   */
-  childrenConstruct(_options) {
-
+  childrenConstructAndLink(_options, _complete) {
+    throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
   realize(_realizeOptions, _complete) {

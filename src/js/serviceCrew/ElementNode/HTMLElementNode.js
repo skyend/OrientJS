@@ -14,6 +14,13 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children;
   }
 
+
+
+  childrenConstructAndLink(_options, _complete) {
+
+  }
+
+
   realize(_realizeOptions, _complete) {
     let that = this;
 
