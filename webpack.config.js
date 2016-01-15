@@ -71,18 +71,19 @@ module.exports = {
       inject: 'body',
       chunks: ['config', 'venders', 'main'],
       filename: 'index.html'
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Gelateria Workspace',
-      inject: 'body',
-      chunks: ['config', 'venders', 'workspace_main'],
-      filename: 'workspace.html'
-    }),
-    new HtmlWebpackPlugin({
-      title: 'Pre Publish View',
-      inject: 'body',
-      chunks: ['config', 'venders', 'workspace_main'],
-      filename: 'publish_view.html'
     })
+    /*,
+        new HtmlWebpackPlugin({
+          title: 'Gelateria Workspace',
+          inject: 'body',
+          chunks: ['config', 'venders', 'workspace_main'],
+          filename: 'workspace.html'
+        }),
+        new HtmlWebpackPlugin({
+          title: 'Pre Publish View',
+          inject: 'body',
+          chunks: ['config', 'venders', 'workspace_main'],
+          filename: 'publish_view.html'
+        })*/
   ]
 };
