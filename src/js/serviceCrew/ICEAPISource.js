@@ -200,7 +200,7 @@ export default class ICEAPISource {
           if (err !== null) {
             _complete(null);
           } else {
-            _complete(res.body);
+            _complete(res.body, _result.statusCode);
           }
 
         });
@@ -212,7 +212,7 @@ export default class ICEAPISource {
           if (res === null) {
             _complete(null);
           } else {
-            _complete(res.body);
+            _complete(res.body, _result.statusCode);
           }
         });
     }
