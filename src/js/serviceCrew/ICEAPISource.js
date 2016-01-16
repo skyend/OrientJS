@@ -202,7 +202,6 @@ export default class ICEAPISource {
           } else {
             _complete(res.body, res.statusCode);
           }
-
         });
     } else if (req.method === 'post') {
       SuperAgent.post(url)

@@ -116,6 +116,8 @@ class Resolver {
           return result.length;
         case "currency":
           return Accounting.formatMoney(result, splited[1] || '', splited[2], splited[3]);
+        case "date":
+          return dateResolver(result, splited[1]);
       }
     } else if (result !== undefined) {
       return result;
@@ -156,5 +158,40 @@ class Resolver {
     return ObjectExplorer.getValueByKeyPath(this.dataSpace, _pathWithNS.replace(/^\*/, ''));
   }
 }
+
+
+/*
+  DateResolver
+    Parameters:
+      0. Date String
+      1. Format : YYYY - years, MM - Months, DD - Days, hh - Hours, mm - Minuates, ss - Seconds
+*/
+function dateResolver(_dateString, _format) {
+  let dateObject = new Date(_dateString);
+
+  return _format.replace(/(YYYY|YY|MM|DD|hh|mm|ss)/g, function(_matched, _chars) {
+    switch (_chars) {
+      case 'YYYY':
+        return dateObject.getFullYear();
+      case 'YY':
+        return String(dateObject.getFullYear()).substring(2, 4);
+      case 'MM':
+        return dateObject.getMonth();
+      case 'DD':
+        return dateObject.getDay();
+      case 'hh':
+        return dateObject.getHours();
+      case 'mm':
+        return dateObject.getMinutes();
+      case 'ss':
+        return dateObject.getSeconds();
+      default:
+
+    }
+    return _chars;
+  });
+}
+
+window.dateResolver = dateResolver;
 
 export default Resolver;
