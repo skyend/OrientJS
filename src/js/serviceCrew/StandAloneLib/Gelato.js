@@ -57,6 +57,7 @@ class Gelato {
         })
       }, (_cb) => { // fragment attach
         this.page.buildGridNode();
+        this.page.render();
         // let fragmentFollowingGrids = this.page.analysisFragmentFollowing();
         //
         // // gridElement 에 Fragment 를 채운다.

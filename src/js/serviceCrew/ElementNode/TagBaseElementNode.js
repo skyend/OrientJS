@@ -1,6 +1,7 @@
 "use strict";
 import ElementNode from './ElementNode.js';
 import _ from 'underscore';
+import Gelato from '../StandAloneLib/Gelato';
 
 class TagBaseElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -20,6 +21,9 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
+  get behavior() {
+    return this._behavior;
+  }
 
   // Getters
   // element.tagName -> getTagName()
@@ -86,6 +90,12 @@ class TagBaseElementNode extends ElementNode {
 
   get zIndex() {
     return this._zIndex;
+  }
+
+
+
+  set behavior(_behavior) {
+    this._behavior = _behavior;
   }
 
 
@@ -157,13 +167,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-  createRealizationNode() {
-    let htmlDoc = this.environment.getHTMLDocument();
-
-    this.setRealization(htmlDoc.createElement(this.getTagName() || 'div'))
-  }
-
-  mappingAttributes2(_domNode, _options) {
+  mappingAttributes(_domNode, _options) {
     let attributes = this.getAttributes();
 
     let attributeKeys = Object.keys(attributes);
@@ -171,12 +175,7 @@ class TagBaseElementNode extends ElementNode {
 
     for (let i = 0; i < attributeKeys.length; i++) {
       key = attributeKeys[i];
-      switch (key) {
-        case "tagName":
-          break;
-        default:
-          this.mappingAttribute2(key, _options);
-      }
+      this.mappingAttribute(_domNode, key, _options);
     }
 
     var currentRect = this.getCurrentRectangle();
@@ -185,34 +184,53 @@ class TagBaseElementNode extends ElementNode {
     for (let i = 0; i < rectKeys.length; i++) {
       rectKey = rectKeys[i];
       if (/^\d+/.test(currentRect[rectKey])) {
-        this.realization.style[rectKey] = currentRect[rectKey];
+        _domNode.style[rectKey] = currentRect[rectKey];
       }
     }
 
+    _domNode.setAttribute('en-id', this.getId());
+
     if (this.getControl('repeat-n'))
-      this.realization.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+      _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
     if (this.getControl('hidden'))
-      this.realization.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+      _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
     if (this.getName())
-      this.realization.setAttribute('en-name', this.getName());
+      _domNode.setAttribute('en-name', this.getName());
     if (this.isDynamicContext)
-      this.realization.setAttribute('en-dynamic-context', this.isDynamicContext);
+      _domNode.setAttribute('en-dynamic-context', this.isDynamicContext);
     if (this.dynamicContextSID)
-      this.realization.setAttribute('en-dc-source-id', this.dynamicContextSID);
+      _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
     if (this.dynamicContextRID)
-      this.realization.setAttribute('en-dc-request-id', this.dynamicContextRID);
+      _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
     if (this.dynamicContextNS)
-      this.realization.setAttribute('en-dc-ns', this.dynamicContextNS);
+      _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
     if (this.dynamicContextInjectParams)
-      this.realization.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+      _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
   }
+
+  mappingAttribute(_dom, _attrName, _options) {
+    let options = _options || {};
+
+    _dom.setAttribute(_attrName, options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName));
+  }
+
+
+
 
   /*
     CreateNode
       HTMLNode를 생성한다.
   */
   createNode() {
-    let htmlDoc = this.environment.getHTMLDocument();
+
+    let htmlDoc;
+
+    let gelato = Gelato.one();
+    if (gelato !== null) {
+      htmlDoc = gelato.page.doc;
+    } else {
+      htmlDoc = this.environment.getHTMLDocument();
+    }
 
     return htmlDoc.createElement(this.getTagName() || 'div');
   }
@@ -302,7 +320,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns', 'en-ctrl-repeat-n', 'en-ctrl-hidden'], _ignoreAttrFields || []);
+    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-behavior', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns', 'en-ctrl-repeat-n', 'en-ctrl-hidden'], _ignoreAttrFields || []);
 
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
@@ -312,6 +330,9 @@ class TagBaseElementNode extends ElementNode {
 
     if (_domElement.getAttribute('en-type') !== null)
       this.setType(_domElement.getAttribute('en-type'));
+
+    if (_domElement.getAttribute('en-behavior') !== null)
+      this.behavior = _domElement.getAttribute('en-behavior');
 
     if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
       this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
@@ -366,69 +387,6 @@ class TagBaseElementNode extends ElementNode {
 
   }
 
-  mappingAttributes(_skipResolve) {
-    let attributes = this.getAttributes();
-
-    let attributeKeys = Object.keys(attributes);
-    let key;
-
-    for (let i = 0; i < attributeKeys.length; i++) {
-      key = attributeKeys[i];
-      switch (key) {
-        case "tagName":
-          break;
-        default:
-          this.mappingAttribute(key, _skipResolve);
-      }
-    }
-
-    var currentRect = this.getCurrentRectangle();
-    let rectKeys = Object.keys(currentRect);
-    let rectKey;
-    for (let i = 0; i < rectKeys.length; i++) {
-      rectKey = rectKeys[i];
-      if (/^\d+/.test(currentRect[rectKey])) {
-        this.realization.style[rectKey] = currentRect[rectKey];
-      }
-    }
-
-    // skipResolve 옵션이 걸려있다면 text-transform 를 해제한다. 대소문자
-    if (_skipResolve && this.type !== 'string') {
-      this.realization.style.textTransform = 'none';
-    }
-
-
-
-    if (this.getControl('repeat-n'))
-      this.realization.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
-    if (this.getControl('hidden'))
-      this.realization.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
-    if (this.getName())
-      this.realization.setAttribute('en-name', this.getName());
-    if (this.isDynamicContext)
-      this.realization.setAttribute('en-dynamic-context', this.isDynamicContext);
-    if (this.dynamicContextSID)
-      this.realization.setAttribute('en-dc-source-id', this.dynamicContextSID);
-    if (this.dynamicContextRID)
-      this.realization.setAttribute('en-dc-request-id', this.dynamicContextRID);
-    if (this.dynamicContextNS)
-      this.realization.setAttribute('en-dc-ns', this.dynamicContextNS);
-    if (this.dynamicContextInjectParams)
-      this.realization.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
-  }
-
-  mappingAttribute(_attrName, _skipResolve) {
-    this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
-  }
-
-  mappingAttribute2(_attrName, _options) {
-    let options = _options || {};
-
-    this.realization.setAttribute(_attrName, options.skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
-  }
-
-
-
   // 편집자에 의해 Rect가 변경될 떄
   transformRectByEditor(_left, _top, _width, _height) {
 
@@ -457,6 +415,7 @@ class TagBaseElementNode extends ElementNode {
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
     this.tagName = _elementNodeDataObject.tagName;
+    this.behavior = _elementNodeDataObject.behavior;
     this.attributes = _elementNodeDataObject.attributes || {};
     this.zIndex = _elementNodeDataObject.zIndex;
     this.rectangle = _elementNodeDataObject.rectangle || {
@@ -468,6 +427,7 @@ class TagBaseElementNode extends ElementNode {
 
   export (_withoutId) {
     let result = super.export(_withoutId);
+    result.behavior = this.behavior;
     result.attributes = _.clone(this.getAttributes());
     result.rectangle = _.clone(this.getRectangle());
     result.zIndex = this.zIndex;

@@ -16,8 +16,18 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
 
-  childrenConstructAndLink(_options, _complete) {
+  childrenConstructAndLink(_options, _htmlNode, _complete) {
+    //console.log('child');
 
+    async.eachSeries(this.children, function iterator(_child, _next) {
+      _child.constructDOM(_options, function(_dom) {
+        if (_dom !== null)
+          _htmlNode.appendChild(_dom);
+        _next();
+      });
+    }, function done() {
+      _complete();
+    });
   }
 
 

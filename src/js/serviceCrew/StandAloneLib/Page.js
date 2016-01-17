@@ -1,10 +1,11 @@
 import _ from 'underscore';
 import async from 'async';
 import Loader from './Loader';
-import Fragment from './Fragment';
+import FragmentHelper from './Fragment';
 import Gelato from './Gelato';
 import DynamicContext from '../ElementNode/DynamicContext';
 import Factory from '../ElementNode/Factory.js';
+import Document from '../Document';
 
 class Page {
   constructor(_document) {
@@ -106,14 +107,45 @@ class Page {
     return rootGrid;
   }
 
+  /////// NEXT GEN /////////
   buildGridNode() {
     //this.rootGridElementNode;
     let elementNode = Factory.takeElementNode(undefined, undefined, 'grid', Gelato.one().page, undefined);
     elementNode.buildByElement(this.rootGridElement);
-    console.log(elementNode);
-
-    //this.rootGridElementNode
+    this.rootGridElementNode = elementNode;
   }
+
+  render() {
+    let that = this;
+
+    this.rootGridElementNode.constructDOM({
+      linkType: 'downstream'
+    }, function(_dom) {
+      console.log(_dom);
+      that.doc.body.replaceChild(_dom, that.rootGridElement);
+    });
+  }
+
+  loadFragment(_fragmentId, _complete) {
+    Loader.loadFragment(_fragmentId, function(_fragmentText) {
+      console.log(_fragmentId);
+      if (_fragmentText !== null) {
+
+        let fragmentHelper = new FragmentHelper(_fragmentId, _fragmentText);
+        fragmentHelper.buildElementNode();
+
+        let fragment = new Document();
+        fragment.buildByFragmentHTML(_fragmentText);
+        //fragment.render();
+
+        _complete(null, fragment);
+      } else {
+        _complete(new Error(), null);
+      }
+    });
+  }
+
+  /////// NEXT GEN END /////////
 
   analysisFragmentFollowing() {
     if (this.rootGridElement === null) throw new Error('Not found rootGridElement');

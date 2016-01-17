@@ -7,6 +7,8 @@ import ElementNodeFactory from './ElementNode/Factory.js';
 
 import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
+import Factory from './ElementNode/Factory';
+import async from 'async';
 
 class Document {
 
@@ -26,7 +28,7 @@ class Document {
     this.lastElementId;
 
     // document elements
-    this.rootElementNode = null;
+    this.rootElementNodes = [];
     this.elementNodes;
     this.pageCSS;
 
@@ -54,8 +56,8 @@ class Document {
       this.documentUpdate = _documentDataObject.updated;
       this.lastElementId = _documentDataObject.lastElementId || 0;
 
-      this.rootElementNode = (_documentDataObject.rootElementNode !== null && _documentDataObject.rootElementNode !== undefined) ?
-        this.newElementNode(_documentDataObject.rootElementNode) : null;
+      this.rootElementNodes = (_documentDataObject.rootElementNodes !== null && _documentDataObject.rootElementNodes !== undefined) ?
+        this.newElementNode(_documentDataObject.rootElementNodes) : null;
 
       this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
       this.pageCSS = _documentDataObject.pageCSS;
@@ -68,7 +70,7 @@ class Document {
       this.documentCreate = new Date();
       this.lastElementId = 0;
       this.elementNodes = [];
-      this.rootElementNode = null;
+      this.rootElementNodes = null;
       this.refScriptIdList = [];
       this.refStyleIdList = [];
       this.pageCSS = '';
@@ -111,9 +113,9 @@ class Document {
     this.type = _type;
   }
 
-  // rootElementNode
-  setRootElementNode(_elementNode) {
-    this.rootElementNode = _elementNode;
+  // rootElementNodes
+  setrootElementNodes(_elementNode) {
+    this.rootElementNodes = _elementNode;
   }
 
 
@@ -161,9 +163,9 @@ class Document {
     return this.elementNodes;
   }
 
-  // rootElementNode
-  getRootElementNode() {
-    return this.rootElementNode;
+  // rootElementNodes
+  getrootElementNodes() {
+    return this.rootElementNodes;
   }
 
   // pageCSS
@@ -196,9 +198,9 @@ class Document {
   }
 
   ////////////////
-  // removeRootElementNode
-  removeRootElementNode() {
-    this.setRootElementNode(null);
+  // removerootElementNodes
+  removerootElementNodes() {
+    this.setrootElementNodes(null);
     this.contextController.rootRender();
   }
 
@@ -286,6 +288,21 @@ class Document {
     return lines;
   }
 
+  constructDOMChildren(_options, _complete) {
+    let domChildren = [];
+
+    async.eachSeries(this.rootElementNodes, function(_rootElementNode, _next) {
+      _rootElementNode.constructDOM(_options, function(_dom) {
+        if (_dom !== null) {
+          domChildren.push(_dom);
+        }
+
+        _next();
+      })
+    }, function(_err) {
+      _complete(domChildren);
+    });
+  }
 
   ///////////////
   /************
@@ -309,7 +326,7 @@ class Document {
 
   findById(_elementNodeId) {
 
-    var treeSearchResult = this.findRecursive(this.rootElementNode, function(__e) {
+    var treeSearchResult = this.findRecursive(this.rootElementNodes, function(__e) {
       return __e.id == _elementNodeId;
     });
 
@@ -533,8 +550,8 @@ class Document {
     let elementNodeAnalysisBlockSetList = [];
 
 
-    if (this.rootElementNode !== null) {
-      this.rootElementNode.treeExplore(function(_elementNode) {
+    if (this.rootElementNodes !== null) {
+      this.rootElementNodes.treeExplore(function(_elementNode) {
         let bindBlockSetList = _elementNode.detectInterpret();
 
         if (bindBlockSetList !== undefined) {
@@ -592,6 +609,20 @@ class Document {
   //   return result;
   // }
 
+  buildByFragmentHTML(_fragmentHTML) {
+    this.rootElementNodes = [];
+    let domContainer = document.createElement('div');
+    domContainer.innerHTML = _fragmentHTML;
+
+    for (let i = 0; i < domContainer.children.length; i++) {
+      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', this, undefined);
+      elementNode.buildByElement(domContainer.children[i]);
+      this.rootElementNodes.push(elementNode);
+    }
+
+    domContainer.remove();
+  }
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
@@ -628,7 +659,9 @@ class Document {
       //created: this.getDocumentCreate(),
       updated: this.getDocumentUpdate(),
       lastElementId: this.getLastElementId(),
-      rootElementNode: (this.rootElementNode !== null ? this.rootElementNode.export() : null),
+      rootElementNodes: this.rootElementNodes.map(function(_rootElementNode) {
+        return _rootElementNode.export();
+      }),
       elementNodes: this.elementNodes.map(function(_elementNode) {
         return _elementNode.export();
       }),

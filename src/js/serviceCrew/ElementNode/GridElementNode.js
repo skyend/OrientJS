@@ -20,16 +20,13 @@ class GridElementNode extends HTMLElementNode {
       height: 0
     }
 
-    this._behavior; // Grid, Row, Column, Layer
+    //this._behavior; // Grid, Row, Column, Layer
     this._followingFragment;
 
     this._loadedFollowingFragmentObject = null;
     this._fragmentAnalysisResult = null;
   }
 
-  get behavior() {
-    return this._behavior;
-  }
 
   get screenSize() {
     return this._screenSize;
@@ -49,10 +46,6 @@ class GridElementNode extends HTMLElementNode {
 
   get fragmentAnalysisResult() {
     return this._fragmentAnalysisResult;
-  }
-
-  set behavior(_behavior) {
-    this._behavior = _behavior;
   }
 
   set screenSize(_screenSize) {
@@ -75,6 +68,31 @@ class GridElementNode extends HTMLElementNode {
 
   set fragmentAnalysisResult(_fragmentAnalysisResult) {
     this._fragmentAnalysisResult = _fragmentAnalysisResult;
+  }
+
+  mappingAttributes(_domNode, _options) {
+    super.mappingAttributes(_domNode, _options);
+
+    if (this.followingFragment)
+      _domNode.setAttribute('en-ref-fragment', this.followingFragment);
+  }
+
+  childrenConstructAndLink(_options, _htmlNode, _complete) {
+
+    if (_.isString(this.followingFragment)) {
+      this.environment.loadFragment(this.followingFragment, function(_err, _fragment) {
+
+        _fragment.constructDOMChildren(_options, function(_doms) {
+          _doms.map(function(_dom) {
+            _htmlNode.appendChild(_dom);
+          });
+
+          _complete();
+        });
+      });
+    } else {
+      super.childrenConstructAndLink(_options, _htmlNode, _complete);
+    }
   }
 
   realize(_realizeOptions, _complete) {
@@ -381,19 +399,14 @@ class GridElementNode extends HTMLElementNode {
 
     console.log('프패', prepared);
 
-
-
     return prepared;
     //console.log('check bind rule', this.environment, this.fragmentAnalysisResult);
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union([], _ignoreAttrFields || ['en-behavior', 'en-ref-fragment']);
+    let ignoreAttrFields = _.union([], _ignoreAttrFields || ['en-ref-fragment']);
 
     super.buildByElement(_domElement, ignoreAttrFields);
-
-    if (_domElement.getAttribute('en-behavior') !== null)
-      this.behavior = _domElement.getAttribute('en-behavior');
 
     if (_domElement.getAttribute('en-ref-fragment') !== null)
       this.followingFragment = _domElement.getAttribute('en-ref-fragment');
@@ -401,13 +414,11 @@ class GridElementNode extends HTMLElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.behavior = _elementNodeDataObject.behavior;
     this.followingFragment = _elementNodeDataObject.followingFragment || null;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
-    result.behavior = this.behavior;
     result.followingFragment = this.followingFragment;
 
     return result;

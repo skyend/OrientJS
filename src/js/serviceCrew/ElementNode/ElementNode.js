@@ -253,7 +253,8 @@ class ElementNode {
           // upstream 스스로 부모에게 링크 ,downstream 자식만을 링크
           // replacedNode = parentNode.replaceChild(newChild, oldChild);
 
-          resolve: boolean , default:true
+          resolve: boolean , default:true // 바인딩 진행 여부
+          forward: boolean , default:true // true면 생성된 dom을 자신의 forwardDOM 필드에 입력하고 false면 자신의 backupDOM 필드에 입력한다.
         }
       1. _complete Callback
     Returns by arguments of Callback
@@ -271,6 +272,11 @@ class ElementNode {
 
     // Before Control
     // * hidden
+    let that = this;
+    let options = _options || {};
+    options.linkType = options.linkType || 'downstream';
+    options.resolve = options.resolve != undefined ? options.resolve : true;
+    options.forward = options.forward != undefined ? options.forward : true;
 
     // [0] Before Controls
     if (this.getControlWithResolve('hidden') === 'true') {
@@ -278,18 +284,26 @@ class ElementNode {
     }
 
     // [1] Node 생성
-    let htmlNode = this.createNode(_options);
+    let htmlNode = this.createNode(options);
+    if (options.forward) {
+      this.forwardDOM = htmlNode;
+    } else {
+      this.backupDOM = htmlNode;
+    }
+    htmlNode.___en = this;
 
-    console.log(this, htmlNode);
+    //console.log(this, htmlNode);
     // [2] Attribute and text 매핑
-    this.mappingAttributes2(htmlNode, _options);
+    this.mappingAttributes(htmlNode, options);
 
     // [3] Children Construct
     if (this.type !== 'string') {
-      this.childrenConstructAndLink(_options, _complete); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
+      this.childrenConstructAndLink(options, htmlNode, function() {
+        _complete(htmlNode);
+      }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
+    } else {
+      _complete(htmlNode);
     }
-
-    _complete(htmlNode);
   }
 
   /*
@@ -300,7 +314,7 @@ class ElementNode {
 
     return DOMNode
   */
-  createNode() {
+  createNode(options) {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
@@ -311,7 +325,7 @@ class ElementNode {
       인자로 들어온 DOMNode에 Attribute 또는 nodeValue(text) 를 입력한다.
     return Nothing
   */
-  mappingAttributes(_domNode) {
+  mappingAttributes(htmlNode, options) {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 

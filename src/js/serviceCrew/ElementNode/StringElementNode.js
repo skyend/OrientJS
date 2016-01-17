@@ -1,6 +1,7 @@
 "use strict";
 import ElementNode from './ElementNode.js';
 import _ from 'underscore';
+import Gelato from '../StandAloneLib/Gelato';
 
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -13,6 +14,11 @@ class StringElementNode extends ElementNode {
   getText() {
     return this.text;
   }
+
+  get enableHTML() {
+    return this._enableHTML;
+  }
+
 
   // getBoundingRect() {
   //
@@ -44,9 +50,21 @@ class StringElementNode extends ElementNode {
     this.text = _text;
   }
 
+  set enableHTML(_enableHTML) {
+    this._enableHTML = _enableHTML;
+  }
+
   createRealizationNode() {
 
-    let htmlDoc = this.environment.getHTMLDocument();
+    let htmlDoc;
+
+    let gelato = Gelato.one();
+    if (gelato !== null) {
+      htmlDoc = gelato.page.doc;
+    } else {
+      htmlDoc = this.environment.getHTMLDocument();
+    }
+
     this.setRealization(htmlDoc.createElement('span'));
   }
 
@@ -79,7 +97,6 @@ class StringElementNode extends ElementNode {
 
         if (that.isTextEditMode()) {
           that.realization.setAttribute('contenteditable', true);
-          that.realization.focus();
         }
       }
 
@@ -94,8 +111,30 @@ class StringElementNode extends ElementNode {
       HTMLNode를 생성한다.
   */
   createNode(_options) {
-    let htmlDoc = this.environment.getHTMLDocument();
-    return htmlDoc.createElement('span');
+    let htmlDoc;
+
+    let gelato = Gelato.one();
+    if (gelato !== null) {
+      htmlDoc = gelato.page.doc;
+    } else {
+      htmlDoc = this.environment.getHTMLDocument();
+    }
+
+    // environment 에 stripStringEN 가 활성화 되어 있다면 text 를 span으로 감싸지 않고 랜더링 하며
+    // text 내에 태그가 들어 있다면 span태그로 감싸서 랜더링 하도록 한다.
+    if (this.environment.stripStringEN && !this.enableHTML) {
+      return htmlDoc.createTextNode('');
+    } else {
+      return htmlDoc.createElement('span');
+    }
+  }
+
+  mappingAttributes(_domNode, _options) {
+    if (_domNode.nodeName === '#text') {
+      _domNode.nodeValue = _options.resolve ? this.interpret(this.getText()) : this.getText();
+    } else {
+      _domNode.innerHTML = _options.resolve ? this.interpret(this.getText()) : this.getText();
+    }
   }
 
   //
@@ -144,13 +183,14 @@ class StringElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.text = _elementNodeDataObject.text;
+    this.enableHTML = _elementNodeDataObject.enableHTML || false;
+    this.text = _elementNodeDataObject.text || false;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.text = this.getText();
-
+    result.enableHTML = this.enableHTML;
     return result;
   }
 }

@@ -37,6 +37,29 @@ class RefElementNode extends HTMLElementNode {
     this._refTargetId = _refTargetId;
   }
 
+  mappingAttributes(_domNode, _options) {
+    super.mappingAttributes(_domNode, _options);
+
+    if (this.refType)
+      _domNode.setAttribute('en-ref-type', this.refType);
+
+    if (this.refTargetId)
+      _domNode.setAttribute('en-ref-target-id', this.refTargetId);
+  }
+
+  childrenConstructAndLink(_options, _htmlNode, _complete) {
+
+    if (_.isString(this.refTargetId)) {
+      this._sa_renderRefferenced(function(_result) {
+        console.log(_result);
+        _complete();
+      });
+    } else {
+      super.childrenConstructAndLink(_options, _htmlNode, _complete);
+    }
+  }
+
+
   realize(_realizeOptions, _complete) {
     let that = this;
     super.realize(_realizeOptions, function(_result) {
@@ -56,13 +79,13 @@ class RefElementNode extends HTMLElementNode {
 
 
   buildByElement(_domElement) {
-    super.buildByElement(_domElement, ['ref-type', 'ref-target-id']);
+    super.buildByElement(_domElement, ['en-ref-type', 'en-ref-target-id']);
 
-    if (_domElement.getAttribute('ref-type') !== null)
-      this.refType = _domElement.getAttribute('ref-type');
+    if (_domElement.getAttribute('en-ref-type') !== null)
+      this.refType = _domElement.getAttribute('en-ref-type');
 
-    if (_domElement.getAttribute('ref-target-id') !== null)
-      this.refTargetId = _domElement.getAttribute('ref-target-id');
+    if (_domElement.getAttribute('en-ref-target-id') !== null)
+      this.refTargetId = _domElement.getAttribute('en-ref-target-id');
 
   }
 
@@ -103,29 +126,21 @@ class RefElementNode extends HTMLElementNode {
 
   _sa_renderSharedElementNode(_complete) {
     let that = this;
+    let parseContainer = document.createElement('div');
     let refTargetId = this.interpret(this.refTargetId);
 
     SALoader.loadSharedElementNode(refTargetId, function(_sharedElementNodeText) {
-      that.realization.innerHTML = _sharedElementNodeText;
-      that.rendered = true;
+      parseContainer.innerHTML = _sharedElementNodeText;
+
       let children = [];
 
-      for (let i = 0; i < that.realization.children.length; i++) {
+      for (let i = 0; i < parseContainer.children.length; i++) {
         let elementNode = Factory.takeElementNode(undefined, {}, 'html', that.environment, that.dynamicContext);
-        elementNode.buildByElement(that.realization.children[i]);
+        elementNode.buildByElement(parseContainer.children[i]);
         children.push(elementNode);
       }
 
-      that.children = children;
-
-      async.eachSeries(that.children, function(_child, _next) {
-        _child.realize(undefined, function() {
-          _next();
-        })
-      }, function() {
-        _complete();
-      })
-
+      _complete(children);
     });
   }
 
