@@ -4,6 +4,7 @@ import _ from 'underscore';
 import SALoader from '../StandAloneLib/Loader.js';
 import Factory from './Factory';
 import async from 'async';
+import SA_Fragment from '../StandAloneLib/Fragment'
 
 let RefferenceType = Object.freeze({
   ElementNode: 'ElementNode',
@@ -89,13 +90,13 @@ class RefElementNode extends HTMLElementNode {
 
     SALoader.loadFragment(refTargetId, function(_fragmentText) {
 
-      let fragment = new Fragment(refTargetId, _fragmentText, that.realization);
-      fragment.render();
+      let fragment = new SA_Fragment(refTargetId, _fragmentText, that.realization);
 
-      fragment.renderRefElements(() => {
-        that.rendered = true;
+      fragment.buildElementNode();
 
-        _complete();
+      fragment.renderByRootElementNodes(function() {
+
+        _complete(fragment);
       });
     });
   }

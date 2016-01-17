@@ -248,7 +248,13 @@ class ElementNode {
   /*
     constructDOM
     Parameters
-      0. _options
+      0. _options {
+          linkType: 'upstream' | 'downstream', default: 'downstream'
+          // upstream 스스로 부모에게 링크 ,downstream 자식만을 링크
+          // replacedNode = parentNode.replaceChild(newChild, oldChild);
+
+          resolve: boolean , default:true
+        }
       1. _complete Callback
     Returns by arguments of Callback
       0. DOMNode or NULL

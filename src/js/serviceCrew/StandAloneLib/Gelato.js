@@ -12,6 +12,7 @@ import ReactDom from 'react-dom';
 import _ from 'underscore';
 import accounting from 'accounting';
 import Superagent from 'superagent';
+import Identifier from '../../util/Identifier';
 
 let instance = null;
 
@@ -36,27 +37,11 @@ class Gelato {
     this.cookie = new Cookie();
     // page 객체가 생성될 때 Page의 사양을 파악한다.
     this.page = new Page(document);
-
     this.api = new API();
-
     this.resolver = new DataResolver();
 
-    // underscore provide
-    this._ = _; // underscore 제공
-
-    // react provide
-    this.react = React;
-    this.reactDom = ReactDom;
-    this.jsxCompiler = null; // jsxCompiler 객체를 제공해야함
-
-    this.format = accounting;
-
-    this.request = Superagent;
-
-    this.requestHelpURL = "https://visionmedia.github.io/superagent"; //
-
     this.helpRequest = function() {
-      window.location.href = "https://visionmedia.github.io/superagent";
+      window.location.href = "";
     }
   }
 
@@ -71,16 +56,17 @@ class Gelato {
           _cb();
         })
       }, (_cb) => { // fragment attach
-        let fragmentFollowingGrids = this.page.analysisFragmentFollowing();
-
-        // gridElement 에 Fragment 를 채운다.
-        this.page.fillAllFragmentOfGridElement(fragmentFollowingGrids, () => {
-          console.log("Attached All Fragments");
-          _cb();
-        });
+        this.page.buildGridNode();
+        // let fragmentFollowingGrids = this.page.analysisFragmentFollowing();
+        //
+        // // gridElement 에 Fragment 를 채운다.
+        // this.page.fillAllFragmentOfGridElement(fragmentFollowingGrids, () => {
+        //   console.log("Attached All Fragments");
+        //   _cb();
+        // });
       }, (_cb) => {
         // 다이나믹 컨텍스트 찾기.
-        this.page.processingAllDynamicContextInstances();
+        //this.page.processingAllDynamicContextInstances();
         _cb();
 
       }, (_cb) => {
@@ -92,16 +78,43 @@ class Gelato {
 
   }
 
+  /* public api */
   newDataResolver() {
     return new DataResolver();
   }
 
-  // loadConfig(_config) {
-  //   request.get('./config/config.json')
-  //     .end(function(_result) {
-  //       console.log(_result);
-  //     });
-  // }
+  getNewID() {
+    return Identifier.genUUID();
+  }
+
+  get _() {
+    return _;
+  }
+
+  get react() {
+    return React;
+  }
+
+  get reactDom() {
+    return ReactDom()
+  }
+
+  get jsxCompiler() {
+    return null;
+  }
+
+  get currencyFormatter() {
+    return accounting;
+  }
+
+  get request() {
+    //https://visionmedia.github.io/superagent
+    return Superagent;
+  }
+
+  set navigate(_navigateString) {
+    return window.location.href = _navigateString;
+  }
 }
 
 export default Gelato;

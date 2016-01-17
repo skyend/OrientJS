@@ -4,6 +4,7 @@ import Loader from './Loader';
 import Fragment from './Fragment';
 import Gelato from './Gelato';
 import DynamicContext from '../ElementNode/DynamicContext';
+import Factory from '../ElementNode/Factory.js';
 
 class Page {
   constructor(_document) {
@@ -97,12 +98,21 @@ class Page {
     let rootGrid = null;
 
     bodyChildArray.map(function(_child) {
-      if (_child.getAttribute('type') === 'grid') {
+      if (_child.getAttribute('en-type') === 'grid') {
         rootGrid = _child;
       }
     });
 
     return rootGrid;
+  }
+
+  buildGridNode() {
+    //this.rootGridElementNode;
+    let elementNode = Factory.takeElementNode(undefined, undefined, 'grid', Gelato.one().page, undefined);
+    elementNode.buildByElement(this.rootGridElement);
+    console.log(elementNode);
+
+    //this.rootGridElementNode
   }
 
   analysisFragmentFollowing() {
@@ -134,64 +144,65 @@ class Page {
 
   // 프래그먼트를 참조하는 요소를 프래그먼트로 채운다.
   static fillElementThatReferToTheFragmentByFragment(_element, _complete) {
-      let fragmentName = _element.getAttribute('fragment-name');
+    let fragmentName = _element.getAttribute('fragment-name');
 
-      Loader.loadFragment(fragmentName, function(_fragmentText) {
-        let fragment = new Fragment(fragmentName, _fragmentText, _element);
+    Loader.loadFragment(fragmentName, function(_fragmentText) {
+      let fragment = new Fragment(fragmentName, _fragmentText, _element);
 
-        //fragment.render();
+      //fragment.render();
 
-        fragment.buildElementNode();
+      fragment.buildElementNode();
 
-        fragment.renderByRootElementNodes(function() {
+      fragment.renderByRootElementNodes(function() {
 
-          _complete(fragment);
-        });
+        _complete(fragment);
       });
-    }
-    //
-    // renderRefElementsOfFragments(_complete) {
-    //
-    //   async.eachSeries(this.runningFragments, (_fragment, _next) => {
-    //     _fragment.renderRefElements((_result) => {
-    //       _next();
-    //     });
-    //   }, (_err) => {
-    //     _complete();
-    //   })
-    // }
-    //
-    // runAllDynamicContext(_complete) {
-    //
-    //   let asyncTasks = this.selectAllDynamicContexts().map((_dynamicContext) => {
-    //     return (_cb) => {
-    //       _dynamicContext.processing(() => {
-    //         _cb();
-    //       });
-    //     }
-    //   });
-    //
-    //   async.parallel(asyncTasks, () => {
-    //     _complete();
-    //   });
-    // }
-    //
-    // selectAllDynamicContexts() {
-    //   let dynamicContexts = [];
-    //
-    //   Gelato.one().GD.exploreBody((_element) => {
-    //     if (_element.getAttribute('dynamic-context') === 'true') {
-    //       dynamicContexts.push(this.createDynamicContext(_element));
-    //       return null;
-    //     }
-    //   });
-    //
-    //   return dynamicContexts;
-    // }
-    //
-    // createDynamicContext(_element) {
-    //   return new DynamicContext(_element, this);
-    // }
+    });
+  }
+
+  //
+  // renderRefElementsOfFragments(_complete) {
+  //
+  //   async.eachSeries(this.runningFragments, (_fragment, _next) => {
+  //     _fragment.renderRefElements((_result) => {
+  //       _next();
+  //     });
+  //   }, (_err) => {
+  //     _complete();
+  //   })
+  // }
+  //
+  // runAllDynamicContext(_complete) {
+  //
+  //   let asyncTasks = this.selectAllDynamicContexts().map((_dynamicContext) => {
+  //     return (_cb) => {
+  //       _dynamicContext.processing(() => {
+  //         _cb();
+  //       });
+  //     }
+  //   });
+  //
+  //   async.parallel(asyncTasks, () => {
+  //     _complete();
+  //   });
+  // }
+  //
+  // selectAllDynamicContexts() {
+  //   let dynamicContexts = [];
+  //
+  //   Gelato.one().GD.exploreBody((_element) => {
+  //     if (_element.getAttribute('dynamic-context') === 'true') {
+  //       dynamicContexts.push(this.createDynamicContext(_element));
+  //       return null;
+  //     }
+  //   });
+  //
+  //   return dynamicContexts;
+  // }
+  //
+  // createDynamicContext(_element) {
+  //   return new DynamicContext(_element, this);
+  // }
   processingAllDynamicContextInstances() {
 
     this.runningFragments.map((_fragment) => {

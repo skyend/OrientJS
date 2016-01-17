@@ -280,10 +280,6 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-
-
-
-
   ///////////
   // Remove Attribute
   removeAttribute(_attrName) {
@@ -313,6 +309,9 @@ class TagBaseElementNode extends ElementNode {
 
     if (_domElement.getAttribute('en-id') !== null)
       this.setId(_domElement.getAttribute('en-id'));
+
+    if (_domElement.getAttribute('en-type') !== null)
+      this.setType(_domElement.getAttribute('en-type'));
 
     if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
       this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));

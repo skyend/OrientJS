@@ -1,6 +1,7 @@
 "use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import Document from '../Document.js';
+import _ from 'underscore';
 
 class GridElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -93,10 +94,10 @@ class GridElementNode extends HTMLElementNode {
       }
 
       //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
-      that.realization.setAttribute("behavior", that.behavior);
+      that.realization.setAttribute("en-behavior", that.behavior);
 
       if (that.followingFragment !== null) {
-        that.realization.setAttribute('fragment-id', that.followingFragment);
+        that.realization.setAttribute('en-ref-fragment', that.followingFragment);
 
         that.environment.getFragment(that.followingFragment, function(_fragmentContextController) {
           that.setFragmentCC(_fragmentContextController);
@@ -384,6 +385,18 @@ class GridElementNode extends HTMLElementNode {
 
     return prepared;
     //console.log('check bind rule', this.environment, this.fragmentAnalysisResult);
+  }
+
+  buildByElement(_domElement, _ignoreAttrFields) {
+    let ignoreAttrFields = _.union([], _ignoreAttrFields || ['en-behavior', 'en-ref-fragment']);
+
+    super.buildByElement(_domElement, ignoreAttrFields);
+
+    if (_domElement.getAttribute('en-behavior') !== null)
+      this.behavior = _domElement.getAttribute('en-behavior');
+
+    if (_domElement.getAttribute('en-ref-fragment') !== null)
+      this.followingFragment = _domElement.getAttribute('en-ref-fragment');
   }
 
   import (_elementNodeDataObject) {
