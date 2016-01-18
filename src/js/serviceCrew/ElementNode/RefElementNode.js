@@ -5,6 +5,7 @@ import SALoader from '../StandAloneLib/Loader.js';
 import Factory from './Factory';
 import async from 'async';
 import SA_Fragment from '../StandAloneLib/Fragment'
+import Gelato from '../StandAloneLib/Gelato';
 
 let RefferenceType = Object.freeze({
   ElementNode: 'ElementNode',
@@ -19,6 +20,7 @@ class RefElementNode extends HTMLElementNode {
     this.type = 'ref';
 
     this.refInstance = null;
+    this.loadedRefs = false;
   }
 
   get refType() {
@@ -48,15 +50,22 @@ class RefElementNode extends HTMLElementNode {
   }
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
+    let that = this;
+    super.childrenConstructAndLink(_options, _htmlNode, function() {
 
-    if (_.isString(this.refTargetId)) {
-      this._sa_renderRefferenced(function(_result) {
-        console.log(_result);
-        _complete();
-      });
-    } else {
-      super.childrenConstructAndLink(_options, _htmlNode, _complete);
-    }
+      if (_.isString(that.refTargetId) && that.loadedRefs === false) {
+
+        that._sa_renderRefferenced(function(_sharedElementNodeChildren) {
+          console.log("loaded", _sharedElementNodeChildren);
+          that.loadedRefs = true;
+          that.children = _sharedElementNodeChildren;
+          that.childrenConstructAndLink(_options, _htmlNode, _complete);
+        });
+      } else {
+        _complete([]);
+      }
+    });
+
   }
 
 

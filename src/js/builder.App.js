@@ -20,7 +20,7 @@ import Viewer from './serviceCrew/Viewer.js';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
-window.gelateriaHost = '125.131.88.146:8080';
+window.gelateriaHost = '125.131.88.146:8090';
 
 var App = function() {
   window.app = this;
