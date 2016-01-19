@@ -280,7 +280,39 @@ class ElementNode {
 
     // [0] Before Controls
     if (this.getControlWithResolve('hidden') === 'true') {
-      _complete(null);
+      _complete([]);
+      return;
+    }
+
+    let childRepeatNumber = this.getControlWithResolve('repeat-n');
+    let repeatedElements = [];
+
+    // 반복체크
+    if (/^\d+$/.test(childRepeatNumber) && !this.isRepeated) {
+      let exported = that.export();
+      let elementNode;
+
+      //console.log("repeat"); // 안나옴
+      async.eachSeries(_.range(parseInt(childRepeatNumber)), function iterator(_i, _next) {
+        elementNode = Factory.takeElementNode(_.clone(exported), {
+          isGhost: true,
+          repeatOrder: _i,
+          isRepeated: true
+        }, that.getType(), that.environment, that.dynamicContext);
+
+        repeatedElements.push(elementNode);
+
+        elementNode.constructDOM(options, function(_dom) {
+          _next();
+        });
+      }, function done(_err) {
+
+        _complete(repeatedElements);
+      })
+
+      return;
+    } else {
+
     }
 
     // [1] Node 생성
@@ -299,10 +331,10 @@ class ElementNode {
     // [3] Children Construct
     if (this.type !== 'string') {
       this.childrenConstructAndLink(options, htmlNode, function() {
-        _complete(htmlNode);
+        _complete([htmlNode]);
       }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
     } else {
-      _complete(htmlNode);
+      _complete([htmlNode]);
     }
   }
 

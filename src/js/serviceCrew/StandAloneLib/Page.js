@@ -120,11 +120,15 @@ class Page {
 
     this.rootGridElementNode.constructDOM({
       linkType: 'downstream'
-    }, function(_dom) {
-      console.log(_dom);
-      that.doc.body.replaceChild(_dom, that.rootGridElement);
+    }, function(_domList) {
 
-      _complete();
+      _domList.map(function(_dom) {
+        that.doc.body.replaceChild(_dom, that.rootGridElement);
+        _complete();
+      });
+
+
+
     });
   }
 

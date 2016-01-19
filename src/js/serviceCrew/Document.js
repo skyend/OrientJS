@@ -292,11 +292,12 @@ class Document {
     let domChildren = [];
 
     async.eachSeries(this.rootElementNodes, function(_rootElementNode, _next) {
-      _rootElementNode.constructDOM(_options, function(_dom) {
-        if (_dom !== null) {
-          domChildren.push(_dom);
-        }
-
+      _rootElementNode.constructDOM(_options, function(_domList) {
+        _domList.map(function(_dom) {
+          if (_dom !== null) {
+            domChildren.push(_dom);
+          }
+        });
         _next();
       })
     }, function(_err) {
