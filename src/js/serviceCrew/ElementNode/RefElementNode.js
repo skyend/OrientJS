@@ -55,17 +55,23 @@ class RefElementNode extends HTMLElementNode {
 
       if (_.isString(that.refTargetId) && that.loadedRefs === false) {
 
-        that._sa_renderRefferenced(function(_sharedElementNodeChildren) {
-          console.log("loaded", _sharedElementNodeChildren);
+        that.loadRefferenced(function(_resultObject) {
           that.loadedRefs = true;
-          that.children = _sharedElementNodeChildren;
+
+          // 로드한 객체의 ElementNode Children을 자신의 Children 목록에 삽입한다.
+          if (that.refType === 'Fragment') {
+            console.log(_resultObject);
+            that.children = _resultObject.rootElementNodes;
+          } else if (that.refType === 'ElementNode') {
+            that.children = _resultObject;
+          }
+
           that.childrenConstructAndLink(_options, _htmlNode, _complete);
         });
       } else {
         _complete([]);
       }
     });
-
   }
 
 
@@ -107,16 +113,24 @@ class RefElementNode extends HTMLElementNode {
     return true;
   }
 
-  _sa_renderRefferenced(_complete) {
-
-    if (this.refType === 'ElementNode') {
-      this._sa_renderSharedElementNode(_complete);
-    } else if (this.refType === 'Fragment') {
-      this._sa_renderFragment(_complete);
+  loadRefferenced(_complete) {
+    if (Gelato.one() !== null) {
+      this._sa_loadRefferenced(_complete);
+    } else {
+      console.error("not implemented");
     }
   }
 
-  _sa_renderFragment(_complete) {
+  _sa_loadRefferenced(_complete) {
+
+    if (this.refType === 'ElementNode') {
+      this._sa_loadSharedElementNode(_complete);
+    } else if (this.refType === 'Fragment') {
+      this._sa_loadFragment(_complete);
+    }
+  }
+
+  _sa_loadFragment(_complete) {
     let that = this;
     let refTargetId = this.interpret(this.refTargetId);
 
@@ -126,14 +140,11 @@ class RefElementNode extends HTMLElementNode {
 
       fragment.buildElementNode();
 
-      fragment.renderByRootElementNodes(function() {
-
-        _complete(fragment);
-      });
+      _complete(fragment);
     });
   }
 
-  _sa_renderSharedElementNode(_complete) {
+  _sa_loadSharedElementNode(_complete) {
     let that = this;
     let parseContainer = document.createElement('div');
     let refTargetId = this.interpret(this.refTargetId);

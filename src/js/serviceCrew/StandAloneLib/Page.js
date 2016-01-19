@@ -115,7 +115,7 @@ class Page {
     this.rootGridElementNode = elementNode;
   }
 
-  render() {
+  render(_complete) {
     let that = this;
 
     this.rootGridElementNode.constructDOM({
@@ -123,6 +123,8 @@ class Page {
     }, function(_dom) {
       console.log(_dom);
       that.doc.body.replaceChild(_dom, that.rootGridElement);
+
+      _complete();
     });
   }
 

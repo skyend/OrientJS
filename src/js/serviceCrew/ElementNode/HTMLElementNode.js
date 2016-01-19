@@ -20,6 +20,7 @@ class HTMLElementNode extends TagBaseElementNode {
     //console.log('child');
 
     async.eachSeries(this.children, function iterator(_child, _next) {
+
       _child.constructDOM(_options, function(_dom) {
         if (_dom !== null)
           _htmlNode.appendChild(_dom);
