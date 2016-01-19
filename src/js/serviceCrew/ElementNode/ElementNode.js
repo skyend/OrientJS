@@ -260,7 +260,7 @@ class ElementNode {
     Returns by arguments of Callback
       0. DOMNode or NULL
   */
-  constructDOM(_options, _complete) { // Controls : Hidden, Repeat-n
+  constructDOMs(_options, _complete) { // Controls : Hidden, Repeat-n
     // [
     //  [0] Before Controls
     //  [1] Node 생성
@@ -285,36 +285,42 @@ class ElementNode {
     }
 
     let childRepeatNumber = this.getControlWithResolve('repeat-n');
-    let repeatedElements = [];
 
-    // 반복체크
+    // 하나이상의 요소를 생성하여 반환한다.
+    // 반복인자가 유효하고 반복요소가 아닌 요소에 한해서 자신을 여러개 복제 하여 반환한다.
     if (/^\d+$/.test(childRepeatNumber) && !this.isRepeated) {
+      let repeatedDomList = [];
+      let clonedElementNodeList = [];
       let exported = that.export();
       let elementNode;
 
       //console.log("repeat"); // 안나옴
       async.eachSeries(_.range(parseInt(childRepeatNumber)), function iterator(_i, _next) {
-        elementNode = Factory.takeElementNode(_.clone(exported), {
-          isGhost: true,
-          repeatOrder: _i,
-          isRepeated: true
-        }, that.getType(), that.environment, that.dynamicContext);
+          elementNode = Factory.takeElementNode(_.clone(exported), {
+            isGhost: true,
+            repeatOrder: _i,
+            isRepeated: true
+          }, that.getType(), that.environment, that.dynamicContext);
+          elementNode.setParent(that);
 
-        repeatedElements.push(elementNode);
+          clonedElementNodeList.push(elementNode);
+          elementNode.constructDOMs(options, function(_domList) {
+            _domList.map(function(_dom) {
+              repeatedDomList.push(_dom);
+            })
 
-        elementNode.constructDOM(options, function(_dom) {
-          _next();
-        });
-      }, function done(_err) {
-
-        _complete(repeatedElements);
-      })
+            _next();
+          });
+        },
+        function done(_err) {
+          that.clonePool = clonedElementNodeList;
+          _complete(repeatedDomList);
+        })
 
       return;
-    } else {
-
     }
 
+    // 하나의 요소만 생성하여 반환한다.
     // [1] Node 생성
     let htmlNode = this.createNode(options);
     if (options.forward) {

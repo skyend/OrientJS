@@ -79,16 +79,19 @@ class GridElementNode extends HTMLElementNode {
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
 
-    if (_.isString(this.followingFragment)) {
+    if (_.isString(this.followingFragment) && this.loadedFollowingFragmentObject === null) {
+      let that = this;
       this.environment.loadFragment(this.followingFragment, function(_err, _fragment) {
-
-        _fragment.constructDOMChildren(_options, function(_doms) {
-          _doms.map(function(_dom) {
-            _htmlNode.appendChild(_dom);
-          });
-
-          _complete();
-        });
+        that.loadedFollowingFragmentObject = _fragment;
+        console.log(_fragment);
+        that.children = _fragment.rootElementNodes;
+        that.childrenConstructAndLink(_options, _htmlNode, _complete);
+        // _fragment.constructDOMChildren(_options, function(_elementNodeList) {
+        //   console.log(_doms);
+        //   that.children = _doms;
+        //
+        //   _complete();
+        // });
       });
     } else {
       super.childrenConstructAndLink(_options, _htmlNode, _complete);

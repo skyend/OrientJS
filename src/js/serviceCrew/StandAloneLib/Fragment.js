@@ -78,15 +78,16 @@ class Fragment {
       //   _next();
       // });
 
-      _rootElementNode.constructDOM({}, function(_element) {
-        console.log(_element);
-        if (_element !== null) {
-          that.parentElement.appendChild(_element);
-          _next();
-        } else {
-          throw new Error("element is null");
-        }
-      });
+      _rootElementNode.constructDOMs({},
+        function(_element) {
+          console.log(_element);
+          if (_element !== null) {
+            that.parentElement.appendChild(_element);
+            _next();
+          } else {
+            throw new Error("element is null");
+          }
+        });
     }, () => {
       this.parentElement.innerHTML = '';
 

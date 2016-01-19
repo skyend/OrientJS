@@ -118,18 +118,19 @@ class Page {
   render(_complete) {
     let that = this;
 
-    this.rootGridElementNode.constructDOM({
-      linkType: 'downstream'
-    }, function(_domList) {
+    this.rootGridElementNode.constructDOMs({
+        linkType: 'downstream'
+      },
+      function(_domList) {
 
-      _domList.map(function(_dom) {
-        that.doc.body.replaceChild(_dom, that.rootGridElement);
-        _complete();
+        _domList.map(function(_dom) {
+          that.doc.body.replaceChild(_dom, that.rootGridElement);
+          _complete();
+        });
+
+
+
       });
-
-
-
-    });
   }
 
   loadFragment(_fragmentId, _complete) {
