@@ -13,7 +13,7 @@ class Resolver {
 
   setNS(_ns, _data) {
     this.dataSpace[_ns] = _data;
-    console.log(this.dataSpace);
+    // console.log(this.dataSpace);
   }
 
   getNS(_ns) {
@@ -35,7 +35,7 @@ class Resolver {
       ${cookie:.....} // Cookie
     */
     solved = _matter.replace(/\$\{(\*|[\w-]+:)([^\{^\}]*)\}/g, function(_matched, _intentKey, _description) {
-      console.log('Resolve ${}', _intentKey, _description);
+      //console.log('Resolve ${}', _intentKey, _description);
       if (_intentKey === '*') {
         let nsData = that.resolveWithNS(_description);
 
@@ -72,7 +72,7 @@ class Resolver {
       %{....}
     */
     solved = solved.replace(/\%\{([^\{^\}]+)\}/g, function(_matched, _formularString) {
-      console.log('FormularString', _formularString);
+      //console.log('FormularString', _formularString);
 
       try {
         return eval(_formularString);
@@ -103,7 +103,7 @@ class Resolver {
 
     // splitPathAndMethod[0] Main 데이터 패스
     let result = this.getNSData(splited.shift());
-    console.log(result);
+    //console.log(result);
     // 메인 데이터패스가 제외된 splited 배열의 길이가 2이며 메인 데이터가 undefined 가 아닐 때 메소드 처리를 거친다.
     // 0번째 요소는 메소드명이며
     // 1번째 이상 요소는 메소드의 인자로 사용된다.

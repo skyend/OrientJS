@@ -2,56 +2,78 @@ import Factory from './Factory';
 import Sizzle from 'sizzle';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import SALoader from '../StandAloneLib/Loader';
+import Gelato from '../StandAloneLib/Gelato';
 import async from 'async';
 import Events from 'events';
 import ICEAPISource from '../ICEAPISource';
 import _ from 'underscore';
 import DataResolver from '../DataResolver/Resolver';
+import Identifier from '../../util/Identifier';
 
 class DynamicContext {
-  constructor(_environment, _parentDynamicContext, _data) {
+  /*
+    _environment -
+    _props -
+    ~_interpretInterfaceFollowObject - interpret 메소드를 구현한 Object를 입력한다. 현재 가능한 대상 : {}ElementNode~
+  */
+  constructor(_environment, _props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
     Object.assign(this, Events.EventEmitter.prototype);
+    this.id = Identifier.genUUID();
+
     this.dataResolver = new DataResolver();
 
-    this.environment = _environment;
+    // this.environment = _environment;
 
-    this.parentDynamicContext = _parentDynamicContext || null;
+    //this.interpretInterfaceFollowObject = _interpretInterfaceFollowObject || null;
+    this.upperDynamicContext = _upperDynamicContext || null;
     this.params = {};
 
     // 모든 다중 요청의 구분은 콤마(,)로 한다.
     // 다중요청을 사용 할 때 모든 필드의 순서를 맞추어 주어야 한다.
-    this.sourceIDs = _data.sourceIDs;
-    this.requestIDs = _data.requestIDs;
-    this.namespaces = _data.namespaces;
-    this.injectParams = _data.injectParams;
+    this.sourceIDs = _props.sourceIDs;
+    this.requestIDs = _props.requestIDs;
+    this.namespaces = _props.namespaces;
+    this.injectParams = _props.injectParams;
 
     this.apisources = [];
     this.isLoading = false;
   }
 
-  get parentDynamicContext() {
-    return this._parentDynamicContext;
+  get interpretInterfaceFollowObject() {
+    return this._interpretInterfaceFollowObject;
   }
 
-  set parentDynamicContext(_parentDynamicContext) {
-    this._parentDynamicContext = _parentDynamicContext;
+  get upperDynamicContext() {
+    return this._upperDynamicContext;
+  }
+
+  set interpretInterfaceFollowObject(_interpretInterfaceFollowObject) {
+    this._interpretInterfaceFollowObject = _interpretInterfaceFollowObject;
+  }
+
+  set upperDynamicContext(_upperDynamicContext) {
+    this._upperDynamicContext = _upperDynamicContext;
   }
 
   getParam(_ns) {
-    return this.params[_ns];
-  }
+      return this.params[_ns];
+    }
+    // Object.keys($('..')[0].___en.dynamicContext.params).length > 0
 
+  // clearInterval(itvid)
   ready(_complete) {
     let that = this;
 
     this.isLoading = true;
     this.emit("begin-load");
-
+    // console.log(this.sourceIDs);
     let sourceIdList = this.sourceIDs.split(',');
+    // console.log(sourceIdList);
     async.eachSeries(sourceIdList, function(_id, _next) {
+      // console.log(_id, 'source id', sourceIdList);
       SALoader.loadAPISource(_id, function(_apiSource) {
         let apiSource = new ICEAPISource(_apiSource);
-        apiSource.setHost(that.environment.iceHost);
+        apiSource.setHost(Gelato.one().page.iceHost);
 
         that.apisources.push(apiSource);
         _next();
@@ -62,7 +84,7 @@ class DynamicContext {
     });
   }
 
-  start(_complete) {
+  dataLoad(_complete) {
     let that = this;
     let sourceIdList = this.sourceIDs.split(',');
     let requestIdList = this.requestIDs.split(',');

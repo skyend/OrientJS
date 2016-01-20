@@ -60,7 +60,7 @@ class RefElementNode extends HTMLElementNode {
 
           // 로드한 객체의 ElementNode Children을 자신의 Children 목록에 삽입한다.
           if (that.refType === 'Fragment') {
-            rootElementNodes.map(function(_rootElementNode) {
+            _resultObject.rootElementNodes.map(function(_rootElementNode) {
               _rootElementNode.setParent(that);
             });
 

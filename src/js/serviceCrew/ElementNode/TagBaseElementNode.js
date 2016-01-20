@@ -357,9 +357,6 @@ class TagBaseElementNode extends ElementNode {
 
     if (_domElement.getAttribute('en-dc-ns') !== null)
       this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
-
-    if (this.isDynamicContext === 'true')
-      this.buildDynamicContext();
   }
 
 

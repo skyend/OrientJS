@@ -12,7 +12,7 @@ import DataResolver from '../DataResolver/Resolver';
 import Events from 'events';
 
 class ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
+  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     Object.assign(this, Events.EventEmitter.prototype);
 
     // 미리 삽입된 프로퍼티
@@ -49,7 +49,8 @@ class ElementNode {
 
     this.realization = null;
     this.clonePool = []; // repeated
-
+    this.backupDOM = null;
+    this.forwardDOM = null;
 
 
     // Repeat by parent's Repeat Control
@@ -59,7 +60,8 @@ class ElementNode {
 
     this.environment = _environment;
     this.mode = 'normal';
-    this.dynamicContext = _dynamicContext;
+    this.dynamicContext = null;
+    // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
 
     //////////////////////////
@@ -76,6 +78,7 @@ class ElementNode {
     }
   }
 
+  // Getters
   get isDynamicContext() {
     return this._isDynamicContext;
   }
@@ -96,6 +99,28 @@ class ElementNode {
     return this._dynamicContextInjectParams;
   }
 
+  get dynamicContext() {
+    return this._dynamicContext;
+  }
+
+  // 상위로 탐색하면서 사용가능한 dynamicContext를 확인한다.
+  get availableDynamicContext() {
+    if (this.dynamicContext !== null) return this.dynamicContext;
+    else {
+      // dynamicContext를 찾을 때 까지 부모에게 요청 할 것이다.
+      // like climbParents
+      if (this.parent === null) return null;
+      return this.parent.availableDynamicContext;
+    }
+  }
+
+  //
+  // get parentDynamicContext() {
+  //   return this._parentDynamicContext;
+  // }
+
+
+  // Setters
   set isDynamicContext(_isDynamicContext) {
     this._isDynamicContext = _isDynamicContext;
   }
@@ -115,6 +140,15 @@ class ElementNode {
   set dynamicContextInjectParams(_dynamicContextInjectParams) {
     this._dynamicContextInjectParams = _dynamicContextInjectParams;
   }
+
+  set dynamicContext(_dynamicContext) {
+    this._dynamicContext = _dynamicContext;
+  }
+
+  //
+  // set parentDynamicContext(_parentDynamicContext) {
+  //   this._parentDynamicContext = _parentDynamicContext;
+  // }
 
   ////////////////////
   // Getters
@@ -255,6 +289,7 @@ class ElementNode {
 
           resolve: boolean , default:true // 바인딩 진행 여부
           forward: boolean , default:true // true면 생성된 dom을 자신의 forwardDOM 필드에 입력하고 false면 자신의 backupDOM 필드에 입력한다.
+          keelDC: boolean | 'once' , default:false // true - 전체 , false - 유지하지 않음, once - 단 한번 유지된다. constructDOMs 의 대상의 dc만 유지되며 그 하위의 ElementNode의 dc는 유지되지 않는다.
         }
       1. _complete Callback
     Returns by arguments of Callback
@@ -277,6 +312,45 @@ class ElementNode {
     options.linkType = options.linkType || 'downstream';
     options.resolve = options.resolve != undefined ? options.resolve : true;
     options.forward = options.forward != undefined ? options.forward : true;
+    options.keepDC = options.keepDC != undefined ? options.keepDC : false;
+
+    if (options.keepDC == false) {
+      // 새로 생성
+      let isBuiltDC = this.buildDynamicContext(); // dynamicContext 생성 호출  // 생성여부에 따라 true 또는 false 를 반환한다.
+
+      // dc 가 생성되고 정해진 api을 실행한다.
+      if (isBuiltDC) {
+
+        this.dynamicContext.ready(function(_err) {
+          if (_err !== null) {
+
+            that.dynamicContext.dataLoad(function(_err) {
+              that.constructDOMs({
+                forward: false,
+                keepDC: 'once'
+              }, function(_domList) {
+                //console.log(that.forwardDOM, that);
+                that.parent.forwardMe(that);
+
+                // that.parent.forwardDOM.replaceChild(_domList[0], that.forwardDOM);
+
+                // if (that.parent.forwardDOM !== null)
+                //   that.parent.forwardDOM.replaceChild(_domList[0], that.forwardDOM);
+                // else if (that.parent.backupDOM !== null)
+                //   that.parent.backupDOM.replaceChild(_domList[0], that.backupDOM);
+
+                //console.log(that.parent.forwardDOM, that.forwardDOM);
+                //console.log(that.parent.backupDOM, that.backupDOM);
+                //that.forwardBackupDOMAll();
+              });
+            });
+          }
+        });
+      }
+    } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
+
+      options.keepDC = false;
+    }
 
     // [0] Before Controls
     if (this.getControlWithResolve('hidden') === 'true') {
@@ -300,14 +374,14 @@ class ElementNode {
             isGhost: true,
             repeatOrder: _i,
             isRepeated: true
-          }, that.getType(), that.environment, that.dynamicContext);
-          elementNode.setParent(that);
+          }, that.getType(), that.environment, null);
+          elementNode.setParent(that.parent);
 
           clonedElementNodeList.push(elementNode);
           elementNode.constructDOMs(options, function(_domList) {
             _domList.map(function(_dom) {
               repeatedDomList.push(_dom);
-            })
+            });
 
             _next();
           });
@@ -378,97 +452,56 @@ class ElementNode {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
-  realize(_realizeOptions, _complete) {
-    if (this.getControlWithResolve('hidden') === 'true') {
-      console.log('hidden element', this);
-      return _complete(false);
-    }
 
-    // clonePool 은 repeat-n Control에 의해 변경되지만 control의 설정 여부와 관계없이 항상 Pool을 비운다.
-    this.clonePool = [];
+  // 자신의 backupDOM을 forward의 위치로 교체한다.
+  forwardBackupDOMAll() {
+    // console.log(this.forwardDOM, this.backupDOM);
+    this.parent.forwardDOM.replaceChild(this.forwardDOM, this.backupDOM);
 
-    let realizeOptions = _realizeOptions || {};
 
-    // _ghostOrder 인자 에 값을 입력함으로써 GhostPoint임을 간접적으로 전달한다.
-    let isGhostizePoint = realizeOptions.ghostOrder !== undefined;
-    // let ghostOrder = realizeOptions.ghostOrder;
-
-    this.modifyFromControl(realizeOptions.skipControl, realizeOptions.skipResolve, isGhostizePoint, function() {
-      _complete();
-    });
-
-    //console.log('Realize options', this, _realizeOptions);
+    // if (_.isFunction(this.treeExplore)) {
+    //   this.treeExplore(function(_elementNode) {
+    //     // console.log(_elementNode.parent.forwardDOM, _elementNode.backupDOM, _elementNode.forwardDOM);
+    //     console.log(_elementNode.backupDOM);
+    //     //_elementNode.parent.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM);
+    //     _elementNode.forwardDOM = _elementNode.backupDOM;
+    //     _elementNode.backupDOM = null;
+    //   });
+    // }
   }
 
-  // 번외 처리
-  linkHierarchyRealizaion() {
-    if (this.dynamicContext && this.isDynamicContextOwner) {
-      if (this.dynamicContext.isLoading) {
-        //let computedStyle = window.getComputedStyle(this.realization);
-
-        //console.log(computedStyle.getPropertyValue('position'));
-        //if (computedStyle.getPropertyValue('position') === "static") {
-        //console.log('this static');
-        this.realization.setAttribute('fix-placeholder', '');
-        //}
-
-        let placeholder = this.environment.getHTMLDocument().createElement('div');
-
-        placeholder.setAttribute('is-dynamic-context-placeholder', '');
-
-        placeholder.innerHTML = '<i class="fa fa-spin fa-sun-o"/>';
-
-        this.realization.appendChild(placeholder);
-      }
+  forwardBackupDOMByVirtual() {
+    console.log(this.backupDOM);
+    if (this.backupDOM !== null) {
+      //this.forwardDOM = this.backupDOM;
     }
   }
-
 
   buildDynamicContext() {
     let that = this;
-    this.isDynamicContextOwner = true;
-    let newDynamicContext;
-    let makeNew = false;
+    this.dynamicContext = null;
 
-    if (this.isDynamicContext !== 'true') throw new Error("this is not DynamicContext!");
+    // sourceID가 undefined 가 아니면 dynamicContext 생성하고 자신의 dynamicContext 필드에 대입한다.
+    if (this.dynamicContextSID !== undefined) {
 
-    // 현재 다이나믹 컨텍스트가 입력되어 있다면
-    if (this.dynamicContext) {
-
-      // 현재 다이나믹컨텍스트의 메타 정보가 자신이 가지고 있는 메타정보와 같은지 비교하고 하나라도 다른 정보가 존재한다면
-      // 부모로 부터 입력된 다이나믹컨텍스트이므로
-      if ((this.dynamicContext.sourceIDs !== this.dynamicContextSID || this.dynamicContext.requestIDs !== this.dynamicContextRID) || this.dynamicContext.namespaces !== this.dynamicContextNS) {
-        // 자신이 가진 메타정보로 다이나믹컨텍스트를 생성하고 이전에 가지고 있던 다이나믹컨텍스트를 자신의 다이나믹컨텍스트의 부모로 입력한다.
-        makeNew = true;
-      }
-    } else {
-      makeNew = true;
-      // 새 다이나믹 컨텍스트 생성
+      let newDynamicContext = new DynamicContext(this.environment, {
+        sourceIDs: this.interpret(this.dynamicContextSID),
+        requestIDs: this.interpret(this.dynamicContextRID),
+        namespaces: this.interpret(this.dynamicContextNS),
+        injectParams: this.interpret(this.dynamicContextInjectParams)
+      }, this.availableDynamicContext);
+      // console.log(newDynamicContext);
+      this.dynamicContext = newDynamicContext;
+      //console.log(this.dynamicContext.sourceIDs);
+      return true;
     }
+    // else {
+    //   // dynamicContext 생성 조건(입력된 sourceID 값이 존재해야함)이 맞지 않으면 부모 dynamicContext 를 자신에게 대입한다.
+    //   this.dynamicContext = this.parentDynamicContext;
+    // }
 
-    if (makeNew) {
-      this.dynamicContext = new DynamicContext(this.environment, this.dynamicContext, {
-        sourceIDs: this.dynamicContextSID,
-        requestIDs: this.dynamicContextRID,
-        namespaces: this.dynamicContextNS,
-        injectParams: this.dynamicContextInjectParams
-      });
-
-      this.dynamicContext.on("begin-load", function() {
-        that.emit('link-me');
-      });
-
-      this.dynamicContext.on("complete-load", function() {
-        console.log('loaded');
-        that.realize(undefined, function() {
-          that.emit('link-me');
-        })
-      });
-    }
+    return false;
   }
-
-
-
 
   getBoundingRect() {
 
@@ -801,9 +834,13 @@ class ElementNode {
     let text = _matterText;
 
     text = this.preInterpretOnTree(text);
+    let dc = this.availableDynamicContext;
 
-    if (this.dynamicContext) {
-      return this.dynamicContext.interpret(text);
+    if (dc) {
+      let solvedText = dc.interpret(text);
+      //console.log(this.dynamicContext, this);
+
+      return solvedText;
     } else {
       return this.defaultResolver.resolve(text);
     }
@@ -820,7 +857,7 @@ class ElementNode {
     text = text.replace(WhatThings, function(_match, _mean, _submean) {
       //console.log('repeat-n', _match, _mean, _submean, _matterText);
       if (_mean === 'repeat-n') {
-        console.log('get repeat-n');
+        // console.log('get repeat-n');
         return that.getRepeatNOnTree();
       } else if (_mean === 'attr') {
         return that.getAttrOnTree(_submean);
@@ -1072,9 +1109,6 @@ class ElementNode {
 
     this.createDate = _elementNodeDataObject.createDate;
     this.updateDate = _elementNodeDataObject.updateDate;
-
-    if (this.isDynamicContext === 'true')
-      this.buildDynamicContext();
   }
 
 

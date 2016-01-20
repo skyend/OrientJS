@@ -52,6 +52,7 @@ class Gelato {
     async.waterfall([
       (_cb) => {
         Loader.loadConfig((_result) => {
+          console.log(_result);
           this.page.setConfig(_result);
           _cb();
         })

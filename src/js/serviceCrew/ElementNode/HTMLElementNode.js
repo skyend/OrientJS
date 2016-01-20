@@ -18,8 +18,9 @@ class HTMLElementNode extends TagBaseElementNode {
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
     //console.log('child');
-
+    let that = this;
     async.eachSeries(this.children, function iterator(_child, _next) {
+
         _child.constructDOMs(_options,
           function(_domList) {
             //console.log(_domList, _htmlNode);
@@ -36,62 +37,59 @@ class HTMLElementNode extends TagBaseElementNode {
       });
   }
 
-
-  realize(_realizeOptions, _complete) {
+  forwardMe(_childElementNode) {
+    console.log('forward');
+    console.log(_childElementNode);
     let that = this;
+    let lastDOM;
+    //
+    // this.childrenIteration(function(_elementNode) {
+    //   if (_elementNode === _childElementNode) {
+    //     console.log('same');
+    //     try {
+    //       console.log(that.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM));
+    //     } catch (_e) {
+    //
+    //     }
+    //   } else {
+    //     if (_elementNode.clonePool.length > 0) {
+    //       console.log('cloned');
+    //     }
+    //   }
+    // });
 
-    super.realize(_realizeOptions, function(_result) {
-      if (_result === false) return _complete(_result);
+    this.forwardDOM.innerHTML = '';
+    this.childrenIteration(function(_elementNode) {
+      if (_elementNode.backupDOM !== null) _elementNode.forwardDOM = _elementNode.backupDOM;
 
-      let realizeOptions = _realizeOptions || {};
+      if (_elementNode.clonePool.length > 0) {
+        _elementNode.clonePool.map(function(_clonedElementNode) {
+          if (_clonedElementNode.backupDOM !== null) _clonedElementNode.forwardDOM = _clonedElementNode.backupDOM;
 
-      //this.realization.setAttribute('async', 'true');
-
-      that.childrenRealize(realizeOptions, function() {
-        _complete();
-      });
-    });
-  }
-
-  childrenRealize(_realizeOptions, _complete) {
-
-    async.eachSeries(this.children, function iterator(_child, _next) {
-      _child.realize(_realizeOptions, function() {
-        _next();
-      });
-    }, function done() {
-
-      _complete()
-    });
-  }
-
-  linkHierarchyRealizaion() {
-    let self = this;
-    this.clearRealizationChildren();
-
-    this.children.map(function(_child) {
-      if (_child.realization === null) return;
-      self.realization.appendChild(_child.realization);
-
-      if (_child.type !== 'string') {
-        _child.linkHierarchyRealizaion();
-      } else {
-        if (_child.isTextEditMode()) {
-          _child.realization.focus();
-        }
-      }
-
-      if (_child.clonePool.length > 0) {
-        _child.clonePool.map(function(_cloneChild) {
-
-          self.realization.appendChild(_cloneChild.realization);
-
-          if (/^(html|ref|grid)$/.test(_cloneChild.type)) _cloneChild.linkHierarchyRealizaion();
+          console.log(_clonedElementNode.forwardDOM, _clonedElementNode);
+          that.forwardDOM.appendChild(_clonedElementNode.forwardDOM);
         });
       }
-    });
+      console.log(_elementNode.forwardDOM, _elementNode);
+      if (_elementNode.forwardDOM !== null) {
+        that.forwardDOM.appendChild(_elementNode.forwardDOM);
+      }
 
-    super.linkHierarchyRealizaion();
+
+
+      // if (_elementNode === _childElementNode) {
+      //   console.log('same');
+      //   try {
+      //     console.log(that.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM));
+      //   } catch (_e) {
+      //
+      //   }
+      // } else {
+      //   if (_elementNode.clonePool.length > 0) {
+      //     console.log('cloned');
+      //   }
+      // }
+    });
   }
 
   hookingLink() {
