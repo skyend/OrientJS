@@ -78,6 +78,10 @@ class ElementNode {
     }
   }
 
+  get isElementNode() {
+    return true;
+  }
+
   // Getters
   get isDynamicContext() {
     return this._isDynamicContext;
@@ -326,7 +330,7 @@ class ElementNode {
 
             that.dynamicContext.dataLoad(function(_err) {
               that.constructDOMs({
-                forward: false,
+                forward: true,
                 keepDC: 'once'
               }, function(_domList) {
                 //console.log(that.forwardDOM, that);
@@ -453,27 +457,20 @@ class ElementNode {
   }
 
 
-  // 자신의 backupDOM을 forward의 위치로 교체한다.
-  forwardBackupDOMAll() {
-    // console.log(this.forwardDOM, this.backupDOM);
-    this.parent.forwardDOM.replaceChild(this.forwardDOM, this.backupDOM);
-
-
-    // if (_.isFunction(this.treeExplore)) {
-    //   this.treeExplore(function(_elementNode) {
-    //     // console.log(_elementNode.parent.forwardDOM, _elementNode.backupDOM, _elementNode.forwardDOM);
-    //     console.log(_elementNode.backupDOM);
-    //     //_elementNode.parent.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM);
-    //     _elementNode.forwardDOM = _elementNode.backupDOM;
-    //     _elementNode.backupDOM = null;
-    //   });
-    // }
+  // backupDOM 을 forwardDOM으로 옮긴다.
+  forwardBackupDOMAllVirtual() {
+    if (_.isFunction(this.treeExplore)) {
+      this.treeExplore(function(_elementNode) {
+        //_elementNode.parent.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM);
+        _elementNode.forwardBackupDOMVirtual();
+      });
+    }
   }
 
-  forwardBackupDOMByVirtual() {
-    console.log(this.backupDOM);
+  forwardBackupDOMVirtual() {
     if (this.backupDOM !== null) {
-      //this.forwardDOM = this.backupDOM;
+      this.forwardDOM = this.backupDOM;
+      this.backupDOM = null;
     }
   }
 

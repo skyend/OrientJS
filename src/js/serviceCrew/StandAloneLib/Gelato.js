@@ -40,6 +40,8 @@ class Gelato {
     this.api = new API();
     this.resolver = new DataResolver();
 
+    this.customActions = {};
+
     this.helpRequest = function() {
       window.location.href = "";
     }
@@ -118,6 +120,19 @@ class Gelato {
 
   set navigate(_navigateString) {
     return window.location.href = _navigateString;
+  }
+
+
+  en(_domElement) {
+    if (_domElement.isElementNode) return _domElement;
+
+    return _domElement.___en || null;
+  }
+
+  addCustomAction(_name, _actionFunc) {
+    if (this.customActions[_name] !== undefined) throw new Error(`${name} is already exists action.`);
+
+    this.customActions[_name] = _actionFunc;
   }
 }
 

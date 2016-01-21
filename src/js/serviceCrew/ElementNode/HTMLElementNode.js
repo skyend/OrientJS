@@ -39,56 +39,28 @@ class HTMLElementNode extends TagBaseElementNode {
 
   forwardMe(_childElementNode) {
     console.log('forward');
-    console.log(_childElementNode);
+    console.log(this);
     let that = this;
     let lastDOM;
-    //
-    // this.childrenIteration(function(_elementNode) {
-    //   if (_elementNode === _childElementNode) {
-    //     console.log('same');
-    //     try {
-    //       console.log(that.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM));
-    //     } catch (_e) {
-    //
-    //     }
-    //   } else {
-    //     if (_elementNode.clonePool.length > 0) {
-    //       console.log('cloned');
-    //     }
-    //   }
-    // });
 
+    //    if (this.forwardDOM)
     this.forwardDOM.innerHTML = '';
     this.childrenIteration(function(_elementNode) {
-      if (_elementNode.backupDOM !== null) _elementNode.forwardDOM = _elementNode.backupDOM;
+      //_elementNode.forwardBackupDOMAllVirtual();
 
+      // clone 처리
       if (_elementNode.clonePool.length > 0) {
         _elementNode.clonePool.map(function(_clonedElementNode) {
-          if (_clonedElementNode.backupDOM !== null) _clonedElementNode.forwardDOM = _clonedElementNode.backupDOM;
+          //_clonedElementNode.forwardBackupDOMAllVirtual();
 
-          console.log(_clonedElementNode.forwardDOM, _clonedElementNode);
           that.forwardDOM.appendChild(_clonedElementNode.forwardDOM);
         });
       }
-      console.log(_elementNode.forwardDOM, _elementNode);
+
+      //
       if (_elementNode.forwardDOM !== null) {
         that.forwardDOM.appendChild(_elementNode.forwardDOM);
       }
-
-
-
-      // if (_elementNode === _childElementNode) {
-      //   console.log('same');
-      //   try {
-      //     console.log(that.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM));
-      //   } catch (_e) {
-      //
-      //   }
-      // } else {
-      //   if (_elementNode.clonePool.length > 0) {
-      //     console.log('cloned');
-      //   }
-      // }
     });
   }
 
