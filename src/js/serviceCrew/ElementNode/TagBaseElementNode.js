@@ -340,27 +340,28 @@ class TagBaseElementNode extends ElementNode {
       'en-id',
       'en-type',
       'en-behavior',
-      'en-name',
+      'en-name'
 
       // DynamicContext
-      'en-dc-source-id',
-      'en-dc-request-id',
-      'en-dc-inject-params',
-      'en-dc-ns',
+      // 'en-dc-source-id',
+      // 'en-dc-request-id',
+      // 'en-dc-inject-params',
+      // 'en-dc-ns'
 
       // Controls
-      'en-ctrl-repeat-n',
-      'en-ctrl-hidden',
+      // 'en-ctrl-repeat-n',
+      // 'en-ctrl-hidden'
 
       // Events
-      'en-event-click',
-      'en-event-mouseenter',
-      'en-event-complete-bind'
+      // 'en-event-click',
+      // 'en-event-mouseenter',
+      // 'en-event-complete-bind'
 
     ], _ignoreAttrFields || []);
 
 
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
+
     if (this.realization === null) this.realization = _domElement;
 
     // Normals
@@ -397,14 +398,72 @@ class TagBaseElementNode extends ElementNode {
       this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
 
-    // Events
-    if (_domElement.getAttribute('en-event-click') !== null)
+    // # Events
+    // Mouse Events
+    if (_domElement.getAttribute('en-event-click') !== null) // Click
       this.setEvent('click', _domElement.getAttribute('en-event-click'));
 
-    if (_domElement.getAttribute('en-event-mouseenter') !== null)
-      this.setEvent('mouseenter', _domElement.getAttribute('en-event-mouseenter'));
+    if (_domElement.getAttribute('en-event-dblclick') !== null) // DoubleClick
+      this.setEvent('dblclick', _domElement.getAttribute('en-event-dblclick'));
 
-    if (_domElement.getAttribute('en-event-complete-bind') !== null)
+    if (_domElement.getAttribute('en-event-mousedown') !== null) // Mouse Down
+      this.setEvent('mousedown', _domElement.getAttribute('en-event-mousedown'));
+
+    if (_domElement.getAttribute('en-event-mousemove') !== null) // Mouse Move
+      this.setEvent('mousemove', _domElement.getAttribute('en-event-mousemove'));
+
+    if (_domElement.getAttribute('en-event-mouseout') !== null) // Mouse Out
+      this.setEvent('mouseout', _domElement.getAttribute('en-event-mouseout'));
+
+    if (_domElement.getAttribute('en-event-mouseover') !== null) // Mouse Over
+      this.setEvent('mouseover', _domElement.getAttribute('en-event-mouseover'));
+
+    if (_domElement.getAttribute('en-event-mouseup') !== null) // Mouse Up
+      this.setEvent('mouseup', _domElement.getAttribute('en-event-mouseup'));
+
+    // Keyboard Event
+    if (_domElement.getAttribute('en-event-keydown') !== null) // Key down
+      this.setEvent('keydown', _domElement.getAttribute('en-event-keydown'));
+
+    if (_domElement.getAttribute('en-event-keyup') !== null) // Key up
+      this.setEvent('keyup', _domElement.getAttribute('en-event-keyup'));
+
+    if (_domElement.getAttribute('en-event-keypress') !== null) // Key press
+      this.setEvent('keypress', _domElement.getAttribute('en-event-keypress'));
+
+    // Form Event
+    if (_domElement.getAttribute('en-event-blur') !== null) // Blur
+      this.setEvent('blur', _domElement.getAttribute('en-event-blur'));
+
+    if (_domElement.getAttribute('en-event-change') !== null) // Change
+      this.setEvent('change', _domElement.getAttribute('en-event-change'));
+
+    if (_domElement.getAttribute('en-event-contextmenu') !== null) // Contextmenu
+      this.setEvent('contextmenu', _domElement.getAttribute('en-event-contextmenu'));
+
+    if (_domElement.getAttribute('en-event-focus') !== null) // Focus
+      this.setEvent('focus', _domElement.getAttribute('en-event-focus'));
+
+    if (_domElement.getAttribute('en-event-input') !== null) // Input
+      this.setEvent('input', _domElement.getAttribute('en-event-input'));
+
+    if (_domElement.getAttribute('en-event-invalid') !== null) // Invalid
+      this.setEvent('invalid', _domElement.getAttribute('en-event-invalid'));
+
+    if (_domElement.getAttribute('en-event-reset') !== null) // Reset
+      this.setEvent('reset', _domElement.getAttribute('en-event-reset'));
+
+    if (_domElement.getAttribute('en-event-search') !== null) // Search
+      this.setEvent('submit', _domElement.getAttribute('en-event-submit'));
+
+    if (_domElement.getAttribute('en-event-select') !== null) // Select
+      this.setEvent('select', _domElement.getAttribute('en-event-select'));
+
+    if (_domElement.getAttribute('en-event-submit') !== null) // Submit
+      this.setEvent('submit', _domElement.getAttribute('en-event-submit'));
+
+    // Gelato Events
+    if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
       this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
 
   }
@@ -420,11 +479,14 @@ class TagBaseElementNode extends ElementNode {
     let attrValue;
     for (var i = 0; i < attributes.length; i++) {
       attrName = attributes[i].name;
-      if (_.findIndex(_ignoreAttrFields, (_name) => {
-          return attrName.toLowerCase() === _name.toLowerCase();
-        }) != -1) continue;
+      // if (_.findIndex(_ignoreAttrFields, (_name) => {
+      //     return attrName.toLowerCase() === _name.toLowerCase();
+      //   }) != -1) continue;
 
-      this.setAttribute(attributes[i].name, attributes[i].nodeValue);
+      // en 으로 시작하는 모든 attribute 는 무시한다.
+      if (/^en-/.test(attrName)) continue;
+
+      this.setAttribute(attrName, attributes[i].nodeValue);
     }
   }
 
