@@ -428,6 +428,7 @@ class ElementNode {
 
     // [3] Children Construct
     if (this.type !== 'string') {
+      this.bindDOMEvents(options, htmlNode);
       this.childrenConstructAndLink(options, htmlNode, function() {
         _complete([htmlNode]);
       }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
@@ -468,6 +469,23 @@ class ElementNode {
   */
   childrenConstructAndLink(_options, _complete) {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
+  }
+
+  bindDOMEvents(options, _dom) {
+    let eventKeys = Object.keys(this.nodeEvents);
+    let that = this;
+    let DomEvents = {
+      click: true,
+      dblclick: true,
+      mouseenter: true,
+      mouseleave: true
+    }
+
+    eventKeys.map(function(_key, _i) {
+      if (DomEvents[_key]) _dom.addEventListener(_key, function() {
+        that.progressEvent(_key, {});
+      });
+    });
   }
 
 
@@ -921,7 +939,7 @@ class ElementNode {
       var attributeValue = this.getAttribute(_attrName);
 
       if (attributeValue !== undefined) {
-        return self.interpret(attributeValue);
+        return this.interpret(attributeValue);
       }
     }
 
@@ -1053,13 +1071,20 @@ class ElementNode {
     let actions = this.parsingEventDesc(eventDesc);
     let firstAction = actions.shift();
 
+    if (firstAction === undefined) {
+      console.log(this.forwardDOM);
+      throw new Error(`${_name} event has invalid value`);
+    }
 
     this.executeAction(firstAction, null, actions, function(_actionResult) {
 
     });
   }
 
-  // 여기에서만 구현
+  /*
+    ExecuteAction
+    progressEvent 로 부터 액션을 실행한다.
+  */
   executeAction(_action, _beforeAction, _actionList, _complete) {
     let that = this;
     let _actionName = _action.targetActionKey;
@@ -1067,9 +1092,11 @@ class ElementNode {
     let actionParams = _action.params;
 
     // 잠시 개발 보류 // ElementNode 상에서 지원부터
-    if (typeof actionFunction === 'function') {
-      this.environment.getCustomAction(_actionName);
+    if (typeof actionFunction !== 'function') {
+      actionFunction = this.environment.getCustomAction(_actionName);
     }
+
+    if (typeof actionFunction !== 'function') throw new Error(`Not found customAction ${_actionName}`);
 
     actionParams = actionParams.map(function(_param) {
 
@@ -1084,8 +1111,29 @@ class ElementNode {
 
     // action의 종료 콜백을 actionParams 의 0번 인덱스에 밀어넣는다.
     actionParams.unshift(function(_actionResult) {
-      console.log('action end');
+
+      if (_actionResult.nextPoint !== null) {
+        let nextAction = null;
+        let nextActionList = _actionList.filter(function(_action) {
+          if (_action.callPoint === _actionResult.nextPoint) {
+            nextAction = _action;
+            return false;
+          } else {
+            return true;
+          }
+        });
+
+        if (nextAction === null) return console.warn("Not found a next action point");
+
+        that.executeAction(nextAction, _action, nextActionList, function(_actionResult) {
+          _complete(_actionResult);
+        });
+      } else {
+        _complete(_actionResult)
+      }
     });
+
+    console.log('Action Function', actionFunction);
 
     if (typeof actionFunction === 'function') actionFunction.apply(this, actionParams)
     else throw new Error(`Not found Action ${_actionName}`);
@@ -1107,29 +1155,46 @@ class ElementNode {
     let targetActionKey;
     let paramsString;
 
-    actions = actionDescs.map(function(_desc) {
+    actionDescs.map(function(_desc) {
       let matches = _desc.match(/^(?:(\w+)@)?(\w+)(?:\((.*)\))$/);
+      if (matches === null) return;
+
       callPoint = matches[1] || 'forward';
       targetActionKey = matches[2];
       paramsString = matches[3]; // 각 파라메터 값 내에 콤마(,) 사용 불가
 
       action = new Action(callPoint, targetActionKey, paramsString.split(','));
-
-      return action;
+      actions.push(action);
     });
 
     return actions;
   }
 
   //****** ElementNode default Actions *****//
-  action_alert(_complete, _string) {
+  action_refresh(_complete, _string) {
+    let that = this;
     let actionResult = new ActionResult();
 
 
-
+    this.constructDOMs({}, function(_doms) {
+      that.parent.forwardMe(that);
+      actionResult.nextPoint = 'success';
+      _complete(actionResult);
+    });
   }
 
+  action_attr(_complete, _name, _value) {
+    let actionResult = new ActionResult();
+    this.setAttribute(_name, _value);
 
+    actionResult.nextPoint = 'success';
+
+    _complete(actionResult);
+  }
+
+  action_requestAPI() {
+
+  }
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

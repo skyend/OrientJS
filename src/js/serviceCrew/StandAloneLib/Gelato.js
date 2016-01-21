@@ -14,6 +14,9 @@ import accounting from 'accounting';
 import Superagent from 'superagent';
 import Identifier from '../../util/Identifier';
 
+import ActionResult from '../ActionResult';
+import Action from '../Action';
+
 let instance = null;
 
 class Gelato {
@@ -45,6 +48,11 @@ class Gelato {
     this.helpRequest = function() {
       window.location.href = "";
     }
+
+
+    this.addCustomAction('completeA', function(_complete, _string) {
+      console.log('completeA ' + _string);
+    });
   }
 
   // 서비스를 시작함
@@ -118,6 +126,10 @@ class Gelato {
     return Superagent;
   }
 
+  newActionResult() {
+    return new ActionResult();
+  }
+
   set navigate(_navigateString) {
     return window.location.href = _navigateString;
   }
@@ -133,6 +145,10 @@ class Gelato {
     if (this.customActions[_name] !== undefined) throw new Error(`${name} is already exists action.`);
 
     this.customActions[_name] = _actionFunc;
+  }
+
+  getCustomAction(_name) {
+    return this.customActions[_name];
   }
 }
 

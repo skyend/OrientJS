@@ -9,6 +9,7 @@ import _ from 'underscore';
 import ObjectExplorer from '../util/ObjectExplorer.js';
 import Factory from './ElementNode/Factory';
 import async from 'async';
+import Gelato from './StandAloneLib/Gelato';
 
 class Document {
 
@@ -64,7 +65,7 @@ class Document {
       this.pageScript = _documentDataObject.pageScript;
       this.refScriptIdList = _documentDataObject.refScriptIdList;
       this.refStyleIdList = _documentDataObject.refStyleIdList;
-
+      this.customActions = _documentDataObject.customActions || {};
     } else {
       // 새 도큐먼트가 생성된것이다.
       this.documentCreate = new Date();
@@ -75,6 +76,7 @@ class Document {
       this.refStyleIdList = [];
       this.pageCSS = '';
       this.pageScript = '';
+      this.customActions = {};
     }
   }
 
@@ -431,6 +433,17 @@ class Document {
 
   // ToDo...
   getCustomAction(_name) {
+
+    if (this.customActions[_name] !== undefined) {
+      return this.customActions[_name];
+    }
+
+    let gelato = Gelato.one();
+
+    if (gelato !== null) {
+      return gelato.getCustomAction(_name);
+    }
+
     return null;
   }
 
@@ -565,7 +578,9 @@ class Document {
       pageCSS: this.getPageCSS(),
       pageScript: this.getPageScript(),
       refStyleIdList: this.refStyleIdList,
-      refScriptIdList: this.refScriptIdList
+      refScriptIdList: this.refScriptIdList,
+
+      customActions: this.customActions
     }
   }
 }

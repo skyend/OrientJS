@@ -1,7 +1,7 @@
 class ActionResult {
   constructor(_data, _nextPoint) {
-    this.data = _data;
-    this.nextPoint = _nextPoint;
+    this.data = _data || null;
+    this.nextPoint = _nextPoint || null;
   }
 
   get data() {
