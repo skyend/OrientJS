@@ -120,9 +120,9 @@ class StringElementNode extends ElementNode {
       htmlDoc = this.environment.getHTMLDocument();
     }
 
-    // environment 에 stripStringEN 가 활성화 되어 있다면 text 를 span으로 감싸지 않고 랜더링 하며
-    // text 내에 태그가 들어 있다면 span태그로 감싸서 랜더링 하도록 한다.
-    if (this.environment.stripStringEN && !this.enableHTML) {
+    // gelato 가 존재하거나( StandAlone 모드로 동작 ) StringElementNode의 enableHTML 이 켜져있지 않을 경우 TextNode로 랜더링 하며
+    // 그렇지 않을 경우 Span 태그를 사용하여 랜더링 한다.
+    if (gelato !== null && this.enableHTML != true) {
       return htmlDoc.createTextNode('');
     } else {
       return htmlDoc.createElement('span');

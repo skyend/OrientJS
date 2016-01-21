@@ -9,11 +9,14 @@ import DynamicContext from './DynamicContext';
 import async from 'async';
 import DataResolver from '../DataResolver/Resolver';
 
-import Events from 'events';
+import Action from '../Action';
+import ActionResult from '../ActionResult';
+
+import events from 'events';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    Object.assign(this, Events.EventEmitter.prototype);
+    Object.assign(this, events.EventEmitter.prototype);
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -39,6 +42,8 @@ class ElementNode {
         hidden: "true|false" or interpert
     } **/
 
+    this.nodeEvents;
+
     // date fields
     this.createDate;
     this.updateDate;
@@ -56,7 +61,7 @@ class ElementNode {
     // Repeat by parent's Repeat Control
     this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
     this.isRepeated = preInsectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
-    this.repeatOrder = preInsectProps.repeatOrder || -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
+    this.repeatOrder = preInsectProps.repeatOrder > -1 ? preInsectProps.repeatOrder : -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
 
     this.environment = _environment;
     this.mode = 'normal';
@@ -83,10 +88,6 @@ class ElementNode {
   }
 
   // Getters
-  get isDynamicContext() {
-    return this._isDynamicContext;
-  }
-
   get dynamicContextSID() {
     return this._dynamicContextSID;
   }
@@ -125,10 +126,6 @@ class ElementNode {
 
 
   // Setters
-  set isDynamicContext(_isDynamicContext) {
-    this._isDynamicContext = _isDynamicContext;
-  }
-
   set dynamicContextSID(_dynamicContextSID) {
     this._dynamicContextSID = _dynamicContextSID;
   }
@@ -174,6 +171,14 @@ class ElementNode {
   // control
   getControl(_controlName) {
     return this.controls[_controlName];
+  }
+
+  get nodeEvents() {
+    return this._nodeEvents;
+  }
+
+  getEvent(_name) {
+    return this._nodeEvents[_name];
   }
 
   // controls
@@ -265,6 +270,14 @@ class ElementNode {
     this.controls[_controlName] = _value;
   }
 
+  set nodeEvents(_nodeEvents) {
+    this._nodeEvents = _nodeEvents;
+  }
+
+  setEvent(_name, _value) {
+    this._nodeEvents[_name] = _value;
+  }
+
   // controls
   setControls(_controls) {
     this.controls = _controls;
@@ -335,7 +348,7 @@ class ElementNode {
               }, function(_domList) {
                 //console.log(that.forwardDOM, that);
                 that.parent.forwardMe(that);
-
+                that.progressEvent('complete-bind');
                 // that.parent.forwardDOM.replaceChild(_domList[0], that.forwardDOM);
 
                 // if (that.parent.forwardDOM !== null)
@@ -409,6 +422,7 @@ class ElementNode {
     htmlNode.___en = this;
 
     //console.log(this, htmlNode);
+
     // [2] Attribute and text 매핑
     this.mappingAttributes(htmlNode, options);
 
@@ -828,18 +842,18 @@ class ElementNode {
   interpret(_matterText) {
     if (_matterText === undefined) return;
 
-    let text = _matterText;
+    let solved = _matterText;
 
-    text = this.preInterpretOnTree(text);
+    solved = this.preInterpretOnTree(solved);
     let dc = this.availableDynamicContext;
 
     if (dc) {
-      let solvedText = dc.interpret(text);
+      solved = dc.interpret(solved);
       //console.log(this.dynamicContext, this);
 
-      return solvedText;
+      return solved;
     } else {
-      return this.defaultResolver.resolve(text);
+      return this.defaultResolver.resolve(solved);
     }
   }
 
@@ -848,20 +862,34 @@ class ElementNode {
   preInterpretOnTree(_matterText) {
     let that = this;
     let text = _matterText;
-
+    let singleKept = null;
+    let matched = false;
     var WhatThings = /\*\(([\w-]+)\:?([\w-_\.]+)?\)/g;
 
     text = text.replace(WhatThings, function(_match, _mean, _submean) {
-      //console.log('repeat-n', _match, _mean, _submean, _matterText);
-      if (_mean === 'repeat-n') {
-        // console.log('get repeat-n');
-        return that.getRepeatNOnTree();
-      } else if (_mean === 'attr') {
-        return that.getAttrOnTree(_submean);
+      matched = true;
+
+      let asteriskData = that.asteriskResolve(_mean, _submean);
+      if (_matterText.length == _match.length) {
+        singleKept = asteriskData;
       }
+
+      return asteriskData;
     });
 
+    if (matched && singleKept !== null) {
+      return singleKept;
+    }
+
     return text;
+  }
+
+  asteriskResolve(_mean, _submean) {
+    if (_mean === 'repeat-n') {
+      return this.getRepeatNOnTree();
+    } else if (_mean === 'attr') {
+      return this.getAttrOnTree(_submean);
+    }
   }
 
   getRepeatNOnTree() {
@@ -1011,6 +1039,95 @@ class ElementNode {
     return matched;
   }
 
+  /////////
+  // ElementNode Event Methods
+  /////////
+  /*
+    EventProgress
+    이벤트 처리를 시작
+    특정한 상황에서 호출된다.
+  */
+  progressEvent(_name, _data) {
+    let eventDesc = this.getEvent(_name);
+    if (eventDesc === undefined) return;
+    let actions = this.parsingEventDesc(eventDesc);
+    let firstAction = actions.shift();
+
+
+    this.executeAction(firstAction, null, actions, function(_actionResult) {
+
+    });
+  }
+
+  // 여기에서만 구현
+  executeAction(_action, _beforeAction, _actionList, _complete) {
+    let that = this;
+    let _actionName = _action.targetActionKey;
+    let actionFunction = this[`action_${_actionName}`];
+    let actionParams = _action.params;
+
+    // 잠시 개발 보류 // ElementNode 상에서 지원부터
+    if (typeof actionFunction === 'function') {
+      this.environment.getCustomAction(_actionName);
+    }
+
+    actionParams = actionParams.map(function(_param) {
+
+      // actionParams
+      let interpreted = that.interpret(_param);
+
+      // before Action으로부터 받아야 할 값이 있다면 before Action의 값을 가져온다.
+      // ....
+
+      return interpreted;
+    });
+
+    // action의 종료 콜백을 actionParams 의 0번 인덱스에 밀어넣는다.
+    actionParams.unshift(function(_actionResult) {
+      console.log('action end');
+    });
+
+    if (typeof actionFunction === 'function') actionFunction.apply(this, actionParams)
+    else throw new Error(`Not found Action ${_actionName}`);
+  }
+
+  // event 내용을 파싱하여 액션 배열을 반환한다.
+  parsingEventDesc(_desc) {
+    let that = this;
+    let actions = [];
+    let descLength = _desc.length;
+    let actionDescs = _desc.split(/\n/);
+
+    actionDescs = actionDescs.map(function(_actionDesc) {
+      return _actionDesc.replace(/^[\s\t]*(.+)[\s\t]*$/, '$1');
+    });
+
+    let action;
+    let callPoint;
+    let targetActionKey;
+    let paramsString;
+
+    actions = actionDescs.map(function(_desc) {
+      let matches = _desc.match(/^(?:(\w+)@)?(\w+)(?:\((.*)\))$/);
+      callPoint = matches[1] || 'forward';
+      targetActionKey = matches[2];
+      paramsString = matches[3]; // 각 파라메터 값 내에 콤마(,) 사용 불가
+
+      action = new Action(callPoint, targetActionKey, paramsString.split(','));
+
+      return action;
+    });
+
+    return actions;
+  }
+
+  //****** ElementNode default Actions *****//
+  action_alert(_complete, _string) {
+    let actionResult = new ActionResult();
+
+
+
+  }
 
 
 
@@ -1089,7 +1206,6 @@ class ElementNode {
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
-    this.isDynamicContext = _elementNodeDataObject.isDynamicContext;
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
@@ -1101,6 +1217,8 @@ class ElementNode {
       'repeat-n': '',
       'hidden': ''
     };
+
+    this.nodeEvents = _elementNodeDataObject.nodeEvents || {};
 
     this.comment = _elementNodeDataObject.comment || '';
 
@@ -1117,13 +1235,13 @@ class ElementNode {
       type: this.getType(),
       name: this.getName(),
       controls: _.clone(this.getControls()),
+      nodeEvents: _.clone(this.nodeEvents),
       comment: this.getComment(),
       componentName: this.getComponentName(),
       createDate: (new Date(this.createDate)).toString(),
       updateDate: (new Date(this.updateDate)).toString(),
     }
 
-    exportObject.isDynamicContext = this.isDynamicContext;
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;

@@ -188,16 +188,21 @@ class TagBaseElementNode extends ElementNode {
       }
     }
 
+    // #Normals
     _domNode.setAttribute('en-id', this.getId());
+    _domNode.setAttribute('en-type', this.getType());
+    if (this.getName())
+      _domNode.setAttribute('en-name', this.getName());
+    if (this.behavior)
+      _domNode.setAttribute('en-behavior', this.behavior);
 
+    // #Controls
     if (this.getControl('repeat-n'))
       _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
     if (this.getControl('hidden'))
       _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
-    if (this.getName())
-      _domNode.setAttribute('en-name', this.getName());
-    if (this.isDynamicContext)
-      _domNode.setAttribute('en-dynamic-context', this.isDynamicContext);
+
+    // #DynamicContext
     if (this.dynamicContextSID)
       _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
     if (this.dynamicContextRID)
@@ -206,6 +211,15 @@ class TagBaseElementNode extends ElementNode {
       _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
     if (this.dynamicContextInjectParams)
       _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+
+    // #Events
+    // dom defaults events
+    if (this.getEvent('click'))
+      _domNode.setAttribute('en-event-click', this.getEvent('click'));
+    if (this.getEvent('mouseenter'))
+      _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
+    if (this.getEvent('complete-bind'))
+      _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
   }
 
   mappingAttribute(_dom, _attrName, _options) {
@@ -320,11 +334,36 @@ class TagBaseElementNode extends ElementNode {
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union(['__vid__', 'en-id', 'en-type', 'en-behavior', 'en-dynamic-context', 'en-dc-source-id', 'en-dc-request-id', 'en-dc-ns', 'en-ctrl-repeat-n', 'en-ctrl-hidden'], _ignoreAttrFields || []);
+    let ignoreAttrFields = _.union(['__vid__',
+
+      // Normals
+      'en-id',
+      'en-type',
+      'en-behavior',
+      'en-name',
+
+      // DynamicContext
+      'en-dc-source-id',
+      'en-dc-request-id',
+      'en-dc-inject-params',
+      'en-dc-ns',
+
+      // Controls
+      'en-ctrl-repeat-n',
+      'en-ctrl-hidden',
+
+      // Events
+      'en-event-click',
+      'en-event-mouseenter',
+      'en-event-complete-bind'
+
+    ], _ignoreAttrFields || []);
+
 
     this.copyAllAtrributeFromDOMElement(_domElement, ignoreAttrFields);
     if (this.realization === null) this.realization = _domElement;
 
+    // Normals
     if (_domElement.getAttribute('en-id') !== null)
       this.setId(_domElement.getAttribute('en-id'));
 
@@ -334,18 +373,10 @@ class TagBaseElementNode extends ElementNode {
     if (_domElement.getAttribute('en-behavior') !== null)
       this.behavior = _domElement.getAttribute('en-behavior');
 
-    if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
-      this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
+    if (_domElement.getAttribute('en-name') !== null)
+      this.setName(_domElement.getAttribute('en-name'));
 
-    if (_domElement.getAttribute('en-ctrl-hidden') !== null)
-      this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
-
-    if (_domElement.getAttribute('name') !== null)
-      this.setName(_domElement.getAttribute('name'));
-
-    if (_domElement.getAttribute('en-dynamic-context') !== null)
-      this.isDynamicContext = _domElement.getAttribute('en-dynamic-context');
-
+    // DynamicContext
     if (_domElement.getAttribute('en-dc-source-id') !== null)
       this.dynamicContextSID = _domElement.getAttribute('en-dc-source-id');
 
@@ -357,6 +388,25 @@ class TagBaseElementNode extends ElementNode {
 
     if (_domElement.getAttribute('en-dc-ns') !== null)
       this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
+
+    // Controls
+    if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
+      this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
+
+    if (_domElement.getAttribute('en-ctrl-hidden') !== null)
+      this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
+
+
+    // Events
+    if (_domElement.getAttribute('en-event-click') !== null)
+      this.setEvent('click', _domElement.getAttribute('en-event-click'));
+
+    if (_domElement.getAttribute('en-event-mouseenter') !== null)
+      this.setEvent('mouseenter', _domElement.getAttribute('en-event-mouseenter'));
+
+    if (_domElement.getAttribute('en-event-complete-bind') !== null)
+      this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
+
   }
 
 
