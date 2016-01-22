@@ -183,7 +183,7 @@ class Page {
 
   // 프래그먼트를 참조하는 요소를 프래그먼트로 채운다.
   static fillElementThatReferToTheFragmentByFragment(_element, _complete) {
-    let fragmentName = _element.getAttribute('fragment-name');
+    let fragmentName = _element.getAttribute('en-ref-fragment');
 
     Loader.loadFragment(fragmentName, function(_fragmentText) {
       let fragment = new Fragment(fragmentName, _fragmentText, _element);

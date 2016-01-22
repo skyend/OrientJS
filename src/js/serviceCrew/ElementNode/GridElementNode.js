@@ -154,7 +154,7 @@ class GridElementNode extends HTMLElementNode {
 
   fragmentRender(_realizeOptions, _complete) {
     this.realization.innerHTML = '';
-    this.realization.setAttribute('fragment-name', this.fragmentContextController.subject.documentName);
+    this.realization.setAttribute('en-ref-fragment', this.fragmentContextController.subject.documentName);
 
     this.fragmentContextController.attach(this.environment.fragmentContext);
     this.fragmentContextController.setSuperElement(this.realization);
