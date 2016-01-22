@@ -3,6 +3,124 @@ import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 import Gelato from '../StandAloneLib/Gelato';
 
+const DOMEvents = [
+  // Mouse Events
+  'click',
+  'contextmenu',
+  'dblclick',
+  'mousedown',
+  'mouseenter',
+  'mouseleave',
+  'mousemove',
+  'mouseover',
+  'mouseout',
+  'mouseup',
+
+  // Keyboard Events
+  'keydown',
+  'keypress',
+  'keyup',
+
+  // Frame/Object Events
+  'abort',
+  'beforeunload',
+  'error',
+  'hashchange',
+  'load',
+  'pageshow',
+  'pagehide',
+  'resize',
+  'scroll',
+  'unload',
+
+  // Form Events
+  'blur',
+  'change',
+  'focus',
+  'focusin',
+  'focusout',
+  'input',
+  'invalid',
+  'reset',
+  'search',
+  'select',
+  'submit',
+
+  // Drag Events
+  'drag',
+  'dragend',
+  'dragenter',
+  'dragleave',
+  'dragover',
+  'dragstart',
+  'drop',
+
+  // Clipboard Events
+  'copy',
+  'cut',
+  'paste',
+
+  // Print Events
+  'afterprint',
+  'beforeprint',
+
+  // Media Events
+  'abort',
+  'canplay',
+  'canplaythrough',
+  'durationchange',
+  'emptied',
+  'ended',
+  'error',
+  'loadeddata',
+  'loadedmetadata',
+  'loadstart',
+  'pause',
+  'play',
+  'playing',
+  'progress',
+  'ratechange',
+  'seeked',
+  'seeking',
+  'stalled',
+  'suspend',
+  'timeupdate',
+  'volumechange',
+  'waiting',
+
+  // Animation Events
+  'animationend',
+  'animationiteration',
+  'animationstart',
+
+  // Transition Events
+  'transitionend',
+
+  // Server-Sent Events
+  'error',
+  'message',
+  'open',
+
+  // Misc Events
+  'message',
+  'mousewheel',
+  'online',
+  'offline',
+  'popstate',
+  'show',
+  'storage',
+  'toggle',
+  'wheel',
+
+  // Touch Events
+  'touchcancel',
+  'touchend',
+  'touchmove',
+  'touchstart'
+];
+
+
+
 class TagBaseElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
     super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
@@ -398,69 +516,11 @@ class TagBaseElementNode extends ElementNode {
       this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
 
-    // # Events
-    // Mouse Events
-    if (_domElement.getAttribute('en-event-click') !== null) // Click
-      this.setEvent('click', _domElement.getAttribute('en-event-click'));
-
-    if (_domElement.getAttribute('en-event-dblclick') !== null) // DoubleClick
-      this.setEvent('dblclick', _domElement.getAttribute('en-event-dblclick'));
-
-    if (_domElement.getAttribute('en-event-mousedown') !== null) // Mouse Down
-      this.setEvent('mousedown', _domElement.getAttribute('en-event-mousedown'));
-
-    if (_domElement.getAttribute('en-event-mousemove') !== null) // Mouse Move
-      this.setEvent('mousemove', _domElement.getAttribute('en-event-mousemove'));
-
-    if (_domElement.getAttribute('en-event-mouseout') !== null) // Mouse Out
-      this.setEvent('mouseout', _domElement.getAttribute('en-event-mouseout'));
-
-    if (_domElement.getAttribute('en-event-mouseover') !== null) // Mouse Over
-      this.setEvent('mouseover', _domElement.getAttribute('en-event-mouseover'));
-
-    if (_domElement.getAttribute('en-event-mouseup') !== null) // Mouse Up
-      this.setEvent('mouseup', _domElement.getAttribute('en-event-mouseup'));
-
-    // Keyboard Event
-    if (_domElement.getAttribute('en-event-keydown') !== null) // Key down
-      this.setEvent('keydown', _domElement.getAttribute('en-event-keydown'));
-
-    if (_domElement.getAttribute('en-event-keyup') !== null) // Key up
-      this.setEvent('keyup', _domElement.getAttribute('en-event-keyup'));
-
-    if (_domElement.getAttribute('en-event-keypress') !== null) // Key press
-      this.setEvent('keypress', _domElement.getAttribute('en-event-keypress'));
-
-    // Form Event
-    if (_domElement.getAttribute('en-event-blur') !== null) // Blur
-      this.setEvent('blur', _domElement.getAttribute('en-event-blur'));
-
-    if (_domElement.getAttribute('en-event-change') !== null) // Change
-      this.setEvent('change', _domElement.getAttribute('en-event-change'));
-
-    if (_domElement.getAttribute('en-event-contextmenu') !== null) // Contextmenu
-      this.setEvent('contextmenu', _domElement.getAttribute('en-event-contextmenu'));
-
-    if (_domElement.getAttribute('en-event-focus') !== null) // Focus
-      this.setEvent('focus', _domElement.getAttribute('en-event-focus'));
-
-    if (_domElement.getAttribute('en-event-input') !== null) // Input
-      this.setEvent('input', _domElement.getAttribute('en-event-input'));
-
-    if (_domElement.getAttribute('en-event-invalid') !== null) // Invalid
-      this.setEvent('invalid', _domElement.getAttribute('en-event-invalid'));
-
-    if (_domElement.getAttribute('en-event-reset') !== null) // Reset
-      this.setEvent('reset', _domElement.getAttribute('en-event-reset'));
-
-    if (_domElement.getAttribute('en-event-search') !== null) // Search
-      this.setEvent('submit', _domElement.getAttribute('en-event-submit'));
-
-    if (_domElement.getAttribute('en-event-select') !== null) // Select
-      this.setEvent('select', _domElement.getAttribute('en-event-select'));
-
-    if (_domElement.getAttribute('en-event-submit') !== null) // Submit
-      this.setEvent('submit', _domElement.getAttribute('en-event-submit'));
+    // 모든 DOM 이벤트를 인식한다.
+    for (let i = 0; i < DOMEvents.length; i++) {
+      if (_domElement.getAttribute(`en-event-${DOMEvents[i]}`) !== null) // Click
+        this.setEvent(DOMEvents[i], _domElement.getAttribute(`en-event-${DOMEvents[i]}`));
+    }
 
     // Gelato Events
     if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind

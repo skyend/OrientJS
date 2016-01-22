@@ -474,16 +474,14 @@ class ElementNode {
   bindDOMEvents(options, _dom) {
     let eventKeys = Object.keys(this.nodeEvents);
     let that = this;
-    let DomEvents = {
-      click: true,
-      dblclick: true,
-      mouseenter: true,
-      mouseleave: true
-    }
 
+    // 자신에게 설정된 모든 이벤트를 Dom에 바인딩한다.
+    // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
-      if (DomEvents[_key]) _dom.addEventListener(_key, function() {
-        that.progressEvent(_key, {});
+      _dom.addEventListener(_key, function(_e) {
+        that.progressEvent(_key, {
+          event: _e
+        });
       });
     });
   }
