@@ -1,4 +1,5 @@
 "use strict";
+import ElementNodeMulti from './ElementNodeMulti';
 import React from 'react';
 import Returns from "../../Returns.js";
 import _ from 'underscore';
@@ -11,6 +12,9 @@ import DataResolver from '../DataResolver/Resolver';
 
 import Action from '../Action';
 import ActionResult from '../ActionResult';
+import SA_Loader from '../StandAloneLib/Loader';
+import ICEAPISource from '../ICEAPISource';
+import Gelato from '../StandAloneLib/Gelato';
 
 import events from 'events';
 
@@ -337,11 +341,14 @@ class ElementNode {
 
       // dc 가 생성되고 정해진 api을 실행한다.
       if (isBuiltDC) {
-
+        console.log(this.dynamicContext);
         this.dynamicContext.ready(function(_err) {
-          if (_err !== null) {
+
+          if (_err === null) {
 
             that.dynamicContext.dataLoad(function(_err) {
+              console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
+
               that.constructDOMs({
                 forward: true,
                 keepDC: 'once'
@@ -361,6 +368,8 @@ class ElementNode {
                 //that.forwardBackupDOMAll();
               });
             });
+          } else {
+            console.warn("Todo Error Handling");
           }
         });
       }
@@ -479,6 +488,8 @@ class ElementNode {
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
       _dom.addEventListener(_key, function(_e) {
+        _e.preventDefault();
+
         that.progressEvent(_key, {
           event: _e
         });
@@ -1169,31 +1180,113 @@ class ElementNode {
   }
 
   //****** ElementNode default Actions *****//
-  action_refresh(_complete, _string) {
+  action_refresh(_complete, _nextPoint) {
     let that = this;
     let actionResult = new ActionResult();
 
-
-    this.constructDOMs({}, function(_doms) {
-      that.parent.forwardMe(that);
-      actionResult.nextPoint = 'success';
+    this.refresh(function() {
+      actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
       _complete(actionResult);
     });
   }
 
-  action_attr(_complete, _name, _value) {
+  action_refresh2(_complete, _id, _nextPoint) {
+    let that = this;
     let actionResult = new ActionResult();
+
+    // find ElementNode
+    let targetElementNode = this.environment.findById(_id);
+    if (targetElementNode == false) throw new Error(`Not found elementNode@${_id}`);
+    console.log(targetElementNode);
+
+    targetElementNode.refresh(function() {
+      actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+      _complete(actionResult);
+    });
+  }
+
+  action_attr(_complete, _name, _value, _nextPoint) {
+    let actionResult = new ActionResult();
+
+    // modify
     this.setAttribute(_name, _value);
+
+    // complete callback
+    actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+    _complete(actionResult);
+  }
+
+  action_attr2(_complete, _selector, _name, _value) {
+    let actionResult = new ActionResult();
+
+    // find ElementNode
+    let targetElementNode = this.environment.findById(_id);
+    if (targetElementNode == false) throw new Error(`Not found elementNode@${_id}`);
+
+    // Modify
+    targetElementNode.setAttribute(_name, _value);
+
+    // complete callback
+    actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+    _complete(actionResult);
+  }
+
+  action_changeText(_complete, _text) {
+    let actionResult = new ActionResult();
+    this.setAttribute(_name, _text);
 
     actionResult.nextPoint = 'success';
 
     _complete(actionResult);
   }
 
-  action_requestAPI() {
+  /*
+    RequestAPI
+  */
+  action_sendForm(_complete, _apiSourceId, _requestId) {
+    let actionResult = new ActionResult();
+    let that = this;
+    SA_Loader.loadAPISource(_apiSourceId, function(_apiSourceData) {
+      let fieldObject = {};
+      let apiSource = new ICEAPISource(_apiSourceData);
+      let request = apiSource.findRequest(_requestId);
+      apiSource.setHost(Gelato.one().page.iceHost);
+
+      let reqFields = request.fields;
+
+      reqFields.map(function(_field) {
+        if (that.forwardDOM[_field.key] !== undefined) {
+          fieldObject[_field.key] = that.getFormFieldDOMData(that.forwardDOM[_field.key]);
+        }
+      });
+
+      console.log(fieldObject);
+
+      apiSource.executeRequest(_requestId, fieldObject, {}, that.getAttribute('enctype'), function(_result) {
+        console.log(_result);
+      });
+
+      console.log(apiSource);
+    });
 
   }
 
+  refresh(_complete) {
+    let that = this;
+    this.constructDOMs({}, function(_doms) {
+      that.parent.forwardMe(that);
+      _complete(_doms);
+    });
+  }
+
+  getFormFieldDOMData(_dom) {
+    console.log(_dom.value);
+
+    if (_dom.getAttribute('type') === 'file') {
+      return _dom.files[0];
+    }
+    return _dom.value;
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,20 @@ class ServiceResourceLoader {
         } else {
           _complete(_result.body, _result.statusCode);
         }
+      });
+  }
 
+  static loadAPIFarmSource(_farmService, _class, _complete) {
+    // console.log(_name, 'load APISource');
+    request.get(`./apisources/farm/${_farmService}/${_class}.json`)
+      .end(function(_err, _result) {
+        console.log(_err, _result);
+        if (_err !== null) {
+          console.warn(_err);
+          _complete(null);
+        } else {
+          _complete(_result.body, _result.statusCode);
+        }
 
       });
   }

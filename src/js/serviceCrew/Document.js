@@ -331,15 +331,11 @@ class Document {
 
   findById(_elementNodeId) {
 
-    var treeSearchResult = this.findRecursive(this.rootElementNodes, function(__e) {
-      return __e.id == _elementNodeId;
-    });
+    var treeSearchResult = null;
 
-    if (treeSearchResult) return treeSearchResult;
-
-    for (var i = 0; i < this.elementNodes.length; i++) {
-      treeSearchResult = this.findRecursive(this.elementNodes[i], function(__e) {
-        return __e.id == _elementNodeId;
+    for (var i = 0; i < this.rootElementNodes.length; i++) {
+      treeSearchResult = this.findRecursive(this.rootElementNodes[i], function(_en) {
+        return _en.id == _elementNodeId;
       });
 
       if (treeSearchResult) return treeSearchResult;

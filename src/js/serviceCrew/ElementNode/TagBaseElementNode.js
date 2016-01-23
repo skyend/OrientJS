@@ -515,7 +515,7 @@ class TagBaseElementNode extends ElementNode {
     if (_domElement.getAttribute('en-ctrl-hidden') !== null)
       this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
-
+    // Event reads
     // 모든 DOM 이벤트를 인식한다.
     for (let i = 0; i < DOMEvents.length; i++) {
       if (_domElement.getAttribute(`en-event-${DOMEvents[i]}`) !== null) // Click

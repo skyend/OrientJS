@@ -6,6 +6,7 @@ import Gelato from '../StandAloneLib/Gelato';
 import async from 'async';
 import Events from 'events';
 import ICEAPISource from '../ICEAPISource';
+import APIFarmSource from '../APIFarmSource';
 import _ from 'underscore';
 import DataResolver from '../DataResolver/Resolver';
 import Identifier from '../../util/Identifier';
@@ -68,19 +69,41 @@ class DynamicContext {
     this.emit("begin-load");
     // console.log(this.sourceIDs);
     let sourceIdList = this.sourceIDs.split(',');
-    // console.log(sourceIdList);
+    console.log(sourceIdList);
     async.eachSeries(sourceIdList, function(_id, _next) {
-      // console.log(_id, 'source id', sourceIdList);
-      SALoader.loadAPISource(_id, function(_apiSource) {
-        let apiSource = new ICEAPISource(_apiSource);
-        apiSource.setHost(Gelato.one().page.iceHost);
 
-        that.apisources.push(apiSource);
-        _next();
-      })
+      // API Farm 과 ICEAPISource를 구분
+      if (/^farm/.test(_id)) {
+        // farm / apiFarmServiceId / serviceClassId
+        let farmPathSplit = _id.split('/');
+        if (farmPathSplit.length != 3) throw new Error("Invalid DynamicContext apiFarm Spec");
+
+        let apiFarmService = farmPathSplit[1];
+        let serviceClass = farmPathSplit[2];
+
+        SALoader.loadAPIFarmSource(apiFarmService, serviceClass, function(_apiFarmSource) {
+          let apiSource = new APIFarmSource(_apiFarmSource);
+          apiSource.setHost(Gelato.one().page.apiFarmHost);
+
+          that.apisources.push(apiSource);
+          console.log('loaded', sourceIdList);
+          _next();
+        })
+      } else {
+        // console.log(_id, 'source id', sourceIdList);
+        SALoader.loadAPISource(_id, function(_iceApiSource) {
+          let apiSource = new ICEAPISource(_iceApiSource);
+          apiSource.setHost(Gelato.one().page.iceHost);
+
+          that.apisources.push(apiSource);
+          _next();
+        })
+      }
+
 
     }, function done() {
-      _complete();
+      console.log('done', sourceIdList);
+      _complete(null);
     });
   }
 
@@ -92,8 +115,8 @@ class DynamicContext {
     let injectParams = (this.injectParams || '').split(',');
 
     async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
-      let apiSourceOrder = _.findIndex(sourceIdList, function(_id) {
-        return _apiSource.nt_tid == _id;
+      let apiSourceOrder = _.findIndex(sourceIdList, function(_idAsKey) {
+        return _apiSource.key == _idAsKey;
       });
 
       // 없으므로 next
@@ -103,6 +126,7 @@ class DynamicContext {
         let paramObject = that.parseParamString(paramsString);
 
         _apiSource.executeRequest(requestIdList[apiSourceOrder], paramObject, undefined, function(_result) {
+          console.log(_apiSource);
 
           that.dataResolver.setNS(namespaceList[apiSourceOrder], _result);
           //

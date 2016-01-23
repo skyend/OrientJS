@@ -43,6 +43,7 @@ class Page {
 
   setConfig(_config) {
     this.iceHost = _config['ice-host'];
+    this.apiFarmHost = _config['apifarm-host'];
   }
 
   appendPageStyles() {

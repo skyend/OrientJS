@@ -4,12 +4,16 @@ import _ from 'underscore';
 import SuperAgent from 'superagent';
 
 export default class ICEAPISource {
-  constructor(_ICEAPISourceData, _serviceManager) {
+  constructor(_APISourceData, _serviceManager) {
     this.serviceManager = _serviceManager;
 
     this.nodeTypeMeta = null;
     this.host = '';
-    this.import(_ICEAPISourceData);
+    this.import(_APISourceData);
+  }
+
+  get key() {
+    return this.nt_tid;
   }
 
   setHost(_iceHost) {
@@ -168,6 +172,7 @@ export default class ICEAPISource {
     return false;
   }
 
+  // APIFarmSource 에서 오버라이딩
   getRequestLocation(_reqId) {
     let req = this.findRequest(_reqId);
 
@@ -178,19 +183,43 @@ export default class ICEAPISource {
     }
   }
 
-  executeRequest(_requestId, _fields, _heads, _complete) {
+  getRequestURL(_reqId) {
+    return this.host + this.getRequestLocation(_reqId)
+  }
+
+
+  /*
+    application/x-www-form-urlencoded: The default value if the attribute is not specified.
+    multipart/form-data: The value used for an <input> element with the type attribute set to "file".
+    text/plain (HTML5)
+  */
+  /**
+    ExecuteRequest
+    _enctypeOrComplete : 'multipart/form-data' | 'application/x-www-form-urlencoded' | completeCallback(Function) : default: 'application/x-www-form-urlencoded' // 전송 타입
+  */
+  executeRequest(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
+    let enctype, complete;
     let fields = _fields || {};
     fields.t = 'api';
     let req = this.findRequest(_requestId);
     let url;
+
+    console.log(this.);
+
+    if (typeof _enctypeOrComplete === 'function') {
+      complete = _enctypeOrComplete;
+      enctype = 'application/x-www-form-urlencoded';
+    } else {
+      complete = _complete;
+      enctype = _enctypeOrComplete;
+    }
 
     fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
 
     if (req.crud === '**') {
       url = req.customURL;
     } else {
-
-      url = this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
+      url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
     }
 
     if (req.method === 'get') {
@@ -198,25 +227,38 @@ export default class ICEAPISource {
         .query(fields)
         .end(function(err, res) {
           if (err !== null) {
-            _complete(null);
+            complete(null);
           } else {
-            _complete(res.body, res.statusCode);
+            complete(res.body, res.statusCode);
           }
         });
     } else if (req.method === 'post') {
+
       SuperAgent.post(url)
         .type('form')
-        .send(fields)
+        .query({
+          t: 'api'
+        })
+        .send(enctype === 'multipart/form-data' ? this.convertFieldsToFormData(fields) : fields)
         .end(function(err, res) {
           if (res === null) {
-            _complete(null);
+            complete(null);
           } else {
-            _complete(res.body, res.statusCode);
+            complete(res.body, res.statusCode);
           }
         });
     }
+  }
 
+  convertFieldsToFormData(_fields) {
+    let formData = new FormData();
+    let fieldKeys = Object.keys(_fields);
 
+    fieldKeys.map(function(_key) {
+      formData.append(_key, _fields[_key]);
+    });
+
+    return formData;
   }
 
   executeTestRequest(_requestId, _complete) {
@@ -326,7 +368,6 @@ export default class ICEAPISource {
     this.requests = this.requests.map(function(_r) {
       return new Request(_r);
     });
-
   }
 
   export () {
