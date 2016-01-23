@@ -204,7 +204,6 @@ export default class ICEAPISource {
     let req = this.findRequest(_requestId);
     let url;
 
-    console.log(this.);
 
     if (typeof _enctypeOrComplete === 'function') {
       complete = _enctypeOrComplete;

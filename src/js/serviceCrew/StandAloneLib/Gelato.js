@@ -16,6 +16,8 @@ import Identifier from '../../util/Identifier';
 
 import ActionResult from '../ActionResult';
 import Action from '../Action';
+import events from 'events';
+
 
 let instance = null;
 
@@ -25,6 +27,8 @@ class Gelato {
   }
 
   constructor() {
+    Object.assign(this, events.EventEmitter.prototype);
+
     // Gelato가 둘 이상 생성되는 것을 방지 한다.
     (() => {
       if (instance !== null) throw new Error("Gelato is aleady running. Call Gelato.one() if you need to the gelato instance.");
@@ -58,7 +62,7 @@ class Gelato {
   // 서비스를 시작함
   // 1. Grid에서 프래그먼트를 필요로 하는 요소 찾기
   startup() {
-
+    let that = this;
     async.waterfall([
       (_cb) => {
         Loader.loadConfig((_result) => {
@@ -85,7 +89,7 @@ class Gelato {
 
       }, (_cb) => {
         this.page.appendPageScripts(() => {
-
+          that.emit("load");
         });
       }
     ]);
