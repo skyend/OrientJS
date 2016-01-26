@@ -12,11 +12,13 @@ import DataResolver from '../DataResolver/Resolver';
 
 import Action from '../Action';
 import ActionResult from '../ActionResult';
-import SA_Loader from '../StandAloneLib/Loader';
 import ICEAPISource from '../ICEAPISource';
+import events from 'events';
+import ScopeMemberFactory from './ScopeMember/Factory';
+
+import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
 
-import events from 'events';
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -123,6 +125,10 @@ class ElementNode {
     }
   }
 
+  get scopeMembers() {
+    return this._scopeMembers;
+  }
+
   //
   // get parentDynamicContext() {
   //   return this._parentDynamicContext;
@@ -148,6 +154,10 @@ class ElementNode {
 
   set dynamicContext(_dynamicContext) {
     this._dynamicContext = _dynamicContext;
+  }
+
+  set scopeMembers(_scopeMembers) {
+    this._scopeMembers = _scopeMembers;
   }
 
   //
@@ -390,12 +400,11 @@ class ElementNode {
     if (/^\d+$/.test(childRepeatNumber) && !this.isRepeated) {
       let repeatedDomList = [];
       let clonedElementNodeList = [];
-      let exported = that.export();
       let elementNode;
 
       //console.log("repeat"); // 안나옴
       async.eachSeries(_.range(parseInt(childRepeatNumber)), function iterator(_i, _next) {
-          elementNode = Factory.takeElementNode(_.clone(exported), {
+          elementNode = Factory.takeElementNode(that.export(), {
             isGhost: true,
             repeatOrder: _i,
             isRepeated: true
@@ -1067,6 +1076,37 @@ class ElementNode {
     return matched;
   }
 
+
+  ////////////////////////////////////////// Scope Logics ///////////////////////////////////////////
+
+  buildScopeMemberByScopeDom(_scopeDom) {
+    let scopeDomNodeName = _scopeDom.nodeName;
+    let scopeType;
+
+    if (/en-action/i.test(scopeDomNodeName)) {
+      scopeType = 'action';
+    } else if (/en-value/i.test(scopeDomNodeName)) {
+      scopeType = 'value';
+    }
+
+    let scopeMemberClass = ScopeMemberFactory.getClass(scopeType);
+
+    scopeMember.buildByScopeDom(_scopeDom);
+
+    return scopeMember;
+  }
+
+  appendScopeMember(_scopeMember) {
+    this.scopeMembers.push(_scopeMember);
+  }
+
+  updateScopeMember(_scopeMember) {
+
+  }
+
+  ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
+
+
   /////////
   // ElementNode Event Methods
   /////////
@@ -1392,6 +1432,7 @@ class ElementNode {
       'hidden': ''
     };
 
+    this.scopeMembers = _elementNodeDataObject.scopeMembers || [];
     this.nodeEvents = _elementNodeDataObject.nodeEvents || {};
 
     this.comment = _elementNodeDataObject.comment || '';
@@ -1409,6 +1450,7 @@ class ElementNode {
       type: this.getType(),
       name: this.getName(),
       controls: _.clone(this.getControls()),
+      scopeMembers: _.clone(this.scopeMembers),
       nodeEvents: _.clone(this.nodeEvents),
       comment: this.getComment(),
       componentName: this.getComponentName(),
