@@ -437,7 +437,9 @@ class ElementNode {
 
     // [3] Children Construct
     if (this.type !== 'string') {
+      // Event 바인딩
       this.bindDOMEvents(options, htmlNode);
+
       this.childrenConstructAndLink(options, htmlNode, function() {
         _complete([htmlNode]);
       }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.

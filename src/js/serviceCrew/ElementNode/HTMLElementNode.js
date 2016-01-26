@@ -17,13 +17,13 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
-    //console.log('child');
+
     let that = this;
     async.eachSeries(this.children, function iterator(_child, _next) {
 
         _child.constructDOMs(_options,
           function(_domList) {
-            //console.log(_domList, _htmlNode);
+
             _domList.map(function(_dom) {
               _htmlNode.appendChild(_dom);
             });

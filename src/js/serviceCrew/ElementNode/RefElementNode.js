@@ -51,46 +51,52 @@ class RefElementNode extends HTMLElementNode {
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
     let that = this;
-    super.childrenConstructAndLink(_options, _htmlNode, function() {
 
-      if (_.isString(that.refTargetId) && that.loadedRefs === false) {
+    // super.childrenConstructAndLink(_options, _htmlNode, function() {
 
+    if (_.isString(that.refTargetId)) {
+      if (that.loadedRefs == false) {
         that.loadRefferenced(function(_resultObject) {
           that.loadedRefs = true;
           that.loadedInstance = _resultObject;
 
-          if (that.refType === 'Fragment') {
-
-            // 상위 environment 지정
-            that.loadedInstance.upperEnvironment = that.environment;
-
-            _htmlNode.innerHTML = '';
-            that.loadedInstance.constructDOMChildren(_options, function(_domList) {
-              _domList.map(function(_dom) {
-                _htmlNode.appendChild(_dom);
-              });
-
-              _complete()
-            });
-
-          } else if (that.refType === 'ElementNode') {
-            _resultObject.map(function(_elementNode) {
-              _elementNode.setParent(that);
-            });
-
-            that.children = _resultObject;
-
-            _htmlNode.innerHTML = '';
-            that.childrenConstructAndLink(_options, _htmlNode, _complete);
-
-          }
-
-
+          console.log('loaded', _resultObject);
+          that.childrenConstructAndLink(_options, _htmlNode, function() {
+            _complete();
+          });
         });
-      } else {
-        _complete([]);
+
+      } else { // load 완료시
+
+        if (that.refType === 'Fragment') {
+
+          // 상위 environment 지정
+          that.loadedInstance.upperEnvironment = that.environment;
+
+          that.loadedInstance.constructDOMChildren(_options, function(_domList) {
+            _htmlNode.innerHTML = '';
+            _domList.map(function(_dom) {
+              _htmlNode.appendChild(_dom);
+            });
+
+            console.log(_domList, _htmlNode);
+            _complete([]);
+          });
+
+        } else if (that.refType === 'ElementNode') {
+          that.loadedInstance.map(function(_elementNode) {
+            _elementNode.setParent(that);
+          });
+
+          that.children = that.loadedInstance;
+
+          _htmlNode.innerHTML = '';
+          super.childrenConstructAndLink(_options, _htmlNode, _complete);
+        }
       }
-    });
+    } else {
+      _complete([]);
+    }
   }
 
 
