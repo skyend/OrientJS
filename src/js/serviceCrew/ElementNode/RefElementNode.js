@@ -57,44 +57,38 @@ class RefElementNode extends HTMLElementNode {
 
         that.loadRefferenced(function(_resultObject) {
           that.loadedRefs = true;
+          that.loadedInstance = _resultObject;
 
-          // 로드한 객체의 ElementNode Children을 자신의 Children 목록에 삽입한다.
           if (that.refType === 'Fragment') {
-            _resultObject.rootElementNodes.map(function(_rootElementNode) {
-              _rootElementNode.setParent(that);
+
+            // 상위 environment 지정
+            that.loadedInstance.upperEnvironment = that.environment;
+
+            _htmlNode.innerHTML = '';
+            that.loadedInstance.constructDOMChildren(_options, function(_domList) {
+              _domList.map(function(_dom) {
+                _htmlNode.appendChild(_dom);
+              });
+
+              _complete()
             });
 
-            that.children = _resultObject.rootElementNodes;
           } else if (that.refType === 'ElementNode') {
             _resultObject.map(function(_elementNode) {
               _elementNode.setParent(that);
             });
 
             that.children = _resultObject;
+
+            _htmlNode.innerHTML = '';
+            that.childrenConstructAndLink(_options, _htmlNode, _complete);
+
           }
 
-          that.childrenConstructAndLink(_options, _htmlNode, _complete);
+
         });
       } else {
         _complete([]);
-      }
-    });
-  }
-
-
-  realize(_realizeOptions, _complete) {
-    let that = this;
-    super.realize(_realizeOptions, function(_result) {
-      if (_result === false) return _complete(_result);
-      // StandAlone 의 Environment 라면 sa 방식으로 로드한다.
-
-      if (that.environment.standAlone) {
-        that._sa_renderRefferenced(function() {
-
-          _complete();
-        });
-      } else {
-        _complete();
       }
     });
   }
@@ -133,7 +127,12 @@ class RefElementNode extends HTMLElementNode {
     if (this.refType === 'ElementNode') {
       this._sa_loadSharedElementNode(_complete);
     } else if (this.refType === 'Fragment') {
-      this._sa_loadFragment(_complete);
+      //this._sa_loadFragment(_complete);
+
+      this.environment.highestEnvironment.loadFragment(this.refTargetId, function(_err, _fragment) {
+        _complete(_fragment);
+      });
+
     }
   }
 
@@ -145,7 +144,7 @@ class RefElementNode extends HTMLElementNode {
 
       let fragment = new SA_Fragment(refTargetId, _fragmentText, that.realization);
 
-      fragment.buildElementNode();
+      fragment.buildElementNode(that.environment);
 
       _complete(fragment);
     });

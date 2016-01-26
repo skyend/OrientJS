@@ -1271,6 +1271,13 @@ class ElementNode {
 
   }
 
+  action_alert(_complete, _string) {
+    let actionResult = new ActionResult();
+    alert(_string);
+
+    _complete(actionResult);
+  }
+
   refresh(_complete) {
     let that = this;
     this.constructDOMs({}, function(_doms) {

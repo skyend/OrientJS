@@ -71,22 +71,14 @@ class Gelato {
           _cb();
         })
       }, (_cb) => { // fragment attach
-        this.page.buildGridNode();
+        this.page.buildBodyFragment();
+
+        //this.page.buildGridNode();
         this.page.render(function() {
           _cb();
         });
-        // let fragmentFollowingGrids = this.page.analysisFragmentFollowing();
-        //
-        // // gridElement 에 Fragment 를 채운다.
-        // this.page.fillAllFragmentOfGridElement(fragmentFollowingGrids, () => {
-        //   console.log("Attached All Fragments");
-        //   _cb();
-        // });
       }, (_cb) => {
-        // 다이나믹 컨텍스트 찾기.
-        //this.page.processingAllDynamicContextInstances();
         _cb();
-
       }, (_cb) => {
         this.page.appendPageScripts(() => {
           that.emit("load");
@@ -154,6 +146,7 @@ class Gelato {
   getCustomAction(_name) {
     return this.customActions[_name];
   }
+
 }
 
 export default Gelato;

@@ -28,7 +28,7 @@ class GelatoDocument {
       scriptElement.onload = _loaded;
     }
 
-    this.document.body.appendChild(scriptElement);
+    this.document.head.appendChild(scriptElement);
   }
 
   exploreBody(_exploreFunc) {

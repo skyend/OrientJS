@@ -13,7 +13,11 @@ import Gelato from './StandAloneLib/Gelato';
 
 class Document {
 
-  constructor(_contextController, _documentParams, _documentDataObject, _fragmentOption) {
+  /*
+
+    upperEnv : Fragment 또는 Page
+  */
+  constructor(_contextController, _documentParams, _documentDataObject, _fragmentOption, _upperEnv) {
     //////////////
     // 필드 정의
     ////////////////////////
@@ -42,43 +46,30 @@ class Document {
     this.enableNavigate = fragmentOption.enableNavigate || false;
     this.screenSizing = 'desktop';
     this.params = _documentParams || {};
+    this.upperEnvironment = _upperEnv || null;
 
     console.log('Document Map', _documentDataObject);
-    //////////////////////////
-    // 처리로직
-    //////////////////////////
-    // 이미 있는 도큐맨트를 로드한 경우 데이터를 객체에 맵핑해준다.
-    if (typeof _documentDataObject !== 'undefined') {
-      this.id = _documentDataObject._id;
-      this.documentID = _documentDataObject._id;
-      this.documentName = _documentDataObject.name;
-      this.documentTitle = _documentDataObject.title;
-      this.documentCreate = _documentDataObject.created;
-      this.documentUpdate = _documentDataObject.updated;
-      this.lastElementId = _documentDataObject.lastElementId || 0;
 
-      this.rootElementNodes = (_documentDataObject.rootElementNodes !== null && _documentDataObject.rootElementNodes !== undefined) ?
-        this.newElementNode(_documentDataObject.rootElementNodes) : null;
-
-      this.elementNodes = this.inspireElementNodes(_documentDataObject.elementNodes, this);
-      this.pageCSS = _documentDataObject.pageCSS;
-      this.pageScript = _documentDataObject.pageScript;
-      this.refScriptIdList = _documentDataObject.refScriptIdList;
-      this.refStyleIdList = _documentDataObject.refStyleIdList;
-      this.customActions = _documentDataObject.customActions || {};
-    } else {
-      // 새 도큐먼트가 생성된것이다.
-      this.documentCreate = new Date();
-      this.lastElementId = 0;
-      this.elementNodes = [];
-      this.rootElementNodes = null;
-      this.refScriptIdList = [];
-      this.refStyleIdList = [];
-      this.pageCSS = '';
-      this.pageScript = '';
-      this.customActions = {};
-    }
+    this.import(_documentDataObject);
   }
+
+  get upperEnvironment() {
+    return this._upperEnvironment;
+  }
+
+  // null 을 반환하지 않는다.
+  // upperEnvironment 가 없을 경우 자신을 반환하며.
+  // upperEnvironment 의 highestEnvironment 결과가 부정 일 경우 upperEnvironment 로 선택된 객체를 반환한다.
+  get highestEnvironment() {
+    if (this.upperEnvironment === null) return this;
+    return this.upperEnvironment.highestEnvironment || this.upperEnvironment;
+  }
+
+  set upperEnvironment(_upperEnv) {
+    this._upperEnvironment = _upperEnv;
+  }
+
+
 
   setParam(_paramNS, _data) {
     this.params[_paramNS] = _data;
@@ -553,6 +544,31 @@ class Document {
     }
 
     return list;
+  }
+
+  import (_documentDataObject) {
+    let that = this;
+    let documentDataObject = _documentDataObject || {};
+
+    this.id = documentDataObject._id;
+    this.documentID = documentDataObject._id;
+    this.documentName = documentDataObject.name;
+    this.documentTitle = documentDataObject.title;
+    this.documentCreate = documentDataObject.created || new Date();
+    this.documentUpdate = documentDataObject.updated;
+    this.lastElementId = documentDataObject.lastElementId || 0;
+
+    this.rootElementNodes = documentDataObject.rootElementNodes || [];
+    this.rootElementNodes = this.rootElementNodes.map(function(_rootElementNode) {
+      return that.newElementNode(_rootElementNode);
+    });
+    this.elementNodes = documentDataObject.elementNodes || [];
+    this.elementNodes = this.inspireElementNodes(this.elementNodes, this);
+    this.pageCSS = documentDataObject.pageCSS || '';
+    this.pageScript = documentDataObject.pageScript || '';
+    this.refScriptIdList = documentDataObject.refScriptIdList || [];
+    this.refStyleIdList = documentDataObject.refStyleIdList || [];
+    this.customActions = documentDataObject.customActions || {};
   }
 
   //////////////////////////

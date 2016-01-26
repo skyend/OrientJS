@@ -53,13 +53,13 @@ class Fragment {
     this.rendered = true;
   }
 
-  buildElementNode() {
+  buildElementNode(_environment) {
     this.rootElementNodes = [];
     let domContainer = document.createElement('div');
     domContainer.innerHTML = this.fragmentText;
 
     for (let i = 0; i < domContainer.children.length; i++) {
-      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', Gelato.one().page, undefined);
+      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', _environment, undefined);
       elementNode.buildByElement(domContainer.children[i]);
       this.rootElementNodes.push(elementNode);
     }

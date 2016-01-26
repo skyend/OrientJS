@@ -81,86 +81,25 @@ class GridElementNode extends HTMLElementNode {
 
     if (_.isString(this.followingFragment) && this.loadedFollowingFragmentObject === null) {
       let that = this;
-      this.environment.loadFragment(this.followingFragment, function(_err, _fragment) {
+
+      this.environment.highestEnvironment.loadFragment(this.followingFragment, function(_err, _fragment) {
         that.loadedFollowingFragmentObject = _fragment;
-        console.log(_fragment);
-        that.children = _fragment.rootElementNodes;
-        that.childrenConstructAndLink(_options, _htmlNode, _complete);
-        // _fragment.constructDOMChildren(_options, function(_elementNodeList) {
-        //   console.log(_doms);
-        //   that.children = _doms;
-        //
-        //   _complete();
-        // });
+
+        // 상위 environment 지정
+        that.loadedFollowingFragmentObject.upperEnvironment = that.environment;
+
+        _htmlNode.innerHTML = '';
+        that.loadedFollowingFragmentObject.constructDOMChildren(_options, function(_domList) {
+          _domList.map(function(_dom) {
+            _htmlNode.appendChild(_dom);
+          });
+
+          _complete()
+        });
       });
     } else {
       super.childrenConstructAndLink(_options, _htmlNode, _complete);
     }
-  }
-
-  realize(_realizeOptions, _complete) {
-    let that = this;
-    super.realize(_realizeOptions, function(_result) {
-      if (_result === false) return _complete(_result);
-
-      console.log(that.realization, that.environment, that.environment.screenMode);
-      let containerSize = that.calcContainerSize(that.environment.screenMode);
-      //this.realization.style.width = containerSize.width;
-      //this.realization.style.height = containerSize.height;
-      if (that.behavior === 'row') {
-
-      } else if (that.behavior === 'column') {
-        that.realization.style.float = 'left';
-
-      }
-
-      //this.realization.style.backgroundColor = 'rgba(' + [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 0.5].join(',') + ')';
-      that.realization.setAttribute("en-behavior", that.behavior);
-
-      if (that.followingFragment !== null) {
-        that.realization.setAttribute('en-ref-fragment', that.followingFragment);
-
-        that.environment.getFragment(that.followingFragment, function(_fragmentContextController) {
-          that.setFragmentCC(_fragmentContextController);
-          that.fragmentRender(_realizeOptions, function() {
-
-            _complete()
-          });
-        });
-      } else {
-        _complete();
-      }
-    });
-  }
-
-  linkHierarchyRealizaion() {
-    super.linkHierarchyRealizaion();
-
-    if (this.behavior === 'row') {
-      // 마지막에 clear블록을 삽입하여 float:left CSS 속성을 가진 Column들의 높이를 적용한다.
-      let clearBlock = document.createElement('div');
-      clearBlock.style.clear = 'both';
-      //clearBlock.style.content = " ";
-      clearBlock.style.display = "block";
-
-      this.realization.appendChild(clearBlock);
-    }
-  }
-
-  setFragmentCC(_fragmentContextController) {
-    this.fragmentContextController = _fragmentContextController;
-    console.log(this.fragmentContextController);
-  }
-
-  fragmentRender(_realizeOptions, _complete) {
-    this.realization.innerHTML = '';
-    this.realization.setAttribute('en-ref-fragment', this.fragmentContextController.subject.documentName);
-
-    this.fragmentContextController.attach(this.environment.fragmentContext);
-    this.fragmentContextController.setSuperElement(this.realization);
-    this.fragmentContextController.beginRender(_realizeOptions, function() {
-      _complete();
-    });
   }
 
   resetTemporaryDecrementRectSize() {

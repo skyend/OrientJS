@@ -24,6 +24,7 @@ class Page {
 
     let rootGridElement = this.findRootGrid();
     this.rootGridElement = rootGridElement;
+    this.bodyFragment = null;
 
     this.stripStringEN = true;
     this.standAlone = true;
@@ -108,6 +109,17 @@ class Page {
     return rootGrid;
   }
 
+  buildBodyFragment() {
+
+    let bodyElementNode = Factory.takeElementNode(undefined, undefined, 'html', Gelato.one().page, undefined);
+    bodyElementNode.buildByElement(this.doc.body);
+    let bodyFragment = new Document(undefined, undefined, {
+      rootElementNodes: [bodyElementNode.export()]
+    }, undefined, this);
+
+    this.bodyFragment = bodyFragment;
+  }
+
   /////// NEXT GEN /////////
   buildGridNode() {
     //this.rootGridElementNode;
@@ -119,19 +131,17 @@ class Page {
   render(_complete) {
     let that = this;
 
-    this.rootGridElementNode.constructDOMs({
-        linkType: 'downstream'
-      },
-      function(_domList) {
+    // 하나의 fragment에서 rootElementNode 는 다수로 존재 할 수 있지만 Page 에 존재하는 Fragment 의 rootElementNode는 body 태그에 대응하는 elementNode 단 하나만 존재한다.
+    this.bodyFragment.rootElementNodes[0].constructDOMs({
+      linkType: 'downstream'
+    }, function(_domList) {
+      // 반환도 배열 타입이지만 요소는 body 태그 하나만 존재한다.
+      let bodyDOMElement = _domList[0];
 
-        _domList.map(function(_dom) {
-          that.doc.body.replaceChild(_dom, that.rootGridElement);
-          _complete();
-        });
+      that.doc.body.parentElement.replaceChild(bodyDOMElement, that.doc.body);
+      _complete();
+    });
 
-
-
-      });
   }
 
   loadFragment(_fragmentId, _complete) {
@@ -243,33 +253,6 @@ class Page {
   // createDynamicContext(_element) {
   //   return new DynamicContext(_element, this);
   // }
-  processingAllDynamicContextInstances() {
-
-    this.runningFragments.map((_fragment) => {
-      _fragment.rootElementNodes.map((_rootElementNode) => {
-        this.progressElementDynamicContext(_rootElementNode);
-      });
-    });
-  }
-
-  progressElementDynamicContext(_elementNode) {
-    let that = this;
-
-    if (typeof _elementNode.treeExplore === 'function') {
-      _elementNode.treeExplore((_subElementNode) => {
-        if (_subElementNode.isDynamicContext === 'true') {
-          _subElementNode.dynamicContext.ready(function() {
-            _subElementNode.dynamicContext.start(function done() {
-              _subElementNode.childrenIteration((_child) => {
-                that.progressElementDynamicContext(_child);
-              });
-            });
-          })
-          return null;
-        }
-      });
-    }
-  }
 
   bindTag(_element, _apiSourceId, _requestId, _fields) {
 
