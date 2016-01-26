@@ -90,6 +90,11 @@ class GridElementNode extends HTMLElementNode {
 
         _htmlNode.innerHTML = '';
         that.loadedFollowingFragmentObject.constructDOMChildren(_options, function(_domList) {
+          // parent 삽입
+          that.loadedFollowingFragmentObject.rootElementNodes.map(function(_rootElementNode) {
+            _rootElementNode.setParent(that);
+          });
+
           _domList.map(function(_dom) {
             _htmlNode.appendChild(_dom);
           });

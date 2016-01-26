@@ -341,7 +341,6 @@ class ElementNode {
 
       // dc 가 생성되고 정해진 api을 실행한다.
       if (isBuiltDC) {
-        console.log(this.dynamicContext);
         this.dynamicContext.ready(function(_err) {
 
           if (_err === null) {
@@ -1187,7 +1186,7 @@ class ElementNode {
     let actionResult = new ActionResult();
 
     this.refresh(function() {
-      actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+      actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
       _complete(actionResult);
     });
   }
@@ -1202,7 +1201,7 @@ class ElementNode {
     console.log(targetElementNode);
 
     targetElementNode.refresh(function() {
-      actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+      actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
       _complete(actionResult);
     });
   }
@@ -1214,11 +1213,11 @@ class ElementNode {
     this.setAttribute(_name, _value);
 
     // complete callback
-    actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
     _complete(actionResult);
   }
 
-  action_attr2(_complete, _selector, _name, _value) {
+  action_attr2(_complete, _id, _name, _value, _nextPoint) {
     let actionResult = new ActionResult();
 
     // find ElementNode
@@ -1229,7 +1228,16 @@ class ElementNode {
     targetElementNode.setAttribute(_name, _value);
 
     // complete callback
-    actionResult.nextPoint = /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
+    _complete(actionResult);
+  }
+
+  action_scrollTop(_complete, _nextPoint) {
+    let actionResult = new ActionResult();
+
+    window.scrollTo(0, 0);
+
+    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
     _complete(actionResult);
   }
 
@@ -1283,6 +1291,7 @@ class ElementNode {
   refresh(_complete) {
     let that = this;
     this.constructDOMs({}, function(_doms) {
+      console.log(_doms);
       that.parent.forwardMe(that);
       _complete(_doms);
     });

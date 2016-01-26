@@ -75,11 +75,16 @@ class RefElementNode extends HTMLElementNode {
 
           that.loadedInstance.constructDOMChildren(_options, function(_domList) {
             _htmlNode.innerHTML = '';
+
+            // parent 삽입
+            that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
+              _rootElementNode.setParent(that);
+            });
+
             _domList.map(function(_dom) {
               _htmlNode.appendChild(_dom);
             });
 
-            console.log(_domList, _htmlNode);
             _complete([]);
           });
 
