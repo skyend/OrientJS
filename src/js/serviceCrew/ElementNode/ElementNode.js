@@ -1079,15 +1079,13 @@ class ElementNode {
 
   ////////////////////////////////////////// Scope Logics ///////////////////////////////////////////
 
+  // Done
   buildScopeMemberByScopeDom(_scopeDom) {
     let scopeDomNodeName = _scopeDom.nodeName;
     let scopeType;
 
-    if (/en-action/i.test(scopeDomNodeName)) {
-      scopeType = 'action';
-    } else if (/en-value/i.test(scopeDomNodeName)) {
-      scopeType = 'value';
-    }
+    let matches = String(_scopeDom.nodeName).match(/^en:(\w+)$/i);
+    scopeType = matches[1].toLowerCase();
 
     let ScopeMemberClass = ScopeMemberFactory.getClass(scopeType);
     let scopeMemberInstance = ScopeMemberClass.CreateByScopeDom(_scopeDom);
@@ -1095,10 +1093,24 @@ class ElementNode {
     return scopeMemberInstance;
   }
 
+  // Done
   appendScopeMember(_scopeMember) {
+    // 이미 존재하는 ScopeMember를 미리 찾아 중복을 체크한다.
+    // 중복을 판별하는 필드는 type 과 name 이 사용된다.
+    // 같은 타입간에 중복 name 은 사용이 불가능 하다.
+    let foundDupl = _.findIndex(this.scopeMembers, function(_compareScopeMember) {
+      return _compareScopeMember.type === _scopeMember.type && _compareScopeMember.name === _scopeMember.name;
+    });
+
+    // foundDupl 값이 -1 이 아니면 이미 존재하는 ScopeMember로 에러를 발생시킨다.
+    if (foundDupl != -1) {
+      throw new Error("이미 존재하는 ScopeMember 입니다. ScopeMember 는 같은 태그내에서 name 이 중복 될 수 없습니다.", _scopeMember);
+    }
+
     this.scopeMembers.push(_scopeMember);
   }
 
+  // ToDo... how?
   updateScopeMember(_scopeMember) {
 
   }

@@ -3,6 +3,7 @@ class ScopeMember {
     this.import(_scopeData);
   }
 
+  // Dom 으로부터 기본 scope 필드를 추출하여 반환한다.
   static BuildScopeSpecObjectByScopeDom(_dom) {
     let scopeSpecObject = {};
     scopeSpecObject.name = _dom.getAttribute('name');
@@ -28,7 +29,6 @@ class ScopeMember {
   import (_scopeData) {
     this.name = _scopeData.name;
     this.type = _scopeData.type;
-
   }
 
   export () {
