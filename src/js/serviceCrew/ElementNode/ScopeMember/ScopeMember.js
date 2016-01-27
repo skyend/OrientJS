@@ -6,7 +6,6 @@ class ScopeMember {
   static BuildScopeSpecObjectByScopeDom(_dom) {
     let scopeSpecObject = {};
     scopeSpecObject.name = _dom.getAttribute('name');
-    scopeSpecObject.type = _dom.getAttribute('type');
     return scopeSpecObject;
   }
 

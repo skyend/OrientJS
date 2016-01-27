@@ -1089,11 +1089,10 @@ class ElementNode {
       scopeType = 'value';
     }
 
-    let scopeMemberClass = ScopeMemberFactory.getClass(scopeType);
+    let ScopeMemberClass = ScopeMemberFactory.getClass(scopeType);
+    let scopeMemberInstance = ScopeMemberClass.CreateByScopeDom(_scopeDom);
 
-    scopeMember.buildByScopeDom(_scopeDom);
-
-    return scopeMember;
+    return scopeMemberInstance;
   }
 
   appendScopeMember(_scopeMember) {

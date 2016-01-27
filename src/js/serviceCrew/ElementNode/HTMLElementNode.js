@@ -203,6 +203,7 @@ class HTMLElementNode extends TagBaseElementNode {
       // en- 으로 시작되는 태그를 ScopeMember로 취급한다.
       if (/^en-/i.test(child_.nodeName)) {
         this.appendScopeMember(this.buildScopeMemberByScopeDom(child_));
+        console.log(this.scopeMembers, this, this.forwardDOM);
         continue;
       }
 
