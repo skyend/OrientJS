@@ -22,10 +22,9 @@ class ValueScopeMember extends ScopeMember {
   constructor(_scopeData) {
     super(_scopeData);
     this.type = 'value';
-
   }
 
-  get value(){
+  get value() {
     return this._value;
   }
 
@@ -52,7 +51,7 @@ class ValueScopeMember extends ScopeMember {
     return this._dataType;
   }
 
-  set value(_value){
+  set value(_value) {
     this._value = _value;
   }
 
@@ -92,7 +91,7 @@ class ValueScopeMember extends ScopeMember {
 
     // type attribute 는 dataType 으로 지정된다.
     scopeSpecObject.dataType = DataTypes[_dom.getAttribute('type')];
-    scopeSpecObject.value =_dom.getAttribute('value') || _dom.innerHTML || '';
+    scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
 
     return scopeSpecObject;
   }

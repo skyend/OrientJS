@@ -57,9 +57,10 @@ class DynamicContext {
   }
 
   getParam(_ns) {
-      return this.params[_ns];
-    }
-    // Object.keys($('..')[0].___en.dynamicContext.params).length > 0
+    return this.params[_ns];
+  }
+
+  // Object.keys($('..')[0].___en.dynamicContext.params).length > 0
 
   // clearInterval(itvid)
   ready(_complete) {

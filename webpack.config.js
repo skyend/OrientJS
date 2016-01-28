@@ -10,7 +10,7 @@ module.exports = {
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
     main: ['./src/js/main.js'],
-    'built-foundation':['./src/stand-alone-foundation/main.js']
+    'built-foundation':['./src/stand-alone-foundation/main.js'] // foundation build
       //main: ['./src/js/ui/editor/test_main.jsx']
   },
 

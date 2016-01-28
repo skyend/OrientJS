@@ -33,7 +33,9 @@
 <!-- ==========================
     SCROLL TOP - START
   =========================== -->
-<div id="scrolltop" class="hidden-xs"><i class="fa fa-angle-up"></i></div>
+<div id="scrolltop" class="hidden-xs">
+  <i class="fa fa-angle-up"></i>
+</div>
 <!-- ==========================
     SCROLL TOP - END
   =========================== -->
@@ -42,7 +44,9 @@
     COLOR SWITCHER - START
   =========================== -->
 <div id="color-switcher">
-  <div id="toggle-switcher"><i class="fa fa-gear"></i></div>
+  <div id="toggle-switcher">
+    <i class="fa fa-gear"></i>
+  </div>
   <span>Color Scheme:</span>
   <ul class="list-unstyled list-inline">
     <li id="red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Red"></li>
@@ -71,19 +75,22 @@
   <!-- ==========================
     BREADCRUMB - START
   =========================== -->
-  <section  class="breadcrumb-wrapper" en-ctrl-hidden="%{'${*csdp-product/prd_info/brand}' != '' ? 'true':'false'}"  en-dynamic-context='true' en-dc-source-id='csdp/list' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
+  <section class="breadcrumb-wrapper" en-ctrl-hidden="%{'${*csdp-product/prd_info/brand}' != '' ? 'true':'false'}" en-dynamic-context='true' en-dc-source-id='csdp/list' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
     <div class="container">
       <div class="row" en-ctrl-hidden="%{'${*csdp-product/prd_info/brand}' != '' ? 'true':'false'}" en-event-click="forward:requestAPI('broadcast_series','12312312-1123-1232','a=a&b=${*csdp-product/a/a}')>fail:update(${param:0})">
         <div class="col-xs-6">
           <h2>${*csdp-product/prd_info/brand}</h2>
           <p>All Categories</p>
-          <div en-type='ref' ref-type='ElementNode' ref-target-id='${*csdp-product/prd_info/view}'>
-          </div>
+          <div en-type='ref' ref-type='ElementNode' ref-target-id='${*csdp-product/prd_info/view}'></div>
         </div>
         <div class="col-xs-6">
           <ol class="breadcrumb">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="blog.html">Blog</a></li>
+            <li>
+              <a href="index.html">Home</a>
+            </li>
+            <li>
+              <a href="blog.html">Blog</a>
+            </li>
             <li class="active">All Categories</li>
           </ol>
         </div>
@@ -99,19 +106,21 @@
   =========================== -->
   <section class="content blog">
     <div class="container">
-      <h2 class="hidden">Blog </h2>
+      <h2 class="hidden">Blog
+      </h2>
       <div class="row">
-        <div class="col-sm-9"
-              en-dynamic-context='true'
-              en-dc-source-id='broadcast_series,csdp'
-              en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
-              en-dc-inject-params='a=${http-param:hello}'
-              en-dc-ns='broadcast_series-list,csdp-product'
-              en-event-complete-bind='forward#alert("binded")'>
+        <div
+          class="col-sm-9"
+          en-dynamic-context='true'
+          en-dc-source-id='broadcast_series,csdp'
+          en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
+          en-dc-inject-params='a=${http-param:hello}'
+          en-dc-ns='broadcast_series-list,csdp-product'
+          en-event-complete-bind='forward#alert("binded")'>
 
           <!-- POST - START -->
           <article class="post" en-ctrl-repeat-n="${*broadcast_series-list/items:length}">
-            <div class="post-left" en-dynamic-context='true'  en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
+            <div class="post-left" en-dynamic-context='true' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
               <div class="author">
                 <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
                 <span>Posted by ${*csdp-product/prd_info/brand}</span>
@@ -121,9 +130,7 @@
             </div>
             <h3>
               <a href="single-post.html">
-                ${*broadcast_series-list/items/*(repeat-n)/nid:currency}
-                ${*broadcast_series-list/items/*(repeat-n)/title}
-                ${*csdp-product/prd_info/brand}
+                ${*broadcast_series-list/items/*(repeat-n)/nid:currency} ${*broadcast_series-list/items/*(repeat-n)/title} ${*csdp-product/prd_info/brand}
               </a>
 
             </h3>
@@ -138,12 +145,30 @@
             <p>${*broadcast_series-list/items/*(repeat-n)/synopsis}</p>
             <div class="post-bottom clearfix" data-hello="${*broadcast_series-list/items/*(repeat-n)/synopsis}">
               <div class="tags">
-                <span class="label"><i class="fa fa-tag"></i><a href="#">*(attr:data-hello) book</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">*(attr:data-hello) book</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">music</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">nature</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">read</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">songs</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">sunshine</a>
+                </span>
               </div>
               <a href="single-post.html" class="btn btn-primary">Read More</a>
             </div>
@@ -156,10 +181,13 @@
               <div class="author">
                 <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
                 <span>Posted by</span>
-                <span class="name">John Doe </span>
+                <span class="name">John Doe
+                </span>
               </div>
             </div>
-            <h3><a href="single-post.html">Professional Habits To Adopt</a></h3>
+            <h3>
+              <a href="single-post.html">Professional Habits To Adopt</a>
+            </h3>
             <div class="meta">
               <div class="date">01/12/2015</div>
               <div class="date visible-xs-inline-block">John Doe</div>
@@ -172,16 +200,34 @@
             </div>
             <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
               elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
-            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
-              lorem concordia.</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere lorem
+              concordia.</p>
             <div class="post-bottom clearfix">
               <div class="tags">
-                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">book</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">music</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">nature</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">read</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">songs</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">sunshine</a>
+                </span>
               </div>
               <a href="single-post.html" class="btn btn-primary">Read More</a>
             </div>
@@ -197,7 +243,9 @@
                 <span class="name">John Doe</span>
               </div>
             </div>
-            <h3><a href="single-post.html">How to pickup shoes</a></h3>
+            <h3>
+              <a href="single-post.html">How to pickup shoes</a>
+            </h3>
             <div class="meta">
               <div class="date">24/11/2015</div>
               <div class="date visible-xs-inline-block">John Doe</div>
@@ -221,16 +269,34 @@
             </div>
             <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
               elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
-            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
-              lorem concordia.</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere lorem
+              concordia.</p>
             <div class="post-bottom clearfix">
               <div class="tags">
-                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">book</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">music</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">nature</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">read</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">songs</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">sunshine</a>
+                </span>
               </div>
               <a href="single-post.html" class="btn btn-primary">Read More</a>
             </div>
@@ -246,7 +312,9 @@
                 <span class="name">John Doe</span>
               </div>
             </div>
-            <h3><a href="single-post.html">Fine mens gloves</a></h3>
+            <h3>
+              <a href="single-post.html">Fine mens gloves</a>
+            </h3>
             <div class="meta">
               <div class="date">10/11/2015</div>
               <div class="date visible-xs-inline-block">John Doe</div>
@@ -259,16 +327,34 @@
             </div>
             <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
               elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
-            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
-              lorem concordia.</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere lorem
+              concordia.</p>
             <div class="post-bottom clearfix">
               <div class="tags">
-                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">book</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">music</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">nature</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">read</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">songs</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">sunshine</a>
+                </span>
               </div>
               <a href="single-post.html" class="btn btn-primary">Read More</a>
             </div>
@@ -284,7 +370,9 @@
                 <span class="name">John Doe</span>
               </div>
             </div>
-            <h3><a href="single-post.html">Sunglasses for a beach</a></h3>
+            <h3>
+              <a href="single-post.html">Sunglasses for a beach</a>
+            </h3>
             <div class="meta">
               <div class="date">18/10/2015</div>
               <div class="date visible-xs-inline-block">John Doe</div>
@@ -293,16 +381,34 @@
             <div class="attachment"></div>
             <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
               elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
-            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
-              lorem concordia.</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere lorem
+              concordia.</p>
             <div class="post-bottom clearfix">
               <div class="tags">
-                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">book</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">music</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">nature</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">read</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">songs</a>
+                </span>
+                <span class="label">
+                  <i class="fa fa-tag"></i>
+                  <a href="#">sunshine</a>
+                </span>
               </div>
               <a href="single-post.html" class="btn btn-primary">Read More</a>
             </div>
@@ -310,12 +416,28 @@
           <!-- POST - END -->
 
           <ul class="pagination">
-            <li><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
-            <li><a href="#">1</a></li>
-            <li class="active"><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
+            <li>
+              <a href="#">
+                <i class="fa fa-angle-double-left"></i>
+              </a>
+            </li>
+            <li>
+              <a href="#">1</a>
+            </li>
+            <li class="active">
+              <a href="#">2</a>
+            </li>
+            <li>
+              <a href="#">3</a>
+            </li>
+            <li>
+              <a href="#">4</a>
+            </li>
+            <li>
+              <a href="#">
+                <i class="fa fa-angle-double-right"></i>
+              </a>
+            </li>
           </ul>
 
         </div>
@@ -330,7 +452,9 @@
                   <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search">
                     <span class="input-group-btn">
-                      <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+                      <button class="btn btn-primary" type="button">
+                        <i class="fa fa-search"></i>
+                      </button>
                     </span>
                   </div>
                 </form>
@@ -343,11 +467,31 @@
               <h3>Categories</h3>
               <div class="widget-body">
                 <ul class="list-unstyled">
-                  <li><a href="#">Fashion<span class="badge">12</span></a></li>
-                  <li><a href="#">Design<span class="badge">12</span></a></li>
-                  <li><a href="#">Music<span class="badge">12</span></a></li>
-                  <li><a href="#">Travel<span class="badge">12</span></a></li>
-                  <li><a href="#">Uncategorized<span class="badge">12</span></a></li>
+                  <li>
+                    <a href="#">Fashion
+                      <span class="badge">12</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">Design
+                      <span class="badge">12</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">Music
+                      <span class="badge">12</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">Travel
+                      <span class="badge">12</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">Uncategorized
+                      <span class="badge">12</span>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -358,12 +502,30 @@
               <h3>Tags</h3>
               <div class="widget-body">
                 <div class="tags">
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
-                  <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">book</a>
+                  </span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">music</a>
+                  </span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">nature</a>
+                  </span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">read</a>
+                  </span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">songs</a>
+                  </span>
+                  <span class="label">
+                    <i class="fa fa-tag"></i>
+                    <a href="#">sunshine</a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -375,19 +537,32 @@
               <div class="widget-body">
                 <ul class="list-unstyled">
                   <li>
-                    <p class="text"> Nullam lectus risus, pretium eu rhoncus quis</p>
-                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
-                    <p>By <a href="#">John Doe</a></p>
+                    <p class="text">
+                      Nullam lectus risus, pretium eu rhoncus quis</p>
+                    <p>Posted in
+                      <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a>
+                    </p>
+                    <p>By
+                      <a href="#">John Doe</a>
+                    </p>
                   </li>
                   <li>
                     <p class="text">Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi</p>
-                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
-                    <p>By <a href="#">John Doe</a></p>
+                    <p>Posted in
+                      <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a>
+                    </p>
+                    <p>By
+                      <a href="#">John Doe</a>
+                    </p>
                   </li>
                   <li>
                     <p class="text">Great shoes! Recomended!</p>
-                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
-                    <p>By <a href="#">John Doe</a></p>
+                    <p>Posted in
+                      <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a>
+                    </p>
+                    <p>By
+                      <a href="#">John Doe</a>
+                    </p>
                   </li>
                 </ul>
               </div>
@@ -402,7 +577,6 @@
   <!-- ==========================
     BLOG - END
   =========================== -->
-
 
   <div en-type='ref' ref-type='ElementNode' ref-target-id='footer'>
     <!-- Header -->

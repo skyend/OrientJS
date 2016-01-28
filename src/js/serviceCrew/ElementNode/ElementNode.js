@@ -17,9 +17,7 @@ import ScopeMemberFactory from './ScopeMember/Factory';
 
 import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
-
 "use strict";
-
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -879,54 +877,22 @@ class ElementNode {
   // String Resolve
   interpret(_matterText) {
     if (_matterText === undefined) return;
+    let externalGetterInterface = {
+      getAttribute: this.getAttrOnTree.bind(this),
+      getScope: this.getScope.bind(this),
+      getNodeMeta: this.getNodeMeta.bind(this)
+        // todo .... geo 추가
+        //  getAttributeResolve: this.getAttrOnTreeWithResolve
+    };
 
     let solved = _matterText;
-
-    solved = this.preInterpretOnTree(solved);
     let dc = this.availableDynamicContext;
 
     if (dc) {
-      solved = dc.interpret(solved);
-      //console.log(this.dynamicContext, this);
-
+      solved = dc.interpret(solved, externalGetterInterface);
       return solved;
     } else {
-      return this.defaultResolver.resolve(solved);
-    }
-  }
-
-  // 전처리
-  // ElementNode상의 가능한 인터프리팅을 진행한다.
-  preInterpretOnTree(_matterText) {
-    let that = this;
-    let text = _matterText;
-    let singleKept = null;
-    let matched = false;
-    var WhatThings = /\*\(([\w-]+)\:?([\w-_\.]+)?\)/g;
-
-    text = text.replace(WhatThings, function(_match, _mean, _submean) {
-      matched = true;
-
-      let asteriskData = that.asteriskResolve(_mean, _submean);
-      if (_matterText.length == _match.length) {
-        singleKept = asteriskData;
-      }
-
-      return asteriskData;
-    });
-
-    if (matched && singleKept !== null) {
-      return singleKept;
-    }
-
-    return text;
-  }
-
-  asteriskResolve(_mean, _submean) {
-    if (_mean === 'repeat-n') {
-      return this.getRepeatNOnTree();
-    } else if (_mean === 'attr') {
-      return this.getAttrOnTree(_submean);
+      return this.defaultResolver.resolve(solved, externalGetterInterface);
     }
   }
 
@@ -952,14 +918,14 @@ class ElementNode {
     }
   }
 
-  getAttrOnTree(_attrName) {
-
+  getAttrOnTree(_attrName, _resolving) {
     if (_.isFunction(this.getAttribute)) {
       // 먼저 자신에게서 구한다.
       var attributeValue = this.getAttribute(_attrName);
 
       if (attributeValue !== undefined) {
-        return this.interpret(attributeValue);
+
+        return _resolving ? this.interpret(attributeValue) : attributeValue;
       }
     }
 
@@ -968,7 +934,7 @@ class ElementNode {
       var value = _parent.getAttribute(_attrName);
 
       if (value !== undefined) {
-        parentAttribute = _parent.interpret(value);
+        parentAttribute = _resolving ? _parent.interpret(value) : value;
         return null;
       }
     });
@@ -978,7 +944,34 @@ class ElementNode {
     } else {
       return '`' + _attrName + '`is null';
     }
+  }
 
+  getScope(_name, _type, _withString) {
+    let scope = this.getMyScope(_name, _type, _withString);
+
+    if (scope === null) {
+      if (this.parent !== null) return this.parent.getScope(_name, _type, _withString);
+      return null;
+    }
+
+    return scope;
+  }
+
+  getMyScope(_name, _type, _withString) {
+
+    let findIndex = _.findIndex(this.scopeMembers, function(_scopeMember) {
+      return _scopeMember.name === _name && _scopeMember.type === _type;
+    });
+
+    return this.scopeMembers[findIndex] || null;
+  }
+
+  // 추가...
+  getNodeMeta(_metaName, _resolve) {
+    switch (_metaName) {
+      case "repeat-n":
+        return this.getRepeatNOnTree();
+    }
   }
 
   // 모든 ElementNode type 의 Interpret작업이 필요한 항목들을 감지한다.

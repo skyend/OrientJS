@@ -13,10 +13,24 @@
   Hello, I'm index fragment
 
   <div en-id='asdasd12asdasdasdasd' class='list'>
-    <ul en-id='asdasdasadasd2asdasdasd' class='list' en-dynamic-context='true'  en-dc-source-id='csdp,${*broadcast_series-list/items:length}' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
-      <li en-id='asdasdasd21asdasdasd'>
-        ${*broadcast_series-list/items/0/title}
-        tttt
+    <ul en-id='asdasdasadasd2asdasdasd' class='list'>
+      <li en-id='asdasdasd21asdasdasd' sample-array='{{[1,2,3,4]}}' en-ctrl-repeat-n='2' attr2='{{}}'>
+        <en:value name='test-val' type='string' value='hello value'></en:value>
+        <en:value name='test-object' type='object'>
+          { "a":31, "b":{ "a":2 } }
+        </en:value>
+
+        1+1 = \{{{1+1}}\}
+
+        2+2 = {{2+2}} {{([1,2,3,4])[3]}}
+
+        {{ cookie@a + cookie@b }}
+
+        {{  en-attr@sample-array[en@repeat-n] + 'aa'  }}
+
+        {{val@test-val}}
+
+        repeat {{en@repeat-n}}
       </li>
     </ul>
   </div>

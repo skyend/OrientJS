@@ -1,43 +1,37 @@
 <!doctype html>
 <html>
   <head>
-    <title> Temporary Publish </title>
+    <title>
+      Temporary Publish
+    </title>
 
     <!-- Page Spec JSON -->
     <script id='page-meta' type='text/json'>
-      {
-        "id":1231221323,
-        "scripts":[
-          "jquery.js"
-        ],
-        "styles":[
-          "bootstrap.css"
-        ]
-      }
+      { "id":1231221323, "scripts":[ "jquery.js" ], "styles":[ "bootstrap.css" ] }
     </script>
 
     <!-- Publish run foundation-->
     <link rel='stylesheet' type='text/css' href='./foundation/css/font-awesome.css'/>
     <link rel='stylesheet' type='text/css' href='./foundation/css/grid.css'/>
     <link rel='stylesheet' type='text/css' href='./foundation/css/feedback.css'/>
+
+    <script src='http://localhost:8080/built-foundation.js'></script>
+    <script>
+      window.onload = function () {
+        $ervice.startup();
+      }
+    </script>
   </head>
   <body>
     <!-- Page Grid -->
-    <div type='grid' behavior='grid'>
-      <div type='grid' behavior='row'>
+    <div en-type='grid' en-behavior='grid'>
+      <div en-type='grid' en-behavior='row'>
         <!-- fragment include -->
-        <div type='grid' behavior='column' has-fragment='true' fragment-name='index'>
-          <!-- Will attach a index fragment -->
+        <div en-type='grid' en-behavior='column' en-ref-fragment='index'>
+          <!-- Will attach a blogBody fragment -->
         </div>
       </div>
     </div>
 
-    <!-- Publish -->
-    <script src='./foundation/built-foundation.js'></script>
-    <script>
-      window.onload = function(){
-        $ervice.startup();
-      }
-    </script>
   </body>
 </html>
