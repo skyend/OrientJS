@@ -1,7 +1,7 @@
-"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import Document from '../Document.js';
 import _ from 'underscore';
+"use strict";
 
 class GridElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {

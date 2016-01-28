@@ -1,4 +1,4 @@
-var App = require('./builder.App.js');
+import App from './builder.App';
 
 window.onload = function() {
   var app = new App();

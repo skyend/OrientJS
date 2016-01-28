@@ -1,0 +1,12 @@
+{
+  "projectId": "asdasdasd",
+  "serviceId": "212321212",
+  "ice-host": "http://125.131.88.75:8080",
+  "apifarm-host": "http://125.131.88.77:8200",
+  "commonScripts": [
+
+  ],
+  "commonStyles": [
+
+  ]
+}

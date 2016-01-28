@@ -371,38 +371,38 @@ class DocumentContextController extends HasElementNodeContextController {
 
         break;
       case "appendComponent":
-        returns = () => {
+        returns = (() => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
           if (targetElementNode === null) {
             this.subject.setRootElementNode(newElementNode);
           } else {
             this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
           }
-        }.apply(this);
+        }).apply(this);
         break;
       case "insertBeforeComponent":
-        returns = () => {
+        returns = (() => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
           this.subject.insertElementNode("insertBefore", newElementNode, targetElementNode);
-        }.apply(this);
+        }).apply(this);
         break;
       case "insertAfterComponent":
-        returns = () => {
+        returns = (() => {
           let newElementNode = this.convertToElementNodeFromComponent(_object);
           this.subject.insertElementNode("insertAfter", newElementNode, targetElementNode);
-        }.apply(this);
+        }).apply(this);
         break;
       case "cloneAndInsertAfter":
-        returns = () => {
+        returns = (() => {
           let clonedElementNode = this.subject.cloneElement(targetElementNode);
           this.subject.insertElementNode("insertAfter", clonedElementNode, targetElementNode);
-        }.apply(this);
+        }).apply(this);
         break;
       case "pasteIn":
-        returns = () => {
+        returns = (() => {
           var newElementNode = this.subject.newElementNode(_object);
           this.subject.insertElementNode("appendChild", newElementNode, targetElementNode);
-        }.apply(this);
+        }).apply(this);
         break;
       case "default":
         console.error('What the');

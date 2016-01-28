@@ -1,10 +1,9 @@
-"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import GridElementNode from './GridElementNode.js';
 import ReactElementNode from './ReactElementNode.js';
 import StringElementNode from './StringElementNode.js';
 import RefElementNode from './RefElementNode.js';
-
+"use strict";
 
 class Factory {
   static takeElementNode(_elementNodeDataObject, _preInjectProps, _type, _environment, _dynamicContext) {

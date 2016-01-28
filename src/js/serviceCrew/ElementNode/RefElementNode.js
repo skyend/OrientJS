@@ -1,4 +1,3 @@
-"use strict";
 import HTMLElementNode from './HTMLElementNode.js';
 import _ from 'underscore';
 import SALoader from '../StandAloneLib/Loader.js';
@@ -6,6 +5,7 @@ import Factory from './Factory';
 import async from 'async';
 import SA_Fragment from '../StandAloneLib/Fragment'
 import Gelato from '../StandAloneLib/Gelato';
+"use strict";
 
 let RefferenceType = Object.freeze({
   ElementNode: 'ElementNode',

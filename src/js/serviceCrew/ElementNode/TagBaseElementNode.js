@@ -1,7 +1,8 @@
-"use strict";
 import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 import Gelato from '../StandAloneLib/Gelato';
+"use strict";
+
 
 const DOMEvents = [
   // Mouse Events

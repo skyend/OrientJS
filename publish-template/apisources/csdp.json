@@ -1,0 +1,17 @@
+{
+  "_id": "568d11767671ee8630709067",
+  "nt_tid": "csdp",
+  "title": "CSDP",
+  "icon": "silk/r_t/trashcan-empty.png",
+  "nid": "400073733",
+  "serviceId": "568ac5a24469c3d414f0e653",
+  "created": "2016-01-06T13:07:02.345Z",
+  "requests": [{
+    "id": "b4bb86b0-6434-4c1b-ad43-c671389c49db",
+    "name": "product",
+    "method": "get",
+    "crud": "**",
+    "customURL": "http://localhost:8080/kolon-demo-data/product.json",
+    "fields": []
+  }]
+}

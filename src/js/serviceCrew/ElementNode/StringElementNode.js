@@ -1,7 +1,7 @@
-"use strict";
 import ElementNode from './ElementNode.js';
 import _ from 'underscore';
 import Gelato from '../StandAloneLib/Gelato';
+"use strict"
 
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {

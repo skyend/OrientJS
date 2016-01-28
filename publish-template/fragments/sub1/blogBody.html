@@ -1,0 +1,595 @@
+<!--@FragmentMeta
+{
+  "scripts":[
+    "http://code.jquery.com/jquery-latest.min.js",
+    "http://code.jquery.com/ui/1.11.1/jquery-ui.js",
+    "https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true",
+    "bootstrap.min.js",
+    "bootstrap-hover-dropdown.min.js",
+    "SmoothScroll.js",
+    "jquery.dragtable.js",
+    "jquery.card.js",
+    "owl.carousel.min.js",
+    "twitterFetcher_min.js",
+    "color-switcher.js",
+    "custom.js"
+  ],
+  "styles":[
+    "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900,900italic&amp;subset=latin,latin-ext",
+    "https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,900,800",
+    "http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css",
+    "bootstrap.min.css",
+    "font-awesome.min.css",
+    "dragtable.css",
+    "owl.carousel.css",
+    "animate.css",
+    "color-switcher.css",
+    "custom.css",
+    "red.css"
+  ]
+}
+@FragmentMetaEnd-->
+
+<!-- ==========================
+    SCROLL TOP - START
+  =========================== -->
+<div id="scrolltop" class="hidden-xs"><i class="fa fa-angle-up"></i></div>
+<!-- ==========================
+    SCROLL TOP - END
+  =========================== -->
+
+<!-- ==========================
+    COLOR SWITCHER - START
+  =========================== -->
+<div id="color-switcher">
+  <div id="toggle-switcher"><i class="fa fa-gear"></i></div>
+  <span>Color Scheme:</span>
+  <ul class="list-unstyled list-inline">
+    <li id="red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Red"></li>
+    <li id="purple" data-toggle="tooltip" data-placement="top" title="" data-original-title="Purple"></li>
+    <li id="yellow" data-toggle="tooltip" data-placement="top" title="" data-original-title="Yellow"></li>
+    <li id="blue" data-toggle="tooltip" data-placement="top" title="" data-original-title="Blue"></li>
+    <li id="dark-blue" data-toggle="tooltip" data-placement="top" title="" data-original-title="Dark Blue"></li>
+    <li id="orange" data-toggle="tooltip" data-placement="top" title="" data-original-title="Orange"></li>
+    <li id="green" data-toggle="tooltip" data-placement="top" title="" data-original-title="Green"></li>
+    <li id="brown" data-toggle="tooltip" data-placement="top" title="" data-original-title="Brown"></li>
+    <li id="dark-red" data-toggle="tooltip" data-placement="top" title="" data-original-title="Dark Red"></li>
+    <li id="light-green" data-toggle="tooltip" data-placement="top" title="" data-original-title="Light Green"></li>
+  </ul>
+</div>
+<!-- ==========================
+    COLOR SWITCHER - END
+  =========================== -->
+
+<div id="page-wrapper">
+  <!-- PAGE - START -->
+
+  <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='header'>
+    <!-- Header -->
+  </div>
+
+
+  <!-- ==========================
+    BREADCRUMB - START
+  =========================== -->
+  <section  class="breadcrumb-wrapper"
+            en-ctrl-hidden='false' en-dc-source-id='csdp'
+            en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db'
+            en-dc-inject-params='a=${http-param:hello}'
+            en-dc-ns='csdp-product' >
+
+      <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
+        <!-- Header -->
+      </div>
+
+    <div class="container">
+      <div class="row" en-ctrl-hidden="%{'${*csdp-product/prd_info/brand}' == '' ? 'true':'false'}">
+        <div class="col-xs-6">
+          <h2>Brand</h2>
+          <p>All Categories *(attr:class)</p>
+          <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='${*csdp-product/prd_info/view}'></div>
+
+          <button en-event-click='forward@attr2(aaa,text,AAA)
+                                  success@refresh2(aaa)'>
+
+            <en:value name='text1' type='string' value='Value 의 type 은 dataType 을 나타낸다.'></en:value>
+            <en:value name='text2' type='string'> 'Hello, Gelato World. innerHTML' </en:value>
+            <en:value name='defTest' type='object'>
+              {
+                "text":"hello, Gelato JSON"
+              }
+            </en:value>
+            <en:value name='defTest2' type='number'>
+
+               123123
+
+            </en:value>
+            <en:task name='defTest' action='attr' arg-name='' arg-value=''></en:task>
+
+            Modification Tag Define Test
+          </button>
+
+          <div en-id='aaa' text='Hello'>
+            *(attr:text)
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <ol class="breadcrumb">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li class="active">All Categories</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ==========================
+    BREADCRUMB - END
+  =========================== -->
+
+  <!-- ==========================
+    BLOG - START
+  =========================== -->
+
+  <section class="content blog">
+    <div class="container">
+      <h2 class="hidden">Blog </h2>
+      <div class='row' en-ctrl-hidden='true'>
+        <div class='col-sm-9'>
+          <form enctype="multipart/form-data" en-event-submit="forward@sendForm(broadcast_series,create)
+                                  success@refresh2(bc-list)">
+              <input class='form-control' name='create' type='hidden' value='true'/>
+              <input class='form-control' name='cp_id' type='hidden' value='401075333'/>
+              <input class='form-control' name='genre' type='hidden' value='007'/>
+              <div class='form-group'>
+                <label>
+                  Title
+                </label>
+                <input class='form-control' name='title' type='text' value='123123123'/>
+              </div>
+
+              <!-- <div class='form-group'>
+                <label>
+                  Nid
+                </label>
+                <input class='form-control' name='nid' type='text' value='123123123'/>
+              </div> -->
+              <div class='form-group'>
+                <label>
+                  fixed_participant
+                </label>
+                <input class='form-control' name='fixed_participant' type='text' value='test'/>
+              </div>
+              <div class='form-group'>
+                <label>
+                  Nid
+                </label>
+                <input class='form-control' name='director' type='text' value='test'/>
+              </div>
+              <div class='form-group'>
+                <label>
+                  시리즈 ID 유니크
+                </label>
+                <input class='form-control' name='series_id' type='text' value='test'/>
+              </div>
+              <div class='form-group'>
+                <label>
+                  age_ratings
+                </label>
+                <input class='form-control' name='age_ratings' type='text' value='TV_PG'/>
+              </div>
+              <div class='form-group'>
+                <label>
+                  완결여부 (Y,N)
+                </label>
+                <input class='form-control' name='complete_yn' type='text' value='Y'/>
+              </div>
+              <div class='form-group'>
+                <label>
+                  시놉시스
+                </label>
+                <textarea class='form-control' name='synopsis'>테스트 시놉시스</textarea>
+              </div>
+              <div class='form-group'>
+                <label>
+                  Image
+                </label>
+                <input class='form-control' name='image' type='file'/>
+              </div>
+              <input class='btn btn-primary btn-lg' type='submit' value='전송 후 갱신'/>
+          </form>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div  class="col-sm-9"
+              en-dc-source-id='farm/vod/category'
+              en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
+              en-dc-inject-params='a=${http-param:hello}'
+              en-dc-ns='category-list'>
+              ${*category-list/items/0/orgz_ctgry_nm} aaaa
+        </div>
+
+      </div>
+
+      <div class="row" en-id='bc-wrapper'>
+        <div class="col-sm-9" en-id='bc-list'
+        variable-source-id=''
+        en-dc-source-id='*(attr:variable-source-id)'
+        en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
+        en-dc-inject-params='a=${http-param:hello}'
+        en-dc-ns='broadcast_series-list,csdp-product'>
+
+          <button en-event-click='forward@attr2(bc-list,variable-source-id,broadcast_series)
+                                  success@refresh2(bc-wrapper)'>
+            <en-action name='test' executor='refresh'></en-action>
+
+            Refresh Test
+          </button>
+
+          <!-- "fields": [{
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "nid",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "fixed_participant",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "director",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "create",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "cp_id",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "series_id",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "age_ratings",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "genre",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "complete_yn",
+            "value": "",
+            "testValue": "5"
+          }, {
+            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
+            "key": "image",
+            "value": "",
+            "testValue": "5"
+          } -->
+
+
+
+
+          <!-- POST - START -->
+          <article class="post" en-ctrl-repeat-n="${*broadcast_series-list/items:length}">
+            <div class="post-left" en-dynamic-context='true'  en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
+              <div class="author">
+                <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
+                <span>Posted by ${*csdp-product/prd_info/brand}</span>
+                <span class="name">John Doe</span>
+                ${cookie:ad}
+              </div>
+            </div>
+            <h3>
+              <a href="single-post.html">
+                ${*broadcast_series-list/items/*(repeat-n)/nid:currency}
+                 ${*broadcast_series-list/items/*(repeat-n)/title}
+                  ${*csdp-product/prd_info/brand}
+              </a>
+
+              <button en-id='data-field2' en-event-mouseout='forward@attr(data,%{parseInt(*(attr:data))*5})
+                                      success@refresh()' data='1'>
+                Click *(attr:data)
+              </button>
+
+              <button en-event-click='forward@refresh2(data-field2,p)'>
+
+                Mouse Enter
+              </button>
+            </h3>
+
+            <div class="meta">
+              <div class="date">20/12/2015</div>
+              <div class="date visible-xs-inline-block">John Doe</div>
+              <div class="category">Uncategorized</div>
+            </div>
+            <div class="attachment">
+              <img src="assets/images/blog/blog-4.jpg" class="img-responsive" alt="">
+            </div>
+            <p>${*broadcast_series-list/items/*(repeat-n)/synopsis}</p>
+            <div class="post-bottom clearfix" data-hello="${*broadcast_series-list/items/*(repeat-n)/synopsis}">
+              <div class="tags">
+                <span class="label"><i class="fa fa-tag"></i><a href="#">*(attr:data-hello) book</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+              </div>
+              <a href="single-post.html" class="btn btn-primary">Read More</a>
+            </div>
+          </article>
+          <!-- POST - END -->
+
+          <!-- POST - START -->
+          <article class="post" repeat-n="5">
+            <div class="post-left">
+              <div class="author">
+                <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
+                <span>Posted by</span>
+                <span class="name">John Doe </span>
+              </div>
+            </div>
+            <h3><a href="single-post.html">Professional Habits To Adopt</a></h3>
+            <div class="meta">
+              <div class="date">01/12/2015</div>
+              <div class="date visible-xs-inline-block">John Doe</div>
+              <div class="category">Uncategorized</div>
+            </div>
+            <div class="attachment">
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe src="https://player.vimeo.com/video/120197450"></iframe>
+              </div>
+            </div>
+            <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
+              elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
+              lorem concordia.</p>
+            <div class="post-bottom clearfix">
+              <div class="tags">
+                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+              </div>
+              <a href="single-post.html" class="btn btn-primary">Read More</a>
+            </div>
+          </article>
+          <!-- POST - END -->
+
+          <!-- POST - START -->
+          <article class="post">
+            <div class="post-left">
+              <div class="author">
+                <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
+                <span>Posted by</span>
+                <span class="name">John Doe</span>
+              </div>
+            </div>
+            <h3><a href="single-post.html">How to pickup shoes</a></h3>
+            <div class="meta">
+              <div class="date">24/11/2015</div>
+              <div class="date visible-xs-inline-block">John Doe</div>
+              <div class="category">Uncategorized</div>
+            </div>
+            <div class="attachment">
+              <div id="blog-post-gallery" class="nav-inside">
+                <div class="item">
+                  <img src="assets/images/blog/blog-1.jpg" class="img-responsive" alt="">
+                </div>
+                <div class="item">
+                  <img src="assets/images/blog/blog-2.jpg" class="img-responsive" alt="">
+                </div>
+                <div class="item">
+                  <img src="assets/images/blog/blog-3.jpg" class="img-responsive" alt="">
+                </div>
+                <div class="item">
+                  <img src="assets/images/blog/blog-4.jpg" class="img-responsive" alt="">
+                </div>
+              </div>
+            </div>
+            <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
+              elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
+              lorem concordia.</p>
+
+            <div class="post-bottom clearfix">
+              <div class="tags">
+                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+              </div>
+              <a href="single-post.html" class="btn btn-primary">Read More</a>
+            </div>
+          </article>
+          <!-- POST - END -->
+
+          <!-- POST - START -->
+          <article class="post">
+            <div class="post-left">
+              <div class="author">
+                <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
+                <span>Posted by</span>
+                <span class="name">John Doe</span>
+              </div>
+            </div>
+            <h3><a href="single-post.html">Fine mens gloves</a></h3>
+            <div class="meta">
+              <div class="date">10/11/2015</div>
+              <div class="date visible-xs-inline-block">John Doe</div>
+              <div class="category">Uncategorized</div>
+            </div>
+            <div class="attachment">
+              <div class="embed-responsive embed-responsive-audio">
+                <iframe height="166" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/147737117&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false"></iframe>
+              </div>
+            </div>
+            <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
+              elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
+              lorem concordia.</p>
+            <div class="post-bottom clearfix">
+              <div class="tags">
+                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+              </div>
+              <a href="single-post.html" class="btn btn-primary">Read More</a>
+            </div>
+          </article>
+          <!-- POST - END -->
+
+          <!-- POST - START -->
+          <article class="post">
+            <div class="post-left">
+              <div class="author">
+                <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
+                <span>Posted by</span>
+                <span class="name">John Doe</span>
+              </div>
+            </div>
+            <h3><a href="single-post.html">Sunglasses for a beach</a></h3>
+            <div class="meta">
+              <div class="date">18/10/2015</div>
+              <div class="date visible-xs-inline-block">John Doe</div>
+              <div class="category">Uncategorized</div>
+            </div>
+            <div class="attachment"></div>
+            <p>Nam vehicula vestibulum leo sit amet tristique. Cras laoreet elit non enim sodales, sit amet dictum felis lobortis. Nam ut elementum nibh, eget bibendum risus. Maecenas a metus non eros vestibulum bibendum sit amet vel dui. Phasellus convallis
+              elit diam, ut porttitor magna pellentesque id. Pellentesque sed orci dolor. Aliquam aliquet dolor eget diam varius</p>
+            <p>Morbi non aliquet felis. Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi, pellentesque nec gravida quis, fringilla eget mi. In malesuada placerat diam at posuere
+              lorem concordia.</p>
+            <div class="post-bottom clearfix">
+              <div class="tags">
+                <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+              </div>
+              <a href="single-post.html" class="btn btn-primary">Read More</a>
+            </div>
+          </article>
+          <!-- POST - END -->
+
+          <ul class="pagination">
+            <li><a href="#"><i class="fa fa-angle-double-left"></i></a></li>
+            <li><a href="#">1</a></li>
+            <li class="active"><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li><a href="#">4</a></li>
+            <li><a href="#"><i class="fa fa-angle-double-right"></i></a></li>
+          </ul>
+
+        </div>
+        <div class="col-sm-3">
+          <aside class="sidebar right">
+
+            <!-- WIDGET:SEARCH - START -->
+            <div class="widget widget-search">
+              <h3>Search</h3>
+              <div class="widget-body">
+                <form>
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                    <span class="input-group-btn">
+                      <button class="btn btn-primary" type="button"><i class="fa fa-search"></i></button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- WIDGET:SEARCH - START -->
+
+            <!-- WIDGET:POST CATEGORIES - START -->
+            <div class="widget widget-post-categories">
+              <h3>Categories</h3>
+              <div class="widget-body">
+                <ul class="list-unstyled">
+                  <li><a href="#">Fashion<span class="badge">12</span></a></li>
+                  <li><a href="#">Design<span class="badge">12</span></a></li>
+                  <li><a href="#">Music<span class="badge">12</span></a></li>
+                  <li><a href="#">Travel<span class="badge">12</span></a></li>
+                  <li><a href="#">Uncategorized<span class="badge">12</span></a></li>
+                </ul>
+              </div>
+            </div>
+            <!-- WIDGET:POST CATEGORIES - START -->
+
+            <!-- WIDGET:TAGS - START -->
+            <div class="widget widget-tags">
+              <h3>Tags</h3>
+              <div class="widget-body">
+                <div class="tags">
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">book</a></span>
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">music</a></span>
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">nature</a></span>
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">read</a></span>
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">songs</a></span>
+                  <span class="label"><i class="fa fa-tag"></i><a href="#">sunshine</a></span>
+                </div>
+              </div>
+            </div>
+            <!-- WIDGET:TAGS - START -->
+
+            <!-- WIDGET:TAGS - START -->
+            <div class="widget widget-recent-comments">
+              <h3>Recent Comments</h3>
+              <div class="widget-body">
+                <ul class="list-unstyled">
+                  <li>
+                    <p class="text"> Nullam lectus risus, pretium eu rhoncus quis</p>
+                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
+                    <p>By <a href="#">John Doe</a></p>
+                  </li>
+                  <li>
+                    <p class="text">Nullam lectus risus, pretium eu rhoncus quis, ultrices et dolor. Cras eget sem vitae velit cursus pulvinar in a urna arcu nisi</p>
+                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
+                    <p>By <a href="#">John Doe</a></p>
+                  </li>
+                  <li>
+                    <p class="text">Great shoes! Recomended!</p>
+                    <p>Posted in <a href="single-post.html">Introducing WordPress 4.0 “Benny”</a></p>
+                    <p>By <a href="#">John Doe</a></p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- WIDGET:TAGS - START -->
+
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ==========================
+    BLOG - END
+  =========================== -->
+
+
+  <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='footer'>
+    <!-- Header -->
+  </div>
+</div>

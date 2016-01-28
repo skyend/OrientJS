@@ -9,8 +9,8 @@ module.exports = {
     config: [
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
-    workspace_main: ['./src/js/main.js'],
-    main: ['./src/js/main.js']
+    main: ['./src/js/main.js'],
+    'built-foundation':['./src/stand-alone-foundation/main.js']
       //main: ['./src/js/ui/editor/test_main.jsx']
   },
 
@@ -38,15 +38,24 @@ module.exports = {
     }, {
       test: /\.useable\.less$/,
       loader: "style/useable!css!less"
-    }, {
-      test: /\.js$/,
+    },{
+      test: /.jsx?$/,
+      loader: 'babel-loader',
       exclude: /node_modules/,
-      loaders: ['react-hot', 'babel-loader']
-    }, {
-      test: /\.jsx$/,
-      //loaders: ['jsx-loader?insertPragma=React.DOM&harmony', 'react-hot', 'babel-loader']
-      loaders: ['react-hot', 'babel-loader']
-    }, {
+      query: {
+        presets: ['es2015', 'react']
+      }
+    },
+    //  {
+    //   test: /\.js$/,
+    //   exclude: /node_modules/,
+    //   loaders: ['react-hot', 'babel-loader']
+    // }, {
+    //   test: /\.jsx$/,
+    //   //loaders: ['jsx-loader?insertPragma=React.DOM&harmony', 'react-hot', 'babel-loader']
+    //   loaders: ['react-hot', 'babel-loader']
+    // },
+    {
       test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
       loader: "url-loader?limit=10000&minetype=application/font-woff"
     }, {
@@ -58,12 +67,12 @@ module.exports = {
     }]
   },
 
-  resolve: {
-    modulesDirectories: ['node_modules'],
-  },
+  // resolve: {
+  //   modulesDirectories: ['node_modules'],
+  // },
 
   plugins: [
-    new Clean(['dist', 'build']),
+    new Clean(['dist']),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new HtmlWebpackPlugin({

@@ -8,7 +8,7 @@ import Cookie from './Cookie';
 import API from './API';
 import DataResolver from '../DataResolver/Resolver';
 import React from 'react';
-import ReactDom from 'react-dom';
+//import ReactDom from 'react-dom';
 import _ from 'underscore';
 import accounting from 'accounting';
 import Superagent from 'superagent';
@@ -106,7 +106,7 @@ class Gelato {
   }
 
   get reactDom() {
-    return ReactDom()
+    //return ReactDom()
   }
 
   get jsxCompiler() {

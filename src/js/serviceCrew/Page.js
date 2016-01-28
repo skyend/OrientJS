@@ -695,7 +695,7 @@ class Page {
       updated: this.updated,
       accessPoint: this.accessPoint,
       paramSupplies: this.paramSupplies,
-      bodyFragment: _.clone(this.bodyFragment.export());
+      bodyFragment: _.clone(this.bodyFragment.export()),
       rootGridElement: this.rootGridElement !== null ? _.clone(this.rootGridElement.export()) : undefined,
       requiredNSCache: [], // 추후에 불필요한 ParamSupply 가 호출되는것을 막기 위해 page를 저장 할 때 마다 이 필드를 갱신한다. // 갱신방법으로는 page가 필요한 NameSpace 바인딩을 얻어와 갱신 하는 방법이 있다.
     };

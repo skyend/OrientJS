@@ -1,4 +1,3 @@
-"use strict";
 import ElementNodeMulti from './ElementNodeMulti';
 import React from 'react';
 import Returns from "../../Returns.js";
@@ -18,6 +17,8 @@ import ScopeMemberFactory from './ScopeMember/Factory';
 
 import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
+
+"use strict";
 
 
 class ElementNode {
