@@ -23,9 +23,27 @@ import events from 'events';
 
 let instance = null;
 
+const GELATO_VERSION = eval(`\'1.0.1\'`);
+
+/**
+  Version Description
+  1.0.1
+    
+
+**/
+
+
 class Gelato {
   static one() {
     return instance;
+  }
+
+  static get VERSION() {
+    return GELATO_VERSION;
+  }
+
+  get VERSION() {
+    return GELATO_VERSION;
   }
 
   constructor() {
