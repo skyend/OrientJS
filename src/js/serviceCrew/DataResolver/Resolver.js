@@ -159,16 +159,16 @@ class Resolver {
       en-attr - resolve 된 값을 반환
       ns  - DynmaicContext 의 namespace 데이터 반환
       en - node Meta : repeat-n , ...
-      geo - width, height, x, y, left, top, right, bottom, 등등 지원
+      geo - width, height, x, y, left, top, right, bottom, 등등 지원 (미지원)
       val - 타입으로 반환
       val-plain - String 으로 반환
       task - taskScope 반환
       action - actionScope 반환
-      function - functionScope 반환
-      class - classScope 반환
-      cookie -
-      http-param -
-      service - Service Config
+      function - functionScope 반환 (미지원)
+      class - classScope 반환 (미지원)
+      cookie - cookie 필드 값 반환
+      http-param - HTTP Parameter 값 반환
+      service - Service Config (미지원)
   */
   __getInterpretVar(_varName, _externalGetterInterface) {
     let splited = _varName.split('@');
