@@ -14,10 +14,19 @@ import ActionResult from '../ActionResult';
 import ICEAPISource from '../ICEAPISource';
 import events from 'events';
 import ScopeMemberFactory from './ScopeMember/Factory';
+import ActionStore from '../Actions/ActionStore';
+
+// Actions Import
+import '../Actions/BasicElementNodeActions';
+
 
 import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
 "use strict";
+
+
+let EventEffectMatcher = /^([\w-]+)@([\w-]+)$/;
+
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -363,7 +372,9 @@ class ElementNode {
               }, function(_domList) {
                 //console.log(that.forwardDOM, that);
                 that.parent.forwardMe(that);
-                that.progressEvent('complete-bind');
+                that.__progressEvent('complete-bind', {
+                  dynamicContext: that.dynamicContext
+                }, null);
                 // that.parent.forwardDOM.replaceChild(_domList[0], that.forwardDOM);
 
                 // if (that.parent.forwardDOM !== null)
@@ -499,9 +510,9 @@ class ElementNode {
       _dom.addEventListener(_key, function(_e) {
         _e.preventDefault();
 
-        that.progressEvent(_key, {
-          event: _e
-        });
+        that.__progressEvent(_key, {
+          eventKey: _key
+        }, _e);
       });
     });
   }
@@ -1104,125 +1115,100 @@ class ElementNode {
     this.scopeMembers.push(_scopeMember);
   }
 
-  // ToDo... how?
+  // ToDo... how? . uh
   updateScopeMember(_scopeMember) {
 
   }
 
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
 
-
-  /////////
-  // ElementNode Event Methods
-  /////////
-  /*
-    EventProgress
-    이벤트 처리를 시작
-    특정한 상황에서 호출된다.
-  */
-  progressEvent(_name, _data) {
+  __progressEvent(_name, _elementNodeEvent, _originDomEvent) {
     let eventDesc = this.getEvent(_name);
     if (eventDesc === undefined) return;
-    let actions = this.parsingEventDesc(eventDesc);
-    let firstAction = actions.shift();
 
-    if (firstAction === undefined) {
-      console.log(this.forwardDOM);
-      throw new Error(`${_name} event has invalid value`);
+
+    if (eventDesc.match(EventEffectMatcher) !== null) {
+      let scope = this.interpret(`{{${eventDesc}}}`);
+      if (!scope) throw new Error(` ${eventDesc} Task 를 찾지 못 하였습니다.`);
+
+      switch (scope.constructor.name) {
+        case "TaskScopeMember": // Scope 의 종류가 TaskScopeMember 인가
+          return this.__executeTask(scope, _elementNodeEvent, _originDomEvent);
+      }
+
+      throw new Error(`아직 지원하지 않는 eventDescription 입니다. ${eventDesc}`);
+    } else {
+      throw new Error(`아직 지원하지 않는 eventDescription 입니다. \nDescription: ${eventDesc}`);
     }
-
-    this.executeAction(firstAction, null, actions, function(_actionResult) {
-
-    });
   }
 
-  /*
-    ExecuteAction
-    progressEvent 로 부터 액션을 실행한다.
-  */
-  executeAction(_action, _beforeAction, _actionList, _complete) {
+  __executeTask(_taskScope, _enEvent, _originEvent, _prevActionResult) {
+
     let that = this;
-    let _actionName = _action.targetActionKey;
-    let actionFunction = this[`action_${_actionName}`];
-    let actionParams = _action.params;
+    let actionName = _taskScope.action;
+    let action = this.__getAction(actionName);
+    let executeParamMap = {}; // {paramName : inject Param Datas, ...}
+    let taskArgs = _taskScope.args;
+    let taskArgMatchIndex;
 
-    // 잠시 개발 보류 // ElementNode 상에서 지원부터
-    if (typeof actionFunction !== 'function') {
-      actionFunction = this.environment.getCustomAction(_actionName);
-    }
+    if (!action) throw new Error(`${actionName} Action을 찾지 못 하였습니다.`);
 
-    if (typeof actionFunction !== 'function') throw new Error(`Not found customAction ${_actionName}`);
+    // action 이 필요로 하는 param에 값을 입력하기 위해
+    // task 의 argument 리스트의 값을가져와 입력한다.
+    // action 이 필요로 하지만 task 의 argument로 입력되지 않은 param 에는 undefined 를 입력한다.
+    action.params.map(function(_paramKey) {
+      taskArgMatchIndex = _.findIndex(taskArgs, function(_taskArg) {
+        return _paramKey === _taskArg.name;
+      });
 
-    actionParams = actionParams.map(function(_param) {
-
-      // actionParams
-      let interpreted = that.interpret(_param);
-
-      // before Action으로부터 받아야 할 값이 있다면 before Action의 값을 가져온다.
-      // ....
-
-      return interpreted;
-    });
-
-    // action의 종료 콜백을 actionParams 의 0번 인덱스에 밀어넣는다.
-    actionParams.unshift(function(_actionResult) {
-
-      if (_actionResult.nextPoint !== null) {
-        let nextAction = null;
-        let nextActionList = _actionList.filter(function(_action) {
-          if (_action.callPoint === _actionResult.nextPoint) {
-            nextAction = _action;
-            return false;
-          } else {
-            return true;
-          }
-        });
-
-        if (nextAction === null) return console.warn("Not found a next action point");
-
-        that.executeAction(nextAction, _action, nextActionList, function(_actionResult) {
-          _complete(_actionResult);
-        });
+      if (taskArgMatchIndex != -1) {
+        executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value);
       } else {
-        _complete(_actionResult)
+        executeParamMap[_paramKey] = undefined;
       }
     });
 
-    console.log('Action Function', actionFunction);
+    // _enEvent, domEvent와 이전 액션의 수행결과를 삽입
+    executeParamMap['_event'] = _enEvent;
+    executeParamMap['_originEvent'] = _originEvent;
+    executeParamMap['_prevResult'] = _prevActionResult;
 
-    if (typeof actionFunction === 'function') actionFunction.apply(this, actionParams)
-    else throw new Error(`Not found Action ${_actionName}`);
+    // 액션을 실행하고 결과를 콜백으로 통보 받는다.
+    action.execute(executeParamMap, this, function(_actionResult) {
+      // task chain 처리
+      if (_actionResult !== undefined) {
+        if (_actionResult.taskChain) {
+          let taskScope = that.__getTask(_actionResult.taskChain);
+
+          if (!taskScope) throw new Error(`${_actionResult.taskChain} Task 를 찾지 못 하였습니다.`);
+
+          that.__executeTask(taskScope, _enEvent, _originEvent, _actionResult);
+        }
+      }
+    });
   }
 
-  // event 내용을 파싱하여 액션 배열을 반환한다.
-  parsingEventDesc(_desc) {
-    let that = this;
-    let actions = [];
-    let descLength = _desc.length;
-    let actionDescs = _desc.split(/\n/);
+  // scope에서 먼저 action을 찾고
+  __getAction(_actionName) {
+    let actionScope = this.getScope(_actionName, 'action');
 
-    actionDescs = actionDescs.map(function(_actionDesc) {
-      return _actionDesc.replace(/^[\s\t]*(.+)[\s\t]*$/, '$1');
+    if (actionScope !== null) return this.__actionScopeToAction(actionScope);
+
+    // actionStore 에서 action가져와서 반환
+    return ActionStore.instance().getAction(_actionName);
+  }
+
+  __actionScopeToAction(_actionScope) {
+    let action = new Action({
+      params: _actionScope.params,
+      actionBody: _actionScope.actionBody
     });
 
-    let action;
-    let callPoint;
-    let targetActionKey;
-    let paramsString;
+    return action;
+  }
 
-    actionDescs.map(function(_desc) {
-      let matches = _desc.match(/^(?:(\w+)@)?(\w+)(?:\((.*)\))$/);
-      if (matches === null) return;
-
-      callPoint = matches[1] || 'forward';
-      targetActionKey = matches[2];
-      paramsString = matches[3]; // 각 파라메터 값 내에 콤마(,) 사용 불가
-
-      action = new Action(callPoint, targetActionKey, paramsString.split(','));
-      actions.push(action);
-    });
-
-    return actions;
+  __getTask(_taskName) {
+    return this.interpret(`{{task@${_taskName}}}`);
   }
 
   //****** ElementNode default Actions *****//

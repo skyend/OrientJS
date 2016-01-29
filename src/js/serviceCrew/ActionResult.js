@@ -1,23 +1,23 @@
 class ActionResult {
-  constructor(_data, _nextPoint) {
+  constructor(_data, _nextTask) {
     this.data = _data || null;
-    this.nextPoint = _nextPoint || null;
+    this.nextTask = _nextTask || undefined;
   }
 
   get data() {
     return this._data;
   }
 
-  get nextPoint() {
-    return this._nextPoint;
+  get nextTask() {
+    return this._nextTask;
   }
 
   set data(_data) {
     this._data = _data;
   }
 
-  set nextPoint(_nextPoint) {
-    this._nextPoint = _nextPoint;
+  set nextTask(_nextTask) {
+    this._nextTask = _nextTask;
   }
 }
 

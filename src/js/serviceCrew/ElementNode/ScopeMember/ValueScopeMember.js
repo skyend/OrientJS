@@ -78,6 +78,10 @@ class ValueScopeMember extends ScopeMember {
     }
   }
 
+
+  /**
+  Task Implement
+  **/
   static CreateByScopeDom(_scopeDom) {
     let newScopeMember = new ValueScopeMember(ValueScopeMember.BuildScopeSpecObjectByScopeDom(_scopeDom));
     console.log(newScopeMember);

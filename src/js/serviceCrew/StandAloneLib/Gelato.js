@@ -16,6 +16,8 @@ import Identifier from '../../util/Identifier';
 
 import ActionResult from '../ActionResult';
 import Action from '../Action';
+import ActionStore from '../Actions/ActionStore';
+
 import events from 'events';
 
 
@@ -137,16 +139,22 @@ class Gelato {
     return _domElement.___en || null;
   }
 
-  addCustomAction(_name, _actionFunc) {
-    if (this.customActions[_name] !== undefined) throw new Error(`${name} is already exists action.`);
+  // addCustomAction(_name, _actionFunc) {
+  //   if (this.customActions[_name] !== undefined) throw new Error(`${name} is already exists action.`);
+  //
+  //   this.customActions[_name] = _actionFunc;
+  // }
+  //
+  // getCustomAction(_name) {
+  //   return this.customActions[_name];
+  // }
 
-    this.customActions[_name] = _actionFunc;
+
+  registerAction(_name, _paramKeys, _anonymousActionFunction) {
+    let actionStore = ActionStore.instance();
+
+    actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
   }
-
-  getCustomAction(_name) {
-    return this.customActions[_name];
-  }
-
 }
 
 export default Gelato;

@@ -14,17 +14,23 @@
 
   <div en-id='asdasd12asdasdasdasd' class='list'>
     <ul en-id='asdasdasadasd2asdasdasd' class='list'>
-      <li en-id='asdasdasd21asdasdasd' sample-array='{{[1,2,3,4]}}' en-ctrl-repeat-n='2' attr2='{{}}'>
+      <li en-id='asdasdasd21asdasdasd' sample-array='{{[1,2,3,4]}}' en-ctrl-repeat-n='2' attr2='{{}}' en-event-click='task@test'>
         <en:value name='test-val' type='string' value='hello value'></en:value>
         <en:value name='test-object' type='object'>
           { "a":31, "b":{ "a":2 } }
         </en:value>
+        <en:task name='test' action='test' arg-testparam='test' arg-extra='{{en-attr@class}}' chain-success='hello'></en:task>
+        <en:action name='test' param-testparam param-extra>
+          console.log(testparam)
+          console.log(this);
+          console.log(arguments)
+        </en:action>
 
         1+1 = \{{{1+1}}\}
 
         2+2 = {{2+2}} {{([1,2,3,4])[3]}}
 
-        {{ cookie@a + cookie@b }}
+        {{ $ervice.currency( a@a + ns@a ) }}
 
         {{  en-attr@sample-array[en@repeat-n] + 'aa'  }}
 

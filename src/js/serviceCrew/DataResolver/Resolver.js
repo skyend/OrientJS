@@ -25,10 +25,6 @@ class Resolver {
     return this.__interpret3(_matter, _externalGetterInterface);
   }
 
-  __interpret4(_matter, _externalInterface) {
-
-  }
-
 
   // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 업어ㅋㅋ
   __interpret3(_matter, _externalGetterInterface) {
@@ -125,7 +121,14 @@ class Resolver {
       return that.__getInterpretVar(_argHolder, _externalGetterInterface);
     });
 
-    return vfunction.apply(null, argsMap);
+    try {
+      let result = vfunction.apply(null, argsMap);
+      return result;
+    } catch (_e) {
+      _e._blocksource = _syntax;
+      _e._argmap = argsMap;
+      return _e;
+    }
   }
 
   // interpret 블럭을 함수로 변환하고 _argumentMapRef 에 인자를 순서대로 입력한다.
@@ -159,6 +162,10 @@ class Resolver {
       geo - width, height, x, y, left, top, right, bottom, 등등 지원
       val - 타입으로 반환
       val-plain - String 으로 반환
+      task - taskScope 반환
+      action - actionScope 반환
+      function - functionScope 반환
+      class - classScope 반환
       cookie -
       http-param -
       service - Service Config
@@ -184,6 +191,16 @@ class Resolver {
         return _externalGetterInterface.getScope(varName, 'value').plainValue
       case 'val':
         return _externalGetterInterface.getScope(varName, 'value').shapeValue
+      case 'task':
+        return _externalGetterInterface.getScope(varName, 'task');
+      case 'action':
+        return _externalGetterInterface.getScope(varName, 'action');
+      case 'function':
+        throw new Error("function category 는 아직 지원하지 않습니다.");
+        return _externalGetterInterface.getScope(varName, 'function');
+      case 'class':
+        throw new Error("class category 는 아직 지원하지 않습니다.");
+        return _externalGetterInterface.getScope(varName, 'class');
       case 'cookie':
         return this.resolveWithCookie(varName);
       case 'http-param':
