@@ -56,9 +56,6 @@ class Gelato {
     }
 
 
-    this.addCustomAction('completeA', function(_complete, _string) {
-      console.log('completeA ' + _string);
-    });
   }
 
   // 서비스를 시작함
