@@ -157,7 +157,7 @@ class Resolver {
     Support :
       en-attr-origin - resolve 되지 않은 값(입력 된 값 그대로)을 반환
       en-attr - resolve 된 값을 반환
-      dc -
+      ns  - DynmaicContext 의 namespace 데이터 반환
       en - node Meta : repeat-n , ...
       geo - width, height, x, y, left, top, right, bottom, 등등 지원
       val - 타입으로 반환
