@@ -10,21 +10,31 @@
 @FragmentMetaEnd-->
 
 <div en-id='asda12sdasdasdasdasd'>
+
+
+
+
   Hello, I'm index fragment
+  <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test'></div>
 
   <div en-id='asdasd12asdasdasdasd' class='list'>
     <ul en-id='asdasdasadasd2asdasdasd' class='list'>
-      <li en-id='asdasdasd21asdasdasd' sample-array='{{[1,2,3,4]}}' en-ctrl-repeat-n='2' attr2='{{}}' en-event-click='task@test'>
+      <li en-id='asdasdasd21asdasdasd' sample-array='{{[1,2,3,4]}}' en-ctrl-repeat-n='10' attr2='{{new Date()}}' en-event-click='task@change-attr'>
         <en:value name='test-val' type='string' value='hello value'></en:value>
         <en:value name='test-object' type='object'>
           { "a":31, "b":{ "a":2 } }
         </en:value>
-        <en:task name='test' action='test' arg-testparam='test' arg-extra='{{en-attr@class}}' chain-success='hello'></en:task>
-        <en:action name='test' param-testparam param-extra>
-          console.log(testparam)
+        <en:task name='test' action='test' arg-testparam='test' arg-extra='{{en-attr@class}}' arg-hello='{{en@repeat-n}}' chain-success='hello'></en:task>
+        <en:action name='test' param-testparam param-extra param-hello>
+          console.log(testparam, hello);
           console.log(this);
-          console.log(arguments)
+          console.log(arguments);
         </en:action>
+
+        <en:task name='change-attr' action='attr' arg-name='attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
+        <en:task name='refresh' action='refresh'></en:task>
+
+        {{en-attr@attr2}}
 
         1+1 = \{{{1+1}}\}
 
@@ -37,6 +47,18 @@
         {{val@test-val}}
 
         repeat {{en@repeat-n}}
+
+        <div en-type='string'>
+          Hello
+          Hello
+          Hello
+          Hello
+          <br/>
+
+          Hello
+          Hello
+          Hello
+        </div>
       </li>
     </ul>
   </div>

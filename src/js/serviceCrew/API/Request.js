@@ -55,6 +55,7 @@ export default class Request {
 
     let object = {};
     for (let i = 0; i < this.fields.length; i++) {
+      console.log(this.fields[i].value, this);
       object[this.fields[i].key] = dataResolver.resolve(this.fields[i].value || this.fields[i].testValue);
     }
 

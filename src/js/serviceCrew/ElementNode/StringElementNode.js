@@ -15,8 +15,8 @@ class StringElementNode extends ElementNode {
     return this.text;
   }
 
-  get enableHTML() {
-    return this._enableHTML;
+  get disableHTML() {
+    return this._disableHTML;
   }
 
 
@@ -50,8 +50,8 @@ class StringElementNode extends ElementNode {
     this.text = _text;
   }
 
-  set enableHTML(_enableHTML) {
-    this._enableHTML = _enableHTML;
+  set disableHTML(_disableHTML) {
+    this._disableHTML = _disableHTML;
   }
 
   createRealizationNode() {
@@ -120,20 +120,29 @@ class StringElementNode extends ElementNode {
       htmlDoc = this.environment.getHTMLDocument();
     }
 
-    // gelato 가 존재하거나( StandAlone 모드로 동작 ) StringElementNode의 enableHTML 이 켜져있지 않을 경우 TextNode로 랜더링 하며
-    // 그렇지 않을 경우 Span 태그를 사용하여 랜더링 한다.
-    if (gelato !== null && this.enableHTML != true) {
-      return htmlDoc.createTextNode('');
-    } else {
-      return htmlDoc.createElement('span');
+    if (this.wrappingTag !== null) {
+      return htmlDoc.createElement(this.wrappingTag);
     }
+
+    return htmlDoc.createTextNode('');
   }
 
   mappingAttributes(_domNode, _options) {
+    let text = _options.resolve ? this.interpret(this.getText()) : this.getText();;
+
     if (_domNode.nodeName === '#text') {
-      _domNode.nodeValue = _options.resolve ? this.interpret(this.getText()) : this.getText();
+      _domNode.nodeValue = text;
     } else {
-      _domNode.innerHTML = _options.resolve ? this.interpret(this.getText()) : this.getText();
+      _domNode.setAttribute('en-id', this.getId());
+      _domNode.setAttribute('en-type', this.getType());
+      if (this.getName())
+        _domNode.setAttribute('en-name', this.getName());
+
+      if (this.disableHTML) {
+        _domNode.appendChild(_domNode.ownerDocument.createTextNode(text));
+      } else {
+        _domNode.innerHTML = text;
+      }
     }
   }
 
@@ -150,14 +159,22 @@ class StringElementNode extends ElementNode {
     this.setText("Text");
   }
 
-  buildByElement(_textNode) {
+  buildByElement(_stringNode) {
     this.setType('string');
 
     // null을 반환한 ElementNode는 유효하지 않은 ElementNode로 상위 ElementNode의 자식으로 편입되지 못 한다.
     // 공백과 줄바꿈으로만 이루어진 TextNode는 필요하지 않은 요소이다.
-    if (/^[\s\n]+$/.test(_textNode.nodeValue)) return null;
+    if (/^[\s\n]+$/.test(_stringNode.nodeValue)) return null;
 
-    this.setText(_textNode.nodeValue)
+
+    // #text Node가 아닌 태그가 입력되었을 떄 해당 태그명을 wrappingTag 로 입력해둔다.
+    if (_stringNode.nodeName !== '#text') {
+      this.setText(_stringNode.innerHTML);
+      this.wrappingTag = _stringNode.nodeName;
+    } else {
+      this.setText(_stringNode.nodeValue);
+      this.wrappingTag = null;
+    }
   }
 
 
@@ -183,14 +200,16 @@ class StringElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.enableHTML = _elementNodeDataObject.enableHTML || false;
+    this.disableHTML = _elementNodeDataObject.disableHTML || false;
     this.text = _elementNodeDataObject.text || false;
+    this.wrappingTag = _elementNodeDataObject.wrappingTag || null;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.text = this.getText();
-    result.enableHTML = this.enableHTML;
+    result.disableHTML = this.disableHTML;
+    result.wrappingTag = this.wrappingTag;
     return result;
   }
 }

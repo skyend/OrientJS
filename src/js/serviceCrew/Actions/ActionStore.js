@@ -1,20 +1,22 @@
 import Action from '../Action';
 import _ from 'underscore';
 
+const NEW_CHECK = '082dc829-7b48-4107-b119-f8ec2f0d9ecc';
+
 // Singletone 클래스
 // Gelato가 기본으로 지원하는 Action을 포함하여 사용자가 입력한 CustomAction 모두를 제공하는 ActionStore 이다.
 let instance = null;
 class ActionStore {
   static instance() {
-    if (instance === null) instance = new ActionStore(true);
+    if (instance === null) instance = new ActionStore(NEW_CHECK);
 
     return instance;
   }
 
-  constructor(_bySingletone) {
+  constructor(_NEW_CHECK) {
     this.actions = [];
 
-    if (!_bySingletone) {
+    if (_NEW_CHECK !== NEW_CHECK) {
       throw new Error("ActionStore를 직접 생성 하실 수 없습니다. ActionStore.instance() 로 인스턴스를 얻으세요.");
     }
 
@@ -35,9 +37,7 @@ class ActionStore {
     _actionFunction : Parameter 정의가 되어 있지 않은 익명함수. 함수의 Body 만 추출하여 입력된다.
   */
   registerAction(_name, _params, _actionFunction) {
-    let checkDupl = _.findIndex(this.actions, function(_action) {
-      return _action.name === _name;
-    });
+    let oldAction = this.getAction(_name);
 
     let actionFunctionString = _actionFunction.toString();
     let actionBody = actionFunctionString.substring(actionFunctionString.indexOf('{') + 1, actionFunctionString.lastIndexOf('}'));
@@ -48,7 +48,7 @@ class ActionStore {
       actionBody: actionBody
     });
 
-    if (checkDupl != -1) console.warn("동일한 Name 의 Action이 재정의 되었습니다. old, new", this.actions[checkDupl], _actionFunction);
+    if (oldAction !== null) console.warn("동일한 Name 의 Action이 재정의 되었습니다. old, new", oldAction, _actionFunction);
 
     this.actions.push(action);
   }

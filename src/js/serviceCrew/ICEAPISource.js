@@ -215,12 +215,13 @@ export default class ICEAPISource {
 
     fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
 
+    console.log(req.getFieldsObjectWithResolve());
     if (req.crud === '**') {
       url = req.customURL;
     } else {
       url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
     }
-
+    console.log(fields, 'fields', this);
     if (req.method === 'get') {
       SuperAgent.get(url)
         .query(fields)

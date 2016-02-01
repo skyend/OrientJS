@@ -14,12 +14,12 @@
     "fields": [{
       "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
       "key": "pagecount",
-      "value": "${http-param:count}",
+      "value": "{{http-param@pagecount}}",
       "testValue": "5"
     }, {
       "id": "42d8d045-00b3-41e9-90a2-cda2b1ff8088",
       "key": "pagecurrent",
-      "value": "${http-param:cursor}",
+      "value": "{{http-param@pagecurrent}}",
       "testValue": "1"
     }]
   }, {

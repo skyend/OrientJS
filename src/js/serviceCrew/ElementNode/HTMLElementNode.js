@@ -236,7 +236,7 @@ class HTMLElementNode extends TagBaseElementNode {
       children.push(newChildElementNode);
       newChildElementNode.setParent(this);
     }
-    // 재귀끝  //
+    // 선택적 재귀끝  //
     ////////////
 
     this.children = children;

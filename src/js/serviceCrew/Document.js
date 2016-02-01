@@ -191,8 +191,8 @@ class Document {
   }
 
   ////////////////
-  // removerootElementNodes
-  removerootElementNodes() {
+  // removeRootElementNodes
+  removeRootElementNodes() {
     this.setrootElementNodes(null);
     this.contextController.rootRender();
   }
@@ -320,29 +320,34 @@ class Document {
     return newElementNode;
   }
 
-  findById(_elementNodeId) {
+  findById(_elementNodeId, _allowUpper) {
 
     var treeSearchResult = null;
 
     for (var i = 0; i < this.rootElementNodes.length; i++) {
       treeSearchResult = this.findRecursive(this.rootElementNodes[i], function(_en) {
         return _en.id == _elementNodeId;
-      });
+      }, _allowUpper);
 
       if (treeSearchResult) return treeSearchResult;
+    }
+
+    if (_allowUpper && (this.upperEnvironment && this.upperEnvironment.constructor.name === 'Document')) {
+      console.log(this.upperEnvironment);
+      return this.upperEnvironment.findById(_elementNodeId, _allowUpper);
     }
 
     return false;
   }
 
-  findRecursive(_t, _finder) {
+  findRecursive(_t, _finder, _allowUpper) {
     var result = _finder(_t);
     if (result) {
       return _t;
     } else {
       if (_t.children !== undefined) {
         for (var i = 0; i < _t.children.length; i++) {
-          var recvResult = this.findRecursive(_t.children[i], _finder);
+          var recvResult = this.findRecursive(_t.children[i], _finder, _allowUpper);
           if (recvResult) {
             return recvResult;
           }

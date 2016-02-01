@@ -1,4 +1,5 @@
 import ScopeMember from './ScopeMember';
+import _ from 'underscore';
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 
@@ -100,6 +101,19 @@ class TaskScopeMember extends ScopeMember {
 
   set chains(_chains) {
     this._chains = _chains;
+  }
+
+  getChainedTaskName(_chainCode) {
+    let index = _.findIndex(this.chains, function(_chain) {
+
+      return _chain.name.toLowerCase() === _chainCode.toLowerCase();
+    });
+
+    if (this.chains[index]) {
+      return this.chains[index].value;
+    }
+
+    return undefined;
   }
 
   import (_scopeData) {

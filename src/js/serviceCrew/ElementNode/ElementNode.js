@@ -411,10 +411,13 @@ class ElementNode {
       let repeatedDomList = [];
       let clonedElementNodeList = [];
       let elementNode;
+      let exportObject;
 
-      //console.log("repeat"); // 안나옴
       async.eachSeries(_.range(parseInt(childRepeatNumber)), function iterator(_i, _next) {
-          elementNode = Factory.takeElementNode(that.export(), {
+          exportObject = that.export();
+          exportObject.id = exportObject.id + '@' + _i; // repeat-counting
+
+          elementNode = Factory.takeElementNode(exportObject, {
             isGhost: true,
             repeatOrder: _i,
             isRepeated: true
@@ -1158,11 +1161,12 @@ class ElementNode {
     // action 이 필요로 하지만 task 의 argument로 입력되지 않은 param 에는 undefined 를 입력한다.
     action.params.map(function(_paramKey) {
       taskArgMatchIndex = _.findIndex(taskArgs, function(_taskArg) {
-        return _paramKey === _taskArg.name;
+        return _paramKey.toLowerCase() === _taskArg.name.toLowerCase();
       });
 
       if (taskArgMatchIndex != -1) {
         executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value);
+        console.log(executeParamMap, _taskScope, actionName);
       } else {
         executeParamMap[_paramKey] = undefined;
       }
@@ -1175,15 +1179,23 @@ class ElementNode {
 
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
     action.execute(executeParamMap, this, function(_actionResult) {
+      let chainedTask;
+
       // task chain 처리
       if (_actionResult !== undefined) {
         if (_actionResult.taskChain) {
-          let taskScope = that.__getTask(_actionResult.taskChain);
 
-          if (!taskScope) throw new Error(`${_actionResult.taskChain} Task 를 찾지 못 하였습니다.`);
+          chainedTask = that.__getTask(_actionResult.taskChain);
 
-          that.__executeTask(taskScope, _enEvent, _originEvent, _actionResult);
+          if (!chainedTask) throw new Error(`${_actionResult.taskChain} Task 를 찾지 못 하였습니다.`);
+        } else if (/\w+/.test(_actionResult.code)) {
+
+          let nextTaskName = _taskScope.getChainedTaskName(_actionResult.code);
+          chainedTask = that.__getTask(nextTaskName);
         }
+
+        if (chainedTask)
+          that.__executeTask(chainedTask, _enEvent, _originEvent, _actionResult);
       }
     });
   }

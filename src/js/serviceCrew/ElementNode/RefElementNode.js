@@ -19,7 +19,7 @@ class RefElementNode extends HTMLElementNode {
     super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
     this.type = 'ref';
 
-    this.refInstance = null;
+    this.loadedInstance = null;
     this.loadedRefs = false;
   }
 
@@ -68,7 +68,7 @@ class RefElementNode extends HTMLElementNode {
 
       } else { // load 완료시
 
-        if (that.refType === 'Fragment') {
+        if (that.refType === 'Fragment' && this.loadedInstance !== null) {
 
           // 상위 environment 지정
           that.loadedInstance.upperEnvironment = that.environment;

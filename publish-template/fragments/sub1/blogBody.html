@@ -75,42 +75,17 @@
   <!-- ==========================
     BREADCRUMB - START
   =========================== -->
-  <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a=${http-param:hello}' en-dc-ns='csdp-product'>
+  <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a={{http-param@hello}}' en-dc-ns='csdp-product'>
 
     <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
       <!-- Header -->
     </div>
 
     <div class="container">
-      <div class="row" en-ctrl-hidden="%{'${*csdp-product/prd_info/brand}' == '' ? 'true':'false'}">
+      <div class="row">
         <div class="col-xs-6">
           <h2>Brand</h2>
-          <p>All Categories *(attr:class)</p>
-          <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='${*csdp-product/prd_info/view}'></div>
-
-          <button en-event-click='forward@attr2(aaa,text,AAA)
-                                  success@refresh2(aaa)'>
-
-            <en:value name='text1' type='string' value='Value 의 type 은 dataType 을 나타낸다.'></en:value>
-            <en:value name='text2' type='string'>
-              'Hello, Gelato World. innerHTML'
-            </en:value>
-            <en:value name='defTest' type='object'>
-              { "text":"hello, Gelato JSON" }
-            </en:value>
-            <en:value name='defTest2' type='number'>
-
-              123123
-
-            </en:value>
-            <en:task name='defTest' action='attr' arg-name='' arg-value=''></en:task>
-
-            Modification Tag Define Test
-          </button>
-
-          <div en-id='aaa' text='Hello'>
-            *(attr:text)
-          </div>
+          <p>All Categories</p>
         </div>
         <div class="col-xs-6">
           <ol class="breadcrumb">
@@ -140,8 +115,7 @@
       </h2>
       <div class='row' en-ctrl-hidden='false'>
         <div class='col-sm-9'>
-          <form enctype="multipart/form-data" en-event-submit="forward@sendForm(broadcast_series,create)
-                                  success@refresh2(bc-list)">
+          <form enctype="multipart/form-data">
             <input class='form-control' name='create' type='hidden' value='true'/>
             <input class='form-control' name='cp_id' type='hidden' value='401075333'/>
             <input class='form-control' name='genre' type='hidden' value='007'/>
@@ -206,107 +180,37 @@
         </div>
       </div>
 
-      <div class="row">
-
-        <div class="col-sm-9" en-dc-source-id='farm/vod/category' en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f' en-dc-inject-params='a=${http-param:hello}' en-dc-ns='category-list'>
-          ${*category-list/items/0/orgz_ctgry_nm} aaaa
-        </div>
-
-      </div>
-
       <div class="row" en-id='bc-wrapper'>
         <div
           class="col-sm-9"
           en-id='bc-list'
-          variable-source-id=''
-          en-dc-source-id='*(attr:variable-source-id)'
+          en-dc-source-id='broadcast_series,csdp'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
-          en-dc-inject-params='a=${http-param:hello}'
           en-dc-ns='broadcast_series-list,csdp-product'>
 
-          <button en-event-click='forward@attr2(bc-list,variable-source-id,broadcast_series)
-                                  success@refresh2(bc-wrapper)'>
-            <en-action name='test' executor='refresh'></en-action>
-
-            Refresh Test
-          </button>
-
-          <!-- "fields": [{
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "nid",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "fixed_participant",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "director",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "create",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "cp_id",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "series_id",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "age_ratings",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "genre",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "complete_yn",
-            "value": "",
-            "testValue": "5"
-          }, {
-            "id": "ae4106bd-a793-49c8-acb6-cfceab2bedd0",
-            "key": "image",
-            "value": "",
-            "testValue": "5"
-          } -->
 
           <!-- POST - START -->
-          <article class="post" en-ctrl-repeat-n="${*broadcast_series-list/items:length}">
-            <div class="post-left" en-dynamic-context='true' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-ns='csdp-product'>
+          <article class="post" en-ctrl-repeat-n="{{ ns@broadcast_series-list.items.length}}">
+            <div class="post-left"
+            en-dynamic-context='true'
+            en-dc-source-id='csdp'
+            en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db'
+            en-dc-ns='csdp-product'>
+
               <div class="author">
                 <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
-                <span>Posted by ${*csdp-product/prd_info/brand}</span>
+                <span>Posted by {{ ns@csdp-product/prd_info/brand}}</span>
                 <span class="name">John Doe</span>
-                ${cookie:ad}
+
               </div>
             </div>
             <h3>
               <a href="single-post.html">
-                ${*broadcast_series-list/items/*(repeat-n)/nid:currency} ${*broadcast_series-list/items/*(repeat-n)/title} ${*csdp-product/prd_info/brand}
+                {{console.log(ns@broadcast_series-list)}}
+                {{ns@broadcast_series-list.items[en@repeat-n].nid}}
+                {{ns@broadcast_series-list.items[en@repeat-n].title}}
+                {{ns@csdp-product/prd_info/brand}}
               </a>
-
-              <button en-id='data-field2' en-event-mouseout='forward@attr(data,%{parseInt(*(attr:data))*5})
-                                      success@refresh()' data='1'>
-                Click *(attr:data)
-              </button>
-
-              <button en-event-click='forward@refresh2(data-field2,p)'>
-
-                Mouse Enter
-              </button>
             </h3>
 
             <div class="meta">
@@ -317,12 +221,12 @@
             <div class="attachment">
               <img src="assets/images/blog/blog-4.jpg" class="img-responsive" alt="">
             </div>
-            <p>${*broadcast_series-list/items/*(repeat-n)/synopsis}</p>
-            <div class="post-bottom clearfix" data-hello="${*broadcast_series-list/items/*(repeat-n)/synopsis}">
+            <p>{{ns@broadcast_series-list.items[en@repeat-n].synopsis}}</p>
+            <div class="post-bottom clearfix" data-hello="">
               <div class="tags">
                 <span class="label">
                   <i class="fa fa-tag"></i>
-                  <a href="#">*(attr:data-hello) book</a>
+                  <a href="#">book</a>
                 </span>
                 <span class="label">
                   <i class="fa fa-tag"></i>
