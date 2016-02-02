@@ -185,21 +185,14 @@
 
     <ul en-id='tab-head'>
       <li en-ctrl-repeat-n='{{en-attr@tab-count}}' en-event-click="task@click">
-        <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{en@repeat-n}}' chain-success='refresh' ></en:task>
+        <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{String(en@repeat-n)}}' chain-success='refresh' ></en:task>
         <en:task name='refresh' action='refresh-to' arg-eid='tab-container'></en:task>
         Tab  {{en@repeat-n}}
       </li>
     </ul>
 
     <div en-id='tab-body'>
-      {{en-attr@tab-current}}
       <div en-ctrl-repeat-n='{{en-attr@tab-count}}'>
-          {{ en@repeat-n == parseInt(en-attr@tab-current) }}
-          [ {{[ en@repeat-n ,en-attr@tab-current] }} ]
-          {{ typeof en@repeat-n   }}
-          {{ console.log(en-attr-origin@tab-current)}}
-            {{ typeof parseInt(en-attr@tab-current)  }}
-          /
 
         <div  en-ctrl-hidden='{{en@repeat-n == en-attr@tab-current ? false :true }}'>
             <code>{{ en@repeat-n == parseInt(en-attr@tab-current) }}
@@ -207,5 +200,20 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading" role="tab">
+      <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#faq-3-accordion" href="#faq-3-q-1" aria-expanded="true" aria-controls="faq-3-q-1">Lorem ipsum Question #1</a></h4>
+  </div>
+  <div id="faq-3-q-1" class="panel-collapse collapse in" role="tabpanel">
+      <div class="panel-body">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex.
+        Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+      </div>
   </div>
 </div>
