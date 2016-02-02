@@ -84,7 +84,6 @@ class StringElementNode extends ElementNode {
       }
 
 
-
       _complete();
     });
   }

@@ -191,7 +191,7 @@ class DocumentContextController extends HasElementNodeContextController {
 
 
     if (parentElementNode !== null) {
-      targetElementNode.realize(function() {
+      targetElementNode.realize({}, function() {
         // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
         parentElementNode.linkHierarchyRealizaion();
       });
@@ -222,7 +222,7 @@ class DocumentContextController extends HasElementNodeContextController {
     targetElementNode.setReactComponentProp(_propKey, _propValue);
 
     if (parentElementNode !== null) {
-      targetElementNode.realize(function() {
+      targetElementNode.realize({}, function() {
         // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
         parentElementNode.linkHierarchyRealizaion();
       });
@@ -269,7 +269,7 @@ class DocumentContextController extends HasElementNodeContextController {
       targetElementNode.mappingAttributes();
     } else {
       if (parentElementNode !== null) {
-        targetElementNode.realize(function() {
+        targetElementNode.realize({}, function() {
           // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
           parentElementNode.linkHierarchyRealizaion();
         });
@@ -330,7 +330,7 @@ class DocumentContextController extends HasElementNodeContextController {
     if (parentElementNode !== null) {
 
       parentElementNode.children.map((_childElementNode) => {
-        _childElementNode.realize(function() {
+        _childElementNode.realize({}, function() {
           // RootElementNode 트리에 종속된 모든 ElementNode의 RealElement를 계층적으로 RealElement에 삽입한다.
           parentElementNode.linkHierarchyRealizaion();
         });
@@ -417,7 +417,7 @@ class DocumentContextController extends HasElementNodeContextController {
     if (parentElementNode !== null) {
 
       parentElementNode.children.map((_childElementNode) => {
-        _childElementNode.realize(function() {
+        _childElementNode.realize({}, function() {
           parentElementNode.linkHierarchyRealizaion();
         });
       });

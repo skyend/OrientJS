@@ -744,6 +744,9 @@ class ElementNode {
 
     text = this.preInterpretOnTree(text);
 
+    text = this.environment.interpret(text);
+
+
     if (this.dynamicContext) {
       return this.dynamicContext.interpret(text);
     } else {
