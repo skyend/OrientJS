@@ -238,7 +238,7 @@ let APISourceItem = React.createClass({
     let self = this;
     let iconElement;
     if (this.props.apiSource.icon !== '') {
-
+      
       iconElement = <img src={this.props.iceHost + "/icon/"+ this.props.apiSource.icon}/>;
     } else {
 

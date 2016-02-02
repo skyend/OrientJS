@@ -22,7 +22,7 @@ import ICEAPISource from './serviceCrew/ICEAPISource.js';
 
 class ServiceManager {
 
-  constructor(_app, _service_id, _readyCallback) {
+  constructor(_app, _service_id, _iceHost, _readyCallback) {
     let self = this;
     this.app = _app;
     this.service_id = _service_id;
@@ -36,7 +36,7 @@ class ServiceManager {
     this.jsContextControllers = {};
 
     //this.iceHost = "http://icedev.i-on.net";
-    this.iceHost = 'http://125.131.88.75:8080';
+    this.iceHost = _iceHost;
     this.iceDriver = new ICEServerDriver(this.iceHost);
     this.gelateriaHost = window.gelateriaHost;
     this.sampleDatas = {};
@@ -72,6 +72,14 @@ class ServiceManager {
     ], function end() {
       _readyCallback(self);
     });
+  }
+
+  get iceHost() {
+    return this._iceHost;
+  }
+
+  set iceHost(_iceHost) {
+    this._iceHost = _iceHost;
   }
 
   createDocument(_title, _type, _complete) {
@@ -298,9 +306,13 @@ class ServiceManager {
   getApisourceObjectList(_complete) {
     let self = this;
     this.getApisourceList(function(_result) {
+      let apiSource;
 
       _result.list = _result.list.map(function(_apiSource) {
-        return new ICEAPISource(_apiSource, self);
+        apiSource = new ICEAPISource(_apiSource, self);
+        apiSource.setHost(self.iceHost);
+
+        return apiSource;
       });
 
       _complete(_result);

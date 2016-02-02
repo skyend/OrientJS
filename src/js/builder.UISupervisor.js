@@ -728,6 +728,7 @@ UI.prototype.onThrowCatcherNeedAPISourceObjectList = function(_eventData) {
   var self = this;
 
   this.app.serviceManager.getApisourceObjectList(function(_result) {
+    console.log(_result);
     _eventData.path[0].setState({
       apisourceList: _result.list
     });

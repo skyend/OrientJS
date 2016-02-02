@@ -303,7 +303,7 @@ class GelateriaRequest {
       .query({
         'at': Cookie.get('at')
       })
-      .withCredentials()
+      //.withCredentials()
       .end(function(err, res) {
         if (err !== null) throw new Error("page load fail");
 

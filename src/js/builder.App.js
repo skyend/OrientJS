@@ -20,7 +20,8 @@ import Viewer from './serviceCrew/Viewer.js';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
-window.gelateriaHost = '125.131.88.146:8090';
+window.gelateriaHost = 'localhost:9080';
+const FIXED_ICE_HOST = 'http://125.131.88.75:8080';
 
 var App = function() {
   window.app = this;
@@ -68,7 +69,7 @@ App.prototype.startPublishPage = function(_params) {
   }
 
   // Main Page
-  let serviceManager = new ServiceManager(this, serviceId, function readyFunc(_serviceManager) {
+  let serviceManager = new ServiceManager(this, serviceId, FIXED_ICE_HOST, function readyFunc(_serviceManager) {
     self.session.setServiceManager(_serviceManager);
 
     // 빌더 시작
@@ -119,7 +120,7 @@ App.prototype.startPublishPage = function(_params) {
 App.prototype.startServiceBuilding = function(_service_id) {
   let self = this;
   // 서비스 매니저 생성
-  this.serviceManager = new ServiceManager(this, _service_id, function readyFunc(_serviceManager) {
+  this.serviceManager = new ServiceManager(this, _service_id, FIXED_ICE_HOST, function readyFunc(_serviceManager) {
     self.session.setServiceManager(_serviceManager);
     // 빌더 시작
     self.initBuilder();
