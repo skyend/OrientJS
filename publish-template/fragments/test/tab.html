@@ -181,7 +181,7 @@
   </div>
 
 
-  <div en-id='tab-container' tab-count='5' tab-current='0'>
+  <div en-id='tab-container' tab-count='5' tab-current='{{0}}'>
 
     <ul en-id='tab-head'>
       <li en-ctrl-repeat-n='{{en-attr@tab-count}}' en-event-click="task@click">
@@ -195,10 +195,15 @@
       {{en-attr@tab-current}}
       <div en-ctrl-repeat-n='{{en-attr@tab-count}}'>
           {{ en@repeat-n == parseInt(en-attr@tab-current) }}
-          {{[ en@repeat-n ,en-attr@tab-current] }}
-        <div  en-ctrl-hidden='{{en@repeat-n == parseInt(en-attr@tab-current)? "false":"true"}}'>
-          {{ en@repeat-n == parseInt(en-attr@tab-current) }}
-          Body {{en@repeat-n}}
+          [ {{[ en@repeat-n ,en-attr@tab-current] }} ]
+          {{ typeof en@repeat-n   }}
+          {{ console.log(en-attr-origin@tab-current)}}
+            {{ typeof parseInt(en-attr@tab-current)  }}
+          /
+
+        <div  en-ctrl-hidden='{{en@repeat-n == en-attr@tab-current ? false :true }}'>
+            <code>{{ en@repeat-n == parseInt(en-attr@tab-current) }}
+              Body {{en@repeat-n}}</code>
         </div>
       </div>
     </div>

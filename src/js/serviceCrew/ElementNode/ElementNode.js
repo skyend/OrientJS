@@ -344,6 +344,12 @@ class ElementNode {
     //  [5] After Controls
     // ]
 
+    // [0] Before Controls
+    if (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true) {
+      _complete([]);
+      return;
+    }
+
     // Before Control
     // * hidden
     let that = this;
@@ -393,15 +399,11 @@ class ElementNode {
         });
       }
     } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
-
       options.keepDC = false;
     }
 
-    // [0] Before Controls
-    if (this.getControlWithResolve('hidden') === 'true') {
-      _complete([]);
-      return;
-    }
+
+
 
     let childRepeatNumber = this.getControlWithResolve('repeat-n');
 
@@ -891,6 +893,7 @@ class ElementNode {
   // String Resolve
   interpret(_matterText) {
     if (_matterText === undefined) return;
+
     let externalGetterInterface = {
       getAttribute: this.getAttrOnTree.bind(this),
       getScope: this.getScope.bind(this),
