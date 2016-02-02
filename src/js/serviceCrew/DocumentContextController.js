@@ -566,7 +566,8 @@ class DocumentContextController extends HasElementNodeContextController {
         that.clearSuperElement();
         _elementNode.linkHierarchyRealizaion();
 
-        console.log('슈퍼 엘리멑느', that.superElement);
+        console.log('슈퍼 엘리멑느', that.superElement, that.superElement.parentNode);
+        //that.superElement.parentNode.replaceChild(_elementNode.realization, that.superElement);
         that.superElement.appendChild(_elementNode.realization);
       }
 

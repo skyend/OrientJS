@@ -106,7 +106,13 @@ var IFrameStage = React.createClass({
   },
 
   appendScriptElementToBodyTail(_element){
-    this.getIFrameInnerDoc().body.appendChild(_element);
+    try{
+
+      console.log(this.getIFrameInnerDoc(), _element);
+      this.getIFrameInnerDoc().body.appendChild(_element);
+    }catch(_e){
+
+    }
   },
 
   appendScriptElementToHTML(_element){
@@ -173,7 +179,7 @@ var IFrameStage = React.createClass({
 
   onIframeLoaded(_e) {
     let iframe = _e.target;
-    console.log(_e);
+    console.log(_e, _e.nativeEvent);
     var self = this;
 // 임시 차후에 EditorStageContext 에서 처리되어야 함
     var iwindow = iframe.contentWindow || iframe.contentDocument;
@@ -254,7 +260,7 @@ var IFrameStage = React.createClass({
 
   elementHover(_target, _e){
     let element = this.searchPointedDOM(_target, _e.x, _e.y);
-   
+
     if( element.nodeName === '#text' ){
       element = element.parentNode;
     }

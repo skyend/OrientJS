@@ -419,7 +419,8 @@ class TagBaseElementNode extends ElementNode {
   }
 
   mappingAttribute(_attrName, _skipResolve) {
-    this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
+    if (/\w+/.test(_attrName))
+      this.realization.setAttribute(_attrName, _skipResolve ? this.getAttribute(_attrName) : this.getAttributeWithResolve(_attrName));
   }
 
   mappingAttribute2(_attrName, _options) {
