@@ -557,7 +557,7 @@ class ServiceManager {
 
       });
     } else {
-      _complete(this.apiSourceContextControllers[_apiSourceId]);
+      _complete(this.apiSourceContextControllers[_ICEAPISourceId]);
     }
   }
 

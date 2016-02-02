@@ -20,7 +20,7 @@ import Viewer from './serviceCrew/Viewer.js';
 import PreviewScene from './ui.workspace/Context/PageContext/PreviewScene.jsx';
 import React from 'react';
 
-window.gelateriaHost = location.host;
+window.gelateriaHost = '125.131.88.146:9080'; //location.host;
 const FIXED_ICE_HOST = 'http://125.131.88.75:8080';
 
 var App = function() {
