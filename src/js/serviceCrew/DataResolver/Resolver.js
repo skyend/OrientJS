@@ -22,7 +22,13 @@ class Resolver {
   }
 
   resolve(_matter, _externalGetterInterface) {
-    return this.__interpret3(_matter, _externalGetterInterface);
+    let transformed = _matter;
+
+    if (typeof _matter !== 'string') {
+      transformed = String(_matter);
+    }
+
+    return this.__interpret3(transformed, _externalGetterInterface);
   }
 
 
@@ -188,9 +194,9 @@ class Resolver {
         throw new Error("geo category 는 아직 지원하지 않습니다.");
         return this.resolveWithHttpParam(varName);
       case 'val-plain':
-        return _externalGetterInterface.getScope(varName, 'value').plainValue
+        return _externalGetterInterface.getScope(varName, 'value').plainValue;
       case 'val':
-        return _externalGetterInterface.getScope(varName, 'value').shapeValue
+        return _externalGetterInterface.getScope(varName, 'value').shapeValue;
       case 'task':
         return _externalGetterInterface.getScope(varName, 'task');
       case 'action':
