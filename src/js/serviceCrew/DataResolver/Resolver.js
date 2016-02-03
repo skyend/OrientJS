@@ -1,6 +1,8 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
+import Shortcut from './Shortcut';
+
 import _ from 'underscore';
 /**
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
@@ -127,6 +129,9 @@ class Resolver {
       return that.__getInterpretVar(_argHolder, _externalGetterInterface);
     });
 
+    // 마지막에 Shortcut 객체 삽입.
+    argsMap.push(Shortcut);
+
     try {
       let result = vfunction.apply(null, argsMap);
       return result;
@@ -141,6 +146,7 @@ class Resolver {
   __getVirtualFunctionWithParamMap(_syntax, _argumentMapRef) {
     let argumentsMap = _argumentMapRef; // 함수 호출자가 생성하여 입력한 Array
     let alreadyIndex;
+    let functionCreateArgs = [];
 
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
     let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+/g, function(_matched) {
@@ -151,12 +157,19 @@ class Resolver {
 
       if (alreadyIndex == -1) {
         alreadyIndex = argumentsMap.push(_matched) - 1;
+
+        // 마지막 인자로 shortcut 를 입력하기 위해 인수 필드리스트에 패딩을 추가한다.
+        functionCreateArgs.push('__argPadding_' + alreadyIndex);
       }
 
       return `arguments[${alreadyIndex}]`;
     });
 
-    return new Function("return " + functionBody.replace(/^[\n\s]*/, ''));
+    functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
+
+    functionCreateArgs.push("return " + functionBody.replace(/^[\n\s]*/, ''));
+
+    return Function.constructor.apply(this, functionCreateArgs);
   }
 
   /*

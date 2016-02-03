@@ -203,12 +203,16 @@
   </div>
 </div>
 <div>
+
+  {{ shortcut.if_then(false, '참') }}
+
+
   <div class="panel-group" en-id='panel-container2' data-opened='-1'>
     <div class="panel panel-primary" en-ctrl-repeat-n='5'>
       <div class="panel-heading" role="tab" en-event-click='task@forward'>
         <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='refresh'></en:task>
         <en:task name='refresh' action='refresh-to' arg-eid='panel-container2'></en:task>
-        <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#faq-3-accordion" href="#faq-3-q-1" aria-expanded="true" aria-controls="faq-3-q-1">Lorem ipsum Question #1</a></h4>
+        <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1</a></h4>
       </div>
 
       <div id="faq-3-q-1" class="panel-collapse collapse {{ en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel">
