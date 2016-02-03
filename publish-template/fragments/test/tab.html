@@ -179,15 +179,20 @@
         </div>
 
   </div>
+<div>
+  <div en-ctrl-repeat-n='5'>
+    <input en-ctrl-repeat-n='5'/>
+  </div>
 
+</div>
 
   <div en-id='tab-container' tab-count='5' tab-current='{{0}}'>
 
     <ul en-id='tab-head'>
-      <li en-ctrl-repeat-n='{{en-attr@tab-count}}' en-event-click="task@click">
+      <li en-ctrl-repeat-n='{{en-attr@tab-count}}' update-test='{{en-attr@tab-current}}' en-event-click="task@click">
         <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{String(en@repeat-n)}}' chain-success='refresh' ></en:task>
-        <en:task name='refresh' action='refresh-to' arg-eid='tab-container'></en:task>
-        Tab  {{en@repeat-n}}
+        <en:task name='refresh' action='update-to' arg-eid='tab-container'></en:task>
+        Tab  {{en@repeat-n}} {{en-attr@update-test}}
       </li>
     </ul>
 

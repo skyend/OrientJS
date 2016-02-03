@@ -17,6 +17,7 @@ import Identifier from '../../util/Identifier';
 import ActionResult from '../ActionResult';
 import Action from '../Action';
 import ActionStore from '../Actions/ActionStore';
+import Shortcut from '../DataResolver/Shortcut';
 
 import events from 'events';
 
@@ -28,7 +29,7 @@ const GELATO_VERSION = eval(`\'1.0.1\'`);
 /**
   Version Description
   1.0.1
-    
+
 
 **/
 
@@ -132,6 +133,10 @@ class Gelato {
 
   get currencyFormatter() {
     return accounting;
+  }
+
+  get shortcuts() {
+    return Shortcut;
   }
 
   get request() {

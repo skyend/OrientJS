@@ -36,7 +36,7 @@ class Resolver {
 
 
   // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 업어ㅋㅋ
-  __interpret3(_matter, _externalGetterInterface) {
+  __interpret3(_matter, _externalGetterInterface, _caller) {
     // 모든 바인딩은 Resolver에서 이루어 지며 리졸브 블럭내에서 요구하는 데이터는 resolve 실행 자 로 부터 얻을 수 있는 메소드를 제공 받아야 한다.
     let dataSeries = [];
     let matterLen = _matter.length
@@ -90,7 +90,7 @@ class Resolver {
               firstClosed = false;
 
               // interpret 처리
-              dataSeries.push(this.__executeSyntax(tempStringChunk, _externalGetterInterface));
+              dataSeries.push(this.__executeSyntax(tempStringChunk, _externalGetterInterface, _caller));
               tempStringChunk = '';
             } else {
               firstClosed = true;
@@ -121,7 +121,7 @@ class Resolver {
     return dataSeries.join('');
   }
 
-  __executeSyntax(_syntax, _externalGetterInterface) {
+  __executeSyntax(_syntax, _externalGetterInterface, _caller) {
     let that = this;
     let argsMap = [];
     let vfunction = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
@@ -134,7 +134,7 @@ class Resolver {
     argsMap.push(Shortcut);
 
     try {
-      let result = vfunction.apply(null, argsMap);
+      let result = vfunction.apply(_caller, argsMap);
       return result;
     } catch (_e) {
       _e._blocksource = _syntax;
@@ -348,40 +348,5 @@ class Resolver {
     return ObjectExplorer.getValueByKeyPath(this.dataSpace, _pathWithNS.replace(/^\*/, ''));
   }
 }
-
-
-/*
-  DateResolver
-    Parameters:
-      0. Date String
-      1. Format : YYYY - years, MM - Months, DD - Days, hh - Hours, mm - Minuates, ss - Seconds
-*/
-function dateResolver(_dateString, _format) {
-  let dateObject = new Date(_dateString);
-
-  return _format.replace(/(YYYY|YY|MM|DD|hh|mm|ss)/g, function(_matched, _chars) {
-    switch (_chars) {
-      case 'YYYY':
-        return dateObject.getFullYear();
-      case 'YY':
-        return String(dateObject.getFullYear()).substring(2, 4);
-      case 'MM':
-        return dateObject.getMonth();
-      case 'DD':
-        return dateObject.getDay();
-      case 'hh':
-        return dateObject.getHours();
-      case 'mm':
-        return dateObject.getMinutes();
-      case 'ss':
-        return dateObject.getSeconds();
-      default:
-
-    }
-    return _chars;
-  });
-}
-
-window.dateResolver = dateResolver;
 
 export default Resolver;

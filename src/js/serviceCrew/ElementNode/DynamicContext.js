@@ -173,10 +173,10 @@ class DynamicContext {
   }
 
 
-  interpret(_text, externalGetterInterface) {
+  interpret(_text, externalGetterInterface, _caller) {
     var self = this;
 
-    return this.dataResolver.resolve(_text, externalGetterInterface);
+    return this.dataResolver.resolve(_text, externalGetterInterface, _caller || this);
     //
     // // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
     // // 객체를 보존하여 반환하도록 한다.

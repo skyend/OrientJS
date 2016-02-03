@@ -9,6 +9,38 @@ class Shortcut {
       return _false;
     }
   }
+
+  /*
+    DateResolver
+      Parameters:
+        0. Date String
+        1. Format : YYYY - years, MM - Months, DD - Days, hh - Hours, mm - Minuates, ss - Seconds
+  */
+  static dateFormatter(_dateString, _format) {
+    let dateObject = new Date(_dateString);
+
+    return _format.replace(/(YYYY|YY|MM|DD|hh|mm|ss)/g, function(_matched, _chars) {
+      switch (_chars) {
+        case 'YYYY':
+          return dateObject.getFullYear();
+        case 'YY':
+          return String(dateObject.getFullYear()).substring(2, 4);
+        case 'MM':
+          return dateObject.getMonth() + 1;
+        case 'DD':
+          return dateObject.getDate();
+        case 'hh':
+          return dateObject.getHours();
+        case 'mm':
+          return dateObject.getMinutes();
+        case 'ss':
+          return dateObject.getSeconds();
+        default:
+
+      }
+      return _chars;
+    });
+  }
 }
 
 export default Shortcut;

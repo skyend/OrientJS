@@ -325,7 +325,7 @@ class ElementNode {
           linkType: 'upstream' | 'downstream', default: 'downstream'
           // upstream 스스로 부모에게 링크 ,downstream 자식만을 링크
           // replacedNode = parentNode.replaceChild(newChild, oldChild);
-
+          remaining
           resolve: boolean , default:true // 바인딩 진행 여부
           forward: boolean , default:true // true면 생성된 dom을 자신의 forwardDOM 필드에 입력하고 false면 자신의 backupDOM 필드에 입력한다.
           keelDC: boolean | 'once' , default:false // true - 전체 , false - 유지하지 않음, once - 단 한번 유지된다. constructDOMs 의 대상의 dc만 유지되며 그 하위의 ElementNode의 dc는 유지되지 않는다.
@@ -343,7 +343,7 @@ class ElementNode {
     //  [4] Children Link
     //  [5] After Controls
     // ]
-
+    this.clonePool = [];
     // [0] Before Controls
     if (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true) {
       _complete([]);
@@ -906,10 +906,10 @@ class ElementNode {
     let dc = this.availableDynamicContext;
 
     if (dc) {
-      solved = dc.interpret(solved, externalGetterInterface);
+      solved = dc.interpret(solved, externalGetterInterface, this);
       return solved;
     } else {
-      return this.defaultResolver.resolve(solved, externalGetterInterface);
+      return this.defaultResolver.resolve(solved, externalGetterInterface, this);
     }
   }
 
@@ -1227,74 +1227,6 @@ class ElementNode {
   }
 
   //****** ElementNode default Actions *****//
-  action_refresh(_complete, _nextPoint) {
-    let that = this;
-    let actionResult = new ActionResult();
-
-    this.refresh(function() {
-      actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
-      _complete(actionResult);
-    });
-  }
-
-  action_refresh2(_complete, _id, _nextPoint) {
-    let that = this;
-    let actionResult = new ActionResult();
-
-    // find ElementNode
-    let targetElementNode = this.environment.findById(_id);
-    if (targetElementNode == false) throw new Error(`Not found elementNode@${_id}`);
-    console.log(targetElementNode);
-
-    targetElementNode.refresh(function() {
-      actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
-      _complete(actionResult);
-    });
-  }
-
-  action_attr(_complete, _name, _value, _nextPoint) {
-    let actionResult = new ActionResult();
-
-    // modify
-    this.setAttribute(_name, _value);
-
-    // complete callback
-    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
-    _complete(actionResult);
-  }
-
-  action_attr2(_complete, _id, _name, _value, _nextPoint) {
-    let actionResult = new ActionResult();
-
-    // find ElementNode
-    let targetElementNode = this.environment.findById(_id);
-    if (targetElementNode == false) throw new Error(`Not found elementNode@${_id}`);
-
-    // Modify
-    targetElementNode.setAttribute(_name, _value);
-
-    // complete callback
-    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
-    _complete(actionResult);
-  }
-
-  action_scrollTop(_complete, _nextPoint) {
-    let actionResult = new ActionResult();
-
-    window.scrollTo(0, 0);
-
-    actionResult.nextPoint = _nextPoint && /^\w+/.test(_nextPoint) ? _nextPoint : 'success';
-    _complete(actionResult);
-  }
-
-  action_changeText(_complete, _text) {
-    let actionResult = new ActionResult();
-    this.setAttribute(_name, _text);
-
-    actionResult.nextPoint = 'success';
-
-    _complete(actionResult);
-  }
 
   /*
     RequestAPI
@@ -1327,18 +1259,20 @@ class ElementNode {
 
   }
 
-  action_alert(_complete, _string) {
-    let actionResult = new ActionResult();
-    alert(_string);
-
-    _complete(actionResult);
-  }
 
   refresh(_complete) {
     let that = this;
     this.constructDOMs({}, function(_doms) {
       console.log(_doms);
       that.parent.forwardMe(that);
+      _complete(_doms);
+    });
+  }
+
+  update(_complete) {
+    let that = this;
+    this.constructDOMs({}, function(_doms) {
+      that.updateMe(that);
       _complete(_doms);
     });
   }
