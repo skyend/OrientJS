@@ -2,6 +2,7 @@ import ObjectExplorer from '../../util/ObjectExplorer.js';
 import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
+import TypeCaster from '../Data/TypeCaster';
 
 import _ from 'underscore';
 /**
@@ -149,7 +150,7 @@ class Resolver {
     let functionCreateArgs = [];
 
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
-    let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+/g, function(_matched) {
+    let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+(:\w+)?/g, function(_matched) {
 
       alreadyIndex = _.findIndex(argumentsMap, function(_argName) {
         return _argName === _matched;
@@ -174,63 +175,104 @@ class Resolver {
 
   /*
     Support :
-      en-attr-origin - resolve 되지 않은 값(입력 된 값 그대로)을 반환
-      en-attr - resolve 된 값을 반환
-      ns  - DynmaicContext 의 namespace 데이터 반환
-      en - node Meta : repeat-n , ...
-      geo - width, height, x, y, left, top, right, bottom, 등등 지원 (미지원)
-      val - 타입으로 반환
-      val-plain - String 으로 반환
-      task - taskScope 반환
-      action - actionScope 반환
-      function - functionScope 반환 (미지원)
-      class - classScope 반환 (미지원)
-      cookie - cookie 필드 값 반환
-      http-param - HTTP Parameter 값 반환
-      service - Service Config (미지원)
+      en-attr-origin : resolve 되지 않은 값(입력 된 값 그대로)을 반환
+      en-attr        : resolve 된 값을 반환
+      ns             : DynmaicContext 의 namespace 데이터 반환
+      en             : node Meta : repeat-n , ...
+      geo            : width, height, x, y, left, top, right, bottom, 등등 지원 (미지원)
+      val            : 타입으로 반환
+      val-plain      : String 으로 반환
+      task           : taskScope 반환
+      action         : actionScope 반환
+      function       : functionScope 반환 (미지원)
+      class          : classScope 반환 (미지원)
+      cookie         : cookie 필드 값 반환
+      http-param     : HTTP Parameter 값 반환
+      service        : Service Config (미지원)
   */
   __getInterpretVar(_varName, _externalGetterInterface) {
-    let splited = _varName.split('@');
+    let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
     let varCategory = splited[0];
-    let varName = splited[1];
+    let splitForTypeCast = splited[1].split(':');
+    let varName = splitForTypeCast[0];
+    let type = splitForTypeCast[1];
 
+    let data;
     switch (varCategory) {
       case 'en-attr-origin':
-        return _externalGetterInterface.getAttribute(varName, false);
+        data = _externalGetterInterface.getAttribute(varName, false);
+        break;
       case 'en-attr':
-        return _externalGetterInterface.getAttribute(varName, true);
+        data = _externalGetterInterface.getAttribute(varName, true);
+        break;
       case 'ns':
-        return this.getNSData(varName);
+        data = this.getNSData(varName);
+        break;
       case 'en':
-        return _externalGetterInterface.getNodeMeta(varName);
+        data = _externalGetterInterface.getNodeMeta(varName);
+        break;
       case 'geo':
         throw new Error("geo category 는 아직 지원하지 않습니다.");
-        return this.resolveWithHttpParam(varName);
+        data = this.resolveWithHttpParam(varName);
+        break;
       case 'val-plain':
-        return _externalGetterInterface.getScope(varName, 'value').plainValue;
+        data = _externalGetterInterface.getScope(varName, 'value').plainValue;
+        break;
       case 'val':
-        return _externalGetterInterface.getScope(varName, 'value').shapeValue;
+        data = _externalGetterInterface.getScope(varName, 'value').shapeValue;
+        break;
       case 'task':
-        return _externalGetterInterface.getScope(varName, 'task');
+        data = _externalGetterInterface.getScope(varName, 'task');
+        break;
       case 'action':
-        return _externalGetterInterface.getScope(varName, 'action');
+        data = _externalGetterInterface.getScope(varName, 'action');
+        break;
       case 'function':
         throw new Error("function category 는 아직 지원하지 않습니다.");
-        return _externalGetterInterface.getScope(varName, 'function');
+        data = _externalGetterInterface.getScope(varName, 'function');
+        break;
       case 'class':
         throw new Error("class category 는 아직 지원하지 않습니다.");
-        return _externalGetterInterface.getScope(varName, 'class');
+        data = _externalGetterInterface.getScope(varName, 'class');
+        break;
       case 'cookie':
-        return this.resolveWithCookie(varName);
+        data = this.resolveWithCookie(varName);
+        break;
       case 'http-param':
-        return this.resolveWithHttpParam(varName);
+        data = this.resolveWithHttpParam(varName);
+        break;
       case 'service':
         throw new Error("service category 는 아직 지원하지 않습니다.");
-        return _externalGetterInterface.getServiceConfig(varName); // Todo..
+        data = _externalGetterInterface.getServiceConfig(varName);
+        break; // Todo..
+      default:
+        throw new Error("지원하지 않는 카테고리 명입니다.");
+    }
+
+
+    if (splitForTypeCast[1]) {
+      return this.__typeCast(data, splitForTypeCast[1]);
+    } else {
+      return data;
     }
   }
 
-
+  __typeCast(_value, _type) {
+    switch (_type) {
+      case 'string':
+        return TypeCaster.toString(_value);
+      case 'int':
+        return TypeCaster.toInteger(_value);
+      case 'float':
+        return TypeCaster.toFloat(_value);
+      case 'number':
+        return TypeCaster.toNumber(_value);
+      case 'boolean':
+        return TypeCaster.toBoolean(_value);
+      case 'object':
+        return TypeCaster.toObject(_value);
+    }
+  }
 
   //
   //

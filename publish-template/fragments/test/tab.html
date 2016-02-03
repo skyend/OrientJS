@@ -203,8 +203,16 @@
   </div>
 </div>
 <div>
+  <en:value name='testObject' type='string'>
+    {
+      "a":1,
+      "b":2
+    }
+  </en:value>
 
-  {{ shortcut.if_then(false, '참') }}
+  {{ val@testObject:object === true? 't':'f'}}
+
+  {{ shortcut.if_then(true, '참') }}
 
 
   <div class="panel-group" en-id='panel-container2' data-opened='-1'>
@@ -215,7 +223,7 @@
         <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1</a></h4>
       </div>
 
-      <div id="faq-3-q-1" class="panel-collapse collapse {{ en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel">
+      <div id="faq-3-q-1" class="panel-collapse collapse {{ en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
         <div class="panel-body">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit,
           sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

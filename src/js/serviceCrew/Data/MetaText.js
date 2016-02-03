@@ -31,7 +31,7 @@ class MetaText {
     return parseFloat(this.variable);
   }
 
-  get byNumber(){
+  get byNumber() {
     return Number(this.variable);
   }
 
@@ -47,7 +47,7 @@ class MetaText {
     return false;
   }
 
-  get byObject(){
+  get byObject() {
     return JSON.parse(this.variable);
   }
 
@@ -79,7 +79,7 @@ class MetaText {
     this._variable = String(_v);
   }
 
-  set fromNumber(_v){
+  set fromNumber(_v) {
     this._variable = String(_v);
   }
 
@@ -90,7 +90,7 @@ class MetaText {
 
   // Read With Type Casting
   set fromBoolean(_v) {
-    if( _v ){
+    if (_v) {
       this._variable = 'true';
     } else {
       this._variable = 'false';
@@ -114,8 +114,8 @@ class MetaText {
     this.variable = this.stored;
   }
 
-  import(_data){
-    if( typeof _data === 'Object'){
+  import (_data) {
+    if (typeof _data === 'Object') {
       this.variable = _data.seed; // variable 는 런타임에 언제든지 변경될 수 있는 데이터이다.
       this.seed = _data.seed; // Seed 는 런타임에 변경되지 않는 데이터이다.
       this.default = _data.default; // default 는 seed의 데이터 리졸브가 실패하였을 때 대체될 데이터이다.
@@ -124,7 +124,7 @@ class MetaText {
     }
   }
 
-  export(){
+  export () {
     return {
       seed: this.seed,
       default: this.default
