@@ -37,6 +37,7 @@ class HTMLElementNode extends TagBaseElementNode {
       });
   }
 
+  //
   forwardMe(_childElementNode) {
     console.log('forward');
     console.log(this);
@@ -55,13 +56,17 @@ class HTMLElementNode extends TagBaseElementNode {
 
           that.forwardDOM.appendChild(_clonedElementNode.forwardDOM);
         });
-      }
-
-      //
-      if (_elementNode.forwardDOM !== null) {
-        that.forwardDOM.appendChild(_elementNode.forwardDOM);
+      } else {
+        //
+        if (_elementNode.forwardDOM !== null) {
+          that.forwardDOM.appendChild(_elementNode.forwardDOM);
+        }
       }
     });
+  }
+
+  updateMe(_childElementNode) {
+    console.log(_childElementNode);
   }
 
   hookingLink() {
