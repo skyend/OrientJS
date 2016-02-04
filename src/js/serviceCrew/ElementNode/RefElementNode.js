@@ -106,13 +106,21 @@ class RefElementNode extends HTMLElementNode {
 
 
   buildByElement(_domElement) {
-    super.buildByElement(_domElement, ['en-ref-type', 'en-ref-target-id']);
+    super.buildByElement(_domElement, ['en-ref-type', 'en-ref-target-id', 'en-']);
+    let attributes = _domElement.attributes;
+    let attr;
 
     if (_domElement.getAttribute('en-ref-type') !== null)
       this.refType = _domElement.getAttribute('en-ref-type');
 
     if (_domElement.getAttribute('en-ref-target-id') !== null)
       this.refTargetId = _domElement.getAttribute('en-ref-target-id');
+
+    // for (let i = 0; i < attributes.length; i++) {
+    //   attr = attributes[i];
+    //
+    // }
+
 
   }
 

@@ -186,22 +186,22 @@
 
 </div>
   <div>
-    <div en-id='tab-container' tab-count='5' tab-current='{{0}}'>
+    <div en-id='tab-container' tab-count='5' tab-current='{{<< 0}}'>
 
       <ul en-id='tab-head'>
-        <li en-ctrl-repeat-n='{{en-attr@tab-count}}' update-test='{{en-attr@tab-current}}' en-event-click="task@click">
-          <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{String(en@repeat-n)}}' chain-success='refresh' ></en:task>
+        <li en-ctrl-repeat-n='{{<< en-attr@tab-count}}' update-test='{{<< en-attr@tab-current}}' en-event-click="task@click">
+          <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{<< String(en@repeat-n)}}' chain-success='refresh' ></en:task>
           <en:task name='refresh' action='refresh-to' arg-eid='tab-container'></en:task>
-          Tab  {{en@repeat-n}} {{en-attr@update-test}}
+          Tab  {{<< en@repeat-n}} {{<< en-attr@update-test}}
         </li>
       </ul>
 
       <div en-id='tab-body'>
-        <div en-ctrl-repeat-n='{{en-attr@tab-count}}'>
+        <div en-ctrl-repeat-n='{{<< en-attr@tab-count}}'>
 
-          <div  en-ctrl-hidden='{{en@repeat-n == en-attr@tab-current ? false :true }}'>
-              <code>{{ en@repeat-n == parseInt(en-attr@tab-current) }}
-                Body {{en@repeat-n}}</code>
+          <div  en-ctrl-hidden='{{<< en@repeat-n == en-attr@tab-current ? false :true }}'>
+              <code>{{<<  en@repeat-n == parseInt(en-attr@tab-current) }}
+                Body {{<< en@repeat-n}}</code>
           </div>
         </div>
       </div>
@@ -216,20 +216,20 @@
     }
   </en:value>
 
-  {{ val@testObject:object === true? 't':'f'}}
+  {{<<  val@testObject:object === true? 't':'f'}}
 
-  {{ shortcut.if_then(true, '참') }}
+  {{<<  shortcut.if_then(true, '참') }}
 
 
   <div class="panel-group" en-id='panel-container2' data-opened='-1'>
     <div class="panel panel-primary" en-ctrl-repeat-n='5'>
       <div class="panel-heading" role="tab" en-event-click='task@forward'>
-        <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='refresh'></en:task>
+        <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{<< en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='refresh'></en:task>
         <en:task name='refresh' action='refresh-to' arg-eid='panel-container2'></en:task>
         <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1</a></h4>
       </div>
 
-      <div id="faq-3-q-1" class="panel-collapse collapse {{ en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
+      <div id="faq-3-q-1" class="panel-collapse collapse {{<<  en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
         <div class="panel-body">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit,
           sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

@@ -68,6 +68,7 @@ class ElementNode {
 
     this.realization = null;
     this.clonePool = []; // repeated
+    this.cloned = false;
     this.backupDOM = null;
     this.forwardDOM = null;
 
@@ -344,6 +345,8 @@ class ElementNode {
     //  [5] After Controls
     // ]
     this.clonePool = [];
+    this.cloned = false; // clone 여부 플래그 construct시 매번 초기화 한다.
+
     // [0] Before Controls
     if (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true) {
       _complete([]);
@@ -415,6 +418,8 @@ class ElementNode {
       let elementNode;
       let exportObject;
 
+      this.cloned = true;
+
       async.eachSeries(_.range(parseInt(childRepeatNumber)), function iterator(_i, _next) {
           exportObject = that.export();
           exportObject.id = exportObject.id + '@' + _i; // repeat-counting
@@ -468,6 +473,21 @@ class ElementNode {
       }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
     } else {
       _complete([htmlNode]);
+    }
+  }
+
+  /*
+    getForwardDOMs
+     생성된 forwardDOM 리스트를 반환한다.
+     clone 요소라면 clonePool의 DOM리스트를 반환한다.
+  */
+  getForwardDOMs() {
+    if (this.cloned) {
+      return this.clonePool.map(function(_clonedElementNode) {
+        return _clonedElementNode.forwardDOM;
+      });
+    } else {
+      return this.forwardDOM ? [this.forwardDOM] : [];
     }
   }
 
@@ -565,6 +585,8 @@ class ElementNode {
 
     return false;
   }
+
+
 
   getBoundingRect() {
 
@@ -1132,9 +1154,8 @@ class ElementNode {
     let eventDesc = this.getEvent(_name);
     if (eventDesc === undefined) return;
 
-
     if (eventDesc.match(EventEffectMatcher) !== null) {
-      let scope = this.interpret(`{{${eventDesc}}}`);
+      let scope = this.interpret(`{{<< ${eventDesc}}}`);
       if (!scope) throw new Error(` ${eventDesc} Task 를 찾지 못 하였습니다.`);
 
       switch (scope.constructor.name) {
@@ -1192,8 +1213,8 @@ class ElementNode {
 
           if (!chainedTask) throw new Error(`${_actionResult.taskChain} Task 를 찾지 못 하였습니다.`);
         } else if (/\w+/.test(_actionResult.code)) {
-
           let nextTaskName = _taskScope.getChainedTaskName(_actionResult.code);
+
           chainedTask = that.__getTask(nextTaskName);
         }
 
@@ -1223,7 +1244,7 @@ class ElementNode {
   }
 
   __getTask(_taskName) {
-    return this.interpret(`{{task@${_taskName}}}`);
+    return this.interpret(`{{<< task@${_taskName}}}`);
   }
 
   //****** ElementNode default Actions *****//
@@ -1272,7 +1293,7 @@ class ElementNode {
   update(_complete) {
     let that = this;
     this.constructDOMs({}, function(_doms) {
-      that.updateMe(that);
+      that.applyMe(that);
       _complete(_doms);
     });
   }
@@ -1372,7 +1393,10 @@ class ElementNode {
       'hidden': ''
     };
 
-    this.scopeMembers = _elementNodeDataObject.scopeMembers || [];
+    this.scopeMembers = _elementNodeDataObject.scopeMembers ? _elementNodeDataObject.scopeMembers.map(function(_scopeMemberObject) {
+      return new(ScopeMemberFactory.getClass(_scopeMemberObject.type))(_scopeMemberObject);
+    }) : [];
+
     this.nodeEvents = _elementNodeDataObject.nodeEvents || {};
 
     this.comment = _elementNodeDataObject.comment || '';
@@ -1390,7 +1414,9 @@ class ElementNode {
       type: this.getType(),
       name: this.getName(),
       controls: _.clone(this.getControls()),
-      scopeMembers: _.clone(this.scopeMembers),
+      scopeMembers: _.clone(this.scopeMembers.map(function(_scopeMember) {
+        return _scopeMember.export();
+      })),
       nodeEvents: _.clone(this.nodeEvents),
       comment: this.getComment(),
       componentName: this.getComponentName(),

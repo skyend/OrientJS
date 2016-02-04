@@ -21,7 +21,8 @@ class DynamicContext {
     Object.assign(this, Events.EventEmitter.prototype);
     this.id = Identifier.genUUID();
 
-    this.dataResolver = new DataResolver();
+    // 상위 dynamicContext로 입력된 resolver 를 입력함
+    this.dataResolver = new DataResolver(_upperDynamicContext ? _upperDynamicContext.dataResolver : null);
 
     // this.environment = _environment;
 

@@ -1,9 +1,11 @@
 import ValueScopeMember from './ValueScopeMember';
 import ActionScopeMember from './ActionScopeMember';
 import TaskScopeMember from './TaskScopeMember';
+import ParamScopeMember from './ParamScopeMember';
 
-class ScopeMember {
+class ScopeMemberFactory {
   static getClass(_type) {
+
     switch (_type) {
       case 'value':
         return ValueScopeMember;
@@ -11,8 +13,10 @@ class ScopeMember {
         return TaskScopeMember;
       case 'action':
         return ActionScopeMember;
+      case 'param':
+        return ParamScopeMember;
     }
   }
 }
 
-export default ScopeMember;
+export default ScopeMemberFactory;

@@ -10,7 +10,10 @@ import _ from 'underscore';
 */
 
 class Resolver {
-  constructor() {
+  constructor(_upperResolver) {
+
+    // 상위 NS데이터 참조를 위해 사용 // getNSData()
+    this.upperResolver = _upperResolver || null;
 
     this.dataSpace = {};
   }
@@ -148,7 +151,7 @@ class Resolver {
     let argumentsMap = _argumentMapRef; // 함수 호출자가 생성하여 입력한 Array
     let alreadyIndex;
     let functionCreateArgs = [];
-
+    let functionResult;
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
     let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+(:\w+)?/g, function(_matched) {
 
@@ -173,7 +176,15 @@ class Resolver {
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
-    return Function.constructor.apply(this, functionCreateArgs);
+    try {
+      functionResult = Function.constructor.apply(this, functionCreateArgs);
+    } catch (_e) {
+      _e.message += `\n Origin Source : {{${_syntax}}}`;
+      throw _e;
+    }
+
+    return functionResult;
+    //return Function.constructor.apply(this, functionCreateArgs);
   }
 
   /*
@@ -208,7 +219,7 @@ class Resolver {
       case 'en-attr':
         data = _externalGetterInterface.getAttribute(varName, true);
         break;
-      case 'ns':
+      case 'ns': // getNSData 메서드는 자신에게 없으면 상위 resolver의 NS데이터를 탐색한다.
         data = this.getNSData(varName);
         break;
       case 'en':
@@ -249,7 +260,7 @@ class Resolver {
         data = _externalGetterInterface.getServiceConfig(varName);
         break; // Todo..
       default:
-        throw new Error("지원하지 않는 카테고리 명입니다.");
+        throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
     }
 
 
@@ -347,8 +358,13 @@ class Resolver {
       Took a data[String|Object] from path
   */
   getNSData(_pathWithNS) {
+    let data = ObjectExplorer.getValueByKeyPath(this.dataSpace, _pathWithNS.replace(/^\*/, ''));
 
-    return ObjectExplorer.getValueByKeyPath(this.dataSpace, _pathWithNS.replace(/^\*/, ''));
+    if (!data) {
+      if (this.upperResolver !== null) data = this.upperResolver.getNSData(_pathWithNS);
+    }
+
+    return data;
   }
 }
 

@@ -44,29 +44,22 @@ class HTMLElementNode extends TagBaseElementNode {
     let that = this;
     let lastDOM;
 
-    //    if (this.forwardDOM)
     this.forwardDOM.innerHTML = '';
     this.childrenIteration(function(_elementNode) {
-      //_elementNode.forwardBackupDOMAllVirtual();
 
-      // clone 처리
-      if (_elementNode.clonePool.length > 0) {
-        _elementNode.clonePool.map(function(_clonedElementNode) {
-          //_clonedElementNode.forwardBackupDOMAllVirtual();
-
-          that.forwardDOM.appendChild(_clonedElementNode.forwardDOM);
-        });
-      } else {
-        //
-        if (_elementNode.forwardDOM !== null) {
-          that.forwardDOM.appendChild(_elementNode.forwardDOM);
-        }
-      }
+      _elementNode.getForwardDOMs().map(function(_dom) {
+        that.forwardDOM.appendChild(_dom);
+      });
     });
   }
 
-  updateMe(_childElementNode) {
+  applyMe(_childElementNode) {
     console.log(_childElementNode);
+
+    this.treeExplore(function(_elementNode) {
+
+    });
+
   }
 
   hookingLink() {

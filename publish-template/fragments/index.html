@@ -14,8 +14,11 @@
 
 
 
-  Hello, I'm index fragment
-  <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test'></div>
+  Hello, I'm index fragment22222
+  <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test'>
+    <en:param name='test' type='string' value='fragment param'></en:param>
+
+  </div>
 
   <div en-id='asdasd12asdasdasdasd' class='list'>
     <ul en-id='asdasdasadasd2asdasdasd' class='list'>
@@ -40,7 +43,7 @@
 
         2+2 = {{2+2}} {{([1,2,3,4])[3]}}
 
-        {{ $ervice.currency( a@a + ns@a ) }}
+        {{ $ervice.currency( ns@a ) }}
 
         {{  en-attr@sample-array[en@repeat-n] + 'aa'  }}
 
