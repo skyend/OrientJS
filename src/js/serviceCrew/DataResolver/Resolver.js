@@ -168,7 +168,10 @@ class Resolver {
 
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
 
-    functionCreateArgs.push("return " + functionBody.replace(/^[\n\s]*/, ''));
+
+    functionBody = functionBody.replace(/^<</, 'return ');
+
+    functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
     return Function.constructor.apply(this, functionCreateArgs);
   }
