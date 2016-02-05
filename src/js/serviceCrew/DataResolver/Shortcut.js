@@ -1,3 +1,13 @@
+const DAY_MAP = {
+  'ko': ['월', '화', '수', '목', '금', '토', '일'],
+  'en': ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', "Sat", 'Sun']
+};
+
+const MONTH_MAP = {
+  'ko': [],
+  'en': []
+};
+
 class Shortcut {
 
   // 삼항연산 메서드
@@ -13,13 +23,13 @@ class Shortcut {
   /*
     DateResolver
       Parameters:
-        0. Date String
-        1. Format : YYYY - years, MM - Months, DD - Days, hh - Hours, mm - Minuates, ss - Seconds
+        0. Date String or timestamp
+        1. Format : YYYY - years, MM - Months, DD - Date, dd - Day ,hh - Hours, mm - Minuates, ss - Seconds
   */
-  static dateFormatter(_dateString, _format) {
+  static dateFormatter(_dateString, _format, _lang) {
     let dateObject = new Date(_dateString);
 
-    return _format.replace(/(YYYY|YY|MM|DD|hh|mm|ss)/g, function(_matched, _chars) {
+    return _format.replace(/(YYYY|YY|MM|DD|dd|hh|mm|ss)/g, function(_matched, _chars) {
       switch (_chars) {
         case 'YYYY':
           return dateObject.getFullYear();
@@ -29,6 +39,8 @@ class Shortcut {
           return dateObject.getMonth() + 1;
         case 'DD':
           return dateObject.getDate();
+        case 'dd':
+          return Shortcut.dayConverter(dateObject.getDay(), _lang);
         case 'hh':
           return dateObject.getHours();
         case 'mm':
@@ -36,10 +48,25 @@ class Shortcut {
         case 'ss':
           return dateObject.getSeconds();
         default:
-
       }
+
       return _chars;
     });
+  }
+
+  static dayConverter(_dayNumber, _lang) {
+    let lang = _lang || 'en';
+
+    switch (_lang) {
+      case 'ko':
+        break;
+      case 'en':
+        break;
+      default:
+        lang = 'en';
+    }
+
+    return DAY_MAP[lang][_dayNumber - 1];
   }
 }
 

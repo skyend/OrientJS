@@ -11,4 +11,9 @@
     console.log(this);
   </en:action>
   Hello I'm test Fragment
+
+  {{<< fragment@test ? 'true':'false'}}
+  {{<< fragment@test:number}}
+
+  {{<< shortcut.dateFormatter(Date.now() + (60*60*24*4*1000), 'dd', 'ko') }} 요일
 </div>

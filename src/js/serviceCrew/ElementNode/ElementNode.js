@@ -919,7 +919,8 @@ class ElementNode {
     let externalGetterInterface = {
       getAttribute: this.getAttrOnTree.bind(this),
       getScope: this.getScope.bind(this),
-      getNodeMeta: this.getNodeMeta.bind(this)
+      getNodeMeta: this.getNodeMeta.bind(this),
+      getFragmentParam: this.environment.getParam.bind(this.environment)
         // todo .... geo 추가
         //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
@@ -1137,7 +1138,7 @@ class ElementNode {
 
     // foundDupl 값이 -1 이 아니면 이미 존재하는 ScopeMember로 에러를 발생시킨다.
     if (foundDupl != -1) {
-      throw new Error("이미 존재하는 ScopeMember 입니다. ScopeMember 는 같은 태그내에서 name 이 중복 될 수 없습니다.", _scopeMember);
+      throw new Error("이미 존재하는 ScopeMember 입니다. ScopeMember 는 같은 태그내에서 name 이 중복 될 수 없습니다. \n" + JSON.stringify(_scopeMember.export()));
     }
 
     this.scopeMembers.push(_scopeMember);
@@ -1190,7 +1191,6 @@ class ElementNode {
 
       if (taskArgMatchIndex != -1) {
         executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value);
-        console.log(executeParamMap, _taskScope, actionName);
       } else {
         executeParamMap[_paramKey] = undefined;
       }
@@ -1293,7 +1293,7 @@ class ElementNode {
   update(_complete) {
     let that = this;
     this.constructDOMs({}, function(_doms) {
-      that.applyMe(that);
+      that.parent.applyMe(that);
       _complete(_doms);
     });
   }

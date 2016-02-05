@@ -143,12 +143,11 @@ class Page {
       that.doc.body.parentElement.replaceChild(bodyDOMElement, that.doc.body);
       _complete();
     });
-
   }
 
   loadFragment(_fragmentId, _complete) {
     Loader.loadFragment(_fragmentId, function(_fragmentText) {
-      console.log(_fragmentId);
+
       if (_fragmentText !== null) {
 
         let fragmentHelper = new FragmentHelper(_fragmentId, _fragmentText);

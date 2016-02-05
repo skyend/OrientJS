@@ -203,6 +203,7 @@ class Resolver {
       cookie         : cookie 필드 값 반환
       http-param     : HTTP Parameter 값 반환
       service        : Service Config (미지원)
+      fragment       : Fragment Parameter
   */
   __getInterpretVar(_varName, _externalGetterInterface) {
     let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
@@ -259,6 +260,9 @@ class Resolver {
         throw new Error("service category 는 아직 지원하지 않습니다.");
         data = _externalGetterInterface.getServiceConfig(varName);
         break; // Todo..
+      case 'fragment':
+        data = _externalGetterInterface.getFragmentParam(varName);
+        break;
       default:
         throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
     }

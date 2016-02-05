@@ -54,7 +54,32 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   applyMe(_childElementNode) {
-    console.log(_childElementNode);
+    let childStartIndex = _.findIndex(this.children, function(_child) {
+
+      return _childElementNode === _child;
+    });
+
+    let childNodes = this.forwardDOM.childNodes;
+    let childNodesLen = childNodes.length;
+    let childNode, childNodeEnId, i = 0,
+      sub_i = 0,
+      serialedIndex = 0;
+
+    this.children.map(function(_childElementNode) {
+
+      _childElementNode.getForwardDOMs().map(function(_dom) {
+        console.log(_dom, childNodes[serialedIndex]);
+
+        sub_i++;
+      });
+
+      i++;
+      serialedIndex++;
+      sub_i = 0;
+    });
+
+
+    console.log(_childElementNode, childStartIndex, this.children, _childElementNode.getForwardDOMs());
 
     this.treeExplore(function(_elementNode) {
 

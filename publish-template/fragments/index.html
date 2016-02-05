@@ -11,12 +11,10 @@
 
 <div en-id='asda12sdasdasdasdasd'>
 
-
-
-
   Hello, I'm index fragment22222
-  <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test'>
-    <en:param name='test' type='string' value='fragment param'></en:param>
+
+  <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test' test='{{<< true}}'>
+    <en:param name='test' type='string' value='{{<< en-attr@test}}'></en:param>
 
   </div>
 
@@ -51,7 +49,7 @@
 
         repeat {{en@repeat-n}}
 
-        <div en-type='string'>
+        <div en-type='string' en-enableHtml>
           Hello
           Hello
           Hello

@@ -71,8 +71,8 @@ class Document {
 
 
 
-  setParam(_paramNS, _data) {
-    this.params[_paramNS] = _data;
+  setParam(_paramName, _data) {
+    this.params[_paramName] = _data;
   }
 
   setParams(_params) {
@@ -118,8 +118,8 @@ class Document {
 
   ////////////////////
   // Getters
-  getParam(_paramNS) {
-    return this.params[_paramNS];
+  getParam(_paramName) {
+    return this.params[_paramName];
   }
 
   // documentID

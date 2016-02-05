@@ -175,6 +175,12 @@ class Gelato {
 
     actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
   }
+
+  // 추가 shortcut 은 랜더링 전에 추가 되어야 한다.
+  // 랜더링전에 shortcut 스크립트를 추가 하는 방법이 나오지 않는 이상 이 기능은 미뤄져야 한다.
+  registerShotcut(_name, _shortcutFunc) {
+
+  }
 }
 
 export default Gelato;

@@ -15,8 +15,8 @@ class StringElementNode extends ElementNode {
     return this.text;
   }
 
-  get disableHTML() {
-    return this._disableHTML;
+  get enableHTML() {
+    return this._enableHTML;
   }
 
 
@@ -50,8 +50,8 @@ class StringElementNode extends ElementNode {
     this.text = _text;
   }
 
-  set disableHTML(_disableHTML) {
-    this._disableHTML = _disableHTML;
+  set enableHTML(_enableHTML) {
+    this._enableHTML = _enableHTML;
   }
 
   createRealizationNode() {
@@ -131,6 +131,7 @@ class StringElementNode extends ElementNode {
     let text = _options.resolve ? this.interpret(this.getText()) : this.getText();;
 
     if (_domNode.nodeName === '#text') {
+
       _domNode.nodeValue = text;
     } else {
       _domNode.setAttribute('en-id', this.getId());
@@ -138,10 +139,12 @@ class StringElementNode extends ElementNode {
       if (this.getName())
         _domNode.setAttribute('en-name', this.getName());
 
-      if (this.disableHTML) {
-        _domNode.appendChild(_domNode.ownerDocument.createTextNode(text));
-      } else {
+      if (this.enableHTML) { // enableHTML default : false
+        _domNode.setAttribute('en-enableHtml', '');
+
         _domNode.innerHTML = text;
+      } else {
+        _domNode.appendChild(_domNode.ownerDocument.createTextNode(text));
       }
     }
   }
@@ -169,6 +172,12 @@ class StringElementNode extends ElementNode {
 
     // #text Node가 아닌 태그가 입력되었을 떄 해당 태그명을 wrappingTag 로 입력해둔다.
     if (_stringNode.nodeName !== '#text') {
+      if (_stringNode.hasAttribute('en-enableHtml')) {
+        this.enableHTML = true;
+      } else {
+        this.enableHTML = false;
+      }
+
       this.setText(_stringNode.innerHTML);
       this.wrappingTag = _stringNode.nodeName;
     } else {
@@ -200,7 +209,7 @@ class StringElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.disableHTML = _elementNodeDataObject.disableHTML || false;
+    this.enableHTML = _elementNodeDataObject.enableHTML || false;
     this.text = _elementNodeDataObject.text || false;
     this.wrappingTag = _elementNodeDataObject.wrappingTag || null;
   }
@@ -208,7 +217,7 @@ class StringElementNode extends ElementNode {
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.text = this.getText();
-    result.disableHTML = this.disableHTML;
+    result.enableHTML = this.enableHTML;
     result.wrappingTag = this.wrappingTag;
     return result;
   }

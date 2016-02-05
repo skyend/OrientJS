@@ -73,6 +73,16 @@ class RefElementNode extends HTMLElementNode {
           // 상위 environment 지정
           that.loadedInstance.upperEnvironment = that.environment;
 
+          console.log('params', this.scopeMembers);
+
+          this.scopeMembers.map(function(_scopeMember) {
+            if (_scopeMember.type === 'param') {
+              console.log(_scopeMember.value);
+              that.loadedInstance.setParam(_scopeMember.name, that.interpret(_scopeMember.plainValue));
+            }
+          });
+
+
           that.loadedInstance.constructDOMChildren(_options, function(_domList) {
             _htmlNode.innerHTML = '';
 
