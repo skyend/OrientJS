@@ -10,7 +10,7 @@ module.exports = {
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
     main: ['./src/js/main.js'],
-    'built-foundation':['./src/stand-alone-foundation/main.js'] // foundation build
+    'built-foundation': ['./src/stand-alone-foundation/main.js'] // foundation build
       //main: ['./src/js/ui/editor/test_main.jsx']
   },
 
@@ -22,49 +22,51 @@ module.exports = {
 
   module: {
     loaders: [{
-      test: /\.json$/,
-      loader: "json"
-    }, {
-      test: /\.css$/,
-      exclude: /\.useable\.css$/,
-      loader: "style!css"
-    }, {
-      test: /\.useable\.css$/,
-      loader: "style/useable!css"
-    }, {
-      test: /\.less$/,
-      exclude: /\.useable\.less$/,
-      loader: "style!css!less"
-    }, {
-      test: /\.useable\.less$/,
-      loader: "style/useable!css!less"
-    },{
-      test: /.jsx?$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/,
-      query: {
-        presets: ['es2015', 'react']
+        test: /\.json$/,
+        loader: "json"
+      }, {
+        test: /\.css$/,
+        exclude: /\.useable\.css$/,
+        loader: "style!css"
+      }, {
+        test: /\.useable\.css$/,
+        loader: "style/useable!css"
+      }, {
+        test: /\.less$/,
+        exclude: /\.useable\.less$/,
+        loader: "style!css!less"
+      }, {
+        test: /\.useable\.less$/,
+        loader: "style/useable!css!less"
+      }, {
+        test: /.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015', 'react']
+        }
+      },
+      // {
+      //   test: /\.js$/,
+      //   exclude: /node_modules/,
+      //   loaders: ['react-hot', 'babel-loader']
+      // },
+      // {
+      //   test: /\.jsx$/,
+      //   loaders: ['jsx-loader?insertPragma=React.DOM&harmony', 'babel-loader']
+      //     //loaders: ['react-hot', 'babel-loader']
+      // },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url-loader?limit=10000&minetype=application/font-woff"
+      }, {
+        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "file-loader"
+      }, {
+        test: /\.(png|jpg)$/,
+        loader: "url-loader?mimetype=image/png"
       }
-    },
-    //  {
-    //   test: /\.js$/,
-    //   exclude: /node_modules/,
-    //   loaders: ['react-hot', 'babel-loader']
-    // }, {
-    //   test: /\.jsx$/,
-    //   //loaders: ['jsx-loader?insertPragma=React.DOM&harmony', 'react-hot', 'babel-loader']
-    //   loaders: ['react-hot', 'babel-loader']
-    // },
-    {
-      test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "url-loader?limit=10000&minetype=application/font-woff"
-    }, {
-      test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: "file-loader"
-    }, {
-      test: /\.(png|jpg)$/,
-      loader: "url-loader?mimetype=image/png"
-    }]
+    ]
   },
 
   // resolve: {

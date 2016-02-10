@@ -53,10 +53,10 @@ class HTMLElementNode extends TagBaseElementNode {
     });
   }
 
-  applyMe(_childElementNode) {
+  applyMe(_targetChildElementNode) {
     let childStartIndex = _.findIndex(this.children, function(_child) {
 
-      return _childElementNode === _child;
+      return _targetChildElementNode === _child;
     });
 
     let childNodes = this.forwardDOM.childNodes;
@@ -66,6 +66,7 @@ class HTMLElementNode extends TagBaseElementNode {
       serialedIndex = 0;
 
     this.children.map(function(_childElementNode) {
+      console.log(_childElementNode === _targetChildElementNode);
 
       _childElementNode.getForwardDOMs().map(function(_dom) {
         console.log(_dom, childNodes[serialedIndex]);
@@ -79,7 +80,7 @@ class HTMLElementNode extends TagBaseElementNode {
     });
 
 
-    console.log(_childElementNode, childStartIndex, this.children, _childElementNode.getForwardDOMs());
+    console.log(_targetChildElementNode, childStartIndex, this.children, _targetChildElementNode.getForwardDOMs());
 
     this.treeExplore(function(_elementNode) {
 

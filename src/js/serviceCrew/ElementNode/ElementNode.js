@@ -1247,38 +1247,8 @@ class ElementNode {
     return this.interpret(`{{<< task@${_taskName}}}`);
   }
 
-  //****** ElementNode default Actions *****//
+  // Event end 
 
-  /*
-    RequestAPI
-  */
-  action_sendForm(_complete, _apiSourceId, _requestId) {
-    let actionResult = new ActionResult();
-    let that = this;
-    SA_Loader.loadAPISource(_apiSourceId, function(_apiSourceData) {
-      let fieldObject = {};
-      let apiSource = new ICEAPISource(_apiSourceData);
-      let request = apiSource.findRequest(_requestId);
-      apiSource.setHost(Gelato.one().page.iceHost);
-
-      let reqFields = request.fields;
-
-      reqFields.map(function(_field) {
-        if (that.forwardDOM[_field.key] !== undefined) {
-          fieldObject[_field.key] = that.getFormFieldDOMData(that.forwardDOM[_field.key]);
-        }
-      });
-
-      console.log(fieldObject);
-
-      apiSource.executeRequest(_requestId, fieldObject, {}, that.getAttribute('enctype'), function(_result) {
-        console.log(_result);
-      });
-
-      console.log(apiSource);
-    });
-
-  }
 
 
   refresh(_complete) {
@@ -1292,7 +1262,9 @@ class ElementNode {
 
   update(_complete) {
     let that = this;
+    console.log('Update', this);
     this.constructDOMs({}, function(_doms) {
+      console.log('new dom ', _doms);
       that.parent.applyMe(that);
       _complete(_doms);
     });

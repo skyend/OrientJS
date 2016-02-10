@@ -89,4 +89,39 @@ actionStore.registerAction('scrollTop', ['taskChain'], function() {
 });
 
 
+
+
+//****** ElementNode default Actions *****//
+
+/*
+  RequestAPI
+*/
+// action_sendForm(_complete, _apiSourceId, _requestId) {
+//   let actionResult = new ActionResult();
+//   let that = this;
+//   SA_Loader.loadAPISource(_apiSourceId, function(_apiSourceData) {
+//     let fieldObject = {};
+//     let apiSource = new ICEAPISource(_apiSourceData);
+//     let request = apiSource.findRequest(_requestId);
+//     apiSource.setHost(Gelato.one().page.iceHost);
+//
+//     let reqFields = request.fields;
+//
+//     reqFields.map(function(_field) {
+//       if (that.forwardDOM[_field.key] !== undefined) {
+//         fieldObject[_field.key] = that.getFormFieldDOMData(that.forwardDOM[_field.key]);
+//       }
+//     });
+//
+//     console.log(fieldObject);
+//
+//     apiSource.executeRequest(_requestId, fieldObject, {}, that.getAttribute('enctype'), function(_result) {
+//       console.log(_result);
+//     });
+//
+//     console.log(apiSource);
+//   });
+//
+// }
+
 console.log(actionStore);
