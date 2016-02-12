@@ -250,6 +250,8 @@ class TagBaseElementNode extends ElementNode {
 
   // attribute
   setAttribute(_name, _value) {
+    this.attributes = this.attributes || {};
+
     this.attributes[_name] = _value;
   }
 
@@ -435,10 +437,6 @@ class TagBaseElementNode extends ElementNode {
   // Remove Attribute
   removeAttribute(_attrName) {
     delete this.attributes[_attrName];
-
-    if (this.getRealization() !== null) {
-      this.getRealization().removeAttribute(_attrName);
-    }
   }
 
 
@@ -484,8 +482,13 @@ class TagBaseElementNode extends ElementNode {
     if (this.realization === null) this.realization = _domElement;
 
     // Normals
-    if (_domElement.getAttribute('en-id') !== null)
+    if (_domElement.getAttribute('en-id') !== null) {
+      if (/@/.test(_domElement.getAttribute('en-id'))) {
+        throw new Error("ElementNode Id로 @가 사용 될 수 없습니다.");
+      }
+
       this.setId(_domElement.getAttribute('en-id'));
+    }
 
     if (_domElement.getAttribute('en-type') !== null)
       this.setType(_domElement.getAttribute('en-type'));

@@ -1,6 +1,8 @@
- import Gelato from '../js/serviceCrew/StandAloneLib/Gelato.js';
+import Gelato from '../js/serviceCrew/StandAloneLib/Gelato.js';
 
- window.addEventListener('load', function() {
-   // Service Object
-   window.$ervice = window.__ = window.so = new Gelato();
- });
+//var Gelato = require( '../js/serviceCrew/StandAloneLib/Gelato.js');
+
+window.addEventListener('load', function() {
+  // Service Object
+  window.$ervice = new Gelato();
+});

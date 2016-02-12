@@ -12,6 +12,20 @@
 <div en-id='asda12sdasdasdasdasd'>
 
   Hello, I'm index fragment22222
+  <div en-id='pw-field-warpper' validate='false'>
+		<en:task name='input' action='input-value-upsync' chain-success='validate'></en:task>
+		<en:task name='validate' action='input-value-validate' arg-type='password' chain-pass='success-validate' chain-fail='fail-validate'></en:task>
+		<en:task name='success-validate' action='attr-to' arg-eid='id-field-warpper' arg-name='validate' arg-value='true' chain-success='refresh'></en:task>
+		<en:task name='fail-validate' action='attr-to' arg-eid='id-field-warpper' arg-name='validate' arg-value='false' chain-success='refresh'></en:task>
+		<en:task name='refresh' action='refresh-to' arg-eid='pw-field-warpper'></en:task>
+
+		<input type="password" class="itx-bd" name="" id="memberPassword" title="비밀번호 입력" en-event-change='task@input'>
+		<span class="tip">
+			영문, 숫자, 특수문자를 혼합하여 8~15자로 사용 합니다.(! @ # $ % ^ * ? _ ~)
+
+			{{<< en-attr@validate:boolean ? '사용 가능 한 비밀번호 입니다.':'사용 할 수 없는 비밀번호 입니다.'}}
+		</span>
+	</div>
 
   <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='sub1/test' test='{{<< true}}'>
     <en:param name='test' type='string' value='{{<< en-attr@test}}'></en:param>
@@ -25,11 +39,12 @@
         <en:value name='test-object' type='object'>
           { "a":31, "b":{ "a":2 } }
         </en:value>
-        <en:task name='test' action='test' arg-testparam='test' arg-extra='{{en-attr@class}}' arg-hello='{{en@repeat-n}}' chain-success='hello'></en:task>
-        <en:action name='test' param-testparam param-extra param-hello>
-          console.log(testparam, hello);
-          console.log(this);
-          console.log(arguments);
+        <en:task name='test' action='test' arg-test='Hello'></en:task>
+        <en:action name='test' param-test>
+          alert(test);
+
+          _actionResult.code = 'success';
+          _callback(_actionResult);
         </en:action>
 
         <en:task name='change-attr' action='attr' arg-name='attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
@@ -48,17 +63,11 @@
         {{val@test-val}}
 
         repeat {{en@repeat-n}}
-
-        <div en-type='string' en-enableHtml>
-          Hello
-          Hello
-          Hello
-          Hello
-          <br/>
-
-          Hello
-          Hello
-          Hello
+        {{console.log(this)}}
+        <div test='<p>ddddd<b>dddddddd</b></p><p><b><br></b></p><p><b>dfdfdfdfdfdf</b></p><p><b><br></b></p><p><b style="text-decoration: underline;">dfaweqfasfdwqerfgasfgaswf</b><u>werwqerqwerfqwesf</u><b><u>aswertqwegfwseag</u>weqtfqwegqwergqweg</b></p>'>
+          <div en-type='string' en-enableHtml>
+            {{<< en-attr@test }}
+          </div>
         </div>
       </li>
     </ul>

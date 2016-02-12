@@ -27,14 +27,14 @@ class Resolver {
     return this.dataSpace[_ns];
   }
 
-  resolve(_matter, _externalGetterInterface) {
+  resolve(_matter, _externalGetterInterface, _caller) {
     let transformed = _matter;
 
     if (typeof _matter !== 'string') {
       transformed = String(_matter);
     }
 
-    return this.__interpret3(transformed, _externalGetterInterface);
+    return this.__interpret3(transformed, _externalGetterInterface, _caller);
   }
 
 
@@ -42,7 +42,7 @@ class Resolver {
   __interpret3(_matter, _externalGetterInterface, _caller) {
     // 모든 바인딩은 Resolver에서 이루어 지며 리졸브 블럭내에서 요구하는 데이터는 resolve 실행 자 로 부터 얻을 수 있는 메소드를 제공 받아야 한다.
     let dataSeries = [];
-    let matterLen = _matter.length
+    let matterLen = _matter.length;
 
     let tempStringChunk = '';
     let temp = '';
@@ -135,7 +135,7 @@ class Resolver {
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
-
+    console.log(_caller);
     try {
       let result = vfunction.apply(_caller, argsMap);
       return result;
@@ -172,9 +172,11 @@ class Resolver {
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
 
 
-    functionBody = functionBody.replace(/^<</, 'return ');
+    functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)/, 'return ');
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
+
+    console.log(functionCreateArgs);
 
     try {
       functionResult = Function.constructor.apply(this, functionCreateArgs);

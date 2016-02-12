@@ -1,10 +1,12 @@
 import Factory from './Factory';
 import Sizzle from 'sizzle';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
+import ObjectExtends from '../../util/ObjectExtends.js';
+
 import SALoader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
 import async from 'async';
-import Events from 'events';
+import events from 'events';
 import ICEAPISource from '../ICEAPISource';
 import APIFarmSource from '../APIFarmSource';
 import _ from 'underscore';
@@ -18,7 +20,10 @@ class DynamicContext {
     ~_interpretInterfaceFollowObject - interpret 메소드를 구현한 Object를 입력한다. 현재 가능한 대상 : {}ElementNode~
   */
   constructor(_environment, _props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
-    Object.assign(this, Events.EventEmitter.prototype);
+    //Object.assign(this, Events.EventEmitter.prototype);
+    //_.extendOwn(this, Events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
+
     this.id = Identifier.genUUID();
 
     // 상위 dynamicContext로 입력된 resolver 를 입력함

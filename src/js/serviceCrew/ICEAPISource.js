@@ -213,7 +213,8 @@ export default class ICEAPISource {
       enctype = _enctypeOrComplete;
     }
 
-    fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
+    //fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
+    fields = _.extendOwn(req.getFieldsObjectWithResolve(), fields);
 
     console.log(req.getFieldsObjectWithResolve());
     if (req.crud === '**') {

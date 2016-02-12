@@ -5,6 +5,8 @@ import _ from 'underscore';
 import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
+import ObjectExtends from '../../util/ObjectExtends.js';
+
 import DynamicContext from './DynamicContext';
 import async from 'async';
 import DataResolver from '../DataResolver/Resolver';
@@ -30,7 +32,9 @@ let EventEffectMatcher = /^([\w-]+)@([\w-]+)$/;
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
-    Object.assign(this, events.EventEmitter.prototype);
+    //Object.assign(this, events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
+    //_.extendOwn(this, Events.EventEmitter.prototype);
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -344,7 +348,6 @@ class ElementNode {
     //  [4] Children Link
     //  [5] After Controls
     // ]
-    this.clonePool = [];
     this.cloned = false; // clone 여부 플래그 construct시 매번 초기화 한다.
 
     // [0] Before Controls
@@ -424,12 +427,16 @@ class ElementNode {
           exportObject = that.export();
           exportObject.id = exportObject.id + '@' + _i; // repeat-counting
 
-          elementNode = Factory.takeElementNode(exportObject, {
-            isGhost: true,
-            repeatOrder: _i,
-            isRepeated: true
-          }, that.getType(), that.environment, null);
-          elementNode.setParent(that.parent);
+          elementNode = that.clonePool[_i];
+
+          if (elementNode === undefined) {
+            elementNode = Factory.takeElementNode(exportObject, {
+              isGhost: true,
+              repeatOrder: _i,
+              isRepeated: true
+            }, that.getType(), that.environment, null);
+            elementNode.setParent(that.parent);
+          }
 
           clonedElementNodeList.push(elementNode);
           elementNode.constructDOMs(options, function(_domList) {
@@ -534,6 +541,7 @@ class ElementNode {
     eventKeys.map(function(_key, _i) {
       _dom.addEventListener(_key, function(_e) {
         _e.preventDefault();
+        _e.stopPropagation();
 
         that.__progressEvent(_key, {
           eventKey: _key
@@ -1247,7 +1255,7 @@ class ElementNode {
     return this.interpret(`{{<< task@${_taskName}}}`);
   }
 
-  // Event end 
+  // Event end
 
 
 
@@ -1263,8 +1271,11 @@ class ElementNode {
   update(_complete) {
     let that = this;
     console.log('Update', this);
-    this.constructDOMs({}, function(_doms) {
+    this.constructDOMs({
+      forward: false
+    }, function(_doms) {
       console.log('new dom ', _doms);
+
       that.parent.applyMe(that);
       _complete(_doms);
     });
@@ -1276,6 +1287,7 @@ class ElementNode {
     if (_dom.getAttribute('type') === 'file') {
       return _dom.files[0];
     }
+
     return _dom.value;
   }
 

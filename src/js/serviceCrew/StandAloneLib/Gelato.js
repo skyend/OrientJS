@@ -13,6 +13,7 @@ import _ from 'underscore';
 import accounting from 'accounting';
 import Superagent from 'superagent';
 import Identifier from '../../util/Identifier';
+import ObjectExtends from '../../util/ObjectExtends.js';
 
 import ActionResult from '../ActionResult';
 import Action from '../Action';
@@ -48,7 +49,9 @@ class Gelato {
   }
 
   constructor() {
-    Object.assign(this, events.EventEmitter.prototype);
+    //Object.assign(this, events.EventEmitter.prototype);
+    //_.extendOwn(this, events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
 
     // Gelato가 둘 이상 생성되는 것을 방지 한다.
     (() => {

@@ -77,9 +77,8 @@
   =========================== -->
   <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a={{http-param@hello}}' en-dc-ns='csdp-product'>
 
-    <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
-      <!-- Header -->
-    </div>
+    <!-- <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
+    </div> -->
 
     <div class="container">
       <div class="row">
@@ -115,7 +114,9 @@
       </h2>
       <div class='row' en-ctrl-hidden='false'>
         <div class='col-sm-9'>
-          <form enctype="multipart/form-data">
+          <form enctype="multipart/form-data" en-event-submit='task@submit'>
+            <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='broadcast_series' arg-requestId='create'></en:task>
+
             <input class='form-control' name='create' type='hidden' value='true'/>
             <input class='form-control' name='cp_id' type='hidden' value='401075333'/>
             <input class='form-control' name='genre' type='hidden' value='007'/>
@@ -124,7 +125,7 @@
                 Title
                 {{ 1+ 1 + 'hello'}}
               </label>
-              <input class='form-control' name='title' type='text' value='123123123'/>
+              <input class='form-control' transfer-value='title22' name='title' type='text' value='123123123'/>
             </div>
 
             <!-- <div class='form-group'>
@@ -137,13 +138,13 @@
               <label>
                 fixed_participant
               </label>
-              <input class='form-control' name='fixed_participant' type='text' value='test'/>
+              <input class='form-control' transfer-value='fixed_participant22'  name='fixed_participant' type='text' value='test'/>
             </div>
             <div class='form-group'>
               <label>
                 Nid
               </label>
-              <input class='form-control' name='director' type='text' value='test'/>
+              <input class='form-control' transfer-value='director222'  name='director' type='text' value='test'/>
             </div>
             <div class='form-group'>
               <label>

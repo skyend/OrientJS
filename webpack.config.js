@@ -9,9 +9,12 @@ module.exports = {
     config: [
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
+    // main: ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/js/main.js'],
+    // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/stand-alone-foundation/main.js'] // foundation build
+    //main: ['./src/js/ui/editor/test_main.jsx']
+
     main: ['./src/js/main.js'],
-    'built-foundation': ['./src/stand-alone-foundation/main.js'] // foundation build
-      //main: ['./src/js/ui/editor/test_main.jsx']
+    'built-foundation': ['./src/stand-alone-foundation/main.js']
   },
 
   output: {

@@ -3,6 +3,8 @@ import Factory from './Factory.js';
 import _ from 'underscore';
 import React from 'react';
 import async from 'async';
+import Sizzle from 'sizzle';
+
 "use strict";
 
 class HTMLElementNode extends TagBaseElementNode {
@@ -53,39 +55,109 @@ class HTMLElementNode extends TagBaseElementNode {
     });
   }
 
+  applyAllChildren() {
+    let children = this.children;
+    let childrenLen = children.length;
+
+
+    for (let i = 0; i < childrenLen; i++) {
+      this.applyChild(children[i]);
+    }
+  }
+
   applyMe(_targetChildElementNode) {
-    let childStartIndex = _.findIndex(this.children, function(_child) {
+    this.applyChild(_targetChildElementNode);
+  }
 
-      return _targetChildElementNode === _child;
-    });
-
+  applyChild(_targetChildElementNode) {
+    console.log(this.forwardDOM, this.forwardDOM.childNodes);
+    // 실제 childNodes 로 조작대상의 범위를 확인 한 후 apply / append / remove 를 실행하고 하위 자식에 대해서도 동일한 작업이 수행 되도록 한다.
     let childNodes = this.forwardDOM.childNodes;
-    let childNodesLen = childNodes.length;
-    let childNode, childNodeEnId, i = 0,
-      sub_i = 0,
-      serialedIndex = 0;
+    let targetId = _targetChildElementNode.id;
+    let targetChildIndex = -1;
+    let beforeRangeIndex = -2; // 조작대상 ElementNode 범위의 전 요소의 인덱스 // 초기값은 -1로 시작하여 범위가 0인덱스 부터 시작 하게 되면 -1로 지정 될 것이다.
+    let afterRangeIndex = -2; // 조작대상 ElementNode 범위의 다음 요소의 인덱스
+    /*
+      ElementNode 범위로 지칭하는 것은 하나의 ElementNode가 clone(repeat-n 영향) 으로 인해 2이상의 수로 늘어 날 수 있기 때문이다.
+        예 ) 1 2 (3) [ 4 5 6 7 ] (8) 9 : Child Node List
+          * (3)         : beforeRangeIndex
+          * [ 4 ... 7 ] : 조작대상 요소 범위
+          * (8)         : afterRangeIndex
+    */
 
-    this.children.map(function(_childElementNode) {
-      console.log(_childElementNode === _targetChildElementNode);
+    /*
+      조작 계획
+        이미 존재하는 요소의 경우 변경된 attribute만 apply 하고
+        모자라는 요소는 추가로 삽입한다.
+        조작이 완료되는 시점또는 조작이 시작되는 시점에 남는 afterRangeIndex보다 조작완료된 인덱스의 크기가 작을 경우 남은 요소를 remove한다.
+        apply 되는 요소는 자식 요소에 대해 apply 작업을 수행한다.
+    */
 
-      _childElementNode.getForwardDOMs().map(function(_dom) {
-        console.log(_dom, childNodes[serialedIndex]);
+    // dirty check 불필요
+    console.log(childNodes, childNodes.length);
+    let childNode;
+    let childNodeEnId;
+    for (let i = 0; i < childNodes.length; i++) {
+      childNode = childNodes[i];
+      childNodeEnId = childNode.___en.id.split('@')[0]; // repeat을 떼어 낸다.
 
-        sub_i++;
-      });
+      if (childNodeEnId === targetId) {
+        if (beforeRangeIndex == -2) {
+          beforeRangeIndex = i - 1;
+        }
+      }
 
-      i++;
-      serialedIndex++;
-      sub_i = 0;
-    });
+      beforeRangeIndex++;
+      afterRangeIndex++;
+    }
 
 
-    console.log(_targetChildElementNode, childStartIndex, this.children, _targetChildElementNode.getForwardDOMs());
 
-    this.treeExplore(function(_elementNode) {
 
-    });
 
+
+    // let childStartIndex = _.findIndex(this.children, function(_child) {
+    //
+    //   return _child === _targetChildElementNode;
+    // });
+    //
+    // let childNodes = this.forwardDOM.childNodes;
+    // let childNodesLen = childNodes.length;
+    // let childNode, childNodeEnId, i = 0,
+    //   sub_i = 0,
+    //   serialedIndex = 0,
+    //   rangeStart = -1,
+    //   rangeEnd = -1;
+    //
+    // console.log(this, _targetChildElementNode);
+    //
+    // this.children.map(function(_childElementNode) {
+    //   console.log(_childElementNode);
+    //   if (_childElementNode === _targetChildElementNode) {
+    //     //console.log(_dom.__en);
+    //     rangeStart = serialedIndex;
+    //     console.log("range start", rangeStart);
+    //   }
+    //
+    //   _childElementNode.getForwardDOMs().map(function(_dom) {
+    //     // if (_childElementNode.id === )
+    //     console.log(_dom, childNodes[serialedIndex]);
+    //
+    //     sub_i++;
+    //     serialedIndex++;
+    //   });
+    //
+    //   if (_childElementNode === _targetChildElementNode) {
+    //     //console.log(_dom.__en);
+    //     rangeEnd = serialedIndex - 1;
+    //   }
+    //
+    //   i++;
+    //   sub_i = 0;
+    // });
+    //
+    //
+    // console.log(_targetChildElementNode, childStartIndex, this.children, _targetChildElementNode.getForwardDOMs());
   }
 
   hookingLink() {
@@ -159,6 +231,15 @@ class HTMLElementNode extends TagBaseElementNode {
       }
     }
     return false;
+  }
+
+  findChildren(_selector) {
+    let elements = Sizzle(_selector, this.forwardDOM);
+    console.log(_selector, elements, this.forwardDOM);
+
+    return elements.map(function(_childDom) {
+      return _childDom.___en;
+    });
   }
 
   // alias : result[Array] == this.children.map(Function)

@@ -63,8 +63,8 @@ class Fragment {
       elementNode.buildByElement(domContainer.children[i]);
       this.rootElementNodes.push(elementNode);
     }
-
-    domContainer.remove();
+    // IE 지원안함
+    //domContainer.remove();
   }
 
   renderByRootElementNodes(_complete) {

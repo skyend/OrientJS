@@ -522,7 +522,8 @@ class Document {
       this.rootElementNodes.push(elementNode);
     }
 
-    domContainer.remove();
+    // IE 지원안함
+    //domContainer.remove();
   }
 
 

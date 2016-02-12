@@ -27,9 +27,12 @@ class TypeCaster {
   }
 
   static toBoolean(_v) {
+    if (_v === 'false') return false;
+
     if (_v === 'true' || _v) {
       return true;
     }
+
     return false;
   }
 
