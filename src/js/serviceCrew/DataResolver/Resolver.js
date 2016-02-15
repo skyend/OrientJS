@@ -28,17 +28,15 @@ class Resolver {
   }
 
   resolve(_matter, _externalGetterInterface, _caller) {
-    let transformed = _matter;
-
-    if (typeof _matter !== 'string') {
-      transformed = String(_matter);
+    if (_matter === null || _matter === undefined || _matter === NaN) {
+      return _matter;
     }
 
-    return this.__interpret3(transformed, _externalGetterInterface, _caller);
+    return this.__interpret3(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _caller);
   }
 
 
-  // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 업어ㅋㅋ
+  // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 없어ㅋㅋ
   __interpret3(_matter, _externalGetterInterface, _caller) {
     // 모든 바인딩은 Resolver에서 이루어 지며 리졸브 블럭내에서 요구하는 데이터는 resolve 실행 자 로 부터 얻을 수 있는 메소드를 제공 받아야 한다.
     let dataSeries = [];
@@ -135,7 +133,7 @@ class Resolver {
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
-    console.log(_caller);
+
     try {
       let result = vfunction.apply(_caller, argsMap);
       return result;
@@ -176,7 +174,6 @@ class Resolver {
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
-    console.log(functionCreateArgs);
 
     try {
       functionResult = Function.constructor.apply(this, functionCreateArgs);
@@ -205,12 +202,14 @@ class Resolver {
       cookie         : cookie 필드 값 반환
       http-param     : HTTP Parameter 값 반환
       service        : Service Config (미지원)
-      fragment       : Fragment Parameter
+      fragment       : Fragment Parameter - 참조된 프래그먼트 내에서만 사용 가능
+      past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능
+      event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능
   */
   __getInterpretVar(_varName, _externalGetterInterface) {
     let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
     let varCategory = splited[0];
-    let splitForTypeCast = splited[1].split(':');
+    let splitForTypeCast = (splited[1] || '').split(':');
     let varName = splitForTypeCast[0];
     let type = splitForTypeCast[1];
 
@@ -233,6 +232,7 @@ class Resolver {
         data = this.resolveWithHttpParam(varName);
         break;
       case 'val-plain':
+        console.log(_externalGetterInterface.getScope(varName, 'value'));
         data = _externalGetterInterface.getScope(varName, 'value').plainValue;
         break;
       case 'val':
@@ -264,6 +264,12 @@ class Resolver {
         break; // Todo..
       case 'fragment':
         data = _externalGetterInterface.getFragmentParam(varName);
+        break;
+      case 'past-action-result':
+        data = _externalGetterInterface.getActionResult(varName);
+        break;
+      case 'feature':
+        data = _externalGetterInterface.getFeature(varName);
         break;
       default:
         throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);

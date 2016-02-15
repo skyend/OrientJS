@@ -27,7 +27,13 @@ class Shortcut {
         1. Format : YYYY - years, MM - Months, DD - Date, dd - Day ,hh - Hours, mm - Minuates, ss - Seconds
   */
   static dateFormatter(_dateString, _format, _lang) {
-    let dateObject = new Date(_dateString);
+
+
+
+    let dateObject = new Date(_dateString.replace(/^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/, function(_matched, _y, _m, _d, _h, _min, _s) {
+      return `${_y}/${_m}/${_d} ${_h}:${_min}:${_s}`;
+    }));
+
 
     return _format.replace(/(YYYY|YY|MM|DD|dd|hh|mm|ss)/g, function(_matched, _chars) {
       switch (_chars) {
@@ -36,17 +42,17 @@ class Shortcut {
         case 'YY':
           return String(dateObject.getFullYear()).substring(2, 4);
         case 'MM':
-          return dateObject.getMonth() + 1;
+          return Shortcut.zeroPadding(dateObject.getMonth() + 1, 2);
         case 'DD':
-          return dateObject.getDate();
+          return Shortcut.zeroPadding(dateObject.getDate(), 2);
         case 'dd':
           return Shortcut.dayConverter(dateObject.getDay(), _lang);
         case 'hh':
-          return dateObject.getHours();
+          return Shortcut.zeroPadding(dateObject.getHours(), 2);
         case 'mm':
-          return dateObject.getMinutes();
+          return Shortcut.zeroPadding(dateObject.getMinutes(), 2);
         case 'ss':
-          return dateObject.getSeconds();
+          return Shortcut.zeroPadding(dateObject.getSeconds(), 2);
         default:
       }
 
@@ -67,6 +73,19 @@ class Shortcut {
     }
 
     return DAY_MAP[lang][_dayNumber - 1];
+  }
+
+
+  static zeroPadding(_number, _limit) {
+    let str = String(_number);
+    let length = str.length;
+    let addC = _limit - length;
+
+    for (let i = 0; i < addC; i++) {
+      str = '0' + str;
+    }
+
+    return str;
   }
 }
 

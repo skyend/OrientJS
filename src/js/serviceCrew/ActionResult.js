@@ -2,6 +2,7 @@ class ActionResult {
   constructor(_data, _taskChain) {
     this.data = _data || null;
     this.taskChain = _taskChain || undefined;
+    this.code = 'next';
   }
 
   get data() {

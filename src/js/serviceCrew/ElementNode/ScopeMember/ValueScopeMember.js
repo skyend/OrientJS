@@ -51,6 +51,9 @@ class ValueScopeMember extends ScopeMember {
     return this._dataType;
   }
 
+
+  // 외부에서는 value setter 를 사용하지 않아야 한다.
+  // value Member는 MetaText 객체이다.
   set value(_value) {
     this._value = _value;
   }
@@ -68,13 +71,19 @@ class ValueScopeMember extends ScopeMember {
     switch (this.dataType) {
       case DataTypes.String:
         this.value.fromString = _shape;
+        break;
       case DataTypes.Number:
         this.value.fromNumber = _shape;
+        break;
       case DataTypes.Boolean:
         this.value.fromBoolean = _shape;
+        break;
       case DataTypes.Array:
       case DataTypes.Object:
         this.value.fromObject = _shape;
+        break;
+      default:
+        throw new Error("invalid value type :" + this.dataType);
     }
   }
 

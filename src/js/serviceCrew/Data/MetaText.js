@@ -115,7 +115,7 @@ class MetaText {
   }
 
   import (_data) {
-    if (typeof _data === 'Object') {
+    if (typeof _data === 'object') {
       this.variable = _data.seed; // variable 는 런타임에 언제든지 변경될 수 있는 데이터이다.
       this.seed = _data.seed; // Seed 는 런타임에 변경되지 않는 데이터이다.
       this.default = _data.default; // default 는 seed의 데이터 리졸브가 실패하였을 때 대체될 데이터이다.

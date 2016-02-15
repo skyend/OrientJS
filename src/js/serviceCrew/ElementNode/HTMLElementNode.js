@@ -18,17 +18,19 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
 
-  childrenConstructAndLink(_options, _htmlNode, _complete) {
+  childrenConstructAndLink(_options, _htmlNode, _complete, _doLink) {
+    let doLink = _doLink === undefined ? true : _doLink;
 
     let that = this;
     async.eachSeries(this.children, function iterator(_child, _next) {
 
         _child.constructDOMs(_options,
           function(_domList) {
-
-            _domList.map(function(_dom) {
-              _htmlNode.appendChild(_dom);
-            });
+            if (doLink) {
+              _domList.map(function(_dom) {
+                _htmlNode.appendChild(_dom);
+              });
+            }
 
             _next();
           });
@@ -75,7 +77,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let childNodes = this.forwardDOM.childNodes;
     let targetId = _targetChildElementNode.id;
     let targetChildIndex = -1;
-    let beforeRangeIndex = -2; // 조작대상 ElementNode 범위의 전 요소의 인덱스 // 초기값은 -1로 시작하여 범위가 0인덱스 부터 시작 하게 되면 -1로 지정 될 것이다.
+    let beforeRangeIndex = -1; // 조작대상 ElementNode 범위의 전 요소의 인덱스
     let afterRangeIndex = -2; // 조작대상 ElementNode 범위의 다음 요소의 인덱스
     /*
       ElementNode 범위로 지칭하는 것은 하나의 ElementNode가 clone(repeat-n 영향) 으로 인해 2이상의 수로 늘어 날 수 있기 때문이다.
@@ -94,76 +96,91 @@ class HTMLElementNode extends TagBaseElementNode {
     */
 
     // dirty check 불필요
-    console.log(childNodes, childNodes.length);
-    let childNode;
-    let childNodeEnId;
-    for (let i = 0; i < childNodes.length; i++) {
-      childNode = childNodes[i];
-      childNodeEnId = childNode.___en.id.split('@')[0]; // repeat을 떼어 낸다.
 
-      if (childNodeEnId === targetId) {
-        if (beforeRangeIndex == -2) {
-          beforeRangeIndex = i - 1;
+    let child;
+    let passThroughTarget = false; // 불필요한 변수일 수 도 있음. 목표 대상에 도달 했을 때 처리가 완료 될 예정이므로
+    for (let i = 0; i < this.children.length; i++) {
+      child = this.children[i];
+
+      if (_targetChildElementNode.id.split('@')[0] === child.id.split('@')[0]) {
+        let targetForwardDOMs = _targetChildElementNode.getForwardDOMs();
+        let targetBackupDOMs = _targetChildElementNode.getBackupDOMs();
+        let maxLength = Math.max(targetForwardDOMs.length, targetBackupDOMs.length);
+        let newClonedForwardDoms = [];
+
+        /*
+          beforeRangeIndex 값이 -1 이면 forwardDOM에 새 요소를 등록 해야 할 때 appendChild를 수행하고
+                                   이 아니면 해당 index의 다음요소를 기준으로 처리한다.
+
+          removeChild,
+          appendChild,
+          insertAfter
+          insertBefore
+        */
+        console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom);
+
+        let prevDom = beforeRangeIndex == -1 ? null : childNodes[beforeRangeIndex]; // 이전 요소 , 시작은 beforeRangeIndex에 해당하는 요소가 된다.
+        for (let j = 0; j < maxLength; j++) {
+
+          if (targetForwardDOMs[j] !== undefined && targetBackupDOMs[j] !== undefined) {
+            // apply 처리
+            targetForwardDOMs[j].___en.applyForward();
+
+            prevDom = targetForwardDOMs[j];
+
+            newClonedForwardDoms.push(targetForwardDOMs[j]);
+            console.log('apply ');
+            if (typeof targetForwardDOMs[j].___en.applyAllChildren === 'function')
+              targetForwardDOMs[j].___en.applyAllChildren();
+
+          } else if (targetForwardDOMs[j] !== undefined && targetBackupDOMs[j] === undefined) {
+            // removeChild 처리
+            console.log('remove ', j, targetForwardDOMs[j]);
+
+            this.forwardDOM.removeChild(targetForwardDOMs[j]);
+          } else if (targetForwardDOMs[j] === undefined && targetBackupDOMs[j] !== undefined) {
+            // append 처리
+
+            if (prevDom !== null) {
+              let nextNode = prevDom.nextSibling;
+
+              // 다음 노드가 없을 경우 appendCHild 를 수행한다.
+              if (nextNode !== null) {
+                this.forwardDOM.insertBefore(targetBackupDOMs[j], nextNode);
+              } else {
+                this.forwardDOM.appendChild(targetBackupDOMs[j]);
+              }
+            } else {
+
+              if (childNodes[0] !== undefined) {
+                this.forwardDOM.insertBefore(targetBackupDOMs[j], childNodes[0]);
+              } else {
+                this.forwardDOM.appendChild(targetBackupDOMs[j]);
+              }
+            }
+
+            newClonedForwardDoms.push(targetBackupDOMs[j]);
+
+            prevDom = targetBackupDOMs[j];
+            targetBackupDOMs[j].___en.forwardDOM = targetBackupDOMs[j].___en.backupDOM;
+            targetBackupDOMs[j].___en.backupDOM = null;
+            console.log('appended ', j, targetBackupDOMs[j], targetBackupDOMs[j].___en);
+
+            if (typeof targetBackupDOMs[j].___en.applyAllChildren === 'function')
+              targetBackupDOMs[j].___en.applyAllChildren();
+          }
         }
+
+        if (_targetChildElementNode.cloned) {
+          _targetChildElementNode.clonedForwardDOMs = newClonedForwardDoms;
+        }
+        break;
+      } else {
+        beforeRangeIndex += child.getForwardDOMs().length;
       }
-
-      beforeRangeIndex++;
-      afterRangeIndex++;
     }
-
-
-
-
-
-
-    // let childStartIndex = _.findIndex(this.children, function(_child) {
-    //
-    //   return _child === _targetChildElementNode;
-    // });
-    //
-    // let childNodes = this.forwardDOM.childNodes;
-    // let childNodesLen = childNodes.length;
-    // let childNode, childNodeEnId, i = 0,
-    //   sub_i = 0,
-    //   serialedIndex = 0,
-    //   rangeStart = -1,
-    //   rangeEnd = -1;
-    //
-    // console.log(this, _targetChildElementNode);
-    //
-    // this.children.map(function(_childElementNode) {
-    //   console.log(_childElementNode);
-    //   if (_childElementNode === _targetChildElementNode) {
-    //     //console.log(_dom.__en);
-    //     rangeStart = serialedIndex;
-    //     console.log("range start", rangeStart);
-    //   }
-    //
-    //   _childElementNode.getForwardDOMs().map(function(_dom) {
-    //     // if (_childElementNode.id === )
-    //     console.log(_dom, childNodes[serialedIndex]);
-    //
-    //     sub_i++;
-    //     serialedIndex++;
-    //   });
-    //
-    //   if (_childElementNode === _targetChildElementNode) {
-    //     //console.log(_dom.__en);
-    //     rangeEnd = serialedIndex - 1;
-    //   }
-    //
-    //   i++;
-    //   sub_i = 0;
-    // });
-    //
-    //
-    // console.log(_targetChildElementNode, childStartIndex, this.children, _targetChildElementNode.getForwardDOMs());
   }
 
-  hookingLink() {
-    let realization = this.realization;
-
-  }
 
   appendChild(_elementNode) {
     if (this.getType() === 'string') {
@@ -308,7 +325,6 @@ class HTMLElementNode extends TagBaseElementNode {
       // en- 으로 시작되는 태그를 ScopeMember로 취급한다.
       if (/^en:/i.test(child_.nodeName)) {
         this.appendScopeMember(this.buildScopeMemberByScopeDom(child_));
-        console.log(this.scopeMembers, this, this.forwardDOM);
         continue;
       }
 

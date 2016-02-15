@@ -60,6 +60,8 @@ class TaskScopeMember extends ScopeMember {
     let attrs = _dom.attributes;
     let length = attrs.length;
 
+    scopeSpecObject.trace = _dom.getAttribute('trace') !== null ? true : false;
+
     // 확장클래스에서 사용하는 attribute 읽기 및 지정
     scopeSpecObject.action = _dom.getAttribute('action');
     if (!/\w+/.test(scopeSpecObject.action || '')) throw new Error("TaskScope 선언에는 action 이 포함되어야 합니다.");
@@ -125,6 +127,7 @@ class TaskScopeMember extends ScopeMember {
     this.chains = _scopeData.chains.map(function(_chain) {
       return new TaskChain(_chain);
     });
+    this.trace = _scopeData.trace;
   }
 
   export () {
@@ -136,6 +139,7 @@ class TaskScopeMember extends ScopeMember {
     exportObject.chains = this.chains.map(function(_taskChain) {
       return _taskChain.export();
     });
+    exportObject.trace = this.trace;
 
     return exportObject;
   }

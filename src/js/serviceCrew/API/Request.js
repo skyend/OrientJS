@@ -54,14 +54,18 @@ export default class Request {
     let dataResolver = new DataResolver();
 
     let object = {};
+    let result;
     for (let i = 0; i < this.fields.length; i++) {
-      console.log(this.fields[i].value, this);
-      object[this.fields[i].key] = dataResolver.resolve(this.fields[i].value || this.fields[i].testValue);
+
+      result = dataResolver.resolve(this.fields[i].value) || dataResolver.resolve(this.fields[i].defaultValue);
+
+      if (result && result !== '') {
+        object[this.fields[i].key] = result;
+      }
     }
 
     return object;
   }
-
 
   removeField(_fieldId) {
     let fields = [];

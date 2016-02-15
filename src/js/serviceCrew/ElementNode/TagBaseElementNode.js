@@ -370,6 +370,40 @@ class TagBaseElementNode extends ElementNode {
     return htmlDoc.createElement(this.getTagName() || 'div');
   }
 
+
+  applyForward() {
+    let oldAttributes = this.forwardDOM.attributes;
+    let newAttributes = this.backupDOM.attributes;
+    let attrName;
+    let attrValue;
+
+    // 사라질 예정의 attribute제거
+    for (let i = 0; i < oldAttributes.length; i++) {
+      attrName = oldAttributes[i].nodeName;
+      attrValue = oldAttributes[i].nodeValue;
+
+      // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
+      if (!this.backupDOM.getAttribute(attrName)) {
+        this.forwardDOM.removeAttribute(attrName);
+      }
+    }
+
+    // 변경된 attribute반영
+    for (let i = 0; i < newAttributes.length; i++) {
+      attrName = newAttributes[i].nodeName;
+      attrValue = newAttributes[i].nodeValue;
+
+      if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
+        this.forwardDOM.setAttribute(attrName, attrValue);
+      }
+
+      if (attrName === 'value')
+        this.forwardDOM.value = attrValue;
+    }
+
+    this.backupDOM = null;
+  }
+
   // realize
   realize(_realizeOptions, _complete) {
     let that = this;

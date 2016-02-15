@@ -200,10 +200,11 @@ export default class ICEAPISource {
   executeRequest(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
     let enctype, complete;
     let fields = _fields || {};
-    fields.t = 'api';
+
     let req = this.findRequest(_requestId);
     let url;
 
+    if (this.constructor.name === 'ICEAPISource') fields.t = 'api';
 
     if (typeof _enctypeOrComplete === 'function') {
       complete = _enctypeOrComplete;
@@ -237,9 +238,6 @@ export default class ICEAPISource {
 
       SuperAgent.post(url)
         .type('form')
-        .query({
-          t: 'api'
-        })
         .send(enctype === 'multipart/form-data' ? this.convertFieldsToFormData(fields) : fields)
         .end(function(err, res) {
           if (res === null) {

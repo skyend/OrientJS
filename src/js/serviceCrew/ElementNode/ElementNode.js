@@ -18,6 +18,7 @@ import events from 'events';
 import ScopeMemberFactory from './ScopeMember/Factory';
 import ActionStore from '../Actions/ActionStore';
 
+
 // Actions Import
 import '../Actions/BasicElementNodeActions';
 
@@ -29,11 +30,10 @@ import Gelato from '../StandAloneLib/Gelato';
 
 let EventEffectMatcher = /^([\w-]+)@([\w-]+)$/;
 
-
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     //Object.assign(this, events.EventEmitter.prototype);
-    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
 
     // 미리 삽입된 프로퍼티
@@ -74,7 +74,9 @@ class ElementNode {
     this.clonePool = []; // repeated
     this.cloned = false;
     this.backupDOM = null;
+    this.clonedBackupDOMs = [];
     this.forwardDOM = null;
+    this.clonedForwardDOMs = [];
 
 
     // Repeat by parent's Repeat Control
@@ -87,6 +89,11 @@ class ElementNode {
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
+
+
+    // update Queue
+    this.updateQueue = [];
+
 
     //////////////////////////
     // 처리로직
@@ -449,6 +456,13 @@ class ElementNode {
         },
         function done(_err) {
           that.clonePool = clonedElementNodeList;
+
+          if (options.forward) {
+            that.clonedForwardDOMs = repeatedDomList;
+          } else {
+            that.clonedBackupDOMs = repeatedDomList;
+          }
+
           _complete(repeatedDomList);
         })
 
@@ -475,13 +489,15 @@ class ElementNode {
       // Event 바인딩
       this.bindDOMEvents(options, htmlNode);
 
+      // backupDOM 으로 생성 될 때는 자식을 Link 하지 않는다.
       this.childrenConstructAndLink(options, htmlNode, function() {
         _complete([htmlNode]);
-      }); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
+      }, options.forward ? true : false); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
     } else {
       _complete([htmlNode]);
     }
   }
+
 
   /*
     getForwardDOMs
@@ -490,12 +506,31 @@ class ElementNode {
   */
   getForwardDOMs() {
     if (this.cloned) {
-      return this.clonePool.map(function(_clonedElementNode) {
-        return _clonedElementNode.forwardDOM;
-      });
+      return this.clonedForwardDOMs;
+      // return this.clonePool.map(function(_clonedElementNode) {
+      //   return _clonedElementNode.forwardDOM;
+      // });
     } else {
       return this.forwardDOM ? [this.forwardDOM] : [];
     }
+  }
+
+  getBackupDOMs() {
+    if (this.cloned) {
+      return this.clonedBackupDOMs;
+      // return this.clonePool.map(function(_clonedElementNode) {
+      //   return _clonedElementNode.forwardDOM;
+      // });
+    } else {
+      return this.backupDOM ? [this.backupDOM] : [];
+    }
+  }
+
+
+  // 자신의 backupDOM 을 forwardDOM에 반영한다.
+  // TagBaseElementNode 와 StringElementNode 에서 오버라이드한다.
+  applyForward() {
+    throw new Error('오버라이드 해야됨');
   }
 
   /*
@@ -921,26 +956,31 @@ class ElementNode {
 
   /////////////
   // String Resolve
-  interpret(_matterText) {
+  interpret(_matterText, _getFeature) {
     if (_matterText === undefined) return;
 
-    let externalGetterInterface = {
+    let injectGetterInterface = {
       getAttribute: this.getAttrOnTree.bind(this),
       getScope: this.getScope.bind(this),
       getNodeMeta: this.getNodeMeta.bind(this),
-      getFragmentParam: this.environment.getParam.bind(this.environment)
-        // todo .... geo 추가
-        //  getAttributeResolve: this.getAttrOnTreeWithResolve
+      getFragmentParam: this.environment.getParam.bind(this.environment),
+
+      // extraGetterInterface
+      getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
+
+      // todo .... geo 추가
+      //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
+
 
     let solved = _matterText;
     let dc = this.availableDynamicContext;
 
     if (dc) {
-      solved = dc.interpret(solved, externalGetterInterface, this);
+      solved = dc.interpret(solved, injectGetterInterface, this);
       return solved;
     } else {
-      return this.defaultResolver.resolve(solved, externalGetterInterface, this);
+      return this.defaultResolver.resolve(solved, injectGetterInterface, this);
     }
   }
 
@@ -1178,7 +1218,8 @@ class ElementNode {
     }
   }
 
-  __executeTask(_taskScope, _enEvent, _originEvent, _prevActionResult) {
+  __executeTask(_taskScope, _enEvent, _originEvent, _prevActionResult, _TASK_STACK) {
+    let __TASK_STACK__ = _TASK_STACK || [];
 
     let that = this;
     let actionName = _taskScope.action;
@@ -1186,6 +1227,10 @@ class ElementNode {
     let executeParamMap = {}; // {paramName : inject Param Datas, ...}
     let taskArgs = _taskScope.args;
     let taskArgMatchIndex;
+    let enEvent = _enEvent || {};
+    if (_originEvent) {
+      enEvent.originEvent = _originEvent;
+    }
 
     if (!action) throw new Error(`${actionName} Action을 찾지 못 하였습니다.`);
 
@@ -1198,7 +1243,17 @@ class ElementNode {
       });
 
       if (taskArgMatchIndex != -1) {
-        executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value);
+        // executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value, _prevActionResult, enEvent);
+        executeParamMap[_paramKey] = that.interpret(taskArgs[taskArgMatchIndex].value,
+          function getFeature(_target) {
+            switch (_target) {
+              case "event":
+                return enEvent;
+              case "prev-result":
+                return _prevActionResult;
+            }
+          });
+
       } else {
         executeParamMap[_paramKey] = undefined;
       }
@@ -1208,6 +1263,22 @@ class ElementNode {
     executeParamMap['_event'] = _enEvent;
     executeParamMap['_originEvent'] = _originEvent;
     executeParamMap['_prevResult'] = _prevActionResult;
+
+    // __TASK_STACK__.push({
+    //   task: _taskScope,
+    //   action: action,
+    //   arguments: executeParamMap
+    // });
+
+    __TASK_STACK__.push(`${_taskScope.name}@${_taskScope.action}`, {
+      task: _taskScope,
+      action: action,
+      paramMap: executeParamMap
+    });
+
+    if (_taskScope.trace) {
+      console.warn(`TASK TRACE : ${_taskScope.name}@${_taskScope.action}`, __TASK_STACK__);
+    }
 
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
     action.execute(executeParamMap, this, function(_actionResult) {
@@ -1227,7 +1298,7 @@ class ElementNode {
         }
 
         if (chainedTask)
-          that.__executeTask(chainedTask, _enEvent, _originEvent, _actionResult);
+          that.__executeTask(chainedTask, _enEvent, _originEvent, _actionResult, __TASK_STACK__);
       }
     });
   }
@@ -1268,9 +1339,13 @@ class ElementNode {
     });
   }
 
+
+
+
   update(_complete) {
     let that = this;
     console.log('Update', this);
+
     this.constructDOMs({
       forward: false
     }, function(_doms) {

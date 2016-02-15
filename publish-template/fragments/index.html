@@ -11,15 +11,77 @@
 
 <div en-id='asda12sdasdasdasdasd'>
 
+  <div en-id='dance-wrapper'>
+    <en:value name='x' type='number' value='10'></en:value>
+
+    <button en-event-click='task@run'>
+      <en:task name='run' action='loop' arg-fps="{{<< 30}}" chain-next='sum'></en:task>
+      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.07 }}' chain-success='update'></en:task>
+      <en:task name='update' action='refresh-to' arg-eid='dance-wrapper'></en:task>
+      run
+    </button>
+
+    <div en-event-click='task@run'
+          style='position:fixed; background-color:#{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }};
+                width:{{<< 100 + en@repeat-n + Math.sin(val@x)*50 }}px;
+                height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
+                left:{{<< 300 + Math.sin(val@x + en@repeat-n * 0.01 )*300 }}px;
+                top:{{<< 300 + Math.cos(val@x + en@repeat-n * 0.01)*300 }}px;'
+          en-ctrl-repeat-n='70'>
+
+
+
+      Hello
+    </div>
+  </div>
+
+  <div en-id='dance-wrapper2'>
+    <en:value name='x' type='number' value='10'></en:value>
+
+    <button en-event-click='task@run'>
+      <en:task name='run' action='loop' arg-fps="{{<< 30}}" chain-next='sum'></en:task>
+      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.07 }}' chain-success='update'></en:task>
+      <en:task name='update' action='update-to' arg-eid='dance-wrapper2'></en:task>
+      run 2
+    </button>
+
+    <div en-event-click='task@run'
+          style='position:fixed; background-color:#{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }};
+                width:{{<< 100 + en@repeat-n + Math.sin(val@x)*50 }}px;
+                height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
+                left:{{<< Math.random()*1600 }}px;
+                top:{{<< Math.random()*768  }}px;'
+          en-ctrl-repeat-n='50'>
+
+
+
+      Hello
+    </div>
+  </div>
+
+  <!-- <div en-event-click='task@run' style='position:fixed; background-color:#{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}; width:100px; height:100px; left:{{<< 300 + Math.sin(val@x)*300 }}px; top:{{<< 300 + Math.cos(val@x)*300 }}px;' en-ctrl-repeat-n='50'>
+    <en:value name='x' type='number' value='10'></en:value>
+    <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='move'></en:task>
+    <en:task name='move' action='set' arg-name='x' arg-value='{{<< val@x + 0.03 }}' chain-success='update'></en:task>
+    <en:task name='update' action='update'></en:task>
+
+    Hello
+  </div> -->
+
+  <svg width="100" height="100">
+   <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
+   Sorry, your browser does not support inline SVG.
+</svg>
+
   Hello, I'm index fragment22222
   <div en-id='pw-field-warpper' validate='false'>
 		<en:task name='input' action='input-value-upsync' chain-success='validate'></en:task>
 		<en:task name='validate' action='input-value-validate' arg-type='password' chain-pass='success-validate' chain-fail='fail-validate'></en:task>
-		<en:task name='success-validate' action='attr-to' arg-eid='id-field-warpper' arg-name='validate' arg-value='true' chain-success='refresh'></en:task>
-		<en:task name='fail-validate' action='attr-to' arg-eid='id-field-warpper' arg-name='validate' arg-value='false' chain-success='refresh'></en:task>
-		<en:task name='refresh' action='refresh-to' arg-eid='pw-field-warpper'></en:task>
+		<en:task name='success-validate' action='attr-to' arg-eid='pw-field-warpper' arg-name='validate' arg-value='true' chain-success='refresh'></en:task>
+		<en:task name='fail-validate' action='attr-to' arg-eid='pw-field-warpper' arg-name='validate' arg-value='false' chain-success='refresh'></en:task>
+		<en:task name='refresh' action='update-to' arg-eid='pw-field-warpper'></en:task>
 
-		<input type="password" class="itx-bd" name="" id="memberPassword" title="비밀번호 입력" en-event-change='task@input'>
+		<input type="password" class="itx-bd" name="" id="memberPassword" title="비밀번호 입력" en-event-keyup='task@input'>
 		<span class="tip">
 			영문, 숫자, 특수문자를 혼합하여 8~15자로 사용 합니다.(! @ # $ % ^ * ? _ ~)
 
@@ -47,7 +109,7 @@
           _callback(_actionResult);
         </en:action>
 
-        <en:task name='change-attr' action='attr' arg-name='attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
+        <en:task name='change-attr' action='attr' arg-name='{{<< console.log( feature@event ) }} attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
         <en:task name='refresh' action='refresh'></en:task>
 
         {{en-attr@attr2}}

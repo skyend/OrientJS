@@ -9,6 +9,22 @@ window.APIFarmSource = APIFarmSource;
 
 let actionStore = ActionStore.instance();
 
+//
+//
+// regexp = {
+//       empty     : function(){return /^\s*$/;},
+//       email     : function(){return /^[\w\d]+@[\w\d-]+\.[\w]+$/;},
+//       username  : function(){return /^[A-Za-z0-9_\-]+$/;},
+//       name      : function(){return /^[\w\d\s]+$/;},
+//       text      : function(){return /^[A-Za-z0-9_\-]+$/;},
+//       image_file    : function(){return /\.(jpg|png|gif|jpeg)$/i;},
+//       password_min_chars : function(){ return /^.{0,7}$/; },
+//       password_L1   : function(){return /^[a-z]+$/;},
+//       password_L2   : function(){return /^[a-z0-9]+$/;},
+//       password_L3   : function(){return /^[a-zA-Z0-9]+$/;},
+//       password_L4   : function(){return /^[a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\-\+\=]+$/;}
+//     };
+
 /*
 Action Function Scope 내 의 고정 인자
   _event : ElementNode가 생성한 이벤트 객체 --- from ElementNode __executeTask
@@ -62,12 +78,34 @@ actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
 
   targetElementNode.update(function() {
     _actionResult.code = 'success';
+
     _callback(_actionResult);
   });
 });
 
 actionStore.registerAction('attr', ['name', 'value', 'taskChain'], function() {
   this.setAttribute(name, value);
+
+  _actionResult.taskChain = taskChain;
+  _actionResult.code = 'success';
+  _callback(_actionResult);
+});
+
+
+actionStore.registerAction('set-by-plain', ['name', 'value', 'taskChain'], function() {
+  let valueScope = this.getScope(name, 'value');
+
+  valueScope.plainValue = value;
+
+  _actionResult.taskChain = taskChain;
+  _actionResult.code = 'success';
+  _callback(_actionResult);
+});
+
+actionStore.registerAction('set', ['name', 'value', 'taskChain'], function() {
+  let valueScope = this.getScope(name, 'value');
+
+  valueScope.shapeValue = value;
 
   _actionResult.taskChain = taskChain;
   _actionResult.code = 'success';
@@ -172,6 +210,39 @@ actionStore.registerAction('input-value-validate', ['type'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('validate', ['text', 'type'], function() {
+
+
+  function validate(_regExp, _value) {
+
+    if (_regExp.test(_value || '')) {
+      return 'pass';
+    } else {
+      return 'fail';
+    }
+  }
+
+  switch (type) {
+    case 'number':
+      _actionResult.code = validate(/^\d+$/, text);
+      break;
+    case 'words':
+      _actionResult.code = validate(/^\w+$/, text);
+      break;
+    case 'email':
+      _actionResult.code = validate(/^[\w\d]+@[\w\d-]+\.[\w]+$/, text);
+      break;
+
+    case 'email-host':
+      _actionResult.code = validate(/^[\w\d-]+\.[\w]+$/, text);
+      break;
+    default:
+      throw new Error("지원하지 않는 유효성 검사 타입입니다.");
+  }
+
+  _callback(_actionResult);
+});
+
 actionStore.registerAction('if', ['conditionResult'], function() {
 
   if (conditionResult) {
@@ -183,11 +254,17 @@ actionStore.registerAction('if', ['conditionResult'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('loop', ['fps'], function() {
+  setInterval(function() {
+    _callback(_actionResult);
+  }, 1000 / fps);
+});
 
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], function(){
+
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], function() {
   let that = this;
   let type = 'ice-api';
-  if( /^farm\//.test(apiSourceId) ){
+  if (/^farm\//.test(apiSourceId)) {
     type = 'farm-api';
   }
 
@@ -195,63 +272,61 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], fu
     let apiSource;
     let fields = {};
     //let request;
-    if( type === 'farm-api' ){
-      apiSource = new (window.APIFarmSource)(_apiSourceData);
+    if (type === 'farm-api') {
+      apiSource = new(window.APIFarmSource)(_apiSourceData);
       apiSource.setHost($ervice.page.apiFarmHost);
-    } else if( type === 'ice-api'){
-      apiSource = new (window.ICEAPISource)(_apiSourceData);
+    } else if (type === 'ice-api') {
+      apiSource = new(window.ICEAPISource)(_apiSourceData);
       apiSource.setHost($ervice.page.iceHost);
     }
 
-    //request = apiSource.findRequest(requestId);
 
-    that.findChildren('[transfer-value]').map(function(_elementNode){
-      fields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
+    that.findChildren('[transfer-value]').map(function(_elementNode) {
+
+      let pass = true;
+
+      _elementNode.climbParents(function(_parent) {
+        if (_parent === that) {
+
+          return null;
+        } else if (_parent.getAttribute('ignore-transfer') !== undefined) {
+
+          pass = false;
+          return null;
+        }
+      });
+
+      if (pass) {
+        fields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
+      }
     });
 
+    console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
+    console.log(apiSourceId, requestId, fields);
 
     apiSource.executeRequest(requestId, fields, {}, that.getAttribute('enctype'), function(_result, _statusCode) {
+      console.log("Result ", _result, _statusCode);
 
       _actionResult.code = _result.result || _statusCode;
       _actionResult.data = _result;
       _callback(_actionResult);
     });
-
-    console.log(apiSource, that, fields);
   });
 });
 
+
+actionStore.registerAction('focus', ['eid'], function() {
+  let targetElementNode;
+  if (eid !== undefined) {
+    targetElementNode = this.environment.findById(eid, true);
+  }
+
+  targetElementNode.forwardDOM.focus();
+
+  _callback(_actionResult);
+});
+
+
 //****** ElementNode default Actions *****//
-
-/*
-  RequestAPI
-*/
-var action_sendForm = function(_complete, _apiSourceId, _requestId) {
-
-  let that = this;
-  SA_Loader.loadAPISource(_apiSourceId, function(_apiSourceData) {
-    let fieldObject = {};
-    let apiSource = new ICEAPISource(_apiSourceData);
-    let request = apiSource.findRequest(_requestId);
-    apiSource.setHost(Gelato.one().page.iceHost);
-
-    let reqFields = request.fields;
-
-    reqFields.map(function(_field) {
-      if (that.forwardDOM[_field.key] !== undefined) {
-        fieldObject[_field.key] = that.getFormFieldDOMData(that.forwardDOM[_field.key]);
-      }
-    });
-
-    console.log(fieldObject);
-
-    apiSource.executeRequest(_requestId, fieldObject, {}, that.getAttribute('enctype'), function(_result) {
-      console.log(_result);
-    });
-
-    console.log(apiSource);
-  });
-
-}
 
 console.log(actionStore);

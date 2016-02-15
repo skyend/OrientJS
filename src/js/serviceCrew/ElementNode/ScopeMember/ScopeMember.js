@@ -6,6 +6,9 @@ class ScopeMember {
   // Dom 으로부터 기본 scope 필드를 추출하여 반환한다.
   static BuildScopeSpecObjectByScopeDom(_dom) {
     let scopeSpecObject = {};
+
+    scopeSpecObject.debug = _dom.getAttribute('debug');
+
     scopeSpecObject.name = _dom.getAttribute('name');
     if (!/\w+/.test(scopeSpecObject.name || '')) throw new Error("Scope 선언에는 name 이 포함되어야 합니다.");
     _dom.removeAttribute('name'); // name Attribute 를 읽었으므로 제거
@@ -33,12 +36,14 @@ class ScopeMember {
   import (_scopeData) {
     this.name = _scopeData.name;
     this.type = _scopeData.type;
+    this.debug = _scopeData.debug;
   }
 
   export () {
     let exportObject = {};
     exportObject.name = this.name;
     exportObject.type = this.type;
+    exportObject.debug = this.debug;
 
     return exportObject;
   }
