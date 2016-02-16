@@ -1,4 +1,4 @@
-import ScopeMember from './ScopeMember';
+import ScopeNode from './ScopeNode';
 import MetaText from '../../Data/MetaText';
 import _ from 'underscore';
 
@@ -18,10 +18,14 @@ const DataTypes = Object.freeze({
   function: "function"
 });
 
-class ValueScopeMember extends ScopeMember {
+class ValueScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
     this.type = 'value';
+  }
+
+  get resolveOn() {
+    return this._resolveOn;
   }
 
   get value() {
@@ -51,9 +55,12 @@ class ValueScopeMember extends ScopeMember {
     return this._dataType;
   }
 
+  set resolveOn(_onRes) {
+    this._resolveOn = _onRes;
+  }
 
   // 외부에서는 value setter 를 사용하지 않아야 한다.
-  // value Member는 MetaText 객체이다.
+  // value Node는 MetaText 객체이다.
   set value(_value) {
     this._value = _value;
   }
@@ -92,9 +99,9 @@ class ValueScopeMember extends ScopeMember {
   Task Implement
   **/
   static CreateByScopeDom(_scopeDom) {
-    let newScopeMember = new ValueScopeMember(ValueScopeMember.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeMember);
-    return newScopeMember;
+    let newScopeNode = new ValueScopeNode(ValueScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
+    console.log(newScopeNode);
+    return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
@@ -105,18 +112,21 @@ class ValueScopeMember extends ScopeMember {
     // type attribute 는 dataType 으로 지정된다.
     scopeSpecObject.dataType = DataTypes[_dom.getAttribute('type')];
     scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
+    scopeSpecObject.resolveOn = _dom.getAttribute('resolve-on') !== null ? true : false;
 
     return scopeSpecObject;
   }
 
   import (_scopeData) {
     super.import(_scopeData);
+    this.resolveOn = _scopeData.resolveOn;
     this.dataType = _scopeData.dataType;
     this.value = new MetaText(_scopeData.value || '');
   }
 
   export () {
     let exportObject = super.export();
+    exportObject.resolveOn = this.resolveOn;
     exportObject.dataType = this.dataType;
     exportObject.value = _.clone(this.value.export());
 
@@ -124,4 +134,4 @@ class ValueScopeMember extends ScopeMember {
   }
 }
 
-export default ValueScopeMember;
+export default ValueScopeNode;

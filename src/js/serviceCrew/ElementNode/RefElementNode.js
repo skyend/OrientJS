@@ -73,12 +73,12 @@ class RefElementNode extends HTMLElementNode {
           // 상위 environment 지정
           that.loadedInstance.upperEnvironment = that.environment;
 
-          console.log('params', this.scopeMembers);
+          console.log('params', this.scopeNodes);
 
-          this.scopeMembers.map(function(_scopeMember) {
-            if (_scopeMember.type === 'param') {
-              console.log(_scopeMember.value);
-              that.loadedInstance.setParam(_scopeMember.name, that.interpret(_scopeMember.plainValue));
+          this.scopeNodes.map(function(_scopeNode) {
+            if (_scopeNode.type === 'param') {
+              console.log(_scopeNode.value);
+              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
             }
           });
 

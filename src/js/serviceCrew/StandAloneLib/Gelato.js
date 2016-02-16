@@ -51,7 +51,7 @@ class Gelato {
   constructor() {
     //Object.assign(this, events.EventEmitter.prototype);
     //_.extendOwn(this, events.EventEmitter.prototype);
-    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
 
     // Gelato가 둘 이상 생성되는 것을 방지 한다.
     (() => {
@@ -62,14 +62,17 @@ class Gelato {
     // Gelato가 제공하는 DOM 선택자
     this.$ = Sizzle;
 
-    // GelatoDocument 조작 객체
-    this.GD = new GelatoDocument(document);
-    // cookie 제어 객체
-    this.cookie = new Cookie();
-    // page 객체가 생성될 때 Page의 사양을 파악한다.
-    this.page = new Page(document);
     this.api = new API();
     this.resolver = new DataResolver();
+    // cookie 제어 객체
+    this.cookie = new Cookie();
+
+    // GelatoDocument 조작 객체
+    this.GD = new GelatoDocument(document);
+
+    // page 객체가 생성될 때 Page의 사양을 파악한다.
+    this.page = new Page(document);
+
 
     this.customActions = {};
 
@@ -77,18 +80,27 @@ class Gelato {
       window.location.href = "";
     }
 
-
+    this.readyGelato = false;
   }
 
   // 서비스를 시작함
   // 1. Grid에서 프래그먼트를 필요로 하는 요소 찾기
   startup() {
     let that = this;
+
+
+
+
     async.waterfall([
       (_cb) => {
         Loader.loadConfig((_result) => {
           console.log(_result);
           this.page.setConfig(_result);
+
+          // 스타일은 미리 입력해두어도 서비스 동작에 무관하므로 미리 입력.
+          this.page.appendPageStyles();
+
+
           _cb();
         })
       }, (_cb) => { // fragment attach
@@ -102,7 +114,10 @@ class Gelato {
         _cb();
       }, (_cb) => {
         this.page.appendPageScripts(() => {
+
           that.emit("load");
+
+          that.readyGelato = true;
         });
       }
     ]);
@@ -171,6 +186,15 @@ class Gelato {
   // getCustomAction(_name) {
   //   return this.customActions[_name];
   // }
+  getConfig(_key) {
+    return this.page.config[_key];
+  }
+
+  interpret(_text) {
+    return this.resolver.resolve(_text, {
+      getServiceConfig: this.getConfig.bind(this)
+    });
+  }
 
 
   registerAction(_name, _paramKeys, _anonymousActionFunction) {
@@ -183,6 +207,14 @@ class Gelato {
   // 랜더링전에 shortcut 스크립트를 추가 하는 방법이 나오지 않는 이상 이 기능은 미뤄져야 한다.
   registerShotcut(_name, _shortcutFunc) {
 
+  }
+
+  ready(_func) {
+    if (this.readyGelato) {
+      _func();
+    } else {
+      this.on('load', _func);
+    }
   }
 }
 

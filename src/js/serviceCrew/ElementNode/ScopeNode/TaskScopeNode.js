@@ -1,4 +1,4 @@
-import ScopeMember from './ScopeMember';
+import ScopeNode from './ScopeNode';
 import _ from 'underscore';
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
@@ -41,7 +41,7 @@ class TaskChain {
 }
 
 
-class TaskScopeMember extends ScopeMember {
+class TaskScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
     this.type = 'task';
@@ -49,9 +49,9 @@ class TaskScopeMember extends ScopeMember {
   }
 
   static CreateByScopeDom(_scopeDom) {
-    let newScopeMember = new TaskScopeMember(TaskScopeMember.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeMember);
-    return newScopeMember;
+    let newScopeNode = new TaskScopeNode(TaskScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
+    console.log(newScopeNode);
+    return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
@@ -145,4 +145,4 @@ class TaskScopeMember extends ScopeMember {
   }
 }
 
-export default TaskScopeMember;
+export default TaskScopeNode;

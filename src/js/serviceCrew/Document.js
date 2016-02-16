@@ -526,6 +526,11 @@ class Document {
     //domContainer.remove();
   }
 
+  getServiceConfig(_key) {
+
+    // highestEnvironment === Page
+    return this.highestEnvironment.getConfig(_key);
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */

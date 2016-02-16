@@ -226,9 +226,11 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
     case 'number':
       _actionResult.code = validate(/^\d+$/, text);
       break;
+
     case 'words':
       _actionResult.code = validate(/^\w+$/, text);
       break;
+
     case 'email':
       _actionResult.code = validate(/^[\w\d]+@[\w\d-]+\.[\w]+$/, text);
       break;
@@ -236,6 +238,11 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
     case 'email-host':
       _actionResult.code = validate(/^[\w\d-]+\.[\w]+$/, text);
       break;
+
+    case 'tel-number-ko':
+      _actionResult.code = validate(/^\d{2,3}-\d{3,4}-\d{3,4}$/, text);
+      break;
+
     default:
       throw new Error("지원하지 않는 유효성 검사 타입입니다.");
   }

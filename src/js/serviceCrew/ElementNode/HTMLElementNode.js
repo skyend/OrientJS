@@ -322,9 +322,9 @@ class HTMLElementNode extends TagBaseElementNode {
     for (var i = 0; i < childNodes.length; i++) {
       child_ = childNodes[i];
 
-      // en- 으로 시작되는 태그를 ScopeMember로 취급한다.
+      // en- 으로 시작되는 태그를 ScopeNode로 취급한다.
       if (/^en:/i.test(child_.nodeName)) {
-        this.appendScopeMember(this.buildScopeMemberByScopeDom(child_));
+        this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
         continue;
       }
 

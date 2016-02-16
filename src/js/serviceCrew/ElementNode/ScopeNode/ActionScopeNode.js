@@ -1,10 +1,10 @@
-import ScopeMember from './ScopeMember';
+import ScopeNode from './ScopeNode';
 import _ from 'underscore';
 
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 
-class ActionScopeMember extends ScopeMember {
+class ActionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
     this.type = 'action';
@@ -12,9 +12,9 @@ class ActionScopeMember extends ScopeMember {
   }
 
   static CreateByScopeDom(_scopeDom) {
-    let newScopeMember = new ActionScopeMember(ActionScopeMember.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeMember);
-    return newScopeMember;
+    let newScopeNode = new ActionScopeNode(ActionScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
+    console.log(newScopeNode);
+    return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
@@ -70,4 +70,4 @@ class ActionScopeMember extends ScopeMember {
   }
 }
 
-export default ActionScopeMember;
+export default ActionScopeNode;

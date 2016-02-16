@@ -2,11 +2,16 @@ class ActionResult {
   constructor(_data, _taskChain) {
     this.data = _data || null;
     this.taskChain = _taskChain || undefined;
+    this.returns = {};
     this.code = 'next';
   }
 
   get data() {
     return this._data;
+  }
+
+  get returns() {
+    return this._returns;
   }
 
   get taskChain() {
@@ -22,6 +27,10 @@ class ActionResult {
 
   set data(_data) {
     this._data = _data;
+  }
+
+  set returns(_returns) {
+    this._returns = _returns;
   }
 
   set taskChain(_taskChain) {

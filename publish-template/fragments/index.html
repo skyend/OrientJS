@@ -15,8 +15,8 @@
     <en:value name='x' type='number' value='10'></en:value>
 
     <button en-event-click='task@run'>
-      <en:task name='run' action='loop' arg-fps="{{<< 30}}" chain-next='sum'></en:task>
-      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.07 }}' chain-success='update'></en:task>
+      <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='sum'></en:task>
+      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.1 }}' chain-success='update'></en:task>
       <en:task name='update' action='refresh-to' arg-eid='dance-wrapper'></en:task>
       run
     </button>
@@ -27,7 +27,7 @@
                 height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
                 left:{{<< 300 + Math.sin(val@x + en@repeat-n * 0.01 )*300 }}px;
                 top:{{<< 300 + Math.cos(val@x + en@repeat-n * 0.01)*300 }}px;'
-          en-ctrl-repeat-n='70'>
+          en-ctrl-repeat-n='20'>
 
 
 
@@ -37,25 +37,25 @@
 
   <div en-id='dance-wrapper2'>
     <en:value name='x' type='number' value='10'></en:value>
+    <en:value name='min-size' type='number' value='10'></en:value>
+    <en:value name='size' type='number' value='2'></en:value>
 
     <button en-event-click='task@run'>
-      <en:task name='run' action='loop' arg-fps="{{<< 30}}" chain-next='sum'></en:task>
-      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.07 }}' chain-success='update'></en:task>
-      <en:task name='update' action='update-to' arg-eid='dance-wrapper2'></en:task>
+      <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='sum'></en:task>
+      <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.02 }}' chain-success='update'></en:task>
+      <en:task name='update' action='refresh-to' arg-eid='dance-wrapper2'></en:task>
       run 2
     </button>
 
     <div en-event-click='task@run'
-          style='position:fixed; background-color:#{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }};
-                width:{{<< 100 + en@repeat-n + Math.sin(val@x)*50 }}px;
-                height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
-                left:{{<< Math.random()*1600 }}px;
-                top:{{<< Math.random()*768  }}px;'
-          en-ctrl-repeat-n='50'>
-
-
-
-      Hello
+          style='display:inline-block; position:fixed; border-radius:50%;
+                  background-color:rgb({{<< val@color-factor }},{{<< val@color-factor }},{{<< val@color-factor }});
+                  width:{{<< Math.floor(val@min-size + Math.sin(val@x) * val@size) }}px;
+                  height:{{<< Math.floor(val@min-size + Math.cos(val@x) * val@size) }}px;
+                  left:{{<< Math.random()*1600 }}px;
+                  top:{{<< Math.random()*768  }}px;'
+          en-ctrl-repeat-n='100'>
+          <en:value name='color-factor' type='number' value='{{<<  Math.floor(Math.random()*255)  }}' resolve-on></en:value>
     </div>
   </div>
 

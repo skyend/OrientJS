@@ -21,9 +21,6 @@ class Page {
 
     this.attachENModificationStyle();
 
-    // 스타일은 미리 입력해두어도 서비스 동작에 무관하므로 미리 입력.
-    this.appendPageStyles();
-
     let rootGridElement = this.findRootGrid();
     this.rootGridElement = rootGridElement;
     this.bodyFragment = null;
@@ -47,17 +44,27 @@ class Page {
   setConfig(_config) {
     this.iceHost = _config['ice-host'];
     this.apiFarmHost = _config['apifarm-host'];
+
+    this.config = _config;
+  }
+
+  getConfig(_key) {
+    return this.config[_key];
   }
 
   appendPageStyles() {
+    let gelato = Gelato.one();
+
     this.refStyleList.map((_refString) => {
-      this.appendStyleRef(_refString)
+      this.appendStyleRef(gelato.interpret(_refString));
     });
   }
 
   appendPageScripts(_complete) {
+    let gelato = Gelato.one();
+
     async.eachSeries(this.refScriptList, (_refString, _next) => {
-      this.appendScriptRef(_refString, () => {
+      this.appendScriptRef(gelato.interpret(_refString), () => {
         _next();
       });
     }, () => {
@@ -67,6 +74,7 @@ class Page {
 
   appendStyleRef(_refString) {
     let gelato = Gelato.one();
+
     if (this.runningStyles[_refString] !== undefined) return;
     this.runningStyles[_refString] = true;
 

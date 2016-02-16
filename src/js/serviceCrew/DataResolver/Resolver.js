@@ -258,10 +258,6 @@ class Resolver {
       case 'http-param':
         data = this.resolveWithHttpParam(varName);
         break;
-      case 'service':
-        throw new Error("service category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getServiceConfig(varName);
-        break; // Todo..
       case 'fragment':
         data = _externalGetterInterface.getFragmentParam(varName);
         break;
@@ -271,6 +267,13 @@ class Resolver {
       case 'feature':
         data = _externalGetterInterface.getFeature(varName);
         break;
+      case 'config':
+        data = _externalGetterInterface.getServiceConfig(varName);
+        break;
+      case 'service':
+        throw new Error("service category 는 아직 지원하지 않습니다.");
+        data = _externalGetterInterface.getServiceConfig(varName);
+        break; // Todo..
       default:
         throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
     }

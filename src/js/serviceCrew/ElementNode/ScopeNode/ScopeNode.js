@@ -1,4 +1,4 @@
-class ScopeMember {
+class ScopeNode {
   constructor(_scopeData) {
     this.import(_scopeData);
   }
@@ -49,4 +49,4 @@ class ScopeMember {
   }
 }
 
-export default ScopeMember;
+export default ScopeNode;

@@ -15,7 +15,7 @@ import Action from '../Action';
 import ActionResult from '../ActionResult';
 import ICEAPISource from '../ICEAPISource';
 import events from 'events';
-import ScopeMemberFactory from './ScopeMember/Factory';
+import ScopeNodeFactory from './ScopeNode/Factory';
 import ActionStore from '../Actions/ActionStore';
 
 
@@ -145,8 +145,8 @@ class ElementNode {
     }
   }
 
-  get scopeMembers() {
-    return this._scopeMembers;
+  get scopeNodes() {
+    return this._scopeNodes;
   }
 
   //
@@ -176,8 +176,8 @@ class ElementNode {
     this._dynamicContext = _dynamicContext;
   }
 
-  set scopeMembers(_scopeMembers) {
-    this._scopeMembers = _scopeMembers;
+  set scopeNodes(_scopeNodes) {
+    this._scopeNodes = _scopeNodes;
   }
 
   //
@@ -361,6 +361,13 @@ class ElementNode {
     if (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true) {
       _complete([]);
       return;
+    }
+
+    let sn_len = this.scopeNodes.length;
+    for (let i = 0; i < sn_len; i++) {
+      if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
+        this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].plainValue);
+      }
     }
 
     // Before Control
@@ -954,6 +961,10 @@ class ElementNode {
     }
   }
 
+  getRootEnvironment() {
+
+  }
+
   /////////////
   // String Resolve
   interpret(_matterText, _getFeature) {
@@ -967,6 +978,7 @@ class ElementNode {
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
+      getServiceConfig: this.environment.getServiceConfig.bind(this.environment)
 
       // todo .... geo 추가
       //  getAttributeResolve: this.getAttrOnTreeWithResolve
@@ -1047,11 +1059,11 @@ class ElementNode {
 
   getMyScope(_name, _type, _withString) {
 
-    let findIndex = _.findIndex(this.scopeMembers, function(_scopeMember) {
-      return _scopeMember.name === _name && _scopeMember.type === _type;
+    let findIndex = _.findIndex(this.scopeNodes, function(_scopeNode) {
+      return _scopeNode.name === _name && _scopeNode.type === _type;
     });
 
-    return this.scopeMembers[findIndex] || null;
+    return this.scopeNodes[findIndex] || null;
   }
 
   // 추가...
@@ -1162,38 +1174,38 @@ class ElementNode {
   ////////////////////////////////////////// Scope Logics ///////////////////////////////////////////
 
   // Done
-  buildScopeMemberByScopeDom(_scopeDom) {
+  buildScopeNodeByScopeDom(_scopeDom) {
     let scopeDomNodeName = _scopeDom.nodeName;
     let scopeType;
 
     let matches = String(_scopeDom.nodeName).match(/^en:(\w+)$/i);
     scopeType = matches[1].toLowerCase();
 
-    let ScopeMemberClass = ScopeMemberFactory.getClass(scopeType);
-    let scopeMemberInstance = ScopeMemberClass.CreateByScopeDom(_scopeDom);
+    let ScopeNodeClass = ScopeNodeFactory.getClass(scopeType);
+    let scopeNodeInstance = ScopeNodeClass.CreateByScopeDom(_scopeDom);
 
-    return scopeMemberInstance;
+    return scopeNodeInstance;
   }
 
   // Done
-  appendScopeMember(_scopeMember) {
-    // 이미 존재하는 ScopeMember를 미리 찾아 중복을 체크한다.
+  appendScopeNode(_scopeNode) {
+    // 이미 존재하는 ScopeNode를 미리 찾아 중복을 체크한다.
     // 중복을 판별하는 필드는 type 과 name 이 사용된다.
     // 같은 타입간에 중복 name 은 사용이 불가능 하다.
-    let foundDupl = _.findIndex(this.scopeMembers, function(_compareScopeMember) {
-      return _compareScopeMember.type === _scopeMember.type && _compareScopeMember.name === _scopeMember.name;
+    let foundDupl = _.findIndex(this.scopeNodes, function(_compareScopeNode) {
+      return _compareScopeNode.type === _scopeNode.type && _compareScopeNode.name === _scopeNode.name;
     });
 
-    // foundDupl 값이 -1 이 아니면 이미 존재하는 ScopeMember로 에러를 발생시킨다.
+    // foundDupl 값이 -1 이 아니면 이미 존재하는 ScopeNode로 에러를 발생시킨다.
     if (foundDupl != -1) {
-      throw new Error("이미 존재하는 ScopeMember 입니다. ScopeMember 는 같은 태그내에서 name 이 중복 될 수 없습니다. \n" + JSON.stringify(_scopeMember.export()));
+      throw new Error("이미 존재하는 ScopeNode 입니다. ScopeNode 는 같은 태그내에서 name 이 중복 될 수 없습니다. \n" + JSON.stringify(_scopeNode.export()));
     }
 
-    this.scopeMembers.push(_scopeMember);
+    this.scopeNodes.push(_scopeNode);
   }
 
   // ToDo... how? . uh
-  updateScopeMember(_scopeMember) {
+  updateScopeNode(_scopeNode) {
 
   }
 
@@ -1208,7 +1220,7 @@ class ElementNode {
       if (!scope) throw new Error(` ${eventDesc} Task 를 찾지 못 하였습니다.`);
 
       switch (scope.constructor.name) {
-        case "TaskScopeMember": // Scope 의 종류가 TaskScopeMember 인가
+        case "TaskScopeNode": // Scope 의 종류가 TaskScopeNode 인가
           return this.__executeTask(scope, _elementNodeEvent, _originDomEvent);
       }
 
@@ -1452,8 +1464,8 @@ class ElementNode {
       'hidden': ''
     };
 
-    this.scopeMembers = _elementNodeDataObject.scopeMembers ? _elementNodeDataObject.scopeMembers.map(function(_scopeMemberObject) {
-      return new(ScopeMemberFactory.getClass(_scopeMemberObject.type))(_scopeMemberObject);
+    this.scopeNodes = _elementNodeDataObject.scopeNodes ? _elementNodeDataObject.scopeNodes.map(function(_scopeNodeObject) {
+      return new(ScopeNodeFactory.getClass(_scopeNodeObject.type))(_scopeNodeObject);
     }) : [];
 
     this.nodeEvents = _elementNodeDataObject.nodeEvents || {};
@@ -1473,8 +1485,8 @@ class ElementNode {
       type: this.getType(),
       name: this.getName(),
       controls: _.clone(this.getControls()),
-      scopeMembers: _.clone(this.scopeMembers.map(function(_scopeMember) {
-        return _scopeMember.export();
+      scopeNodes: _.clone(this.scopeNodes.map(function(_scopeNode) {
+        return _scopeNode.export();
       })),
       nodeEvents: _.clone(this.nodeEvents),
       comment: this.getComment(),
