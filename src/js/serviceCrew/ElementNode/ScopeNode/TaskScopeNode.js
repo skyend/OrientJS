@@ -62,6 +62,8 @@ class TaskScopeNode extends ScopeNode {
 
     scopeSpecObject.trace = _dom.getAttribute('trace') !== null ? true : false;
 
+    scopeSpecObject.delegate = _dom.getAttribute('en-delegate') || null;
+
     // 확장클래스에서 사용하는 attribute 읽기 및 지정
     scopeSpecObject.action = _dom.getAttribute('action');
     if (!/\w+/.test(scopeSpecObject.action || '')) throw new Error("TaskScope 선언에는 action 이 포함되어야 합니다.");
@@ -121,6 +123,9 @@ class TaskScopeNode extends ScopeNode {
   import (_scopeData) {
     super.import(_scopeData);
     this.action = _scopeData.action;
+
+    this.delegate = _scopeData.delegate;
+
     this.args = _scopeData.args.map(function(_arg) {
       return new TaskArgument(_arg);
     });
@@ -133,12 +138,17 @@ class TaskScopeNode extends ScopeNode {
   export () {
     let exportObject = super.export();
     exportObject.action = this.action;
+
+    exportObject.delegate = this.delegate;
+
     exportObject.args = this.args.map(function(_taskArgument) {
       return _taskArgument.export();
     });
+
     exportObject.chains = this.chains.map(function(_taskChain) {
       return _taskChain.export();
     });
+
     exportObject.trace = this.trace;
 
     return exportObject;

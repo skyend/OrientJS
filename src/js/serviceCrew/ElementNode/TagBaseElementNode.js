@@ -255,6 +255,10 @@ class TagBaseElementNode extends ElementNode {
     this.attributes[_name] = _value;
   }
 
+  // setAttributeWithEvent(_name, _value){
+  //   this.setAttribute(_name, _value)
+  // }
+
   // attributes
   setAttributes(_attributes) {
     this.attributes = _attributes;
@@ -345,7 +349,7 @@ class TagBaseElementNode extends ElementNode {
 
   mappingAttribute(_dom, _attrName, _options) {
     let options = _options || {};
-
+    console.log(_attrName);
     _dom.setAttribute(_attrName, options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName));
   }
 
@@ -401,7 +405,7 @@ class TagBaseElementNode extends ElementNode {
         this.forwardDOM.value = attrValue;
     }
 
-    this.backupDOM = null;
+    //this.backupDOM = null;
   }
 
   // realize
@@ -561,8 +565,48 @@ class TagBaseElementNode extends ElementNode {
     }
 
     // Gelato Events
+    // done
+    if (_domElement.getAttribute('en-event-will-update') !== null) // will Update
+      this.setEvent('will-update', _domElement.getAttribute('en-event-will-update'));
+    // done
+    if (_domElement.getAttribute('en-event-did-update') !== null) // did Update
+      this.setEvent('did-update', _domElement.getAttribute('en-event-did-update'));
+    // done
+    if (_domElement.getAttribute('en-event-will-refresh') !== null) // will refresh
+      this.setEvent('will-refresh', _domElement.getAttribute('en-event-will-refresh'));
+    // done
+    if (_domElement.getAttribute('en-event-did-refresh') !== null) // did refresh
+      this.setEvent('did-refresh', _domElement.getAttribute('en-event-did-refresh'));
+
+    //done
+    if (_domElement.getAttribute('en-event-will-dc-request') !== null) // will DC request
+      this.setEvent('will-dc-request', _domElement.getAttribute('en-event-will-dc-request'));
+
+    // done
     if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
       this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
+
+    // done
+    if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
+      this.setEvent('will-hide', _domElement.getAttribute('en-event-will-hide'));
+
+    // done
+    if (_domElement.getAttribute('en-event-will-show') !== null) // will show
+      this.setEvent('will-show', _domElement.getAttribute('en-event-will-show'));
+
+
+    // 보류
+    // if (_domElement.getAttribute('en-event-will-value-change') !== null) // will  value change
+    //   this.setEvent('will-value-change', _domElement.getAttribute('en-event-will-value-change'));
+    //
+    // if (_domElement.getAttribute('en-event-did-value-change') !== null) // did value change
+    //   this.setEvent('did-value-change', _domElement.getAttribute('en-event-did-value-change'));
+    //
+    // if (_domElement.getAttribute('en-event-will-attr-change') !== null) // will attr change
+    //   this.setEvent('will-value-change', _domElement.getAttribute('en-event-will-attr-change'));
+    //
+    // if (_domElement.getAttribute('en-event-did-attr-change') !== null) // did attr change
+    //   this.setEvent('did-value-change', _domElement.getAttribute('en-event-did-attr-change'));
 
   }
 

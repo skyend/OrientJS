@@ -1,3 +1,6 @@
+import DateDistance from '../Builtins/Classes/DateDistance';
+import Date2 from '../Builtins/Classes/Date2';
+
 const DAY_MAP = {
   'ko': ['월', '화', '수', '목', '금', '토', '일'],
   'en': ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', "Sat", 'Sun']
@@ -28,12 +31,14 @@ class Shortcut {
   */
   static dateFormatter(_dateString, _format, _lang) {
 
-
-
-    let dateObject = new Date(_dateString.replace(/^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/, function(_matched, _y, _m, _d, _h, _min, _s) {
-      return `${_y}/${_m}/${_d} ${_h}:${_min}:${_s}`;
-    }));
-
+    let dateObject;
+    if (typeof _dateString === 'number') {
+      dateObject = new Date(_dateString);
+    } else if (typeof _dateString === 'string') {
+      dateObject = new Date(Shortcut.reviseDateString(_dateString));
+    } else {
+      throw new Error("인식할 수 없는 Date 입력 타입 입니다.");
+    }
 
     return _format.replace(/(YYYY|YY|MM|DD|dd|hh|mm|ss)/g, function(_matched, _chars) {
       switch (_chars) {
@@ -57,6 +62,25 @@ class Shortcut {
       }
 
       return _chars;
+    });
+  }
+
+
+  static get dateDistance() {
+    return DateDistance;
+  }
+
+  static get Date() {
+    return Date2;
+  }
+
+  static dateShift(_from, _to, _format) {
+
+  }
+
+  static reviseDateString(_dateString) {
+    return _dateString.replace(/^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/, function(_matched, _y, _m, _d, _h, _min, _s) {
+      return `${_y}/${_m}/${_d} ${_h}:${_min}:${_s}`;
     });
   }
 

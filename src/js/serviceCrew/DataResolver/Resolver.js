@@ -133,6 +133,7 @@ class Resolver {
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
+    //argsMap.push(_externalGetterInterface.i18n);
 
     try {
       let result = vfunction.apply(_caller, argsMap);
@@ -150,6 +151,7 @@ class Resolver {
     let alreadyIndex;
     let functionCreateArgs = [];
     let functionResult;
+
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
     let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+(:\w+)?/g, function(_matched) {
 
@@ -160,7 +162,7 @@ class Resolver {
       if (alreadyIndex == -1) {
         alreadyIndex = argumentsMap.push(_matched) - 1;
 
-        // 마지막 인자로 shortcut 를 입력하기 위해 인수 필드리스트에 패딩을 추가한다.
+        // 마지막 인자로 shortcut과 그밖의 기본 제공 인자 를 입력하기 위해 인수 필드리스트에 패딩을 추가한다.
         functionCreateArgs.push('__argPadding_' + alreadyIndex);
       }
 
@@ -168,7 +170,7 @@ class Resolver {
     });
 
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
-
+    functionCreateArgs.push('i18n'); // i18n 메서드를 인자로 받기 위해 인수필드에 예비한다.
 
     functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)/, 'return ');
 

@@ -346,10 +346,19 @@ class Document {
       return _t;
     } else {
       if (_t.children !== undefined) {
-        for (var i = 0; i < _t.children.length; i++) {
-          var recvResult = this.findRecursive(_t.children[i], _finder, _allowUpper);
-          if (recvResult) {
-            return recvResult;
+        if (this.cloned) {
+          for (var i = 0; i < _t.clonePool.length; i++) {
+            var recvResult = this.findRecursive(_t.clonePool[i], _finder, _allowUpper);
+            if (recvResult) {
+              return recvResult;
+            }
+          }
+        } else {
+          for (var i = 0; i < _t.children.length; i++) {
+            var recvResult = this.findRecursive(_t.children[i], _finder, _allowUpper);
+            if (recvResult) {
+              return recvResult;
+            }
           }
         }
       }

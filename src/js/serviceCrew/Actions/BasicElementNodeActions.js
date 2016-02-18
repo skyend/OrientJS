@@ -49,7 +49,7 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true);
+    targetElementNode = this.environment.findById(eid, true, this);
   }
 
   targetElementNode.refresh(function() {
@@ -73,7 +73,7 @@ actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true);
+    targetElementNode = this.environment.findById(eid, true, this);
   }
 
   targetElementNode.update(function() {
@@ -115,7 +115,7 @@ actionStore.registerAction('set', ['name', 'value', 'taskChain'], function() {
 actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true);
+    targetElementNode = this.environment.findById(eid, true, this);
   }
 
   targetElementNode.setAttribute(name, value);
@@ -128,7 +128,7 @@ actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'task
 actionStore.registerAction('exists-toggle-attr-to', ['eid', 'name', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true);
+    targetElementNode = this.environment.findById(eid, true, this);
   }
 
   if (targetElementNode.getAttribute(name) !== undefined) {
@@ -325,7 +325,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], fu
 actionStore.registerAction('focus', ['eid'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true);
+    targetElementNode = this.environment.findById(eid, true, this);
   }
 
   targetElementNode.forwardDOM.focus();
@@ -333,6 +333,24 @@ actionStore.registerAction('focus', ['eid'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('stopPropagation', [], function() {
+
+  _event.originEvent.stopPropagation();
+
+  _callback(_actionResult);
+});
+
+actionStore.registerAction('preventDefault', [], function() {
+
+  _event.originEvent.preventDefault();
+
+  _callback(_actionResult);
+});
+
+actionStore.registerAction('singleReturn', ['returnValue'], function() {
+  _actionResult.returns = returnValue;
+  _callback(_actionResult);
+});
 
 //****** ElementNode default Actions *****//
 

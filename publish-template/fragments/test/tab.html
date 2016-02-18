@@ -11,6 +11,30 @@
 
 <div class="container">
   <div class="default-style faq">
+    <button en-event-click='task@test'>
+      <en:task name='test' action='a'></en:task>
+      <script type='text' en-scope-type='action' name='a'>
+
+        console.log($.ajax, window);
+      </script>
+
+      Test
+    </button>
+
+
+    <button en-event-click='task@dele-test' test-attr='Hello2'>
+      <en:task name='dele-test' en-delegate='element-01' action='attr' arg-name='abc' arg-value='{{<< en-attr@test-attr}}' chain-success='update'></en:task>
+      Task 위임 테스트
+
+    </button>
+
+    <div>
+      <div en-id='element-01'>
+        <en:task name='update' action='update'></en:task>
+        {{<< en-attr@abc }}
+      </div>
+    </div>
+
     <h2>Frequently Asked Questions</h2>
     <div en-dc-source-id='farm/vod/category'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'

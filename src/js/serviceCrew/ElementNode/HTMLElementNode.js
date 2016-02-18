@@ -163,7 +163,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
             prevDom = targetBackupDOMs[j];
             targetBackupDOMs[j].___en.forwardDOM = targetBackupDOMs[j].___en.backupDOM;
-            targetBackupDOMs[j].___en.backupDOM = null;
+            //targetBackupDOMs[j].___en.backupDOM = null;
             console.log('appended ', j, targetBackupDOMs[j], targetBackupDOMs[j].___en);
 
             if (typeof targetBackupDOMs[j].___en.applyAllChildren === 'function')
@@ -239,11 +239,22 @@ class HTMLElementNode extends TagBaseElementNode {
     if (result) {
       return this;
     } else {
-      for (var i = 0; i < this.children.length; i++) {
-        var recvResult = this.children[i].findRecursive(_finder);
 
-        if (recvResult) {
-          return recvResult;
+      for (var i = 0; i < this.children.length; i++) {
+
+        if (this.children[i].cloned) {
+          for (var j = 0; j < this.children[i].clonePool.length; j++) {
+            var recvResult = this.children[i].clonePool[j].findRecursive(_finder);
+            if (recvResult) {
+              return recvResult;
+            }
+          }
+        } else {
+          var recvResult = this.children[i].findRecursive(_finder);
+
+          if (recvResult) {
+            return recvResult;
+          }
         }
       }
     }
@@ -323,7 +334,7 @@ class HTMLElementNode extends TagBaseElementNode {
       child_ = childNodes[i];
 
       // en- 으로 시작되는 태그를 ScopeNode로 취급한다.
-      if (/^en:/i.test(child_.nodeName)) {
+      if (/^en:|script/i.test(child_.nodeName)) {
         this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
         continue;
       }

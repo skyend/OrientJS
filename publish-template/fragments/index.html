@@ -11,27 +11,32 @@
 
 <div en-id='asda12sdasdasdasdasd'>
 
+
   <div en-id='dance-wrapper'>
     <en:value name='x' type='number' value='10'></en:value>
+    <en:task name='update' action='update-to' arg-eid='dance-wrapper'></en:task>
 
     <button en-event-click='task@run'>
       <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='sum'></en:task>
       <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.1 }}' chain-success='update'></en:task>
-      <en:task name='update' action='refresh-to' arg-eid='dance-wrapper'></en:task>
+
       run
     </button>
 
-    <div en-event-click='task@run'
-          style='position:fixed; background-color:#{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }}{{<< parseInt(Math.random()*9) }};
-                width:{{<< 100 + en@repeat-n + Math.sin(val@x)*50 }}px;
+    <div en-event-click='task@run' en-event-mouseenter='task@hidden' en-event-mouseleave='task@show'
+          style='position:fixed;
+                background-color:#{{<< parseInt( Math.sin(val@x + en@repeat-n * 0.02 ) * 10) }}{{<< parseInt(Math.sin(val@x + en@repeat-n * 0.02 )* 10 ) }}{{<< parseInt(Math.sin(val@x + en@repeat-n * 0.02 ) * 10) }};
+                width:{{<< 100 + en@repeat-n + Math.sin(val@x)*50 }}px; opacity:{{<< en-attr@opacity || 1}};
                 height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
-                left:{{<< 300 + Math.sin(val@x + en@repeat-n * 0.01 )*300 }}px;
-                top:{{<< 300 + Math.cos(val@x + en@repeat-n * 0.01)*300 }}px;'
-          en-ctrl-repeat-n='20'>
+                left:{{<< 300 + Math.sin(val@x + en@repeat-n * 0.02 )*300 }}px;
+                top:{{<< 300 + Math.cos(val@x + en@repeat-n * 0.02)*300 }}px;'
+          en-ctrl-repeat-n='100'>
+          <en:task name='hidden' action='attr' arg-name='opacity' arg-value='0.1' chain-success='update'></en:task>
+          <en:task name='show' action='attr' arg-name='opacity' arg-value='1' chain-success='update'></en:task>
+          <en:task name='update' action='update'></en:task>
 
 
-
-      Hello
+      &lt;
     </div>
   </div>
 
@@ -43,7 +48,7 @@
     <button en-event-click='task@run'>
       <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='sum'></en:task>
       <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.02 }}' chain-success='update'></en:task>
-      <en:task name='update' action='refresh-to' arg-eid='dance-wrapper2'></en:task>
+      <en:task name='update' action='update-to' arg-eid='dance-wrapper2'></en:task>
       run 2
     </button>
 
@@ -74,12 +79,14 @@
 </svg>
 
   Hello, I'm index fragment22222
-  <div en-id='pw-field-warpper' validate='false'>
+  <div en-id='pw-field-warpper' validate='false' en-event-will-update='task@test'>
 		<en:task name='input' action='input-value-upsync' chain-success='validate'></en:task>
 		<en:task name='validate' action='input-value-validate' arg-type='password' chain-pass='success-validate' chain-fail='fail-validate'></en:task>
 		<en:task name='success-validate' action='attr-to' arg-eid='pw-field-warpper' arg-name='validate' arg-value='true' chain-success='refresh'></en:task>
 		<en:task name='fail-validate' action='attr-to' arg-eid='pw-field-warpper' arg-name='validate' arg-value='false' chain-success='refresh'></en:task>
 		<en:task name='refresh' action='update-to' arg-eid='pw-field-warpper'></en:task>
+
+    <en:task name='test' action='alert' trace arg-message='will update'></en:task>
 
 		<input type="password" class="itx-bd" name="" id="memberPassword" title="비밀번호 입력" en-event-keyup='task@input'>
 		<span class="tip">
@@ -134,4 +141,26 @@
       </li>
     </ul>
   </div>
+
+  <div style='width:500px;height:500px;'>
+    <div  en-ctrl-repeat-n='50'>
+      <div
+        style='width:10px;
+          height:10px;
+          background-color:rgb(38, 174, 239);
+          float:left;
+          opacity:{{<< val@opacity}};
+          transition:all .3s;'
+        en-ctrl-repeat-n='50'
+        en-event-mouseenter='task@over' en-event-mouseleave='task@leave'>
+        <en:value name='opacity' type='number' value='0.5'></en:value>
+        <en:task name='over' action='set' arg-name='opacity' arg-value='0.1' chain-success='update'></en:task>
+        <en:task name='leave' action='set' arg-name='opacity' arg-value='0.5' chain-success='update'></en:task>
+        <en:task name='update' action='update'></en:task>
+
+      </div>
+    </div>
+  </div>
+
+
 </div>

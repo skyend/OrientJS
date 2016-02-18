@@ -134,7 +134,7 @@ class StringElementNode extends ElementNode {
       this.forwardDOM.nodeValue = this.backupDOM.nodeValue;
     }
 
-    this.backupDOM = null;
+    //this.backupDOM = null;
   }
 
   mappingAttributes(_domNode, _options) {

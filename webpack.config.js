@@ -1,5 +1,6 @@
 var Clean = require('clean-webpack-plugin');
 var webpack = require('webpack');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
@@ -86,6 +87,11 @@ module.exports = {
       chunks: ['config', 'venders', 'main'],
       filename: 'index.html'
     })
+    // ,
+    // new CopyWebpackPlugin([{
+    //   from: './built-foundation*',
+    //   to: '../'
+    // }])
     /*,
         new HtmlWebpackPlugin({
           title: 'Gelateria Workspace',
