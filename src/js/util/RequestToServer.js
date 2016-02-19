@@ -24,7 +24,9 @@
         return req.responseText;
       } else {
         //console.error(req);
-        throw new Error("could not load iCafe Node Scheme Specification");
+        //throw new Error("could not load iCafe Node Scheme Specification");
+
+        return undefined;
       }
     }
   }

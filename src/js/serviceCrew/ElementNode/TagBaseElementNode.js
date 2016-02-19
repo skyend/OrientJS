@@ -349,7 +349,7 @@ class TagBaseElementNode extends ElementNode {
 
   mappingAttribute(_dom, _attrName, _options) {
     let options = _options || {};
-    console.log(_attrName);
+
     _dom.setAttribute(_attrName, options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName));
   }
 

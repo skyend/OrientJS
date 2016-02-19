@@ -100,7 +100,6 @@ class Gelato {
           // 스타일은 미리 입력해두어도 서비스 동작에 무관하므로 미리 입력.
           this.page.appendPageStyles();
 
-
           _cb();
         })
       }, (_cb) => { // fragment attach
@@ -190,10 +189,11 @@ class Gelato {
     return this.page.config[_key];
   }
 
-  interpret(_text) {
+  interpret(_text, _defaultDataObject) {
     return this.resolver.resolve(_text, {
-      getServiceConfig: this.getConfig.bind(this)
-    });
+      getServiceConfig: this.getConfig.bind(this),
+      executeI18n: this.page.executeI18n.bind(this.page)
+    }, _defaultDataObject, this);
   }
 
 

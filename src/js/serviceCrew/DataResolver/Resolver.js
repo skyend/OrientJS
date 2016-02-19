@@ -27,17 +27,17 @@ class Resolver {
     return this.dataSpace[_ns];
   }
 
-  resolve(_matter, _externalGetterInterface, _caller) {
+  resolve(_matter, _externalGetterInterface, _defaultDataObject, _caller) {
     if (_matter === null || _matter === undefined || _matter === NaN) {
       return _matter;
     }
 
-    return this.__interpret3(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _caller);
+    return this.__interpret3(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _defaultDataObject, _caller);
   }
 
 
   // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 없어ㅋㅋ
-  __interpret3(_matter, _externalGetterInterface, _caller) {
+  __interpret3(_matter, _externalGetterInterface, _defaultDataObject, _caller) {
     // 모든 바인딩은 Resolver에서 이루어 지며 리졸브 블럭내에서 요구하는 데이터는 resolve 실행 자 로 부터 얻을 수 있는 메소드를 제공 받아야 한다.
     let dataSeries = [];
     let matterLen = _matter.length;
@@ -91,7 +91,7 @@ class Resolver {
               firstClosed = false;
 
               // interpret 처리
-              dataSeries.push(this.__executeSyntax(tempStringChunk, _externalGetterInterface, _caller));
+              dataSeries.push(this.__executeSyntax(tempStringChunk, _externalGetterInterface, _defaultDataObject, _caller));
               tempStringChunk = '';
             } else {
               firstClosed = true;
@@ -122,18 +122,20 @@ class Resolver {
     return dataSeries.join('');
   }
 
-  __executeSyntax(_syntax, _externalGetterInterface, _caller) {
+  __executeSyntax(_syntax, _externalGetterInterface, _defaultDataObject, _caller) {
     let that = this;
     let argsMap = [];
     let vfunction = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
 
     argsMap = argsMap.map(function(_argHolder, _i) {
-      return that.__getInterpretVar(_argHolder, _externalGetterInterface);
+      return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject);
     });
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
-    //argsMap.push(_externalGetterInterface.i18n);
+    argsMap.push(_externalGetterInterface ? _externalGetterInterface.executeI18n : function() {
+      throw new Error(`text 사용 불가능. ${_syntax}`);
+    });
 
     try {
       let result = vfunction.apply(_caller, argsMap);
@@ -153,7 +155,7 @@ class Resolver {
     let functionResult;
 
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
-    let functionBody = _syntax.replace(/[\w\-\_]+\@[\w\-\_]+(:\w+)?/g, function(_matched) {
+    let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_]+(:\w+)?/g, function(_matched) {
 
       alreadyIndex = _.findIndex(argumentsMap, function(_argName) {
         return _argName === _matched;
@@ -170,7 +172,7 @@ class Resolver {
     });
 
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
-    functionCreateArgs.push('i18n'); // i18n 메서드를 인자로 받기 위해 인수필드에 예비한다.
+    functionCreateArgs.push('text'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
 
     functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)/, 'return ');
 
@@ -207,13 +209,15 @@ class Resolver {
       fragment       : Fragment Parameter - 참조된 프래그먼트 내에서만 사용 가능
       past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능
       event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능
+      ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다.
   */
-  __getInterpretVar(_varName, _externalGetterInterface) {
+  __getInterpretVar(_varName, _externalGetterInterface, _defaultDataObject) {
     let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
     let varCategory = splited[0];
     let splitForTypeCast = (splited[1] || '').split(':');
     let varName = splitForTypeCast[0];
     let type = splitForTypeCast[1];
+    console.log(varCategory, varName);
 
     let data;
     switch (varCategory) {
@@ -277,7 +281,11 @@ class Resolver {
         data = _externalGetterInterface.getServiceConfig(varName);
         break; // Todo..
       default:
-        throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
+        if (varCategory === '') {
+          data = _defaultDataObject[varName]; // varName be must Number
+        } else {
+          throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
+        }
     }
 
 

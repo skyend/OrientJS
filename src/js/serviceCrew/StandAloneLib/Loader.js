@@ -1,4 +1,6 @@
 import request from 'superagent';
+import async from 'async';
+import RequestToServer from '../../util/RequestToServer';
 
 class ServiceResourceLoader {
   static loadConfig(_complete) {
@@ -63,6 +65,25 @@ class ServiceResourceLoader {
         }
 
       });
+  }
+
+  static loadI18NJSONSync(_lang) {
+
+    let data = RequestToServer.sync(`./i18n/${_lang}.json`, 'get');
+
+    try {
+      return JSON.parse(data);
+    } catch (e) {
+      return undefined;
+    }
+  }
+
+  static loadI18NJSON(_targetLangs, _complete) {
+    async.eachSeries(_targetLangs, function(_next) {
+      console.log(_targetLangs);
+    }, function(_err) {
+
+    });
   }
 }
 

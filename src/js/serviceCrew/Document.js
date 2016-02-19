@@ -541,6 +541,12 @@ class Document {
     return this.highestEnvironment.getConfig(_key);
   }
 
+
+  executeI18n() {
+    let highestEnvironment = this.highestEnvironment;
+    return highestEnvironment.executeI18n.apply(highestEnvironment, arguments);
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

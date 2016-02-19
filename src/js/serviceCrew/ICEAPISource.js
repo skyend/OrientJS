@@ -218,6 +218,7 @@ export default class ICEAPISource {
     fields = _.extendOwn(req.getFieldsObjectWithResolve(), fields);
 
     console.log(req.getFieldsObjectWithResolve());
+
     if (req.crud === '**') {
       url = req.customURL;
     } else {

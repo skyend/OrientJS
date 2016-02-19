@@ -22,7 +22,7 @@ class DynamicContext {
   constructor(_environment, _props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
     //Object.assign(this, Events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
-    ObjectExtends.liteExtends(this,  events.EventEmitter.prototype);
+    ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
 
     this.id = Identifier.genUUID();
 
@@ -182,7 +182,7 @@ class DynamicContext {
   interpret(_text, externalGetterInterface, _caller) {
     var self = this;
 
-    return this.dataResolver.resolve(_text, externalGetterInterface, _caller || this);
+    return this.dataResolver.resolve(_text, externalGetterInterface, null, _caller || this);
     //
     // // 바인딩 문자열 단 하나만 있을 때는 replace를 하지 않고
     // // 객체를 보존하여 반환하도록 한다.

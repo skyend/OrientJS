@@ -1066,12 +1066,11 @@ class ElementNode {
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
-      getServiceConfig: this.environment.getServiceConfig.bind(this.environment)
-
-      // todo .... geo 추가
-      //  getAttributeResolve: this.getAttrOnTreeWithResolve
+      getServiceConfig: this.environment.getServiceConfig.bind(this.environment),
+      executeI18n: this.environment.executeI18n.bind(this.environment)
+        // todo .... geo 추가
+        //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
-
 
     let solved = _matterText;
     let dc = this.availableDynamicContext;
@@ -1080,7 +1079,7 @@ class ElementNode {
       solved = dc.interpret(solved, injectGetterInterface, this);
       return solved;
     } else {
-      return this.defaultResolver.resolve(solved, injectGetterInterface, this);
+      return this.defaultResolver.resolve(solved, injectGetterInterface, null, this);
     }
   }
 
@@ -1339,11 +1338,24 @@ class ElementNode {
     // Task 처리 위임
     // delegate 설정이 입력되어 있고 _mandator(위임자)가 undefined 로 입력되었을 때 위임을 진행한다.
     if (_taskScope.delegate !== null && _mandator === undefined) {
-      let foundEN = this.environment.findById(_taskScope.delegate);
-      if (foundEN !== null) {
+
+      // delegate 값에 ElementNode ID 를 입력해도 되고, 바인딩블럭을 이용해 직접 ElementNode 객체를 얻도록 코드를 입력해도 된다.
+      let delegateValue = this.interpret(_taskScope.delegate);
+      let foundEN;
+
+      // interpret 된 delegateValue 의 데이터타입이 string이면 EN ID로 간주하며
+      // 그 밖의 타입일 경우 ElementNode 객체로 간주한다.
+      if (typeof delegateValue === 'string') {
+        foundEN = this.environment.findById(_taskScope.delegate);
+      } else {
+        foundEN = delegateValue;
+      }
+
+      if (foundEN) {
+        // 마지막 인자로 위임명령자(mandator, 자신)을 입력한다.
         foundEN.__executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, this);
       } else {
-        throw new Error(`Not found Task Delegator[${_taskScope.delegate}].`);
+        throw new Error(`Not found Task delegate target[${_taskScope.delegate}].`);
       }
 
       return true;
