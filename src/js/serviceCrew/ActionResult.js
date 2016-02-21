@@ -4,6 +4,20 @@ class ActionResult {
     this.taskChain = _taskChain || undefined;
     this.returns = {};
     this.code = 'next';
+
+    // ActionResult의 내용을 세팅 한 action:task 또는 function:task의 name
+    this.origin;
+
+    // 상위(이전에 처리되어 반환된) result 객체
+    this.upperResult;
+  }
+
+  get upperResult() {
+    return this._upperResult;
+  }
+
+  get origin() {
+    return this._origin;
   }
 
   get data() {
@@ -23,6 +37,14 @@ class ActionResult {
   // 대부분의 task 는 success로 반환 될 것이며 taskChain 에 입력된 값의 여부에 따라 무시 될 수 있다.
   get code() {
     return this._code;
+  }
+
+  set upperResult(_upperResult) {
+    this._upperResult = _upperResult;
+  }
+
+  set origin(_origin) {
+    this._origin = _origin;
   }
 
   set data(_data) {

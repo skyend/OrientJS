@@ -387,7 +387,6 @@ class ElementNode {
 
       // Before Control
       // * hidden
-
       let options = _options || {};
       options.linkType = options.linkType || 'downstream'; // will deprecate
       options.resolve = options.resolve != undefined ? options.resolve : true;
@@ -401,22 +400,9 @@ class ElementNode {
         // dc 가 생성되고 정해진 api을 실행한다.
         if (isBuiltDC) {
 
-          if (this.hasEvent('will-dc-request')) {
-
-            /****************************************/
-            /***** Emit Event 'will-dc-request' *****/
-            /****************************************/
-            that.__progressEvent('will-dc-request', {
-              dynamicContext: this.dynamicContext
-            }, null, function done(_actionResult) {
-
-              if (_actionResult && _actionResult.returns) {
-                this.executeDynamicContext(options);
-              }
-            });
-          } else {
-            this.executeDynamicContext(options);
-          }
+          // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
+          if (this.dynamicContextAttitude !== 'passive')
+            this.executeDynamicContext();
         }
       } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
         options.keepDC = false;
@@ -470,37 +456,56 @@ class ElementNode {
     }
   }
 
-  executeDynamicContext(_options) {
+  executeDynamicContext() {
     let that = this;
     // 새로 생성
 
-    this.dynamicContext.ready(function(_err) {
+    if (this.hasEvent('will-dc-request')) {
 
-      if (_err === null) {
+      /****************************************/
+      /***** Emit Event 'will-dc-request' *****/
+      /****************************************/
+      that.__progressEvent('will-dc-request', {
+        dynamicContext: this.dynamicContext
+      }, null, function done(_actionResult) {
 
-        that.dynamicContext.dataLoad(function(_err) {
-          console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
+        // returns 에 true가 입력되어 있어야 한다.
+        if (_actionResult && _actionResult.returns === true) {
+          execute();
+        }
+      });
+    } else {
+      execute();
+    }
 
-          that.constructDOMs({
-            forward: true,
-            keepDC: 'once'
-          }, function(_domList) {
-            that.parent.forwardMe(that);
+    function execute() {
+      that.dynamicContext.ready(function(_err) {
 
-            /**************************************/
-            /***** Emit Event 'complete-bind' *****/
-            /**************************************/
-            that.__progressEvent('complete-bind', {
-              dynamicContext: that.dynamicContext
-            }, null, function done() {});
+        if (_err === null) {
 
+          that.dynamicContext.dataLoad(function(_err) {
+            console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
+
+            that.constructDOMs({
+              forward: true,
+              keepDC: 'once'
+            }, function(_domList) {
+              that.parent.forwardMe(that);
+
+              /**************************************/
+              /***** Emit Event 'complete-bind' *****/
+              /**************************************/
+              that.__progressEvent('complete-bind', {
+                dynamicContext: that.dynamicContext
+              }, null, function done() {});
+
+            });
           });
-        });
-      } else {
-        console.warn("Todo Error Handling");
-      }
-    });
-
+        } else {
+          console.warn("Todo Error Handling");
+        }
+      });
+    }
   }
 
   multipleConstruct(_repeatNumber, _options, _complete) {
@@ -1427,11 +1432,13 @@ class ElementNode {
     }
 
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
-    action.execute(executeParamMap, this, function(_actionResult) {
+    action.execute(executeParamMap, this, this.forwardDOM.ownerDocument.defaultView, function(_actionResult) {
       let chainedTask;
 
       // task chain 처리
       if (_actionResult !== undefined) {
+        _actionResult.origin = 'task@' + _taskScope.name;
+
         if (_actionResult.taskChain) {
 
           chainedTask = that.__getTask(_actionResult.taskChain);
@@ -1636,6 +1643,7 @@ class ElementNode {
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
+    this.dynamicContextAttitude = _elementNodeDataObject.dynamicContextAttitude;
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
@@ -1679,6 +1687,7 @@ class ElementNode {
       updateDate: (new Date(this.updateDate)).toString(),
     }
 
+    exportObject.dynamicContextAttitude = this.dynamicContextAttitude;
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;

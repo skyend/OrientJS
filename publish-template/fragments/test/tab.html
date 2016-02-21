@@ -41,9 +41,11 @@
     <h2>Frequently Asked Questions</h2>
     <div en-dc-source-id='farm/vod/category'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
-          en-dc-ns='category'>
-
-          {{<< ns@category }}
+          en-dc-ns='category' en-dc-attitude='passive' en-event-click='task@exec'>
+          <en:task name='exec' action='executeDC'></en:task>
+          수동 DynamicContext 테스트  << 클릭
+          <br/>
+          카테고리 : {{<< JSON.stringify(ns@category) }}
       </div>
 
       {{<< config@ice-host }}

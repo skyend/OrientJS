@@ -352,6 +352,10 @@ actionStore.registerAction('singleReturn', ['returnValue'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('executeDC', [], function() {
+  this.executeDynamicContext();
+});
+
 //****** ElementNode default Actions *****//
 
 console.log(actionStore);

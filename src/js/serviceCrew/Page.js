@@ -17,6 +17,8 @@ class Page {
     this.screenMode = _contextController.screenSizing;
     this.params = {};
 
+    this.window;
+    //throw new Error("need Window arguments"); // 현재 러닝 프레임의 window를 전달 받아야 한다.
   }
 
   set title(_title) {

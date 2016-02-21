@@ -330,6 +330,8 @@ class TagBaseElementNode extends ElementNode {
     // #DynamicContext
     if (this.dynamicContextSID)
       _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
+    if (this.dynamicContextAttitude)
+      _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
     if (this.dynamicContextRID)
       _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
     if (this.dynamicContextNS)
@@ -549,6 +551,10 @@ class TagBaseElementNode extends ElementNode {
 
     if (_domElement.getAttribute('en-dc-ns') !== null)
       this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
+
+    if (_domElement.getAttribute('en-dc-attitude') !== null) {
+      this.dynamicContextAttitude = _domElement.getAttribute('en-dc-attitude');
+    }
 
     // Controls
     if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)

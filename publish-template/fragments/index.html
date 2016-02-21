@@ -10,6 +10,16 @@
 @FragmentMetaEnd-->
 
 <div en-id='asda12sdasdasdasdasd'>
+  <div en-event-click='task@test'>
+    <en:task name='test' action='test'></en:task>
+    <en:action name='test'>
+      console.log(FB);
+    </en:action>
+
+
+
+    외부 라이브러리 연동테스트
+  </div>
 
 
   <div en-id='dance-wrapper'>
@@ -116,7 +126,7 @@
           _callback(_actionResult);
         </en:action>
 
-        <en:task name='change-attr' action='attr' arg-name='{{<< console.log( feature@event ) }} attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
+        <en:task name='change-attr' action='attr' arg-name='attr2' arg-value='hello' arg-taskChain='refresh'></en:task>
         <en:task name='refresh' action='refresh'></en:task>
 
         {{en-attr@attr2}}
