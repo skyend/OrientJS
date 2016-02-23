@@ -7,4 +7,7 @@ window.onload = function() {
   setInterval(function() {
     console.log("---------------3s--------------");
   }, 3000)
+
+
+  document.body.setAttribute("style", 'display:block!important')
 };

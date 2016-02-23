@@ -57,7 +57,7 @@ let PreviewScene = React.createClass({
 
     return (
       <div className="PreviewScene" style={style} >
-        <IFrameStage ref='iframe-stage' ref='iframe-stage' width={this.props.width} height={this.props.height} left={ this.props.left } top={ this.props.top } color='white' freeContextMenu={true}/>
+        <IFrameStage ref='iframe-stage' width={this.props.width} height={this.props.height} left={ this.props.left } top={ this.props.top } color='white' freeContextMenu={true}/>
       </div>
     );
   }

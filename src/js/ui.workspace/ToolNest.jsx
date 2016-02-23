@@ -36,14 +36,6 @@ var ToolNest = React.createClass({
     this.props.toolEgg.factory.removeNest(this.props.toolEgg.toolKey, this);
   },
 
-  componentDidUpdate(){
-    this.props.toolEgg.factory.updateLivingBirds(this.props.toolEgg.toolKey);
-  },
-
-  componentDidMount(){
-    this.props.toolEgg.factory.updateLivingBirds(this.props.toolEgg.toolKey);
-  },
-
   birdUpdate(){
     this.forceUpdate();
   },
@@ -67,6 +59,7 @@ var ToolNest = React.createClass({
     this.props.toolEgg.factory.registerNest(this);
     this.hatchTool();
   },
+
   //
   // componentWillUpdate(_nextProps, _nextState){
   //   console.log( arguments );

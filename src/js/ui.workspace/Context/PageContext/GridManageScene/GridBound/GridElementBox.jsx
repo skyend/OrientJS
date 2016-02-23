@@ -68,12 +68,6 @@ let GridElementBox = React.createClass({
     });
   },
 
-  setFragmentId(_fragmentId){
-    this.emit("AttachFragment", {
-      targetId: this.props.gridElement.getId(),
-      fragmentId: _fragmentId
-    });
-  },
 
   addGrid(){
     this.emit("SetNewGrid", {
