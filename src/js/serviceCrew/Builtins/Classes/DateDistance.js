@@ -47,9 +47,8 @@ class DateDistance {
     } else if (typeof _dateMean === 'number') {
       return _dateMean;
     } else if (typeof _dateMean === 'object') {
-      if (_dateMean.constructor.name === 'Date') {
+      if (_dateMean !== null && _dateMean !== undefined)
         return _dateMean.getTime();
-      }
     }
   }
 }

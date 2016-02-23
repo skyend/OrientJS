@@ -5,6 +5,8 @@ import SuperAgent from 'superagent';
 
 export default class ICEAPISource {
   constructor(_APISourceData, _serviceManager) {
+    this.clazz = 'ICEAPISource';
+
     this.serviceManager = _serviceManager;
 
     this.nodeTypeMeta = null;
@@ -204,7 +206,7 @@ export default class ICEAPISource {
     let req = this.findRequest(_requestId);
     let url;
 
-    if (this.constructor.name === 'ICEAPISource') fields.t = 'api';
+    if (this.constructor.clazz === 'ICEAPISource') fields.t = 'api';
 
     if (typeof _enctypeOrComplete === 'function') {
       complete = _enctypeOrComplete;

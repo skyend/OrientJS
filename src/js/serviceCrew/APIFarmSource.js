@@ -5,6 +5,7 @@ import Request from './API/Request';
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _serviceManager) {
     super(_APISourceData, _serviceManager);
+    this.clazz = 'APIFarmSource';
 
     this.meta = null;
   }

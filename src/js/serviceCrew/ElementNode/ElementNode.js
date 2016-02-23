@@ -1327,8 +1327,10 @@ class ElementNode {
       let scope = this.interpret(`{{<< ${eventDesc}}}`);
       if (!scope) throw new Error(` ${eventDesc} Task 를 찾지 못 하였습니다.`);
 
-      switch (scope.constructor.name) {
-        case "TaskScopeNode": // Scope 의 종류가 TaskScopeNode 인가
+
+      console.log(scope);
+      switch (scope.type) {
+        case "task": // Scope 의 종류가 TaskScopeNode 인가
           return this.__executeTask(scope, _elementNodeEvent, _originDomEvent, _completeProcess);
       }
 

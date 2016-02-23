@@ -58,7 +58,7 @@ var Enterance = React.createClass({
   },
 
   /** over Life cycle **/
-    componentDidUpdate(){
+  componentDidUpdate(){
     this.showMain();
   },
 
@@ -76,7 +76,7 @@ var Enterance = React.createClass({
   },
 
   /** Renders **/
-    renderMain(){
+  renderMain(){
 
     switch (this.state.mainType.toLowerCase()) {
       case "signin":
@@ -90,7 +90,6 @@ var Enterance = React.createClass({
 
   render(){
     return (
-
       <div id="wrapper">
         { this.renderMain()}
         <footer id="footer">

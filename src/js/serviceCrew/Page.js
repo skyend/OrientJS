@@ -8,6 +8,8 @@ import Gelato from './StandAloneLib/Gelato';
 
 class Page {
   constructor(_contextController, _pageDataObject, _serviceManager, _gelato) {
+    this.clazz = 'Page';
+
     this.contextController = _contextController;
     this.serviceManager = _serviceManager;
     this.import(_pageDataObject);

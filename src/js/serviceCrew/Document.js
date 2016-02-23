@@ -18,6 +18,8 @@ class Document {
     upperEnv : Fragment 또는 Page
   */
   constructor(_contextController, _documentParams, _documentDataObject, _fragmentOption, _upperEnv) {
+    this.clazz = 'Document';
+
     //////////////
     // 필드 정의
     ////////////////////////
@@ -332,7 +334,7 @@ class Document {
       if (treeSearchResult) return treeSearchResult;
     }
 
-    if (_allowUpper && (this.upperEnvironment && this.upperEnvironment.constructor.name === 'Document')) {
+    if (_allowUpper && (this.upperEnvironment && this.upperEnvironment.clazz === 'Document')) {
       console.log(this.upperEnvironment);
       return this.upperEnvironment.findById(_elementNodeId, _allowUpper);
     }
