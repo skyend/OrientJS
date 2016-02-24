@@ -1,6 +1,6 @@
 var Clean = require('clean-webpack-plugin');
 var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+//var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {

@@ -206,7 +206,7 @@ export default class ICEAPISource {
     let req = this.findRequest(_requestId);
     let url;
 
-    if (this.constructor.clazz === 'ICEAPISource') fields.t = 'api';
+    if (this.clazz === 'ICEAPISource') fields.t = 'api';
 
     if (typeof _enctypeOrComplete === 'function') {
       complete = _enctypeOrComplete;
