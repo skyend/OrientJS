@@ -236,6 +236,10 @@
       "jsxPath": "StandAlonePublisher",
       "title": "Stand Alone Publish"
     },
+    "SVNManager": {
+      "jsxPath": "SVNManager",
+      "title": "SVN Manager"
+    },
     "FragmentSetting": {
       "jsxPath": "FragmentSetting",
       "title": "Fragment Setting"

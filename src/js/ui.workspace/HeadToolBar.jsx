@@ -30,6 +30,13 @@ var HeadToolBar = React.createClass({
     });
   },
 
+  callSVNTool(){
+    this.emit("RequestAttachTool", {
+      "toolKey": "SVNManager",
+      "where": "ModalWindow"
+    });
+  },
+
   clickSave(){
     this.emit('SaveCurrentContext');
   },
@@ -132,6 +139,8 @@ var HeadToolBar = React.createClass({
           </li>
 
           <li className='right'>
+            <OutlineButton icon='git' title="GIT" color='deep-blue' onClick={this.callGITTool}/>
+            <OutlineButton icon='code-fork' title="SVN" color='deep-blue' onClick={this.callSVNTool}/>
             <OutlineButton icon='ship' title="Publish" color='deep-blue' onClick={this.publish}/>
             <OutlineButton icon='user' title={this.state['user-info'].name || this.state['user-info'].userid} color='blue'/>
           </li>
