@@ -440,7 +440,7 @@ class ElementNode {
         if (isBuiltDC) {
 
           // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
-          if (this.dynamicContextAttitude !== 'passive')
+          if (this.dynamicContextAttitude === 'active')
             this.executeDynamicContext();
         }
       } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
@@ -588,7 +588,7 @@ class ElementNode {
         } else {
           that.clonedBackupDOMs = repeatedDomList;
         }
-
+        console.log(repeatedDomList);
         _complete(repeatedDomList);
       })
   }

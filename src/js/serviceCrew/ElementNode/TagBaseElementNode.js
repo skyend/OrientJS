@@ -545,20 +545,23 @@ class TagBaseElementNode extends ElementNode {
       this.setName(_domElement.getAttribute('en-name'));
 
     // DynamicContext
-    if (_domElement.getAttribute('en-dc-source-id') !== null)
+    if (_domElement.getAttribute('en-dc-source-id') !== null) {
       this.dynamicContextSID = _domElement.getAttribute('en-dc-source-id');
 
-    if (_domElement.getAttribute('en-dc-request-id') !== null)
-      this.dynamicContextRID = _domElement.getAttribute('en-dc-request-id');
+      if (_domElement.getAttribute('en-dc-request-id') !== null)
+        this.dynamicContextRID = _domElement.getAttribute('en-dc-request-id');
 
-    if (_domElement.getAttribute('en-dc-inject-params') !== null)
-      this.dynamicContextInjectParams = _domElement.getAttribute('en-dc-inject-params');
+      if (_domElement.getAttribute('en-dc-inject-params') !== null)
+        this.dynamicContextInjectParams = _domElement.getAttribute('en-dc-inject-params');
 
-    if (_domElement.getAttribute('en-dc-ns') !== null)
-      this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
+      if (_domElement.getAttribute('en-dc-ns') !== null)
+        this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
 
-    if (_domElement.getAttribute('en-dc-attitude') !== null) {
-      this.dynamicContextAttitude = _domElement.getAttribute('en-dc-attitude');
+      if (_domElement.getAttribute('en-dc-attitude') !== null) {
+        this.dynamicContextAttitude = _domElement.getAttribute('en-dc-attitude');
+      } else {
+        this.dynamicContextAttitude = 'active';
+      }
     }
 
     // Controls

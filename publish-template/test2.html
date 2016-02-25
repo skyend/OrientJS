@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+  <head>
+    <title> Temporary Publish : Test </title>
+
+    <!-- Page Meta JSON -->
+    <script id='page-meta' type='text/json'>
+      {
+        "id":1231221323,
+        "scripts":[
+          "http://code.jquery.com/jquery-latest.min.js",
+          "http://code.jquery.com/ui/1.11.1/jquery-ui.js",
+          "https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true",
+          "bootstrap.min.js",
+          "bootstrap-hover-dropdown.min.js",
+          "SmoothScroll.js",
+          "jquery.dragtable.js",
+          "jquery.card.js",
+          "owl.carousel.min.js",
+          "twitterFetcher_min.js",
+          "color-switcher.js"
+
+        ],
+        "styles":[
+          "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900,900italic&amp;subset=latin,latin-ext",
+          "https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,900,800",
+          "http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css",
+          "bootstrap.min.css",
+          "font-awesome.min.css",
+          "dragtable.css",
+          "owl.carousel.css",
+          "animate.css",
+          "color-switcher.css",
+          "custom.css",
+          "red.css"
+        ]
+      }
+    </script>
+
+    <!-- Publish -->
+    <script src='http://localhost:8080/built-foundation.js'></script>
+    <script>
+      window.onload = function(){
+        $ervice.startup();
+      }
+    </script>
+  </head>
+  <body >
+
+    <div en-id='container-test'>
+      <en:value name='count' type='number' value='5'></en:value>
+
+      <en:task name='render' action='update-to' arg-eid='container-test'></en:task>
+
+      <button en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-repeat-n='100'>
+        <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
+
+        Count {{<< en-attr@count }}
+      </button>
+
+      <br/>
+      현재 개수 : {{<< val@count }}
+
+
+
+      <div style='width:30%; float:left;' >
+        <ul en-dc-source-id='broadcast_series'
+          en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
+          en-dc-ns='broadcast_series-list,csdp-product' en-dc-inject-params='pagecount={{<< val@count || "0" }}'
+          en-event-complete-bind='task@completeBind'>
+          <en:task name='completeBind' action='completeBind' arg-message='aa' trace></en:task>
+          <en:action name='completeBind'>
+          alert('aa');
+          console.log('hello');
+            console.log(this.forwardDOM.innerHTML);
+          </en:action>
+
+          <li en-id='item' en-ctrl-repeat-n='{{<< ns@broadcast_series-list.count }}'>
+            <h3>   {{<< ns@broadcast_series-list.items[en@repeat-n].title}} <sub> ({{<< en@repeat-n }}) </sub></h3>
+            {{<< ns@broadcast_series-list.items[en@repeat-n].nid}}
+
+          </li>
+
+        </ul>
+
+
+      </div>
+
+      <div style='width:30%; float:left;' >
+        <en:value name='value' type='string' value=''></en:value>
+
+        <div en-dc-source-id='broadcast_series'
+        en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
+        en-dc-ns='broadcast_series-list,csdp-product' en-dc-inject-params='pagecount={{<< val@count || "0" }}'>
+          <en:task name='change' action='set' arg-name='value' arg-value='{{<< feature@event.originEvent.target.value}}' chain-success='render'></en:task>
+
+
+          <select en-event-change='task@change' value='{{<< val@value }}'>
+            <option en-ctrl-repeat-n='{{<< ns@broadcast_series-list.count }}' value='{{<< ns@broadcast_series-list.items[en@repeat-n].nid}}'>
+              {{<< ns@broadcast_series-list.items[en@repeat-n].title}} / ({{<< en@repeat-n }})
+            </option>
+          </select>
+        </div>
+
+
+      </div>
+    </div>
+
+
+  </body>
+</html>
