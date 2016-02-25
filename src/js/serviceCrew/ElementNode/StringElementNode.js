@@ -224,8 +224,8 @@ class StringElementNode extends ElementNode {
     this.wrappingTag = _elementNodeDataObject.wrappingTag || null;
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender) {
+    let result = super.export(_withoutId, _idAppender);
     result.text = this.getText();
     result.enableHTML = this.enableHTML;
     result.wrappingTag = this.wrappingTag;

@@ -162,12 +162,13 @@
           opacity:{{<< val@opacity}};
           transition:all .3s;'
         en-ctrl-repeat-n='50'
-        en-event-mouseenter='task@over' en-event-mouseleave='task@leave'>
+        en-event-mouseenter='task@over' en-event-mouseleave='task@leave' en-event-will-construct-dom='task@testCon'>
         <en:value name='opacity' type='number' value='0.5'></en:value>
         <en:task name='over' action='set' arg-name='opacity' arg-value='0.1' chain-success='update'></en:task>
         <en:task name='leave' action='set' arg-name='opacity' arg-value='0.5' chain-success='update'></en:task>
         <en:task name='update' action='update'></en:task>
-
+        <en:task name='testCon' action='alert' arg-message='construct'></en:task>
+        <input type='hidden'/>
       </div>
     </div>
   </div>

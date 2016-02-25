@@ -334,6 +334,45 @@ class ElementNode {
     this.realization.setAttribute('en-type', this.type);
   }
 
+  constructDOMs(_options, _complete) {
+    let that = this;
+
+    if (this.hasEvent('will-construct-dom')) {
+      let that = this;
+
+      /*******************************************/
+      /***** Emit Event 'will-construct-dom' *****/
+      /*******************************************/
+      that.__progressEvent('will-construct-dom', {}, null, function done(_actionResult) {
+        that.constructDOMsInner(_options, function(_doms) {
+
+          if (that.hasEvent("did-construct-dom")) {
+
+            /******************************************/
+            /***** Emit Event 'did-construct-dom' *****/
+            /******************************************/
+            that.__progressEvent('did-construct-dom', {}, null, function done(_actionResult) {});
+          }
+
+          _complete(_doms);
+        });
+      });
+    } else {
+      this.constructDOMsInner(_options, function(_doms) {
+
+        if (that.hasEvent("did-construct-dom")) {
+
+          /******************************************/
+          /***** Emit Event 'did-construct-dom' *****/
+          /******************************************/
+          that.__progressEvent('did-construct-dom', {}, null, function done(_actionResult) {});
+        }
+
+        _complete(_doms);
+      });
+    }
+  }
+
   /*
     constructDOM
     Parameters
@@ -350,7 +389,7 @@ class ElementNode {
     Returns by arguments of Callback
       0. DOMNode or NULL
   */
-  constructDOMs(_options, _complete) { // Controls : Hidden, Repeat-n
+  constructDOMsInner(_options, _complete) { // Controls : Hidden, Repeat-n
     // [
     //  [0] Before Controls
     //  [1] Node 생성
@@ -487,10 +526,11 @@ class ElementNode {
             console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
 
             that.constructDOMs({
-              forward: true,
+              forward: false,
               keepDC: 'once'
             }, function(_domList) {
-              that.parent.forwardMe(that);
+              that.parent.applyMe(that);
+
 
               /**************************************/
               /***** Emit Event 'complete-bind' *****/
@@ -518,8 +558,7 @@ class ElementNode {
     this.cloned = true;
 
     async.eachSeries(_.range(parseInt(_repeatNumber)), function iterator(_i, _next) {
-        exportObject = that.export();
-        exportObject.id = exportObject.id + '@' + _i; // repeat-counting
+        exportObject = that.export(false, `@${_i}`);
 
         elementNode = that.clonePool[_i];
 
@@ -1434,7 +1473,8 @@ class ElementNode {
     }
 
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
-    action.execute(executeParamMap, this, this.forwardDOM.ownerDocument.defaultView, function(_actionResult) {
+    //action.execute(executeParamMap, this, this.forwardDOM.ownerDocument.defaultView, function(_actionResult) {
+    action.execute(executeParamMap, this, null, function(_actionResult) {
       let chainedTask;
 
       // task chain 처리
@@ -1490,6 +1530,7 @@ class ElementNode {
 
   refresh(_complete) {
     let that = this;
+    console.log(this);
 
     if (this.hasEvent("will-refresh")) {
 
@@ -1505,6 +1546,10 @@ class ElementNode {
       });
     } else {
       that.refreshForwardDOM(function(_doms) {
+
+        _doms.map(function(_dom) {
+          console.log(_dom);
+        })
         _complete(_doms);
       });
     }
@@ -1563,9 +1608,9 @@ class ElementNode {
 
       if (that.hasEvent("did-update")) {
 
-        /************************************/
-        /***** Emit Event 'will-update' *****/
-        /************************************/
+        /***********************************/
+        /***** Emit Event 'did-update' *****/
+        /***********************************/
         this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
       }
     });
@@ -1673,9 +1718,9 @@ class ElementNode {
 
   //////////////////////////
   // export methods
-  export (_withoutId) {
+  export (_withoutId, _idAppender) {
     var exportObject = {
-      id: _withoutId ? undefined : this.id,
+      id: _withoutId ? undefined : this.id + (_idAppender || ''),
       type: this.getType(),
       name: this.getName(),
       controls: _.clone(this.getControls()),

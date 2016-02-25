@@ -251,8 +251,8 @@ class ReactElementNode extends TagBaseElementNode {
     }
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender) {
+    let result = super.export(_withoutId, _idAppender);
     result.reactPackageKey = this.getReactPackageKey();
     result.reactComponentKey = this.getReactComponentKey();
     result.reactComponentProps = _.clone(this.getReactComponentProps());

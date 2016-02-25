@@ -202,7 +202,7 @@ export default class ICEAPISource {
   executeRequest(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
     let enctype, complete;
     let fields = _fields || {};
-
+    let that = this;
     let req = this.findRequest(_requestId);
     let url;
 
@@ -232,6 +232,8 @@ export default class ICEAPISource {
         .query(fields)
         .end(function(err, res) {
           if (err !== null) {
+            console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
+
             complete(null);
           } else {
             complete(res.body, res.statusCode);
@@ -244,6 +246,8 @@ export default class ICEAPISource {
         .send(enctype === 'multipart/form-data' ? this.convertFieldsToFormData(fields) : fields)
         .end(function(err, res) {
           if (res === null) {
+            console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
+
             complete(null);
           } else {
             complete(res.body, res.statusCode);

@@ -5,6 +5,12 @@ import Factory from './Factory';
 import async from 'async';
 import SA_Fragment from '../StandAloneLib/Fragment'
 import Gelato from '../StandAloneLib/Gelato';
+
+import ActionStore from '../Actions/ActionStore';
+
+// Actions Import
+import '../Actions/RefElementNodeActions';
+
 "use strict";
 
 let RefferenceType = Object.freeze({
@@ -152,32 +158,20 @@ class RefElementNode extends HTMLElementNode {
   }
 
   _sa_loadRefferenced(_complete) {
-
+    let refTargetId = this.interpret(this.refTargetId);
+    console.log("ref target id ", refTargetId);
     if (this.refType === 'ElementNode') {
       this._sa_loadSharedElementNode(_complete);
     } else if (this.refType === 'Fragment') {
       //this._sa_loadFragment(_complete);
 
-      this.environment.highestEnvironment.loadFragment(this.refTargetId, function(_err, _fragment) {
+      this.environment.highestEnvironment.loadFragment(refTargetId, function(_err, _fragment) {
         _complete(_fragment);
       });
 
     }
   }
 
-  _sa_loadFragment(_complete) {
-    let that = this;
-    let refTargetId = this.interpret(this.refTargetId);
-
-    SALoader.loadFragment(refTargetId, function(_fragmentText) {
-
-      let fragment = new SA_Fragment(refTargetId, _fragmentText, that.realization);
-
-      fragment.buildElementNode(that.environment);
-
-      _complete(fragment);
-    });
-  }
 
   _sa_loadSharedElementNode(_complete) {
     let that = this;
@@ -197,6 +191,11 @@ class RefElementNode extends HTMLElementNode {
 
       _complete(children);
     });
+  }
+
+  resetRefInstance() {
+    this.loadedRefs = false;
+    this.loadedInstance = null;
   }
 
   import (_elementNodeDataObject) {

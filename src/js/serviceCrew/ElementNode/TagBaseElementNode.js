@@ -351,8 +351,13 @@ class TagBaseElementNode extends ElementNode {
 
   mappingAttribute(_dom, _attrName, _options) {
     let options = _options || {};
+    let value = options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName);
 
-    _dom.setAttribute(_attrName, options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName));
+    if (_attrName === 'value') {
+      _dom.value = value;
+    }
+
+    _dom.setAttribute(_attrName, value);
   }
 
 
@@ -600,6 +605,11 @@ class TagBaseElementNode extends ElementNode {
     if (_domElement.getAttribute('en-event-will-show') !== null) // will show
       this.setEvent('will-show', _domElement.getAttribute('en-event-will-show'));
 
+    if (_domElement.getAttribute('en-event-will-construct-dom') !== null)
+      this.setEvent('will-construct-dom', _domElement.getAttribute('en-event-will-construct-dom'));
+
+    if (_domElement.getAttribute('en-event-did-construct-dom') !== null)
+      this.setEvent('did-construct-dom', _domElement.getAttribute('en-event-did-construct-dom'));
 
     // 보류
     // if (_domElement.getAttribute('en-event-will-value-change') !== null) // will  value change
@@ -682,8 +692,8 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender) {
+    let result = super.export(_withoutId, _idAppender);
     result.behavior = this.behavior;
     result.attributes = _.clone(this.getAttributes());
     result.rectangle = _.clone(this.getRectangle());

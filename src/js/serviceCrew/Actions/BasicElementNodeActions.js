@@ -51,7 +51,6 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
   if (eid !== undefined) {
     targetElementNode = this.environment.findById(eid, true, this);
   }
-
   targetElementNode.refresh(function() {
     _actionResult.code = 'success';
     _callback(_actionResult);

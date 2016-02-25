@@ -217,7 +217,7 @@ class Resolver {
     let splitForTypeCast = (splited[1] || '').split(':');
     let varName = splitForTypeCast[0];
     let type = splitForTypeCast[1];
-    console.log(varCategory, varName);
+    //console.log(varCategory, varName);
 
     let data;
     switch (varCategory) {
@@ -239,10 +239,18 @@ class Resolver {
         break;
       case 'val-plain':
         console.log(_externalGetterInterface.getScope(varName, 'value'));
-        data = _externalGetterInterface.getScope(varName, 'value').plainValue;
+        try {
+          data = _externalGetterInterface.getScope(varName, 'value').plainValue;
+        } catch (_e) {
+          throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
+        }
         break;
       case 'val':
-        data = _externalGetterInterface.getScope(varName, 'value').shapeValue;
+        try {
+          data = _externalGetterInterface.getScope(varName, 'value').shapeValue;
+        } catch (_e) {
+          throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
+        }
         break;
       case 'task':
         data = _externalGetterInterface.getScope(varName, 'task');

@@ -129,6 +129,7 @@ class HTMLElementNode extends TagBaseElementNode {
             prevDom = targetForwardDOMs[j];
 
             newClonedForwardDoms.push(targetForwardDOMs[j]);
+
             console.log('apply ');
             if (typeof targetForwardDOMs[j].___en.applyAllChildren === 'function')
               targetForwardDOMs[j].___en.applyAllChildren();
@@ -141,7 +142,7 @@ class HTMLElementNode extends TagBaseElementNode {
           } else if (targetForwardDOMs[j] === undefined && targetBackupDOMs[j] !== undefined) {
             // append 처리
 
-            if (prevDom !== null) {
+            if (prevDom) {
               let nextNode = prevDom.nextSibling;
 
               // 다음 노드가 없을 경우 appendCHild 를 수행한다.
@@ -444,19 +445,19 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children = this.inspireChildren(_elementNodeDataObject.children || []);
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender) {
+    let result = super.export(_withoutId, _idAppender);
     result.children = [];
 
     this.children.map(function(_child) {
       if (!_child.isGhost) {
         // 자식이 고스트가 아닌경우만 export한다.
-        result.children.push(_child.export(_withoutId));
+        result.children.push(_child.export(_withoutId, _idAppender));
       } else {
 
         // 자식이 고스트이면서 반복된 요소일 떄는 export한다.
         if (!_child.isRepeated) {
-          result.children.push(_child.export(_withoutId));
+          result.children.push(_child.export(_withoutId, _idAppender));
         }
       }
 

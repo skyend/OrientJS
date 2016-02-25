@@ -364,8 +364,8 @@ class GridElementNode extends HTMLElementNode {
     this.followingFragment = _elementNodeDataObject.followingFragment || null;
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender) {
+    let result = super.export(_withoutId, _idAppender);
     result.followingFragment = this.followingFragment;
 
     return result;

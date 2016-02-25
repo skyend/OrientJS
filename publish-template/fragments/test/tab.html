@@ -225,12 +225,27 @@
         </div>
 
   </div>
-<div>
-  <div en-ctrl-repeat-n='5'>
-    <input en-ctrl-repeat-n='5'>
-  </div>
+  <div en-id='wrapper-tag'>
+    <div en-ctrl-repeat-n='5'>
+      <input en-ctrl-repeat-n='5'>
+    </div>
+    <div >
+      <en:value name='district_1_code' type='string' value='1'></en:value>
 
-</div>
+      <div >
+        <en:task name='refresh' action='update-to' arg-eid='wrapper-tag'></en:task>
+        <en:task name='changed' action='set' arg-name='district_1_code' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='refresh'></en:task>
+
+        <select title="1차"  value='{{<< val@district_1_code}}' en-event-change='task@changed'>
+            <option en-ctrl-repeat-n="10" value="{{<< en@repeat-n }}">
+               {{<< en@repeat-n }}
+            </option>
+        </select>
+
+
+      </div>
+    </div>
+  </div>
   <div>
     <div en-id='tab-container' tab-count='5' tab-current='{{<< 0}}'>
 
@@ -304,7 +319,7 @@
     <div class="panel panel-primary" en-id='test-panel-tab' en-ctrl-repeat-n='{{<< en-attr@repeat-number}}'>
       <div class="panel-heading" role="tab" en-event-click='task@forward'>
         <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{<< en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='update'></en:task>
-        <en:task name='update' action='refresh-to' arg-eid='panel-container2'></en:task>
+        <en:task name='update' action='update-to' arg-eid='panel-container2'></en:task>
         <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1 Update Test</a></h4>
 
         <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
