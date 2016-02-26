@@ -353,6 +353,12 @@ class TagBaseElementNode extends ElementNode {
     let options = _options || {};
     let value = options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName);
 
+
+    // value 의 최종 값이 null 이라면 무시한다.
+    if (value === null) {
+      return;
+    }
+
     if (_attrName === 'value') {
       _dom.value = value;
     }

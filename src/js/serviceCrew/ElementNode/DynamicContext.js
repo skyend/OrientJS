@@ -42,6 +42,16 @@ class DynamicContext {
     this.namespaces = _props.namespaces;
     this.injectParams = _props.injectParams;
 
+
+    // sourceID 에 대한 예외처리를 하지 않는 이유는 sourceID가 존재하지 않으면 DynamicContext가 생성되지 않으므로.
+    if (!this.requestIDs) {
+      throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceIDs}'`);
+    }
+
+    if (!this.namespaces) {
+      throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceIDs}', 연관 RequestID : '${this.requestIDs}'`);
+    }
+
     this.apisources = [];
     this.isLoading = false;
   }
