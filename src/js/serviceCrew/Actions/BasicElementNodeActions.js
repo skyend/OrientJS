@@ -245,6 +245,10 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
       _actionResult.code = validate(/^[\w\d]+@[\w\d-]+\.[\w]+$/, text);
       break;
 
+    case 'password':
+      _actionResult.code = validate(/^[\w\d\!\@\#\$\%\^\*\?\_\~]{8,}$/, text);
+      break;
+
     case 'email-host':
       _actionResult.code = validate(/^[\w\d-]+\.[\w]+$/, text);
       break;

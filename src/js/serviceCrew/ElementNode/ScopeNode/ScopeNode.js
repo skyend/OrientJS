@@ -10,7 +10,11 @@ class ScopeNode {
     scopeSpecObject.debug = _dom.getAttribute('debug');
 
     scopeSpecObject.name = _dom.getAttribute('name');
-    if (!/\w+/.test(scopeSpecObject.name || '')) throw new Error("Scope 선언에는 name 이 포함되어야 합니다.");
+    if (!/\w+/.test(scopeSpecObject.name || '')) {
+      console.info(_dom);
+      throw new Error("Scope 선언에는 name 이 포함되어야 합니다.", _dom);
+    }
+
     _dom.removeAttribute('name'); // name Attribute 를 읽었으므로 제거
 
 
