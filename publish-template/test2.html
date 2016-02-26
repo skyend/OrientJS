@@ -13,7 +13,6 @@
           "https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true",
           "bootstrap.min.js",
           "bootstrap-hover-dropdown.min.js",
-          "SmoothScroll.js",
           "jquery.dragtable.js",
           "jquery.card.js",
           "owl.carousel.min.js",
@@ -46,17 +45,22 @@
     </script>
   </head>
   <body >
+    <en:value name='count' type='number' value='5'></en:value>
+    <en:task name='render' action='update-to' arg-eid='container-test'></en:task>
+    <!-- <en:task name='render' en-delegate='dc-ul' action='executeDC'></en:task> -->
+  <en:value name='value' type='string' value=''></en:value>
+    <button en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-repeat-n='100'>
+      <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
+
+      Count {{<< en-attr@count }}
+    </button>
 
     <div en-id='container-test'>
-      <en:value name='count' type='number' value='5'></en:value>
 
-      <en:task name='render' action='update-to' arg-eid='container-test'></en:task>
 
-      <button en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-repeat-n='100'>
-        <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
 
-        Count {{<< en-attr@count }}
-      </button>
+
+
 
       <br/>
       현재 개수 : {{<< val@count }}
@@ -67,7 +71,7 @@
         <ul en-dc-source-id='broadcast_series'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
           en-dc-ns='broadcast_series-list,csdp-product' en-dc-inject-params='pagecount={{<< val@count || "0" }}'
-          en-event-complete-bind='task@completeBind'>
+          en-event-complete-bind='task@completeBind' en-id='dc-ul'>
           <en:task name='completeBind' action='completeBind' arg-message='aa' trace></en:task>
           <en:action name='completeBind'>
           alert('aa');
@@ -87,7 +91,7 @@
       </div>
 
       <div style='width:30%; float:left;' >
-        <en:value name='value' type='string' value=''></en:value>
+
 
         <div en-dc-source-id='broadcast_series'
         en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'

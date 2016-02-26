@@ -447,11 +447,12 @@ class ElementNode {
         options.keepDC = false;
       }
 
-      let repeatNumber = this.getControlWithResolve('repeat-n');
 
       // 하나이상의 요소를 생성하여 반환한다.
       // 반복인자가 유효하고 반복요소가 아닌 요소에 한해서 자신을 여러개 복제 하여 반환한다.
-      if (/^\d+$/.test(repeatNumber) && !this.isRepeated) {
+      if (/.+/.test(this.getControl('repeat-n') || '') && !this.isRepeated) {
+        let repeatNumber = this.getControlWithResolve('repeat-n');
+
         this.multipleConstruct(repeatNumber, options, _complete);
       } else {
         this.singleConstruct(options, _complete);

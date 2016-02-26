@@ -38,10 +38,15 @@ Action Function Scope 내 의 고정 인자
 actionStore.registerAction('refresh', ['taskChain'], function() {
   _actionResult.taskChain = taskChain;
 
-  this.refresh(function() {
+  this.update(function() {
     _actionResult.code = 'success';
     _callback(_actionResult);
   });
+
+  // this.refresh(function() {
+  //   _actionResult.code = 'success';
+  //   _callback(_actionResult);
+  // });
 });
 
 actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], function() {
@@ -51,8 +56,14 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
   if (eid !== undefined) {
     targetElementNode = this.environment.findById(eid, true, this);
   }
-  targetElementNode.refresh(function() {
+  // targetElementNode.refresh(function() {
+  //   _actionResult.code = 'success';
+  //   _callback(_actionResult);
+  // });
+
+  targetElementNode.update(function() {
     _actionResult.code = 'success';
+
     _callback(_actionResult);
   });
 });

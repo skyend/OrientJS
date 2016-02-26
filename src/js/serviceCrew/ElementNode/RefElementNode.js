@@ -88,21 +88,27 @@ class RefElementNode extends HTMLElementNode {
             }
           });
 
+          console.log(that.loadedInstance);
 
-          that.loadedInstance.constructDOMChildren(_options, function(_domList) {
-            _htmlNode.innerHTML = '';
+          this.children = that.loadedInstance.rootElementNodes;
+          super.childrenConstructAndLink(_options, _htmlNode, _complete);
 
-            // parent 삽입
-            that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
-              _rootElementNode.setParent(that);
-            });
-
-            _domList.map(function(_dom) {
-              _htmlNode.appendChild(_dom);
-            });
-
-            _complete([]);
-          });
+          // that.loadedInstance.constructDOMChildren(_options, function(_domList) {
+          //   _htmlNode.innerHTML = '';
+          //
+          //   // parent 삽입
+          //   that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
+          //     _rootElementNode.setParent(that);
+          //   });
+          //
+          //   _domList.map(function(_dom) {
+          //
+          //     _htmlNode.appendChild(_dom);
+          //
+          //   });
+          //
+          //   _complete([]);
+          // });
 
         } else if (that.refType === 'ElementNode') {
           that.loadedInstance.map(function(_elementNode) {
