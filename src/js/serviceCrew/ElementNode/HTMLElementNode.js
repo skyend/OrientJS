@@ -61,7 +61,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let children = this.children;
     let childrenLen = children.length;
 
-    console.log('applyAllChildren');
+    // console.log('applyAllChildren');
     for (let i = 0; i < childrenLen; i++) {
 
       this.applyChild(children[i]);
@@ -73,7 +73,7 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   applyChild(_targetChildElementNode) {
-    console.log(this.forwardDOM, this.forwardDOM.childNodes);
+    // console.log(this.forwardDOM, this.forwardDOM.childNodes);
     // 실제 childNodes 로 조작대상의 범위를 확인 한 후 apply / append / remove 를 실행하고 하위 자식에 대해서도 동일한 작업이 수행 되도록 한다.
     let childNodes = this.forwardDOM.childNodes;
     let targetId = _targetChildElementNode.id;
@@ -100,7 +100,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
     let child;
     let passThroughTarget = false; // 불필요한 변수일 수 도 있음. 목표 대상에 도달 했을 때 처리가 완료 될 예정이므로
-    console.log(this.children.length);
+    // console.log(this.children.length);
     for (let i = 0; i < this.children.length; i++) {
       child = this.children[i];
 
@@ -109,9 +109,9 @@ class HTMLElementNode extends TagBaseElementNode {
         let targetBackupDOMs = _targetChildElementNode.getBackupDOMs();
         let maxLength = Math.max(targetForwardDOMs.length, targetBackupDOMs.length);
         let newClonedForwardDoms = [];
-        console.log('target child', child, child.id);
-        console.log('backupdom', targetBackupDOMs);
-        console.log('forwarddom', targetForwardDOMs);
+        // console.log('target child', child, child.id);
+        // console.log('backupdom', targetBackupDOMs);
+        // console.log('forwarddom', targetForwardDOMs);
         /*
           beforeRangeIndex 값이 -1 이면 forwardDOM에 새 요소를 등록 해야 할 때 appendChild를 수행하고
                                    이 아니면 해당 index의 다음요소를 기준으로 처리한다.
@@ -121,7 +121,7 @@ class HTMLElementNode extends TagBaseElementNode {
           insertAfter
           insertBefore
         */
-        console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom, child.id, maxLength);
+        // console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom, child.id, maxLength);
 
         let prevDom = beforeRangeIndex == -1 ? null : childNodes[beforeRangeIndex]; // 이전 요소 , 시작은 beforeRangeIndex에 해당하는 요소가 된다.
         for (let j = 0; j < maxLength; j++) {
@@ -134,14 +134,14 @@ class HTMLElementNode extends TagBaseElementNode {
 
             newClonedForwardDoms.push(targetForwardDOMs[j]);
 
-            console.log('apply ', targetForwardDOMs[j].___en.id);
+            // console.log('apply ', targetForwardDOMs[j].___en.id);
 
             if (typeof targetForwardDOMs[j].___en.applyAllChildren === 'function')
               targetForwardDOMs[j].___en.applyAllChildren();
 
           } else if (targetForwardDOMs[j] !== undefined && targetBackupDOMs[j] === undefined) {
             // removeChild 처리
-            console.log('remove ', j, targetForwardDOMs[j], targetForwardDOMs[j].___en.id);
+            // console.log('remove ', j, targetForwardDOMs[j], targetForwardDOMs[j].___en.id);
 
             this.forwardDOM.removeChild(targetForwardDOMs[j]);
           } else if (targetForwardDOMs[j] === undefined && targetBackupDOMs[j] !== undefined) {
@@ -170,7 +170,7 @@ class HTMLElementNode extends TagBaseElementNode {
             prevDom = targetBackupDOMs[j];
             targetBackupDOMs[j].___en.forwardDOM = targetBackupDOMs[j].___en.backupDOM;
             //targetBackupDOMs[j].___en.backupDOM = null;
-            console.log('appended ', j, targetBackupDOMs[j], targetBackupDOMs[j].___en, targetBackupDOMs[j].___en.id);
+            // console.log('appended ', j, targetBackupDOMs[j], targetBackupDOMs[j].___en, targetBackupDOMs[j].___en.id);
 
             if (typeof targetBackupDOMs[j].___en.applyAllChildren === 'function')
               targetBackupDOMs[j].___en.applyAllChildren();
