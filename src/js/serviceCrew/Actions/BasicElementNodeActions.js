@@ -257,6 +257,18 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
       _actionResult.code = validate(/^\d{2,3}-\d{3,4}-\d{3,4}$/, text);
       break;
 
+    case 'birthdate':
+      _actionResult.code = validate(/^\d{4}\d{2}\d{2}$/, text);
+      break;
+
+    case 'birth-date':
+      _actionResult.code = validate(/^\d{4}-\d{1,2}-\d{1,2}$/, text);
+      break;
+
+    case 'birth-day':
+      _actionResult.code = validate(/^\d{1,2}-\d{1,2}$/, text);
+      break;
+
     default:
       throw new Error("지원하지 않는 유효성 검사 타입입니다.");
   }
@@ -368,6 +380,16 @@ actionStore.registerAction('singleReturn', ['returnValue'], function() {
 
 actionStore.registerAction('executeDC', [], function() {
   this.executeDynamicContext();
+
+  _callback(_actionResult);
+});
+
+actionStore.registerAction('pipe', ['pipeName', 'pipeData'], function() {
+
+  this.executeEventPipe(pipeName, pipeData || {}, function(_pipeResult) {
+
+    _callback(_actionResult);
+  });
 });
 
 //****** ElementNode default Actions *****//

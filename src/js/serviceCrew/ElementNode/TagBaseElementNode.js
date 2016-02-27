@@ -3,6 +3,7 @@ import _ from 'underscore';
 import Gelato from '../StandAloneLib/Gelato';
 "use strict";
 
+const PIPE_EVENT_SPLIT_REGEXP = /^en-pipe-event-([\w\-\_\d]+)$/;
 
 const DOMEvents = [
   // Mouse Events
@@ -343,8 +344,10 @@ class TagBaseElementNode extends ElementNode {
     // dom defaults events
     if (this.getEvent('click'))
       _domNode.setAttribute('en-event-click', this.getEvent('click'));
+
     if (this.getEvent('mouseenter'))
       _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
+
     if (this.getEvent('complete-bind'))
       _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
   }
@@ -633,6 +636,17 @@ class TagBaseElementNode extends ElementNode {
     // if (_domElement.getAttribute('en-event-did-attr-change') !== null) // did attr change
     //   this.setEvent('did-value-change', _domElement.getAttribute('en-event-did-attr-change'));
 
+
+    // Pipe Event 적용
+    var attributes = _domElement.attributes;
+    let matched;
+    for (var i = 0; i < attributes.length; i++) {
+      matched = attributes[i].name.match(PIPE_EVENT_SPLIT_REGEXP);
+
+      if (matched !== null) {
+        this.setPipeEvent(matched[1], attributes[i].nodeValue);
+      }
+    }
   }
 
 

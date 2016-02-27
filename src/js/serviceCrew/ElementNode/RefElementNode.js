@@ -88,10 +88,10 @@ class RefElementNode extends HTMLElementNode {
             }
           });
 
-          console.log(that.loadedInstance);
 
-          this.children = that.loadedInstance.rootElementNodes;
-          super.childrenConstructAndLink(_options, _htmlNode, _complete);
+          // this.children = that.loadedInstance.rootElementNodes;
+          // this.forwardDOM.innerHTML = '';
+          // super.childrenConstructAndLink(_options, _htmlNode, _complete);
 
           // that.loadedInstance.constructDOMChildren(_options, function(_domList) {
           //   _htmlNode.innerHTML = '';
@@ -109,6 +109,31 @@ class RefElementNode extends HTMLElementNode {
           //
           //   _complete([]);
           // });
+
+          that.loadedInstance.constructDOMChildren(_options, function(_domList) {
+            _htmlNode.innerHTML = '';
+
+            // parent 삽입
+            that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
+              _rootElementNode.setParent(that);
+
+              if (_options.forward) {
+
+                _htmlNode.appendChild(_rootElementNode.forwardDOM);
+              } else {
+                _rootElementNode.forwardDOM = _rootElementNode.backupDOM;
+                _htmlNode.appendChild(_rootElementNode.forwardDOM);
+
+                _rootElementNode.applyAllChildren();
+              }
+
+            });
+
+
+
+            _complete([]);
+          });
+
 
         } else if (that.refType === 'ElementNode') {
           that.loadedInstance.map(function(_elementNode) {

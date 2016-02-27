@@ -40,7 +40,7 @@
                 height:{{<< 100 + en@repeat-n + Math.cos(val@x)*50 }}px;
                 left:{{<< 300 + Math.sin(val@x + en@repeat-n * 0.02 )*300 }}px;
                 top:{{<< 300 + Math.cos(val@x + en@repeat-n * 0.02)*300 }}px;'
-          en-ctrl-repeat-n='100'>
+          en-ctrl-repeat-n='360'>
           <en:task name='hidden' action='attr' arg-name='opacity' arg-value='0.1' chain-success='update'></en:task>
           <en:task name='show' action='attr' arg-name='opacity' arg-value='1' chain-success='update'></en:task>
           <en:task name='update' action='update'></en:task>

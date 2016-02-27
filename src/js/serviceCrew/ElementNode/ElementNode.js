@@ -28,7 +28,7 @@ import Gelato from '../StandAloneLib/Gelato';
 "use strict";
 
 
-let EventEffectMatcher = /^([\w-]+)@([\w-]+)$/;
+const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
 
 class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
@@ -61,6 +61,7 @@ class ElementNode {
     } **/
 
     this.nodeEvents;
+    this.pipeEvents;
 
     // date fields
     this.createDate;
@@ -219,6 +220,18 @@ class ElementNode {
     return this._nodeEvents[_name] ? true : false;
   }
 
+  get pipeEvents() {
+    return this._pipeEvents;
+  }
+
+  getPipeEvent(_name) {
+    return this._pipeEvents[_name];
+  }
+
+  hasPipeEvent(_name) {
+    return this._pipeEvents[_name] ? true : false;
+  }
+
   // controls
   getControls() {
     return this.controls;
@@ -314,6 +327,14 @@ class ElementNode {
 
   setEvent(_name, _value) {
     this._nodeEvents[_name] = _value;
+  }
+
+  set pipeEvents(_pipeEvents) {
+    this._pipeEvents = _pipeEvents;
+  }
+
+  setPipeEvent(_name, _value) {
+    this._pipeEvents[_name] = _value;
   }
 
   // controls
@@ -440,8 +461,25 @@ class ElementNode {
         if (isBuiltDC) {
 
           // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
-          if (this.dynamicContextAttitude === 'active')
+          if (this.dynamicContextAttitude === 'active') {
+
+
+
+            /*
+
+            랜더링 중에 DynamicContext 가 실행되면
+            현재 트리부터 랜더링을 중지하며
+            랜더링이 완료된 후에 값을 표시하도록 변경한다.
+
+            Todo
+             나중엔 랜더링 흐름을 큐 방식으로 컨트롤을 하여 랜더링중에 DC가 실행되어도
+             DC 로드가 완료 되었을 때 다시 랜더링 하여도 랜더링에 문제가 없도록 한다.
+
+            */
             this.executeDynamicContext();
+            _complete([]);
+            return;
+          }
         }
       } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
         options.keepDC = false;
@@ -1351,21 +1389,56 @@ class ElementNode {
 
   }
 
+  findPipeEventOwner(_pipeEventName) {
+    if (this.getPipeEvent(_pipeEventName) !== undefined) {
+      return this;
+    }
+
+    let owner = null;
+    this.climbParents(function(_elementNode) {
+      if (_elementNode.getPipeEvent(_pipeEventName) !== undefined) {
+        owner = _elementNode;
+        return null;
+      }
+    })
+
+    return owner;
+  }
+
+  executeEventPipe(_pipeName, _pipeEventObject, _completeProcess) {
+    let pipeOwner = this.findPipeEventOwner(_pipeName);
+
+    if (pipeOwner) {
+      pipeOwner.__progressPipeEvent(_pipeName, _pipeEventObject, _completeProcess);
+    }
+  }
+
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
   /**
     _name : Event의 이름
     _elementNodeEvent : ElementNode에서 생성된 이벤트 객체
     _originDomEvent : DOM Event 객체 ( DOM 이벤트 기반의 이벤트일 경우 세팅 )
     _completeProcess : 이벤트로 인해 시작된 Task 처리가 완료 되었을 때 호출 된다. ( chain 된 이벤트의 경우 chain 상의 마지막 Task 가 실행완료 된 후 실행 )
-
   */
   __progressEvent(_name, _elementNodeEvent, _originDomEvent, _completeProcess) {
     let eventDesc = this.getEvent(_name);
-    if (eventDesc === undefined) return;
 
-    if (eventDesc.match(EventEffectMatcher) !== null) {
-      let scope = this.interpret(`{{<< ${eventDesc}}}`);
-      if (!scope) throw new Error(` ${eventDesc} Task 를 찾지 못 하였습니다.`);
+    this.__progressEventDesc(eventDesc, _elementNodeEvent, _originDomEvent, _completeProcess);
+  }
+
+  // PIPE 이벤트
+  __progressPipeEvent(_name, _elementNodeEvent, _completeProcess) {
+    let eventDesc = this.getPipeEvent(_name);
+
+    this.__progressEventDesc(eventDesc, _elementNodeEvent, null, _completeProcess);
+  }
+
+  __progressEventDesc(_desc, _elementNodeEvent, _originDomEvent, _completeProcess) {
+    if (_desc === undefined) return;
+
+    if (_desc.match(EVENT_EFFECT_MATCHER) !== null) {
+      let scope = this.interpret(`{{<< ${_desc}}}`);
+      if (!scope) throw new Error(` ${_desc} Task 를 찾지 못 하였습니다.`);
 
 
       console.log(scope);
@@ -1374,9 +1447,9 @@ class ElementNode {
           return this.__executeTask(scope, _elementNodeEvent, _originDomEvent, _completeProcess);
       }
 
-      throw new Error(`아직 지원하지 않는 eventDescription 입니다. ${eventDesc}`);
+      throw new Error(`아직 지원하지 않는 eventDescription 입니다. ${_desc}`);
     } else {
-      throw new Error(`아직 지원하지 않는 eventDescription 입니다. \nDescription: ${eventDesc}`);
+      throw new Error(`아직 지원하지 않는 eventDescription 입니다. \nDescription: ${_desc}`);
     }
   }
 
@@ -1482,15 +1555,19 @@ class ElementNode {
       if (_actionResult !== undefined) {
         _actionResult.origin = 'task@' + _taskScope.name;
 
-        if (_actionResult.taskChain) {
-
-          chainedTask = that.__getTask(_actionResult.taskChain);
-
-          if (!chainedTask) throw new Error(`${_actionResult.taskChain} Task 를 찾지 못 하였습니다.`);
-        } else if (/\w+/.test(_actionResult.code)) {
+        if (/\w+/.test(_actionResult.code)) {
           let nextTaskName = _taskScope.getChainedTaskName(_actionResult.code);
 
-          chainedTask = that.__getTask(nextTaskName);
+          if (/\w+/.test(nextTaskName || '')) {
+            chainedTask = that.__getTask(nextTaskName);
+
+            // code 에 대응하는 task 명이 지정되어 있지만
+            // getTask 로 지정된 Task를 가져오지 못 했을 때 에러를 발생한다.
+            // 비선언 에러
+            if (!chainedTask) {
+              throw new Error(`선언되지 않은 Task를 체인으로 지정하였습니다.\n지정된 TaskName: [${nextTaskName}], 체인을 실행시킨 Task: [${_taskScope.name}], EID:[${that.id}]`);
+            }
+          }
         }
 
         if (chainedTask)
@@ -1709,6 +1786,7 @@ class ElementNode {
     }) : [];
 
     this.nodeEvents = _elementNodeDataObject.nodeEvents || {};
+    this.pipeEvents = _elementNodeDataObject.pipeEvents || {};
 
     this.comment = _elementNodeDataObject.comment || '';
 
@@ -1729,6 +1807,7 @@ class ElementNode {
         return _scopeNode.export();
       })),
       nodeEvents: _.clone(this.nodeEvents),
+      pipeEvents: _.clone(this.pipeEvents),
       comment: this.getComment(),
       componentName: this.getComponentName(),
       createDate: (new Date(this.createDate)).toString(),

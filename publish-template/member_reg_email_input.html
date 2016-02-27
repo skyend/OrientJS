@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+  <title> joykolon </title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+
+  <script id="page-meta" type="text/json">
+    {
+    "id":1,
+
+    "prepareScripts":[
+
+    ],
+
+    "scripts":[
+      "service/service_common.js"
+      ,"service/tag_kolon.js"
+      ,"jquery-1.11.3.min.js"
+      ,"jquery.scrollbar.js"
+      ,"common.js"
+      ,"html5.js"
+      ,"respond.min.js"
+    ],
+    "styles":[
+      "{{<< config@resource-base-path }}css/common.css"
+      ,"{{<< config@resource-base-path }}css/default.css"
+      ,"{{<< config@resource-base-path }}css/layout.css"
+      ,"{{<< config@resource-base-path }}css/jquery.scrollbar.css"
+      ,"{{<< config@resource-base-path }}css/basic_new.css"
+    ]
+    }
+  </script>
+
+  <!-- Publish -->
+  <script src='/built-foundation.js'></script>
+  <script>
+    window.onload = function () {
+      $ervice.startup();
+    }
+  </script>
+
+  <!--[if lt IE 9]>
+  	<script src="js/html5.js"></script>
+  	<script src="js/respond.min.js"></script>
+  <![endif]-->
+
+  </head>
+
+  <body>
+
+    <!--######## wrap ########-->
+    <div id="kolon_wrapper">
+
+      <!--#### contents ####-->
+      <h2 class="hidden">joykolon 본문영역</h2>
+      <section id="kolon_contents">
+
+        <!--내용-->
+        <div class="common_module_div">
+
+          <div class="l-wrapper">
+
+
+          	<!--
+          	/**
+          	 * Title  : 이메일가입
+          	 * Parent : .l-wrapper
+          	 * Layout : .l-section-header
+          	 */
+          	-->
+          	<div class="l-section-header medium">
+
+          		<h1 class="l-s-logo"><a href="">JOYKOLON</a></h1>
+
+          		<h2>이메일가입</h2>
+          	</div>
+          	<!-- // .l-section-header -->
+
+          	<!-- 이메일 회원가입 METAPO | step -->
+          	<div class="m-meta">
+          		<ul class="m-meta-sign email">
+          			<li class="step1">
+          				<i></i>
+          				<em>STEP 1</em>
+          				<strong>이메일인증</strong>
+          			</li>
+          			<li class="step2">
+          				<i></i>
+          				<em>STEP 2</em>
+          				<strong>약관동의</strong>
+          			</li>
+          			<li class="step3 is-active">
+          				<i></i>
+          				<em>STEP 3</em>
+          				<strong>정보입력</strong>
+          			</li>
+          			<li class="step4">
+          				<i></i>
+          				<em>STEP 4</em>
+          				<strong>가입완료</strong>
+          			</li>
+          		</ul>
+          	</div>
+          	<!-- // .m-meta -->
+
+          	<div class="l-in-wrap">
+
+          		<div class="member-in-wrap sign-member-wrap">
+
+          			<form  en-id='signup-form'>
+                  <en:value name='cust-email' type='string' value='hongildong@naver.com'></en:value>
+                  <en:value name='cust-name' type='string' value=''></en:value>
+                  <en:value name='cust-birthday' type='string' value=''></en:value>
+                  <en:value name='cust-gender' type='string' value='male'></en:value>
+                  <en:value name='cust-password' type='string' value=''></en:value>
+                  <en:value name='cust-confirm' type='string' value=''></en:value>
+
+                  <en:value name='cust-tel01' type='string' value='010'></en:value>
+                  <en:value name='cust-tel02' type='string' value=''></en:value>
+                  <en:value name='cust-tel03' type='string' value=''></en:value>
+
+                  <en:value name='cust-zipnumber' type='string' value=''></en:value>
+                  <en:value name='cust-address' type='string' value=''></en:value>
+                  <en:value name='cust-address-detail' type='string' value=''></en:value>
+
+                  <en:task name='render-form' trace action='update' en-delegate='signup-form'></en:task>
+
+            			<fieldset>
+              			<legend>회원 정보 입력 폼</legend>
+              			<div class="sign-form-scope">
+
+              				<h3>회원 정보 입력</h3>
+              				<p class="tip">
+              					<img src="img/common/ico_red_star.png" alt="필수">
+              					필수입력 항목
+              				</p>
+
+              				<div class="sign-form-table">
+              					<table class="form" summary="회원 정보를 입력 하기위한 표로, 1열은 라벨을 2열은 정보입력창이 제공됩니다.">
+              						<caption class="is-blind">회원 정보 입력</caption>
+              						<colgroup>
+              							<col>
+              							<col>
+              						</colgroup>
+              						<tbody>
+              							<tr class="narrow top">
+              								<th scope="row">
+              									<label for="memberEmailId">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										이메일 아이디
+              									</label>
+              								</th>
+              								<td>
+              									<p class="email-id">
+              										{{<< val@cust-email }}
+              									</p>
+              								</td>
+              							</tr>
+              							<tr class="narrow">
+              								<th scope="row">
+              									<label for="memberName">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										이름
+              									</label>
+              								</th>
+              								<td>
+              									<div class="m-name">
+                                  <en:task name='keyup' action='set' arg-name='cust-name' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+              										<input type="text" class="itx-bd" value='{{<< val@cust-name }}' name="" id="memberName" title="이름 입력" en-event-keyup='task@keyup'>
+              									</div>
+              								</td>
+              							</tr>
+              							<tr class="narrow">
+              								<th scope="row">
+              									<label for="birth_day">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										생년월일
+              									</label>
+              								</th>
+              								<td>
+
+              									<div class="m-birth">
+              										<label>
+              											<i class="lab is-blind">생년월일 입력</i>
+
+                                    <en:task name='keyup' action='set' arg-name='cust-birthday' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+              											<input type="text" class="itx-bd" value='{{<< val@cust-birthday }}' name="" id="birth_day" class="생년월일 입력"  en-event-keyup='task@keyup'>
+              										</label>
+
+              									</div>
+
+              								</td>
+              							</tr>
+              							<tr class="narrow foo">
+              								<th scope="row">
+              									<label for="g_male">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										성별
+              									</label>
+              								</th>
+              								<td>
+              									<div class="m-gender">
+              										<label en-event-click='task@click'>
+                                    <en:task name='click' action='set' arg-name='cust-gender' arg-value='male' chain-success='render-form'></en:task>
+
+              											<input type="radio" name="memberGender" id="g_male" checked="{{<< shortcut.if_then(val@cust-gender === 'male', 'checked', null) }}"  en-event-click='task@click'>
+              											<i class="lab">남</i>
+              										</label>
+              										<label en-event-click='task@click'>
+                                    <en:task name='click' trace action='set' arg-name='cust-gender' arg-value='female' chain-success='render-form'></en:task>
+
+              											<input type="radio" name="memberGender" id="g_female" checked="{{<< shortcut.if_then(val@cust-gender === 'female', 'checked', null) }}" en-event-click='task@click'>
+              											<i class="lab">여</i>
+              										</label>
+              									</div>
+              								</td>
+              							</tr>
+              							<tr class="bdt narrow">
+              								<th scope="row">
+              									<label for="memberPassword">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										비밀번호(여기 랜더링 문제 있다)
+              									</label>
+              								</th>
+              								<td>
+                                <en:value name='validate' type='string' value='no'></en:value>
+
+                                <en:task name='keyup' action='set' arg-name='cust-password' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='validate'></en:task>
+
+                                <en:task name='validate' action='validate' arg-text='{{<< feature@event.originEvent.target.value }}' arg-type='password' trace chain-pass='special-require-check' chain-fail='fail-validate'></en:task>
+            										<en:task name='special-require-check' action='if' trace arg-conditionResult='{{<< /[\!\@\#\$\%\^\*\?\_\~]+/.test(val@cust-password) }}' chain-true='success-validate' chain-false='fail-sc-validate'></en:task>
+
+                                <en:task name='success-validate' action='set' arg-name='validate' arg-value='ok' chain-success='render-form'></en:task>
+
+                                <en:task name='fail-sc-validate' action='set' arg-name='validate' arg-value='require-sc' chain-success='render-form'></en:task>
+            										<en:task name='fail-validate' action='set' arg-name='validate' arg-value='no' chain-success='render-form'></en:task>
+
+                                <en:task name='reset-confirm' action='set' arg-name='cust-confirm' arg-value='' chain-success='reset-confirm2'></en:task>
+                                <en:task name='reset-confirm2' action='set' arg-name='validate' arg-value='no' chain-success='render-form'></en:task>
+
+
+              									<input type="password" class="itx-bd" name="" value='{{<< val@cust-password }}' id="memberPassword" title="비밀번호 입력" en-event-keyup='task@keyup'>
+              									<span class="tip">영문, 숫자, 특수문자를 혼합하여 8~15자로 사용 합니다.(! @ # $ % ^ * ? _ ~)</span>
+
+                                <span style='color:red' en-ctrl-hidden='{{<< val@validate === "no" ? false:true }}'> 사용 할 수 없는 비밀번호 입니다.</span>
+                                <span style='color:red' en-ctrl-hidden='{{<< val@validate === "require-sc" ? false:true }}'> 특수문자를 포함 해 주세요. </span>
+                                <span style='color:blue' en-ctrl-hidden='{{<< val@validate === "ok" ? false:true }}'> 사용가능 한 비밀번호 입니다. </span>
+              								</td>
+              							</tr>
+              							<tr class="narrow">
+              								<th scope="row">
+              									<label for="memberPasswordConfirm">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										비밀번호 확인
+              									</label>
+              								</th>
+              								<td>
+                                <en:task name='keyup' action='set' arg-name='cust-confirm' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+
+              									<input type="password" class="itx-bd" name="" value='{{<< val@cust-confirm }}' id="memberPasswordConfirm" title="비밀번호 확인 입력" en-event-click='task@click'>
+              								</td>
+              							</tr>
+
+              							<tr class="narrow top foo">
+              								<th scope="row">
+              									<label for="memberCp1">
+              										<img src="img/common/ico_red_star.png" alt="필수">
+              										휴대폰 번호
+              									</label>
+              								</th>
+              								<td>
+              									<div class="telnum">
+              										<span class="stx_out_model">
+
+                                    <en:task name='change' action='set' arg-name='cust-tel01' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+              											<select name="" id="memberCp1" value='{{<< val@cust-tel01 }}' title="휴대폰 번호 첫번째 자리 선택" en-event-change='task@change'>
+              												<option value="">선택</option>
+                                      <option value="010">010</option>
+                                      <option value="011">011</option>
+                                      <option value="123">123</option>
+                                      <option value="02">02</option>
+              											</select>
+              										</span>
+
+                                  <en:task name='keyup1' action='set' arg-name='cust-tel02' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+                                  <en:task name='keyup2' action='set' arg-name='cust-tel03' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+                                  <input type="text" name="" id="memberCp2" value='{{<< val@cust-tel02 }}' class="itx-bd" title="휴대폰 번호 가운데 자리 입력" en-event-keyup='task@keyup1'>
+              										<span class="dash">-</span>
+              										<input type="text" name="" id="memberCp3" value='{{<< val@cust-tel03 }}' class="itx-bd" title="휴대폰 번호 마지막 자리 입력" en-event-keyup='task@keyup2'>
+
+              										<button type="button" class="btn gray">인증하기</button>
+              									</div>
+              								</td>
+              							</tr>
+
+              							<tr class="narrow bdt top vtt foo">
+              								<th scope="row">
+              									<label for="memberZipcode">
+              										배송주소 (선택)
+              									</label>
+              								</th>
+              								<td>
+
+              									<div class="from-person">
+              										<div class="post-code">
+              											<input type="text" name="" id="memberZipcode" class="itx-bd" title="우편번호 입력" readonly="readonly">
+              											<button type="button" class="btn">우편번호찾기</button>
+              										</div>
+              										<div class="post-address">
+              											<input type="text" name="" class="itx-bd" title="주소 입력">
+              											<input type="text" name="" class="itx-bd" title="상세 주소 입력">
+              										</div>
+              									</div>
+
+              								</td>
+              							</tr>
+              							<tr class="bdt vtt narrow top">
+              								<th scope="row">
+              									<label for="memberRcvEmail">
+              										eKOLON 멤버십<br>정보 수신 동의
+              									</label>
+              								</th>
+              								<td>
+              									<div class="choose-section">
+              										<p class="q">회원님께 제공되는 공지, 이벤트 소식, 포인트 정보, 행사, 신상품 소개 등의 다양한 정보 안내를 받으시겠습니까?</p>
+              										<div class="section-area">
+              											<label>
+              											<input type="checkbox" id="memberRcvEmail" name="" checked="checked">
+              											<i class="lab">이메일 수신동의</i>
+              											</label>
+              											<label>
+              											<input type="checkbox" id="memberRcvSms" name="" checked="checked">
+              											<i class="lab">SMS 수신 동의</i>
+              											</label>
+              										</div>
+              									</div>
+              								</td>
+              							</tr>
+              							<tr class="bdt narrow top foo">
+              								<th scope="row">
+              									<label for="memberSiteRcvEmail">
+              										사이트<br>정보 수신 동의
+              									</label>
+              								</th>
+              								<td>
+              									<label>
+              										<input type="checkbox" id="memberSiteRcvEmail" name="" checked="checked">
+              										<i class="lab">이메일을 통한 상품 및 이벤트 정보 수신에 동의합니다.</i>
+              									</label>
+              								</td>
+              							</tr>
+              							<tr class="bdt vtt narrow top foo">
+              								<th scope="row">
+              									<label>
+              										관심브랜드
+              									</label>
+              								</th>
+              								<td>
+              									<div class="group-brand-interest">
+              										<p>선택하신 브랜드의 상품 및 다양한 이벤트 정보를 받으실 수 있습니다.</p>
+              										<ul class="brand-list">
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">조이코오롱</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">쿠론</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">잭니클라우스</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">브렌우드</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">엘로드</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">코오롱스포츠</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">럭키슈에뜨</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">클럽캠프리지</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">캠브리지멤버스</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">헨리코튼</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">커스텀멜로우</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">슈콤마보니</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">지오투</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">슈퍼콤마비</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">아만다고스트</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">시리즈</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">코오롱스쿨</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">스파소</i>
+              												</label>
+              											</li>
+              											<li>
+              												<label>
+              													<input type="checkbox" name="grbrand[]" checked="checked">
+              													<i class="lab">헤드</i>
+              												</label>
+              											</li>
+              										</ul>
+              									</div>
+              								</td>
+              							</tr>
+              						</tbody>
+              					</table>
+              				</div>
+              				<!-- // .sign-form-table -->
+
+              				<div class="action">
+              					<button type="reset" class="btn white">취소</button>
+              					<button type="submit" class="btn black">확인</button>
+              				</div>
+              				<!-- // .action -->
+
+              			</div>
+              			<!-- // .sign-form-scope -->
+            			</fieldset>
+          			</form>
+
+          		</div>
+          		<!-- // .member-in-wrap -->
+
+          	</div>
+          	<!-- // .l-in-wrap -->
+
+
+          </div>
+          <!-- // .l-wrapper -->
+
+        <div>
+        <!--내용-->
+      </section>
+      <!--#### //contents ####-->
+
+    </div>
+    <!--######## //wrap ########-->
+
+  </body>
+</html>
