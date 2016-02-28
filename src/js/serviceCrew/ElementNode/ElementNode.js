@@ -1389,6 +1389,104 @@ class ElementNode {
 
   }
 
+
+  /***************************************
+
+    Value Scope 값 사용 및 조작 메서드 군
+
+  *****/
+  setValueScopeData(_scopeName, _scopeValue) {
+    let valueScope = this.getScope(_scopeName, 'value');
+    if (valueScope)
+      valueScope.shapeValue = _scopeValue;
+    else
+      throw new Error(`선언 되지 않은 변수${_scopeName} 노드(<en:value>)의 값을 변경하려 합니다. <en:value name='${_scopeName}' ...></en:value>를 선언 해 주세요.`);
+  }
+
+  // Array 타입의 ValueScope 에 _scopeValue 를 push함
+  pushToValueScopeArray(_scopeName, _value) {
+    let valueScope = this.getScope(_scopeName, 'value');
+
+    if (valueScope) {
+      if (valueScope.dataType === 'array') {
+        let array = valueScope.shapeValue;
+
+        array.push(_value);
+
+        valueScope.shapeValue = array;
+      } else {
+        throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 Push 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
+      }
+    } else
+      throw new Error(`선언 되지 않은 변수[${_scopeName}] 노드(<en:value>)의 값을 변경하려 합니다.\n <en:value name='${_scopeName}' type='array' ...></en:value>를 선언 해 주세요.`);
+  }
+
+  popToValueScopeArray(_scopeName) {
+    if (valueScope) {
+      if (valueScope.dataType === 'array') {
+        let array = valueScope.shapeValue;
+
+        array.pop();
+
+        valueScope.shapeValue = array;
+      } else {
+        throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 Pop 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
+      }
+    } else
+      throw new Error(`선언 되지 않은 변수[${_scopeName}] 노드(<en:value>)의 값을 변경하려 합니다.\n <en:value name='${_scopeName}' type='array' ...></en:value>를 선언 해 주세요.`);
+  }
+
+  // Array 타입의 ValueScope 에 _scopeValue 를 push함
+  popToValueScopeArrayByValue(_scopeName, _value) {
+    let valueScope = this.getScope(_scopeName, 'value');
+
+    if (valueScope) {
+      if (valueScope.dataType === 'array') {
+        let array = valueScope.shapeValue;
+        let newArray = [];
+
+        for (let i = 0; i < array.length; i++) {
+          if (_value !== array[i]) newArray.push(array[i]);
+        }
+
+        valueScope.shapeValue = newArray;
+      } else {
+        throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 PopByValue 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
+      }
+    } else
+      throw new Error(`선언 되지 않은 변수[${_scopeName}] 노드(<en:value>)의 값을 변경하려 합니다.\n <en:value name='${_scopeName}' type='array' ...></en:value>를 선언 해 주세요.`);
+  }
+
+  // Array 타입의 Value Scope내용에 _scopeValue가 존재 하는지 확인 하고
+  // 존재하면 true를 반환 존재하지 않으면 false 를 반환
+  // 이 메서드는 Processing Scope로 제공 되어야 한다.
+  isValueInArrayValueScope(_scopeName, _scopeValue) {
+    let valueScope = this.getScope(_scopeName, 'value');
+
+    if (valueScope) {
+      if (valueScope.dataType === 'array') {
+        let array = valueScope.shapeValue;
+
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] === _value) {
+            return true;
+          }
+        }
+
+        return false;
+      } else {
+        throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 Push 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
+      }
+    } else
+      throw new Error(`선언 되지 않은 변수[${_scopeName}] 노드(<en:value>)의 값을 변경하려 합니다.\n <en:value name='${_scopeName}' type='array' ...></en:value>를 선언 해 주세요.`);
+  }
+
+  /******
+
+    Value Scope 사용 및 조작 메서드 군 끝
+
+  ****************************************/
+
   findPipeEventOwner(_pipeEventName) {
     if (this.getPipeEvent(_pipeEventName) !== undefined) {
       return this;

@@ -48,7 +48,11 @@ class MetaText {
   }
 
   get byObject() {
-    return JSON.parse(this.variable);
+    try {
+      return JSON.parse(this.variable);
+    } catch (_e) {
+      throw new Error("Fail Parse JSON " + this.variable);
+    }
   }
 
 

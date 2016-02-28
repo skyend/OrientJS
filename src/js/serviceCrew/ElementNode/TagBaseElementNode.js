@@ -403,7 +403,7 @@ class TagBaseElementNode extends ElementNode {
       attrValue = oldAttributes[i].nodeValue;
 
       // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
-      if (!this.backupDOM.getAttribute(attrName)) {
+      if (!this.backupDOM.hasAttribute(attrName)) {
         this.forwardDOM.removeAttribute(attrName);
       }
     }

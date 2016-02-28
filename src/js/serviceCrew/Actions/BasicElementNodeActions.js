@@ -54,7 +54,7 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true, this);
+    targetElementNode = this.environment.findById(eid, false);
   }
   // targetElementNode.refresh(function() {
   //   _actionResult.code = 'success';
@@ -83,7 +83,7 @@ actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true, this);
+    targetElementNode = this.environment.findById(eid, false);
   }
 
   targetElementNode.update(function() {
@@ -112,12 +112,9 @@ actionStore.registerAction('set-by-plain', ['name', 'value', 'taskChain'], funct
   _callback(_actionResult);
 });
 
-actionStore.registerAction('set', ['name', 'value', 'taskChain'], function() {
-  let valueScope = this.getScope(name, 'value');
+actionStore.registerAction('set', ['name', 'value'], function() {
+  this.setValueScopeData(name, value);
 
-  valueScope.shapeValue = value;
-
-  _actionResult.taskChain = taskChain;
   _actionResult.code = 'success';
   _callback(_actionResult);
 });
@@ -125,7 +122,7 @@ actionStore.registerAction('set', ['name', 'value', 'taskChain'], function() {
 actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true, this);
+    targetElementNode = this.environment.findById(eid, false);
   }
 
   targetElementNode.setAttribute(name, value);
@@ -138,7 +135,7 @@ actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'task
 actionStore.registerAction('exists-toggle-attr-to', ['eid', 'name', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true, this);
+    targetElementNode = this.environment.findById(eid, false);
   }
 
   if (targetElementNode.getAttribute(name) !== undefined) {
@@ -351,7 +348,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], fu
 actionStore.registerAction('focus', ['eid'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, true, this);
+    targetElementNode = this.environment.findById(eid, false);
   }
 
   targetElementNode.forwardDOM.focus();
@@ -390,6 +387,22 @@ actionStore.registerAction('pipe', ['pipeName', 'pipeData'], function() {
 
     _callback(_actionResult);
   });
+});
+
+// 배열에 값을 추가
+actionStore.registerAction('push', ['name', 'value'], function() {
+
+  this.pushToValueScopeArray(name, value);
+
+  _callback(_actionResult);
+});
+
+// 배열에서 특정한 값을 제거
+actionStore.registerAction('pop2', ['name', 'value'], function() {
+
+  this.popToValueScopeArrayByValue(name, value);
+
+  _callback(_actionResult);
 });
 
 //****** ElementNode default Actions *****//
