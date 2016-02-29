@@ -100,7 +100,7 @@ class ValueScopeNode extends ScopeNode {
   **/
   static CreateByScopeDom(_scopeDom) {
     let newScopeNode = new ValueScopeNode(ValueScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeNode);
+
     return newScopeNode;
   }
 

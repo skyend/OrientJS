@@ -9,6 +9,8 @@ import _ from 'underscore';
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
 */
 
+let i = 0;
+
 class Resolver {
   constructor(_upperResolver) {
 
@@ -16,6 +18,9 @@ class Resolver {
     this.upperResolver = _upperResolver || null;
 
     this.dataSpace = {};
+
+    this.resolveFunctionDict = {};
+    this.argsMapDict = {};
   }
 
   setNS(_ns, _data) {
@@ -124,8 +129,20 @@ class Resolver {
 
   __executeSyntax(_syntax, _externalGetterInterface, _defaultDataObject, _caller) {
     let that = this;
-    let argsMap = [];
-    let vfunction = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
+    // let argsMap = [];
+    // let vfunction = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
+    let argsMap;
+    let vfunction;
+
+    if (this.resolveFunctionDict[_syntax]) {
+      vfunction = this.resolveFunctionDict[_syntax];
+      argsMap = this.argsMapDict[_syntax];
+    } else {
+      argsMap = []; // __getVirtualFunctionWithParamMap 메서드에 참조가 전달된다.
+      vfunction = this.resolveFunctionDict[_syntax] = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
+      this.argsMapDict[_syntax] = argsMap;
+    }
+
 
     argsMap = argsMap.map(function(_argHolder, _i) {
       return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject);
@@ -181,6 +198,7 @@ class Resolver {
 
     try {
       functionResult = Function.constructor.apply(this, functionCreateArgs);
+      console.log('new function', i++);
     } catch (_e) {
       _e.message += `\n Origin Source : {{${_syntax}}}`;
       throw _e;
@@ -246,9 +264,11 @@ class Resolver {
         }
         break;
       case 'val':
-        try {
-          data = _externalGetterInterface.getScope(varName, 'value').shapeValue;
-        } catch (_e) {
+        let valueScope = _externalGetterInterface.getScope(varName, 'value');
+
+        if (valueScope) {
+          data = valueScope.shapeValue;
+        } else {
           throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
         }
         break;

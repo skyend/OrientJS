@@ -41,10 +41,13 @@ class MetaText {
   }
 
   get byBoolean() {
-    if (this.variable === 'true' || this.variable) {
+    if (this.variable === 'true') {
       return true;
+    } else if (this.variable === 'false') {
+      return false;
+    } else {
+      throw new Error("Boolean 으로 변환 할 수 없습니다.");
     }
-    return false;
   }
 
   get byObject() {
@@ -94,10 +97,12 @@ class MetaText {
 
   // Read With Type Casting
   set fromBoolean(_v) {
-    if (_v) {
+    if (_v === true) {
       this._variable = 'true';
-    } else {
+    } else if (_v === false) {
       this._variable = 'false';
+    } else {
+      throw new Error("Boolean 값이 아닌 값을 입력하셨습니다. boolean 값을 입력하세요.");
     }
   }
 

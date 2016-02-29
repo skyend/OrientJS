@@ -60,7 +60,7 @@ class ActionResult {
   }
 
   set code(_code) {
-    this._code = _code;
+    this._code = String(_code);
   }
 }
 

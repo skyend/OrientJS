@@ -455,15 +455,14 @@ class ElementNode {
 
       // DynamicContext
       if (options.keepDC == false) {
-        let isBuiltDC = this.buildDynamicContext(); // dynamicContext 생성 호출  // 생성여부에 따라 true 또는 false 를 반환한다.
+
 
         // dc 가 생성되고 정해진 api을 실행한다.
-        if (isBuiltDC) {
+        if (this.isDynamicContext()) {
 
           // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
           if (this.dynamicContextAttitude === 'active') {
-
-
+            // DC가 active일 때만 update때 마다 지속적으로 DC를 Reset 한다.
 
             /*
 
@@ -511,16 +510,21 @@ class ElementNode {
         /***** Emit Event 'will-hide' *****/
         /**********************************/
         that.__progressEvent('will-hide', {}, null, function done() {
+
           that.forwardDOM = null;
+          that.backupDOM = null;
           _complete();
         });
       } else {
+
         this.forwardDOM = null;
+        that.backupDOM = null;
         _complete();
       }
     } else {
 
       this.forwardDOM = null;
+      that.backupDOM = null;
       _complete();
     }
   }
@@ -537,6 +541,8 @@ class ElementNode {
   executeDynamicContext() {
     let that = this;
     // 새로 생성
+
+    this.resetDynamicContext(); // dynamicContext 생성 호출  // 생성여부에 따라 true 또는 false 를 반환한다.
 
     if (this.hasEvent('will-dc-request')) {
 
@@ -557,6 +563,8 @@ class ElementNode {
     }
 
     function execute() {
+      that.resetDynamicContext();
+
       that.dynamicContext.ready(function(_err) {
 
         if (_err === null) {
@@ -781,7 +789,14 @@ class ElementNode {
     }
   }
 
-  buildDynamicContext() {
+  isDynamicContext() {
+    if (this.dynamicContextSID !== undefined) {
+      return true;
+    }
+    return false;
+  }
+
+  resetDynamicContext() {
     let that = this;
     this.dynamicContext = null;
 
