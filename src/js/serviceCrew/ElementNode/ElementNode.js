@@ -425,73 +425,85 @@ class ElementNode {
     // resolve 대상 scope의 resolve를 진행한다.
     this.scopesResolve();
 
-    // hidden control 에 어떤 값이 입력되어 있을경우 hidden control이 바인딩 된 것이다.
-    let isHiddenBind = this.getControl('hidden') !== undefined ? true : false;
 
-    // [0] Before Controls
-    if (isHiddenBind && (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true)) {
 
-      this.hiddenConstruct(function() {
-        _complete([]);
-      });
+    // Before Control
+    // * hidden
+    let options = _options || {};
+    options.linkType = options.linkType || 'downstream'; // will deprecate
+    options.resolve = options.resolve != undefined ? options.resolve : true;
+    options.forward = options.forward != undefined ? options.forward : true;
+    options.keepDC = options.keepDC != undefined ? options.keepDC : false;
+
+    // DynamicContext
+    if (options.keepDC == false) {
+
+
+      // dc 가 생성되고 정해진 api을 실행한다.
+      if (this.isDynamicContext()) {
+
+        // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
+        if (this.dynamicContextAttitude === 'active') {
+          // DC가 active일 때만 update때 마다 지속적으로 DC를 Reset 한다.
+
+          /*
+
+          랜더링 중에 DynamicContext 가 실행되면
+          현재 트리부터 랜더링을 중지하며
+          랜더링이 완료된 후에 값을 표시하도록 변경한다.
+
+          Todo
+           나중엔 랜더링 흐름을 큐 방식으로 컨트롤을 하여 랜더링중에 DC가 실행되어도
+           DC 로드가 완료 되었을 때 다시 랜더링 하여도 랜더링에 문제가 없도록 한다.
+
+          */
+          this.executeDynamicContext();
+          _complete([]);
+          return;
+        }
+      }
+    } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
+      options.keepDC = false;
+    }
+
+
+    // 하나이상의 요소를 생성하여 반환한다.
+    // 반복인자가 유효하고 반복요소가 아닌 요소에 한해서 자신을 여러개 복제 하여 반환한다.
+    if (/.+/.test(this.getControl('repeat-n') || '') && !this.isRepeated) {
+      let repeatNumber = this.getControlWithResolve('repeat-n');
+
+      this.multipleConstruct(repeatNumber, options, _complete);
     } else {
-      // hidden control 에 값이 바인딩 되어 있고 forwardDOM이 null 로 지정되어 있을 경우 현재 블럭에 들어 선 것은
-      // hidden 이 해제되어 랜더링 될 것을 의미한다. 그럴 경우 will-show 이벤트를 발생시킨다.
-      if (isHiddenBind) {
-        if (this.forwardDOM === null) {
-          if (this.hasEvent('will-show')) {
-            that.__progressEvent('will-show', {}, null, function done(_actionResult) {});
-          }
-        }
-      }
 
-      // Before Control
-      // * hidden
-      let options = _options || {};
-      options.linkType = options.linkType || 'downstream'; // will deprecate
-      options.resolve = options.resolve != undefined ? options.resolve : true;
-      options.forward = options.forward != undefined ? options.forward : true;
-      options.keepDC = options.keepDC != undefined ? options.keepDC : false;
+      /*** Hidden 처리 로직 시작 ***/
+      /**********
+       * Hidden 처리는 singleConstruct 에 대해서만 처리 하도록 한다.
+       * multipleConstruct 도 여러개로 나누어져서 single로 Construct 되므로 Repeat 된 요소배열들에게 hidden을 단독으로 적용 가능하다.
+       ****/
 
-      // DynamicContext
-      if (options.keepDC == false) {
+      // hidden control 에 어떤 값이 입력되어 있을경우 hidden control이 바인딩 된 것이다.
+      let isHiddenBind = this.getControl('hidden') !== undefined ? true : false;
 
+      // [0] Before Controls
+      if (isHiddenBind && (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true)) {
 
-        // dc 가 생성되고 정해진 api을 실행한다.
-        if (this.isDynamicContext()) {
-
-          // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
-          if (this.dynamicContextAttitude === 'active') {
-            // DC가 active일 때만 update때 마다 지속적으로 DC를 Reset 한다.
-
-            /*
-
-            랜더링 중에 DynamicContext 가 실행되면
-            현재 트리부터 랜더링을 중지하며
-            랜더링이 완료된 후에 값을 표시하도록 변경한다.
-
-            Todo
-             나중엔 랜더링 흐름을 큐 방식으로 컨트롤을 하여 랜더링중에 DC가 실행되어도
-             DC 로드가 완료 되었을 때 다시 랜더링 하여도 랜더링에 문제가 없도록 한다.
-
-            */
-            this.executeDynamicContext();
-            _complete([]);
-            return;
-          }
-        }
-      } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
-        options.keepDC = false;
-      }
-
-
-      // 하나이상의 요소를 생성하여 반환한다.
-      // 반복인자가 유효하고 반복요소가 아닌 요소에 한해서 자신을 여러개 복제 하여 반환한다.
-      if (/.+/.test(this.getControl('repeat-n') || '') && !this.isRepeated) {
-        let repeatNumber = this.getControlWithResolve('repeat-n');
-
-        this.multipleConstruct(repeatNumber, options, _complete);
+        this.hiddenConstruct(function() {
+          _complete([]);
+        });
       } else {
+        // hidden control 에 값이 바인딩 되어 있고 forwardDOM이 null 로 지정되어 있을 경우 현재 블럭에 들어 선 것은
+        // hidden 이 해제되어 랜더링 될 것을 의미한다. 그럴 경우 will-show 이벤트를 발생시킨다.
+        if (isHiddenBind) {
+          if (this.forwardDOM === null) {
+            if (this.hasEvent('will-show')) {
+              that.__progressEvent('will-show', {}, null, function done(_actionResult) {});
+            }
+          }
+        }
+
+        /*** Hidden 처리 로직 끝 ***/
+
+
         this.singleConstruct(options, _complete);
       }
     }
@@ -512,19 +524,19 @@ class ElementNode {
         that.__progressEvent('will-hide', {}, null, function done() {
 
           that.forwardDOM = null;
-          that.backupDOM = null;
+          // that.backupDOM = null;
           _complete();
         });
       } else {
 
         this.forwardDOM = null;
-        that.backupDOM = null;
+        // that.backupDOM = null;
         _complete();
       }
     } else {
 
       this.forwardDOM = null;
-      that.backupDOM = null;
+      // that.backupDOM = null;
       _complete();
     }
   }
