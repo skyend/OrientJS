@@ -27,14 +27,19 @@ import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
 "use strict";
 
-
+const SIGN_BY_ELEMENTNODE = 'EN';
 const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
 
 class ElementNode {
+  static get SIGN_BY_ELEMENTNODE() {
+    return SIGN_BY_ELEMENTNODE;
+  }
+
   constructor(_environment, _elementNodeDataObject, _preInsectProps) {
     //Object.assign(this, events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
+    this[SIGN_BY_ELEMENTNODE] = SIGN_BY_ELEMENTNODE;
 
     // 미리 삽입된 프로퍼티
     var preInsectProps = _preInsectProps || {};
@@ -458,6 +463,7 @@ class ElementNode {
 
           */
           this.executeDynamicContext();
+
           _complete([]);
           return;
         }
@@ -487,9 +493,11 @@ class ElementNode {
       // [0] Before Controls
       if (isHiddenBind && (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true)) {
 
-        this.hiddenConstruct(function() {
+        this.hiddenConstruct(options, function() {
           _complete([]);
         });
+
+        return;
       } else {
         // hidden control 에 값이 바인딩 되어 있고 forwardDOM이 null 로 지정되어 있을 경우 현재 블럭에 들어 선 것은
         // hidden 이 해제되어 랜더링 될 것을 의미한다. 그럴 경우 will-show 이벤트를 발생시킨다.
@@ -499,17 +507,17 @@ class ElementNode {
               that.__progressEvent('will-show', {}, null, function done(_actionResult) {});
             }
           }
+
+          console.log('will showwwwwwwwwwwww', this, this.forwardDOM);
         }
 
         /*** Hidden 처리 로직 끝 ***/
-
-
         this.singleConstruct(options, _complete);
       }
     }
   }
 
-  hiddenConstruct(_complete) {
+  hiddenConstruct(_options, _complete) {
     let that = this;
 
     // 이전에 forwardDOM 이 존재 했을 경우
@@ -522,21 +530,32 @@ class ElementNode {
         /***** Emit Event 'will-hide' *****/
         /**********************************/
         that.__progressEvent('will-hide', {}, null, function done() {
-
+          // if (_options.forward) {
+          //   that.forwardDOM = null;
+          // } else {
+          //   that.backupDOM = null;
+          // }
           that.forwardDOM = null;
-          // that.backupDOM = null;
           _complete();
         });
       } else {
 
-        this.forwardDOM = null;
-        // that.backupDOM = null;
+        // if (_options.forward) {
+        //   that.forwardDOM = null;
+        // } else {
+        //   that.backupDOM = null;
+        // }
+        that.forwardDOM = null;
         _complete();
       }
     } else {
 
-      this.forwardDOM = null;
-      // that.backupDOM = null;
+      // if (_options.forward) {
+      //   that.forwardDOM = null;
+      // } else {
+      //   that.backupDOM = null;
+      // }
+      that.forwardDOM = null;
       _complete();
     }
   }
@@ -1177,7 +1196,9 @@ class ElementNode {
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
       getServiceConfig: this.environment.getServiceConfig.bind(this.environment),
-      executeI18n: this.environment.executeI18n.bind(this.environment)
+      executeI18n: this.environment.executeI18n.bind(this.environment),
+
+      getElementNodeById: this.environment.findById.bind(this.environment)
         // todo .... geo 추가
         //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
@@ -1514,6 +1535,11 @@ class ElementNode {
 
   ****************************************/
 
+  /****************************************
+
+    Pipe
+
+  **********/
   findPipeEventOwner(_pipeEventName) {
     if (this.getPipeEvent(_pipeEventName) !== undefined) {
       return this;
@@ -1536,6 +1562,32 @@ class ElementNode {
     if (pipeOwner) {
       pipeOwner.__progressPipeEvent(_pipeName, _pipeEventObject, _completeProcess);
     }
+  }
+
+  /******
+
+    Pipe
+
+  ****************************************/
+
+  getElementNodeByInterpretField(_fieldValue) {
+    // delegate 값에 ElementNode ID 를 입력해도 되고, 바인딩블럭을 이용해 직접 ElementNode 객체를 얻도록 코드를 입력해도 된다.
+    let delegateValue = this.interpret(_fieldValue);
+    let foundEN;
+
+    // interpret 된 delegateValue 의 데이터타입이 string이면 EN ID로 간주하며
+    // 그 밖의 타입일 경우 ElementNode 객체로 간주한다.
+    if (typeof delegateValue === 'string') {
+      foundEN = this.environment.findById(_fieldValue);
+    } else {
+      foundEN = delegateValue;
+    }
+
+    if (foundEN && foundEN[SIGN_BY_ELEMENTNODE] === SIGN_BY_ELEMENTNODE) {
+      return foundEN;
+    }
+
+    throw new Error(`${foundEN} is Not ElementNode. \nSEED:'${_fieldValue}'`);
   }
 
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
@@ -1584,17 +1636,8 @@ class ElementNode {
     // delegate 설정이 입력되어 있고 _mandator(위임자)가 undefined 로 입력되었을 때 위임을 진행한다.
     if (_taskScope.delegate !== null && _mandator === undefined) {
 
-      // delegate 값에 ElementNode ID 를 입력해도 되고, 바인딩블럭을 이용해 직접 ElementNode 객체를 얻도록 코드를 입력해도 된다.
-      let delegateValue = this.interpret(_taskScope.delegate);
-      let foundEN;
 
-      // interpret 된 delegateValue 의 데이터타입이 string이면 EN ID로 간주하며
-      // 그 밖의 타입일 경우 ElementNode 객체로 간주한다.
-      if (typeof delegateValue === 'string') {
-        foundEN = this.environment.findById(_taskScope.delegate);
-      } else {
-        foundEN = delegateValue;
-      }
+      let foundEN = this.getElementNodeByInterpretField(_taskScope.delegate);
 
       if (foundEN) {
         // 마지막 인자로 위임명령자(mandator, 자신)을 입력한다.
@@ -1671,9 +1714,16 @@ class ElementNode {
       console.warn(`TASK TRACE : ${_taskScope.name}@${_taskScope.action}`, __TASK_STACK__);
     }
 
+    let executor = this; // action 에 this로 바인딩 될 action실행자.
+    if (_taskScope.executor !== null) {
+      let foundEN = this.getElementNodeByInterpretField(_taskScope.executor);
+
+      executor = foundEN;
+    }
+
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
     //action.execute(executeParamMap, this, this.forwardDOM.ownerDocument.defaultView, function(_actionResult) {
-    action.execute(executeParamMap, this, null, function(_actionResult) {
+    action.execute(executeParamMap, executor, null, function(_actionResult) {
       let chainedTask;
 
       // task chain 처리

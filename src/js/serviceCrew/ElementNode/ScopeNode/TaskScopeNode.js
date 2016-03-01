@@ -63,6 +63,7 @@ class TaskScopeNode extends ScopeNode {
     scopeSpecObject.trace = _dom.getAttribute('trace') !== null ? true : false;
 
     scopeSpecObject.delegate = _dom.getAttribute('en-delegate') || null;
+    scopeSpecObject.executor = _dom.getAttribute('en-executor') || null;
 
     // 확장클래스에서 사용하는 attribute 읽기 및 지정
     scopeSpecObject.action = _dom.getAttribute('action');
@@ -125,6 +126,7 @@ class TaskScopeNode extends ScopeNode {
     this.action = _scopeData.action;
 
     this.delegate = _scopeData.delegate;
+    this.executor = _scopeData.executor;
 
     this.args = _scopeData.args.map(function(_arg) {
       return new TaskArgument(_arg);
@@ -140,6 +142,7 @@ class TaskScopeNode extends ScopeNode {
     exportObject.action = this.action;
 
     exportObject.delegate = this.delegate;
+    exportObject.executor = this.executor;
 
     exportObject.args = this.args.map(function(_taskArgument) {
       return _taskArgument.export();

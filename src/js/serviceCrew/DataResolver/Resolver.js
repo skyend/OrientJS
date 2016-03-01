@@ -3,6 +3,7 @@ import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
 import TypeCaster from '../Data/TypeCaster';
+import ElementNode from '../ElementNode/ElementNode';
 
 import _ from 'underscore';
 /**
@@ -210,6 +211,7 @@ class Resolver {
 
   /*
     Support :
+      id             : Element Node 를 검색
       en-attr-origin : resolve 되지 않은 값(입력 된 값 그대로)을 반환
       en-attr        : resolve 된 값을 반환
       ns             : DynmaicContext 의 namespace 데이터 반환
@@ -239,6 +241,12 @@ class Resolver {
 
     let data;
     switch (varCategory) {
+      case 'id':
+        data = _externalGetterInterface.getElementNodeById(varName);
+        if (!(data && data[ElementNode.SIGN_BY_ELEMENTNODE] === ElementNode.SIGN_BY_ELEMENTNODE)) {
+          throw new Error(`Not found ElementNode in Environment. \nID: ${varName}`);
+        }
+        break;
       case 'en-attr-origin':
         data = _externalGetterInterface.getAttribute(varName, false);
         break;

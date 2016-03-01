@@ -121,7 +121,7 @@ class HTMLElementNode extends TagBaseElementNode {
           insertAfter
           insertBefore
         */
-        // console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom, child.id, maxLength);
+        console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom, child.id, maxLength);
 
         let prevDom = beforeRangeIndex == -1 ? null : childNodes[beforeRangeIndex]; // 이전 요소 , 시작은 beforeRangeIndex에 해당하는 요소가 된다.
         for (let j = 0; j < maxLength; j++) {
@@ -144,6 +144,7 @@ class HTMLElementNode extends TagBaseElementNode {
             // console.log('remove ', j, targetForwardDOMs[j], targetForwardDOMs[j].___en.id);
 
             this.forwardDOM.removeChild(targetForwardDOMs[j]);
+            targetForwardDOMs[j].___en.forwardDOM = null;
           } else if (targetForwardDOMs[j] === undefined && targetBackupDOMs[j] !== undefined) {
             // append 처리
 

@@ -112,6 +112,7 @@ class RefElementNode extends HTMLElementNode {
 
           that.loadedInstance.constructDOMChildren(_options, function(_domList) {
             _htmlNode.innerHTML = '';
+            console.log("new construct fragment", this, that.loadedInstance, _domList, that.refTargetId);
 
             // parent 삽입
             that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {

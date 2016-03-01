@@ -381,6 +381,12 @@ actionStore.registerAction('executeDC', [], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('resetDC', [], function() {
+  this.resetDynamicContext();
+
+  _callback(_actionResult);
+});
+
 actionStore.registerAction('pipe', ['pipeName', 'pipeData'], function() {
 
   this.executeEventPipe(pipeName, pipeData || {}, function(_pipeResult) {
