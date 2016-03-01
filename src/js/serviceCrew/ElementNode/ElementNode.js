@@ -360,7 +360,35 @@ class ElementNode {
     this.realization.setAttribute('en-type', this.type);
   }
 
-  constructDOMs(_options, _complete) {
+  constructDOMs(_options) {
+    let that = this;
+
+    let result = this.constructDOMsInner(_options);
+
+
+    return result;
+  }
+
+  /*
+      ConstructDOMsInner
+
+      Parameters
+        _options
+
+      Return
+        true or false
+  */
+  constructDOMsInner(_options) {
+    // hidden 일 때 false
+
+    this.scopesResolve();
+
+
+
+
+  }
+
+  constructDOMs2(_options, _complete) {
     let that = this;
 
     if (this.hasEvent('will-construct-dom')) {
@@ -415,7 +443,7 @@ class ElementNode {
     Returns by arguments of Callback
       0. DOMNode or NULL
   */
-  constructDOMsInner(_options, _complete) { // Controls : Hidden, Repeat-n
+  constructDOMsInner2(_options, _complete) { // Controls : Hidden, Repeat-n
     // [
     //  [0] Before Controls
     //  [1] Node 생성

@@ -218,16 +218,23 @@ class Page {
   render(_complete) {
     let that = this;
 
-    // 하나의 fragment에서 rootElementNode 는 다수로 존재 할 수 있지만 Page 에 존재하는 Fragment 의 rootElementNode는 body 태그에 대응하는 elementNode 단 하나만 존재한다.
     this.bodyFragment.rootElementNodes[0].constructDOMs({
-      linkType: 'downstream'
-    }, function(_domList) {
-      // 반환도 배열 타입이지만 요소는 body 태그 하나만 존재한다.
-      let bodyDOMElement = _domList[0];
-
-      that.doc.body.parentElement.replaceChild(bodyDOMElement, that.doc.body);
-      _complete();
+      forward: true,
+      'linkType': 'downstream'
     });
+
+    that.doc.body.parentElement.replaceChild(this.bodyFragment.rootElementNodes[0].forwardDOM, that.doc.body);
+
+    // 하나의 fragment에서 rootElementNode 는 다수로 존재 할 수 있지만 Page 에 존재하는 Fragment 의 rootElementNode는 body 태그에 대응하는 elementNode 단 하나만 존재한다.
+    // this.bodyFragment.rootElementNodes[0].constructDOMs({
+    //   linkType: 'downstream'
+    // }, function(_domList) {
+    //   // 반환도 배열 타입이지만 요소는 body 태그 하나만 존재한다.
+    //   let bodyDOMElement = _domList[0];
+    //
+    //   that.doc.body.parentElement.replaceChild(bodyDOMElement, that.doc.body);
+    //   _complete();
+    // });
   }
 
   loadFragment(_fragmentId, _complete) {
