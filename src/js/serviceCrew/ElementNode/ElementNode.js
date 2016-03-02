@@ -98,7 +98,8 @@ class ElementNode {
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
-
+    this.nextSibling = null;
+    this.prevSibling = null;
 
     // update Queue
     this.updateQueue = [];

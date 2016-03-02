@@ -24,7 +24,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let returnHolder = super.constructDOMs(_options);
 
     console.log(returnHolder);
-    if (this.isRepeater()) return returnHolder;
+    //if (this.isRepeater()) return returnHolder;
     if (returnHolder.length === 0) return returnHolder;
 
 
