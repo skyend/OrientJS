@@ -111,6 +111,9 @@ class ElementNode {
     // forwardDOM 이 화면에 랜더링 되지 않은 경우도 x,y 값이 -1을 갖는다.
     this.indexOccupyRange = new Point(-1, -1);
 
+    // 상위 forwardDOM 에서 차지중인 index 위치
+    this.indexInParentDOM = -1;
+
     //////////////////////////
     // 처리로직
     //////////////////////////
@@ -503,6 +506,7 @@ class ElementNode {
         let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
 
         if (hidden === true || hidden === 'true') {
+          this.forwardDOM = null;
           return [];
         }
       }

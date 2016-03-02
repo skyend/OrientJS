@@ -24,7 +24,7 @@ class HTMLElementNode extends TagBaseElementNode {
     let returnHolder = super.constructDOMs(_options);
 
     console.log(returnHolder);
-    //if (this.isRepeater()) return returnHolder;
+    if (this.isRepeater()) return returnHolder;
     if (returnHolder.length === 0) return returnHolder;
 
 
@@ -37,20 +37,36 @@ class HTMLElementNode extends TagBaseElementNode {
 
       child.constructDOMs(_options);
 
-      this.updateChild(child);
+      if (child.isRepeater()) {
+        for (let j = 0; j < child.clonePool.length; j++) {
+          this.updateChild(child.clonePool[j]);
+        }
+      } else {
 
-      console.log(child.prevSibling);
+        this.updateChild(child);
+      }
     }
 
-    //this.updateChildren();
 
     return returnHolder;
   }
 
   updateChild(_child) {
     let prevSibling = _child.prevSibling;
+    let nextSibling = _child.nextSibling;
+
     console.log(prevSibling);
     console.log(prevSibling ? prevSibling.id : null, _child.id);
+
+    if (prevSibling) {
+
+    } else {
+      if (nextSibling) {
+        if (this.indexOccupyRange.x === -1) {
+
+        }
+      }
+    }
   }
 
   updateChildren() {
