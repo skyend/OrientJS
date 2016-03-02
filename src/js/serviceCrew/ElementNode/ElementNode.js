@@ -25,6 +25,9 @@ import '../Actions/BasicElementNodeActions';
 
 import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
+
+import Point from '../../util/Point';
+
 "use strict";
 
 const SIGN_BY_ELEMENTNODE = 'EN';
@@ -100,6 +103,12 @@ class ElementNode {
     // update Queue
     this.updateQueue = [];
 
+    // 상위 forwardDOM 에서 차지중인 index 범위
+    // repeater 의 경우 index 거리의 차이가 있으며
+    // single 의 경우 x,y 값이 동일하며
+    // hidden 으로 차지 하지 않는 경우 x,y 값이 -1이 된다.
+    // forwardDOM 이 화면에 랜더링 되지 않은 경우도 x,y 값이 -1을 갖는다.
+    this.indexOccupyRange = new Point(-1, -1);
 
     //////////////////////////
     // 처리로직
@@ -155,6 +164,14 @@ class ElementNode {
     return this._scopeNodes;
   }
 
+  get nextSibling() {
+    return this._nextSibling;
+  }
+
+  get prevSibling() {
+    return this._prevSibling;
+  }
+
   //
   // get parentDynamicContext() {
   //   return this._parentDynamicContext;
@@ -184,6 +201,21 @@ class ElementNode {
 
   set scopeNodes(_scopeNodes) {
     this._scopeNodes = _scopeNodes;
+  }
+
+  set nextSibling(_e) {
+    this._nextSibling = _e;
+    if (this._nextSibling) {
+      this._nextSibling._prevSibling = this;
+    }
+  }
+
+  set prevSibling(_e) {
+    this._prevSibling = _e;
+
+    if (this._prevSibling) {
+      this._prevSibling._nextSibling = this;
+    }
   }
 
   //
@@ -363,10 +395,40 @@ class ElementNode {
   constructDOMs(_options) {
     let that = this;
 
+    try {
+      // options.linkType = options.linkType || 'downstream'; // will deprecate
+      _options.resolve = _options.resolve != undefined ? _options.resolve : true;
+      // options.forward = options.forward != undefined ? options.forward : true;
+      _options.keepDC = _options.keepDC != undefined ? _options.keepDC : false;
+    } catch (_e) {
+      /**
+        _options 인자는 오직 Object만 입력 되어야 한다 null, undefined, NaN 은 허용하지 않는다.
+        _options 객체는 랜러링 흐름에서 단 하나만 존재 하여야 하며 랜더링 중 값이 수정되면 다음 랜더링 대상이 그 값을 상속 받을 수 있도록 한다.
+      **/
+
+      throw new Error("_options is not normal Object");
+    }
+
     let result = this.constructDOMsInner(_options);
 
 
     return result;
+  }
+
+  getDOMNode() {
+    return this.forwardDOM;
+  }
+
+  render(_target) {
+    _target.appendChild(this.forwardDOM);
+    // this.forwardDOM = this.backupDOM;
+    // this.backupDOM = null;
+  }
+
+  renderWithReplace(_target, _old) {
+    _target.replaceChild(this.forwardDOM, _old);
+    // this.forwardDOM = this.backupDOM;
+    // this.backupDOM = null;
   }
 
   /*
@@ -380,12 +442,109 @@ class ElementNode {
   */
   constructDOMsInner(_options) {
     // hidden 일 때 false
+    let returnElementNodes = []; // 현재 생성된 DOM에 대응하는 ElementNode를 반환한다.
+
+    let options = _options || {};
+    // options.linkType = options.linkType || 'downstream'; // will deprecate
+    options.resolve = options.resolve != undefined ? options.resolve : true;
+    // options.forward = options.forward != undefined ? options.forward : true;
+    options.keepDC = options.keepDC != undefined ? options.keepDC : false;
 
     this.scopesResolve();
 
+    // backupDOM 으로 생성될 것
+
+    // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
+    if (this.isRepeater()) {
+      // repeat 처리
+
+      let i = 0;
+      let repeatN = parseInt(_options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n'));
+      let repeatedElementNode;
+      let newClonePool = [];
+
+      let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
+
+      for (i = 0; i < repeatN; i++) {
+
+        repeatedElementNode = this.clonePool[i];
+
+        if (repeatedElementNode === undefined) {
+          repeatedElementNode = Factory.takeElementNode(this.export(false, `@${i}`), {
+            isGhost: true,
+            repeatOrder: i,
+            isRepeated: true
+          }, this.getType(), this.environment, null);
+
+          repeatedElementNode.setParent(this.parent);
+        }
+
+        repeatedElementNode.prevSibling = prevElement;
+
+        newClonePool.push(repeatedElementNode);
+
+        if (repeatedElementNode.constructDOMs(_options).length > 0) {
+          returnElementNodes.push(repeatedElementNode);
+        }
+
+        prevElement = repeatedElementNode;
+      }
+
+      /*************/
+      // 제일 마지막 Element의 nextSibling을 자신의 nextSibling으로 세팅한다.
+      prevElement.nextSibling = this.nextSibling;
+
+      this.clonePool = newClonePool;
+    } else {
+
+      // hidden 처리
+      if (this.getControl('hidden') !== undefined) {
+        let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
+
+        if (hidden === true || hidden === 'true') {
+          return [];
+        }
+      }
+
+      let constructedDOM = this.constructDOM(_options);
+
+      // root 로 시작된 render는 단 한번 생성되는 DOM을 forwardDOM 으로 바로 편입 시키며
+      // root 가 아닌 render에서는 생성되는 DOM을 backupDOM 으로 사용한다.
+      // if (_options.root) {
+      //   this.forwardDOM = constructedDOM;
+      //   _options.root = false;
+      // } else {
+      //   this.backupDOM = constructedDOM;
+      // }
+
+      this.forwardDOM = constructedDOM;
+
+      returnElementNodes.push(this);
+    }
+
+    return returnElementNodes;
+  }
+
+  // 단독으로 자신의 DOM을 생성하는 메서드
+  constructDOM(_options) {
+    let htmlNode = this.createNode(_options);
+    htmlNode.___en = this;
+
+    // [2] Attribute and text 매핑
+    this.mappingAttributes(htmlNode, _options);
+
+    // [3] Children Construct
+    if (this.type !== 'string') {
+      // Event 바인딩
+      this.bindDOMEvents(_options, htmlNode);
+    }
+
+    return htmlNode;
+  }
 
 
-
+  isRepeater() {
+    return this.getControl('repeat-n') && !this.isRepeated;
   }
 
   constructDOMs2(_options, _complete) {
@@ -699,7 +858,7 @@ class ElementNode {
       })
   }
 
-  singleConstruct(_options, _complete) {
+  singleConstruct(_options) {
 
     // 하나의 요소만 생성하여 반환한다.
     // [1] Node 생성

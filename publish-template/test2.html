@@ -48,7 +48,8 @@
     <en:value name='count' type='number' value='5'></en:value>
     <en:task name='render' action='update-to' arg-eid='container-test'></en:task>
     <!-- <en:task name='render' en-delegate='dc-ul' action='executeDC'></en:task> -->
-  <en:value name='value' type='string' value=''></en:value>
+    <en:value name='value' type='string' value=''></en:value>
+    
     <button en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-repeat-n='100'>
       <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
 

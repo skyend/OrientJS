@@ -4,8 +4,12 @@ import _ from 'underscore';
 import React from 'react';
 import async from 'async';
 import Sizzle from 'sizzle';
+import Point from '../../util/Point';
 
 "use strict";
+
+const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
+
 
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -16,6 +20,188 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children;
   }
 
+  constructDOMs(_options) {
+    let returnHolder = super.constructDOMs(_options);
+
+    console.log(returnHolder);
+    if (this.isRepeater()) return returnHolder;
+    if (returnHolder.length === 0) return returnHolder;
+
+
+    // children construct
+    let children = this.children;
+    let length = children.length;
+    let child;
+    for (let i = 0; i < length; i++) {
+      child = children[i];
+
+      child.constructDOMs(_options);
+
+      this.updateChild(child);
+
+      console.log(child.prevSibling);
+    }
+
+    //this.updateChildren();
+
+    return returnHolder;
+  }
+
+  updateChild(_child) {
+    let prevSibling = _child.prevSibling;
+    console.log(prevSibling);
+    console.log(prevSibling ? prevSibling.id : null, _child.id);
+  }
+
+  updateChildren() {
+
+  }
+
+  updateChildren2() {
+
+    let children = this.children;
+
+
+    //  #1
+    // let cursor = 0;
+    // let en;
+    // let j;
+    //
+    // let enid;
+    // let childDOM;
+    // let childDOM_en;
+    // for (let i = 0; i < serialedChildren.length; i++) {
+    //   en = serialedChildren[i];
+    //   enid = en.id;
+    //   console.log(this);
+    //
+    //   // DOM loop
+    //   for (j = cursor; j < this.forwardDOM.childNodes.length; j++) {
+    //     childDOM = this.forwardDOM.childNodes[j];
+    //     childDOM_en = childDOM.___en;
+    //
+    //     // id 에서 마지막 repeat 정보 영역을 제외하고 앞의 Origin ID를 얻는다.
+    //     if (childDOM_en.id.split(REGEXP_REAL_EN_ID_SPLITTER)[0] === enid) {
+    //       console.log('find ', enid)
+    //     } else {
+    //       console.log("not matched", enid);
+    //       break;
+    //     }
+    //   }
+    // }
+
+    //  #2
+    let continues = true;
+
+    let targetArray = children;
+    let keepArray = null;
+
+    let target_cursor = 0;
+    let keep_cursor;
+
+    let en;
+    let keep_en;
+    let enid;
+
+    // 아직 안씀
+    let childDOM;
+    let childDOM_en;
+    let childDOMCursor = 0;
+
+
+
+    while (continues && targetArray.length > 0) {
+      en = targetArray[target_cursor];
+
+      if (en === undefined) {
+        if (keepArray !== null) {
+          targetArray = keepArray;
+          keepArray = null;
+
+          target_cursor = keep_cursor;
+          keep_cursor = 0;
+
+          // console.log('out clone ', keepArray, targetArray, keep_cursor, target_cursor);
+          continue;
+        } else {
+          break;
+        }
+      }
+
+      // clonePool 로 대상 Array 변경
+      if (en.isRepeater()) {
+        keep_en = en;
+        keepArray = targetArray;
+        targetArray = en.clonePool;
+
+        keep_cursor = target_cursor + 1;
+        target_cursor = 0;
+
+        // console.log('in clone ', keepArray, targetArray, keep_cursor, target_cursor);
+        continue;
+      }
+
+      console.log('cursr ', this, keepArray, targetArray, keep_cursor, target_cursor);
+
+      {
+        enid = en.id;
+        console.log(enid, keep_en);
+        console.log(this, en);
+
+        // 범위를 계산해서 updateRange 호출하기
+
+        if (en.forwardDOM)
+          this.forwardDOM.appendChild(en.forwardDOM);
+
+        console.log(this.forwardDOM);
+
+        // DOM loop
+        // for (let j = childDOMCursor; j < this.forwardDOM.childNodes.length; j++) {
+        //   childDOM = this.forwardDOM.childNodes[j];
+        //   childDOM_en = childDOM.___en;
+        //
+        //   // id 에서 마지막 repeat 정보 영역을 제외하고 앞의 Origin ID를 얻는다.
+        //   if (childDOM_en.id.split(REGEXP_REAL_EN_ID_SPLITTER)[0] === enid) {
+        //     console.log('find ', enid)
+        //   } else {
+        //     console.log("not matched", enid);
+        //     break;
+        //   }
+        // }
+      }
+
+      target_cursor++;
+    }
+
+
+    // #3
+
+  }
+
+
+  /*
+    UpdateRange
+
+      forwardDOM 에서 범위를 지정하여 update 함
+
+    Parameters
+
+      _start : 시작 Index
+        * -1  : append
+        * 0+ : 대상이 존재 할 경우 시작대상의 Index
+
+      _end : 끝 Index
+        * -1 : 대상이 존재하지 않음
+        * 0+ : 대상이 존재 할 경우 끝대상의 Index
+
+    Return
+      Int : _end 에 대해서 변경된 수치만큼 반환 (+,-)
+        Dom이 더 추가 되었으면 +
+        Dom이 삭제 되었으면 -
+  */
+  updateRange(_start, _end) {
+
+  }
 
 
   childrenConstructAndLink(_options, _htmlNode, _complete, _doLink) {
@@ -431,14 +617,25 @@ class HTMLElementNode extends TagBaseElementNode {
 
     let elementNodeData;
     let child;
+    let prevChild = null;
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
       child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment, this.dynamicContext);
       child.setParent(this);
 
+      // 이전 요소 지정
+      child.prevSibling = prevChild;
+
+      // 다음 요소 지정
+      if (child.prevSibling) {
+        child.prevSibling.nextSibling = child;
+      }
+
       list.push(child);
 
       this.setChildListeners(child);
+
+      prevChild = child;
     }
 
     return list;
