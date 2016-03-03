@@ -83,10 +83,8 @@ class ElementNode {
     this.clonePool = []; // repeated
     this.cloned = false;
     this.backupDOM = null;
-    this.clonedBackupDOMs = [];
     this.forwardDOM = null;
-    this.clonedForwardDOMs = [];
-
+    this.hiddenForwardDOM = null; // hidden construct 가 되었을 때 이전에 forwardDOM을 담는다.
 
     // Repeat by parent's Repeat Control
     this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
@@ -112,7 +110,8 @@ class ElementNode {
     this.indexOccupyRange = new Point(-1, -1);
 
     // 상위 forwardDOM 에서 차지중인 index 위치
-    this.indexInParentDOM = -1;
+    this.attachedIndexInParentDOM = -1;
+    this.isAttachedDOM = false;
 
     //////////////////////////
     // 처리로직
@@ -435,6 +434,32 @@ class ElementNode {
     // this.backupDOM = null;
   }
 
+  // 자신의 이전인덱스에 있는 형제중 상위 DOM에 부착된 가장 가까운 형제를 찾는다.
+  getAttachedPrevSibling() {
+    if (this.prevSibling) {
+      if (this.prevSibling.isAttachedDOM === true) {
+        return this.prevSibling;
+      } else {
+        return this.prevSibling.getAttachedPrevSibling();
+      }
+    }
+
+    return null;
+  }
+
+  // 자신의 다음인덱스에 있는 형제중 상위 DOM에 부착된 가장 가까운 형제를 찾는다.
+  getAttachedNextSibling() {
+    if (this.nextSibling) {
+      if (this.nextSibling.isAttachedDOM === true) {
+        return this.nextSibling;
+      } else {
+        return this.nextSibling.getAttachedNextSibling();
+      }
+    }
+
+    return null;
+  }
+
   /*
       ConstructDOMsInner
 
@@ -496,7 +521,17 @@ class ElementNode {
 
       /*************/
       // 제일 마지막 Element의 nextSibling을 자신의 nextSibling으로 세팅한다.
-      prevElement.nextSibling = this.nextSibling;
+      if (prevElement) {
+        prevElement.nextSibling = this.nextSibling;
+      }
+
+      // clone pool 이 변경되는 순간
+      // 남은 clone 요소의 forwardDOM 을 제거한다.
+      for (let remain = i; remain < this.clonePool.length; remain++) {
+        console.log(this.parent, this.clonePool[remain], remain, this.clonePool.length)
+        this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
+        this.clonePool[remain].isAttachedDOM = false;
+      }
 
       this.clonePool = newClonePool;
     } else {
@@ -504,9 +539,18 @@ class ElementNode {
       // hidden 처리
       if (this.getControl('hidden') !== undefined) {
         let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
-
+        console.log(this.id, hidden);
         if (hidden === true || hidden === 'true') {
+          this.hiddenForwardDOM = this.forwardDOM;
           this.forwardDOM = null;
+
+          if (this.treeExplore) {
+            this.treeExplore(function(_child) {
+              _child.forwardDOM = null;
+              _child.isAttachedDOM = false;
+            });
+          }
+
           return [];
         }
       }
@@ -522,7 +566,11 @@ class ElementNode {
       //   this.backupDOM = constructedDOM;
       // }
 
-      this.forwardDOM = constructedDOM;
+      if (this.isAttachedDOM) {
+        this.backupDOM = constructedDOM;
+      } else {
+        this.forwardDOM = constructedDOM;
+      }
 
       returnElementNodes.push(this);
     }
@@ -551,6 +599,8 @@ class ElementNode {
   isRepeater() {
     return this.getControl('repeat-n') && !this.isRepeated;
   }
+
+
 
   constructDOMs2(_options, _complete) {
     let that = this;
@@ -2043,22 +2093,26 @@ class ElementNode {
   updateForwardDOM(_complete) {
     let that = this;
 
-    this.constructDOMs({
-      forward: false
-    }, function(_doms) {
+    this.constructDOMs({});
 
-      that.parent.applyMe(that);
-
-      _complete(_doms);
-
-      if (that.hasEvent("did-update")) {
-
-        /***********************************/
-        /***** Emit Event 'did-update' *****/
-        /***********************************/
-        this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
-      }
-    });
+    this.parent.updateChild(this);
+    //
+    // this.constructDOMs({
+    //   forward: false
+    // }, function(_doms) {
+    //
+    //   that.parent.applyMe(that);
+    //
+    //   _complete(_doms);
+    //
+    //   if (that.hasEvent("did-update")) {
+    //
+    //     /***********************************/
+    //     /***** Emit Event 'did-update' *****/
+    //     /***********************************/
+    //     this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
+    //   }
+    // });
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

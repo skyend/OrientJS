@@ -52,20 +52,64 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   updateChild(_child) {
-    let prevSibling = _child.prevSibling;
-    let nextSibling = _child.nextSibling;
+    // let prevSibling = _child.prevSibling;
+    // let nextSibling = _child.nextSibling;
+    let attachedPrevSibling = _child.getAttachedPrevSibling();
 
-    console.log(prevSibling);
-    console.log(prevSibling ? prevSibling.id : null, _child.id);
+    // console.log(prevSibling);
+    // console.log(prevSibling ? prevSibling.id : null, _child.id);
 
-    if (prevSibling) {
+    if (_child.isRepeater()) {
+      for (let i = 0; i < _child.clonePool.length; i++) {
+        this.updateChild(_child.clonePool[i]);
+      }
+    }
+
+    // hidden 은 제거
+    if (_child.forwardDOM === null) {
+      if (_child.hiddenForwardDOM) {
+        this.forwardDOM.removeChild(_child.hiddenForwardDOM);
+        _child.hiddenForwardDOM = null;
+        _child.isAttachedDOM = false;
+      }
+
+      return;
+    }
+
+
+    if (_child.isAttachedDOM === true) {
+      // apply
+      _child.applyForward();
 
     } else {
-      if (nextSibling) {
-        if (this.indexOccupyRange.x === -1) {
+      let attachedNextSibling = _child.getAttachedNextSibling();
 
-        }
+      if (attachedNextSibling !== null) {
+        // next sibling 의 이전에 부착
+        this.forwardDOM.insertBefore(_child.forwardDOM, attachedNextSibling.forwardDOM);
+        _child.isAttachedDOM = true;
+      } else {
+        // append
+        this.forwardDOM.appendChild(_child.forwardDOM);
+        _child.isAttachedDOM = true;
       }
+
+      // if (attachedPrevSibling !== null) {
+      //   // prevSibling 의 다음에 부착
+      //
+      // } else {
+      //   let attachedNextSibling = _child.getAttachedNextSibling();
+      //
+      //   if (attachedNextSibling !== null) {
+      //     // next sibling 의 이전에 부착
+      //
+      //   } else {
+      //     // append
+      //     this.forwardDOM.appendChild(_child.forwardDOM);
+      //     _child.isAttachedDOM = true;
+      //   }
+      //
+      // }
     }
   }
 
