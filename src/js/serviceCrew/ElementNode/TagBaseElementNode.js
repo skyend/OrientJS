@@ -5,7 +5,7 @@ import Gelato from '../StandAloneLib/Gelato';
 
 const PIPE_EVENT_SPLIT_REGEXP = /^en-pipe-event-([\w\-\_\d]+)$/;
 
-const DOMEvents = [
+const DOM_EVENTS = [
   // Mouse Events
   'click',
   'contextmenu',
@@ -323,33 +323,33 @@ class TagBaseElementNode extends ElementNode {
       _domNode.setAttribute('en-behavior', this.behavior);
 
     // #Controls
-    if (this.getControl('repeat-n'))
-      _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
-    if (this.getControl('hidden'))
-      _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+    // if (this.getControl('repeat-n'))
+    //   _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+    // if (this.getControl('hidden'))
+    //   _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
 
     // #DynamicContext
-    if (this.dynamicContextSID)
-      _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
-    if (this.dynamicContextAttitude)
-      _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
-    if (this.dynamicContextRID)
-      _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
-    if (this.dynamicContextNS)
-      _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
-    if (this.dynamicContextInjectParams)
-      _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+    // if (this.dynamicContextSID)
+    //   _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
+    // if (this.dynamicContextAttitude)
+    //   _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
+    // if (this.dynamicContextRID)
+    //   _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
+    // if (this.dynamicContextNS)
+    //   _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
+    // if (this.dynamicContextInjectParams)
+    //   _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
 
     // #Events
     // dom defaults events
-    if (this.getEvent('click'))
-      _domNode.setAttribute('en-event-click', this.getEvent('click'));
-
-    if (this.getEvent('mouseenter'))
-      _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
-
-    if (this.getEvent('complete-bind'))
-      _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
+    // if (this.getEvent('click'))
+    //   _domNode.setAttribute('en-event-click', this.getEvent('click'));
+    //
+    // if (this.getEvent('mouseenter'))
+    //   _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
+    //
+    // if (this.getEvent('complete-bind'))
+    //   _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
   }
 
   mappingAttribute(_dom, _attrName, _options) {
@@ -582,9 +582,9 @@ class TagBaseElementNode extends ElementNode {
 
     // Event reads
     // 모든 DOM 이벤트를 인식한다.
-    for (let i = 0; i < DOMEvents.length; i++) {
-      if (_domElement.getAttribute(`en-event-${DOMEvents[i]}`) !== null) // Click
-        this.setEvent(DOMEvents[i], _domElement.getAttribute(`en-event-${DOMEvents[i]}`));
+    for (let i = 0; i < DOM_EVENTS.length; i++) {
+      if (_domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`) !== null) // Click
+        this.setEvent(DOM_EVENTS[i], _domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`));
     }
 
     // Gelato Events
@@ -610,12 +610,12 @@ class TagBaseElementNode extends ElementNode {
       this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
 
     // done
-    if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
-      this.setEvent('will-hide', _domElement.getAttribute('en-event-will-hide'));
-
-    // done
-    if (_domElement.getAttribute('en-event-will-show') !== null) // will show
-      this.setEvent('will-show', _domElement.getAttribute('en-event-will-show'));
+    // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
+    //   this.setEvent('will-hide', _domElement.getAttribute('en-event-will-hide'));
+    //
+    // // done
+    // if (_domElement.getAttribute('en-event-will-show') !== null) // will show
+    //   this.setEvent('will-show', _domElement.getAttribute('en-event-will-show'));
 
     if (_domElement.getAttribute('en-event-will-construct-dom') !== null)
       this.setEvent('will-construct-dom', _domElement.getAttribute('en-event-will-construct-dom'));

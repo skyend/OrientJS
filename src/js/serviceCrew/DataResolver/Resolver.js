@@ -287,8 +287,8 @@ class Resolver {
         data = _externalGetterInterface.getScope(varName, 'action');
         break;
       case 'function':
-        throw new Error("function category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getScope(varName, 'function');
+        //throw new Error("function category 는 아직 지원하지 않습니다.");
+        data = _externalGetterInterface.getScope(varName, 'function').function;
         break;
       case 'class':
         throw new Error("class category 는 아직 지원하지 않습니다.");

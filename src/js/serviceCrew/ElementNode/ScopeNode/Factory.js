@@ -2,6 +2,7 @@ import ValueScopeNode from './ValueScopeNode';
 import ActionScopeNode from './ActionScopeNode';
 import TaskScopeNode from './TaskScopeNode';
 import ParamScopeNode from './ParamScopeNode';
+import FunctionScopeNode from './FunctionScopeNode';
 
 class ScopeNodeFactory {
   static getClass(_type) {
@@ -13,6 +14,8 @@ class ScopeNodeFactory {
         return TaskScopeNode;
       case 'action':
         return ActionScopeNode;
+      case 'function':
+        return FunctionScopeNode;
       case 'param':
         return ParamScopeNode;
     }

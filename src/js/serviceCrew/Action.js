@@ -114,7 +114,7 @@ class Action {
 
     functionParamDefineArray.push('setChain');
     actionArgArray.push(function(_chainCode) {
-      emptyActionResult.taskChain = _chainCode;
+      emptyActionResult.code = _chainCode;
     });
 
     // // ActionResult Class 삽입 Action내에서 한번이상 End Callback 이 호출 될 때 데이터 공간을 공유하여

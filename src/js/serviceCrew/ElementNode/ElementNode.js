@@ -17,10 +17,13 @@ import ICEAPISource from '../ICEAPISource';
 import events from 'events';
 import ScopeNodeFactory from './ScopeNode/Factory';
 import ActionStore from '../Actions/ActionStore';
-
+import FunctionStore from '../Functions/FunctionStore';
 
 // Actions Import
 import '../Actions/BasicElementNodeActions';
+
+// Functions Import
+import '../Functions/BasicFunctions';
 
 
 import SA_Loader from '../StandAloneLib/Loader';
@@ -1204,6 +1207,19 @@ class ElementNode {
 
     if (scope === null) {
       if (this.parent !== null) return this.parent.getScope(_name, _type, _withString);
+
+      switch (_type) {
+        case "action":
+          let action = ActionStore.instance().getAction(_name);
+          // 부모트리상에도 Action이 없다면 ActionStore 에서 Action을 얻는다.
+          return action ? this.__actionToActionScope(action) : null;
+
+        case "function":
+          let _function = FunctionStore.instance().getFunction(_name);
+
+          return _function ? this.__functionToFunctionScope(_function) : null;
+      }
+
       return null;
     }
 
@@ -1548,7 +1564,12 @@ class ElementNode {
   __progressEventDesc(_desc, _elementNodeEvent, _originDomEvent, _completeProcess) {
     if (_desc === undefined) return;
 
-    if (_desc.match(EVENT_EFFECT_MATCHER) !== null) {
+    if (/^\{\{.+?\}\}$/.test(_desc)) {
+
+      this.__executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+
+    } else if (_desc.match(EVENT_EFFECT_MATCHER) !== null) {
+
       let scope = this.interpret(`{{<< ${_desc}}}`);
       if (!scope) throw new Error(` ${_desc} Task 를 찾지 못 하였습니다.`);
 
@@ -1563,6 +1584,20 @@ class ElementNode {
     } else {
       throw new Error(`아직 지원하지 않는 eventDescription 입니다. \nDescription: ${_desc}`);
     }
+  }
+
+  __executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess) {
+    let enEvent = _elementNodeEvent || {};
+    if (_originDomEvent) {
+      enEvent.originEvent = _originDomEvent;
+    }
+
+    this.interpret(_desc, function getFeature(_target) {
+      switch (_target) {
+        case "event":
+          return enEvent;
+      }
+    });
   }
 
   __executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, _mandator) {
@@ -1701,11 +1736,31 @@ class ElementNode {
 
   __actionScopeToAction(_actionScope) {
     let action = new Action({
+      name: _actionScope.name,
       params: _actionScope.params,
       actionBody: _actionScope.actionBody
     });
 
     return action;
+  }
+
+  __actionToActionScope(_action) {
+    let actionScopeClass = ScopeNodeFactory.getClass('action');
+
+    return new actionScopeClass({
+      name: _action.name,
+      params: _action.params,
+      actionBody: _action.actionBody
+    });
+  }
+
+  __functionToFunctionScope(_function) {
+    let functionScopeClass = ScopeNodeFactory.getClass('function');
+
+    return new functionScopeClass({
+      name: _function.name,
+      executableFunction: _function.executableFunction,
+    });
   }
 
   __getTask(_taskName) {
