@@ -45,7 +45,19 @@
     </script>
   </head>
   <body >
-    <h1 en-event-click='{{  console.log(action@refresh ) }}'>
+    <h1 en-event-click='{{ function@test3(3) }}'>
+      <script type='text/function' en-scope-type='function' name='test3'>
+        return function(){
+          console.log("AA");
+        }
+      </script>
+      <en:function name='test2'>
+      var i = 0;
+        return function(_a){
+          i = i + _a;
+          console.log(i);
+        }
+      </en:function>
       <sub>A</sub>
     </h1>
     <h2 en-ctrl-repeat-n='5' en-ctrl-hidden='false'>

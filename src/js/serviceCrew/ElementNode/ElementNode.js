@@ -1756,11 +1756,13 @@ class ElementNode {
 
   __functionToFunctionScope(_function) {
     let functionScopeClass = ScopeNodeFactory.getClass('function');
-
-    return new functionScopeClass({
-      name: _function.name,
-      executableFunction: _function.executableFunction,
+    let functionScope = new functionScopeClass({
+      name: _function.name
     });
+
+    functionScope.executableFunction = _function.executableFunction;
+
+    return functionScope;
   }
 
   __getTask(_taskName) {

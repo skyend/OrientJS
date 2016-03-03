@@ -43,7 +43,12 @@ class FunctionScopeNode extends ScopeNode {
 
   extractFunction() {
     // function Returner 를 실행하여 실제 Function을 얻는다.
-    this.executableFunction = new Function(this.functionReturner)();
+    let executableFunction = new Function(this.functionReturner)();
+    if (typeof executableFunction === 'function') {
+      this.executableFunction = executableFunction;
+    } else {
+      throw new Error("FunctionNode 는 반드시 함수를 반환 해야 합니다.");
+    }
   }
 
   import (_scopeData) {
