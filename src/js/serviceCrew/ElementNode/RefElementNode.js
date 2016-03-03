@@ -27,6 +27,8 @@ class RefElementNode extends HTMLElementNode {
 
     this.loadedInstance = null;
     this.loadedRefs = false;
+
+    this.loadedTargetId = null;
   }
 
   get refType() {
@@ -38,6 +40,8 @@ class RefElementNode extends HTMLElementNode {
   }
 
   set refType(_refType) {
+    // refType 은 런타임에 변경 될 수 없다.
+
     this._refType = _refType;
   }
 
@@ -54,6 +58,33 @@ class RefElementNode extends HTMLElementNode {
     if (this.refTargetId)
       _domNode.setAttribute('en-ref-target-id', this.refTargetId);
   }
+
+
+  constructDOMs(_options) {
+    super.constructDOMs(_options);
+    let that = this;
+
+    if (this.refType === 'Fragment') {
+      let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
+
+      if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+        this.forwardDOM.innerHTML = '';
+
+        this.loadRefferenced(function(_resultObject) {
+          that.loadedInstance = _resultObject;
+          that.loadedInstance.upperEnvironment = that.environment;
+
+          let rootElementNode;
+          for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
+            rootElementNode = that.loadedInstance.rootElementNodes[i];
+            rootElementNode.constructDOMs({});
+            rootElementNode.render(that.forwardDOM);
+          }
+        });
+      }
+    }
+  }
+
 
   childrenConstructAndLink(_options, _htmlNode, _complete) {
     let that = this;

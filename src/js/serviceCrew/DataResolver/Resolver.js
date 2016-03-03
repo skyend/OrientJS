@@ -199,7 +199,7 @@ class Resolver {
 
     try {
       functionResult = Function.constructor.apply(this, functionCreateArgs);
-      console.log('new function', i++);
+
     } catch (_e) {
       _e.message += `\n Origin Source : {{${_syntax}}}`;
       throw _e;

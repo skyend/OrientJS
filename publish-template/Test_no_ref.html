@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+  <head>
+    <title> Temporary Publish : Test </title>
+
+    <!-- Page Meta JSON -->
+    <script id='page-meta' type='text/json'>
+      {
+        "id":1231221323,
+        "scripts":[
+          "http://code.jquery.com/jquery-latest.min.js",
+          "http://code.jquery.com/ui/1.11.1/jquery-ui.js",
+          "https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true",
+          "bootstrap.min.js",
+          "bootstrap-hover-dropdown.min.js",
+          "SmoothScroll.js",
+          "jquery.dragtable.js",
+          "jquery.card.js",
+          "owl.carousel.min.js",
+          "twitterFetcher_min.js",
+          "color-switcher.js"
+        ],
+        "styles":[
+          "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900,900italic&amp;subset=latin,latin-ext",
+          "https://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,900,800",
+          "http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css",
+          "bootstrap.min.css",
+          "font-awesome.min.css",
+          "dragtable.css",
+          "owl.carousel.css",
+          "animate.css",
+          "color-switcher.css",
+          "custom.css",
+          "red.css"
+        ]
+      }
+    </script>
+
+    <!-- Publish -->
+    <script src='http://localhost:8080/built-foundation.js'></script>
+    <script>
+      window.onload = function(){
+        $ervice.startup();
+      }
+    </script>
+  </head>
+  <body >
+    <div>
+      {{<< 'hello'}}
+      if(aa) (
+
+
+
+      )
+a
+      aaa
+    </div>
+
+    <div class="container">
+      <div class="default-style faq">
+        <button en-event-click='task@test'>
+          <en:task name='test' action='a'></en:task>
+          <script type='text' en-scope-type='action' name='a'>
+
+            console.log($.ajax, window);
+          </script>
+
+          Test
+        </button>
+
+
+        <button en-event-click='task@dele-test' test-attr='Hello2'>
+          <en:task name='dele-test' en-delegate='element-01' action='attr' arg-name='abc' arg-value='{{<< en-attr@test-attr}}' chain-success='update'></en:task>
+          Task 위임 테스트
+
+        </button>
+
+        {{<< text('test2/a','ab','c') }}
+
+
+        <div>
+          <div en-id='element-01'>
+            <en:task name='update' action='update'></en:task>
+            {{<< en-attr@abc }}
+          </div>
+        </div>
+
+        <h2>Frequently Asked Questions</h2>
+        <div  en-id='dc-testt'
+              en-dc-source-id='farm/vod/category'
+              en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
+              en-dc-ns='category' en-dc-attitude='passive' en-event-click='task@exec'>
+              <en:task name='exec' action='executeDC'></en:task>
+              수동 DynamicContext 테스트  << 클릭
+              <br/>
+              카테고리 : {{<< JSON.stringify(ns@category) }}
+        </div>
+        <button en-event-click='task@reset'>
+          <en:task name='reset' action='resetDC' en-executor='dc-testt'></en:task>
+          리셋 DC
+
+        </button>
+
+          {{<< config@ice-host }}
+          <div data='[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE'>
+            <span type='string' en-enableHtml>
+              {{<< "[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE" }}
+              {{<< en-attr@data }}
+            </span>
+          </div>
+
+
+          asdasd
+
+            <div class="tabs vertical-tabs">
+              <div class="row">
+                  <div class="col-sm-3">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class=""><a href="#faq-1" role="tab" data-toggle="tab" aria-controls="faq-1" aria-expanded="false">General</a></li>
+                            <li role="presentation" class="active"><a href="#faq-2" role="tab" data-toggle="tab" aria-controls="faq-2" aria-expanded="true">Shipping</a></li>
+                            <li role="presentation" class=""><a href="#faq-3" role="tab" data-toggle="tab" aria-controls="faq-3" aria-expanded="false">Reclamation</a></li>
+                            <li role="presentation" class=""><a href="#faq-4" role="tab" data-toggle="tab" aria-controls="faq-4" aria-expanded="false">Category 4</a></li>
+                            <li role="presentation" class=""><a href="#faq-5" role="tab" data-toggle="tab" aria-controls="faq-5" aria-expanded="false">Category 5</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane" id="faq-1">
+
+                                <div class="panel-group" id="faq-1-accordion" role="tablist" aria-multiselectable="true">
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#faq-1-accordion" href="#faq-1-q-1" aria-expanded="true" aria-controls="faq-1-q-1">Lorem ipsum Question #1</a></h4>
+                                      </div>
+                                      <div id="faq-1-q-1" class="panel-collapse collapse in" role="tabpanel">
+                                          <div class="panel-body">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-1-accordion" href="#faq-1-q-2" aria-expanded="false" aria-controls="faq-1-q-2">Question #2</a></h4>
+                                      </div>
+                                      <div id="faq-1-q-2" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-1-accordion" href="#faq-1-q-3" aria-expanded="false" aria-controls="faq-1-q-3">Question #3</a></h4>
+                                      </div>
+                                      <div id="faq-1-q-3" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                </div>
+
+                            </div>
+                            <div role="tabpanel" class="tab-pane active in" id="faq-2">
+
+                                <div class="panel-group" id="faq-2-accordion" role="tablist" aria-multiselectable="true">
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#faq-2-accordion" href="#faq-2-q-1" aria-expanded="true" aria-controls="faq-2-q-1">Question #1</a></h4>
+                                      </div>
+                                      <div id="faq-2-q-1" class="panel-collapse collapse in" role="tabpanel">
+                                          <div class="panel-body">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-2-accordion" href="#faq-2-q-2" aria-expanded="false" aria-controls="faq-2-q-2">Question #2</a></h4>
+                                      </div>
+                                      <div id="faq-2-q-2" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-2-accordion" href="#faq-2-q-3" aria-expanded="false" aria-controls="faq-2-q-3">Question #3</a></h4>
+                                      </div>
+                                      <div id="faq-2-q-3" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-default">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-2-accordion" href="#faq-2-q-4" aria-expanded="false" aria-controls="faq-2-q-4">Question #4</a></h4>
+                                      </div>
+                                      <div id="faq-2-q-4" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                </div>
+
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="faq-3">
+
+                                <div class="panel-group" id="faq-3-accordion" role="tablist" aria-multiselectable="true">
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#faq-3-accordion" href="#faq-3-q-1" aria-expanded="true" aria-controls="faq-3-q-1">Lorem ipsum Question #1</a></h4>
+                                      </div>
+                                      <div id="faq-3-q-1" class="panel-collapse collapse in" role="tabpanel">
+                                          <div class="panel-body">
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                    <!-- QUESTION - START -->
+                                    <div class="panel panel-primary">
+                                      <div class="panel-heading" role="tab">
+                                          <h4 class="panel-title"><a class="collapsed" role="button" data-toggle="collapse" data-parent="#faq-3-accordion" href="#faq-3-q-2" aria-expanded="false" aria-controls="faq-3-q-2">Question #2</a></h4>
+                                      </div>
+                                      <div id="faq-3-q-2" class="panel-collapse collapse" role="tabpanel">
+                                          <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <!-- QUESTION - END -->
+
+                                </div>
+
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="faq-4">
+                              Category 4 - Empty
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane" id="faq-5">
+                              Category 5 - Empty
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+      </div>
+      <div en-id='wrapper-tag'>
+        <div en-ctrl-repeat-n='5'>
+          <input en-ctrl-repeat-n='5'>
+        </div>
+        <div >
+          <en:value name='district_1_code' type='string' value='1'></en:value>
+
+          <div>
+            <en:task name='refresh' action='update-to' arg-eid='wrapper-tag'></en:task>
+            <en:task name='changed' action='set' arg-name='district_1_code' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='refresh'></en:task>
+
+            <select title="1차"  value='{{<< val@district_1_code}}' en-event-change='task@changed'>
+                <option en-ctrl-repeat-n="10" value="{{<< en@repeat-n }}">
+                   {{<< en@repeat-n }}
+                </option>
+            </select>
+
+
+          </div>
+        </div>
+      </div>
+      <div>
+        <div en-id='tab-container' tab-count='5' tab-current='{{<< 0}}'>
+
+          <ul en-id='tab-head'>
+            <li en-ctrl-repeat-n='{{<< en-attr@tab-count}}' update-test='{{<< en-attr@tab-current}}' en-event-click="task@click">
+              <en:task name='click' action='attr-to' arg-eid='tab-container' arg-name='tab-current' arg-value='{{<< String(en@repeat-n)}}' chain-success='refresh' ></en:task>
+              <en:task name='refresh' action='refresh-to' arg-eid='tab-container'></en:task>
+              Tab  {{<< en@repeat-n}} {{<< en-attr@update-test}}
+            </li>
+          </ul>
+
+          <div en-id='tab-body'>
+            <div en-ctrl-repeat-n='{{<< en-attr@tab-count}}'>
+
+              <div  en-ctrl-hidden='{{<< en@repeat-n == en-attr@tab-current ? false :true }}'>
+                  <code>{{<<  en@repeat-n == parseInt(en-attr@tab-current) }}
+                    Body {{<< en@repeat-n}}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <en:value name='testObject' type='string'>
+        {
+          "a":1,
+          "b":2
+        }
+      </en:value>
+      <en:value name='tab-count' type='number' value='10'></en:value>
+
+
+      {{<<  val@testObject:object === true? 't':'f'}}
+
+      {{<<  shortcut.if_then(true, '참') }}
+
+      <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+        <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
+        <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+        Repeat 10 Test
+      </button>
+      <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+        <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
+        <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+
+        Repeat 5 Test
+      </button>
+      <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+        <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='0' chain-success='update2'></en:task>
+        <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+
+        Repeat 0 Test
+      </button>
+
+
+      <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+        <en:task name='click' action='set-by-plain' arg-name='tab-count' arg-value='2222' chain-success='update2'></en:task>
+        <en:task name='update2' action='update-to' arg-eid='test-panel-tab' trace></en:task>
+
+        Tab count  100
+      </button>
+
+      <div class="panel-group" en-id='panel-container2' data-opened='-1'   repeat-number='5'>
+        <!-- <div class='test-padding-a'>
+          test area
+        </div>
+        <div class='test-padding-b' en-ctrl-repeat-n='3'>
+          test B
+        </div> -->
+        <div class="panel panel-primary" en-id='test-panel-tab' en-ctrl-repeat-n='{{<< en-attr@repeat-number}}'>
+          <div class="panel-heading" role="tab" en-event-click='task@forward'>
+            <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{<< en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='update'></en:task>
+            <en:task name='update' action='update-to' arg-eid='panel-container2'></en:task>
+            <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1 Update Test</a></h4>
+
+            <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+              <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
+              <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+              Repeat 10 Test
+            </button>
+            <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+              <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
+              <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+
+              Repeat 5 Test
+            </button>
+          </div>
+
+          <div id="faq-3-q-1" class="panel-collapse collapse {{<<  en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
+            <div class="panel-body">
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+              sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+              quis nostrud exercitation ullamco laboris nisi ut aliquip ex.
+              Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+            </div>
+          </div>
+        </div>
+        <!-- <div class='test-padding-c' en-ctrl-repeat-n='3'>
+          test C
+        </div> -->
+      </div>
+    </div>
+
+
+  </body>
+</html>

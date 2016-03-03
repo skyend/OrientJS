@@ -25,6 +25,9 @@ import '../Actions/BasicElementNodeActions';
 
 import SA_Loader from '../StandAloneLib/Loader';
 import Gelato from '../StandAloneLib/Gelato';
+
+import Point from '../../util/Point';
+
 "use strict";
 
 const SIGN_BY_ELEMENTNODE = 'EN';
@@ -80,10 +83,8 @@ class ElementNode {
     this.clonePool = []; // repeated
     this.cloned = false;
     this.backupDOM = null;
-    this.clonedBackupDOMs = [];
     this.forwardDOM = null;
-    this.clonedForwardDOMs = [];
-
+    this.hiddenForwardDOM = null; // hidden construct 가 되었을 때 이전에 forwardDOM을 담는다.
 
     // Repeat by parent's Repeat Control
     this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
@@ -95,11 +96,22 @@ class ElementNode {
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
-
+    this.nextSibling = null;
+    this.prevSibling = null;
 
     // update Queue
     this.updateQueue = [];
 
+    // 상위 forwardDOM 에서 차지중인 index 범위
+    // repeater 의 경우 index 거리의 차이가 있으며
+    // single 의 경우 x,y 값이 동일하며
+    // hidden 으로 차지 하지 않는 경우 x,y 값이 -1이 된다.
+    // forwardDOM 이 화면에 랜더링 되지 않은 경우도 x,y 값이 -1을 갖는다.
+    this.indexOccupyRange = new Point(-1, -1);
+
+    // 상위 forwardDOM 에서 차지중인 index 위치
+    this.attachedIndexInParentDOM = -1;
+    this.isAttachedDOM = false;
 
     //////////////////////////
     // 처리로직
@@ -155,6 +167,14 @@ class ElementNode {
     return this._scopeNodes;
   }
 
+  get nextSibling() {
+    return this._nextSibling;
+  }
+
+  get prevSibling() {
+    return this._prevSibling;
+  }
+
   //
   // get parentDynamicContext() {
   //   return this._parentDynamicContext;
@@ -184,6 +204,21 @@ class ElementNode {
 
   set scopeNodes(_scopeNodes) {
     this._scopeNodes = _scopeNodes;
+  }
+
+  set nextSibling(_e) {
+    this._nextSibling = _e;
+    if (this._nextSibling) {
+      this._nextSibling._prevSibling = this;
+    }
+  }
+
+  set prevSibling(_e) {
+    this._prevSibling = _e;
+
+    if (this._prevSibling) {
+      this._prevSibling._nextSibling = this;
+    }
   }
 
   //
@@ -360,204 +395,212 @@ class ElementNode {
     this.realization.setAttribute('en-type', this.type);
   }
 
-  constructDOMs(_options, _complete) {
+  constructDOMs(_options) {
     let that = this;
 
-    if (this.hasEvent('will-construct-dom')) {
-      let that = this;
+    try {
+      // options.linkType = options.linkType || 'downstream'; // will deprecate
+      _options.resolve = _options.resolve != undefined ? _options.resolve : true;
+      // options.forward = options.forward != undefined ? options.forward : true;
+      _options.keepDC = _options.keepDC != undefined ? _options.keepDC : false;
+    } catch (_e) {
+      /**
+        _options 인자는 오직 Object만 입력 되어야 한다 null, undefined, NaN 은 허용하지 않는다.
+        _options 객체는 랜러링 흐름에서 단 하나만 존재 하여야 하며 랜더링 중 값이 수정되면 다음 랜더링 대상이 그 값을 상속 받을 수 있도록 한다.
+      **/
 
-      /*******************************************/
-      /***** Emit Event 'will-construct-dom' *****/
-      /*******************************************/
-      that.__progressEvent('will-construct-dom', {}, null, function done(_actionResult) {
-        that.constructDOMsInner(_options, function(_doms) {
-
-          if (that.hasEvent("did-construct-dom")) {
-
-            /******************************************/
-            /***** Emit Event 'did-construct-dom' *****/
-            /******************************************/
-            that.__progressEvent('did-construct-dom', {}, null, function done(_actionResult) {});
-          }
-
-          _complete(_doms);
-        });
-      });
-    } else {
-      this.constructDOMsInner(_options, function(_doms) {
-
-        if (that.hasEvent("did-construct-dom")) {
-
-          /******************************************/
-          /***** Emit Event 'did-construct-dom' *****/
-          /******************************************/
-          that.__progressEvent('did-construct-dom', {}, null, function done(_actionResult) {});
-        }
-
-        _complete(_doms);
-      });
+      throw new Error("_options is not normal Object");
     }
+
+    let result = this.constructDOMsInner(_options);
+
+
+    return result;
+  }
+
+  getDOMNode() {
+    return this.forwardDOM;
+  }
+
+  render(_target) {
+    _target.appendChild(this.forwardDOM);
+    // this.forwardDOM = this.backupDOM;
+    // this.backupDOM = null;
+  }
+
+  renderWithReplace(_target, _old) {
+    _target.replaceChild(this.forwardDOM, _old);
+    // this.forwardDOM = this.backupDOM;
+    // this.backupDOM = null;
+  }
+
+  // 자신의 이전인덱스에 있는 형제중 상위 DOM에 부착된 가장 가까운 형제를 찾는다.
+  getAttachedPrevSibling() {
+    if (this.prevSibling) {
+      if (this.prevSibling.isAttachedDOM === true) {
+        return this.prevSibling;
+      } else {
+        return this.prevSibling.getAttachedPrevSibling();
+      }
+    }
+
+    return null;
+  }
+
+  // 자신의 다음인덱스에 있는 형제중 상위 DOM에 부착된 가장 가까운 형제를 찾는다.
+  getAttachedNextSibling() {
+    if (this.nextSibling) {
+      if (this.nextSibling.isAttachedDOM === true) {
+        return this.nextSibling;
+      } else {
+        return this.nextSibling.getAttachedNextSibling();
+      }
+    }
+
+    return null;
   }
 
   /*
-    constructDOM
-    Parameters
-      0. _options {
-          linkType: 'upstream' | 'downstream', default: 'downstream'
-          // upstream 스스로 부모에게 링크 ,downstream 자식만을 링크
-          // replacedNode = parentNode.replaceChild(newChild, oldChild);
-          remaining
-          resolve: boolean , default:true // 바인딩 진행 여부
-          forward: boolean , default:true // true면 생성된 dom을 자신의 forwardDOM 필드에 입력하고 false면 자신의 backupDOM 필드에 입력한다.
-          keelDC: boolean | 'once' , default:false // true - 전체 , false - 유지하지 않음, once - 단 한번 유지된다. constructDOMs 의 대상의 dc만 유지되며 그 하위의 ElementNode의 dc는 유지되지 않는다.
-        }
-      1. _complete Callback
-    Returns by arguments of Callback
-      0. DOMNode or NULL
-  */
-  constructDOMsInner(_options, _complete) { // Controls : Hidden, Repeat-n
-    // [
-    //  [0] Before Controls
-    //  [1] Node 생성
-    //  [2] Attribute and text 매핑
-    //  [3] Children Construct & Link
-    //  [4] Children Link
-    //  [5] After Controls
-    // ]
-    let that = this;
-    this.cloned = false; // clone 여부 플래그 construct시 매번 초기화 한다.
+      ConstructDOMsInner
 
-    // resolve 대상 scope의 resolve를 진행한다.
+      Parameters
+        _options  {
+              resolve: boolean , default:true // 바인딩 진행 여부
+              keelDC: boolean | 'once' , default:false // true - 전체 , false - 유지하지 않음, once - 단 한번 유지된다. constructDOMs 의 대상의 dc만 유지되며 그 하위의 ElementNode의 dc는 유지되지 않는다.
+            }
+      Return
+        true or false
+  */
+  constructDOMsInner(_options) {
+    // hidden 일 때 false
+    let returnElementNodes = []; // 현재 생성된 DOM에 대응하는 ElementNode를 반환한다.
+
+
     this.scopesResolve();
 
-
-
-    // Before Control
-    // * hidden
-    let options = _options || {};
-    options.linkType = options.linkType || 'downstream'; // will deprecate
-    options.resolve = options.resolve != undefined ? options.resolve : true;
-    options.forward = options.forward != undefined ? options.forward : true;
-    options.keepDC = options.keepDC != undefined ? options.keepDC : false;
-
-    // DynamicContext
-    if (options.keepDC == false) {
-
-
-      // dc 가 생성되고 정해진 api을 실행한다.
-      if (this.isDynamicContext()) {
-
-        // dynamicContextAttitude 가 passive 로 설정되어 있지 않으면 DC실행
-        if (this.dynamicContextAttitude === 'active') {
-          // DC가 active일 때만 update때 마다 지속적으로 DC를 Reset 한다.
-
-          /*
-
-          랜더링 중에 DynamicContext 가 실행되면
-          현재 트리부터 랜더링을 중지하며
-          랜더링이 완료된 후에 값을 표시하도록 변경한다.
-
-          Todo
-           나중엔 랜더링 흐름을 큐 방식으로 컨트롤을 하여 랜더링중에 DC가 실행되어도
-           DC 로드가 완료 되었을 때 다시 랜더링 하여도 랜더링에 문제가 없도록 한다.
-
-          */
-          this.executeDynamicContext();
-
-          _complete([]);
-          return;
-        }
+    // DC 실행
+    if (this.isDynamicContext() && this.dynamicContextAttitude === 'active') {
+      if (_options.keepDC === false) {
+        this.executeDynamicContext();
+      } else if (_options.keepDC === 'once') {
+        _options.keepDC = true;
       }
-    } else if (options.keepDC === 'once') { // 한번 캐치 후 false 로 옵션 변경
-      options.keepDC = false;
     }
 
+    // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
+    if (this.isRepeater()) {
+      // repeat 처리
 
-    // 하나이상의 요소를 생성하여 반환한다.
-    // 반복인자가 유효하고 반복요소가 아닌 요소에 한해서 자신을 여러개 복제 하여 반환한다.
-    if (/.+/.test(this.getControl('repeat-n') || '') && !this.isRepeated) {
-      let repeatNumber = this.getControlWithResolve('repeat-n');
+      let i = 0;
+      let repeatN = parseInt(_options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n'));
+      let repeatedElementNode;
+      let newClonePool = [];
 
-      this.multipleConstruct(repeatNumber, options, _complete);
+      let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
+
+      for (i = 0; i < repeatN; i++) {
+
+        repeatedElementNode = this.clonePool[i];
+
+        if (repeatedElementNode === undefined) {
+          repeatedElementNode = Factory.takeElementNode(this.export(false, `@${i}`), {
+            isGhost: true,
+            repeatOrder: i,
+            isRepeated: true
+          }, this.getType(), this.environment, null);
+
+          repeatedElementNode.setParent(this.parent);
+        }
+
+        repeatedElementNode.prevSibling = prevElement;
+
+        newClonePool.push(repeatedElementNode);
+
+        if (repeatedElementNode.constructDOMs(_options).length > 0) {
+          returnElementNodes.push(repeatedElementNode);
+        }
+
+        prevElement = repeatedElementNode;
+      }
+
+      /*************/
+      // 제일 마지막 Element의 nextSibling을 자신의 nextSibling으로 세팅한다.
+      if (prevElement) {
+        prevElement.nextSibling = this.nextSibling;
+      }
+
+      // clone pool 이 변경되는 순간
+      // 남은 clone 요소의 forwardDOM 을 제거한다.
+      for (let remain = i; remain < this.clonePool.length; remain++) {
+        this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
+        this.clonePool[remain].isAttachedDOM = false;
+      }
+
+      this.clonePool = newClonePool;
     } else {
 
-      /*** Hidden 처리 로직 시작 ***/
-      /**********
-       * Hidden 처리는 singleConstruct 에 대해서만 처리 하도록 한다.
-       * multipleConstruct 도 여러개로 나누어져서 single로 Construct 되므로 Repeat 된 요소배열들에게 hidden을 단독으로 적용 가능하다.
-       ****/
+      // hidden 처리
+      if (this.getControl('hidden') !== undefined) {
+        let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
 
-      // hidden control 에 어떤 값이 입력되어 있을경우 hidden control이 바인딩 된 것이다.
-      let isHiddenBind = this.getControl('hidden') !== undefined ? true : false;
+        if (hidden === true || hidden === 'true') {
+          this.hiddenForwardDOM = this.forwardDOM;
+          this.forwardDOM = null;
 
-      // [0] Before Controls
-      if (isHiddenBind && (this.getControlWithResolve('hidden') === 'true' || this.getControlWithResolve('hidden') === true)) {
-
-        this.hiddenConstruct(options, function() {
-          _complete([]);
-        });
-
-        return;
-      } else {
-        // hidden control 에 값이 바인딩 되어 있고 forwardDOM이 null 로 지정되어 있을 경우 현재 블럭에 들어 선 것은
-        // hidden 이 해제되어 랜더링 될 것을 의미한다. 그럴 경우 will-show 이벤트를 발생시킨다.
-        if (isHiddenBind) {
-          if (this.forwardDOM === null) {
-            if (this.hasEvent('will-show')) {
-              that.__progressEvent('will-show', {}, null, function done(_actionResult) {});
-            }
+          if (this.treeExplore) {
+            this.treeExplore(function(_child) {
+              _child.forwardDOM = null;
+              _child.isAttachedDOM = false;
+            });
           }
 
-          console.log('will showwwwwwwwwwwww', this, this.forwardDOM);
+          return [];
         }
-
-        /*** Hidden 처리 로직 끝 ***/
-        this.singleConstruct(options, _complete);
       }
+
+      let constructedDOM = this.constructDOM(_options);
+
+      // root 로 시작된 render는 단 한번 생성되는 DOM을 forwardDOM 으로 바로 편입 시키며
+      // root 가 아닌 render에서는 생성되는 DOM을 backupDOM 으로 사용한다.
+      // if (_options.root) {
+      //   this.forwardDOM = constructedDOM;
+      //   _options.root = false;
+      // } else {
+      //   this.backupDOM = constructedDOM;
+      // }
+
+      if (this.isAttachedDOM) {
+        this.backupDOM = constructedDOM;
+      } else {
+        this.forwardDOM = constructedDOM;
+      }
+
+      returnElementNodes.push(this);
     }
+
+    return returnElementNodes;
   }
 
-  hiddenConstruct(_options, _complete) {
-    let that = this;
+  // 단독으로 자신의 DOM을 생성하는 메서드
+  constructDOM(_options) {
+    let htmlNode = this.createNode(_options);
+    htmlNode.___en = this;
 
-    // 이전에 forwardDOM 이 존재 했을 경우
-    // 이번 hide는 not hide 에서 hide로 상태가 변경되는 경우로 will hide를 발생시킨다.
-    if (this.forwardDOM !== null) {
+    // [2] Attribute and text 매핑
+    this.mappingAttributes(htmlNode, _options);
 
-      if (this.hasEvent('will-hide')) {
-
-        /**********************************/
-        /***** Emit Event 'will-hide' *****/
-        /**********************************/
-        that.__progressEvent('will-hide', {}, null, function done() {
-          // if (_options.forward) {
-          //   that.forwardDOM = null;
-          // } else {
-          //   that.backupDOM = null;
-          // }
-          that.forwardDOM = null;
-          _complete();
-        });
-      } else {
-
-        // if (_options.forward) {
-        //   that.forwardDOM = null;
-        // } else {
-        //   that.backupDOM = null;
-        // }
-        that.forwardDOM = null;
-        _complete();
-      }
-    } else {
-
-      // if (_options.forward) {
-      //   that.forwardDOM = null;
-      // } else {
-      //   that.backupDOM = null;
-      // }
-      that.forwardDOM = null;
-      _complete();
+    // [3] Children Construct
+    if (this.type !== 'string') {
+      // Event 바인딩
+      this.bindDOMEvents(_options, htmlNode);
     }
+
+    return htmlNode;
+  }
+
+
+  isRepeater() {
+    return this.getControl('repeat-n') && !this.isRepeated;
   }
 
   scopesResolve() {
@@ -573,7 +616,6 @@ class ElementNode {
     let that = this;
     // 새로 생성
 
-    this.resetDynamicContext(); // dynamicContext 생성 호출  // 생성여부에 따라 true 또는 false 를 반환한다.
 
     if (this.hasEvent('will-dc-request')) {
 
@@ -594,7 +636,7 @@ class ElementNode {
     }
 
     function execute() {
-      that.resetDynamicContext();
+      that.rebuildDynamicContext();
 
       that.dynamicContext.ready(function(_err) {
 
@@ -604,20 +646,14 @@ class ElementNode {
             console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
 
             that.constructDOMs({
-              forward: false,
               keepDC: 'once'
-            }, function(_domList) {
-              that.parent.applyMe(that);
-
-
-              /**************************************/
-              /***** Emit Event 'complete-bind' *****/
-              /**************************************/
-              that.__progressEvent('complete-bind', {
-                dynamicContext: that.dynamicContext
-              }, null, function done() {});
-
             });
+
+            that.parent.updateChild(that);
+
+            that.__progressEvent('complete-bind', {
+              dynamicContext: that.dynamicContext
+            }, null, function done() {});
           });
         } else {
           console.warn("Todo Error Handling");
@@ -626,110 +662,6 @@ class ElementNode {
     }
   }
 
-  multipleConstruct(_repeatNumber, _options, _complete) {
-    let that = this;
-    let repeatedDomList = [];
-    let clonedElementNodeList = [];
-    let elementNode;
-    let exportObject;
-
-    this.cloned = true;
-
-    async.eachSeries(_.range(parseInt(_repeatNumber)), function iterator(_i, _next) {
-        exportObject = that.export(false, `@${_i}`);
-
-        elementNode = that.clonePool[_i];
-
-        if (elementNode === undefined) {
-          elementNode = Factory.takeElementNode(exportObject, {
-            isGhost: true,
-            repeatOrder: _i,
-            isRepeated: true
-          }, that.getType(), that.environment, null);
-          elementNode.setParent(that.parent);
-        }
-
-        clonedElementNodeList.push(elementNode);
-        elementNode.constructDOMs(_options, function(_domList) {
-          _domList.map(function(_dom) {
-            repeatedDomList.push(_dom);
-          });
-
-          _next();
-        });
-      },
-      function done(_err) {
-        that.clonePool = clonedElementNodeList;
-
-        if (_options.forward) {
-          that.clonedForwardDOMs = repeatedDomList;
-        } else {
-          that.clonedBackupDOMs = repeatedDomList;
-        }
-        console.log(repeatedDomList);
-        _complete(repeatedDomList);
-      })
-  }
-
-  singleConstruct(_options, _complete) {
-
-    // 하나의 요소만 생성하여 반환한다.
-    // [1] Node 생성
-    let htmlNode = this.createNode(_options);
-    if (_options.forward) {
-      this.forwardDOM = htmlNode;
-    } else {
-      this.backupDOM = htmlNode;
-    }
-    htmlNode.___en = this;
-
-    //console.log(this, htmlNode);
-
-    // [2] Attribute and text 매핑
-    this.mappingAttributes(htmlNode, _options);
-
-    // [3] Children Construct
-    if (this.type !== 'string') {
-      // Event 바인딩
-      this.bindDOMEvents(_options, htmlNode);
-
-      // backupDOM 으로 생성 될 때는 자식을 Link 하지 않는다.
-      this.childrenConstructAndLink(_options, htmlNode, function() {
-        _complete([htmlNode]);
-      }, _options.forward ? true : false); // children 은 HTML의 자식돔트리도 포함 되지만 ReactType의 ReactElement도 포함된다.
-    } else {
-      _complete([htmlNode]);
-    }
-  }
-
-
-
-  /*
-    getForwardDOMs
-     생성된 forwardDOM 리스트를 반환한다.
-     clone 요소라면 clonePool의 DOM리스트를 반환한다.
-  */
-  getForwardDOMs() {
-    if (this.cloned) {
-      return this.clonedForwardDOMs;
-      // return this.clonePool.map(function(_clonedElementNode) {
-      //   return _clonedElementNode.forwardDOM;
-      // });
-    } else {
-      return this.forwardDOM ? [this.forwardDOM] : [];
-    }
-  }
-
-  getBackupDOMs() {
-    if (this.cloned) {
-      return this.clonedBackupDOMs;
-      // return this.clonePool.map(function(_clonedElementNode) {
-      //   return _clonedElementNode.forwardDOM;
-      // });
-    } else {
-      return this.backupDOM ? [this.backupDOM] : [];
-    }
-  }
 
 
   // 자신의 backupDOM 을 forwardDOM에 반영한다.
@@ -829,28 +761,31 @@ class ElementNode {
 
   resetDynamicContext() {
     let that = this;
+
     this.dynamicContext = null;
 
-    // sourceID가 undefined 가 아니면 dynamicContext 생성하고 자신의 dynamicContext 필드에 대입한다.
-    if (this.dynamicContextSID !== undefined) {
+    if (this.isDynamicContext()) {
 
-      let newDynamicContext = new DynamicContext(this.environment, {
-        sourceIDs: this.interpret(this.dynamicContextSID),
-        requestIDs: this.interpret(this.dynamicContextRID),
-        namespaces: this.interpret(this.dynamicContextNS),
-        injectParams: this.interpret(this.dynamicContextInjectParams)
-      }, this.availableDynamicContext);
-      // console.log(newDynamicContext);
-      this.dynamicContext = newDynamicContext;
-      //console.log(this.dynamicContext.sourceIDs);
-      return true;
+      this.rebuildDynamicContext();
+
+      this.constructDOMs({});
+
+      this.updateChild(this);
+    } else {
+      throw new Error("resetDynamicContext 실패. DynamicContext 가 아닙니다. " + `EN ID: ${this.id}`);
     }
-    // else {
-    //   // dynamicContext 생성 조건(입력된 sourceID 값이 존재해야함)이 맞지 않으면 부모 dynamicContext 를 자신에게 대입한다.
-    //   this.dynamicContext = this.parentDynamicContext;
-    // }
 
-    return false;
+  }
+
+  rebuildDynamicContext() {
+    let newDynamicContext = new DynamicContext(this.environment, {
+      sourceIDs: this.interpret(this.dynamicContextSID),
+      requestIDs: this.interpret(this.dynamicContextRID),
+      namespaces: this.interpret(this.dynamicContextNS),
+      injectParams: this.interpret(this.dynamicContextInjectParams)
+    }, this.availableDynamicContext);
+    // console.log(newDynamicContext);
+    this.dynamicContext = newDynamicContext;
   }
 
 
@@ -1810,24 +1745,22 @@ class ElementNode {
 
   refreshForwardDOM(_complete) {
     let that = this;
-    this.constructDOMs({}, function(_doms) {
 
-      that.parent.forwardMe(that);
+    this.constructDOMs({});
 
-      _complete(_doms);
+    this.parent.updateChild(this);
 
-      if (that.hasEvent("did-refresh")) {
+    if (that.hasEvent("did-refresh")) {
 
-        /************************************/
-        /***** Emit Event 'did-refresh' *****/
-        /************************************/
-        this.__progressEvent('did-refresh', {}, null, function done(_actionResult) {});
-      }
-    });
+      /***********************************/
+      /***** Emit Event 'did-update' *****/
+      /***********************************/
+      this.__progressEvent('did-refresh', {}, null, function done(_actionResult) {});
+    }
   }
 
 
-  update(_complete) {
+  update() {
     let that = this;
 
     if (this.hasEvent('will-update')) {
@@ -1836,37 +1769,28 @@ class ElementNode {
       /************************************/
       this.__progressEvent('will-update', {}, null, function done(_actionResult) {
         if (_actionResult.returns !== false) {
-          that.updateForwardDOM(function(_doms) {
-            _complete(_doms);
-          });
+          that.updateForwardDOM();
         }
       });
     } else {
-      this.updateForwardDOM(function(_doms) {
-        _complete(_doms);
-      });
+      this.updateForwardDOM();
     }
   }
 
-  updateForwardDOM(_complete) {
+  updateForwardDOM() {
     let that = this;
 
-    this.constructDOMs({
-      forward: false
-    }, function(_doms) {
+    this.constructDOMs({});
 
-      that.parent.applyMe(that);
+    this.parent.updateChild(this);
 
-      _complete(_doms);
+    if (that.hasEvent("did-update")) {
 
-      if (that.hasEvent("did-update")) {
-
-        /***********************************/
-        /***** Emit Event 'did-update' *****/
-        /***********************************/
-        this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
-      }
-    });
+      /***********************************/
+      /***** Emit Event 'did-update' *****/
+      /***********************************/
+      this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

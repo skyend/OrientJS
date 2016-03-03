@@ -48,12 +48,24 @@
     <en:value name='count' type='number' value='5'></en:value>
     <en:task name='render' action='update-to' arg-eid='container-test'></en:task>
     <!-- <en:task name='render' en-delegate='dc-ul' action='executeDC'></en:task> -->
-  <en:value name='value' type='string' value=''></en:value>
-    <button en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-repeat-n='100'>
-      <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
+    <en:value name='value' type='string' value=''></en:value>
+    <en:value name='argument' type='number' value='2'></en:value>
 
-      Count {{<< en-attr@count }}
-    </button>
+    <div en-id='wrapper2'>
+      <div en-id='input-fields'>
+        <en:task name='keyup' action='set' arg-name='argument' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='update'></en:task>
+        <en:task name='update' action='update' en-executor='input-fields' chain-success='update2'></en:task>
+        <en:task name='update2' action='update' trace en-executor='buttons'></en:task>
+
+        <input type='number' value='{{<< val@argument || "" }}' en-event-keyup='task@keyup'>
+      </div>
+
+      <button en-id='buttons' en-event-click='task@click' count='{{<< en@repeat-n }}' en-ctrl-hidden='{{<< en@repeat-n % val@argument === 0 ? true:false }}' en-ctrl-repeat-n='100'>
+        <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
+
+        Count {{<< en-attr@count }}
+      </button>
+    </div>
 
     <div en-id='container-test'>
 
@@ -74,7 +86,7 @@
           en-event-complete-bind='task@completeBind' en-id='dc-ul'>
           <en:task name='completeBind' action='completeBind' arg-message='aa' trace></en:task>
           <en:action name='completeBind'>
-          alert('aa');
+
           console.log('hello');
             console.log(this.forwardDOM.innerHTML);
           </en:action>

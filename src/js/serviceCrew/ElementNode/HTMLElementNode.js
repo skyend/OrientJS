@@ -4,8 +4,12 @@ import _ from 'underscore';
 import React from 'react';
 import async from 'async';
 import Sizzle from 'sizzle';
+import Point from '../../util/Point';
 
 "use strict";
+
+const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
+
 
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
@@ -16,178 +20,81 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children;
   }
 
+  constructDOMs(_options) {
+    let returnHolder = super.constructDOMs(_options);
+
+    // console.log(returnHolder);
+    if (this.isRepeater()) return returnHolder;
+    if (returnHolder.length === 0) return returnHolder;
 
 
-  childrenConstructAndLink(_options, _htmlNode, _complete, _doLink) {
-    let doLink = _doLink === undefined ? true : _doLink;
-
-    let that = this;
-    async.eachSeries(this.children, function iterator(_child, _next) {
-
-        _child.constructDOMs(_options,
-          function(_domList) {
-            if (doLink) {
-              _domList.map(function(_dom) {
-                _htmlNode.appendChild(_dom);
-              });
-            }
-
-            _next();
-          });
-
-      },
-      function done() {
-        _complete();
-      });
-  }
-
-  //
-  forwardMe(_childElementNode) {
-    console.log('forward');
-    console.log(this);
-    let that = this;
-    let lastDOM;
-
-    this.forwardDOM.innerHTML = '';
-    this.childrenIteration(function(_elementNode) {
-
-      _elementNode.getForwardDOMs().map(function(_dom) {
-        that.forwardDOM.appendChild(_dom);
-      });
-    });
-  }
-
-  applyAllChildren() {
+    // children construct
     let children = this.children;
-    let childrenLen = children.length;
-
-    // console.log('applyAllChildren');
-    for (let i = 0; i < childrenLen; i++) {
-
-      this.applyChild(children[i]);
-    }
-  }
-
-  applyMe(_targetChildElementNode) {
-    this.applyChild(_targetChildElementNode);
-  }
-
-  applyChild(_targetChildElementNode) {
-    // console.log(this.forwardDOM, this.forwardDOM.childNodes);
-    // 실제 childNodes 로 조작대상의 범위를 확인 한 후 apply / append / remove 를 실행하고 하위 자식에 대해서도 동일한 작업이 수행 되도록 한다.
-    let childNodes = this.forwardDOM.childNodes;
-    let targetId = _targetChildElementNode.id;
-    let targetChildIndex = -1;
-    let beforeRangeIndex = -1; // 조작대상 ElementNode 범위의 전 요소의 인덱스
-    let afterRangeIndex = -2; // 조작대상 ElementNode 범위의 다음 요소의 인덱스
-    /*
-      ElementNode 범위로 지칭하는 것은 하나의 ElementNode가 clone(repeat-n 영향) 으로 인해 2이상의 수로 늘어 날 수 있기 때문이다.
-        예 ) 1 2 (3) [ 4 5 6 7 ] (8) 9 : Child Node List
-          * (3)         : beforeRangeIndex
-          * [ 4 ... 7 ] : 조작대상 요소 범위
-          * (8)         : afterRangeIndex
-    */
-
-    /*
-      조작 계획
-        이미 존재하는 요소의 경우 변경된 attribute만 apply 하고
-        모자라는 요소는 추가로 삽입한다.
-        조작이 완료되는 시점또는 조작이 시작되는 시점에 남는 afterRangeIndex보다 조작완료된 인덱스의 크기가 작을 경우 남은 요소를 remove한다.
-        apply 되는 요소는 자식 요소에 대해 apply 작업을 수행한다.
-    */
-
-    // dirty check 불필요
-
+    let length = children.length;
     let child;
-    let passThroughTarget = false; // 불필요한 변수일 수 도 있음. 목표 대상에 도달 했을 때 처리가 완료 될 예정이므로
-    // console.log(this.children.length);
-    for (let i = 0; i < this.children.length; i++) {
-      child = this.children[i];
+    for (let i = 0; i < length; i++) {
+      child = children[i];
 
-      if (_targetChildElementNode.id.split('@')[0] === child.id.split('@')[0]) {
-        let targetForwardDOMs = _targetChildElementNode.getForwardDOMs();
-        let targetBackupDOMs = _targetChildElementNode.getBackupDOMs();
-        let maxLength = Math.max(targetForwardDOMs.length, targetBackupDOMs.length);
-        let newClonedForwardDoms = [];
-        // console.log('target child', child, child.id);
-        // console.log('backupdom', targetBackupDOMs);
-        // console.log('forwarddom', targetForwardDOMs);
-        /*
-          beforeRangeIndex 값이 -1 이면 forwardDOM에 새 요소를 등록 해야 할 때 appendChild를 수행하고
-                                   이 아니면 해당 index의 다음요소를 기준으로 처리한다.
+      child.constructDOMs(_options);
 
-          removeChild,
-          appendChild,
-          insertAfter
-          insertBefore
-        */
-        console.log('found ', i, beforeRangeIndex, targetForwardDOMs, targetBackupDOMs, prevDom, child.id, maxLength);
-
-        let prevDom = beforeRangeIndex == -1 ? null : childNodes[beforeRangeIndex]; // 이전 요소 , 시작은 beforeRangeIndex에 해당하는 요소가 된다.
-        for (let j = 0; j < maxLength; j++) {
-
-          if (targetForwardDOMs[j] !== undefined && targetBackupDOMs[j] !== undefined) {
-            // apply 처리
-            targetForwardDOMs[j].___en.applyForward();
-
-            prevDom = targetForwardDOMs[j];
-
-            newClonedForwardDoms.push(targetForwardDOMs[j]);
-
-            // console.log('apply ', targetForwardDOMs[j].___en.id);
-
-            if (typeof targetForwardDOMs[j].___en.applyAllChildren === 'function')
-              targetForwardDOMs[j].___en.applyAllChildren();
-
-          } else if (targetForwardDOMs[j] !== undefined && targetBackupDOMs[j] === undefined) {
-            // removeChild 처리
-            // console.log('remove ', j, targetForwardDOMs[j], targetForwardDOMs[j].___en.id);
-
-            this.forwardDOM.removeChild(targetForwardDOMs[j]);
-            targetForwardDOMs[j].___en.forwardDOM = null;
-          } else if (targetForwardDOMs[j] === undefined && targetBackupDOMs[j] !== undefined) {
-            // append 처리
-
-            if (prevDom) {
-              let nextNode = prevDom.nextSibling;
-
-              // 다음 노드가 없을 경우 appendCHild 를 수행한다.
-              if (nextNode !== null) {
-                this.forwardDOM.insertBefore(targetBackupDOMs[j], nextNode);
-              } else {
-                this.forwardDOM.appendChild(targetBackupDOMs[j]);
-              }
-            } else {
-
-              if (childNodes[0] !== undefined) {
-                this.forwardDOM.insertBefore(targetBackupDOMs[j], childNodes[0]);
-              } else {
-                this.forwardDOM.appendChild(targetBackupDOMs[j]);
-              }
-            }
-
-            newClonedForwardDoms.push(targetBackupDOMs[j]);
-
-            prevDom = targetBackupDOMs[j];
-            targetBackupDOMs[j].___en.forwardDOM = targetBackupDOMs[j].___en.backupDOM;
-            //targetBackupDOMs[j].___en.backupDOM = null;
-            // console.log('appended ', j, targetBackupDOMs[j], targetBackupDOMs[j].___en, targetBackupDOMs[j].___en.id);
-
-            if (typeof targetBackupDOMs[j].___en.applyAllChildren === 'function')
-              targetBackupDOMs[j].___en.applyAllChildren();
-          }
+      if (child.isRepeater()) {
+        for (let j = 0; j < child.clonePool.length; j++) {
+          this.updateChild(child.clonePool[j]);
         }
-
-        if (_targetChildElementNode.cloned) {
-          _targetChildElementNode.clonedForwardDOMs = newClonedForwardDoms;
-        }
-        break;
       } else {
-        beforeRangeIndex += child.getForwardDOMs().length;
+
+        this.updateChild(child);
       }
     }
+
+
+    return returnHolder;
   }
 
+  updateChild(_child) {
+    // let prevSibling = _child.prevSibling;
+    // let nextSibling = _child.nextSibling;
+    let attachedPrevSibling = _child.getAttachedPrevSibling();
+
+    // console.log(prevSibling);
+    // console.log(prevSibling ? prevSibling.id : null, _child.id);
+
+    if (_child.isRepeater()) {
+      for (let i = 0; i < _child.clonePool.length; i++) {
+        this.updateChild(_child.clonePool[i]);
+      }
+    }
+
+    // hidden 은 제거
+    if (_child.forwardDOM === null) {
+      if (_child.hiddenForwardDOM) {
+        this.forwardDOM.removeChild(_child.hiddenForwardDOM);
+        _child.hiddenForwardDOM = null;
+        _child.isAttachedDOM = false;
+      }
+
+      return;
+    }
+
+    if (_child.isAttachedDOM === true) {
+      // apply
+      _child.applyForward();
+
+    } else {
+      let attachedNextSibling = _child.getAttachedNextSibling();
+
+      if (attachedNextSibling !== null) {
+        // next sibling 의 이전에 부착
+        this.forwardDOM.insertBefore(_child.forwardDOM, attachedNextSibling.forwardDOM);
+        _child.isAttachedDOM = true;
+      } else {
+        // append
+        this.forwardDOM.appendChild(_child.forwardDOM);
+        _child.isAttachedDOM = true;
+      }
+
+    }
+  }
 
   appendChild(_elementNode) {
     if (this.getType() === 'string') {
@@ -431,14 +338,25 @@ class HTMLElementNode extends TagBaseElementNode {
 
     let elementNodeData;
     let child;
+    let prevChild = null;
     for (var i = 0; i < _childrenDataList.length; i++) {
       elementNodeData = _childrenDataList[i];
       child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment, this.dynamicContext);
       child.setParent(this);
 
+      // 이전 요소 지정
+      child.prevSibling = prevChild;
+
+      // 다음 요소 지정
+      if (child.prevSibling) {
+        child.prevSibling.nextSibling = child;
+      }
+
       list.push(child);
 
       this.setChildListeners(child);
+
+      prevChild = child;
     }
 
     return list;
