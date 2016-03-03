@@ -60,7 +60,7 @@
         <input type='number' value='{{<< val@argument || "" }}' en-event-keyup='task@keyup'>
       </div>
 
-      <button en-id='buttons' en-event-click='task@click' count='{{<< en@repeat-n}}' en-ctrl-hidden='{{<< en@repeat-n % val@argument === 0 ? true:false }}' en-ctrl-repeat-n='100'>
+      <button en-id='buttons' en-event-click='task@click' count='{{<< en@repeat-n }}' en-ctrl-hidden='{{<< en@repeat-n % val@argument === 0 ? true:false }}' en-ctrl-repeat-n='100'>
         <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
 
         Count {{<< en-attr@count }}
