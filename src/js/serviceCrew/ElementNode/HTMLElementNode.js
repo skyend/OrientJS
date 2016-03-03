@@ -244,6 +244,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
     // 자식노드도 생성
     var child_ = null;
+    let prevElementNode = null;
     for (var i = 0; i < childNodes.length; i++) {
       child_ = childNodes[i];
 
@@ -278,9 +279,11 @@ class HTMLElementNode extends TagBaseElementNode {
       if (newChildElementNode.buildByElement(child_) === null) continue;
 
       this.setChildListeners(newChildElementNode);
-
+      newChildElementNode.prevSibling = prevElementNode;
       children.push(newChildElementNode);
       newChildElementNode.setParent(this);
+
+      prevElementNode = newChildElementNode;
     }
     // 선택적 재귀끝  //
     ////////////
@@ -346,11 +349,6 @@ class HTMLElementNode extends TagBaseElementNode {
 
       // 이전 요소 지정
       child.prevSibling = prevChild;
-
-      // 다음 요소 지정
-      if (child.prevSibling) {
-        child.prevSibling.nextSibling = child;
-      }
 
       list.push(child);
 

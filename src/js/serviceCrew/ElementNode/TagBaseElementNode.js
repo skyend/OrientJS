@@ -323,33 +323,33 @@ class TagBaseElementNode extends ElementNode {
       _domNode.setAttribute('en-behavior', this.behavior);
 
     // #Controls
-    // if (this.getControl('repeat-n'))
-    //   _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
-    // if (this.getControl('hidden'))
-    //   _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+    if (this.getControl('repeat-n'))
+      _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+    if (this.getControl('hidden'))
+      _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
 
     // #DynamicContext
-    // if (this.dynamicContextSID)
-    //   _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
-    // if (this.dynamicContextAttitude)
-    //   _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
-    // if (this.dynamicContextRID)
-    //   _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
-    // if (this.dynamicContextNS)
-    //   _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
-    // if (this.dynamicContextInjectParams)
-    //   _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+    if (this.dynamicContextSID)
+      _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
+    if (this.dynamicContextAttitude)
+      _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
+    if (this.dynamicContextRID)
+      _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
+    if (this.dynamicContextNS)
+      _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
+    if (this.dynamicContextInjectParams)
+      _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
 
     // #Events
     // dom defaults events
-    // if (this.getEvent('click'))
-    //   _domNode.setAttribute('en-event-click', this.getEvent('click'));
-    //
-    // if (this.getEvent('mouseenter'))
-    //   _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
-    //
-    // if (this.getEvent('complete-bind'))
-    //   _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
+    if (this.getEvent('click'))
+      _domNode.setAttribute('en-event-click', this.getEvent('click'));
+
+    if (this.getEvent('mouseenter'))
+      _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
+
+    if (this.getEvent('complete-bind'))
+      _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
   }
 
   mappingAttribute(_dom, _attrName, _options) {

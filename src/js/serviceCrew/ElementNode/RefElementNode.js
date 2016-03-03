@@ -61,28 +61,56 @@ class RefElementNode extends HTMLElementNode {
 
 
   constructDOMs(_options) {
-    super.constructDOMs(_options);
+    let returnHolder = super.constructDOMs(_options);
     let that = this;
+
+    if (returnHolder.length === 0) return returnHolder;
+
 
     if (this.refType === 'Fragment') {
       let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
-      if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
-        this.forwardDOM.innerHTML = '';
+      // if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+      this.forwardDOM.innerHTML = '';
 
-        this.loadRefferenced(function(_resultObject) {
-          that.loadedInstance = _resultObject;
-          that.loadedInstance.upperEnvironment = that.environment;
+      this.loadRefferenced(function(_resultObject) {
+        if (!_resultObject) {
+          console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
+          return;
+        }
 
-          let rootElementNode;
-          for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
-            rootElementNode = that.loadedInstance.rootElementNodes[i];
-            rootElementNode.constructDOMs({});
-            rootElementNode.render(that.forwardDOM);
+        that.loadedTargetId = targetId;
+        that.loadedInstance = _resultObject;
+        that.loadedInstance.upperEnvironment = that.environment;
+
+        that.scopeNodes.map(function(_scopeNode) {
+          if (_scopeNode.type === 'param') {
+            that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
           }
         });
-      }
+
+        let rootElementNode;
+        for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
+          rootElementNode = that.loadedInstance.rootElementNodes[i];
+          rootElementNode.constructDOMs({});
+          rootElementNode.render(that.forwardDOM);
+        }
+      });
+      // } else {
+      //   if (this.loadedInstance) {
+      //     this.forwardDOM.innerHTML = '';
+      //
+      //     let rootElementNode;
+      //     for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
+      //       rootElementNode = this.loadedInstance.rootElementNodes[i];
+      //       rootElementNode.constructDOMs({});
+      //       rootElementNode.render(this.forwardDOM);
+      //     }
+      //   }
+      // }
     }
+
+    return returnHolder;
   }
 
 
