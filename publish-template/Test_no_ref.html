@@ -86,14 +86,20 @@ a
         </div>
 
         <h2>Frequently Asked Questions</h2>
-        <div en-dc-source-id='farm/vod/category'
+        <div  en-id='dc-testt'
+              en-dc-source-id='farm/vod/category'
               en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
               en-dc-ns='category' en-dc-attitude='passive' en-event-click='task@exec'>
               <en:task name='exec' action='executeDC'></en:task>
               수동 DynamicContext 테스트  << 클릭
               <br/>
               카테고리 : {{<< JSON.stringify(ns@category) }}
-          </div>
+        </div>
+        <button en-event-click='task@reset'>
+          <en:task name='reset' action='resetDC' en-executor='dc-testt'></en:task>
+          리셋 DC
+
+        </button>
 
           {{<< config@ice-host }}
           <div data='[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE'>
@@ -294,7 +300,7 @@ a
         </div>
       </div>
       <div>
-        <div en-id='tab-container' tab-count='1000' tab-current='{{<< 0}}'>
+        <div en-id='tab-container' tab-count='5' tab-current='{{<< 0}}'>
 
           <ul en-id='tab-head'>
             <li en-ctrl-repeat-n='{{<< en-attr@tab-count}}' update-test='{{<< en-attr@tab-current}}' en-event-click="task@click">

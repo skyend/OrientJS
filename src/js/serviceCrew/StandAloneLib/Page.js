@@ -219,10 +219,7 @@ class Page {
     let that = this;
     let bodyElementNode = this.bodyFragment.rootElementNodes[0];
 
-    bodyElementNode.constructDOMs({
-      root: true,
-      'linkType': 'downstream'
-    });
+    bodyElementNode.constructDOMs({});
 
 
     bodyElementNode.renderWithReplace(that.doc.body.parentElement, that.doc.body);

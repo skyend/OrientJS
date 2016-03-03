@@ -53,8 +53,8 @@
       <en:task name='update' action='update-to' arg-eid='dance-wrapper'></en:task>
 
       <button en-event-click='task@run'>
-        <en:task name='run' action='loop' arg-fps="{{<< 10}}" chain-next='sum'></en:task>
-        <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.1 }}' chain-success='update'></en:task>
+        <en:task name='run' action='loop' arg-fps="{{<< 60}}" chain-next='sum'></en:task>
+        <en:task name='sum' action='set' arg-name='x' arg-value='{{<< val@x + 0.3 }}' chain-success='update'></en:task>
 
         run
       </button>

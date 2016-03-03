@@ -38,10 +38,10 @@ Action Function Scope 내 의 고정 인자
 actionStore.registerAction('refresh', ['taskChain'], function() {
   _actionResult.taskChain = taskChain;
 
-  this.update(function() {
-    _actionResult.code = 'success';
-    _callback(_actionResult);
-  });
+  this.update();
+
+  _actionResult.code = 'success';
+  _callback(_actionResult);
 
   // this.refresh(function() {
   //   _actionResult.code = 'success';
@@ -56,26 +56,23 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
   if (eid !== undefined) {
     targetElementNode = this.environment.findById(eid, false);
   }
-  // targetElementNode.refresh(function() {
-  //   _actionResult.code = 'success';
-  //   _callback(_actionResult);
-  // });
 
-  targetElementNode.update(function() {
-    _actionResult.code = 'success';
+  targetElementNode.update();
+  _actionResult.code = 'success';
 
-    _callback(_actionResult);
-  });
+  _callback(_actionResult);
+
 });
 
 
 actionStore.registerAction('update', ['taskChain'], function() {
   _actionResult.taskChain = taskChain;
 
-  this.update(function() {
-    _actionResult.code = 'success';
-    _callback(_actionResult);
-  });
+  this.update();
+
+  _actionResult.code = 'success';
+  _callback(_actionResult);
+
 });
 
 actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
@@ -86,11 +83,11 @@ actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
     targetElementNode = this.environment.findById(eid, false);
   }
 
-  targetElementNode.update(function() {
-    _actionResult.code = 'success';
+  targetElementNode.update();
+  _actionResult.code = 'success';
 
-    _callback(_actionResult);
-  });
+  _callback(_actionResult);
+
 });
 
 actionStore.registerAction('attr', ['name', 'value', 'taskChain'], function() {

@@ -51,15 +51,11 @@
   <body  >
 
 
-    <!-- Page Grid -->
-    <div en-type='grid' en-behavior='grid'>
-      <div en-type='grid' en-behavior='row'>
-        <!-- fragment include -->
-        <div en-type='grid' en-behavior='column' en-ref-fragment='sub1/blogBody'>
-          <!-- Will attach a blogBody fragment -->
-        </div>
-      </div>
+    <!-- fragment include -->
+    <div en-type='ref' en-behavior='column' en-ref-type='Fragment' en-ref-target-id='sub1/blogBody'>
+      <!-- Will attach a blogBody fragment -->
     </div>
+
 
 
   </body>

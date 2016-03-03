@@ -347,21 +347,24 @@ class Document {
     if (result) {
       return _t;
     } else {
+
+      if (_t.isRepeater()) {
+        for (var i = 0; i < _t.clonePool.length; i++) {
+          var recvResult = this.findRecursive(_t.clonePool[i], _finder, _allowUpper);
+          if (recvResult) {
+            return recvResult;
+          }
+        }
+      }
+
       if (_t.children !== undefined) {
-        if (this.cloned) {
-          for (var i = 0; i < _t.clonePool.length; i++) {
-            var recvResult = this.findRecursive(_t.clonePool[i], _finder, _allowUpper);
-            if (recvResult) {
-              return recvResult;
-            }
+
+        for (var i = 0; i < _t.children.length; i++) {
+          var recvResult = this.findRecursive(_t.children[i], _finder, _allowUpper);
+          if (recvResult) {
+            return recvResult;
           }
-        } else {
-          for (var i = 0; i < _t.children.length; i++) {
-            var recvResult = this.findRecursive(_t.children[i], _finder, _allowUpper);
-            if (recvResult) {
-              return recvResult;
-            }
-          }
+
         }
       }
 

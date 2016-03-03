@@ -187,10 +187,13 @@
         <div
           class="col-sm-9"
           en-id='bc-list'
-          en-dc-source-id='broadcast_series,csdp'
-          en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
-          en-dc-ns='broadcast_series-list,csdp-product'>
+          en-dc-source-id='broadcast_series'
+          en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
+          en-dc-ns='broadcast_series-list'>
 
+        {{ns@broadcast_series-list.items[en@repeat-n].nid}}
+        {{ns@broadcast_series-list.items[en@repeat-n].title}}
+        {{ns@csdp-product/prd_info/brand}}
 
           <!-- POST - START -->
           <article class="post" en-ctrl-repeat-n="{{ ns@broadcast_series-list.items.length}}">
