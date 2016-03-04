@@ -20,6 +20,8 @@ import Action from '../Action';
 import ActionStore from '../Actions/ActionStore';
 import Shortcut from '../DataResolver/Shortcut';
 
+import FunctionStore from '../Functions/FunctionStore';
+
 import events from 'events';
 
 
@@ -106,16 +108,16 @@ class Gelato {
         this.page.buildBodyFragment();
 
         //this.page.buildGridNode();
-        this.page.render(function() {
-          _cb();
-        });
+        this.page.render();
+
+        _cb();
       }, (_cb) => {
         _cb();
       }, (_cb) => {
         this.page.appendPageScripts(() => {
 
           that.emit("load");
-
+          console.log('loaded scripts')
           that.readyGelato = true;
         });
       }
@@ -201,6 +203,12 @@ class Gelato {
     let actionStore = ActionStore.instance();
 
     actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
+  }
+
+  registerFunction(_name, _function) {
+    let functionStore = FunctionStore.instance();
+
+    functionStore.registerFunction(_name, _function);
   }
 
   get actionStore() {

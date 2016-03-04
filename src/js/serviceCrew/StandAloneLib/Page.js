@@ -139,7 +139,7 @@ class Page {
 
   appendPageScripts(_complete) {
     let gelato = Gelato.one();
-
+    console.log(this.refScriptList);
     async.eachSeries(this.refScriptList, (_refString, _next) => {
       this.appendScriptRef(gelato.interpret(_refString), () => {
         _next();

@@ -481,12 +481,14 @@ class ElementNode {
 
     this.scopesResolve();
 
+    this.debug("render-begin", "render begin", _options);
+
     // DC 실행
     if (this.isDynamicContext() && this.dynamicContextAttitude === 'active') {
-      if (_options.keepDC === false) {
+      if (_options.keepDC === false || _options.keepDC === undefined) {
         this.executeDynamicContext();
       } else if (_options.keepDC === 'once') {
-        _options.keepDC = true;
+        _options.keepDC = false;
       }
     }
 
@@ -597,7 +599,7 @@ class ElementNode {
       // Event 바인딩
       this.bindDOMEvents(_options, htmlNode);
     }
-
+    this.debug('construct', 'construct DOMNode ', htmlNode);
     return htmlNode;
   }
 
@@ -619,6 +621,7 @@ class ElementNode {
     let that = this;
     // 새로 생성
 
+    this.debug('dc', 'Execute Dynamic Context');
 
     if (this.hasEvent('will-dc-request')) {
 
@@ -642,11 +645,12 @@ class ElementNode {
       that.rebuildDynamicContext();
 
       that.dynamicContext.ready(function(_err) {
+        that.debug('dc', 'Ready Dynamic Context');
 
         if (_err === null) {
 
           that.dynamicContext.dataLoad(function(_err) {
-            console.log('dataLoad', that.dynamicContext.apisources, that.dynamicContext);
+            that.debug('dc', 'dataLoad', that.dynamicContext.apisources, that.dynamicContext);
 
             that.constructDOMs({
               keepDC: 'once'
@@ -1757,7 +1761,8 @@ class ElementNode {
   __functionToFunctionScope(_function) {
     let functionScopeClass = ScopeNodeFactory.getClass('function');
     let functionScope = new functionScopeClass({
-      name: _function.name
+      name: _function.name,
+      functionReturner: null
     });
 
     functionScope.executableFunction = _function.executableFunction;
@@ -1913,6 +1918,71 @@ class ElementNode {
   //   return false;
   // }
 
+  /**
+    Keys: dc, construct, hidden
+
+  **/
+  debug(_key) {
+    if (this.type !== 'string') {
+      if (this.getAttribute('trace') !== undefined) {
+
+
+        if (!_key && !(args.length > 0)) throw new Error("Key 와 다음 내용을 입력하지 않았습니다. log사용을 위해서는 this.log(KEY, LOG MESSAGES ... )를 사용해야 합니다.");
+
+        let trace = this.getAttribute('trace');
+        if (trace === '') {
+          console.info.apply(console, arguments);
+          return;
+        }
+
+        let args = [];
+        args.push(this.id);
+        for (let i = 1; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
+        args.push(this);
+
+        // trace = dc:error,construct:warn
+        let keyPair = this.getAttribute('trace').split(',');
+        for (let i = 0; i < keyPair.length; i++) {
+          let keyAndLevel = keyPair[i].split(':');
+
+          if (keyAndLevel[0] === _key) {
+            switch (keyAndLevel[1]) {
+              case "error":
+                console.error.apply(console, args);
+                break;
+              case "info":
+                console.info.apply(console, args);
+                break;
+              case "warn":
+                console.warn.apply(console, args);
+                break;
+              case "debug":
+                console.debug.apply(console, args);
+                break;
+              case "trace":
+                console.trace.apply(console, args);
+                break;
+              default:
+                console.log.apply(console, args);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  debugKeyToTitle(_key) {
+    switch (_key) {
+      case "dc":
+        return "DynamicContext";
+      case "construct":
+        return "DOM Construct";
+      default:
+        return _key;
+    }
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */

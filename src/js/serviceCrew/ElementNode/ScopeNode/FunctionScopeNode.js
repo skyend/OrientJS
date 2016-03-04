@@ -56,7 +56,9 @@ class FunctionScopeNode extends ScopeNode {
 
     this.functionReturner = _scopeData.functionReturner;
 
-    this.extractFunction();
+    if (this.functionReturner !== null) {
+      this.extractFunction();
+    }
   }
 
   export () {
