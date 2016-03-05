@@ -481,7 +481,7 @@ class ElementNode {
 
     this.scopesResolve();
 
-    this.debug("render-begin", "render begin", _options);
+    this.debug("construct", "start", _options);
 
     // DC 실행
     if (this.isDynamicContext() && this.dynamicContextAttitude === 'active') {
@@ -549,6 +549,9 @@ class ElementNode {
         let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
 
         if (hidden === true || hidden === 'true') {
+
+          this.debug("construct", "hidden", _options);
+
           this.hiddenForwardDOM = this.forwardDOM;
           this.forwardDOM = null;
 
@@ -599,7 +602,8 @@ class ElementNode {
       // Event 바인딩
       this.bindDOMEvents(_options, htmlNode);
     }
-    this.debug('construct', 'construct DOMNode ', htmlNode);
+
+    this.debug('construct', 'created htmlNode ', htmlNode);
     return htmlNode;
   }
 
@@ -652,11 +656,9 @@ class ElementNode {
           that.dynamicContext.dataLoad(function(_err) {
             that.debug('dc', 'dataLoad', that.dynamicContext.apisources, that.dynamicContext);
 
-            that.constructDOMs({
+            that.update({
               keepDC: 'once'
             });
-
-            that.parent.updateChild(that);
 
             that.__progressEvent('complete-bind', {
               dynamicContext: that.dynamicContext
@@ -718,7 +720,37 @@ class ElementNode {
     // 자신에게 설정된 모든 이벤트를 Dom에 바인딩한다.
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
+
+      // 이벤트를 더 깊게 건다
+      // _dom['on' + _key] = function(_e) {
+      //
+      //   console.log("DOM Event fire :" + _key);
+      //
+      //   let preventDefault = true;
+      //   let stopPropagation = true;
+      //   let eventReturn;
+      //
+      //   that.__progressEvent(_key, {
+      //     eventKey: _key
+      //   }, _e, function(_actionResult) {
+      //     if (_actionResult) {
+      //       eventReturn = _actionResult.returns;
+      //     }
+      //   });
+      //
+      //   // preventDefault 와 stopPropagation 은 action으로 제어 하도록 한다.
+      //   // 기본적으로 비활성화
+      //   // if (preventDefault) _e.preventDefault();
+      //   // if (stopPropagation) _e.stopPropagation();
+      //
+      //   return eventReturn;
+      // };
+
+
       _dom.addEventListener(_key, function(_e) {
+
+        console.log("DOM Event fire :" + _key);
+
         let preventDefault = true;
         let stopPropagation = true;
         let eventReturn;
@@ -1822,7 +1854,7 @@ class ElementNode {
   }
 
 
-  update() {
+  update(_options) {
     let that = this;
 
     if (this.hasEvent('will-update')) {
@@ -1831,18 +1863,18 @@ class ElementNode {
       /************************************/
       this.__progressEvent('will-update', {}, null, function done(_actionResult) {
         if (_actionResult.returns !== false) {
-          that.updateForwardDOM();
+          that.updateForwardDOM(_options);
         }
       });
     } else {
-      this.updateForwardDOM();
+      this.updateForwardDOM(_options);
     }
   }
 
-  updateForwardDOM() {
+  updateForwardDOM(_options) {
     let that = this;
 
-    this.constructDOMs({});
+    this.constructDOMs(_options || {});
 
     this.parent.updateChild(this);
 

@@ -14,8 +14,10 @@ class Page {
     this.doc = _document;
 
     this.pageSpec = this.getPageSpec();
-    this.refStyleList = this.pageSpec.styles;
-    this.refScriptList = this.pageSpec.scripts;
+    this.refStyleList = this.pageSpec.styles || [];
+    this.refScriptList = this.pageSpec.scripts || [];
+    this.refEarlyScriptList = this.pageSpec.earlyScripts || [];
+
     this.runningStyles = {};
     this.runningScripts = {};
 
@@ -141,6 +143,18 @@ class Page {
     let gelato = Gelato.one();
     console.log(this.refScriptList);
     async.eachSeries(this.refScriptList, (_refString, _next) => {
+      this.appendScriptRef(gelato.interpret(_refString), () => {
+        _next();
+      });
+    }, () => {
+      _complete();
+    })
+  }
+
+  appendEarlyScripts(_complete) {
+    let gelato = Gelato.one();
+
+    async.eachSeries(this.refEarlyScriptList, (_refString, _next) => {
       this.appendScriptRef(gelato.interpret(_refString), () => {
         _next();
       });

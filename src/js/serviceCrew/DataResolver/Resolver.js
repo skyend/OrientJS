@@ -227,7 +227,7 @@ class Resolver {
       http-param     : HTTP Parameter 값 반환
       service        : Service Config (미지원)
       fragment       : Fragment Parameter - 참조된 프래그먼트 내에서만 사용 가능
-      past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능
+      ~past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능~ feature@prev-result 로 전근방식 변경
       event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능
       ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다.
   */
@@ -303,9 +303,9 @@ class Resolver {
       case 'fragment':
         data = _externalGetterInterface.getFragmentParam(varName);
         break;
-      case 'past-action-result':
-        data = _externalGetterInterface.getActionResult(varName);
-        break;
+        // case 'past-action-result':
+        //   data = _externalGetterInterface.getActionResult(varName);
+        //   break;
       case 'feature':
         data = _externalGetterInterface.getFeature(varName);
         break;

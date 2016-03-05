@@ -102,7 +102,10 @@ class Gelato {
           // 스타일은 미리 입력해두어도 서비스 동작에 무관하므로 미리 입력.
           this.page.appendPageStyles();
 
-          _cb();
+          this.page.appendEarlyScripts(() => {
+            _cb();
+          });
+
         })
       }, (_cb) => { // fragment attach
         this.page.buildBodyFragment();
@@ -213,6 +216,10 @@ class Gelato {
 
   get actionStore() {
     return ActionStore.instance();
+  }
+
+  get functionStore() {
+    return FunctionStore.instance();
   }
 
   // 추가 shortcut 은 랜더링 전에 추가 되어야 한다.
