@@ -1,28 +1,27 @@
 import async from 'async';
 import request from 'superagent';
 import Sizzle from 'Sizzle';
+import React from 'react';
+//import ReactDom from 'react-dom';
+import _ from 'underscore';
+import accounting from 'accounting';
+import Superagent from 'superagent';
+
+import events from 'events';
+
 import Loader from './Loader.js';
 import Page from './Page';
 import GelatoDocument from './GelatoDocument';
 import Cookie from './Cookie';
 import API from './API';
 import DataResolver from '../DataResolver/Resolver';
-import React from 'react';
-//import ReactDom from 'react-dom';
-import _ from 'underscore';
-import accounting from 'accounting';
-import Superagent from 'superagent';
 import Identifier from '../../util/Identifier';
 import ObjectExtends from '../../util/ObjectExtends.js';
-
 import ActionResult from '../ActionResult';
 import Action from '../Action';
 import ActionStore from '../Actions/ActionStore';
 import Shortcut from '../DataResolver/Shortcut';
-
 import FunctionStore from '../Functions/FunctionStore';
-
-import events from 'events';
 
 
 let instance = null;
@@ -32,7 +31,6 @@ const GELATO_VERSION = eval(`\'1.0.1\'`);
 /**
   Version Description
   1.0.1
-
 
 **/
 
@@ -90,9 +88,6 @@ class Gelato {
   startup() {
     let that = this;
 
-
-
-
     async.waterfall([
       (_cb) => {
         Loader.loadConfig((_result) => {
@@ -119,9 +114,8 @@ class Gelato {
       }, (_cb) => {
         this.page.appendPageScripts(() => {
 
-          that.emit("load");
-          console.log('loaded scripts')
           that.readyGelato = true;
+          that.emit("load");
         });
       }
     ]);
@@ -175,7 +169,7 @@ class Gelato {
   }
 
 
-  en(_domElement) {
+  getENByDOM(_domElement) {
     if (_domElement.isElementNode) return _domElement;
 
     return _domElement.___en || null;
@@ -200,7 +194,6 @@ class Gelato {
       executeI18n: this.page.executeI18n.bind(this.page)
     }, _defaultDataObject, this);
   }
-
 
   registerAction(_name, _paramKeys, _anonymousActionFunction) {
     let actionStore = ActionStore.instance();
@@ -228,12 +221,21 @@ class Gelato {
 
   }
 
+  // 최초 랜더링이 완료 되고 지정된 script 가 모두 로딩되었을 때 _func 인자로 들어온 함수를 실행한다.
+  // gelato가 ready되고 난 후에 이벤트로 등록되는 함수의 경우 즉시 실행한다.
   ready(_func) {
     if (this.readyGelato) {
       _func();
     } else {
       this.on('load', _func);
     }
+  }
+
+  // 페이지에서 사용할 자원을 미리 로딩해둔다.
+  // prepare 로 등록된 자원이 있을 경우 자원이 모두 로딩되기 전에는 startup 이 지연된다.
+  prepare(_target, _path) {
+    // target : fragment, shared, apisource, farmsource, i18n
+
   }
 }
 
