@@ -146,7 +146,7 @@ class Resolver {
 
 
     argsMap = argsMap.map(function(_argHolder, _i) {
-      return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject);
+      return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject, _caller);
     });
 
     // 마지막에 Shortcut 객체 삽입.
@@ -231,7 +231,7 @@ class Resolver {
       event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능
       ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다.
   */
-  __getInterpretVar(_varName, _externalGetterInterface, _defaultDataObject) {
+  __getInterpretVar(_varName, _externalGetterInterface, _defaultDataObject, _caller) {
     let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
     let varCategory = splited[0];
     let splitForTypeCast = (splited[1] || '').split(':');
@@ -288,7 +288,7 @@ class Resolver {
         break;
       case 'function':
         //throw new Error("function category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getScope(varName, 'function').executableFunction;
+        data = _externalGetterInterface.getScope(varName, 'function').executableFunction.bind(_caller);
         break;
       case 'class':
         throw new Error("class category 는 아직 지원하지 않습니다.");

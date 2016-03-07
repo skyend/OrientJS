@@ -170,6 +170,7 @@ class Gelato {
 
 
   getENByDOM(_domElement) {
+    // ElementNode 가 입력되었을 경우 그대로 반환한다.
     if (_domElement.isElementNode) return _domElement;
 
     return _domElement.___en || null;

@@ -39,7 +39,11 @@
     <!-- Publish -->
     <script src='http://localhost:8080/built-foundation.js'></script>
     <script>
+      var i = 0;
       window.onload = function(){
+        $ervice.registerFunction('ttest', function(_name){
+          return ++i;
+        });
         $ervice.startup();
       }
     </script>
@@ -63,7 +67,7 @@
       <button en-id='buttons' en-event-click='task@click' count='{{<< en@repeat-n }}' en-ctrl-hidden='{{<< en@repeat-n % val@argument === 0 ? true:false }}' en-ctrl-repeat-n='100'>
         <en:task name='click' action='set' arg-name='count' arg-value='{{<< en-attr@count }}' chain-success='render'></en:task>
 
-        Count {{<< en-attr@count }}
+        Count {{<< en-attr@count }} /   {{<< function@ttest() }}
       </button>
     </div>
 
@@ -80,7 +84,7 @@
 
 
       <div style='width:30%; float:left;' >
-        <ul en-dc-source-id='broadcast_series'
+        <ul en-dc-source-id='broadcast_series'  en-event-will-dc-bind='{{<< false }}'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f,b4bb86b0-6434-4c1b-ad43-c671389c49db'
           en-dc-ns='broadcast_series-list,csdp-product' en-dc-inject-params='pagecount={{<< val@count || "0" }}'
           en-event-complete-bind='task@completeBind' en-id='dc-ul'>
@@ -118,6 +122,20 @@
           </select>
         </div>
 
+
+      </div>
+
+      <div style='width:30%;float:left'>
+
+        <div  en-id='dc-testt'
+              en-dc-source-id='test'
+              en-dc-request-id='packages'
+              en-dc-ns='category' en-dc-attitude='passive' en-event-click='task@exec'>
+              <en:task name='exec' action='executeDC'></en:task>
+              수동 DynamicContext 테스트  << 클릭
+              <br/>
+              카테고리 : {{<< JSON.stringify(ns@category) }}
+        </div>
 
       </div>
     </div>

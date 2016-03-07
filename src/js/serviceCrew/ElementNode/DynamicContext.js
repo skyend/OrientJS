@@ -87,6 +87,7 @@ class DynamicContext {
     // console.log(this.sourceIDs);
     let sourceIdList = this.sourceIDs.split(',');
     console.log(sourceIdList);
+
     async.eachSeries(sourceIdList, function(_id, _next) {
 
       // API Farm 과 ICEAPISource를 구분

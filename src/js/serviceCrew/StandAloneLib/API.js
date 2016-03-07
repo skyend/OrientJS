@@ -1,4 +1,5 @@
 import ICEAPISource from '../ICEAPISource';
+import APIFarmSource from '../APIFarmSource';
 import Loader from './Loader';
 import Gelato from './Gelato';
 
@@ -33,14 +34,26 @@ class API {
   }
 
   getAPISource(_sourceId, _complete) {
-    Loader.loadAPISource(_sourceId, function(_apiSource) {
-      let iceHost = Gelato.one().page.iceHost;
+    if (/^farm/.test(_sourceId)) {
+      let spliter = _sourceId.split('/')
+      Loader.loadAPIFarmSource(spliter[1], spliter[2], function(_apiSource) {
+        let iceHost = Gelato.one().page.apiFarmHost;
 
-      let apiSource = new ICEAPISource(_apiSource);
-      apiSource.setHost(iceHost);
+        let apiSource = new APIFarmSource(_apiSource);
+        apiSource.setHost(iceHost);
 
-      _complete(apiSource);
-    });
+        _complete(apiSource);
+      });
+    } else {
+      Loader.loadAPISource(_sourceId, function(_apiSource) {
+        let iceHost = Gelato.one().page.iceHost;
+
+        let apiSource = new ICEAPISource(_apiSource);
+        apiSource.setHost(iceHost);
+
+        _complete(apiSource);
+      });
+    }
   }
 }
 

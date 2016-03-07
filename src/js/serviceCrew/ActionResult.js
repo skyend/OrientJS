@@ -2,7 +2,10 @@ class ActionResult {
   constructor(_data, _taskChain) {
     this.data = _data || null;
     this.taskChain = _taskChain || undefined;
-    this.returns = {};
+    this.returns = {
+      "continue": true // continue 가 true 로 유지되어 있을 때 이벤트의 다음 처리를 진행한다. 
+    };
+
     this.code = 'next';
 
     // ActionResult의 내용을 세팅 한 action:task 또는 function:task의 name

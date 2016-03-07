@@ -627,25 +627,15 @@ class ElementNode {
 
     this.debug('dc', 'Execute Dynamic Context');
 
-    if (this.hasEvent('will-dc-request')) {
 
-      /****************************************/
-      /***** Emit Event 'will-dc-request' *****/
-      /****************************************/
-      that.__progressEvent('will-dc-request', {
-        dynamicContext: this.dynamicContext
-      }, null, function done(_actionResult) {
+    /****************************************/
+    /***** Emit Event 'will-dc-request' *****/
+    /****************************************/
+    that.tryEventScope('will-dc-request', {
+      dynamicContext: this.dynamicContext
+    }, null, function done(_result) {
+      if (that.afterContinue(_result) === false) return;
 
-        // returns 에 true가 입력되어 있어야 한다.
-        if (_actionResult && _actionResult.returns === true) {
-          execute();
-        }
-      });
-    } else {
-      execute();
-    }
-
-    function execute() {
       that.rebuildDynamicContext();
 
       that.dynamicContext.ready(function(_err) {
@@ -656,21 +646,27 @@ class ElementNode {
           that.dynamicContext.dataLoad(function(_err) {
             that.debug('dc', 'dataLoad', that.dynamicContext.apisources, that.dynamicContext);
 
-            that.update({
-              keepDC: 'once'
-            });
-
-            that.__progressEvent('complete-bind', {
+            that.tryEventScope('will-dc-bind', {
               dynamicContext: that.dynamicContext
-            }, null, function done() {});
+            }, null, function done(_result) {
+              if (that.afterContinue(_result) === false) return;
+
+              that.update({
+                keepDC: 'once'
+              });
+
+              that.tryEventScope('complete-bind', {
+                dynamicContext: that.dynamicContext
+              }, null);
+
+            });
           });
         } else {
           console.warn("Todo Error Handling");
         }
       });
-    }
+    });
   }
-
 
 
   // 자신의 backupDOM 을 forwardDOM에 반영한다.
@@ -721,52 +717,16 @@ class ElementNode {
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
 
-      // 이벤트를 더 깊게 건다
-      // _dom['on' + _key] = function(_e) {
-      //
-      //   console.log("DOM Event fire :" + _key);
-      //
-      //   let preventDefault = true;
-      //   let stopPropagation = true;
-      //   let eventReturn;
-      //
-      //   that.__progressEvent(_key, {
-      //     eventKey: _key
-      //   }, _e, function(_actionResult) {
-      //     if (_actionResult) {
-      //       eventReturn = _actionResult.returns;
-      //     }
-      //   });
-      //
-      //   // preventDefault 와 stopPropagation 은 action으로 제어 하도록 한다.
-      //   // 기본적으로 비활성화
-      //   // if (preventDefault) _e.preventDefault();
-      //   // if (stopPropagation) _e.stopPropagation();
-      //
-      //   return eventReturn;
-      // };
-
-
       _dom.addEventListener(_key, function(_e) {
-
         console.log("DOM Event fire :" + _key);
 
-        let preventDefault = true;
-        let stopPropagation = true;
         let eventReturn;
 
-        that.__progressEvent(_key, {
+        that.tryEventScope(_key, {
           eventKey: _key
-        }, _e, function(_actionResult) {
-          if (_actionResult) {
-            eventReturn = _actionResult.returns;
-          }
+        }, _e, function(_result) {
+          if (that.afterContinue(_result) === false) return;
         });
-
-        // preventDefault 와 stopPropagation 은 action으로 제어 하도록 한다.
-        // 기본적으로 비활성화
-        // if (preventDefault) _e.preventDefault();
-        // if (stopPropagation) _e.stopPropagation();
 
         return eventReturn;
       });
@@ -1578,6 +1538,43 @@ class ElementNode {
   }
 
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
+
+
+
+
+  // 이벤트 발생지점 이후 처리를 진행 할 것인가 말 것인가를 반환
+  afterContinue(_result) {
+    if (_result) {
+      if (_result.returns) {
+        if (_result.returns.continue === false) {
+          return false;
+        }
+      }
+    } else if (_result === false) {
+      return false;
+    }
+
+    return true;
+  }
+
+  // 이벤트가 바인드 되어 있다면 이벤트 처리 후 nextProcedure를 실행하고
+  // 이벤트가 바인드 되어 있지 않다면 바로 _nextProcedure를 실행한다.
+  tryEventScope(_name, _elementNodeEvent, _originDomEvent, _nextProcedure) {
+    if (this.hasEvent(_name)) {
+
+      // 이벤트 실행 후 다음 function이 있냐에 따라 다음 처리를 수행한다.
+      this.__progressEvent(_name, _elementNodeEvent, _originDomEvent, function done(_result) {
+        if (typeof _nextProcedure === 'function') _nextProcedure(_result);
+      });
+    } else {
+
+      // 이벤트에 해당되는 지점에서 이벤트에 관한 처리를 진행하려 하였지만
+      // 등록된 이벤트가 없으므로 Event에 대한 처리는 진행하지 않으며 _nextProcedure가 등록되어 있다면
+      // _nextProcedure를 호출하여 이벤트의 다음 처리를 진행한다.
+      if (typeof _nextProcedure === 'function') _nextProcedure({});
+    }
+  }
+
   /**
     _name : Event의 이름
     _elementNodeEvent : ElementNode에서 생성된 이벤트 객체
@@ -1610,7 +1607,6 @@ class ElementNode {
       if (!scope) throw new Error(` ${_desc} Task 를 찾지 못 하였습니다.`);
 
 
-      console.log(scope);
       switch (scope.type) {
         case "task": // Scope 의 종류가 TaskScopeNode 인가
           return this.__executeTask(scope, _elementNodeEvent, _originDomEvent, _completeProcess);
@@ -1628,12 +1624,14 @@ class ElementNode {
       enEvent.originEvent = _originDomEvent;
     }
 
-    this.interpret(_desc, function getFeature(_target) {
+    let interpretResult = this.interpret(_desc, function getFeature(_target) {
       switch (_target) {
         case "event":
           return enEvent;
       }
     });
+
+    _completeProcess(interpretResult);
   }
 
   __executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, _mandator) {
@@ -1754,7 +1752,7 @@ class ElementNode {
         if (chainedTask)
           that.__executeTask(chainedTask, _enEvent, _originEvent, _completeProcess, _actionResult, __TASK_STACK__);
         else {
-          _completeProcess(_actionResult);
+          if (typeof _completeProcess === 'function') _completeProcess(_actionResult);
         }
       }
     });
@@ -1808,67 +1806,16 @@ class ElementNode {
 
   // Event end
 
-
-
-  refresh(_complete) {
-    let that = this;
-    console.log(this);
-
-    if (this.hasEvent("will-refresh")) {
-
-      /*************************************/
-      /***** Emit Event 'will-refresh' *****/
-      /*************************************/
-      this.__progressEvent('will-refresh', {}, null, function done(_actionResult) {
-        if (_actionResult.returns !== false) {
-          that.refreshForwardDOM(function(_doms) {
-            _complete(_doms);
-          });
-        }
-      });
-    } else {
-      that.refreshForwardDOM(function(_doms) {
-
-        _doms.map(function(_dom) {
-          console.log(_dom);
-        })
-        _complete(_doms);
-      });
-    }
-  }
-
-  refreshForwardDOM(_complete) {
-    let that = this;
-
-    this.constructDOMs({});
-
-    this.parent.updateChild(this);
-
-    if (that.hasEvent("did-refresh")) {
-
-      /***********************************/
-      /***** Emit Event 'did-update' *****/
-      /***********************************/
-      this.__progressEvent('did-refresh', {}, null, function done(_actionResult) {});
-    }
-  }
-
-
   update(_options) {
     let that = this;
+    /************************************/
+    /***** Emit Event 'will-update' *****/
+    /************************************/
+    this.tryEventScope('will-update', {}, null, function done(_result) {
+      if (that.afterContinue(_result) === false) return;
 
-    if (this.hasEvent('will-update')) {
-      /************************************/
-      /***** Emit Event 'will-update' *****/
-      /************************************/
-      this.__progressEvent('will-update', {}, null, function done(_actionResult) {
-        if (_actionResult.returns !== false) {
-          that.updateForwardDOM(_options);
-        }
-      });
-    } else {
-      this.updateForwardDOM(_options);
-    }
+      that.updateForwardDOM(_options);
+    });
   }
 
   updateForwardDOM(_options) {
@@ -1878,81 +1825,62 @@ class ElementNode {
 
     this.parent.updateChild(this);
 
-    if (that.hasEvent("did-update")) {
 
-      /***********************************/
-      /***** Emit Event 'did-update' *****/
-      /***********************************/
-      this.__progressEvent('did-update', {}, null, function done(_actionResult) {});
-    }
+    /***********************************/
+    /***** Emit Event 'did-update' *****/
+    /***********************************/
+    this.tryEventScope('did-update', {}, null);
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  /* ------------------ Event Handing Methods ------------------------------------------------------------------------------------- */
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // 동기 이벤트 핸들링
-  // Base Method
-  // onEventTernel(_eventName, _eventData, __ORIGIN__) {
-  //   var eventName = _eventName;
-  //   var eventData = _eventData;
-  //   //var origin = _eventData.origin;
-  //
-  //   var eventCatcherKey = "onEC_" + eventName;
-  //
-  //
-  //   var result = this[eventCatcherKey](eventData, __ORIGIN__);
-  //
-  //   if (result === false) {
-  //
-  //     // 결과 타입이 boolean이고 값이 false 일 때 부모로 이벤트를 넘겨준다.
-  //     return this.emitToParent(eventName, eventData, __ORIGIN__);
-  //   } else {
-  //     // false 가 아니라면 이벤트 처리 결과를 반환한다.
-  //     return result;
-  //   }
-  // }
-  //
-  // // Base Method
-  // emitToParent(_eventName, _eventData, __ORIGIN__) {
-  //   if (this.parent === null) {
-  //
-  //     // 이벤트를 듣는 부모가 없다면 이벤트를 environment로 전송한다.
-  //     return this.environment.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
-  //   }
-  //
-  //   return this.parent.onEventTernel(_eventName, _eventData, __ORIGIN__ || this);
-  //
-  //
-  //   // return this.parent.onEventTernel(_eventName, {
-  //   //   eventName: _eventName,
-  //   //   eventData: _eventData,
-  //   //   origin: __ORIGIN__ || this // origin 이 입력되지 않으면 자신을 origin 으로 정한다 // orign은 이벤트를 발생시킨자로 발생된 이벤트를 부모가 처리하지 못하여 부모의 부모로 넘겨줄때 origin을 유지하기 위해 사용한다.
-  //   // });
-  // }
-  //
-  // onEC_GetRepeatN(_eventData, _origin) {
-  //   if (this.isRepeated) {
-  //     return this.repeatOrder;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  //
-  //
-  // onEC_GetResolvedAttribute(_eventData, _origin) {
-  //
-  //   var value = this.getAttribute(_eventData.attr);
-  //   if (value !== undefined) {
-  //     return this.interpret(value);
-  //   }
-  //
-  //   return false;
-  // }
+
+
+  /*
+      ██████  ██    ██ ██████  ██      ██  ██████      █████  ██████  ██
+      ██   ██ ██    ██ ██   ██ ██      ██ ██          ██   ██ ██   ██ ██
+      ██████  ██    ██ ██████  ██      ██ ██          ███████ ██████  ██
+      ██      ██    ██ ██   ██ ██      ██ ██          ██   ██ ██      ██
+      ██       ██████  ██████  ███████ ██  ██████     ██   ██ ██      ██
+  */
+  setValue(_name, _value) {
+    this.setValueScopeData(_name, _value);
+  }
+
+  getValue(_name) {
+
+    let valueScope = this.getScope(_name, 'value');
+
+    if (valueScope)
+      return valueScope.shapeValue;
+    else
+      throw new Error(`선언 되지 않은 변수를 참조합니다.`);
+  }
+
+  executeDC() {
+    this.executeDynamicContext();
+  }
+
+  executeTask(_taskName, _completeProcess) {
+    let taskScope = this.getScope(_taskName, 'task');
+
+    this.__executeTask(taskScope, {}, null, _completeProcess);
+  }
+
+  getFunction(_functionName) {
+    let functionScope = this.getScope(_functionName, 'function');
+    return functionScope.executableFunction;
+  }
+
+
+  /*
+      ██████  ███████ ██████  ██    ██  ██████  ███████ ██████
+      ██   ██ ██      ██   ██ ██    ██ ██       ██      ██   ██
+      ██   ██ █████   ██████  ██    ██ ██   ███ █████   ██████
+      ██   ██ ██      ██   ██ ██    ██ ██    ██ ██      ██   ██
+      ██████  ███████ ██████   ██████   ██████  ███████ ██   ██
+  */
 
   /**
     Keys: dc, construct, hidden
-
   **/
   debug(_key) {
     if (this.type !== 'string') {

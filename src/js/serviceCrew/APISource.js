@@ -2,45 +2,25 @@
 import Request from './API/Request.js';
 import _ from 'underscore';
 import SuperAgent from 'superagent';
-import APISource from './APISource';
 
-export default class ICEAPISource extends APISource {
+export default class APISource {
   constructor(_APISourceData, _serviceManager) {
-    super(_APISourceData, _serviceManager);
-    this.clazz = 'ICEAPISource';
+    this.clazz = 'APISource';
 
     this.serviceManager = _serviceManager;
 
-    this.nodeTypeMeta = null;
     this.host = '';
+    this.import(_APISourceData);
   }
 
   get key() {
-    return this.nt_tid;
+    return this.name;
   }
 
-  setHost(_host) {
-    this.host = _host;
+  setHost(_iceHost) {
+    this.host = _iceHost;
   }
 
-  loadNodeTypeMeta(_complete) {
-    let self = this;
-
-    this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
-      _complete(_result);
-    });
-  }
-
-  prepareNodeTypeMeta(_complete) {
-    console.log("Prepare");
-    let self = this;
-
-    this.loadNodeTypeMeta(function(_nodeTypeMeta) {
-      self.nodeTypeMeta = _nodeTypeMeta;
-
-      _complete(_nodeTypeMeta);
-    });
-  }
 
   addNewRequest(_name, _crud) {
     let newRequest = new Request({
@@ -290,88 +270,18 @@ export default class ICEAPISource extends APISource {
     }
   }
 
-  executeTestRequestAsDataFrame(_requestId, _complete) {
-    let self = this;
-    this.executeTestRequest(_requestId, function(_result) {
 
-      let reqIndex = _.findIndex(self.requests, {
-        id: _requestId
-      });
+  import (_APISource) {
+    let APISource = _APISource || {};
 
-      let req = self.requests[reqIndex];
-
-      if (req.crud === '**') {
-        _complete(_result);
-      } else {
-        let dataframe = self.createResultDataFrame(_result, self.nodeTypeMeta.propertytype);
-        console.log(dataframe);
-        _complete(dataframe);
-      }
-
-    });
-
-  }
-
-  createResultDataFrame(_resultData, _propertytpye) {
-    let dataFrame = {};
-
-    if (_resultData.items !== undefined) {
-      dataFrame.items = this.makeFrame_item_field(_resultData.items, _propertytpye);
-      dataFrame.count = _resultData.count;
-    }
-
-    if (_resultData.page !== undefined) {
-      dataFrame.page = _resultData.page;
-      dataFrame.page.pages = [_resultData.page.pages[0]];
-    }
-
-    if (_resultData.read == 1) {
-      Object.keys(_propertytpye).map(function(_ptkey) {
-        dataFrame[_ptkey] = _resultData[_ptkey] || _ptkey;
-      });
-    }
-
-    if (_resultData.result !== undefined) {
-      dataFrame.result = _resultData.result;
-    }
-
-    if (_resultData.success !== undefined) {
-      dataFrame.success = _resultData.success;
-    }
-
-    return dataFrame;
-  }
-
-  makeFrame_item_field(_items, _propertytpye) {
-    let sampleItems = [];
-
-    let sampleItem = {};
-
-    let itemData = _items[0] || {};
-
-    Object.keys(_propertytpye).map(function(_ptkey) {
-      let pt = _propertytpye[_ptkey];
-
-      sampleItem[_ptkey] = itemData[_ptkey];
-    });
-
-    sampleItems.push(sampleItem);
-
-    return sampleItems;
-  }
-
-
-  import (_ICEAPISourceData) {
-    let ICEAPISourceData = _ICEAPISourceData || {};
-
-    this.id = ICEAPISourceData._id;
-    this.nt_tid = ICEAPISourceData.nt_tid;
-    this.title = ICEAPISourceData.title;
-    this.icon = ICEAPISourceData.icon;
-    this.nid = ICEAPISourceData.nid;
-    this.serviceId = ICEAPISourceData.serviceId;
-    this.created = ICEAPISourceData.created;
-    this.requests = ICEAPISourceData.requests || [];
+    this.id = APISource._id;
+    this.host = APISource.host;
+    this.name = APISource.name;
+    this.title = APISource.title;
+    this.icon = APISource.icon;
+    this.serviceId = APISource.serviceId;
+    this.created = APISource.created;
+    this.requests = APISource.requests || [];
     this.requests = this.requests.map(function(_r) {
       return new Request(_r);
     });
@@ -380,10 +290,10 @@ export default class ICEAPISource extends APISource {
   export () {
     return {
       //_id: this.id,
-      nt_tid: this.nt_tid,
+      host: this.host,
+      name: this.name,
       title: this.title,
       icon: this.icon,
-      nid: this.nid,
       serviceId: this.serviceId,
       created: this.created,
       requests: this.requests.map(function(_request) {

@@ -65,10 +65,12 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
 });
 
 
-actionStore.registerAction('update', ['taskChain'], function() {
-  _actionResult.taskChain = taskChain;
+actionStore.registerAction('update', ['keepDC', 'resolve'], function() {
 
-  this.update();
+  this.update({
+    keepDC: keepDC || 'false',
+    resolve: resolve
+  });
 
   _actionResult.code = 'success';
   _callback(_actionResult);

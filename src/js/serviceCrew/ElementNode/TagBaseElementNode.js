@@ -406,6 +406,12 @@ class TagBaseElementNode extends ElementNode {
       if (!this.backupDOM.hasAttribute(attrName)) {
         this.forwardDOM.removeAttribute(attrName);
       }
+
+      if (attrName === 'value')
+        this.forwardDOM.value = null;
+
+      if (attrName === 'checked')
+        this.forwardDOM.checked = null;
     }
 
     // 변경된 attribute반영
@@ -419,6 +425,9 @@ class TagBaseElementNode extends ElementNode {
 
       if (attrName === 'value')
         this.forwardDOM.value = attrValue;
+
+      if (attrName === 'checked')
+        this.forwardDOM.checked = attrValue;
     }
 
     //this.backupDOM = null;
@@ -606,6 +615,10 @@ class TagBaseElementNode extends ElementNode {
       this.setEvent('will-dc-request', _domElement.getAttribute('en-event-will-dc-request'));
 
     // done
+    if (_domElement.getAttribute('en-event-will-dc-bind') !== null) // Complete Bind
+      this.setEvent('will-dc-bind', _domElement.getAttribute('en-event-will-dc-bind'));
+
+    // done
     if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
       this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
 
@@ -617,11 +630,11 @@ class TagBaseElementNode extends ElementNode {
     // if (_domElement.getAttribute('en-event-will-show') !== null) // will show
     //   this.setEvent('will-show', _domElement.getAttribute('en-event-will-show'));
 
-    if (_domElement.getAttribute('en-event-will-construct-dom') !== null)
-      this.setEvent('will-construct-dom', _domElement.getAttribute('en-event-will-construct-dom'));
-
-    if (_domElement.getAttribute('en-event-did-construct-dom') !== null)
-      this.setEvent('did-construct-dom', _domElement.getAttribute('en-event-did-construct-dom'));
+    // if (_domElement.getAttribute('en-event-will-construct-dom') !== null)
+    //   this.setEvent('will-construct-dom', _domElement.getAttribute('en-event-will-construct-dom'));
+    //
+    // if (_domElement.getAttribute('en-event-did-construct-dom') !== null)
+    //   this.setEvent('did-construct-dom', _domElement.getAttribute('en-event-did-construct-dom'));
 
     // 보류
     // if (_domElement.getAttribute('en-event-will-value-change') !== null) // will  value change

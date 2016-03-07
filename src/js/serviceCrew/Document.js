@@ -11,10 +11,13 @@ import Factory from './ElementNode/Factory';
 import async from 'async';
 import Gelato from './StandAloneLib/Gelato';
 
+
+
+
+
 class Document {
 
   /*
-
     upperEnv : Fragment 또는 Page
   */
   constructor(_contextController, _documentParams, _documentDataObject, _fragmentOption, _upperEnv) {
