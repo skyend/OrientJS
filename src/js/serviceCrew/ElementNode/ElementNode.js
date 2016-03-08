@@ -577,6 +577,7 @@ class ElementNode {
       //   this.backupDOM = constructedDOM;
       // }
 
+      // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
       if (this.isAttachedDOM) {
         this.backupDOM = constructedDOM;
       } else {
@@ -1482,34 +1483,7 @@ class ElementNode {
 
   ****************************************/
 
-  /****************************************
 
-    Pipe
-
-  **********/
-  findPipeEventOwner(_pipeEventName) {
-    if (this.getPipeEvent(_pipeEventName) !== undefined) {
-      return this;
-    }
-
-    let owner = null;
-    this.climbParents(function(_elementNode) {
-      if (_elementNode.getPipeEvent(_pipeEventName) !== undefined) {
-        owner = _elementNode;
-        return null;
-      }
-    })
-
-    return owner;
-  }
-
-  executeEventPipe(_pipeName, _pipeEventObject, _completeProcess) {
-    let pipeOwner = this.findPipeEventOwner(_pipeName);
-
-    if (pipeOwner) {
-      pipeOwner.__progressPipeEvent(_pipeName, _pipeEventObject, _completeProcess);
-    }
-  }
 
   /******
 
@@ -1540,7 +1514,47 @@ class ElementNode {
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
 
 
+  /*
+  ██████  ██ ██████  ███████
+  ██   ██ ██ ██   ██ ██
+  ██████  ██ ██████  █████
+  ██      ██ ██      ██
+  ██      ██ ██      ███████
+  */
+  findPipeEventOwner(_pipeEventName) {
+    if (this.getPipeEvent(_pipeEventName) !== undefined) {
+      return this;
+    }
 
+    let owner = null;
+    this.climbParents(function(_elementNode) {
+      if (_elementNode.getPipeEvent(_pipeEventName) !== undefined) {
+        owner = _elementNode;
+        return null;
+      }
+    });
+
+    return owner;
+  }
+
+  executeEventPipe(_pipeName, _pipeEventObject, _completeProcess) {
+    let pipeOwner = this.findPipeEventOwner(_pipeName);
+
+    if (pipeOwner) {
+      pipeOwner.__progressPipeEvent(_pipeName, _pipeEventObject, _completeProcess);
+    } else {
+      console.warn(`PIPE 를 Listen하는 ElementNode를 찾을 수 없습니다. PipeName: ${_pipeName}`);
+    }
+  }
+
+
+  /*
+      ███████ ██    ██ ███████ ███    ██ ████████ ███████
+      ██      ██    ██ ██      ████   ██    ██    ██
+      █████   ██    ██ █████   ██ ██  ██    ██    ███████
+      ██       ██  ██  ██      ██  ██ ██    ██         ██
+      ███████   ████   ███████ ██   ████    ██    ███████
+  */
 
   // 이벤트 발생지점 이후 처리를 진행 할 것인가 말 것인가를 반환
   afterContinue(_result) {
@@ -1590,17 +1604,20 @@ class ElementNode {
   // PIPE 이벤트
   __progressPipeEvent(_name, _elementNodeEvent, _completeProcess) {
     let eventDesc = this.getPipeEvent(_name);
-
+    console.log('pipe 실행', _name)
     this.__progressEventDesc(eventDesc, _elementNodeEvent, null, _completeProcess);
   }
 
   __progressEventDesc(_desc, _elementNodeEvent, _originDomEvent, _completeProcess) {
     if (_desc === undefined) return;
 
-    if (/^\{\{.+?\}\}$/.test(_desc)) {
+
+    if (typeof _desc === 'function') {
+
+      this.__executeEventAsFunction(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+    } else if (/^\{\{.+?\}\}$/.test(_desc)) {
 
       this.__executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
-
     } else if (_desc.match(EVENT_EFFECT_MATCHER) !== null) {
 
       let scope = this.interpret(`{{<< ${_desc}}}`);
@@ -1634,12 +1651,24 @@ class ElementNode {
     _completeProcess(interpretResult);
   }
 
+  /*
+    eventListener 로 function이 입력되어 있을 경우 이 메서드를 타게된다.
+    eventListener로 입력된 function은 실행 될 때 인자로 event 객체와 _completeProcess 콜백 함수가 주입된다.
+  */
+  __executeEventAsFunction(_funcDesc, _elementNodeEvent, _originDomEvent, _completeProcess) {
+    let enEvent = _elementNodeEvent || {};
+    if (_originDomEvent) {
+      enEvent.originEvent = _originDomEvent;
+    }
+
+    _funcDesc.apply(this, [enEvent, _completeProcess]);
+  }
+
   __executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, _mandator) {
 
     // Task 처리 위임
     // delegate 설정이 입력되어 있고 _mandator(위임자)가 undefined 로 입력되었을 때 위임을 진행한다.
     if (_taskScope.delegate !== null && _mandator === undefined) {
-
 
       let foundEN = this.getElementNodeByInterpretField(_taskScope.delegate);
 
@@ -1758,6 +1787,14 @@ class ElementNode {
     });
   }
 
+  /*
+           █████   ██████ ████████ ██  ██████  ███    ██        ██        ████████  █████  ███████ ██   ██
+          ██   ██ ██         ██    ██ ██    ██ ████   ██        ██           ██    ██   ██ ██      ██  ██
+          ███████ ██         ██    ██ ██    ██ ██ ██  ██     ████████        ██    ███████ ███████ █████
+          ██   ██ ██         ██    ██ ██    ██ ██  ██ ██     ██  ██          ██    ██   ██      ██ ██  ██
+          ██   ██  ██████    ██    ██  ██████  ██   ████     ██████          ██    ██   ██ ███████ ██   ██
+  */
+
   // scope에서 먼저 action을 찾고
   __getAction(_actionName) {
     let actionScope = this.getScope(_actionName, 'action');
@@ -1823,8 +1860,18 @@ class ElementNode {
 
     this.constructDOMs(_options || {});
 
-    this.parent.updateChild(this);
 
+    if (this.parent !== null) {
+      this.parent.updateChild(this);
+    } else {
+      if (this.backupDOM !== null)
+        this.applyForward();
+    }
+
+    /***
+      root 일 경우 랜더링을 통해 영역에 부착 하도록 하는 로직 필요.
+      ** environment 와 elementNode 의 결합관계를 제거해야함 **
+    ***/
 
     /***********************************/
     /***** Emit Event 'did-update' *****/
@@ -1868,6 +1915,14 @@ class ElementNode {
   getFunction(_functionName) {
     let functionScope = this.getScope(_functionName, 'function');
     return functionScope.executableFunction;
+  }
+
+  setEventListener(_eventName, _eventDesc) {
+    this.nodeEvents[_eventName] = _eventDesc;
+  }
+
+  setPipeEventListener(_eventName, _eventDesc) {
+    this.pipeEvents[_eventName] = _eventDesc;
   }
 
 
@@ -2007,6 +2062,11 @@ class ElementNode {
     exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
 
     return exportObject;
+  }
+
+  clone() {
+    let exported = this.export();
+    return Factory.takeElementNode(exported, undefined, exported.type, this.environment, undefined);
   }
 
 }

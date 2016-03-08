@@ -192,7 +192,7 @@ class Resolver {
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
     functionCreateArgs.push('text'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
 
-    functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)/, 'return ');
+    functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)|(:)|(&#58;)/, 'return ');
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
@@ -216,7 +216,7 @@ class Resolver {
       en-attr        : resolve 된 값을 반환
       ns             : DynmaicContext 의 namespace 데이터 반환
       en             : node Meta : repeat-n , ...
-      geo            : width, height, x, y, left, top, right, bottom, 등등 지원 (미지원)
+      geometry       : width, height, x, y, left, top, right, bottom, 등등 지원 (미지원)
       val            : 타입으로 반환
       val-plain      : String 으로 반환
       task           : taskScope 반환
@@ -225,11 +225,14 @@ class Resolver {
       class          : classScope 반환 (미지원)
       cookie         : cookie 필드 값 반환
       http-param     : HTTP Parameter 값 반환
+      location       : 현재 페이지의 위치에 관한 정보
+      geo            : 현재 접속자의 지구상 위치에 관한 정보
+      device         : 접속자의 platform과 browser에 관한 정보
       service        : Service Config (미지원)
       fragment       : Fragment Parameter - 참조된 프래그먼트 내에서만 사용 가능
       ~past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능~ feature@prev-result 로 전근방식 변경
-      event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능
-      ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다.
+      ~event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능~
+      ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다. // I18N 에서 사용한다.
   */
   __getInterpretVar(_varName, _externalGetterInterface, _defaultDataObject, _caller) {
     let splited = _varName.split('@'); // CATEGORY@NAME:CASTING TYPE
@@ -259,8 +262,8 @@ class Resolver {
       case 'en':
         data = _externalGetterInterface.getNodeMeta(varName);
         break;
-      case 'geo':
-        throw new Error("geo category 는 아직 지원하지 않습니다.");
+      case 'geometry': // 위치와 크기정보를 반환
+        throw new Error("geometry category 는 아직 지원하지 않습니다.");
         data = this.resolveWithHttpParam(varName);
         break;
       case 'val-plain':
@@ -288,7 +291,16 @@ class Resolver {
         break;
       case 'function':
         //throw new Error("function category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getScope(varName, 'function').executableFunction.bind(_caller);
+        let functionScope = _externalGetterInterface.getScope(varName, 'function');
+        if (functionScope) {
+          if (typeof functionScope.executableFunction === 'function') {
+            data = functionScope.executableFunction.bind(_caller);
+          } else {
+            throw new Error(`유효하지 않은 Function 입니다. function scope 선언에서는 함수를 반환하여야 합니다.`);
+          }
+        } else {
+          throw new Error(`${varName} Function을 찾을 수 없습니다.`);
+        }
         break;
       case 'class':
         throw new Error("class category 는 아직 지원하지 않습니다.");
@@ -300,12 +312,20 @@ class Resolver {
       case 'http-param':
         data = this.resolveWithHttpParam(varName);
         break;
+      case 'location':
+        data = this.resolveWithLocation(varName);
+        break;
+      case 'device':
+        throw new Error("device category 는 아직 지원하지 않습니다.");
+        data = this.resolveWithDevice(varName);
+        break;
+      case 'geo':
+        throw new Error("geo-location category 는 아직 지원하지 않습니다.");
+        data = this.resolveWithHttpParam(varName);
+        break;
       case 'fragment':
         data = _externalGetterInterface.getFragmentParam(varName);
         break;
-        // case 'past-action-result':
-        //   data = _externalGetterInterface.getActionResult(varName);
-        //   break;
       case 'feature':
         data = _externalGetterInterface.getFeature(varName);
         break;
@@ -404,6 +424,21 @@ class Resolver {
     }
 
     return undefined;
+  }
+
+  resolveWithLocation(_desc) {
+    switch (_desc) {
+      case "hash":
+        return window.location.hash;
+      case "hashbang":
+        if (/^\#\!/.test(window.location.hash)) {
+          return window.location.hash.replace(/\#\!/, '');
+        } else {
+          return null;
+        }
+      default:
+        throw new Error(`지원하지 않는 카테고리의 제공자입니다. location@${_desc}`);
+    }
   }
 
   resolveWithCookie(_description) {

@@ -92,6 +92,7 @@ class RefElementNode extends HTMLElementNode {
         let rootElementNode;
         for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
           rootElementNode = that.loadedInstance.rootElementNodes[i];
+          rootElementNode.setParent(that);
           rootElementNode.constructDOMs({});
           rootElementNode.render(that.forwardDOM);
         }
@@ -112,105 +113,6 @@ class RefElementNode extends HTMLElementNode {
 
     return returnHolder;
   }
-
-
-  childrenConstructAndLink(_options, _htmlNode, _complete) {
-    let that = this;
-
-    // super.childrenConstructAndLink(_options, _htmlNode, function() {
-
-    if (_.isString(that.refTargetId)) {
-      if (that.loadedRefs == false) {
-        that.loadRefferenced(function(_resultObject) {
-          that.loadedRefs = true;
-          that.loadedInstance = _resultObject;
-
-          console.log('loaded', _resultObject);
-          that.childrenConstructAndLink(_options, _htmlNode, function() {
-            _complete();
-          });
-        });
-
-      } else { // load 완료시
-
-        if (that.refType === 'Fragment' && this.loadedInstance !== null) {
-
-          // 상위 environment 지정
-          that.loadedInstance.upperEnvironment = that.environment;
-
-          console.log('params', this.scopeNodes);
-
-          this.scopeNodes.map(function(_scopeNode) {
-            if (_scopeNode.type === 'param') {
-              console.log(_scopeNode.value);
-              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-            }
-          });
-
-
-          // this.children = that.loadedInstance.rootElementNodes;
-          // this.forwardDOM.innerHTML = '';
-          // super.childrenConstructAndLink(_options, _htmlNode, _complete);
-
-          // that.loadedInstance.constructDOMChildren(_options, function(_domList) {
-          //   _htmlNode.innerHTML = '';
-          //
-          //   // parent 삽입
-          //   that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
-          //     _rootElementNode.setParent(that);
-          //   });
-          //
-          //   _domList.map(function(_dom) {
-          //
-          //     _htmlNode.appendChild(_dom);
-          //
-          //   });
-          //
-          //   _complete([]);
-          // });
-
-          that.loadedInstance.constructDOMChildren(_options, function(_domList) {
-            _htmlNode.innerHTML = '';
-            console.log("new construct fragment", this, that.loadedInstance, _domList, that.refTargetId);
-
-            // parent 삽입
-            that.loadedInstance.rootElementNodes.map(function(_rootElementNode) {
-              _rootElementNode.setParent(that);
-
-              if (_options.forward) {
-
-                _htmlNode.appendChild(_rootElementNode.forwardDOM);
-              } else {
-                _rootElementNode.forwardDOM = _rootElementNode.backupDOM;
-                _htmlNode.appendChild(_rootElementNode.forwardDOM);
-
-                _rootElementNode.applyAllChildren();
-              }
-
-            });
-
-
-
-            _complete([]);
-          });
-
-
-        } else if (that.refType === 'ElementNode') {
-          that.loadedInstance.map(function(_elementNode) {
-            _elementNode.setParent(that);
-          });
-
-          that.children = that.loadedInstance;
-
-          _htmlNode.innerHTML = '';
-          super.childrenConstructAndLink(_options, _htmlNode, _complete);
-        }
-      }
-    } else {
-      _complete([]);
-    }
-  }
-
 
   buildByElement(_domElement) {
     super.buildByElement(_domElement, ['en-ref-type', 'en-ref-target-id', 'en-']);
