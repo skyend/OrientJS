@@ -26,7 +26,7 @@ import FunctionStore from '../Functions/FunctionStore';
 
 let instance = null;
 
-const GELATO_VERSION = eval(`\'1.0.1\'`);
+const GELATO_VERSION = eval(`\'0.7.1\'`);
 
 /**
   Version Description

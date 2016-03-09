@@ -290,7 +290,7 @@ actionStore.registerAction('loop', ['fps'], function() {
 });
 
 
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], function() {
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion'], function() {
   let that = this;
   let type = 'ice-api';
   if (/^farm\//.test(apiSourceId)) {
@@ -336,8 +336,17 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId'], fu
     apiSource.executeRequest(requestId, fields, {}, that.getAttribute('enctype'), function(_result, _statusCode) {
       console.log("Result ", _result, _statusCode);
 
-      _actionResult.code = _result.result || _statusCode;
-      _actionResult.data = _result;
+      // http error 코드일 경우
+      if (_result === null) {
+
+        _actionResult.code = _statusCode;
+        _actionResult.data = null;
+      } else {
+
+        _actionResult.code = _result[chainCodeCriterion || 'result'];
+        _actionResult.data = _result;
+      }
+
       _callback(_actionResult);
     });
   });
@@ -406,6 +415,35 @@ actionStore.registerAction('push', ['name', 'value'], function() {
 actionStore.registerAction('pop2', ['name', 'value'], function() {
 
   this.popToValueScopeArrayByValue(name, value);
+
+  _callback(_actionResult);
+});
+
+// 배열에서 특정한 값을 제거
+actionStore.registerAction('set-cookie', ['name', 'value', 'expires', 'path'], function() {
+  let options = {};
+  if (expires !== undefined) {
+    options.expires = expires;
+  }
+
+  if (path !== undefined) {
+    options.path = path;
+  }
+
+  $ervice.cookie.set(name, value, options);
+
+  _callback(_actionResult);
+});
+
+// 배열에서 특정한 값을 제거
+actionStore.registerAction('remove-cookie', ['name', 'path'], function() {
+  let options = {};
+
+  if (path !== undefined) {
+    options.path = path;
+  }
+
+  $ervice.cookie.remove(name, options);
 
   _callback(_actionResult);
 });

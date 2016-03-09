@@ -235,7 +235,7 @@ export default class ICEAPISource extends APISource {
           if (err !== null) {
             console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
 
-            complete(null);
+            complete(null, res.statusCode);
           } else {
             complete(res.body, res.statusCode);
           }
@@ -249,7 +249,7 @@ export default class ICEAPISource extends APISource {
           if (res === null) {
             console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
 
-            complete(null);
+            complete(null, res.statusCode);
           } else {
             complete(res.body, res.statusCode);
           }

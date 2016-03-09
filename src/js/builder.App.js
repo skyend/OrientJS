@@ -24,7 +24,7 @@ window.gelateriaHost = location.host;
 
 var App = function() {
   window.app = this;
-  window.gelateriaVersion = 1.02;
+  window.gelateriaVersion = "0.7.0";
 
   this.session = new Session();
   this.gelateriaRequest = new GelateriaRequest(window.gelateriaHost);

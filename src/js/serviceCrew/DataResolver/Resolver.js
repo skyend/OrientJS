@@ -173,7 +173,7 @@ class Resolver {
     let functionResult;
 
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
-    let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_]+(:\w+)?/g, function(_matched) {
+    let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_\#]+(:\w+)?/g, function(_matched) {
 
       alreadyIndex = _.findIndex(argumentsMap, function(_argName) {
         return _argName === _matched;
