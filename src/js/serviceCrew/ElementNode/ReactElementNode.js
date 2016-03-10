@@ -1,5 +1,5 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
-import React from 'react';
+// import React from 'react';
 //import ReactComponentErrorBox from '../jsx/ReactComponentErrorBox.jsx';
 import _ from 'underscore';
 "use strict";

@@ -1,5 +1,4 @@
 import ElementNodeMulti from './ElementNodeMulti';
-import React from 'react';
 import Returns from "../../Returns.js";
 import _ from 'underscore';
 import Factory from './Factory.js';
@@ -924,11 +923,11 @@ class ElementNode {
         // react type component 는 실제로 elementNode가 생성되지는 않기 때문에 배제한다.
         if (targetElementNode.getType() === 'empty') return false;
         break;
-      case "react":
-        // react type Component 는 empty type elementNode에만 드랍할 수 있다.
-        // react type component 는 실제로 elementNode가 생성되지는 않기 때문에 배제한다.
-        //if (targetElementNode.getType() !== 'empty') return false;
-        break;
+        // case "react":
+        //   // react type Component 는 empty type elementNode에만 드랍할 수 있다.
+        //   // react type component 는 실제로 elementNode가 생성되지는 않기 때문에 배제한다.
+        //   //if (targetElementNode.getType() !== 'empty') return false;
+        //   break;
     }
 
     return true;
@@ -1273,34 +1272,34 @@ class ElementNode {
           })
         }
         break;
-      case "react":
-        ObjectExplorer.explore(this.attributes, function(_key, _data) {
-          extractedBlocks = self.extractBindBlocks(_data);
-
-          if (extractedBlocks !== null) {
-            extractedBlocks.map(function(_block) {
-              bindBlockSetList.push({
-                key: _key,
-                binder: _block
-              });
-            })
-          }
-        }, 'attributes');
-
-        ObjectExplorer.explore(this.getReactComponentProps(), function(_key, _data) {
-          extractedBlocks = self.extractBindBlocks(_data);
-
-          if (extractedBlocks !== null) {
-            extractedBlocks.map(function(_block) {
-              bindBlockSetList.push({
-                key: _key,
-                binder: _block
-              });
-            })
-          }
-        }, 'reactComponentProps');
-
-        break;
+        // case "react":
+        //   ObjectExplorer.explore(this.attributes, function(_key, _data) {
+        //     extractedBlocks = self.extractBindBlocks(_data);
+        //
+        //     if (extractedBlocks !== null) {
+        //       extractedBlocks.map(function(_block) {
+        //         bindBlockSetList.push({
+        //           key: _key,
+        //           binder: _block
+        //         });
+        //       })
+        //     }
+        //   }, 'attributes');
+        //
+        //   ObjectExplorer.explore(this.getReactComponentProps(), function(_key, _data) {
+        //     extractedBlocks = self.extractBindBlocks(_data);
+        //
+        //     if (extractedBlocks !== null) {
+        //       extractedBlocks.map(function(_block) {
+        //         bindBlockSetList.push({
+        //           key: _key,
+        //           binder: _block
+        //         });
+        //       })
+        //     }
+        //   }, 'reactComponentProps');
+        //
+        //   break;
       case "ref":
       case "grid":
       case "html":

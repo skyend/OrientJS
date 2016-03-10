@@ -12,9 +12,8 @@ module.exports = {
     ],
     // main: ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/js/main.js'],
     // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/stand-alone-foundation/main.js'] // foundation build
-    //main: ['./src/js/ui/editor/test_main.jsx']
 
-    main: ['./src/js/main.js'],
+    // main: ['./src/js/main.js'],
     'built-foundation': ['./src/stand-alone-foundation/main.js']
   },
 
@@ -79,8 +78,11 @@ module.exports = {
 
   plugins: [
     new Clean(['dist']),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoErrorsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      minimize: true
+    }),
     new HtmlWebpackPlugin({
       title: 'Gelateria ICE Gelato Builder',
       inject: 'body',

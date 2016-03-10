@@ -1,7 +1,7 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
 import _ from 'underscore';
-import React from 'react';
+// import React from 'react';
 import async from 'async';
 import Sizzle from 'sizzle';
 import Point from '../../util/Point';
@@ -212,19 +212,19 @@ class HTMLElementNode extends TagBaseElementNode {
     }
   }
 
-  buildByComponent(_component) {
-    super.buildByComponent(_component);
-
-    var parsingDom = document.createElement('div');
-    parsingDom.innerHTML = React.renderToStaticMarkup(React.createElement(_component.class));
-
-    this.buildByElement(parsingDom.childNodes[0]);
-
-    if (typeof _component.CSS !== 'undefined') {
-      this.setCSS(_component.CSS);
-      this.environment.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
-    }
-  }
+  // buildByComponent(_component) {
+  //   super.buildByComponent(_component);
+  //
+  //   var parsingDom = document.createElement('div');
+  //   parsingDom.innerHTML = React.renderToStaticMarkup(React.createElement(_component.class));
+  //
+  //   this.buildByElement(parsingDom.childNodes[0]);
+  //
+  //   if (typeof _component.CSS !== 'undefined') {
+  //     this.setCSS(_component.CSS);
+  //     this.environment.appendHTMLElementNodeCSS(_component.componentName, _component.CSS);
+  //   }
+  // }
 
   /******************
    * buildByDomElement

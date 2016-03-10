@@ -1,7 +1,7 @@
 import async from 'async';
 import request from 'superagent';
 import Sizzle from 'Sizzle';
-import React from 'react';
+// import React from 'react';
 //import ReactDom from 'react-dom';
 import _ from 'underscore';
 import accounting from 'accounting';
@@ -135,13 +135,13 @@ class Gelato {
     return _;
   }
 
-  get react() {
-    return React;
-  }
-
-  get reactDom() {
-    //return ReactDom()
-  }
+  // get react() {
+  //   return React;
+  // }
+  //
+  // get reactDom() {
+  //   //return ReactDom()
+  // }
 
   get jsxCompiler() {
     return null;

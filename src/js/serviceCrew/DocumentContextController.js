@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 import LazyTimer from '../util/LazyTimer.js';
 
-import DocumentRevisionManager from './DocumentRevisionManager.js';
+// import DocumentRevisionManager from './DocumentRevisionManager.js';
 import HasElementNodeContextController from './HasElementNodeContextController.js';
 
 class DocumentContextController extends HasElementNodeContextController {

@@ -16,7 +16,6 @@ import ToolFactory from './builder.ToolFactory.js';
 
 // Sub UI Classes
 import BuilderWorkSpace from './ui.workspace/Workspace.jsx';
-import LoginService from './ui.workspace/LoginService.jsx';
 import Enterance from './ui.enterance/Enterance.jsx';
 
 // Data
