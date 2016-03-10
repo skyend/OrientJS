@@ -616,7 +616,7 @@ class ElementNode {
     let sn_len = this.scopeNodes.length;
     for (let i = 0; i < sn_len; i++) {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
-        this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].plainValue);
+        this.scopeNodes[i].plainValue = this.interpret(this.scopeNodes[i].plainValue);
       }
     }
   }
