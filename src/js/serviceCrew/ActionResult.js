@@ -1,9 +1,11 @@
 class ActionResult {
   constructor(_data, _taskChain) {
+    this.clazz = 'ActionResult';
+
     this.data = _data || null;
     this.taskChain = _taskChain || undefined;
     this.returns = {
-      "continue": true // continue 가 true 로 유지되어 있을 때 이벤트의 다음 처리를 진행한다. 
+      "continue": true // continue 가 true 로 유지되어 있을 때 이벤트의 다음 처리를 진행한다.
     };
 
     this.code = 'next';

@@ -87,7 +87,7 @@ class Gelato {
   // 1. Grid에서 프래그먼트를 필요로 하는 요소 찾기
   startup(_options) {
     let that = this;
-    document.body.style = 'opacity:0';
+
 
     async.waterfall([
       (_cb) => {

@@ -616,6 +616,8 @@ class ElementNode {
     let sn_len = this.scopeNodes.length;
     for (let i = 0; i < sn_len; i++) {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
+        // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
+
         this.scopeNodes[i].plainValue = this.interpret(this.scopeNodes[i].plainValue);
       }
     }
@@ -1665,6 +1667,7 @@ class ElementNode {
 
   __executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, _mandator) {
 
+
     // Task 처리 위임
     // delegate 설정이 입력되어 있고 _mandator(위임자)가 undefined 로 입력되었을 때 위임을 진행한다.
     if (_taskScope.delegate !== null && _mandator === undefined) {
@@ -1905,10 +1908,40 @@ class ElementNode {
     this.executeDynamicContext();
   }
 
-  executeTask(_taskName, _completeProcess) {
+  executeTask() {
+    let taskScope = this.getScope(arguments[0], 'task');
+    if (!taskScope) {
+      throw new Error(`Task를 찾을 수 없습니다. "${arguments[0]}"`);
+    }
+
+    if (arguments.length === 3) {
+      /*
+        arguments[0] : TaskName
+        arguments[1] : prevResult
+        arguments[2] : completeCallback
+      */
+
+      this.__executeTask(taskScope, {}, null, arguments[2], arguments[1]);
+    } else if (arguments.length === 2) {
+      /*
+        arguments[0] : TaskName
+        arguments[1] : prevResult
+      */
+
+      this.__executeTask(taskScope, {}, null, arguments[1]);
+    }
+  }
+
+  executeTaskWithPrevResult(_taskName, _prevActionResult, _completeProcess) {
     let taskScope = this.getScope(_taskName, 'task');
 
-    this.__executeTask(taskScope, {}, null, _completeProcess);
+    // if (_prevActionResult) {
+    //   if (_prevActionResult.clazz !== "ActionResult") {
+    //     throw new Error("직접 Task 를 실행할 때 3번째 인자로 ActionResult 객체를 입력해 주세요.");
+    //   }
+    // }
+
+    this.__executeTask(taskScope, {}, null, _completeProcess, _prevActionResult);
   }
 
   getFunction(_functionName) {

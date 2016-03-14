@@ -14,7 +14,9 @@ module.exports = {
     // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/stand-alone-foundation/main.js'] // foundation build
 
     // main: ['./src/js/main.js'],
-    'built-foundation': ['./src/stand-alone-foundation/main.js']
+    'built-foundation': ['./src/stand-alone-foundation/main.js'],
+    'atom': ['./src/js/AtomLibrary/Atom.js'],
+    'foundation': ['./src/js/AtomLibrary/Foundation.js']
   },
 
   output: {

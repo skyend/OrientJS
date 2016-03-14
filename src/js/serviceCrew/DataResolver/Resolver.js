@@ -262,10 +262,10 @@ class Resolver {
       case 'en':
         data = _externalGetterInterface.getNodeMeta(varName);
         break;
-      case 'geometry': // 위치와 크기정보를 반환
-        throw new Error("geometry category 는 아직 지원하지 않습니다.");
-        data = this.resolveWithHttpParam(varName);
-        break;
+        // case 'geometry': // 위치와 크기정보를 반환
+        //   throw new Error("geometry category 는 아직 지원하지 않습니다.");
+        //   data = this.resolveWithHttpParam(varName);
+        //   break;
       case 'val-plain':
         console.log(_externalGetterInterface.getScope(varName, 'value'));
         try {
@@ -302,10 +302,10 @@ class Resolver {
           throw new Error(`${varName} Function을 찾을 수 없습니다.`);
         }
         break;
-      case 'class':
-        throw new Error("class category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getScope(varName, 'class');
-        break;
+        // case 'class':
+        //   throw new Error("class category 는 아직 지원하지 않습니다.");
+        //   data = _externalGetterInterface.getScope(varName, 'class');
+        //   break;
       case 'cookie':
         data = this.resolveWithCookie(varName);
         break;
@@ -315,14 +315,14 @@ class Resolver {
       case 'location':
         data = this.resolveWithLocation(varName);
         break;
-      case 'device':
-        throw new Error("device category 는 아직 지원하지 않습니다.");
-        data = this.resolveWithDevice(varName);
-        break;
-      case 'geo':
-        throw new Error("geo-location category 는 아직 지원하지 않습니다.");
-        data = this.resolveWithHttpParam(varName);
-        break;
+        // case 'device':
+        //   throw new Error("device category 는 아직 지원하지 않습니다.");
+        //   data = this.resolveWithDevice(varName);
+        //   break;
+        // case 'geo':
+        //   throw new Error("geo-location category 는 아직 지원하지 않습니다.");
+        //   data = this.resolveWithHttpParam(varName);
+        //   break;
       case 'fragment':
         data = _externalGetterInterface.getFragmentParam(varName);
         break;
@@ -332,10 +332,6 @@ class Resolver {
       case 'config':
         data = _externalGetterInterface.getServiceConfig(varName);
         break;
-      case 'service':
-        throw new Error("service category 는 아직 지원하지 않습니다.");
-        data = _externalGetterInterface.getServiceConfig(varName);
-        break; // Todo..
       default:
         if (varCategory === '') {
           data = _defaultDataObject[varName]; // varName be must Number
