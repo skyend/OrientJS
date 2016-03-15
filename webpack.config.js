@@ -15,8 +15,8 @@ module.exports = {
 
     // main: ['./src/js/main.js'],
     'built-foundation': ['./src/stand-alone-foundation/main.js'],
-    'atom': ['./src/js/AtomLibrary/Atom.js'],
-    'foundation': ['./src/js/AtomLibrary/Foundation.js']
+    'orient': ['./src/js/Orient/Orient.js'],
+    'orbit': ['./src/js/Orient/Orbit.js']
   },
 
   output: {

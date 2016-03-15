@@ -1,4 +1,13 @@
-var sheet = Atom.define({
+var sheet = Orient.createClass({
+
+  defineFields: function(){
+    return [
+      { name:'val01', 'type':'string', 'AAA'},
+      { name:'val02', 'type':'string', 'AAA'},
+      { name:'val03', 'type':'string', 'AAA'},
+    ];
+  },
+
   functions: {
     test : function(3){
       console.log("aaa");
@@ -13,9 +22,6 @@ var sheet = Atom.define({
 
   },
 
-  values: {
-
-  },
 
   main : function(){
     <body>
@@ -42,7 +48,7 @@ var sheet = Atom.define({
       </h3>
 
 
-      <div en-ctrl-repeat-n='3'>
+      <div o-ctrl-repeat-n='3'>
         <div en-ctrl-repeat-n='{{: en@repeat-n }}'>
           {{: en@repeat-n }}
         </div>

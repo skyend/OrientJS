@@ -483,7 +483,7 @@ class ElementNode {
     this.debug("construct", "start", _options);
 
     // DC 실행
-    if (this.isDynamicContext() && this.dynamicContextAttitude === 'active') {
+    if (this.isDynamicContext() && this.dynamicContextPassive === false) {
       if (_options.keepDC === false || _options.keepDC === undefined) {
         this.executeDynamicContext();
       } else if (_options.keepDC === 'once') {
@@ -1925,7 +1925,7 @@ class ElementNode {
     } else if (arguments.length === 2) {
       /*
         arguments[0] : TaskName
-        arguments[1] : prevResult
+        arguments[1] : completeCallback
       */
 
       this.__executeTask(taskScope, {}, null, arguments[1]);
@@ -2041,7 +2041,7 @@ class ElementNode {
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
-    this.dynamicContextAttitude = _elementNodeDataObject.dynamicContextAttitude;
+    this.dynamicContextPassive = _elementNodeDataObject.dynamicContextPassive;
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
@@ -2087,7 +2087,7 @@ class ElementNode {
       updateDate: (new Date(this.updateDate)).toString(),
     }
 
-    exportObject.dynamicContextAttitude = this.dynamicContextAttitude;
+    exportObject.dynamicContextPassive = this.dynamicContextPassive;
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;

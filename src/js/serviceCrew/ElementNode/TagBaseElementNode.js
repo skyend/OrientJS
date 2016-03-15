@@ -331,8 +331,8 @@ class TagBaseElementNode extends ElementNode {
     // #DynamicContext
     if (this.dynamicContextSID)
       _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
-    if (this.dynamicContextAttitude)
-      _domNode.setAttribute('en-dc-attitude', this.dynamicContextAttitude);
+    if (this.dynamicContextPassive !== undefined)
+      _domNode.setAttribute('en-dc-passive', String(this.dynamicContextPassive));
     if (this.dynamicContextRID)
       _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
     if (this.dynamicContextNS)
@@ -575,10 +575,18 @@ class TagBaseElementNode extends ElementNode {
       if (_domElement.getAttribute('en-dc-ns') !== null)
         this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
 
+
+      if (_domElement.getAttribute('en-dc-passive') !== null) {
+        if (_domElement.getAttribute('en-dc-passive') === 'false') {
+          this.dynamicContextPassive = false;
+        } else {
+          this.dynamicContextPassive = true;
+        }
+      }
+
       if (_domElement.getAttribute('en-dc-attitude') !== null) {
-        this.dynamicContextAttitude = _domElement.getAttribute('en-dc-attitude');
-      } else {
-        this.dynamicContextAttitude = 'active';
+        throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
+
       }
     }
 
