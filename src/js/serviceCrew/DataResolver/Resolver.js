@@ -146,6 +146,7 @@ class Resolver {
 
 
     argsMap = argsMap.map(function(_argHolder, _i) {
+      //console.log(_syntax);
       return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject, _caller);
     });
 
@@ -159,8 +160,8 @@ class Resolver {
       let result = vfunction.apply(_caller, argsMap);
       return result;
     } catch (_e) {
-      _e._blocksource = _syntax;
-      _e._argmap = argsMap;
+
+      console.error('<Binder Error> ', _e, `Problem {{${_syntax}}}`, argsMap);
       return _e;
     }
   }
@@ -334,6 +335,7 @@ class Resolver {
         break;
       default:
         if (varCategory === '') {
+          //console.log(_varName);
           data = _defaultDataObject[varName]; // varName be must Number
         } else {
           throw new Error("지원하지 않는 카테고리 명입니다. " + _varName);
@@ -456,7 +458,7 @@ class Resolver {
       if (this.upperResolver !== null) data = this.upperResolver.getNSData(_pathWithNS);
     }
 
-    return data;
+    return data || {};
   }
 }
 

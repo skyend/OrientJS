@@ -270,82 +270,84 @@
   </div>
 </div>
 <div>
-  <en:value name='testObject' type='string'>
-    {
-      "a":1,
-      "b":2
-    }
-  </en:value>
-  <en:value name='tab-count' type='number' value='10'></en:value>
+  <div en-id='tab-container2'>
+    <en:value name='testObject' type='string'>
+      {
+        "a":1,
+        "b":2
+      }
+    </en:value>
+    <en:value name='tab-count' type='number' value='10'></en:value>
 
 
-  {{<<  val@testObject:object === true? 't':'f'}}
+    {{<<  val@testObject:object === true? 't':'f'}}
 
-  {{<<  shortcut.if_then(true, '참') }}
+    {{<<  shortcut.if_then(true, '참') }}
 
-  <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-    <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
-    <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
-    Repeat 10 Test
-  </button>
-  <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-    <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
-    <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+    <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+      <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
+      <en:task name='update2' action='update-to' arg-eid='tab-container2'></en:task>
+      Repeat 10 Test
+    </button>
+    <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+      <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
+      <en:task name='update2' action='update-to' arg-eid='tab-container2'></en:task>
 
-    Repeat 5 Test
-  </button>
-  <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-    <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='0' chain-success='update2'></en:task>
-    <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+      Repeat 5 Test
+    </button>
+    <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+      <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='0' chain-success='update2'></en:task>
+      <en:task name='update2' action='update-to' arg-eid='tab-container2'></en:task>
 
-    Repeat 0 Test
-  </button>
+      Repeat 0 Test
+    </button>
 
 
-  <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-    <en:task name='click' action='set-by-plain' arg-name='tab-count' arg-value='2222' chain-success='update2'></en:task>
-    <en:task name='update2' action='update-to' arg-eid='test-panel-tab' trace></en:task>
+    <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+      <en:task name='click' action='set-by-plain' arg-name='tab-count' arg-value='2222' chain-success='update2'></en:task>
+      <en:task name='update2' action='update-to' arg-eid='tab-container2' trace></en:task>
 
-    Tab count  100
-  </button>
+      Tab count  100
+    </button>
 
-  <div class="panel-group" en-id='panel-container2' data-opened='-1'   repeat-number='0'>
-    <!-- <div class='test-padding-a'>
-      test area
-    </div>
-    <div class='test-padding-b' en-ctrl-repeat-n='3'>
-      test B
-    </div> -->
-    <div class="panel panel-primary" en-id='test-panel-tab' en-ctrl-repeat-n='{{<< en-attr@repeat-number}}'>
-      <div class="panel-heading" role="tab" en-event-click='task@forward'>
-        <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{<< en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='update'></en:task>
-        <en:task name='update' action='update-to' arg-eid='panel-container2'></en:task>
-        <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1 Update Test</a></h4>
-
-        <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-          <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
-          <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
-          Repeat 10 Test
-        </button>
-        <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
-          <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
-          <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
-
-          Repeat 5 Test
-        </button>
+    <div class="panel-group" en-id='panel-container2' data-opened='-1'   repeat-number='0'>
+      <!-- <div class='test-padding-a'>
+        test area
       </div>
+      <div class='test-padding-b' en-ctrl-repeat-n='3'>
+        test B
+      </div> -->
+      <div class="panel panel-primary" en-id='test-panel-tab' en-ctrl-repeat-n='{{<< en-attr@repeat-number}}'>
+        <div class="panel-heading" role="tab" en-event-click='task@forward'>
+          <en:task name='forward' action='attr-to' arg-eid='panel-container2' arg-name='data-opened' arg-value='{{<< en@repeat-n == en-attr@data-opened? -1:en@repeat-n}}' chain-success='update'></en:task>
+          <en:task name='update' action='update-to' arg-eid='panel-container2'></en:task>
+          <h4 class="panel-title"><a role="button" data-toggle="collapse" aria-expanded="true">Lorem ipsum Question #1 Update Test</a></h4>
 
-      <div id="faq-3-q-1" class="panel-collapse collapse {{<<  en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
-        <div class="panel-body">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex.
-          Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+          <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+            <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='10' chain-success='update2'></en:task>
+            <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+            Repeat 10 Test
+          </button>
+          <button class='btn btn-small btn-primary btn-inline' en-event-click='task@click'>
+            <en:task name='click' action='attr-to' arg-eid='panel-container2' arg-name='repeat-number' arg-value='5' chain-success='update2'></en:task>
+            <en:task name='update2' action='update-to' arg-eid='test-panel-tab'></en:task>
+
+            Repeat 5 Test
+          </button>
+        </div>
+
+        <div id="faq-3-q-1" class="panel-collapse collapse {{<<  en@repeat-n == en-attr@data-opened ? 'in':''}}" role="tabpanel" >
+          <div class="panel-body">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+            quis nostrud exercitation ullamco laboris nisi ut aliquip ex.
+            Suspendisse aliquet imperdiet commodo. Aenean vel lacinia elit. Class aptent taciti sociosqu ad litora torquent per.
+          </div>
         </div>
       </div>
+      <!-- <div class='test-padding-c' en-ctrl-repeat-n='3'>
+        test C
+      </div> -->
     </div>
-    <!-- <div class='test-padding-c' en-ctrl-repeat-n='3'>
-      test C
-    </div> -->
   </div>
 </div>

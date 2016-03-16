@@ -31,6 +31,10 @@ class RefElementNode extends HTMLElementNode {
     this.loadedTargetId = null;
   }
 
+  get refference() {
+
+  }
+
   get refType() {
     return this._refType;
   }
@@ -70,45 +74,43 @@ class RefElementNode extends HTMLElementNode {
     if (this.refType === 'Fragment') {
       let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
-      // if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
-      this.forwardDOM.innerHTML = '';
+      if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+        this.forwardDOM.innerHTML = '';
 
-      this.loadRefferenced(function(_resultObject) {
-        if (!_resultObject) {
-          console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
-          return;
-        }
+        this.loadRefferenced(function(_resultObject) {
+          if (!_resultObject) {
+            console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
+            return;
+          }
 
-        that.loadedTargetId = targetId;
-        that.loadedInstance = _resultObject;
-        that.loadedInstance.upperEnvironment = that.environment;
+          that.loadedTargetId = targetId;
+          that.loadedInstance = _resultObject;
+          that.loadedInstance.upperEnvironment = that.environment;
 
-        that.scopeNodes.map(function(_scopeNode) {
-          if (_scopeNode.type === 'param') {
-            that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+          that.scopeNodes.map(function(_scopeNode) {
+            if (_scopeNode.type === 'param') {
+              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+            }
+          });
+
+          let rootElementNode;
+          for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
+            rootElementNode = that.loadedInstance.rootElementNodes[i];
+            rootElementNode.setParent(that);
+            rootElementNode.constructDOMs({});
+            rootElementNode.render(that.forwardDOM);
           }
         });
-
-        let rootElementNode;
-        for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
-          rootElementNode = that.loadedInstance.rootElementNodes[i];
-          rootElementNode.setParent(that);
-          rootElementNode.constructDOMs({});
-          rootElementNode.render(that.forwardDOM);
+      } else {
+        if (this.loadedInstance) {
+          let rootElementNode;
+          for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
+            rootElementNode = this.loadedInstance.rootElementNodes[i];
+            rootElementNode.constructDOMs({});
+            rootElementNode.render(this.forwardDOM);
+          }
         }
-      });
-      // } else {
-      //   if (this.loadedInstance) {
-      //     this.forwardDOM.innerHTML = '';
-      //
-      //     let rootElementNode;
-      //     for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
-      //       rootElementNode = this.loadedInstance.rootElementNodes[i];
-      //       rootElementNode.constructDOMs({});
-      //       rootElementNode.render(this.forwardDOM);
-      //     }
-      //   }
-      // }
+      }
     }
 
     return returnHolder;
@@ -193,6 +195,7 @@ class RefElementNode extends HTMLElementNode {
 
   import (_elementNodeDataObject) {
     let result = super.import(_elementNodeDataObject);
+    this.refDesc = RefferenceType[_elementNodeDataObject.refDesc] || null;
     this.refType = RefferenceType[_elementNodeDataObject.refType || 'NONE'];
     this.refTargetId = _elementNodeDataObject.refTargetId;
     return result;
@@ -200,6 +203,7 @@ class RefElementNode extends HTMLElementNode {
 
   export (_withoutId) {
     let result = super.export(_withoutId);
+    result.ref = this.refDesc || null;
     result.refType = RefferenceType[this.refType || 'NONE'];
     result.refTargetId = this.refTargetId;
     return result;

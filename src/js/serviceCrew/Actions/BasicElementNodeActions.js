@@ -183,7 +183,7 @@ actionStore.registerAction('input-value-upsync', [], function() {
 actionStore.registerAction('input-value-test', ['testRegExp'], function() {
   let value = this.forwardDOM.value;
 
-  if (testRegExp.test(value)) {
+  if (testRegExp.test(new RegExp(value))) {
     _actionResult.code = 'pass';
   } else {
     _actionResult.code = 'fail';
@@ -263,6 +263,10 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
 
     case 'birth-day':
       _actionResult.code = validate(/^\d{1,2}-\d{1,2}$/, text);
+      break;
+
+    case 'has-special-character':
+      _actionResult.code = validate(/[\!\@\#\$\%\^\*\?\_\~]+/, text);
       break;
 
     default:

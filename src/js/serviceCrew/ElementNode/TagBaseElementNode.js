@@ -582,11 +582,12 @@ class TagBaseElementNode extends ElementNode {
         } else {
           this.dynamicContextPassive = true;
         }
+      } else {
+        this.dynamicContextPassive = false;
       }
 
       if (_domElement.getAttribute('en-dc-attitude') !== null) {
         throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
-
       }
     }
 
