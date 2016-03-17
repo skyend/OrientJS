@@ -4,11 +4,10 @@ import Gelato from '../StandAloneLib/Gelato';
 "use strict"
 
 class StringElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
     this.type = 'string';
     this.text;
-
   }
 
   getText() {
@@ -54,57 +53,6 @@ class StringElementNode extends ElementNode {
     this._enableHTML = _enableHTML;
   }
 
-  createRealizationNode() {
-
-    let htmlDoc;
-
-    let gelato = Gelato.one();
-    if (gelato !== null) {
-      htmlDoc = gelato.page.doc;
-    } else {
-      htmlDoc = this.environment.getHTMLDocument();
-    }
-
-    this.setRealization(htmlDoc.createElement('span'));
-  }
-
-  realize(_realizeOptions, _complete) {
-    let that = this;
-
-    super.realize(_realizeOptions, function(_result) {
-      if (_result === false) return _complete(_result);
-      let realizeOptions = _realizeOptions || {};
-      let textData;
-      let includedTag = false;
-
-      textData = that.getText();
-      if (realizeOptions.skipResolve !== true) {
-        textData = that.interpret(textData);
-      }
-
-      // text 내용에 태그가 들어 있는지 확인
-      if (/\<[^\<^\>]*\>/.test(textData)) {
-        includedTag = true;
-      }
-
-      // environment 에 stripStringEN 가 활성화 되어 있다면 text 를 span으로 감싸지 않고 랜더링 하며
-      // text 내에 태그가 들어 있다면 span태그로 감싸서 랜더링 하도록 한다.
-      if (that.environment.stripStringEN && !includedTag) {
-        that.realization = that.environment.getHTMLDocument().createTextNode(textData);
-      } else {
-        that.createRealizationNode();
-        that.realization.innerHTML = textData;
-
-        if (that.isTextEditMode()) {
-          that.realization.setAttribute('contenteditable', true);
-        }
-      }
-
-
-
-      _complete();
-    });
-  }
 
   /*
     CreateNode
@@ -159,11 +107,6 @@ class StringElementNode extends ElementNode {
     }
   }
 
-  //
-  // linkHierarchyRealizaion() {
-  //   super.linkHierarchyRealizaion();
-  //   //this.realization.appendChild(this.environment.findById(this.getRefferenceTarget()).getRealization());
-  // }
 
 
   buildByComponent(_component) {

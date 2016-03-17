@@ -1,19 +1,11 @@
 "use strict";
-import HTMLElementNode from './ElementNode/HTMLElementNode.js';
-import StringElementNode from './ElementNode/StringElementNode.js';
-import ReactElementNode from './ElementNode/ReactElementNode.js';
-import GridElementNode from './ElementNode/GridElementNode.js';
-import ElementNodeFactory from './ElementNode/Factory.js';
 
 import _ from 'underscore';
+import async from 'async';
+
 import ObjectExplorer from '../util/ObjectExplorer.js';
 import Factory from './ElementNode/Factory';
-import async from 'async';
 import Gelato from './StandAloneLib/Gelato';
-
-
-
-
 
 class Document {
 
@@ -312,7 +304,7 @@ class Document {
    */
   newElementNode(_elementNodeDataObject, _preInsectProps, _type) {
 
-    let elementNode = ElementNodeFactory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
+    let elementNode = Factory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
 
     return elementNode;
   }

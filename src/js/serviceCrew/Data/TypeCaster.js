@@ -43,6 +43,14 @@ class TypeCaster {
 
     throw new Error("String 이 아닌 타입은 Object로 변환 할 수 없습니다.");
   }
+
+  static toArray(_v) {
+    if (typeof _v === 'string') {
+      return JSON.parse(_v);
+    }
+
+    throw new Error("String 이 아닌 타입은 Array로 변환 할 수 없습니다.");
+  }
 }
 
 export default TypeCaster;

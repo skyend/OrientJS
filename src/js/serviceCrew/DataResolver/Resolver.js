@@ -364,6 +364,8 @@ class Resolver {
         return TypeCaster.toBoolean(_value);
       case 'object':
         return TypeCaster.toObject(_value);
+      case 'array':
+        return TypeCaster.toArray(_value);
     }
   }
 

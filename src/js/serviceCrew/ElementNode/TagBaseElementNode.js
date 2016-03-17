@@ -124,8 +124,8 @@ const DOM_EVENTS = [
 
 
 class TagBaseElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
     this.tagName;
     this.attributes;
     this.css;
@@ -433,32 +433,6 @@ class TagBaseElementNode extends ElementNode {
     //this.backupDOM = null;
   }
 
-  // realize
-  realize(_realizeOptions, _complete) {
-    let that = this;
-
-    super.realize(_realizeOptions, function(_result) {
-      if (_result === false) {
-        that.realization = null;
-        return _complete(_result);
-      }
-
-      that.createRealizationNode();
-
-      let realizeOptions = _realizeOptions || {};
-
-      // attribute 매핑
-      that.mappingAttributes(realizeOptions.skipResolve);
-
-      // 이벤트 매핑
-      that.mappingEvent();
-
-      that.mappingNavigate();
-
-      _complete();
-    });
-  }
-
 
   mappingNavigate() {
     // navigate
@@ -693,11 +667,6 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-
-  mappingEvent() {
-    // Todo.....
-
-  }
 
   // 편집자에 의해 Rect가 변경될 떄
   transformRectByEditor(_left, _top, _width, _height) {

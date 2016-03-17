@@ -59,8 +59,10 @@ class Fragment {
     domContainer.innerHTML = this.fragmentText;
 
     for (let i = 0; i < domContainer.children.length; i++) {
-      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', _environment, undefined);
+      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', _environment, true);
       elementNode.buildByElement(domContainer.children[i]);
+      console.log(domContainer.children[i], elementNode);
+
       this.rootElementNodes.push(elementNode);
     }
     // IE 지원안함
@@ -99,35 +101,6 @@ class Fragment {
     })
   }
 
-  findRefferenceElement() {
-    if (!this.rendered) throw new Error("Fragment was not render.");
-
-    let gelato = Gelato.one();
-    let refElements = gelato.$('[en-type="ref"]', this.parentElement);
-
-    return refElements;
-  }
-
-  renderRefElements(_complete) {
-    let refElements = this.findRefferenceElement();
-
-    let refElementNodes = refElements.map((_refElement) => {
-      let refElementNode = Factory.takeElementNode(undefined, undefined, 'ref', undefined, undefined);
-
-      refElementNode.buildByElement(_refElement);
-
-      return refElementNode;
-    });
-
-    async.eachSeries(refElementNodes, (_refElementNode, _next) => {
-
-      _refElementNode._sa_renderRefferenced(() => {
-        _next();
-      })
-    }, () => {
-      _complete();
-    });
-  }
 }
 
 export default Fragment;

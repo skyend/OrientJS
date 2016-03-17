@@ -15,11 +15,10 @@ import Identifier from '../../util/Identifier';
 
 class DynamicContext {
   /*
-    _environment -
     _props -
     ~_interpretInterfaceFollowObject - interpret 메소드를 구현한 Object를 입력한다. 현재 가능한 대상 : {}ElementNode~
   */
-  constructor(_environment, _props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
+  constructor(_props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
     //Object.assign(this, Events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
@@ -28,8 +27,6 @@ class DynamicContext {
 
     // 상위 dynamicContext로 입력된 resolver 를 입력함
     this.dataResolver = new DataResolver(_upperDynamicContext ? _upperDynamicContext.dataResolver : null);
-
-    // this.environment = _environment;
 
     //this.interpretInterfaceFollowObject = _interpretInterfaceFollowObject || null;
     this.upperDynamicContext = _upperDynamicContext || null;
@@ -280,6 +277,9 @@ class DynamicContext {
   //     }
   //   }
   //   return '`Error: Interpret Syntax Error`';
+
+
+
   // }
   //
   //

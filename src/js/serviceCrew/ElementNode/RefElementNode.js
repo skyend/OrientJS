@@ -21,8 +21,8 @@ let RefferenceType = Object.freeze({
 
 
 class RefElementNode extends HTMLElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
     this.type = 'ref';
 
     this.loadedInstance = null;
@@ -165,27 +165,6 @@ class RefElementNode extends HTMLElementNode {
       });
 
     }
-  }
-
-
-  _sa_loadSharedElementNode(_complete) {
-    let that = this;
-    let parseContainer = document.createElement('div');
-    let refTargetId = this.interpret(this.refTargetId);
-
-    SALoader.loadSharedElementNode(refTargetId, function(_sharedElementNodeText) {
-      parseContainer.innerHTML = _sharedElementNodeText;
-
-      let children = [];
-
-      for (let i = 0; i < parseContainer.children.length; i++) {
-        let elementNode = Factory.takeElementNode(undefined, {}, 'html', that.environment, that.dynamicContext);
-        elementNode.buildByElement(parseContainer.children[i]);
-        children.push(elementNode);
-      }
-
-      _complete(children);
-    });
   }
 
   resetRefInstance() {

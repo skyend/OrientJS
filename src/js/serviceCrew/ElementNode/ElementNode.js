@@ -1,19 +1,20 @@
+import _ from 'underscore';
+import events from 'events';
+import async from 'async';
+
 import ElementNodeMulti from './ElementNodeMulti';
 import Returns from "../../Returns.js";
-import _ from 'underscore';
 import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
 
 import DynamicContext from './DynamicContext';
-import async from 'async';
 import DataResolver from '../DataResolver/Resolver';
 
 import Action from '../Action';
 import ActionResult from '../ActionResult';
 import ICEAPISource from '../ICEAPISource';
-import events from 'events';
 import ScopeNodeFactory from './ScopeNode/Factory';
 import ActionStore from '../Actions/ActionStore';
 import FunctionStore from '../Functions/FunctionStore';
@@ -40,7 +41,7 @@ class ElementNode {
     return SIGN_BY_ELEMENTNODE;
   }
 
-  constructor(_environment, _elementNodeDataObject, _preInsectProps) {
+  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
     //Object.assign(this, events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
@@ -55,7 +56,7 @@ class ElementNode {
 
     // environment profile
     this.id;
-    this.type; // html / string / react / grid / ref
+    this.type; // html / string / ~~react~~ / ~~grid~~ / ref
     this.name; // 참고용 이름
 
     this.componentName;
@@ -114,6 +115,9 @@ class ElementNode {
     // 상위 forwardDOM 에서 차지중인 index 위치
     this.attachedIndexInParentDOM = -1;
     this.isAttachedDOM = false;
+
+    // ElementNode 컴포넌트의 최상위 ElementNode
+    this.isMaster = _isMaster || false;
 
     //////////////////////////
     // 처리로직
@@ -312,20 +316,6 @@ class ElementNode {
     return this.interpret(this.attributes[_attrName]);
   }
 
-  getRealization() {
-    return this.realization;
-  }
-
-  // will Deprecate
-  // ////////////////////
-  // /***************
-  //  * getMyContextControllerOfDocument
-  //  * 자신이 소속된 Document의 ContextController를 반환
-  //  */
-  // getMyContextControllerOfDocument() {
-  //   return this.environment.getMyDirector();
-  // }
-
   ////////////////////
   // Setters
   // enid
@@ -389,13 +379,6 @@ class ElementNode {
     this.comment = _comment;
   }
 
-  setRealization(_realization) {
-    this.realization = _realization;
-    this.realization.___en = this;
-
-    this.realization.setAttribute('en-id', this.getId());
-    this.realization.setAttribute('en-type', this.type);
-  }
 
   constructDOMs(_options) {
     let that = this;
@@ -646,7 +629,7 @@ class ElementNode {
         if (_err === null) {
 
           that.dynamicContext.dataLoad(function(_err) {
-            that.debug('dc', 'dataLoad', that.dynamicContext.apisources, that.dynamicContext);
+            that.debug('dc', 'Data Loaded', that.dynamicContext.apisources, that.dynamicContext, that.dynamicContext.dataResolver.dataSpace);
 
             that.tryEventScope('will-dc-bind', {
               dynamicContext: that.dynamicContext
@@ -700,17 +683,6 @@ class ElementNode {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
-  /*
-    각 ElementType Class 에서 메소드를 구현하여야 한다.
-
-    ChildrenConstructAndLink
-      String Element를 제외한 모든 ElementNode Type에 대해서 자식을 생성하고 링크한다.
-      repeatN Control 옵션에 따라서 복제를 수행하여 완료한다.
-  */
-  childrenConstructAndLink(_options, _complete) {
-    throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
-  }
-
   bindDOMEvents(options, _dom) {
     let eventKeys = Object.keys(this.nodeEvents);
     let that = this;
@@ -735,23 +707,6 @@ class ElementNode {
     });
   }
 
-
-  // backupDOM 을 forwardDOM으로 옮긴다.
-  forwardBackupDOMAllVirtual() {
-    if (_.isFunction(this.treeExplore)) {
-      this.treeExplore(function(_elementNode) {
-        //_elementNode.parent.forwardDOM.replaceChild(_elementNode.backupDOM, _elementNode.forwardDOM);
-        _elementNode.forwardBackupDOMVirtual();
-      });
-    }
-  }
-
-  forwardBackupDOMVirtual() {
-    if (this.backupDOM !== null) {
-      this.forwardDOM = this.backupDOM;
-      this.backupDOM = null;
-    }
-  }
 
   isDynamicContext() {
     if (this.dynamicContextSID !== undefined) {
@@ -779,7 +734,7 @@ class ElementNode {
   }
 
   rebuildDynamicContext() {
-    let newDynamicContext = new DynamicContext(this.environment, {
+    let newDynamicContext = new DynamicContext({
       sourceIDs: this.interpret(this.dynamicContextSID),
       requestIDs: this.interpret(this.dynamicContextRID),
       namespaces: this.interpret(this.dynamicContextNS),
@@ -859,26 +814,6 @@ class ElementNode {
 
 
 
-  // Real DOM의 내용과 자신의 내용의 변경사항을 파악하여 자신의 내용을 업데이트 한다.
-  updateSyncDOMChanged() {
-
-    let realDOMElement = this.getRealization();
-
-    let childNodes = realDOMElement.children;
-
-    let newChildren = [];
-
-    for (let i = 0; i < childNodes.length; i++) {
-      let realChild = childNodes[i];
-      let newChildElementNode = this.extractAndRealizeElementNode(realChild);
-
-      newChildElementNode.setParent(this);
-
-      newChildren.push(newChildElementNode);
-    }
-    this.children = newChildren;
-  }
-
   ////////
   /***********
    * updated
@@ -948,54 +883,6 @@ class ElementNode {
     var elementNodeType = _component.elementType;
     // this.setType(elementNodeType);
   }
-
-
-
-
-
-  extractAndRealizeElementNode(_realization) {
-
-    let elementNode = _realization.___en || null;
-
-    if (_realization.nodeName === '#text') {
-      if (elementNode === null) {
-        elementNode = this.environment.newElementNode(undefined, {}, 'string');
-      }
-      elementNode.buildByElement(_realization);
-    } else {
-      if (elementNode === null) {
-        elementNode = this.environment.newElementNode(undefined, {}, 'html');
-        elementNode.buildByElement(_realization);
-        // elementNode.setType('html');
-        // elementNode.setTagName(_realization.nodeName);
-      }
-
-      if (elementNode.getType() === 'string') {
-        elementNode.setText(_realization.innerHTML);
-      } else {
-        let newChildren = [];
-        //  console.log(_realElement.childNodes, 'here');
-
-        for (var i = 0; i < _realization.childNodes.length; i++) {
-
-
-          let afterRealize = this.extractAndRealizeElementNode(_realization.childNodes[i]);
-          afterRealize.setParent(elementNode);
-
-          //console.log(_realElement.childNodes[i]);
-
-          if (afterRealize !== null) {
-            newChildren.push(afterRealize);
-          }
-        }
-
-        elementNode.children = newChildren;
-      }
-    }
-
-    return elementNode;
-  }
-
 
   isDropableComponent(_dropType) {
     var criterionElementNode;
@@ -1114,10 +1001,6 @@ class ElementNode {
     }
   }
 
-  getRootEnvironment() {
-
-  }
-
   /////////////
   // String Resolve
   interpret(_matterText, _getFeature) {
@@ -1127,17 +1010,20 @@ class ElementNode {
       getAttribute: this.getAttrOnTree.bind(this),
       getScope: this.getScope.bind(this),
       getNodeMeta: this.getNodeMeta.bind(this),
-      getFragmentParam: this.environment.getParam.bind(this.environment),
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
-      getServiceConfig: this.environment.getServiceConfig.bind(this.environment),
-      executeI18n: this.environment.executeI18n.bind(this.environment),
 
-      getElementNodeById: this.environment.findById.bind(this.environment)
-        // todo .... geo 추가
-        //  getAttributeResolve: this.getAttrOnTreeWithResolve
+      // todo .... geo 추가
+      //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
+
+    if (this.environment) {
+      injectGetterInterface.executeI18n = this.environment.executeI18n.bind(this.environment); // with Framework
+      injectGetterInterface.getServiceConfig = this.environment.getServiceConfig.bind(this.environment); // with Framework
+      injectGetterInterface.getFragmentParam = this.environment.getParam.bind(this.environment); // to Property
+      injectGetterInterface.getElementNodeById = this.environment.findById.bind(this.environment);
+    }
 
     let solved = _matterText;
     let dc = this.availableDynamicContext;
@@ -1492,6 +1378,9 @@ class ElementNode {
 
   ****************************************/
 
+  /*
+    ElementNode 를 찾는다
+  */
   getElementNodeByInterpretField(_fieldValue) {
     // delegate 값에 ElementNode ID 를 입력해도 되고, 바인딩블럭을 이용해 직접 ElementNode 객체를 얻도록 코드를 입력해도 된다.
     let delegateValue = this.interpret(_fieldValue);
@@ -2037,7 +1926,7 @@ class ElementNode {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   import (_elementNodeDataObject) {
-    this.id = _elementNodeDataObject.id || Identifier.genUUID();
+    this.id = _elementNodeDataObject.id || Identifier.genUUID().toUpperCase();
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
