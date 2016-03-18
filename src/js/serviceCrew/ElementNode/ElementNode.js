@@ -93,6 +93,7 @@ class ElementNode {
     this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
     this.isRepeated = preInsectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
     this.repeatOrder = preInsectProps.repeatOrder > -1 ? preInsectProps.repeatOrder : -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
+    this.repeatItem = preInsectProps.repeatItem || undefined;
 
     this.environment = _environment;
     this.mode = 'normal';
@@ -479,13 +480,24 @@ class ElementNode {
       // repeat 처리
 
       let i = 0;
-      let repeatN = parseInt(_options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n'));
+      let repeatSource = _options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n');
+      let repeatLength;
+
       let repeatedElementNode;
       let newClonePool = [];
 
-      let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
+      if (typeof repeatSource === 'object') {
+        if (repeatSource !== null && repeatSource !== undefined) {
+          repeatLength = repeatSource.length;
+        }
+      } else if (typeof repeatSource === 'string') {
+        repeatLength = parseInt(repeatSource);
+      } else {
+        repeatLength = parseInt(repeatSource);
+      }
 
-      for (i = 0; i < repeatN; i++) {
+      let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
+      for (i = 0; i < repeatLength; i++) {
 
         repeatedElementNode = this.clonePool[i];
 
@@ -493,11 +505,14 @@ class ElementNode {
           repeatedElementNode = Factory.takeElementNode(this.export(false, `@${i}`), {
             isGhost: true,
             repeatOrder: i,
+            repeatItem: repeatSource[i],
             isRepeated: true
           }, this.getType(), this.environment, null);
 
           repeatedElementNode.setParent(this.parent);
         }
+
+        repeatedElementNode.repeatItem = repeatSource[i];
 
         repeatedElementNode.prevSibling = prevElement;
 
@@ -561,8 +576,10 @@ class ElementNode {
 
       // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
       if (this.isAttachedDOM) {
+        console.log('to backup', constructedDOM);
         this.backupDOM = constructedDOM;
       } else {
+        console.log('to forward', constructedDOM);
         this.forwardDOM = constructedDOM;
       }
 
@@ -1009,7 +1026,7 @@ class ElementNode {
     let injectGetterInterface = {
       getAttribute: this.getAttrOnTree.bind(this),
       getScope: this.getScope.bind(this),
-      getNodeMeta: this.getNodeMeta.bind(this),
+      getNodeMeta: this.getNodeMeta.bind(this), // en@
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
@@ -1052,6 +1069,28 @@ class ElementNode {
 
       if (repeatNumber !== -1) {
         return repeatNumber;
+      } else {
+        return undefined;
+      }
+    }
+  }
+
+  getRepeatItemOnTree() {
+    if (this.isRepeated) {
+      return this.repeatItem;
+    } else {
+      // 자신의 부모로부터 반복 순번을 얻음
+      let repeatItem = -1;
+
+      this.climbParents(function(_parent) {
+        if (_parent.isRepeated) {
+          repeatItem = _parent.repeatItem;
+          return null;
+        }
+      });
+
+      if (repeatItem !== -1) {
+        return repeatItem;
       } else {
         return undefined;
       }
@@ -1124,6 +1163,8 @@ class ElementNode {
     switch (_metaName) {
       case "repeat-n":
         return this.getRepeatNOnTree();
+      case "repeat-item":
+        return this.getRepeatItemOnTree();
     }
   }
 

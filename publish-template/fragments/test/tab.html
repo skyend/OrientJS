@@ -10,6 +10,56 @@
 @FragmentMetaEnd-->
 
 <div class="container">
+
+
+  <form en-id='signup-form'>
+    <en:value name='cust-password' type='string' value=''></en:value>
+    <en:value name='cust-name' type='string' value=''></en:value>
+    <en:value name='pw-validate' type='string' value=''></en:value>
+
+    <en:task name='render-form' trace action='update' en-delegate='signup-form'></en:task>
+
+    <div>
+
+
+      <en:task name='keyup' action='set' arg-name='cust-password' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='validate'></en:task>
+
+      <en:task name='validate' action='validate' arg-text='{{<< feature@event.originEvent.target.value }}' arg-type='password' trace chain-pass='special-require-check' chain-fail='fail-validate'></en:task>
+      <en:task name='special-require-check' action='validate' arg-type='has-special-character' arg-text='{{: val@cust-password }}' chain-pass='success-validate' chain-fail='fail-sc-validate'></en:task>
+
+      <en:task name='success-validate' action='set' arg-name='pw-validate' arg-value='ok' chain-success='render-form'></en:task>
+
+      <en:task name='fail-sc-validate' action='set' arg-name='pw-validate' arg-value='require-sc' chain-success='render-form'></en:task>
+      <en:task name='fail-validate' action='set' arg-name='pw-validate' arg-value='no' chain-success='render-form'></en:task>
+
+      <en:task name='reset-confirm' action='set' arg-name='cust-confirm' arg-value='' chain-success='reset-confirm2'></en:task>
+      <en:task name='reset-confirm2' action='set' arg-name='confirm-validate' arg-value='no' chain-success='render-form'></en:task>
+
+
+      <input type="password" class="itx-bd" name="" value='{{<< val@cust-password }}' id="memberPassword" title="비밀번호 입력"
+      en-event-keyup='task@keyup'  en-event-change='task@reset-confirm'>
+      <span class="tip">영문, 숫자, 특수문자를 혼합하여 8~15자로 사용 합니다.(! @ # $ % ^ * ? _ ~)</span>
+
+      <span style='color:red'> {{<< val@pw-validate === "no" ? '사용 할 수 없는 비밀번호 입니다.':'' }} </span>
+      <span style='color:red'> {{<< val@pw-validate === "require-sc" ? '특수문자를 포함 해 주세요.':'' }}  </span>
+      <span style='color:blue'> {{<< val@pw-validate === "ok" ? '사용가능 한 비밀번호 입니다.':'' }} </span>
+    </div>
+    <div>
+      <en:task name='keyup' action='set' arg-name='cust-name' arg-value='{{<< feature@event.originEvent.target.value }}' chain-success='render-form'></en:task>
+
+      <input type="text" class="itx-bd" value='{{<< val@cust-name }}' name="" id="memberName" title="이름 입력" en-event-keyup='task@keyup'>
+    </div>
+  </form>
+
+  <div>
+    배열 반복 테스트
+    <ul>
+      <li en-ctrl-repeat-n='{{: "a,b,c,d".split(",") }}'>
+        {{: en@repeat-item }}
+      </li>
+    </ul>
+  </div>
+
   <div class="default-style faq">
     <button en-event-click='task@test'>
       <en:task name='test' action='a'></en:task>

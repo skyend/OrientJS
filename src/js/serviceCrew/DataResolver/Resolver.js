@@ -290,6 +290,7 @@ class Resolver {
       case 'action':
         data = _externalGetterInterface.getScope(varName, 'action');
         break;
+      case 'func': // function 과 동일함
       case 'function':
         //throw new Error("function category 는 아직 지원하지 않습니다.");
         let functionScope = _externalGetterInterface.getScope(varName, 'function');

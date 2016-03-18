@@ -103,6 +103,13 @@ class RefElementNode extends HTMLElementNode {
         });
       } else {
         if (this.loadedInstance) {
+
+          this.scopeNodes.map(function(_scopeNode) {
+            if (_scopeNode.type === 'param') {
+              this.loadedInstance.setParam(_scopeNode.name, this.interpret(_scopeNode.plainValue));
+            }
+          });
+
           let rootElementNode;
           for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
             rootElementNode = this.loadedInstance.rootElementNodes[i];

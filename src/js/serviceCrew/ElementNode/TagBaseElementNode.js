@@ -405,13 +405,13 @@ class TagBaseElementNode extends ElementNode {
       // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
       if (!this.backupDOM.hasAttribute(attrName)) {
         this.forwardDOM.removeAttribute(attrName);
+
+        if (attrName === 'value')
+          this.forwardDOM.value = null;
+
+        if (attrName === 'checked')
+          this.forwardDOM.checked = null;
       }
-
-      if (attrName === 'value')
-        this.forwardDOM.value = null;
-
-      if (attrName === 'checked')
-        this.forwardDOM.checked = null;
     }
 
     // 변경된 attribute반영
@@ -419,15 +419,16 @@ class TagBaseElementNode extends ElementNode {
       attrName = newAttributes[i].nodeName;
       attrValue = newAttributes[i].nodeValue;
 
+      if (attrName === 'value' && this.forwardDOM.value !== attrValue) {
+        this.forwardDOM.value = attrValue;
+      }
+
+      if (attrName === 'checked' && this.forwardDOM.checked !== attrValue)
+        this.forwardDOM.checked = attrValue;
+
       if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
         this.forwardDOM.setAttribute(attrName, attrValue);
       }
-
-      if (attrName === 'value')
-        this.forwardDOM.value = attrValue;
-
-      if (attrName === 'checked')
-        this.forwardDOM.checked = attrValue;
     }
 
     //this.backupDOM = null;
