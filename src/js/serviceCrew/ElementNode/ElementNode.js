@@ -410,12 +410,14 @@ class ElementNode {
 
   render(_target) {
     _target.appendChild(this.forwardDOM);
+    this.isAttachedDOM = true;
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
 
   renderWithReplace(_target, _old) {
     _target.replaceChild(this.forwardDOM, _old);
+    this.isAttachedDOM = true;
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }

@@ -93,6 +93,10 @@ class RefElementNode extends HTMLElementNode {
             }
           });
 
+          // for (let i = 0; i < that.attributes.length; i++) {
+          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+          // }
+
           let rootElementNode;
           for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
             rootElementNode = that.loadedInstance.rootElementNodes[i];
@@ -106,15 +110,21 @@ class RefElementNode extends HTMLElementNode {
 
           this.scopeNodes.map(function(_scopeNode) {
             if (_scopeNode.type === 'param') {
-              this.loadedInstance.setParam(_scopeNode.name, this.interpret(_scopeNode.plainValue));
+              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
             }
           });
 
+          // for (let i = 0; i < that.attributes.length; i++) {
+          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+          // }
+          this.forwardDOM.innerHTML = '';
           let rootElementNode;
           for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
             rootElementNode = this.loadedInstance.rootElementNodes[i];
+            let prevForwardDOM = rootElementNode.getDOMNode();
             rootElementNode.constructDOMs({});
-            rootElementNode.render(this.forwardDOM);
+            rootElementNode.render(that.forwardDOM);
+            console.log(that.backupDOM);
           }
         }
       }

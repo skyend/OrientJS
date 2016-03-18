@@ -302,9 +302,9 @@ class Document {
    * newElementNode
    * Document의 새 elementNode를 생성 모든 ElementNode는 이 메소드를 통하여 생성해야한다.
    */
-  newElementNode(_elementNodeDataObject, _preInsectProps, _type) {
+  newElementNode(_elementNodeDataObject, _preInsectProps, _type, _isMaster) {
 
-    let elementNode = Factory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this);
+    let elementNode = Factory.takeElementNode(_elementNodeDataObject, _preInsectProps, _type, this, _isMaster);
 
     return elementNode;
   }
@@ -526,7 +526,7 @@ class Document {
     domContainer.innerHTML = _fragmentHTML;
 
     for (let i = 0; i < domContainer.children.length; i++) {
-      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', this, undefined);
+      let elementNode = Factory.takeElementNode(undefined, undefined, 'html', this, true);
       elementNode.buildByElement(domContainer.children[i]);
       this.rootElementNodes.push(elementNode);
     }
@@ -586,7 +586,7 @@ class Document {
 
     this.rootElementNodes = documentDataObject.rootElementNodes || [];
     this.rootElementNodes = this.rootElementNodes.map(function(_rootElementNode) {
-      return that.newElementNode(_rootElementNode);
+      return that.newElementNode(_rootElementNode, true);
     });
     this.elementNodes = documentDataObject.elementNodes || [];
     this.elementNodes = this.inspireElementNodes(this.elementNodes, this);
