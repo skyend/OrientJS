@@ -52,9 +52,16 @@
   </form>
 
   <div>
+    <script type='text/x-javascript' en-scope-type='function' name='style'>
+      return function(){
+        return {
+          backgroundColor:'#555'
+        };
+      }
+    </script>
     배열 반복 테스트
     <ul>
-      <li en-ctrl-repeat-n='{{: "a,b,c,d".split(",") }}'>
+      <li en-ctrl-repeat-n='{{: "a,b,c,d".split(",") }}' style='{{: func@style() }}'>
         {{: en@repeat-item }}
       </li>
     </ul>

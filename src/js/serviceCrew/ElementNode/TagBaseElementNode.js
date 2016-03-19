@@ -1,6 +1,10 @@
-import ElementNode from './ElementNode.js';
 import _ from 'underscore';
+
+import ElementNode from './ElementNode.js';
 import Gelato from '../StandAloneLib/Gelato';
+import ObjectExtends from '../../util/ObjectExtends';
+
+
 "use strict";
 
 const PIPE_EVENT_SPLIT_REGEXP = /^en-pipe-event-([\w\-\_\d]+)$/;
@@ -120,6 +124,11 @@ const DOM_EVENTS = [
   'touchmove',
   'touchstart'
 ];
+
+var SUPPORT_HTML_TAG_STYLES = {};
+if (window) {
+  SUPPORT_HTML_TAG_STYLES = ObjectExtends.clone(window.document.head.style);
+}
 
 
 
@@ -301,6 +310,7 @@ class TagBaseElementNode extends ElementNode {
 
     for (let i = 0; i < attributeKeys.length; i++) {
       key = attributeKeys[i];
+
       this.mappingAttribute(_domNode, key, _options);
     }
 
@@ -356,14 +366,19 @@ class TagBaseElementNode extends ElementNode {
     let options = _options || {};
     let value = options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName);
 
+    // value 의 최종 값이 null 이라면 Attribute가 아얘 추가되지 않도록 함수를 종료한다.
+    if (value === null) return;
 
-    // value 의 최종 값이 null 이라면 무시한다.
-    if (value === null) {
-      return;
-    }
-
-    if (_attrName === 'value') {
-      _dom.value = value;
+    switch (_attrName) {
+      case 'style':
+        if (typeof value === 'object' && value !== undefined) {
+          ObjectExtends.mergeByRef(_dom.style, value, true);
+          return;
+        }
+        break;
+      case 'value':
+        _dom.value = value;
+        break;
     }
 
     _dom.setAttribute(_attrName, value);
