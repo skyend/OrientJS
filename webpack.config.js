@@ -82,9 +82,11 @@ module.exports = {
     new Clean(['dist']),
     // new webpack.HotModuleReplacementPlugin(),
     // new webpack.NoErrorsPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true
-    }),
+
+    // new webpack.optimize.UglifyJsPlugin({
+    //   minimize: true
+    // }),
+
     new HtmlWebpackPlugin({
       title: 'Gelateria ICE Gelato Builder',
       inject: 'body',

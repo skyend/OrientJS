@@ -20,6 +20,7 @@ class Factory {
     // else if (type === 'react') elementNodeCLASS = ReactElementNode;
     //else if (type === 'grid') elementNodeCLASS = GridElementNode;
     else {
+      // 감지된 plugin에서 새로 정의된 ElementNode가 있는지 확인한다.
       throw new Error(`unkown elementNode type ${type}`);
     }
 
@@ -29,6 +30,30 @@ class Factory {
     return elementNode;
   }
 
+  static checkElementNodeType(_domElement) {
+    let tagNodeName = _domElement.nodeName;
+
+    if (tagNodeName === '#text') {
+      return 'string';
+    } else if (tagNodeName === '#comment') {
+      // pass
+    } else {
+      let typeAttribute = _domElement.getAttribute('en-type');
+
+      // typeAttribute가 입력되지않았다면 html로 간주한다.
+      if (typeAttribute === null) {
+        return 'html';
+      } else if (/^html|string|ref$/.test(typeAttribute)) {
+        return typeAttribute;
+      } else {
+
+        // plugin으로 지원하는 ElementNode가 있는지 확인한다.
+        if (null) { // 감지된 plugin에서 지원하지 않을경우
+          throw new Error(`${typeAttribute} 지원하지 않는 ElementNode 타입입니다.`)
+        }
+      }
+    }
+  }
 }
 
 export default Factory;

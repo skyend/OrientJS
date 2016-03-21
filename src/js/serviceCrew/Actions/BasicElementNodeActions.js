@@ -54,7 +54,7 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, false);
+    targetElementNode = this.getMaster().findById(eid, false);
   }
 
   targetElementNode.update();
@@ -82,7 +82,7 @@ actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
 
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, false);
+    targetElementNode = this.getMaster().findById(eid, false);
   }
 
   targetElementNode.update();
@@ -121,7 +121,7 @@ actionStore.registerAction('set', ['name', 'value'], function() {
 actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, false);
+    targetElementNode = this.getMaster().findById(eid, false);
   }
 
   targetElementNode.setAttribute(name, value);
@@ -134,7 +134,7 @@ actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'task
 actionStore.registerAction('exists-toggle-attr-to', ['eid', 'name', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, false);
+    targetElementNode = this.getMaster().findById(eid, false);
   }
 
   if (targetElementNode.getAttribute(name) !== undefined) {
@@ -360,7 +360,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
 actionStore.registerAction('focus', ['eid'], function() {
   let targetElementNode;
   if (eid !== undefined) {
-    targetElementNode = this.environment.findById(eid, false);
+    targetElementNode = this.getMaster().findById(eid, false);
   }
 
   targetElementNode.forwardDOM.focus();

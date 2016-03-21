@@ -49,6 +49,15 @@ class APIFarmSource extends ICEAPISource {
     let req = this.findRequest(_reqId);
     //http://125.131.88.77:8200/api/vod/category/list.json
 
+    if (!this.farmServiceId) {
+      console.error(`Not found 'farmServiceId' in`, this.importData);
+    }
+
+    if (!this.classId) {
+      console.error(`Not found 'classId' in`, this.importData);
+    }
+
+
     if (req !== undefined) {
       return `/api/${this.farmServiceId}/${this.classId}/${req.crudPoint}`; //'/api/' + this.nt_tid + '/' + req.crudPoint;
     } else {

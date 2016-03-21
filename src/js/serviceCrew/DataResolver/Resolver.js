@@ -3,7 +3,7 @@ import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
 import TypeCaster from '../Data/TypeCaster';
-import ElementNode from '../ElementNode/ElementNode';
+// import ElementNode from '../ElementNode/ElementNode';
 
 import _ from 'underscore';
 /**
@@ -245,12 +245,12 @@ class Resolver {
 
     let data;
     switch (varCategory) {
-      case 'id':
-        data = _externalGetterInterface.getElementNodeById(varName);
-        if (!(data && data[ElementNode.SIGN_BY_ELEMENTNODE] === ElementNode.SIGN_BY_ELEMENTNODE)) {
-          throw new Error(`Not found ElementNode in Environment. \nID: ${varName}`);
-        }
-        break;
+      // case 'id': // 사용안함
+      //   data = _externalGetterInterface.getElementNodeById(varName);
+      //   if (!(data && data[ElementNode.SIGN_BY_ELEMENTNODE] === ElementNode.SIGN_BY_ELEMENTNODE)) {
+      //     throw new Error(`Not found ElementNode in Environment. \nID: ${varName}`);
+      //   }
+      //   break;
       case 'en-attr-origin':
         data = _externalGetterInterface.getAttribute(varName, false);
         break;

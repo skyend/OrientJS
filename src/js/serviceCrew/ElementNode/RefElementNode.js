@@ -21,8 +21,8 @@ let RefferenceType = Object.freeze({
 
 
 class RefElementNode extends HTMLElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'ref';
 
     this.loadedInstance = null;
@@ -102,7 +102,7 @@ class RefElementNode extends HTMLElementNode {
             rootElementNode = that.loadedInstance.rootElementNodes[i];
             rootElementNode.setParent(that);
             rootElementNode.constructDOMs({});
-            rootElementNode.render(that.forwardDOM);
+            rootElementNode.attachForwardDOM(that.forwardDOM);
           }
         });
       } else {
@@ -123,7 +123,7 @@ class RefElementNode extends HTMLElementNode {
             rootElementNode = this.loadedInstance.rootElementNodes[i];
             let prevForwardDOM = rootElementNode.getDOMNode();
             rootElementNode.constructDOMs({});
-            rootElementNode.render(that.forwardDOM);
+            rootElementNode.attachForwardDOM(that.forwardDOM);
             console.log(that.backupDOM);
           }
         }

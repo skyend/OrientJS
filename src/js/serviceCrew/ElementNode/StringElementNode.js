@@ -4,8 +4,8 @@ import Gelato from '../StandAloneLib/Gelato';
 "use strict"
 
 class StringElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'string';
     this.text;
   }
@@ -61,11 +61,10 @@ class StringElementNode extends ElementNode {
   createNode(_options) {
     let htmlDoc;
 
-    let gelato = Gelato.one();
-    if (gelato !== null) {
-      htmlDoc = gelato.page.doc;
+    if (this.environment) {
+      htmlDoc = this.environment.document;
     } else {
-      htmlDoc = this.environment.getHTMLDocument();
+      htmlDoc = document;
     }
 
     if (this.wrappingTag !== null) {

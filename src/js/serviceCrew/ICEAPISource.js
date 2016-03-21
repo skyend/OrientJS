@@ -179,6 +179,11 @@ export default class ICEAPISource extends APISource {
   getRequestLocation(_reqId) {
     let req = this.findRequest(_reqId);
 
+    if (!this.nt_tid) {
+      console.error(`Not found 'nt_tid' in`, this.importData);
+    }
+
+
     if (req !== undefined) {
       return '/api/' + this.nt_tid + '/' + req.crudPoint;
     } else {
@@ -188,73 +193,6 @@ export default class ICEAPISource extends APISource {
 
   getRequestURL(_reqId) {
     return this.host + this.getRequestLocation(_reqId)
-  }
-
-
-  /*
-    application/x-www-form-urlencoded: The default value if the attribute is not specified.
-    multipart/form-data: The value used for an <input> element with the type attribute set to "file".
-    text/plain (HTML5)
-  */
-  /**
-    ExecuteRequest
-    _enctypeOrComplete : 'multipart/form-data' | 'application/x-www-form-urlencoded' | completeCallback(Function) : default: 'application/x-www-form-urlencoded' // 전송 타입
-  */
-  executeRequest(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
-    let enctype, complete;
-    let fields = _fields || {};
-    let that = this;
-    let req = this.findRequest(_requestId);
-    let url;
-
-    if (this.clazz === 'ICEAPISource') fields.t = 'api';
-
-    if (typeof _enctypeOrComplete === 'function') {
-      complete = _enctypeOrComplete;
-      enctype = 'application/x-www-form-urlencoded';
-    } else {
-      complete = _complete;
-      enctype = _enctypeOrComplete;
-    }
-
-    //fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
-    fields = _.extendOwn(req.getFieldsObjectWithResolve(), fields);
-
-    console.log(req.getFieldsObjectWithResolve());
-
-    if (req.crud === '**') {
-      url = req.customURL;
-    } else {
-      url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
-    }
-    console.log(fields, 'fields', this);
-    if (req.method === 'get') {
-      SuperAgent.get(url)
-        .query(fields)
-        .end(function(err, res) {
-          if (err !== null) {
-            console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
-
-            complete(null, res.statusCode);
-          } else {
-            complete(res.body, res.statusCode);
-          }
-        });
-    } else if (req.method === 'post') {
-
-      SuperAgent.post(url)
-        .type('form')
-        .send(enctype === 'multipart/form-data' ? this.convertFieldsToFormData(fields) : fields)
-        .end(function(err, res) {
-          if (res === null) {
-            console.warn(`API Source Request Error. SourceId: ${that.id}, RequestId:${_requestId}`, that);
-
-            complete(null, res.statusCode);
-          } else {
-            complete(res.body, res.statusCode);
-          }
-        });
-    }
   }
 
   convertFieldsToFormData(_fields) {

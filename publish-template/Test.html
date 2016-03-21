@@ -37,10 +37,18 @@
     </script>
 
     <!-- Publish -->
+    <script src='/orient.js'></script>
+    <script src='/orbit.js'></script>
     <script src='http://localhost:8080/built-foundation.js'></script>
     <script>
+
+
       window.onload = function(){
-        $ervice.startup();
+        var orbitEnvrionment = new Orbit();
+        var masterElementNode = Orient.buildComponentByElement(document.body, {}, undefined, orbitEnvrionment);
+        Orient.replaceRender(masterElementNode, document.body);
+
+         //$ervice.startup();
       }
     </script>
   </head>
@@ -57,7 +65,7 @@ a
     </div>
 
     <!-- Page Grid -->
-     
+
 
     <div en-type='ref' en-ref-Type='Fragment' en-ref-target-id='test/tab'>
       <!-- Will attach a blogBody fragment -->

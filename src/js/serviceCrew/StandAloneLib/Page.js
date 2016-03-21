@@ -216,7 +216,7 @@ class Page {
     bodyElementNode.constructDOMs({});
 
 
-    bodyElementNode.renderWithReplace(that.doc.body.parentElement, that.doc.body);
+    bodyElementNode.attachForwardDOMByReplace(that.doc.body.parentElement, that.doc.body);
     // 하나의 fragment에서 rootElementNode 는 다수로 존재 할 수 있지만 Page 에 존재하는 Fragment 의 rootElementNode는 body 태그에 대응하는 elementNode 단 하나만 존재한다.
     // this.bodyFragment.rootElementNodes[0].constructDOMs({
     //   linkType: 'downstream'

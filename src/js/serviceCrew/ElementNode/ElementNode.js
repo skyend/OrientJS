@@ -41,14 +41,14 @@ class ElementNode {
     return SIGN_BY_ELEMENTNODE;
   }
 
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     //Object.assign(this, events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
     //_.extendOwn(this, Events.EventEmitter.prototype);
     this[SIGN_BY_ELEMENTNODE] = SIGN_BY_ELEMENTNODE;
 
     // 미리 삽입된 프로퍼티
-    var preInsectProps = _preInsectProps || {};
+    var preInjectProps = _preInjectProps || {};
 
     //////////////
     // 필드 정의
@@ -90,12 +90,12 @@ class ElementNode {
     this.hiddenForwardDOM = null; // hidden construct 가 되었을 때 이전에 forwardDOM을 담는다.
 
     // Repeat by parent's Repeat Control
-    this.isGhost = preInsectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
-    this.isRepeated = preInsectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
-    this.repeatOrder = preInsectProps.repeatOrder > -1 ? preInsectProps.repeatOrder : -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
-    this.repeatItem = preInsectProps.repeatItem || undefined;
+    this.isGhost = preInjectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
+    this.isRepeated = preInjectProps.isRepeated || false; // repeat에 의해 반복된 ElementNode 플래그
+    this.repeatOrder = preInjectProps.repeatOrder > -1 ? preInjectProps.repeatOrder : -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
+    this.repeatItem = preInjectProps.repeatItem || undefined;
 
-    this.environment = _environment;
+    this._environment = _environment;
     this.mode = 'normal';
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
@@ -182,6 +182,10 @@ class ElementNode {
     return this._prevSibling;
   }
 
+  get environment() {
+    return this.__environment;
+  }
+
   //
   // get parentDynamicContext() {
   //   return this._parentDynamicContext;
@@ -226,6 +230,14 @@ class ElementNode {
     if (this._prevSibling) {
       this._prevSibling._nextSibling = this;
     }
+  }
+
+  set _environment(_env) {
+    this.__environment = _env;
+  }
+
+  setEnvironment(_env) {
+    this.environment = _env;
   }
 
   //
@@ -380,6 +392,11 @@ class ElementNode {
     this.comment = _comment;
   }
 
+  // runtime parameter 로 자신이 변경할 수 없고 외부에서 주입한 값에 따라 동작을 달리한다.
+  getProperty(_propKey) {
+
+  }
+
 
   constructDOMs(_options) {
     let that = this;
@@ -408,15 +425,15 @@ class ElementNode {
     return this.forwardDOM;
   }
 
-  render(_target) {
+  attachForwardDOM(_target) {
     _target.appendChild(this.forwardDOM);
     this.isAttachedDOM = true;
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
 
-  renderWithReplace(_target, _old) {
-    _target.replaceChild(this.forwardDOM, _old);
+  attachForwardDOMByReplace(_parentTarget, _old) {
+    _parentTarget.replaceChild(this.forwardDOM, _old);
     this.isAttachedDOM = true;
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
@@ -643,10 +660,11 @@ class ElementNode {
       that.rebuildDynamicContext();
 
       that.dynamicContext.ready(function(_err) {
-        that.debug('dc', 'Ready Dynamic Context');
+        that.debug('dc', 'Ready Dynamic Context.');
 
         if (_err === null) {
 
+          that.debug('dc', 'Will load data.');
           that.dynamicContext.dataLoad(function(_err) {
             that.debug('dc', 'Data Loaded', that.dynamicContext.apisources, that.dynamicContext, that.dynamicContext.dataResolver.dataSpace);
 
@@ -1020,6 +1038,23 @@ class ElementNode {
     }
   }
 
+  getMaster() {
+    let masterElementNode = null;
+    this.climbParents(function(_forefatherEN) {
+      if (_forefatherEN.isMaster) {
+
+        masterElementNode = _forefatherEN;
+        return null;
+      }
+    });
+
+    if (masterElementNode !== null) {
+      return masterElementNode;
+    }
+
+    console.error(`Not found Master ElementNode.`, this);
+  }
+
   /////////////
   // String Resolve
   interpret(_matterText, _getFeature) {
@@ -1032,16 +1067,16 @@ class ElementNode {
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
-
+      getProperty: this.getProperty.bind(this), // old fragmentPram
       // todo .... geo 추가
       //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };
 
     if (this.environment) {
-      injectGetterInterface.executeI18n = this.environment.executeI18n.bind(this.environment); // with Framework
-      injectGetterInterface.getServiceConfig = this.environment.getServiceConfig.bind(this.environment); // with Framework
-      injectGetterInterface.getFragmentParam = this.environment.getParam.bind(this.environment); // to Property
-      injectGetterInterface.getElementNodeById = this.environment.findById.bind(this.environment);
+      injectGetterInterface.executeI18n = this.environment.forInterpret_executeI18N_func; // with Framework
+      injectGetterInterface.getServiceConfig = this.environment.forInterpret_config_func; // with Framework
+      // injectGetterInterface.getFragmentParam = this.environment.getParam.bind(this.environment); // to Property
+      // injectGetterInterface.getElementNodeById = this.environment.findById.bind(this.environment);
     }
 
     let solved = _matterText;
@@ -1432,7 +1467,7 @@ class ElementNode {
     // interpret 된 delegateValue 의 데이터타입이 string이면 EN ID로 간주하며
     // 그 밖의 타입일 경우 ElementNode 객체로 간주한다.
     if (typeof delegateValue === 'string') {
-      foundEN = this.environment.findById(_fieldValue);
+      foundEN = this.getMaster().findById(_fieldValue);
     } else {
       foundEN = delegateValue;
     }

@@ -133,8 +133,8 @@ if (window) {
 
 
 class TagBaseElementNode extends ElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _isMaster) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _isMaster);
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.tagName;
     this.attributes;
     this.css;
@@ -202,14 +202,14 @@ class TagBaseElementNode extends ElementNode {
   getCurrentRectangle() {
     //    console.log(this);
     //switch (this.environment.contextController.getScreenSizing()) {
-    switch (this.environment.getScreenSizing()) {
-      case "desktop":
-        return this.rectangle['desktop'];
-      case "tablet":
-        return this.rectangle['tablet'];
-      case "mobile":
-        return this.rectangle['mobile'];
-    }
+    // switch (this.environment.getScreenSizing()) {
+    //   case "desktop":
+    //     return this.rectangle['desktop'];
+    //   case "tablet":
+    //     return this.rectangle['tablet'];
+    //   case "mobile":
+    //     return this.rectangle['mobile'];
+    // }
     return {};
   }
 
@@ -395,11 +395,10 @@ class TagBaseElementNode extends ElementNode {
 
     let htmlDoc;
 
-    let gelato = Gelato.one();
-    if (gelato !== null) {
-      htmlDoc = gelato.page.doc;
+    if (this.environment) {
+      htmlDoc = this.environment.document;
     } else {
-      htmlDoc = this.environment.getHTMLDocument();
+      htmlDoc = document;
     }
 
     return htmlDoc.createElement(this.getTagName() || 'div');

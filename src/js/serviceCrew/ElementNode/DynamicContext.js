@@ -133,13 +133,14 @@ class DynamicContext {
       let apiSourceOrder = _.findIndex(sourceIdList, function(_idAsKey) {
         return _apiSource.key == _idAsKey;
       });
+      console.log(apiSourceOrder, sourceIdList, _apiSource);
 
       // 없으므로 next
-      if (apiSourceOrder == -1) _next()
+      if (apiSourceOrder === -1) _next()
       else {
         let paramsString = injectParams[apiSourceOrder] || '';
         let paramObject = that.parseParamString(paramsString);
-
+        console.log('wil executeRequest');
         _apiSource.executeRequest(requestIdList[apiSourceOrder], paramObject, undefined, function(_result) {
           console.log(_apiSource);
 

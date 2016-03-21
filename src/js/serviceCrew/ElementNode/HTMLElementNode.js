@@ -12,12 +12,20 @@ const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
 
 
 class HTMLElementNode extends TagBaseElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext) {
-    super(_environment, _elementNodeDataObject, _preInsectProps, _dynamicContext);
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _dynamicContext) {
+    super(_environment, _elementNodeDataObject, _preInjectProps, _dynamicContext);
     this.type = 'html';
 
     // children
     this.children;
+  }
+
+  setEnvironment(_env) {
+    super.setEnvironment(_env);
+
+    for (let i = 0; i < this.children.length; i++) {
+      this.children[i].setEnvironment(_env);
+    }
   }
 
   constructDOMs(_options) {
@@ -150,27 +158,34 @@ class HTMLElementNode extends TagBaseElementNode {
 
   findRecursive(_finder) {
     var result = _finder(this);
+
     if (result) {
       return this;
     } else {
 
-      for (var i = 0; i < this.children.length; i++) {
-
-        if (this.children[i].cloned) {
-          for (var j = 0; j < this.children[i].clonePool.length; j++) {
-            var recvResult = this.children[i].clonePool[j].findRecursive(_finder);
+      if (this.isRepeater()) {
+        for (var i = 0; i < this.clonePool.length; i++) {
+          if (typeof this.clonePool[i].findRecursive === 'function') {
+            var recvResult = this.clonePool[i].findRecursive(_finder);
             if (recvResult) {
               return recvResult;
             }
           }
-        } else {
-          var recvResult = this.children[i].findRecursive(_finder);
+        }
+      }
 
-          if (recvResult) {
-            return recvResult;
+      if (this.children !== undefined) {
+
+        for (var i = 0; i < this.children.length; i++) {
+          if (typeof this.children[i].findRecursive === 'function') {
+            var recvResult = this.children[i].findRecursive(_finder);
+            if (recvResult) {
+              return recvResult;
+            }
           }
         }
       }
+
     }
     return false;
   }
@@ -334,7 +349,7 @@ class HTMLElementNode extends TagBaseElementNode {
     if (typeof _childrenDataList.length !== 'number') throw new Error("element child nodes is not Array.");
     var list = [];
 
-    var preInsectProps = {
+    var preInjectProps = {
       //isRepeated: this.isRepeated,
       isGhost: this.isGhost
     }
@@ -343,8 +358,13 @@ class HTMLElementNode extends TagBaseElementNode {
     let child;
     let prevChild = null;
     for (var i = 0; i < _childrenDataList.length; i++) {
+
       elementNodeData = _childrenDataList[i];
-      child = Factory.takeElementNode(elementNodeData, preInsectProps, undefined, this.environment, this.dynamicContext);
+
+      // children 에 ElementNode가 바로 입력될 수도 있다.
+      if (!elementNodeData.isElementNode) {
+        child = Factory.takeElementNode(elementNodeData, preInjectProps, undefined, this.environment);
+      }
       child.setParent(this);
 
       // 이전 요소 지정

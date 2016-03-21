@@ -37,10 +37,21 @@
     </script>
 
     <!-- Publish -->
+    <script src='/orient.js'></script>
+    <script src='/orbit.js'></script>
     <script src='http://localhost:8080/built-foundation.js'></script>
     <script>
       window.onload = function(){
-        $ervice.startup();
+
+        var orbit = new Orbit(document);
+        orbit.retriveConfig('/publish-template/config/config.json', function(){
+            console.log('loaded config');
+        });
+        
+        var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbit);
+        Orient.replaceRender(masterElementNode, document.body);
+
+//        $ervice.startup();
       }
     </script>
   </head>
@@ -75,7 +86,7 @@ a
 
         </button>
 
-        {{<< text('test2/a','ab','c') }}
+        <!-- {{<< text('test2/a','ab','c') }} -->
 
 
         <div>
@@ -86,7 +97,7 @@ a
         </div>
 
         <h2>Frequently Asked Questions</h2>
-        <div  en-id='dc-testt'
+        <!-- <div  en-id='dc-testt'
               en-dc-source-id='farm/vod/category'
               en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
               en-dc-ns='category' en-dc-attitude='passive' en-event-click='task@exec'>
@@ -94,14 +105,14 @@ a
               수동 DynamicContext 테스트  << 클릭
               <br/>
               카테고리 : {{<< JSON.stringify(ns@category) }}
-        </div>
+        </div> -->
         <button en-event-click='task@reset'>
           <en:task name='reset' action='resetDC' en-executor='dc-testt'></en:task>
           리셋 DC
 
         </button>
 
-          {{<< config@ice-host }}
+          <!-- {{<< config@ice-host }} -->
           <div data='[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE'>
             <span type='string' en-enableHtml>
               {{<< "[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE" }}

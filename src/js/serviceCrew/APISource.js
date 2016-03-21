@@ -9,6 +9,8 @@ export default class APISource {
 
     this.serviceManager = _serviceManager;
 
+    this.importData = _APISourceData;
+
     this.host = '';
     this.import(_APISourceData);
   }
@@ -207,6 +209,7 @@ export default class APISource {
     } else {
       url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
     }
+
     console.log(fields, 'fields', this);
     if (req.method === 'get') {
       SuperAgent.get(url)
@@ -234,6 +237,8 @@ export default class APISource {
             complete(res.body, res.statusCode);
           }
         });
+    } else {
+      console.error(`지원하지 않는 Http Method(${req.method}) 입니다. invalid`, this);
     }
   }
 

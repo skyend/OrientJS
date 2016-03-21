@@ -26,7 +26,7 @@ var component = Orient.createComponent({
         <sub>C</sub>
       </h3>
 
-      <div o-ctrl-repeat-n='3'>
+      <div en-ctrl-repeat-n='3'>
         <div en-ctrl-repeat-n='{{: en@repeat-n }}'>
           {{: en@repeat-n }}
         </div>
