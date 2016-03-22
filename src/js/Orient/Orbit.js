@@ -1,15 +1,19 @@
 //import request from 'superagent';
-import ObjectExtends from '../util/ObjectExtends';
 import HTTPRequest from './Orbit/HTTPRequest';
-import Classer from '../util/Classer';
+import Config from './Orbit/Config';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
-
-const DEFAULT_I18N_PATH = '/i18n';
-const SUPER_DEFAULT_LANG_SET = 'en';
+import BuiltinRetriever from './Orbit/Retriever';
 
 
 class Orbit {
-  constructor(_window) {
+  /**
+    _window : Browser Window Object
+    _inlineConfig : 직접 JSON으로 입력한 Config Object
+    _retriever : 프레임웤 리소스를 로딩해주는 객체
+  */
+  constructor(_window, _inlineConfig, _retriever) {
+    let that = this;
+
     if (_window) {
       this.window = _window;
     } else {
@@ -17,6 +21,17 @@ class Orbit {
     }
 
     this.resolver = new Resolver();
+    this.config = new Config(_inlineConfig);
+    this.config.on('update', function(_e) {
+      // config 가 변경될 때 마다 BuiltinRetriever를 업데이트 한다.
+      that._defaultRetriever = new BuiltinRetriever({
+        'relative-dir-i18n': this.getField('DIR_I18N'),
+        'relative-dir-apisource': this.getField('DIR_API_SOURCE'),
+        'relative-dir-component': this.getField('DIR_COMPONENT')
+      });
+    });
+
+    this.retriever = _retriever;
 
     // Framework Interpreters
     this.bindedInterpretSupporters = {
@@ -59,52 +74,16 @@ class Orbit {
     return this.window.document;
   }
 
-  set defaultLangSet(_langSetName) {
-    this._defaultLangSet = _langSetName;
+  set retriever(_retriever) {
+    this._retriever = _retriever;
   }
 
-  get defaultLangSet() {
-    return this._defaultLangSet || SUPER_DEFAULT_LANG_SET;
+  get retriever() {
+    return this._retriever;
   }
 
-  set i18N_URL(_i18N_URL) {
-    this._i18N_URL = _i18N_URL;
-  }
-
-  get i18N_URL() {
-    return this._i18N_URL || DEFAULT_I18N_PATH;
-  }
-
-  set languageDecider(_languageDecider) {
-    this._languageDecider = _languageDecider;
-  }
-
-  get languageDecider() {
-    return this._languageDecider;
-  }
-
-  set lazyScripts(_lazyScripts) {
-    this.lazyScripts = _lazyScripts;
-  }
-
-  get lazyScripts() { // paths
-    return this._lazyScripts || [];
-  }
-
-  set earlyScripts(_earlyScripts) {
-    this._earlyScripts = _earlyScripts;
-  }
-
-  get earlyScripts() { // paths
-    return this._earlyScripts || [];
-  }
-
-  set styles(_styles) {
-    this._styles = _styles;
-  }
-
-  get styles() { // paths
-    return this._styles || [];
+  get defaultRetriever() {
+    return this._defaultRetriever;
   }
 
   get HTTPRequest() {
@@ -118,42 +97,12 @@ class Orbit {
     }, _defaultDataObject, this);
   }
 
-  // 외부 config 파일을 사용할 때 이 메서드를 사용한다.
-  retriveConfig(_configURL, _function) {
-    // 1. 로딩
-    // 2. import
-
-  }
-
-
   get forInterpret_executeI18N_func() {
     return this.bindedInterpretSupporters.executeI18n;
   }
 
   get forInterpret_config_func() {
     return this.bindedInterpretSupporters.getConfig;
-  }
-
-
-  import (_config) {
-    this.defaultLangSet = _config['default-lang-set'];
-    this.languageDecider = _config['i18n-lang-code'];
-    this.lazyScripts = _config['lazyScripts'];
-    this.earlyScripts = _config['earlyScripts'];
-    this.styles = _config['styles'];
-    this.i18N_URL = _config['i18n-url'];
-  }
-
-  export () {
-    let config = {};
-    config['default-lang-set'] = this._defaultLangSet;
-    config['i18n-lang-code'] = this.languageDecider;
-    config['lazyScripts'] = ObjectExtends.clone(this.lazyScripts);
-    config['earlyScripts'] = ObjectExtends.clone(this.earlyScripts);
-    config['styles'] = ObjectExtends.clone(this.styles);
-    config['i18n-url'] = this._i18N_URL;
-
-    return config;
   }
 }
 

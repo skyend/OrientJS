@@ -1,26 +1,22 @@
-import Superagent from 'superagent';
+import SuperAgent from 'superagent';
 
 class HTTPRequest {
-  static request(_method, _url, _fields = {}, _cb, _enctype = 'application/x-www-form-urlencoded') {
-    if (method === 'get') {
+  static request(_method, _url, _fields = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
+    if (_method === 'get') {
       SuperAgent.get(_url)
-        .query(fields)
+        .query(_fields)
         .end(function(err, res) {
-          if (err !== null)
-            complete(null);
-          else
-            complete(res);
+
+          _complete(err || null, res || null);
         });
 
-    } else if (method === 'post') {
+    } else if (_method === 'post') {
       SuperAgent.post(_url)
         .type('form')
         .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
         .end(function(err, res) {
-          if (res === null)
-            complete(null);
-          else
-            complete(res);
+
+          _complete(err || null, res || null);
         });
     }
   }
