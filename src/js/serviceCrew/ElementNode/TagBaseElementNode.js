@@ -161,11 +161,19 @@ class TagBaseElementNode extends ElementNode {
     return this.tagName || 'div';
   }
 
-  // attribute
-  getAttribute(_name) {
-    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+  hasAttribute(_name) {
+    return this.findAttributeIndex(_name) !== -1;
+  }
+
+  findAttributeIndex(_name) {
+    return ArrayHandler.findIndex(this.attributes, function(_v) {
       return _v.name === _name;
     });
+  }
+
+  // attribute
+  getAttribute(_name) {
+    let foundIndex = this.findAttributeIndex(_name);
 
     if (foundIndex !== -1) {
       return this.attributes[foundIndex].variable;
@@ -271,9 +279,7 @@ class TagBaseElementNode extends ElementNode {
   setAttribute(_name, _value) {
     let that = this;
 
-    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
-      return _v.name === _name;
-    });
+    let foundIndex = this.findAttributeIndex(_name);
 
     if (foundIndex !== -1) {
       this.attributes[foundIndex].variable = _value;
@@ -283,9 +289,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
   setInitialAttribute(_name, _initValue) {
-    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
-      return _v.name === _name;
-    });
+    let foundIndex = this.findAttributeIndex(_name);
 
     if (foundIndex !== -1) {
       this.attributes[foundIndex].seed = _initValue;
@@ -298,9 +302,7 @@ class TagBaseElementNode extends ElementNode {
   defineNewAttribute(_name, _initialValue) {
     let that = this;
 
-    let duplIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
-      return _v.name === _name;
-    });
+    let duplIndex = this.findAttributeIndex(_name);
 
     if (duplIndex === -1) {
       let newAttribute = new MetaText({
@@ -512,10 +514,7 @@ class TagBaseElementNode extends ElementNode {
   //////////
   // Remove Attribute
   renameAttribute(_prevName, _nextName) {
-
-    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
-      return _v.name === _prevName;
-    });
+    let foundIndex = this.findAttributeIndex(_prevName);
 
     if (foundIndex !== -1) {
       this.attributes[foundIndex].name = _nextName;

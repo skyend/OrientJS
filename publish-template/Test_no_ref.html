@@ -43,11 +43,11 @@
     <script>
       window.onload = function(){
 
-        var orbit = new Orbit(document);
+        var orbit = new Orbit(window);
         orbit.retriveConfig('/publish-template/config/config.json', function(){
             console.log('loaded config');
         });
-        
+
         var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbit);
         Orient.replaceRender(masterElementNode, document.body);
 

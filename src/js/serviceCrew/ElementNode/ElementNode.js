@@ -1135,23 +1135,30 @@ class ElementNode {
   }
 
   getAttrOnTree(_attrName, _resolving) {
-    if (_.isFunction(this.getAttribute)) {
+    if (typeof this.getAttribute === 'function') {
       // 먼저 자신에게서 구한다.
-      var attributeValue = this.getAttribute(_attrName);
 
-      if (attributeValue !== undefined) {
 
-        return _resolving ? this.interpret(attributeValue) : attributeValue;
+      if (this.hasAttribute(_attrName)) {
+        var attributeValue;
+
+        attributeValue = this.getAttribute(_attrName);
+
+        if (attributeValue !== undefined) {
+          return _resolving ? this.interpret(attributeValue) : attributeValue;
+        }
       }
     }
 
     let parentAttribute = null;
     this.climbParents(function(_parent) {
-      var value = _parent.getAttribute(_attrName);
+      if (_parent.hasAttribute(_attrName)) {
+        var value = _parent.getAttribute(_attrName);
 
-      if (value !== undefined) {
-        parentAttribute = _resolving ? _parent.interpret(value) : value;
-        return null;
+        if (value !== undefined) {
+          parentAttribute = _resolving ? _parent.interpret(value) : value;
+          return null;
+        }
       }
     });
 
@@ -1938,7 +1945,7 @@ class ElementNode {
   **/
   debug(_key) {
     if (this.type !== 'string') {
-      if (this.getAttribute('trace') !== undefined) {
+      if (this.hasAttribute('trace')) {
 
 
         if (!_key && !(args.length > 0)) throw new Error("Key 와 다음 내용을 입력하지 않았습니다. log사용을 위해서는 this.log(KEY, LOG MESSAGES ... )를 사용해야 합니다.");

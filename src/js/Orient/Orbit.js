@@ -9,11 +9,11 @@ const SUPER_DEFAULT_LANG_SET = 'en';
 
 
 class Orbit {
-  constructor(_document) {
-    if (_document) {
-      this.document = _document;
+  constructor(_window) {
+    if (_window) {
+      this.window = _window;
     } else {
-      throw new Error("Need the document.");
+      throw new Error("Need the window.");
     }
 
     this.resolver = new Resolver();
@@ -47,12 +47,16 @@ class Orbit {
   */
 
 
-  set document(_document) {
-    this._document = _document;
+  set window(_window) {
+    this._window = _window;
+  }
+
+  get window() {
+    return this._window;
   }
 
   get document() {
-    return this._document;
+    return this.window.document;
   }
 
   set defaultLangSet(_langSetName) {
