@@ -37,6 +37,32 @@ class HTTPRequest {
 
     return formData;
   }
+
+
+  static requestSync(_method, _url, _data) {
+    var self = this;
+
+    var req;
+    if (window.XMLHttpRequest) {
+      req = new XMLHttpRequest();
+    } else {
+      req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    // 동기 방식 로딩
+    req.open(_method, _url, false);
+    req.send();
+
+    if (req.status == 200) {
+      return req.responseText;
+    } else {
+      //console.error(req);
+      //throw new Error("could not load iCafe Node Scheme Specification");
+
+      return undefined;
+    }
+  }
+
 }
 
 export default HTTPRequest;

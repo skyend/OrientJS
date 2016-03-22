@@ -1,10 +1,43 @@
-class I18N {
-  constructor(_options) {
+import ObjectExtends from '../../util/ObjectExtends';
+import ObjectExplorer from '../../util/ObjectExplorer';
 
+class I18N {
+  constructor(_orbit, _options) {
+    this.languageDecider = _options.languageDecider;
+    this.languageDefault = _options.languageDefault;
+
+    this.orbit = _orbit;
+
+
+    this.i18nLangSetDict = {};
+  }
+
+  get languageDecider() {
+    return this._languageDecider;
+  }
+
+  set languageDecider(_languageDecider) {
+    this._languageDecider = _languageDecider;
+  }
+
+  get languageDefault() {
+    return this._languageDefault;
+  }
+
+  set languageDefault(_languageDefault) {
+    this._languageDefault = _languageDefault;
+  }
+
+  get languageDirPath() {
+    return this._languageDirPath;
+  }
+
+  set languageDirPath(_languageDefault) {
+    this._languageDirPath = _languageDirPath;
   }
 
   executeI18n(_textCode) {
-    let gelato = Gelato.one();
+
 
     let textCode = arguments[0];
     let values = {};
@@ -18,14 +51,12 @@ class I18N {
       return `not found i18n textCode : ${_textCode}`;
     }
 
-    return gelato.interpret(textSnippet, values);
+    return this.orbit.interpret(textSnippet, values);
   }
 
 
   getI18NTextSnippet(_textCode) {
-    let gelato = Gelato.one();
-
-    let usingLanguageSet = gelato.interpret(this.config['i18n-lang-code']) || this.config['default-lang-set'];
+    let usingLanguageSet = this.orbit.interpret(this.languageDecider) || this.languageDefault;
 
     /**
       snippet을 가져오는 과정
@@ -38,7 +69,7 @@ class I18N {
     */
 
     let langSet, snippet;
-    langSet = this.getI18NLangSet(gelato.interpret(this.config['i18n-lang-code']));
+    langSet = this.getI18NLangSet(this.orbit.interpret(this.languageDecider));
 
     if (langSet !== null) {
 
@@ -51,7 +82,7 @@ class I18N {
 
 
 
-    langSet = this.getI18NLangSet(this.config['default-lang-set']);
+    langSet = this.getI18NLangSet(this.languageDefault);
 
     if (langSet === null) {
       return null;
@@ -70,7 +101,7 @@ class I18N {
     // 로드를 시도 했지만 파일을 찾지 못 했을 때는 null 로 유지 한다.
 
     if (langSet === undefined) {
-      langSet = this.i18nLangSetDict[_langCode] = Loader.loadI18NJSONSync(_langCode) || null;
+      langSet = this.i18nLangSetDict[_langCode] = this.orbit.retriever.loadI18NJSONSync(_langCode) || null;
     }
 
     return langSet;

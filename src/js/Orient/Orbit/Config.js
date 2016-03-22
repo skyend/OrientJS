@@ -4,9 +4,9 @@ import HTTPRequest from './HTTPRequest';
 
 const SUPER_LANGUAGE_DEFAULT = 'en';
 
-const DEFAULT_I18N_PATH = '/i18n';
-const DEFAULT_API_SOURCE_PATH = '/api';
-const DEFAULT_COMPONENT_PATH = '/component';
+const DEFAULT_I18N_PATH = '/i18n/';
+const DEFAULT_API_SOURCE_PATH = '/api/';
+const DEFAULT_COMPONENT_PATH = '/component/';
 
 class Config {
   constructor(_inlineConfig) {
@@ -109,7 +109,7 @@ class Config {
 
 
   // 외부 config 파일을 사용할 때 이 메서드를 사용한다.
-  retriveConfig(_configURL, _function) {
+  retriveConfig(_configURL, _complete) {
     // 1. 로딩
     // 2. import
     let that = this;
@@ -120,8 +120,9 @@ class Config {
         that.import(_res.body);
 
         that.emit('update');
-      } else {
 
+        _complete();
+      } else {
         throw new Error(`Fail load config.`);
       }
     });
