@@ -1,9 +1,5 @@
-import MetaData from './MetaData';
-
-class MetaText extends MetaData {
+class MetaData {
   constructor(_object) {
-    super(_object);
-
     this.import(_object);
   }
 
@@ -39,6 +35,14 @@ class MetaText extends MetaData {
 
   get stored() {
     return this._stored;
+  }
+
+  set name(_n) {
+    this._name = _n;
+  }
+
+  get name() {
+    return this._name;
   }
 
 
@@ -130,6 +134,30 @@ class MetaText extends MetaData {
     this.variable = this.stored;
   }
 
+  import (_data) {
+    if (typeof _data === 'object') {
+      this.variable = _data.seed; // variable 는 런타임에 언제든지 변경될 수 있는 데이터이다.
+      this.seed = _data.seed; // Seed 는 런타임에 변경되지 않는 데이터이다.
+      this.default = _data.default; // default 는 seed의 데이터 리졸브가 실패하였을 때 대체될 데이터이다.
+      this.name = _data.name;
+    } else {
+      // object 가 아닌 타입으로 들어온다면 그것을 초기값으로 입력한다.
+      this.seed = this.variable = _data;
+    }
+  }
+
+  export () {
+    let exportO = {
+      seed: this.seed,
+      default: this.default
+    };
+
+    if (this.name) {
+      exportO.name = this.name;
+    }
+
+    return exportO;
+  }
 }
 
-export default MetaText;
+export default MetaData;

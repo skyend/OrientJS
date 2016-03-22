@@ -3,7 +3,8 @@ import _ from 'underscore';
 import ElementNode from './ElementNode.js';
 import Gelato from '../StandAloneLib/Gelato';
 import ObjectExtends from '../../util/ObjectExtends';
-
+import MetaText from '../Data/MetaText';
+import ArrayHandler from '../../util/ArrayHandler';
 
 "use strict";
 
@@ -144,7 +145,7 @@ class TagBaseElementNode extends ElementNode {
 
     if (typeof _elementNodeDataObject !== 'object') {
       // 새 엘리먼트가 생성되었다.
-      this.attributes = {};
+      this.attributes = [];
       this.children = [];
     }
   }
@@ -162,7 +163,15 @@ class TagBaseElementNode extends ElementNode {
 
   // attribute
   getAttribute(_name) {
-    return this.attributes[_name];
+    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+      return _v.name === _name;
+    });
+
+    if (foundIndex !== -1) {
+      return this.attributes[foundIndex].variable;
+    }
+
+    console.error(`Attribute '${_name}' 가 정의되지 않았습니다.`);
   }
 
   // id
@@ -260,19 +269,54 @@ class TagBaseElementNode extends ElementNode {
 
   // attribute
   setAttribute(_name, _value) {
-    this.attributes = this.attributes || {};
+    let that = this;
 
-    this.attributes[_name] = _value;
+    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+      return _v.name === _name;
+    });
+
+    if (foundIndex !== -1) {
+      this.attributes[foundIndex].variable = _value;
+    } else {
+      console.warn(`'${_name}' attribute 가 정의되지 않았습니다. 정의되지 않은 Attribute의 값을 변경할 수 없습니다.`);
+    }
+  }
+
+  setInitialAttribute(_name, _initValue) {
+    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+      return _v.name === _name;
+    });
+
+    if (foundIndex !== -1) {
+      this.attributes[foundIndex].seed = _initValue;
+    } else {
+      console.warn(`'${_name}' attribute 가 정의되지 않았습니다. 새 Attribute를 생성합니다.`);
+      this.defineNewAttribute(_name, _initValue);
+    }
+  }
+
+  defineNewAttribute(_name, _initialValue) {
+    let that = this;
+
+    let duplIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+      return _v.name === _name;
+    });
+
+    if (duplIndex === -1) {
+      let newAttribute = new MetaText({
+        name: _name,
+        seed: _initialValue
+      });
+
+      this.attributes.push(newAttribute);
+    } else {
+      console.warn(`이미 있는 Attribute'${_name}'를 정의하려 합니다. 이 작업은 무시됩니다.`);
+    }
   }
 
   // setAttributeWithEvent(_name, _value){
   //   this.setAttribute(_name, _value)
   // }
-
-  // attributes
-  setAttributes(_attributes) {
-    this.attributes = _attributes;
-  }
 
   setRectanglePartWithScreenMode(_partName, _partValue, _screenMode) {
     var rectangleRef = this.getRectangleByScreenMode(_screenMode);
@@ -303,15 +347,8 @@ class TagBaseElementNode extends ElementNode {
 
 
   mappingAttributes(_domNode, _options) {
-    let attributes = this.getAttributes();
-
-    let attributeKeys = Object.keys(attributes);
-    let key;
-
-    for (let i = 0; i < attributeKeys.length; i++) {
-      key = attributeKeys[i];
-
-      this.mappingAttribute(_domNode, key, _options);
+    for (let i = 0; i < this.attributes.length; i++) {
+      this.mappingAttribute(_domNode, this.attributes[i], _options);
     }
 
     var currentRect = this.getCurrentRectangle();
@@ -362,14 +399,15 @@ class TagBaseElementNode extends ElementNode {
       _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
   }
 
-  mappingAttribute(_dom, _attrName, _options) {
+  mappingAttribute(_dom, _attribute, _options) {
     let options = _options || {};
-    let value = options.resolve ? this.getAttributeWithResolve(_attrName) : this.getAttribute(_attrName);
+    let value = options.resolve ? this.interpret(_attribute.byString) : _attribute.byString;
+    let name = _attribute.name;
 
     // value 의 최종 값이 null 이라면 Attribute가 아얘 추가되지 않도록 함수를 종료한다.
     if (value === null) return;
 
-    switch (_attrName) {
+    switch (name) {
       case 'style':
         if (typeof value === 'object' && value !== undefined) {
           ObjectExtends.mergeByRef(_dom.style, value, true);
@@ -381,7 +419,7 @@ class TagBaseElementNode extends ElementNode {
         break;
     }
 
-    _dom.setAttribute(_attrName, value);
+    _dom.setAttribute(name, value);
   }
 
 
@@ -448,58 +486,42 @@ class TagBaseElementNode extends ElementNode {
     //this.backupDOM = null;
   }
 
-
-  mappingNavigate() {
-    // navigate
-
-    if (this.realization.getAttribute('data-navigate') !== undefined && this.realization.getAttribute('data-navigate') !== null) {
-      let navigate = this.realization.getAttribute('data-navigate');
-      let self = this;
-
-      this.realization.onclick = function(_e) {
-        //_e.preventDefault();
-
-        let targetNavigate = _e.target.getAttribute('data-navigate');
-        console.log(self.environment);
-        if (self.environment.enableNavigate) {
-
-          self.navigateHandling(targetNavigate);
-        }
-      }
-    } else {
-
-      // this.realization.onclick = function(_e) {
-      //   _e.preventDefault();
-      // }
-
-    }
-
-  }
-
-  navigateHandling(_navigate) {
-    this.environment.contextController.serviceManager.navigateService(_navigate);
-  }
-
-  valueWithUnitSeperator(_value) {
-
-  }
-
-
   ///////////
   // Remove Attribute
   removeAttribute(_attrName) {
-    delete this.attributes[_attrName];
+    let that = this;
+    let newAttributes = [];
+    let deleted = false;
+
+    this.attributes = this.attributes.filter(function(_attribute) {
+
+      if (_attribute.name !== _attrName) {
+        return true;
+      } else {
+        deleted = true;
+        return false;
+      }
+    });
+
+    if (!deleted) {
+      console.error(`정의되지 않은 Attribute ${_attrName} 를 제거하려 합니다.`);
+    }
   }
 
 
   //////////
   // Remove Attribute
   renameAttribute(_prevName, _nextName) {
-    var fieldData = this.getAttribute(_prevName);
-    this.removeAttribute(_prevName);
-    this.setAttribute(_nextName, fieldData);
 
-    this.applyAttributesToRealDOM();
+    let foundIndex = ArrayHandler.findIndex(this.attributes, function(_v) {
+      return _v.name === _prevName;
+    });
+
+    if (foundIndex !== -1) {
+      this.attributes[foundIndex].name = _nextName;
+    } else {
+      console.error(`정의되지 않은 Attribute ${_prevName} 의 이름을 변경하려 합니다.`);
+    }
   }
 
   buildByElement(_domElement, _ignoreAttrFields) {
@@ -678,7 +700,7 @@ class TagBaseElementNode extends ElementNode {
       // en 으로 시작하는 모든 attribute 는 무시한다.
       if (/^en-/.test(attrName)) continue;
 
-      this.setAttribute(attrName, attributes[i].nodeValue);
+      this.defineNewAttribute(attrName, attributes[i].nodeValue);
     }
   }
 
@@ -712,7 +734,11 @@ class TagBaseElementNode extends ElementNode {
     super.import(_elementNodeDataObject);
     this.tagName = _elementNodeDataObject.tagName;
     this.behavior = _elementNodeDataObject.behavior;
-    this.attributes = _elementNodeDataObject.attributes || {};
+    this.attributes = _elementNodeDataObject.attributes || [];
+    this.attributes = this.attributes.map(function(_attributeO) {
+      return new MetaText(_attributeO);
+    });
+
     this.zIndex = _elementNodeDataObject.zIndex;
     this.rectangle = _elementNodeDataObject.rectangle || {
       desktop: {},
@@ -724,7 +750,9 @@ class TagBaseElementNode extends ElementNode {
   export (_withoutId, _idAppender) {
     let result = super.export(_withoutId, _idAppender);
     result.behavior = this.behavior;
-    result.attributes = _.clone(this.getAttributes());
+    result.attributes = _.clone(this.attributes.map(function(_attribute) {
+      return _attribute.export();
+    }));
     result.rectangle = _.clone(this.getRectangle());
     result.zIndex = this.zIndex;
     result.tagName = this.getTagName();
