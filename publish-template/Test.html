@@ -44,8 +44,8 @@
 
 
       window.onload = function(){
-        var orbitEnvrionment = new Orbit();
-        var masterElementNode = Orient.buildComponentByElement(document.body, {}, undefined, orbitEnvrionment);
+        var orbitEnvrionment = new Orbit(window);
+        var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
         Orient.replaceRender(masterElementNode, document.body);
 
          //$ervice.startup();
@@ -66,8 +66,10 @@ a
 
     <!-- Page Grid -->
 
-
-    <div en-type='ref' en-ref-Type='Fragment' en-ref-target-id='test/tab'>
+    <div en-type='ref' en-ref-target-id='json:/publish-template/json/testComponent.json'>
+      <!-- Will attach a blogBody fragment -->
+    </div>
+    <div en-type='ref'  en-ref-target-id='/publish-template/fragments/test/tab.html'>
       <!-- Will attach a blogBody fragment -->
     </div>
     <form action='Test.html' method='post'>

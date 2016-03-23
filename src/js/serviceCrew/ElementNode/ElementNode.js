@@ -1074,7 +1074,7 @@ class ElementNode {
 
     if (this.environment) {
       injectGetterInterface.executeI18n = this.environment.forInterpret_executeI18N_func; // with Framework
-      injectGetterInterface.getServiceConfig = this.environment.forInterpret_config_func; // with Framework
+      injectGetterInterface.getENVConfig = this.environment.forInterpret_config_func; // with Framework
       // injectGetterInterface.getFragmentParam = this.environment.getParam.bind(this.environment); // to Property
       // injectGetterInterface.getElementNodeById = this.environment.findById.bind(this.environment);
     }

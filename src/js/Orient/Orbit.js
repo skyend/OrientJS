@@ -1,5 +1,5 @@
 //import request from 'superagent';
-import HTTPRequest from './Orbit/HTTPRequest';
+import HTTPRequest from './common/HTTPRequest';
 import Config from './Orbit/Config';
 import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
@@ -35,10 +35,13 @@ class Orbit {
       'relative-dir-component': this.config.getField('DIR_COMPONENT')
     }, _retriever);
 
+    // Update Members by Config update
     // config 가 변경될 때 마다 config를 사용하는 객체의 설정을 업데이트한다.
     this.config.on('update', function(_e) {
       // ※ this === this.config
 
+
+      // DIR PATH
       that.retriever.dirpath_i18n = this.getField('DIR_I18N');
       that.retriever.dirpath_apisource = this.getField('DIR_API_SOURCE');
       that.retriever.dirpath_component = this.getField('DIR_COMPONENT');

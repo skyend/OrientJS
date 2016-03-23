@@ -421,8 +421,14 @@ class TagBaseElementNode extends ElementNode {
         break;
     }
 
-    _dom.setAttribute(name, value);
+    this.mappingAttributeDirect(_dom, name, value);
   }
+
+  mappingAttributeDirect(_dom, _name, _value) {
+    _dom.setAttribute(_name, _value);
+  }
+
+
 
 
 

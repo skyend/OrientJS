@@ -1,4 +1,5 @@
 import HTMLElementNode from './HTMLElementNode.js';
+import SVGElementNode from './SVGElementNode.js';
 // import GridElementNode from './GridElementNode.js';
 // import ReactElementNode from './ReactElementNode.js';
 import StringElementNode from './StringElementNode.js';
@@ -14,9 +15,11 @@ class Factory {
     //console.log(_elementNodeDataObject, _type, _environment);
     //console.log(_elementNodeDataObject);
     if (type === 'html') elementNodeCLASS = HTMLElementNode;
+    else if (type === 'svg') elementNodeCLASS = SVGElementNode;
     else if (type === 'string') elementNodeCLASS = StringElementNode;
     //else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
     else if (type === 'ref') elementNodeCLASS = RefElementNode;
+
     // else if (type === 'react') elementNodeCLASS = ReactElementNode;
     //else if (type === 'grid') elementNodeCLASS = GridElementNode;
     else {
@@ -36,14 +39,22 @@ class Factory {
     if (tagNodeName === '#text') {
       return 'string';
     } else if (tagNodeName === '#comment') {
-      // pass
+      return 'comment';
     } else {
       let typeAttribute = _domElement.getAttribute('en-type');
 
-      // typeAttribute가 입력되지않았다면 html로 간주한다.
+      // type 이 지정되지 않았다면 유추하여 type을 알아내야 한다.
       if (typeAttribute === null) {
+
+        // namespaceURI가 입력되어 있다면 SVG태그의 가능성이 있다.
+        if (_domElement.namespaceURI) {
+
+          // namespaceURI 가 SVG의 XML_NS와 같으면 svg 타입으로 반환한다.
+          if (_domElement.namespaceURI === SVGElementNode.XML_NS) return 'svg';
+        }
+
         return 'html';
-      } else if (/^html|string|ref$/.test(typeAttribute)) {
+      } else if (/^html|string|ref|svg$/.test(typeAttribute)) {
         return typeAttribute;
       } else {
 
@@ -52,6 +63,37 @@ class Factory {
           throw new Error(`${typeAttribute} 지원하지 않는 ElementNode 타입입니다.`)
         }
       }
+    }
+  }
+
+  // HTML 텍스트를 ElementNode 컴포넌트로 변환한다.
+  static convertToMasterElementNodesByHTMLSheet(_htmlText, _env) {
+    let realizeContainer = document.createElement('div');
+    realizeContainer.innerHTML = _htmlText;
+
+    let masterElementNodes = [];
+    let type;
+    let masterElementNode;
+    for (let i = 0; i < realizeContainer.childNodes.length; i++) {
+      type = Factory.checkElementNodeType(realizeContainer.childNodes[i]);
+      if (type === 'comment') continue;
+
+      masterElementNode = Factory.takeElementNode(undefined, undefined, type, _env, true);
+      masterElementNode.buildByElement(realizeContainer.childNodes[i]);
+      masterElementNodes.push(masterElementNode);
+    }
+
+    return masterElementNodes;
+  }
+
+  static convertToMasterElementNodesByJSONSheet(_jsonObject, _env) {
+
+    if (_jsonObject instanceof Array) {
+      return _jsonObject.map(function(_elementNodeO) {
+        return Factory.takeElementNode(_elementNodeO, undefined, _elementNodeO.type, _env, true);
+      })
+    } else {
+      return [Factory.takeElementNode(_jsonObject, undefined, _jsonObject.type, _env, true)];
     }
   }
 }

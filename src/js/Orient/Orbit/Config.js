@@ -1,6 +1,6 @@
 import ObjectExtends from '../../util/ObjectExtends';
 import Events from 'events';
-import HTTPRequest from './HTTPRequest';
+import HTTPRequest from '../common/HTTPRequest';
 
 const SUPER_LANGUAGE_DEFAULT = 'en';
 
@@ -104,7 +104,7 @@ class Config {
   }
 
   get configObject() {
-    return this._configObject;
+    return this._configObject || {};
   }
 
 
@@ -137,6 +137,10 @@ class Config {
         return this.configObject[_name];
       }
     }
+  }
+
+  setExtraField(_name, _value) {
+    this.configObject[_name] = _value;
   }
 
   import (_config) {

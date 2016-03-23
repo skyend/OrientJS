@@ -332,7 +332,11 @@ class Resolver {
         data = _externalGetterInterface.getFeature(varName);
         break;
       case 'config':
-        data = _externalGetterInterface.getServiceConfig(varName);
+        if (_externalGetterInterface.getENVConfig) {
+          data = _externalGetterInterface.getENVConfig(varName);
+        } else {
+          console.error("config category를 사용할 수 없습니다.");
+        }
         break;
       default:
         if (varCategory === '') {

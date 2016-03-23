@@ -25,6 +25,8 @@ class RefElementNode extends HTMLElementNode {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'ref';
 
+    this.loadedMasters = null;
+
     this.loadedInstance = null;
     this.loadedRefs = false;
 
@@ -56,8 +58,6 @@ class RefElementNode extends HTMLElementNode {
   mappingAttributes(_domNode, _options) {
     super.mappingAttributes(_domNode, _options);
 
-    if (this.refType)
-      _domNode.setAttribute('en-ref-type', this.refType);
 
     if (this.refTargetId)
       _domNode.setAttribute('en-ref-target-id', this.refTargetId);
@@ -70,86 +70,74 @@ class RefElementNode extends HTMLElementNode {
 
     if (returnHolder.length === 0) return returnHolder;
 
+    let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
-    if (this.refType === 'Fragment') {
-      let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
+    if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+      this.forwardDOM.innerHTML = '';
 
-      if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+      this.loadComponent(targetId, function(_masterElementNodes) {
+        if (!_masterElementNodes) {
+          console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
+          return;
+        }
+
+        console.log(_masterElementNodes);
+        that.masterElementNodes = _masterElementNodes;
+
+        that.loadedTargetId = targetId;
+
+        // that.scopeNodes.map(function(_scopeNode) {
+        //   if (_scopeNode.type === 'param') {
+        //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+        //   }
+        // });
+
+        // for (let i = 0; i < that.attributes.length; i++) {
+        //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+        // }
+
+        let masterElementNode;
+        for (let i = 0; i < that.masterElementNodes.length; i++) {
+          masterElementNode = that.masterElementNodes[i];
+          masterElementNode.setParent(that);
+          masterElementNode.constructDOMs({});
+          masterElementNode.attachForwardDOM(that.forwardDOM);
+        }
+      });
+    } else {
+      if (this.masterElementNodes) {
+        //
+        // this.scopeNodes.map(function(_scopeNode) {
+        //   if (_scopeNode.type === 'param') {
+        //     that.masterElementNodes.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+        //   }
+        // });
+
+        // for (let i = 0; i < that.attributes.length; i++) {
+        //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+        // }
         this.forwardDOM.innerHTML = '';
-
-        this.loadRefferenced(function(_resultObject) {
-          if (!_resultObject) {
-            console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
-            return;
-          }
-
-          that.loadedTargetId = targetId;
-          that.loadedInstance = _resultObject;
-          that.loadedInstance.upperEnvironment = that.environment;
-
-          that.scopeNodes.map(function(_scopeNode) {
-            if (_scopeNode.type === 'param') {
-              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-            }
-          });
-
-          // for (let i = 0; i < that.attributes.length; i++) {
-          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-          // }
-
-          let rootElementNode;
-          for (let i = 0; i < that.loadedInstance.rootElementNodes.length; i++) {
-            rootElementNode = that.loadedInstance.rootElementNodes[i];
-            rootElementNode.setParent(that);
-            rootElementNode.constructDOMs({});
-            rootElementNode.attachForwardDOM(that.forwardDOM);
-          }
-        });
-      } else {
-        if (this.loadedInstance) {
-
-          this.scopeNodes.map(function(_scopeNode) {
-            if (_scopeNode.type === 'param') {
-              that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-            }
-          });
-
-          // for (let i = 0; i < that.attributes.length; i++) {
-          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-          // }
-          this.forwardDOM.innerHTML = '';
-          let rootElementNode;
-          for (let i = 0; i < this.loadedInstance.rootElementNodes.length; i++) {
-            rootElementNode = this.loadedInstance.rootElementNodes[i];
-            let prevForwardDOM = rootElementNode.getDOMNode();
-            rootElementNode.constructDOMs({});
-            rootElementNode.attachForwardDOM(that.forwardDOM);
-            console.log(that.backupDOM);
-          }
+        let masterElementNode;
+        for (let i = 0; i < this.masterElementNodes.length; i++) {
+          masterElementNode = this.masterElementNodes[i];
+          let prevForwardDOM = rootElementNode.getDOMNode();
+          masterElementNode.constructDOMs({});
+          masterElementNode.attachForwardDOM(that.forwardDOM);
         }
       }
     }
+
 
     return returnHolder;
   }
 
   buildByElement(_domElement) {
-    super.buildByElement(_domElement, ['en-ref-type', 'en-ref-target-id', 'en-']);
+    super.buildByElement(_domElement, ['en-ref-target-id', 'en-']);
     let attributes = _domElement.attributes;
     let attr;
 
-    if (_domElement.getAttribute('en-ref-type') !== null)
-      this.refType = _domElement.getAttribute('en-ref-type');
-
     if (_domElement.getAttribute('en-ref-target-id') !== null)
       this.refTargetId = _domElement.getAttribute('en-ref-target-id');
-
-    // for (let i = 0; i < attributes.length; i++) {
-    //   attr = attributes[i];
-    //
-    // }
-
-
   }
 
   appendChild(_elementNode) {
@@ -161,26 +149,58 @@ class RefElementNode extends HTMLElementNode {
     return true;
   }
 
-  loadRefferenced(_complete) {
-    if (Gelato.one() !== null) {
-      this._sa_loadRefferenced(_complete);
+  loadComponent(_targetId, _complete) {
+    let that = this;
+    let targetIdElements = _targetId.split(':');
+    let type;
+    let targetId;
+    // targetId -> html:aa.html or aa.html or html:aa
+    if (targetIdElements.length === 2) {
+      type = targetIdElements[0];
+      targetId = targetIdElements[1];
+    } else if (targetIdElements.length === 1) {
+      targetId = targetIdElements[0];
+      let matches = targetId.match(/\.(\w+)$/);
+      if (matches === null) throw new Error("Invalid Target ID");
+      type = matches[1];
     } else {
-      console.error("not implemented");
+      throw new Error("Invalid Target ID");
+    }
+
+
+
+
+    if (this.environment) {
+      this.environment.retriever.loadComponentSheet(targetId, function(_responseSheet) {
+
+        let masterElementNodes = that.convertMastersByType(type, _responseSheet);
+
+        _complete(masterElementNodes);
+      });
+    } else {
+      Orient.HTTPRequest.request('get', targetId, {}, function(_err, _res) {
+        if (_err !== null) throw new Error("fail static component loading");
+
+        let responseText = _res.text;
+        // let loadedContentType = _res.xhr.getResponseHeader('content-type');
+        // let contentType_only = loadedContentType.split(';')[0];
+
+        let masterElementNodes = that.convertMastersByType(type, responseText);
+
+        _complete(masterElementNodes);
+      });
+
+      //throw new Error(`LoadError : Could not load Component. Need Environment(Recommend Orbit Framework).`);
     }
   }
 
-  _sa_loadRefferenced(_complete) {
-    let refTargetId = this.interpret(this.refTargetId);
-    console.log("ref target id ", refTargetId);
-    if (this.refType === 'ElementNode') {
-      this._sa_loadSharedElementNode(_complete);
-    } else if (this.refType === 'Fragment') {
-      //this._sa_loadFragment(_complete);
-
-      this.environment.highestEnvironment.loadFragment(refTargetId, function(_err, _fragment) {
-        _complete(_fragment);
-      });
-
+  convertMastersByType(_type, _responseText) {
+    if (_type === 'html') {
+      return Factory.convertToMasterElementNodesByHTMLSheet(_responseText, this.environment);
+    } else if (_type === 'json') {
+      return Factory.convertToMasterElementNodesByJSONSheet(JSON.parse(_responseText), this.environment);
+    } else if (_type === 'js') {
+      return Factory.extractByJSModule(_responseText, this.environment);
     }
   }
 

@@ -1,4 +1,5 @@
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
+import HTTPRequest from './common/HTTPRequest';
 
 class Neutron {
   constructor() {
@@ -7,6 +8,10 @@ class Neutron {
 
   static buildElement(_elementNodeObject) {
 
+  }
+
+  static get HTTPRequest() {
+    return HTTPRequest;
   }
 
   //
@@ -22,6 +27,7 @@ class Neutron {
   */
   static buildComponentByElement(_domElement, _props = {}, _env = null) {
     let masterType = ElementNodeFactory.checkElementNodeType(_domElement);
+    console.log(_env);
     // build
     // 랜더링 전에 Env 세팅
     let masterElementNode = ElementNodeFactory.takeElementNode(undefined, _props, masterType, _env, true);

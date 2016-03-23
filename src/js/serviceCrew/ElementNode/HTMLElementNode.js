@@ -12,8 +12,8 @@ const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
 
 
 class HTMLElementNode extends TagBaseElementNode {
-  constructor(_environment, _elementNodeDataObject, _preInjectProps, _dynamicContext) {
-    super(_environment, _elementNodeDataObject, _preInjectProps, _dynamicContext);
+  constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
+    super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'html';
 
     // children
@@ -110,8 +110,6 @@ class HTMLElementNode extends TagBaseElementNode {
     }
 
     _elementNode.setParent(this);
-
-    this.setChildListeners(_elementNode);
 
     this.children.push(_elementNode);
 
@@ -285,15 +283,15 @@ class HTMLElementNode extends TagBaseElementNode {
           }
         }
 
-        newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment, this.dynamicContext);
+        newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
       } else {
+        let type = Factory.checkElementNodeType(child_);
 
-        newChildElementNode = Factory.takeElementNode(undefined, {}, child_.getAttribute('en-type') || 'html', this.environment, this.dynamicContext);
+        newChildElementNode = Factory.takeElementNode(undefined, {}, type, this.environment);
       }
 
       if (newChildElementNode.buildByElement(child_) === null) continue;
 
-      this.setChildListeners(newChildElementNode);
       newChildElementNode.prevSibling = prevElementNode;
       children.push(newChildElementNode);
       newChildElementNode.setParent(this);
@@ -327,14 +325,6 @@ class HTMLElementNode extends TagBaseElementNode {
 
     sortedArray.push(this.children[targetIndex]);
     this.children = sortedArray;
-  }
-
-  setChildListeners(_child) {
-    let that = this;
-    _child.on('link-me', function() {
-      console.log('linking');
-      that.linkHierarchyRealizaion();
-    })
   }
 
   //////////////////////////
@@ -371,8 +361,6 @@ class HTMLElementNode extends TagBaseElementNode {
       child.prevSibling = prevChild;
 
       list.push(child);
-
-      this.setChildListeners(child);
 
       prevChild = child;
     }
