@@ -95,6 +95,8 @@ class ElementNode {
     this.repeatOrder = preInjectProps.repeatOrder > -1 ? preInjectProps.repeatOrder : -1; // repeat에 의해 반복된 자신이 몇번째 반복요소인지를 나타낸다.
     this.repeatItem = preInjectProps.repeatItem || undefined;
 
+    this.properties = _preInjectProps || {};
+
     this._environment = _environment;
     this.mode = 'normal';
     this.dynamicContext = null;
@@ -170,6 +172,10 @@ class ElementNode {
     }
   }
 
+  get properties() {
+    return this._properties;
+  }
+
   get scopeNodes() {
     return this._scopeNodes;
   }
@@ -215,6 +221,10 @@ class ElementNode {
 
   set scopeNodes(_scopeNodes) {
     this._scopeNodes = _scopeNodes;
+  }
+
+  set properties(_properties) {
+    this._properties = _properties;
   }
 
   set nextSibling(_e) {
@@ -394,7 +404,16 @@ class ElementNode {
 
   // runtime parameter 로 자신이 변경할 수 없고 외부에서 주입한 값에 따라 동작을 달리한다.
   getProperty(_propKey) {
+    return this.properties[_propKey];
+  }
 
+  // runtime parameter 로 자신이 변경할 수 없고 외부에서 주입한 값에 따라 동작을 달리한다.
+  setProperty(_propKey, _value) {
+    this.properties[_propKey] = _value;
+  }
+
+  hasProperty(_propKey) {
+    return this.properties.hasOwnProperty(_propKey);
   }
 
 
@@ -1038,6 +1057,12 @@ class ElementNode {
     }
   }
 
+  getPropertyOfMaster(_propKey) {
+    let masterElementNode = this.getMaster();
+
+    return masterElementNode.getProperty(_propKey);
+  }
+
   getMaster() {
     let masterElementNode = null;
     this.climbParents(function(_forefatherEN) {
@@ -1067,7 +1092,7 @@ class ElementNode {
 
       // extraGetterInterface
       getFeature: _getFeature, // 사용 위치별 사용가능한 데이터 제공자
-      getProperty: this.getProperty.bind(this), // old fragmentPram
+      getProperty: this.getPropertyOfMaster.bind(this), // old fragmentPram
       // todo .... geo 추가
       //  getAttributeResolve: this.getAttrOnTreeWithResolve
     };

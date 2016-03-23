@@ -325,8 +325,8 @@ class Resolver {
         //   throw new Error("geo-location category 는 아직 지원하지 않습니다.");
         //   data = this.resolveWithHttpParam(varName);
         //   break;
-      case 'fragment':
-        data = _externalGetterInterface.getFragmentParam(varName);
+      case 'prop':
+        data = _externalGetterInterface.getProperty(varName);
         break;
       case 'feature':
         data = _externalGetterInterface.getFeature(varName);

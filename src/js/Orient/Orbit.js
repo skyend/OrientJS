@@ -58,28 +58,6 @@ class Orbit {
     };
   }
 
-  /*
-    {
-      "projectId": "asdasdasd",
-      "serviceId": "212321212",
-      "ice-host": "http://125.131.88.75:8080",
-      "apifarm-host": "http://125.131.88.77:8200",
-      "resource-base-dir-path": "http://s3.ap-northeast-2.amazonaws.com/kop.images/",
-
-      "default-lang-set": "en",
-      "i18n-lang-code": "{{<< cookie@lang }}",
-
-      "commonScripts": [
-
-      ],
-
-      "commonStyles": [
-
-      ]
-    }
-  */
-
-
   set window(_window) {
     this._window = _window;
   }

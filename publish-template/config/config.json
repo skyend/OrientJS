@@ -12,5 +12,6 @@
 
   "commonScripts": [],
   "commonStyles": [],
-  "DIR_I18N": "/publish-template/i18n/"
+  "DIR_I18N": "/publish-template/i18n/",
+  "DIR_COMPONENT": "/publish-template/component/"
 }

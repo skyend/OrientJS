@@ -99,6 +99,11 @@ class RefElementNode extends HTMLElementNode {
         let masterElementNode;
         for (let i = 0; i < that.masterElementNodes.length; i++) {
           masterElementNode = that.masterElementNodes[i];
+
+          for (let i = 0; i < that.attributes.length; i++) {
+            masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));
+          }
+
           masterElementNode.setParent(that);
           masterElementNode.constructDOMs({});
           masterElementNode.attachForwardDOM(that.forwardDOM);
@@ -113,13 +118,16 @@ class RefElementNode extends HTMLElementNode {
         //   }
         // });
 
-        // for (let i = 0; i < that.attributes.length; i++) {
-        //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-        // }
+
         this.forwardDOM.innerHTML = '';
         let masterElementNode;
         for (let i = 0; i < this.masterElementNodes.length; i++) {
           masterElementNode = this.masterElementNodes[i];
+
+          for (let i = 0; i < this.attributes.length; i++) {
+            masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
+          }
+
           let prevForwardDOM = rootElementNode.getDOMNode();
           masterElementNode.constructDOMs({});
           masterElementNode.attachForwardDOM(that.forwardDOM);
