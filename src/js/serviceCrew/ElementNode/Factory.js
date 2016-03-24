@@ -96,6 +96,34 @@ class Factory {
       return [Factory.takeElementNode(_jsonObject, undefined, _jsonObject.type, _env, true)];
     }
   }
+
+  /*
+    ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
+    ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██
+    █████     ███      ██    █████   ██ ██  ██ ██   ██ ███████ ██████  ██      █████       ██      ██      ███████ ███████ ███████     █████     ███   ██████  ██    ██ ██████     ██
+    ██       ██ ██     ██    ██      ██  ██ ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██      ██      ██     ██       ██ ██  ██      ██    ██ ██   ██    ██
+    ███████ ██   ██    ██    ███████ ██   ████ ██████  ██   ██ ██████  ███████ ███████      ██████ ███████ ██   ██ ███████ ███████     ███████ ██   ██ ██       ██████  ██   ██    ██
+  */
+
+  static get ElementNode() {
+    return ElementNode;
+  }
+
+  static get HTMLElementNode() {
+    return HTMLElementNode;
+  }
+
+  static get RefElementNode() {
+    return RefElementNode;
+  }
+
+  static get TagBaseElementNode() {
+    return TagBaseElementNode;
+  }
+
+  static get StringElementNode() {
+    return StringElementNode;
+  }
 }
 
 export default Factory;

@@ -89,20 +89,39 @@
 
 
     <div>
-      <div en-id='element-01'>
+      <div en-id='element-01' abc='abc' >
         <en:task name='update' action='update'></en:task>
         {{<< en-attr@abc }}
       </div>
     </div>
 
     <h2>Frequently Asked Questions</h2>
-    <div en-dc-source-id='farm/vod/category'
+    <!-- <div en-dc-source-id='farm/vod/category'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
           en-dc-ns='category' en-dc-passive trace en-event-click='task@exec'>
           <en:task name='exec' action='executeDC'></en:task>
           수동 DynamicContext 테스트  << 클릭
           <br/>
           카테고리 : {{<< JSON.stringify(ns@category) }}
+    </div> -->
+
+
+
+      <!-- <div en-dc-source-id='[http]http://125.131.88.75:8080/api/broadcast_series/list.json?pagecount=5'
+            en-dc-ns='category' en-dc-passive trace en-event-click='task@exec' en-dc-inject-params='t=api'>
+            <en:task name='exec' action='executeDC'></en:task>
+            HTTP 타입 / 수동 DynamicContext 테스트  << 클릭
+            <br/>
+            카테고리 : {{<< JSON.stringify(ns@category) }}
+      </div> -->
+
+
+      <div en-dc-source-id='[apifarm]farm/vod/category.json'
+            en-dc-ns='category' en-dc-request-id='list' en-dc-passive trace en-event-click='task@exec' en-dc-inject-params='t=api'>
+            <en:task name='exec' action='executeDC'></en:task>
+            APIFarm 타입 / 수동 DynamicContext 테스트  << 클릭
+            <br/>
+            카테고리 : {{<< JSON.stringify(ns@category) }}
       </div>
 
       {{<< config@ice-host }}

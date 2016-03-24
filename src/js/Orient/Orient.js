@@ -1,6 +1,16 @@
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import HTTPRequest from './common/HTTPRequest';
 
+import ElementNode from '../serviceCrew/ElementNode/ElementNode';
+import HTMLElementNode from '../serviceCrew/ElementNode/HTMLElementNode';
+import RefElementNode from '../serviceCrew/ElementNode/RefElementNode';
+import SVGElementNode from '../serviceCrew/ElementNode/SVGElementNode';
+import StringElementNode from '../serviceCrew/ElementNode/StringElementNode';
+import TagBaseElementNode from '../serviceCrew/ElementNode/TagBaseElementNode';
+
+import ObjectExtends from '../util/ObjectExtends';
+
+
 class Neutron {
   constructor() {
 
@@ -36,7 +46,6 @@ class Neutron {
     return masterElementNode;
   }
 
-
   static renderVirtual(_elementNode) {
     _elementNode.constructDOMs({});
   }
@@ -61,6 +70,40 @@ class Neutron {
   static replaceRender(_elementNode, _targetDOMElement) {
     this.renderVirtual(_elementNode);
     this.mountByReplace(_elementNode, _targetDOMElement);
+  }
+
+
+
+  /*
+    ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
+    ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██
+    █████     ███      ██    █████   ██ ██  ██ ██   ██ ███████ ██████  ██      █████       ██      ██      ███████ ███████ ███████     █████     ███   ██████  ██    ██ ██████     ██
+    ██       ██ ██     ██    ██      ██  ██ ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██      ██      ██     ██       ██ ██  ██      ██    ██ ██   ██    ██
+    ███████ ██   ██    ██    ███████ ██   ████ ██████  ██   ██ ██████  ███████ ███████      ██████ ███████ ██   ██ ███████ ███████     ███████ ██   ██ ██       ██████  ██   ██    ██
+  */
+
+  static get ElementNode() {
+    return ElementNode;
+  }
+
+  static get HTMLElementNode() {
+    return HTMLElementNode;
+  }
+
+  static get RefElementNode() {
+    return RefElementNode;
+  }
+
+  static get TagBaseElementNode() {
+    return TagBaseElementNode;
+  }
+
+  static get StringElementNode() {
+    return StringElementNode;
+  }
+
+  static get ElementNodeFactory() {
+    return Factory;
   }
 }
 

@@ -6,7 +6,7 @@
     <!-- Page Meta JSON -->
     <script id='page-meta' type='text/json'>
       {
-        "id":1231221323,
+        "id":"Test",
         "scripts":[
           "http://code.jquery.com/jquery-latest.min.js",
           "http://code.jquery.com/ui/1.11.1/jquery-ui.js",
@@ -70,12 +70,9 @@ a
 
     <!-- Page Grid -->
 
-    <div en-type='ref' en-ref-target-id='json:/publish-template/json/testComponent.json'>
-      <!-- Will attach a blogBody fragment -->
-    </div>
-    <div en-type='ref'  test-prop='Test Prop' en-ref-target-id='test.html'>
-      <!-- Will attach a blogBody fragment -->
-    </div>
+    <!-- <div en-type='ref' en-ref-target-id='json:/publish-template/json/testComponent.json'></div> -->
+
+    <div en-type='ref'  test-prop='Test Prop' en-ref-target-id='[html]/publish-template/fragments/test/tab.html'> </div>
     <form action='Test.html' method='post'>
       <input type='submit'>
       <input type='text' value='test' name='test'>

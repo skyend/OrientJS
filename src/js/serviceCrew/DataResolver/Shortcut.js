@@ -1,6 +1,6 @@
 import DateDistance from '../Builtins/Classes/DateDistance';
 import Date2 from '../Builtins/Classes/Date2';
-import underscore from 'underscore';
+import ArrayHandler from '../../util/ArrayHandler';
 
 const DAY_MAP = {
   'ko': ['월', '화', '수', '목', '금', '토', '일'],
@@ -113,12 +113,9 @@ class Shortcut {
     return str;
   }
 
-  static get _() {
-    return underscore;
-  }
 
   static findIndex(_array, _value) {
-    return underscore.findIndex(_array, function(_v) {
+    return ArrayHandler.findIndex(_array, function(_v) {
       return _v === _value;
     });
   }

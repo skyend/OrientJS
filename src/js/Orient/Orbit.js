@@ -4,7 +4,9 @@ import Config from './Orbit/Config';
 import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
 import BuiltinRetriever from './Orbit/Retriever';
+import APISourceFactory from './Orbit/APISource/Factory';
 
+import ObjectExtends from '../util/ObjectExtends';
 
 class Orbit {
   /**
@@ -15,6 +17,8 @@ class Orbit {
   constructor(_window, _inlineConfig, _retriever) {
     let that = this;
 
+    console.log(Object.keys(this.__proto__)); // prototype 으로 확장을 해야함
+
     if (_window) {
       this.window = _window;
     } else {
@@ -23,6 +27,7 @@ class Orbit {
 
     /* Initial Members */
     this.config = new Config(_inlineConfig);
+    this.apiSourceFactory = new APISourceFactory(this);
     this.resolver = new Resolver();
     this.i18n = new I18N(this, {
       languageDecider: '',
@@ -70,6 +75,14 @@ class Orbit {
     return this.window.document;
   }
 
+  set apiSourceFactory(_apiSourceFactory) {
+    this._apiSourceFactory = _apiSourceFactory;
+  }
+
+  get apiSourceFactory() {
+    return this._apiSourceFactory;
+  }
+
   set retriever(_retriever) {
     this._retriever = _retriever;
   }
@@ -99,6 +112,46 @@ class Orbit {
 
 
 
+
+  /*
+    ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
+    ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██
+    █████     ███      ██    █████   ██ ██  ██ ██   ██ ███████ ██████  ██      █████       ██      ██      ███████ ███████ ███████     █████     ███   ██████  ██    ██ ██████     ██
+    ██       ██ ██     ██    ██      ██  ██ ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██      ██      ██     ██       ██ ██  ██      ██    ██ ██   ██    ██
+    ███████ ██   ██    ██    ███████ ██   ████ ██████  ██   ██ ██████  ███████ ███████      ██████ ███████ ██   ██ ███████ ███████     ███████ ██   ██ ██       ██████  ██   ██    ██
+  */
+
+  // Class Extention 을 제공하기 위해 Class를 export
+  static get Retriever() {
+    return BuiltinRetriever;
+  }
+
+  static get I18N() {
+    return I18N;
+  }
+
+  static get Config() {
+    return Config;
+  }
+
+  static get Resolver() {
+    return Resolver;
+  }
+
+  /*
+    ███████ ████████  █████  ████████ ██  ██████      █████  ██████  ██
+    ██         ██    ██   ██    ██    ██ ██          ██   ██ ██   ██ ██
+    ███████    ██    ███████    ██    ██ ██          ███████ ██████  ██
+         ██    ██    ██   ██    ██    ██ ██          ██   ██ ██      ██
+    ███████    ██    ██   ██    ██    ██  ██████     ██   ██ ██      ██
+  */
+  static get ObjectExtends() {
+    return ObjectExtends;
+  }
+
+  static get ExtendClass() {
+    return ObjectExtends.ExtendClass;
+  }
 }
 
 export default window.Orbit = Orbit;

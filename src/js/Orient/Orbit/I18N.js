@@ -28,14 +28,6 @@ class I18N {
     this._languageDefault = _languageDefault;
   }
 
-  get languageDirPath() {
-    return this._languageDirPath;
-  }
-
-  set languageDirPath(_languageDefault) {
-    this._languageDirPath = _languageDirPath;
-  }
-
   executeI18n(_textCode) {
 
 

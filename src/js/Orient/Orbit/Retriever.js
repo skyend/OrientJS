@@ -8,34 +8,35 @@ class Retriever {
     this.dirpath_component = _options['relative-dir-component'];
   }
 
+  get loadAPISource() {
+    if (this._extender) {
+      if (this._extender.loadAPISource) {
+        return this._extender.loadAPISource;
+      }
+    }
 
-
-  loadAPISource(_name, _complete) {
-    // console.log(_name, 'load APISource');
-    request.get('./apisources/' + _name + '.json')
-      .end(function(_err, _result) {
-        // console.log(_err, _result);
-        if (_err !== null) {
-          console.warn(_err);
-          _complete(null);
-        } else {
-          _complete(_result.body, _result.statusCode);
-        }
-      });
+    return this._loadAPISource;
   }
 
-  loadAPIFarmSource(_farmService, _class, _complete) {
-    // console.log(_name, 'load APISource');
-    request.get(`./apisources/farm/${_farmService}/${_class}.json`)
-      .end(function(_err, _result) {
-        console.log(_err, _result);
-        if (_err !== null) {
-          console.warn(_err);
-          _complete(null);
-        } else {
-          _complete(_result.body, _result.statusCode);
-        }
-      });
+  _loadAPISource(_loadTarget, _cb) {
+    // 상대경로인가 절대경로인가 판단
+    let url;
+    if (/^\//.test(_loadTarget)) {
+      url = _loadTarget;
+    } else if (/^https?:\/\//.test(_loadTarget)) {
+      // URL
+      url = _loadTarget;
+    } else {
+      // 상대경로
+      url = this.dirpath_apisource + _loadTarget;
+    }
+
+    this.orbit.HTTPRequest.request('get', url, {}, function(_err, _res) {
+      if (_err !== null) return console.error("Error : Fail api source sheet loading", 'detail :', _err);
+
+      let responseText = _res.text;
+      _cb(responseText);
+    });
   }
 
   // 메서드 반환
@@ -55,14 +56,16 @@ class Retriever {
     // 상대경로인가 절대경로인가 판단
     if (/^\//.test(_loadTarget)) {
       url = _loadTarget;
+    } else if (/^https?:\/\//.test(_loadTarget)) {
+      // URL
+      url = _loadTarget;
     } else {
       // 상대경로
       url = this.dirpath_component + _loadTarget;
     }
 
-    // 절대경로
     this.orbit.HTTPRequest.request('get', url, {}, function(_err, _res) {
-      if (_err !== null) throw new Error("fail static component loading");
+      if (_err !== null) throw new Error("fail static component sheet loading");
 
       let responseText = _res.text;
       _cb(responseText);

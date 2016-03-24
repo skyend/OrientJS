@@ -1,11 +1,11 @@
 import ActionStore from './ActionStore';
-import ICEAPISource from '../ICEAPISource';
-import APIFarmSource from '../APIFarmSource';
+// import ICEAPISource from '../ICEAPISource';
+// import APIFarmSource from '../APIFarmSource';
 import SA_Loader from '../StandAloneLib/Loader';
 
-window.ICEAPISource = ICEAPISource;
+// window.ICEAPISource = ICEAPISource;
 window.SA_Loader = SA_Loader;
-window.APIFarmSource = APIFarmSource;
+// window.APIFarmSource = APIFarmSource;
 
 let actionStore = ActionStore.instance();
 
@@ -61,7 +61,6 @@ actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], funct
   _actionResult.code = 'success';
 
   _callback(_actionResult);
-
 });
 
 

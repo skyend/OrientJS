@@ -14,7 +14,6 @@ import DataResolver from '../DataResolver/Resolver';
 
 import Action from '../Action';
 import ActionResult from '../ActionResult';
-import ICEAPISource from '../ICEAPISource';
 import ScopeNodeFactory from './ScopeNode/Factory';
 import ActionStore from '../Actions/ActionStore';
 import FunctionStore from '../Functions/FunctionStore';
@@ -678,34 +677,57 @@ class ElementNode {
 
       that.rebuildDynamicContext();
 
-      that.dynamicContext.ready(function(_err) {
-        that.debug('dc', 'Ready Dynamic Context.');
+      that.debug('dc', 'Will fire');
+      that.dynamicContext.fire(function(_err) {
+        that.debug('dc', 'burn');
 
-        if (_err === null) {
+        if (_err) return console.error(`Error: DC Loading Error.`, 'Detail: ', _err);
 
-          that.debug('dc', 'Will load data.');
-          that.dynamicContext.dataLoad(function(_err) {
-            that.debug('dc', 'Data Loaded', that.dynamicContext.apisources, that.dynamicContext, that.dynamicContext.dataResolver.dataSpace);
+        that.tryEventScope('will-dc-bind', {
+          dynamicContext: that.dynamicContext
+        }, null, function done(_result) {
+          if (that.afterContinue(_result) === false) return;
 
-            that.tryEventScope('will-dc-bind', {
-              dynamicContext: that.dynamicContext
-            }, null, function done(_result) {
-              if (that.afterContinue(_result) === false) return;
-
-              that.update({
-                keepDC: 'once'
-              });
-
-              that.tryEventScope('complete-bind', {
-                dynamicContext: that.dynamicContext
-              }, null);
-
-            });
+          that.update({
+            keepDC: 'once'
           });
-        } else {
-          console.warn("Todo Error Handling");
-        }
+
+          that.tryEventScope('complete-bind', {
+            dynamicContext: that.dynamicContext
+          }, null);
+
+        });
       });
+      return;
+
+      // that.dynamicContext.ready(function(_err) {
+      //   that.debug('dc', 'Ready Dynamic Context.');
+      //
+      //   if (_err === null) {
+      //
+      //     that.debug('dc', 'Will load data.');
+      //     that.dynamicContext.dataLoad(function(_err) {
+      //       that.debug('dc', 'Data Loaded', that.dynamicContext.apisources, that.dynamicContext, that.dynamicContext.dataResolver.dataSpace);
+      //
+      //       that.tryEventScope('will-dc-bind', {
+      //         dynamicContext: that.dynamicContext
+      //       }, null, function done(_result) {
+      //         if (that.afterContinue(_result) === false) return;
+      //
+      //         that.update({
+      //           keepDC: 'once'
+      //         });
+      //
+      //         that.tryEventScope('complete-bind', {
+      //           dynamicContext: that.dynamicContext
+      //         }, null);
+      //
+      //       });
+      //     });
+      //   } else {
+      //     console.warn("Todo Error Handling");
+      //   }
+      // });
     });
   }
 
@@ -790,7 +812,7 @@ class ElementNode {
   }
 
   rebuildDynamicContext() {
-    let newDynamicContext = new DynamicContext({
+    let newDynamicContext = new DynamicContext(this.environment, {
       sourceIDs: this.interpret(this.dynamicContextSID),
       requestIDs: this.interpret(this.dynamicContextRID),
       namespaces: this.interpret(this.dynamicContextNS),

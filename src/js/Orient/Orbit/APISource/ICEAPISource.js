@@ -1,15 +1,16 @@
 "use strict";
-import Request from './API/Request.js';
+import Request from './Request.js';
 import _ from 'underscore';
 import SuperAgent from 'superagent';
 import APISource from './APISource';
+import ArrayHandler from '../../../util/ArrayHandler';
+import ObjectExtends from '../../../util/ObjectExtends';
+
 
 export default class ICEAPISource extends APISource {
-  constructor(_APISourceData, _serviceManager) {
-    super(_APISourceData, _serviceManager);
+  constructor(_APISourceData, _orbit) {
+    super(_APISourceData, _orbit);
     this.clazz = 'ICEAPISource';
-
-    this.serviceManager = _serviceManager;
 
     this.nodeTypeMeta = null;
     this.host = '';
@@ -25,10 +26,10 @@ export default class ICEAPISource extends APISource {
 
   loadNodeTypeMeta(_complete) {
     let self = this;
-
-    this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
-      _complete(_result);
-    });
+    // ICEAPISource 내부에 iceDriver 구현해야 함. serviceManager가 제외되고 orbit에 의존하며 ICEAPISource가 애드온으로 동작하므로
+    // this.serviceManager.iceDriver.getNodeType(this.nid, function(_result) {
+    //   _complete(_result);
+    // });
   }
 
   prepareNodeTypeMeta(_complete) {
@@ -52,7 +53,7 @@ export default class ICEAPISource extends APISource {
   }
 
   findRequest(_id) {
-    let foundReqIdx = _.findIndex(this.requests, {
+    let foundReqIdx = ArrayHandler.findIndex(this.requests, {
       id: _id
     });
 
@@ -232,7 +233,7 @@ export default class ICEAPISource extends APISource {
     let self = this;
     this.executeTestRequest(_requestId, function(_result) {
 
-      let reqIndex = _.findIndex(self.requests, {
+      let reqIndex = ArrayHandler.findIndex(self.requests, {
         id: _requestId
       });
 

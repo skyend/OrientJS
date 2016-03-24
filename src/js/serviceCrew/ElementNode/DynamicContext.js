@@ -1,27 +1,31 @@
-import Factory from './Factory';
-import Sizzle from 'sizzle';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
+import ArrayHandler from '../../util/ArrayHandler.js';
 
-import SALoader from '../StandAloneLib/Loader';
-import Gelato from '../StandAloneLib/Gelato';
+// import SALoader from '../StandAloneLib/Loader';
+// import Gelato from '../StandAloneLib/Gelato';
 import async from 'async';
 import events from 'events';
-import ICEAPISource from '../ICEAPISource';
-import APIFarmSource from '../APIFarmSource';
-import _ from 'underscore';
+
+// import ICEAPISource from '../APISource/ICEAPISource';
+// import APIFarmSource from '../APISource/APIFarmSource';
+
 import DataResolver from '../DataResolver/Resolver';
 import Identifier from '../../util/Identifier';
+
+
+const REGEXP_APISOURCE_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
 class DynamicContext {
   /*
     _props -
     ~_interpretInterfaceFollowObject - interpret 메소드를 구현한 Object를 입력한다. 현재 가능한 대상 : {}ElementNode~
   */
-  constructor(_props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
+  constructor(_env, _props, _upperDynamicContext /*_interpretInterfaceFollowObject*/ ) {
     //Object.assign(this, Events.EventEmitter.prototype);
-    //_.extendOwn(this, Events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
+
+    this.environment = _env;
 
     this.id = Identifier.genUUID();
 
@@ -35,15 +39,14 @@ class DynamicContext {
     // 모든 다중 요청의 구분은 콤마(,)로 한다.
     // 다중요청을 사용 할 때 모든 필드의 순서를 맞추어 주어야 한다.
     this.sourceIDs = _props.sourceIDs;
-    this.requestIDs = _props.requestIDs;
+    this.requestIDs = _props.requestIDs || '';
     this.namespaces = _props.namespaces;
-    this.injectParams = _props.injectParams;
+    this.injectParams = _props.injectParams || '';
+
 
 
     // sourceID 에 대한 예외처리를 하지 않는 이유는 sourceID가 존재하지 않으면 DynamicContext가 생성되지 않으므로.
-    if (!this.requestIDs) {
-      throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceIDs}'`);
-    }
+
 
     if (!this.namespaces) {
       throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceIDs}', 연관 RequestID : '${this.requestIDs}'`);
@@ -75,6 +78,71 @@ class DynamicContext {
 
   // Object.keys($('..')[0].___en.dynamicContext.params).length > 0
 
+  // dc를 실행한다.
+  fire(_complete) {
+    let that = this;
+    /*
+      1. apisources 별 category 파악
+      2.
+
+    */
+    let sources = this.sourceIDs.split(',');
+    let injectParams = this.injectParams.split(',');
+    let requestIDs = this.requestIDs.split(',');
+    let nss = this.namespaces.split(',');
+
+
+    let parallelFunctions = sources.map(function(_apiSource, _i) {
+
+      // apiSource 의 class 확인
+      // http 와 https class 는 직접 요청 처리 그 외 class는 env 를 통해 실행.
+      // http 와 https 는 //로 시작하거나 /로 시작해야 함
+
+      let sourceMatches = _apiSource.match(REGEXP_APISOURCE_MEAN);
+      if (sourceMatches === null) throw new Error(`잘못된 APISource(${_apiSource}) 지정 입니다.`);
+      let sourceClass = sourceMatches[1],
+        sourceTarget = sourceMatches[2];
+      let requestID = requestIDs[_i];
+      let paramsPairs = (injectParams[_i] || '').split('&'); // aa=aa&aas=bb
+      let paramsObject = {};
+
+      let param;
+      for (let i = 0; i < paramsPairs.length; i++) {
+        param = paramsPairs[i].split('=');
+        paramsObject[param[0]] = param[1];
+      }
+
+
+      return function(_callback) {
+        if (/^https?$/.test(sourceClass)) {
+          Orient.HTTPRequest.request('get', sourceTarget, paramsObject, function(_err, _res) {
+            if (_err !== null) return _callback(_err, null);
+
+            that.dataResolver.setNS(nss[_i], _res.body);
+            _callback(null, _res.body);
+          });
+        } else {
+          // apisource JSON을 로드한다.
+          // env 의 APISOurce Factory에 접근한다.
+          // JSON을 APISource로 빌드한다.
+          if (!requestID) throw new Error(`APISource(${_apiSource})에 대응하는 RequestID를 찾을 수 없습니다. 구성을 확인 해 주세요.`);
+
+          that.environment.apiSourceFactory.getInstanceWithRemote(sourceClass, sourceTarget, function(_r) {
+            console.log(_r);
+          })
+
+        }
+      }
+    });
+
+
+    async.parallel(parallelFunctions, function(_err, _results) {
+      if (_err !== null) return _complete(_err);
+      _complete(null);
+    });
+  }
+
+
   // clearInterval(itvid)
   ready(_complete) {
     let that = this;
@@ -84,6 +152,8 @@ class DynamicContext {
     // console.log(this.sourceIDs);
     let sourceIdList = this.sourceIDs.split(',');
     console.log(sourceIdList);
+
+    console.log('API');
 
     async.eachSeries(sourceIdList, function(_id, _next) {
 
@@ -130,7 +200,7 @@ class DynamicContext {
     let injectParams = (this.injectParams || '').split(',');
 
     async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
-      let apiSourceOrder = _.findIndex(sourceIdList, function(_idAsKey) {
+      let apiSourceOrder = ArrayHandler.findIndex(sourceIdList, function(_idAsKey) {
         return _apiSource.key == _idAsKey;
       });
       console.log(apiSourceOrder, sourceIdList, _apiSource);
@@ -178,13 +248,6 @@ class DynamicContext {
 
   feedbackLoadState() {
 
-  }
-
-  endFeedBack() {
-    this.element.removeAttribute('fix-placeholder', '');
-
-    let placeholder = Sizzle('[is-dynamic-context-placeholder]', this.element)[0];
-    placeholder.remove();
   }
 
 

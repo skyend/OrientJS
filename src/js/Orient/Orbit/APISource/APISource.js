@@ -1,13 +1,15 @@
 "use strict";
-import Request from './API/Request.js';
-import _ from 'underscore';
+import Request from './Request.js';
+import ArrayHandler from '../../../util/ArrayHandler';
+import ObjectExtends from '../../../util/ObjectExtends';
+
 import SuperAgent from 'superagent';
 
 export default class APISource {
-  constructor(_APISourceData, _serviceManager) {
+  constructor(_APISourceData, _orbit) {
     this.clazz = 'APISource';
 
-    this.serviceManager = _serviceManager;
+    this.orbit = _orbit;
 
     this.importData = _APISourceData;
 
@@ -34,7 +36,7 @@ export default class APISource {
   }
 
   findRequest(_id) {
-    let foundReqIdx = _.findIndex(this.requests, {
+    let foundReqIdx = ArrayHandler.findIndex(this.requests, {
       id: _id
     });
 
@@ -173,6 +175,12 @@ export default class APISource {
   }
 
 
+  executeRequest(_requestId, _fields, _head, _cb) {
+
+    let req = this.findRequest(_requestId);
+
+  }
+
   /*
     application/x-www-form-urlencoded: The default value if the attribute is not specified.
     multipart/form-data: The value used for an <input> element with the type attribute set to "file".
@@ -182,7 +190,7 @@ export default class APISource {
     ExecuteRequest
     _enctypeOrComplete : 'multipart/form-data' | 'application/x-www-form-urlencoded' | completeCallback(Function) : default: 'application/x-www-form-urlencoded' // 전송 타입
   */
-  executeRequest(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
+  executeRequest2(_requestId, _fields, _heads, _enctypeOrComplete, _complete) {
     let enctype, complete;
     let fields = _fields || {};
     let that = this;
@@ -200,7 +208,7 @@ export default class APISource {
     }
 
     //fields = Object.assign(req.getFieldsObjectWithResolve(), fields);
-    fields = _.extendOwn(req.getFieldsObjectWithResolve(), fields);
+    fields = ObjectExtends.merge(req.getFieldsObjectWithResolve(), fields, true);
 
     console.log(req.getFieldsObjectWithResolve());
 

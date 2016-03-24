@@ -1,10 +1,10 @@
 import ICEAPISource from './ICEAPISource';
 import SuperAgent from 'superagent';
-import Request from './API/Request';
+import Request from './Request';
 
 class APIFarmSource extends ICEAPISource {
-  constructor(_APISourceData, _serviceManager) {
-    super(_APISourceData, _serviceManager);
+  constructor(_APISourceData, _orbit) {
+    super(_APISourceData, _orbit);
     this.clazz = 'APIFarmSource';
 
     this.meta = null;

@@ -19,6 +19,7 @@ let RefferenceType = Object.freeze({
   NONE: 'NONE'
 });
 
+const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
 class RefElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
@@ -159,23 +160,19 @@ class RefElementNode extends HTMLElementNode {
 
   loadComponent(_targetId, _complete) {
     let that = this;
-    let targetIdElements = _targetId.split(':');
+    let matchedTargetId = _targetId.match(REGEXP_REF_TARGET_MEAN);
     let type;
     let targetId;
-    // targetId -> html:aa.html or aa.html or html:aa
-    if (targetIdElements.length === 2) {
-      type = targetIdElements[0];
-      targetId = targetIdElements[1];
-    } else if (targetIdElements.length === 1) {
-      targetId = targetIdElements[0];
+    // targetId -> [html]aa.html or aa.html or [html]aa
+    if (matchedTargetId !== null) {
+      type = matchedTargetId[1];
+      targetId = matchedTargetId[2];
+    } else {
+      targetId = _targetId;
       let matches = targetId.match(/\.(\w+)$/);
       if (matches === null) throw new Error("Invalid Target ID");
       type = matches[1];
-    } else {
-      throw new Error("Invalid Target ID");
     }
-
-
 
 
     if (this.environment) {

@@ -1,11 +1,12 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
+import ArrayHandler from '../../util/ArrayHandler.js';
 import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
 import TypeCaster from '../Data/TypeCaster';
 // import ElementNode from '../ElementNode/ElementNode';
 
-import _ from 'underscore';
+//import _ from 'underscore';
 /**
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
 */
@@ -152,8 +153,9 @@ class Resolver {
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
-    argsMap.push(_externalGetterInterface ? _externalGetterInterface.executeI18n : function() {
-      throw new Error(`text 사용 불가능. ${_syntax}`);
+    argsMap.push(_externalGetterInterface.executeI18n ? _externalGetterInterface.executeI18n : function() {
+      return 'Error: Couldn\'n I18N Text. Required the Environment.';
+      //throw new Error(`text 사용 불가능. ${_syntax}`);
     });
 
     try {
@@ -176,7 +178,7 @@ class Resolver {
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
     let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_\#]+(:\w+)?/g, function(_matched) {
 
-      alreadyIndex = _.findIndex(argumentsMap, function(_argName) {
+      alreadyIndex = ArrayHandler.findIndex(argumentsMap, function(_argName) {
         return _argName === _matched;
       });
 
