@@ -14,5 +14,7 @@
   "commonStyles": [],
   "DIR_I18N": "/publish-template/i18n/",
   "DIR_COMPONENT": "/publish-template/component/",
-  "DIR_API_SOURCE": "/publish-template/apisources/"
+  "DIR_API_SOURCE": "/publish-template/apisources/",
+  "CMS_HOST": "http://125.131.88.75:8080",
+  "FARM_HOST": "http://125.131.88.77:8200"
 }

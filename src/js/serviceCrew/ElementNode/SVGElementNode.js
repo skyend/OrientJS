@@ -1,6 +1,5 @@
 import HTMLElementNode from './HTMLElementNode.js';
 import Factory from './Factory';
-import async from 'async';
 "use strict";
 
 const XML_NS = "http://www.w3.org/2000/svg";

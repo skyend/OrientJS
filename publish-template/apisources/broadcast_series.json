@@ -7,7 +7,7 @@
   "serviceId": "568ac5a24469c3d414f0e653",
   "created": "2016-01-06T13:09:31.594Z",
   "requests": [{
-    "id": "cbfbdb66-1d3f-4bcd-ae92-f13514ae167f",
+    "id": "list",
     "name": "list",
     "method": "get",
     "crud": "list",

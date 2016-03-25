@@ -16,7 +16,9 @@ module.exports = {
     // main: ['./src/js/main.js'],
     'built-foundation': ['./src/stand-alone-foundation/main.js'],
     'orient': ['./src/js/Orient/Orient.js'],
-    'orbit': ['./src/js/Orient/Orbit.js']
+    'orbit': ['./src/js/Orient/Orbit.js'],
+    'orbit.api.cms': ['./src/js/Orient/Orbit/addons/ICEAPISource'],
+    'orbit.api.farm': ['./src/js/Orient/Orbit/addons/APIFarmSource']
   },
 
   output: {

@@ -9,12 +9,11 @@ import StringElementNode from '../serviceCrew/ElementNode/StringElementNode';
 import TagBaseElementNode from '../serviceCrew/ElementNode/TagBaseElementNode';
 
 import ObjectExtends from '../util/ObjectExtends';
-
+import ActionStore from '../serviceCrew/Actions/ActionStore';
+import FunctionStore from '../serviceCrew/Functions/FunctionStore';
 
 class Neutron {
-  constructor() {
 
-  }
 
   static buildElement(_elementNodeObject) {
 
@@ -104,6 +103,33 @@ class Neutron {
 
   static get ElementNodeFactory() {
     return Factory;
+  }
+
+  /*
+    ███████ ████████  █████  ████████ ██  ██████      █████  ██████  ██
+    ██         ██    ██   ██    ██    ██ ██          ██   ██ ██   ██ ██
+    ███████    ██    ███████    ██    ██ ██          ███████ ██████  ██
+         ██    ██    ██   ██    ██    ██ ██          ██   ██ ██      ██
+    ███████    ██    ██   ██    ██    ██  ██████     ██   ██ ██      ██
+  */
+  static registerAction(_name, _paramKeys, _anonymousActionFunction) {
+    let actionStore = ActionStore.instance();
+
+    actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
+  }
+
+  static registerFunction(_name, _function) {
+    let functionStore = FunctionStore.instance();
+
+    functionStore.registerFunction(_name, _function);
+  }
+
+  static get actionStore() {
+    return ActionStore.instance();
+  }
+
+  static get functionStore() {
+    return FunctionStore.instance();
   }
 }
 

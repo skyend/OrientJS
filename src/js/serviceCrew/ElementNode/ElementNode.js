@@ -1,6 +1,5 @@
-import _ from 'underscore';
 import events from 'events';
-import async from 'async';
+import _ from 'underscore';
 
 import ElementNodeMulti from './ElementNodeMulti';
 import Returns from "../../Returns.js";
@@ -8,6 +7,7 @@ import Factory from './Factory.js';
 import Identifier from '../../util/Identifier.js';
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
+import ArrayHandler from '../../util/ArrayHandler';
 
 import DynamicContext from './DynamicContext';
 import DataResolver from '../DataResolver/Resolver';
@@ -845,51 +845,6 @@ class ElementNode {
     return this.getParent() !== null;
   }
 
-  modifyFromControl(_skipControl, _skipResolve, _isGhostizePoint, _complete) {
-    if (_skipControl) return _complete();
-    let repeatOption;
-    let that = this;
-    // rendering 사이클에 개입되는 control 처리
-    // 반복 컨트롤 처리 ghost로 실체화중이라면 반복 컨트롤 처리를 하지 않는다.
-    if ((repeatOption = this.getControlWithResolve('repeat-n')) > 0 && !_isGhostizePoint) {
-      this.isRepeated = true;
-      this.repeatOrder = 0;
-
-      async.eachSeries(_.range(repeatOption - 1), function iterator(_i, _next) {
-        // clone ElementNode 생성
-        let cloned = Factory.takeElementNode(that.export(), {
-          isGhost: true,
-          repeatOrder: _i + 1,
-          isRepeated: true
-        }, that.getType(), that.environment, that.dynamicContext);
-
-        cloned.setParent(that.getParent());
-
-        // clone ElementNode realize
-        cloned.realize({
-          ghostOrder: _i + 1,
-          skipControl: _skipControl,
-          skipResolve: _skipResolve
-        }, function() {
-
-          that.clonePool.push(cloned);
-          _next();
-        });
-      }, function done() {
-        _complete();
-      });
-
-    } else {
-      if (this.clonePool.length > 0) {
-        this.clonePool = [];
-
-      }
-      _complete();
-    }
-  }
-
-
-
 
 
   ////////
@@ -997,14 +952,16 @@ class ElementNode {
   // 자신을 통해 부모에 삽입되므로 자신의 ElementNode Type과는 상관없이 insertBefore를 지원한다.
   insertBefore(_elementNode) {
     var parent = this.getParent();
-
+    let that = this;
     if (parent.getType() === 'string') {
       return false;
     }
 
 
     // 부모의 자식 배열에서 나를 찾는다.
-    var meIndex = _.findIndex(parent.children, this);
+    var meIndex = ArrayHandler.findIndex(parent.children, function(_child) {
+      return _child === that;
+    });
 
     if (meIndex == 0) {
       parent.children.unshift(_elementNode);
@@ -1027,12 +984,14 @@ class ElementNode {
   // 자신을 통해 부모에 삽입되므로 자신의 ElementNode Type과는 상관없이 insertAfter를 지원한다.
   insertAfter(_elementNode) {
     var parent = this.getParent();
-
+    let that = this;
     if (parent.getType() === 'string') {
       return false;
     }
 
-    var meIndex = _.findIndex(parent.children, this);
+    var meIndex = ArrayHandler.findIndex(parent.children, function(_child) {
+      return _child === that;
+    });
 
     if (meIndex == parent.children.length - 1) {
       parent.children.push(_elementNode);
@@ -1242,7 +1201,7 @@ class ElementNode {
 
   getMyScope(_name, _type, _withString) {
 
-    let findIndex = _.findIndex(this.scopeNodes, function(_scopeNode) {
+    let findIndex = ArrayHandler.findIndex(this.scopeNodes, function(_scopeNode) {
       return _scopeNode.name === _name && _scopeNode.type === _type;
     });
 
@@ -1387,7 +1346,7 @@ class ElementNode {
     // 이미 존재하는 ScopeNode를 미리 찾아 중복을 체크한다.
     // 중복을 판별하는 필드는 type 과 name 이 사용된다.
     // 같은 타입간에 중복 name 은 사용이 불가능 하다.
-    let foundDupl = _.findIndex(this.scopeNodes, function(_compareScopeNode) {
+    let foundDupl = ArrayHandler.findIndex(this.scopeNodes, function(_compareScopeNode) {
       return _compareScopeNode.type === _scopeNode.type && _compareScopeNode.name === _scopeNode.name;
     });
 
@@ -1723,7 +1682,7 @@ class ElementNode {
     // task 의 argument 리스트의 값을가져와 입력한다.
     // action 이 필요로 하지만 task 의 argument로 입력되지 않은 param 에는 undefined 를 입력한다.
     action.params.map(function(_paramKey) {
-      taskArgMatchIndex = _.findIndex(taskArgs, function(_taskArg) {
+      taskArgMatchIndex = ArrayHandler.findIndex(taskArgs, function(_taskArg) {
         return _paramKey.toLowerCase() === _taskArg.name.toLowerCase();
       });
 

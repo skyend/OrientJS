@@ -1,17 +1,14 @@
 import ICEAPISource from './ICEAPISource';
 import SuperAgent from 'superagent';
-import Request from './Request';
+
 
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
     this.clazz = 'APIFarmSource';
 
+    this.host = this.orbit.config.getField('FARM_HOST');
     this.meta = null;
-  }
-
-  get key() {
-    return `farm/${this.farmServiceId}/${this.classId}`;
   }
 
   getMetaPath() {
@@ -57,7 +54,6 @@ class APIFarmSource extends ICEAPISource {
       console.error(`Not found 'classId' in`, this.importData);
     }
 
-
     if (req !== undefined) {
       return `/api/${this.farmServiceId}/${this.classId}/${req.crudPoint}`; //'/api/' + this.nt_tid + '/' + req.crudPoint;
     } else {
@@ -65,36 +61,23 @@ class APIFarmSource extends ICEAPISource {
     }
   }
 
-  import (_APIFarmSourceData) {
-    let APIFarmSourceData = _APIFarmSourceData || {};
+  import (_APISourceData) {
+    let APISourceData = _APISourceData || {};
+    super.import(APISourceData);
 
-    this.id = APIFarmSourceData._id;
-    this.farmServiceId = APIFarmSourceData.farmServiceId;
-    this.classId = APIFarmSourceData.classId;
-    this.title = APIFarmSourceData.title;
-    this.icon = APIFarmSourceData.icon;
-    this.serviceId = APIFarmSourceData.serviceId;
-    this.created = APIFarmSourceData.created;
-    this.requests = APIFarmSourceData.requests || [];
-    this.requests = this.requests.map(function(_r) {
-      return new Request(_r);
-    });
+    this.farmServiceId = APISourceData.farmServiceId;
+    this.classId = APISourceData.classId;
   }
 
   export () {
-    return {
-      //_id: this.id,
-      farmServiceId: this.farmServiceId, // system / [service] / type / api
-      classId: this.classId, // system / [service] / [type] / api
-      title: this.title,
-      icon: this.icon,
-      serviceId: this.serviceId,
-      created: this.created,
-      requests: this.requests.map(function(_request) {
-        return _request.export();
-      })
-    }
+    let exportO = super.export();
+    exportO.classId = this.nt_tid;
+    exportO.farmServiceId = this.nid;
+
+    return exportO;
   }
 }
+
+Orbit.APIFactory.RegisterNewType('farm', APIFarmSource);
 
 export default APIFarmSource;

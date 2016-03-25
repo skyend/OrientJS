@@ -5,6 +5,7 @@ import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
 import BuiltinRetriever from './Orbit/Retriever';
 import APISourceFactory from './Orbit/APISource/Factory';
+import OrbitDocument from './Orbit/Document';
 
 import ObjectExtends from '../util/ObjectExtends';
 
@@ -27,6 +28,7 @@ class Orbit {
 
     /* Initial Members */
     this.config = new Config(_inlineConfig);
+    this.orbitDocument = new OrbitDocument(this.window);
     this.apiSourceFactory = new APISourceFactory(this);
     this.resolver = new Resolver();
     this.i18n = new I18N(this, {
@@ -111,7 +113,9 @@ class Orbit {
   }
 
 
+  appendScript() {
 
+  }
 
   /*
     ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
@@ -151,6 +155,14 @@ class Orbit {
 
   static get ExtendClass() {
     return ObjectExtends.ExtendClass;
+  }
+
+  static get APIFactory() {
+    return APISourceFactory;
+  }
+
+  static get HTTPRequest() {
+    return HTTPRequest;
   }
 }
 

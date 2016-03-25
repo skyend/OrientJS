@@ -2,9 +2,8 @@ import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
 import ArrayHandler from '../../util/ArrayHandler.js';
 
-// import SALoader from '../StandAloneLib/Loader';
-// import Gelato from '../StandAloneLib/Gelato';
 import async from 'async';
+
 import events from 'events';
 
 // import ICEAPISource from '../APISource/ICEAPISource';
@@ -128,105 +127,28 @@ class DynamicContext {
           if (!requestID) throw new Error(`APISource(${_apiSource})에 대응하는 RequestID를 찾을 수 없습니다. 구성을 확인 해 주세요.`);
 
           that.environment.apiSourceFactory.getInstanceWithRemote(sourceClass, sourceTarget, function(_r) {
-            console.log(_r);
+
+            _r.executeRequest(requestID, paramsObject, {}, function(_err, _retrievedObject) {
+              if (_err !== null) return _callback(_err, null);
+
+              that.dataResolver.setNS(nss[_i], _retrievedObject);
+              _callback(null, _retrievedObject);
+            });
           })
 
         }
       }
     });
 
-
+    that.isLoading = true;
     async.parallel(parallelFunctions, function(_err, _results) {
       if (_err !== null) return _complete(_err);
-      _complete(null);
-    });
-  }
-
-
-  // clearInterval(itvid)
-  ready(_complete) {
-    let that = this;
-
-    this.isLoading = true;
-    this.emit("begin-load");
-    // console.log(this.sourceIDs);
-    let sourceIdList = this.sourceIDs.split(',');
-    console.log(sourceIdList);
-
-    console.log('API');
-
-    async.eachSeries(sourceIdList, function(_id, _next) {
-
-      // API Farm 과 ICEAPISource를 구분
-      if (/^farm/.test(_id)) {
-        // farm / apiFarmServiceId / serviceClassId
-        let farmPathSplit = _id.split('/');
-        if (farmPathSplit.length != 3) throw new Error("Invalid DynamicContext apiFarm Spec");
-
-        let apiFarmService = farmPathSplit[1];
-        let serviceClass = farmPathSplit[2];
-
-        SALoader.loadAPIFarmSource(apiFarmService, serviceClass, function(_apiFarmSource) {
-          let apiSource = new APIFarmSource(_apiFarmSource);
-          apiSource.setHost(Gelato.one().page.apiFarmHost);
-
-          that.apisources.push(apiSource);
-          console.log('loaded', sourceIdList);
-          _next();
-        })
-      } else {
-        // console.log(_id, 'source id', sourceIdList);
-        SALoader.loadAPISource(_id, function(_iceApiSource) {
-          let apiSource = new ICEAPISource(_iceApiSource);
-          apiSource.setHost(Gelato.one().page.iceHost);
-
-          that.apisources.push(apiSource);
-          _next();
-        })
-      }
-
-
-    }, function done() {
-      console.log('done', sourceIdList);
-      _complete(null);
-    });
-  }
-
-  dataLoad(_complete) {
-    let that = this;
-    let sourceIdList = this.sourceIDs.split(',');
-    let requestIdList = this.requestIDs.split(',');
-    let namespaceList = this.namespaces.split(',');
-    let injectParams = (this.injectParams || '').split(',');
-
-    async.eachSeries(this.apisources, function iterator(_apiSource, _next) {
-      let apiSourceOrder = ArrayHandler.findIndex(sourceIdList, function(_idAsKey) {
-        return _apiSource.key == _idAsKey;
-      });
-      console.log(apiSourceOrder, sourceIdList, _apiSource);
-
-      // 없으므로 next
-      if (apiSourceOrder === -1) _next()
-      else {
-        let paramsString = injectParams[apiSourceOrder] || '';
-        let paramObject = that.parseParamString(paramsString);
-        console.log('wil executeRequest');
-        _apiSource.executeRequest(requestIdList[apiSourceOrder], paramObject, undefined, function(_result) {
-          console.log(_apiSource);
-
-          that.dataResolver.setNS(namespaceList[apiSourceOrder], _result);
-          //
-          // that.params[namespaceList[apiSourceOrder]] = _result;
-
-          _next();
-        });
-      }
-    }, function done() {
-      _complete();
-      that.isLoading = false;
       that.emit('complete-load');
-    })
+      that.isLoading = false;
+      _complete(null);
+    });
   }
+
 
   parseParamString(_paramString) {
     let paramsPairs = _paramString.split('&');

@@ -1,7 +1,7 @@
 "use strict";
-import _ from 'underscore';
+import ArrayHandler from '../../../util/ArrayHandler';
+import ObjectExtends from '../../../util/ObjectExtends';
 import Identifier from '../../../util/Identifier.js';
-import DataResolver from '../../../serviceCrew/DataResolver/Resolver';
 
 export default class Request {
   constructor(_requestData) {
@@ -10,7 +10,11 @@ export default class Request {
   }
 
   get crudPoint() {
-    return this.crudType + '.json';
+    if (/\.[\w\d\-\_]+$/.test(this.crudType)) {
+      return this.crudType;
+    } else {
+      return this.crudType + '.json';
+    }
   }
 
   get crudType() {
@@ -31,8 +35,8 @@ export default class Request {
   }
 
   findField(_id) {
-    let foundIndex = _.findIndex(this.fields, {
-      id: _id
+    let foundIndex = ArrayHandler.findIndex(this.fields, function(_field) {
+      return _field.id === _id
     });
 
     return this.fields[foundIndex];
@@ -50,14 +54,12 @@ export default class Request {
     this.findField(_fieldId).testValue = _value;
   }
 
-  getFieldsObjectWithResolve() {
-    let dataResolver = new DataResolver();
-
+  getFieldsObject() {
     let object = {};
     let result;
     for (let i = 0; i < this.fields.length; i++) {
 
-      result = dataResolver.resolve(this.fields[i].value) || dataResolver.resolve(this.fields[i].defaultValue);
+      result = this.fields[i].value || this.fields[i].defaultValue;
 
       if (result && result !== '') {
         object[this.fields[i].key] = result;
@@ -97,7 +99,7 @@ export default class Request {
       crud: this.crud,
       customCrud: this.customCrud,
       customURL: this.customURL,
-      fields: _.clone(this.fields),
+      fields: ObjectExtends.clone(this.fields),
       isVirtual: this.isVirtual
     };
   }

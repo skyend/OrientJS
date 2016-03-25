@@ -8,6 +8,9 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "async": "^1.5.0",
+    "async-each-series": "^1.1.0",
+    "async-parallel": "^1.0.2",
+    "async-waterfall": "^0.1.5",
     "babel-core": "^6.4.5",
     "babel-loader": "^6.2.1",
     "babel-plugin-transform-es3-member-expression-literals": "^6.5.0",

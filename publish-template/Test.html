@@ -39,6 +39,8 @@
     <!-- Publish -->
     <script src='/orient.js'></script>
     <script src='/orbit.js'></script>
+    <script src='/orbit.api.cms.js'></script>
+    <script src='/orbit.api.farm.js'></script>
     <script src='http://localhost:8080/built-foundation.js'></script>
     <script>
 
@@ -48,7 +50,7 @@
         window.orbit = orbitEnvrionment;
 
         orbitEnvrionment.config.retriveConfig('/publish-template/config/config.json', function(){
-
+          
           var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
           Orient.replaceRender(masterElementNode, document.body);
         });

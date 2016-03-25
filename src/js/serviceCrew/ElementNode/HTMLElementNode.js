@@ -2,7 +2,6 @@ import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
 import _ from 'underscore';
 // import React from 'react';
-import async from 'async';
 import Sizzle from 'sizzle';
 import Point from '../../util/Point';
 

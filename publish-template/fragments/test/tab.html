@@ -96,14 +96,14 @@
     </div>
 
     <h2>Frequently Asked Questions</h2>
-    <!-- <div en-dc-source-id='farm/vod/category'
+    <div en-dc-source-id='[farm]farm/vod/category.json'
           en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
           en-dc-ns='category' en-dc-passive trace en-event-click='task@exec'>
           <en:task name='exec' action='executeDC'></en:task>
           수동 DynamicContext 테스트  << 클릭
           <br/>
           카테고리 : {{<< JSON.stringify(ns@category) }}
-    </div> -->
+    </div>
 
 
 
@@ -116,13 +116,13 @@
       </div> -->
 
 
-      <div en-dc-source-id='[apifarm]farm/vod/category.json'
-            en-dc-ns='category' en-dc-request-id='list' en-dc-passive trace en-event-click='task@exec' en-dc-inject-params='t=api'>
+      <!-- <div en-dc-source-id='[cms]broadcast_series.json'
+            en-dc-ns='category' en-dc-request-id='list' en-dc-passive trace en-event-click='task@exec'>
             <en:task name='exec' action='executeDC'></en:task>
             APIFarm 타입 / 수동 DynamicContext 테스트  << 클릭
             <br/>
             카테고리 : {{<< JSON.stringify(ns@category) }}
-      </div>
+      </div> -->
 
       {{<< config@ice-host }}
       <div data='[헤드] 60주년 기념 스키복 &amp; 용품 30% SALE'>

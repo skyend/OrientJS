@@ -1,27 +1,17 @@
 "use strict";
-import Request from './Request.js';
-import _ from 'underscore';
+
 import SuperAgent from 'superagent';
-import APISource from './APISource';
 import ArrayHandler from '../../../util/ArrayHandler';
 import ObjectExtends from '../../../util/ObjectExtends';
 
-
-export default class ICEAPISource extends APISource {
+class ICEAPISource extends Orbit.APIFactory.APISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
     this.clazz = 'ICEAPISource';
 
     this.nodeTypeMeta = null;
-    this.host = '';
-  }
 
-  get key() {
-    return this.nt_tid;
-  }
-
-  setHost(_host) {
-    this.host = _host;
+    this.host = this.orbit.config.getField('CMS_HOST');
   }
 
   loadNodeTypeMeta(_complete) {
@@ -43,139 +33,6 @@ export default class ICEAPISource extends APISource {
     });
   }
 
-  addNewRequest(_name, _crud) {
-    let newRequest = new Request({
-      name: _name,
-      crud: _crud
-    });
-
-    this.requests.push(newRequest);
-  }
-
-  findRequest(_id) {
-    let foundReqIdx = ArrayHandler.findIndex(this.requests, {
-      id: _id
-    });
-
-    if (foundReqIdx !== -1) {
-      return this.requests[foundReqIdx];
-    } else {
-      return undefined;
-    }
-  }
-
-  changeRequestCRUD(_reqId, _crud) {
-    let req = this.findRequest(_reqId);
-
-    if (req !== undefined) {
-      req.crud = _crud;
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestCustomCRUD(_reqId, _value) {
-    let req = this.findRequest(_reqId);
-
-    if (req !== undefined) {
-      req.customCrud = _value;
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestCustomURL(_reqId, _value) {
-    let req = this.findRequest(_reqId);
-
-    if (req !== undefined) {
-      req.customURL = _value;
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestMethod(_reqId, _method) {
-    let req = this.findRequest(_reqId);
-
-    if (req !== undefined) {
-      req.method = _method;
-      return true;
-    }
-
-    return false;
-  }
-
-  requestNewField(_requestId) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      req.addNewField();
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestFieldKey(_requestId, _fieldId, _value) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      req.changeFieldKey(_fieldId, _value);
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestFieldValue(_requestId, _fieldId, _value) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      req.changeFieldValue(_fieldId, _value);
-      return true;
-    }
-
-    return false;
-  }
-
-  changeRequestFieldTestValue(_requestId, _fieldId, _value) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      req.changeFieldTestValue(_fieldId, _value);
-      return true;
-    }
-
-    return false;
-  }
-
-  removeRequestField(_requestId, _fieldId) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      req.removeField(_fieldId);
-      return true;
-    }
-
-    return false;
-  }
-
-  removeRequest(_requestId) {
-    let req = this.findRequest(_requestId);
-
-    if (req !== undefined) {
-      this.requests = this.requests.filter(function(_r) {
-        return _requestId !== _r.id;
-      });
-      return true;
-    }
-
-    return false;
-  }
-
   // APIFarmSource 에서 오버라이딩
   getRequestLocation(_reqId) {
     let req = this.findRequest(_reqId);
@@ -194,6 +51,12 @@ export default class ICEAPISource extends APISource {
 
   getRequestURL(_reqId) {
     return this.host + this.getRequestLocation(_reqId)
+  }
+
+  getDefaultFields() {
+    return {
+      t: 'api'
+    };
   }
 
   convertFieldsToFormData(_fields) {
@@ -302,32 +165,21 @@ export default class ICEAPISource extends APISource {
 
   import (_ICEAPISourceData) {
     let ICEAPISourceData = _ICEAPISourceData || {};
+    super.import(ICEAPISourceData);
 
-    this.id = ICEAPISourceData._id;
     this.nt_tid = ICEAPISourceData.nt_tid;
-    this.title = ICEAPISourceData.title;
-    this.icon = ICEAPISourceData.icon;
     this.nid = ICEAPISourceData.nid;
-    this.serviceId = ICEAPISourceData.serviceId;
-    this.created = ICEAPISourceData.created;
-    this.requests = ICEAPISourceData.requests || [];
-    this.requests = this.requests.map(function(_r) {
-      return new Request(_r);
-    });
   }
 
   export () {
-    return {
-      //_id: this.id,
-      nt_tid: this.nt_tid,
-      title: this.title,
-      icon: this.icon,
-      nid: this.nid,
-      serviceId: this.serviceId,
-      created: this.created,
-      requests: this.requests.map(function(_request) {
-        return _request.export();
-      })
-    }
+    let exportO = super.export();
+    exportO.nt_tid = this.nt_tid;
+    exportO.nid = this.nid;
+
+    return exportO;
   }
 }
+
+Orbit.APIFactory.RegisterNewType('cms', ICEAPISource);
+
+export default ICEAPISource;
