@@ -1,6 +1,5 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
-import _ from 'underscore';
 // import React from 'react';
 import Sizzle from 'sizzle';
 import Point from '../../util/Point';
@@ -243,9 +242,8 @@ class HTMLElementNode extends TagBaseElementNode {
    * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
    * child는 재귀로 호출한다.
    */
-  buildByElement(_domElement, _ignoreAttrFields) {
-    let ignoreAttrFields = _.union([], _ignoreAttrFields || []);
-    super.buildByElement(_domElement, ignoreAttrFields);
+  buildByElement(_domElement) {
+    super.buildByElement(_domElement);
 
     // this.setType('html');
 

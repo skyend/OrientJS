@@ -1,6 +1,7 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
 import ArrayHandler from '../../util/ArrayHandler.js';
+import APIRequest from '../../Orient/common/APIRequest';
 
 import async from 'async';
 
@@ -80,11 +81,7 @@ class DynamicContext {
   // dc를 실행한다.
   fire(_complete) {
     let that = this;
-    /*
-      1. apisources 별 category 파악
-      2.
 
-    */
     let sources = this.sourceIDs.split(',');
     let injectParams = this.injectParams.split(',');
     let requestIDs = this.requestIDs.split(',');
@@ -93,14 +90,6 @@ class DynamicContext {
 
     let parallelFunctions = sources.map(function(_apiSource, _i) {
 
-      // apiSource 의 class 확인
-      // http 와 https class 는 직접 요청 처리 그 외 class는 env 를 통해 실행.
-      // http 와 https 는 //로 시작하거나 /로 시작해야 함
-
-      let sourceMatches = _apiSource.match(REGEXP_APISOURCE_MEAN);
-      if (sourceMatches === null) throw new Error(`잘못된 APISource(${_apiSource}) 지정 입니다.`);
-      let sourceClass = sourceMatches[1],
-        sourceTarget = sourceMatches[2];
       let requestID = requestIDs[_i];
       let paramsPairs = (injectParams[_i] || '').split('&'); // aa=aa&aas=bb
       let paramsObject = {};
@@ -111,32 +100,12 @@ class DynamicContext {
         paramsObject[param[0]] = param[1];
       }
 
-
       return function(_callback) {
-        if (/^https?$/.test(sourceClass)) {
-          Orient.HTTPRequest.request('get', sourceTarget, paramsObject, function(_err, _res) {
-            if (_err !== null) return _callback(_err, null);
+        APIRequest.RequestAPI(that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _statusCode) {
 
-            that.dataResolver.setNS(nss[_i], _res.body);
-            _callback(null, _res.body);
-          });
-        } else {
-          // apisource JSON을 로드한다.
-          // env 의 APISOurce Factory에 접근한다.
-          // JSON을 APISource로 빌드한다.
-          if (!requestID) throw new Error(`APISource(${_apiSource})에 대응하는 RequestID를 찾을 수 없습니다. 구성을 확인 해 주세요.`);
-
-          that.environment.apiSourceFactory.getInstanceWithRemote(sourceClass, sourceTarget, function(_r) {
-
-            _r.executeRequest(requestID, paramsObject, {}, function(_err, _retrievedObject) {
-              if (_err !== null) return _callback(_err, null);
-
-              that.dataResolver.setNS(nss[_i], _retrievedObject);
-              _callback(null, _retrievedObject);
-            });
-          })
-
-        }
+          that.dataResolver.setNS(nss[_i], _retrievedObject);
+          _callback(null, _retrievedObject);
+        });
       }
     });
 

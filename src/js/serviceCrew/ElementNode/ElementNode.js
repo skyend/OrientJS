@@ -1,5 +1,4 @@
 import events from 'events';
-import _ from 'underscore';
 
 import ElementNodeMulti from './ElementNodeMulti';
 import Returns from "../../Returns.js";
@@ -25,8 +24,6 @@ import '../Actions/BasicElementNodeActions';
 import '../Functions/BasicFunctions';
 
 
-import SA_Loader from '../StandAloneLib/Loader';
-import Gelato from '../StandAloneLib/Gelato';
 
 import Point from '../../util/Point';
 
@@ -700,34 +697,6 @@ class ElementNode {
       });
       return;
 
-      // that.dynamicContext.ready(function(_err) {
-      //   that.debug('dc', 'Ready Dynamic Context.');
-      //
-      //   if (_err === null) {
-      //
-      //     that.debug('dc', 'Will load data.');
-      //     that.dynamicContext.dataLoad(function(_err) {
-      //       that.debug('dc', 'Data Loaded', that.dynamicContext.apisources, that.dynamicContext, that.dynamicContext.dataResolver.dataSpace);
-      //
-      //       that.tryEventScope('will-dc-bind', {
-      //         dynamicContext: that.dynamicContext
-      //       }, null, function done(_result) {
-      //         if (that.afterContinue(_result) === false) return;
-      //
-      //         that.update({
-      //           keepDC: 'once'
-      //         });
-      //
-      //         that.tryEventScope('complete-bind', {
-      //           dynamicContext: that.dynamicContext
-      //         }, null);
-      //
-      //       });
-      //     });
-      //   } else {
-      //     console.warn("Todo Error Handling");
-      //   }
-      // });
     });
   }
 
@@ -2055,12 +2024,12 @@ class ElementNode {
       id: _withoutId ? undefined : this.id + (_idAppender || ''),
       type: this.getType(),
       name: this.getName(),
-      controls: _.clone(this.getControls()),
-      scopeNodes: _.clone(this.scopeNodes.map(function(_scopeNode) {
+      controls: ObjectExtends.clone(this.getControls()),
+      scopeNodes: ObjectExtends.clone(this.scopeNodes.map(function(_scopeNode) {
         return _scopeNode.export();
       })),
-      nodeEvents: _.clone(this.nodeEvents),
-      pipeEvents: _.clone(this.pipeEvents),
+      nodeEvents: ObjectExtends.clone(this.nodeEvents),
+      pipeEvents: ObjectExtends.clone(this.pipeEvents),
       comment: this.getComment(),
       componentName: this.getComponentName(),
       createDate: (new Date(this.createDate)).toString(),

@@ -41,18 +41,63 @@
     </script>
 
     <!-- Publish -->
-    <script src='http://localhost:8080/built-foundation.js'></script>
+    <script src='/orient.js'></script>
+    <script src='/orbit.js'></script>
+    <script src='/orbit.api.cms.js'></script>
+    <script src='/orbit.api.farm.js'></script>
+    <script>
+
+
+      window.onload = function(){
+        var orbitEnvrionment = new Orbit(window);
+        window.orbit = orbitEnvrionment;
+
+        orbit.orbitDocument.loadExtraScript('SmoothScroll.js', function(_err){
+            if( _err ){
+              console.log("Error");
+            } else {
+              console.log("ok");
+            }
+        });
+
+
+        orbit.orbitDocument.loadExtraJSSerial([
+          "http://code.jquery.com/jquery-latest.min.js",
+          "http://code.jquery.com/ui/1.11.1/jquery-ui.js",
+          "https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=true",
+          "/publish-template/js/bootstrap.min.js",
+          "/publish-template/js/bootstrap-hover-dropdown.min.js",
+          "/publish-template/js/SmoothScroll.js",
+          "/publish-template/js/jquery.dragtable.js",
+          "/publish-template/js/jquery.card.js",
+          "/publish-template/js/owl.carousel.min.js",
+          "/publish-template/js/twitterFetcher_min.js",
+          "/publish-template/js/color-switcher.js",
+          "/publish-template/js/custom.js"
+        ], function(_failures){
+          console.log(_failures);
+        });
+
+        orbitEnvrionment.config.retriveConfig('/publish-template/config/config.json', function(){
+
+          // var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
+          // Orient.replaceRender(masterElementNode, document.body);
+        });
+         //$ervice.startup();
+      }
+    </script>
+    <!-- <script src='http://localhost:8080/built-foundation.js'></script>
     <script>
       window.onload = function(){
         $ervice.startup();
       }
-    </script>
+    </script> -->
   </head>
-  <body  >
+  <body>
 
 
     <!-- fragment include -->
-    <div en-type='ref' en-behavior='column' en-ref-type='Fragment' en-ref-target-id='sub1/blogBody'>
+    <div en-type='ref'  en-ref-target-id='/publish-template/fragments/sub1/blogBody.html'>
       <!-- Will attach a blogBody fragment -->
     </div>
 

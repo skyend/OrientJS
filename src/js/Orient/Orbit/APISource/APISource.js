@@ -156,6 +156,12 @@ export default class APISource {
     let req = this.findRequest(_reqId);
 
     if (req !== undefined) {
+      if (req.crud === '**') {
+        return req.customURL;
+      } else {
+        url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
+      }
+
       return '/api/' + this.nt_tid + '/' + req.crudPoint;
     } else {
       return '';
@@ -163,7 +169,14 @@ export default class APISource {
   }
 
   assemblyURLWithRequest(_reqId) {
-    return this.host + this.getRequestLocation(_reqId);
+
+    let urlSnippet = this.getRequestLocation(_reqId);
+    if (/http:\/\//.test(urlSnippet)) {
+
+      return this.host + urlSnippet;
+    } else {
+      return urlSnippet;
+    }
   }
 
   resolvefieldObject(_fieldObject) {
@@ -206,7 +219,7 @@ export default class APISource {
 
   // Proposal Override
   processAfterResponse(_err, _res, _passCB) {
-    _passCB(_err, _res.body);
+    _passCB(_err, _res.body, _res.statusCode);
   }
 
 

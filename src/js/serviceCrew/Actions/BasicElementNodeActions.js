@@ -1,16 +1,15 @@
 import ActionStore from './ActionStore';
 // import ICEAPISource from '../ICEAPISource';
 // import APIFarmSource from '../APIFarmSource';
-import SA_Loader from '../StandAloneLib/Loader';
+// import SA_Loader from '../StandAloneLib/Loader';
 
 // window.ICEAPISource = ICEAPISource;
-window.SA_Loader = SA_Loader;
+// window.SA_Loader = SA_Loader;
 // window.APIFarmSource = APIFarmSource;
 
 let actionStore = ActionStore.instance();
 
-//
-//
+
 // regexp = {
 //       empty     : function(){return /^\s*$/;},
 //       email     : function(){return /^[\w\d]+@[\w\d-]+\.[\w]+$/;},
@@ -293,66 +292,48 @@ actionStore.registerAction('loop', ['fps'], function() {
 });
 
 
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion'], function() {
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype'], function() {
   let that = this;
-  let type = 'ice-api';
-  if (/^farm\//.test(apiSourceId)) {
-    type = 'farm-api';
-  }
 
-  window['SA_Loader'].loadAPISource(apiSourceId, function(_apiSourceData) {
-    let apiSource;
-    let fields = {};
-    //let request;
-    if (type === 'farm-api') {
-      apiSource = new(window.APIFarmSource)(_apiSourceData);
-      apiSource.setHost($ervice.page.apiFarmHost);
-    } else if (type === 'ice-api') {
-      apiSource = new(window.ICEAPISource)(_apiSourceData);
-      apiSource.setHost($ervice.page.iceHost);
+  let fields = {};
+
+  that.findChildren('[transfer-value]').map(function(_elementNode) {
+
+    let pass = true;
+
+    _elementNode.climbParents(function(_parent) {
+      if (_parent === that) {
+
+        return null;
+      } else if (_parent.getAttribute('ignore-transfer') !== undefined) {
+
+        pass = false;
+        return null;
+      }
+    });
+
+    if (pass) {
+      fields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
+    }
+  });
+
+  console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
+  console.log(apiSourceId, requestId, fields);
+
+  Orient.APIRequest.requestAPI(this.environment, apiSourceId, requestId, fields, function(_err, _retrievedObject, _statusCode) {
+    // http error 코드일 경우
+    if (_retrievedObject === null) {
+
+      _actionResult.code = _statusCode;
+      _actionResult.data = null;
+    } else {
+
+      _actionResult.code = _retrievedObject[chainCodeCriterion || 'result'];
+      _actionResult.data = _retrievedObject;
     }
 
-
-    that.findChildren('[transfer-value]').map(function(_elementNode) {
-
-      let pass = true;
-
-      _elementNode.climbParents(function(_parent) {
-        if (_parent === that) {
-
-          return null;
-        } else if (_parent.getAttribute('ignore-transfer') !== undefined) {
-
-          pass = false;
-          return null;
-        }
-      });
-
-      if (pass) {
-        fields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
-      }
-    });
-
-    console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
-    console.log(apiSourceId, requestId, fields);
-
-    apiSource.executeRequest(requestId, fields, {}, that.getAttribute('enctype'), function(_result, _statusCode) {
-      console.log("Result ", _result, _statusCode);
-
-      // http error 코드일 경우
-      if (_result === null) {
-
-        _actionResult.code = _statusCode;
-        _actionResult.data = null;
-      } else {
-
-        _actionResult.code = _result[chainCodeCriterion || 'result'];
-        _actionResult.data = _result;
-      }
-
-      _callback(_actionResult);
-    });
-  });
+    _callback(_actionResult);
+  }, enctype);
 });
 
 

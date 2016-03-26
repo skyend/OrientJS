@@ -1,5 +1,4 @@
 import ScopeNode from './ScopeNode';
-import _ from 'underscore';
 
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");

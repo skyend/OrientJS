@@ -1,5 +1,5 @@
 import _Function from '../Function';
-import _ from 'underscore';
+import ArrayHandler from '../../util/ArrayHandler';
 
 const NEW_CHECK = '082dc829-7b48-4107-b119-f8ec2f0d9ecc';
 
@@ -47,7 +47,7 @@ class FunctionStore {
   }
 
   getFunction(_name) {
-    let index = _.findIndex(this.functions, function(_function) {
+    let index = ArrayHandler.findIndex(this.functions, function(_function) {
       return _function.name === _name;
     });
 

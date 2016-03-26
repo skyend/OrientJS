@@ -70,14 +70,14 @@
 <div id="page-wrapper">
   <!-- PAGE - START -->
 
-  <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='header'>
+  <div en-type='ref'   en-ref-target-id='/publish-template/fragments/shared/header.html' >
     <!-- Header -->
   </div>
 
   <!-- ==========================
     BREADCRUMB - START
   =========================== -->
-  <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='csdp' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a={{http-param@hello}}' en-dc-ns='csdp-product'>
+  <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='[cms]csdp.json' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a={{http-param@hello}}' en-dc-ns='csdp-product'>
 
     <!-- <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
     </div> -->
@@ -117,7 +117,7 @@
       <div class='row' en-ctrl-hidden='false'>
         <div class='col-sm-9'>
           <form enctype="multipart/form-data" en-event-submit='task@submit'>
-            <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='broadcast_series' arg-requestId='create'></en:task>
+            <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[cms]broadcast_series.json' arg-requestId='create'></en:task>
 
             <input class='form-control' name='create' type='hidden' value='true'/>
             <input class='form-control' name='cp_id' type='hidden' value='401075333'/>

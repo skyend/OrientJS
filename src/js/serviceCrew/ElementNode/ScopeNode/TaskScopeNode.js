@@ -1,5 +1,5 @@
 import ScopeNode from './ScopeNode';
-import _ from 'underscore';
+import ArrayHandler from '../../../util/ArrayHandler';
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 
@@ -109,7 +109,7 @@ class TaskScopeNode extends ScopeNode {
   }
 
   getChainedTaskName(_chainCode) {
-    let index = _.findIndex(this.chains, function(_chain) {
+    let index = ArrayHandler.findIndex(this.chains, function(_chain) {
 
       return _chain.name.toLowerCase() === _chainCode.toLowerCase();
     });

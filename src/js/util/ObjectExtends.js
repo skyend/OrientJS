@@ -26,8 +26,14 @@ class ObjectExtends {
 
   static clone(_object, _deep) {
     let keys = Object.keys(_object);
-    let clonedObj = {};
+    let clonedObj;
     let value, key;
+
+    if (_object instanceof Array) {
+      clonedObj = [];
+    } else {
+      clonedObj = {};
+    }
 
     for (let i = 0; i < keys.length; i++) {
       key = keys[i];

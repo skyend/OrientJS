@@ -14,7 +14,7 @@ module.exports = {
     // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/stand-alone-foundation/main.js'] // foundation build
 
     // main: ['./src/js/main.js'],
-    'built-foundation': ['./src/stand-alone-foundation/main.js'],
+    //'built-foundation': ['./src/stand-alone-foundation/main.js'],
     'orient': ['./src/js/Orient/Orient.js'],
     'orbit': ['./src/js/Orient/Orbit.js'],
     'orbit.api.cms': ['./src/js/Orient/Orbit/addons/ICEAPISource'],

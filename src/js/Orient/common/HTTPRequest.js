@@ -21,7 +21,7 @@ class HTTPRequest {
     }
   }
 
-  // IE10
+  // IE10+
   static convertFieldsToFormData(_fields) {
     if (_fields instanceof FormData) {
       console.warn("FormData 를 FormData로 변환하려 합니다. 이 변환시도는 무시되며 그대로 FormData를 사용합니다.");

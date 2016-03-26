@@ -1,5 +1,5 @@
 import Action from '../Action';
-import _ from 'underscore';
+import ArrayHandler from '../../util/ArrayHandler';
 
 const NEW_CHECK = '082dc829-7b48-4107-b119-f8ec2f0d9ecc';
 
@@ -54,7 +54,7 @@ class ActionStore {
   }
 
   getAction(_name) {
-    let index = _.findIndex(this.actions, function(_action) {
+    let index = ArrayHandler.findIndex(this.actions, function(_action) {
       return _action.name === _name;
     });
 

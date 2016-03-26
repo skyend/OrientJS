@@ -1,6 +1,6 @@
 import ScopeNode from './ScopeNode';
 import MetaText from '../../Data/MetaText';
-import _ from 'underscore';
+import ObjectExtends from '../../../util/ObjectExtends';
 
 const DataTypes = Object.freeze({
   Number: "number",
@@ -128,7 +128,7 @@ class ValueScopeNode extends ScopeNode {
     let exportObject = super.export();
     exportObject.resolveOn = this.resolveOn;
     exportObject.dataType = this.dataType;
-    exportObject.value = _.clone(this.value.export());
+    exportObject.value = ObjectExtends.clone(this.value.export());
 
     return exportObject;
   }

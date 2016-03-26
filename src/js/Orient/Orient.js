@@ -1,5 +1,6 @@
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import HTTPRequest from './common/HTTPRequest';
+import APIRequest from './common/APIRequest';
 
 import ElementNode from '../serviceCrew/ElementNode/ElementNode';
 import HTMLElementNode from '../serviceCrew/ElementNode/HTMLElementNode';
@@ -71,6 +72,36 @@ class Neutron {
     this.mountByReplace(_elementNode, _targetDOMElement);
   }
 
+  static getNodeByDOM(_domElement) {
+    if (_domElement.isElementNode) return _domElement;
+
+    return _domElement.___en || null;
+  }
+
+  static registerAction(_name, _paramKeys, _anonymousActionFunction) {
+    let actionStore = ActionStore.instance();
+
+    actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
+  }
+
+  static registerFunction(_name, _function) {
+    let functionStore = FunctionStore.instance();
+
+    functionStore.registerFunction(_name, _function);
+  }
+
+  static get actionStore() {
+    return ActionStore.instance();
+  }
+
+  static get functionStore() {
+    return FunctionStore.instance();
+  }
+
+  static get APIRequest() {
+    return APIRequest;
+  }
+
 
 
   /*
@@ -105,32 +136,6 @@ class Neutron {
     return Factory;
   }
 
-  /*
-    ███████ ████████  █████  ████████ ██  ██████      █████  ██████  ██
-    ██         ██    ██   ██    ██    ██ ██          ██   ██ ██   ██ ██
-    ███████    ██    ███████    ██    ██ ██          ███████ ██████  ██
-         ██    ██    ██   ██    ██    ██ ██          ██   ██ ██      ██
-    ███████    ██    ██   ██    ██    ██  ██████     ██   ██ ██      ██
-  */
-  static registerAction(_name, _paramKeys, _anonymousActionFunction) {
-    let actionStore = ActionStore.instance();
-
-    actionStore.registerAction(_name, _paramKeys, _anonymousActionFunction);
-  }
-
-  static registerFunction(_name, _function) {
-    let functionStore = FunctionStore.instance();
-
-    functionStore.registerFunction(_name, _function);
-  }
-
-  static get actionStore() {
-    return ActionStore.instance();
-  }
-
-  static get functionStore() {
-    return FunctionStore.instance();
-  }
 }
 
 export default window.Orient = Neutron;

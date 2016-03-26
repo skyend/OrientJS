@@ -1,12 +1,13 @@
 //import request from 'superagent';
 import HTTPRequest from './common/HTTPRequest';
+import APIRequest from './common/APIRequest';
+
 import Config from './Orbit/Config';
 import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
 import BuiltinRetriever from './Orbit/Retriever';
 import APISourceFactory from './Orbit/APISource/Factory';
 import OrbitDocument from './Orbit/Document';
-
 import ObjectExtends from '../util/ObjectExtends';
 
 class Orbit {
@@ -18,8 +19,6 @@ class Orbit {
   constructor(_window, _inlineConfig, _retriever) {
     let that = this;
 
-    console.log(Object.keys(this.__proto__)); // prototype 으로 확장을 해야함
-
     if (_window) {
       this.window = _window;
     } else {
@@ -28,7 +27,7 @@ class Orbit {
 
     /* Initial Members */
     this.config = new Config(_inlineConfig);
-    this.orbitDocument = new OrbitDocument(this.window);
+    this.orbitDocument = new OrbitDocument(this.window, this);
     this.apiSourceFactory = new APISourceFactory(this);
     this.resolver = new Resolver();
     this.i18n = new I18N(this, {
@@ -47,7 +46,6 @@ class Orbit {
     this.config.on('update', function(_e) {
       // ※ this === this.config
 
-
       // DIR PATH
       that.retriever.dirpath_i18n = this.getField('DIR_I18N');
       that.retriever.dirpath_apisource = this.getField('DIR_API_SOURCE');
@@ -56,7 +54,6 @@ class Orbit {
       that.i18n.languageDecider = this.getField('LANGUAGE_DECIDER');
       that.i18n.languageDefault = this.getField('LANGUAGE_DEFAULT');
     });
-
 
     // Framework Interpreters
     this.bindedInterpretSupporters = {

@@ -1,6 +1,6 @@
 import ScopeNode from './ScopeNode';
-import _ from 'underscore';
 
+import ObjectExtends from '../../../util/ObjectExtends';
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 
@@ -64,7 +64,7 @@ class ActionScopeNode extends ScopeNode {
 
   export () {
     let exportObject = super.export();
-    exportObject.params = _.clone(this.params);
+    exportObject.params = ObjectExtends.clone(this.params);
     exportObject.actionBody = this.actionBody;
     return exportObject;
   }
