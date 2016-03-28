@@ -5,20 +5,20 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   entry: {
-    //app: ['./client/src/app.jsx'],
+    //app: ['./src/app.jsx'],
     venders: ['react'],
     config: [
       "font-awesome-webpack!./config/font-awesome.config.js"
     ],
-    // main: ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './client/src/js/main.js'],
-    // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './client/src/stand-alone-foundation/main.js'] // foundation build
+    // main: ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/js/main.js'],
+    // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './src/stand-alone-foundation/main.js'] // foundation build
 
-    // main: ['./client/src/js/main.js'],
-    //'built-foundation': ['./client/src/stand-alone-foundation/main.js'],
-    'orient': ['./client/src/js/Orient/Orient.js'],
-    'orbit': ['./client/src/js/Orient/Orbit.js'],
-    'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],
-    'orbit.api.farm': ['./client/src/js/Orient/Orbit/addons/APIFarmSource']
+    // main: ['./src/js/main.js'],
+    //'built-foundation': ['./src/stand-alone-foundation/main.js'],
+    'orient': ['./src/js/Orient/Orient.js'],
+    'orbit': ['./src/js/Orient/Orbit.js'],
+    'orbit.api.cms': ['./src/js/Orient/Orbit/addons/ICEAPISource'],
+    'orbit.api.farm': ['./src/js/Orient/Orbit/addons/APIFarmSource']
   },
 
   output: {
