@@ -8,7 +8,7 @@ module.exports = {
     //app: ['./client/src/app.jsx'],
     venders: ['react'],
     config: [
-      "font-awesome-webpack!./config/font-awesome.config.js"
+      "font-awesome-webpack!./client/config/font-awesome.config.js"
     ],
     // main: ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './client/src/js/main.js'],
     // 'built-foundation': ['es5-shim', 'es5-shim/es5-sham', 'es6-shim', 'es6-shim/es6-sham', './client/src/stand-alone-foundation/main.js'] // foundation build
@@ -22,7 +22,7 @@ module.exports = {
   },
 
   output: {
-    path: './dist',
+    path: './client/dist',
     filename: "[name].js",
     hash: true
   },
@@ -81,7 +81,7 @@ module.exports = {
   // },
 
   plugins: [
-    new Clean(['dist']),
+    new Clean(['client/dist']),
     // new webpack.HotModuleReplacementPlugin(),
     // new webpack.NoErrorsPlugin(),
 
