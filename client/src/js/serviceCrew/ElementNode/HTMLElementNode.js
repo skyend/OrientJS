@@ -1,7 +1,7 @@
 import TagBaseElementNode from './TagBaseElementNode.js';
 import Factory from './Factory.js';
 // import React from 'react';
-import Sizzle from 'sizzle';
+// import Sizzle from 'sizzle';
 import Point from '../../util/Point';
 
 "use strict";
@@ -186,14 +186,14 @@ class HTMLElementNode extends TagBaseElementNode {
     return false;
   }
 
-  findChildren(_selector) {
-    let elements = Sizzle(_selector, this.forwardDOM);
-    console.log(_selector, elements, this.forwardDOM);
-
-    return elements.map(function(_childDom) {
-      return _childDom.___en;
-    });
-  }
+  // findChildren(_selector) {
+  //   let elements = Sizzle(_selector, this.forwardDOM);
+  //   console.log(_selector, elements, this.forwardDOM);
+  //
+  //   return elements.map(function(_childDom) {
+  //     return _childDom.___en;
+  //   });
+  // }
 
   // alias : result[Array] == this.children.map(Function)
   childrenIteration(_processFunc) {

@@ -124,10 +124,13 @@
  ];
 
  var SUPPORT_HTML_TAG_STYLES = {};
- if (window) {
-   SUPPORT_HTML_TAG_STYLES = ObjectExtends.clone(window.document.head.style);
+ try {
+   if (window) {
+     SUPPORT_HTML_TAG_STYLES = ObjectExtends.clone(window.document.head.style);
+   }
+ } catch (_e) {
+   console.warn('Window is not declared');
  }
-
 
 
  class TagBaseElementNode extends ElementNode {
