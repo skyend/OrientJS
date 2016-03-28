@@ -90,6 +90,37 @@ class ObjectExtends {
     return assigned;
   }
 
+  // all argument merge
+  static union() {
+    let newArr = arguments[0];
+
+    for (let i = 1; i < arguments.length; i++) {
+      newArr = ObjectExtends.union2(newArr, arguments[i]);
+    }
+
+    return newArr;
+  }
+
+  static union2(_arr1, _arr2) {
+    let newArr = ObjectExtends.clone(_arr1);
+
+    for (let i = 0; i < _arr2.length; i++) {
+      newArr.push(_arr2[i]);
+    }
+
+    return newArr;
+  }
+
+  static argumentsToArray(_arguments) {
+    let argArray = [];
+
+    for (let i = 0; i < _arguments.length; i++) {
+      argArray.push(_arguments[i]);
+    }
+
+    return argArray;
+  }
+
   static ExtendClass(_subClass, _superClass) {
     if (typeof _subClass !== 'function') throw new Error(`Error : couldn't extend class. _subClass must be function. ${typeof _subClass}`);
     _subClass.prototype = Object.create(_superClass.prototype);

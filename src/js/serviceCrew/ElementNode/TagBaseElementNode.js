@@ -528,6 +528,8 @@
 
    buildByElement(_domElement) {
 
+     // for Debug
+     this.sourceElement = _domElement;
 
      this.copyAllAtrributeFromDOMElement(_domElement);
 

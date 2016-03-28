@@ -74,12 +74,15 @@ class Factory {
     let masterElementNodes = [];
     let type;
     let masterElementNode;
+    let elementNodeBuildResult;
     for (let i = 0; i < realizeContainer.childNodes.length; i++) {
       type = Factory.checkElementNodeType(realizeContainer.childNodes[i]);
       if (type === 'comment') continue;
 
       masterElementNode = Factory.takeElementNode(undefined, undefined, type, _env, true);
-      masterElementNode.buildByElement(realizeContainer.childNodes[i]);
+      elementNodeBuildResult = masterElementNode.buildByElement(realizeContainer.childNodes[i]);
+      if (elementNodeBuildResult === null) continue;
+
       masterElementNodes.push(masterElementNode);
     }
 

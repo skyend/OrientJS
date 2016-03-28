@@ -101,6 +101,8 @@ class RefElementNode extends HTMLElementNode {
             masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));
           }
 
+          masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
+
           masterElementNode.setParent(that);
           masterElementNode.constructDOMs({});
           masterElementNode.attachForwardDOM(that.forwardDOM);
@@ -166,7 +168,7 @@ class RefElementNode extends HTMLElementNode {
     } else {
       targetId = _targetId;
       let matches = targetId.match(/\.(\w+)$/);
-      if (matches === null) throw new Error("Invalid Target ID");
+      if (matches === null) return this.print_console_error(`'${targetId}' is Invalid Target ID.`);
       type = matches[1];
     }
 

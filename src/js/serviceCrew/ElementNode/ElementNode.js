@@ -610,10 +610,10 @@ class ElementNode {
 
       // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
       if (this.isAttachedDOM) {
-        console.log('to backup', constructedDOM);
+        //console.log('to backup', constructedDOM);
         this.backupDOM = constructedDOM;
       } else {
-        console.log('to forward', constructedDOM);
+        //console.log('to forward', constructedDOM);
         this.forwardDOM = constructedDOM;
       }
 
@@ -678,7 +678,7 @@ class ElementNode {
       that.dynamicContext.fire(function(_err) {
         that.debug('dc', 'burn');
 
-        if (_err) return console.error(`Error: DC Loading Error.`, 'Detail: ', _err);
+        if (_err) return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
 
         that.tryEventScope('will-dc-bind', {
           dynamicContext: that.dynamicContext
@@ -1980,6 +1980,52 @@ class ElementNode {
     }
   }
 
+  setDebuggingInfo(_key, _value) {
+    this.debuggingStore = this.debuggingStore || {};
+    this.debuggingStore[_key] = _value;
+  }
+
+  getDebuggingInfo(_key, _value) {
+    return (this.debuggingStore || {})[_key];
+  }
+
+  get DEBUG_FILE_NAME() {
+    try {
+      let master = this.getMaster();
+      return master.getDebuggingInfo('FILE_NAME') || location.pathname;
+    } catch (_e) {
+      return `Unknown or ${  location.pathname }`;
+    }
+  }
+
+  get DEBUG_FILE_NAME_EXPLAIN() {
+    return `Reference file : ${this.DEBUG_FILE_NAME}`;
+  }
+
+  print_console_warn() {
+    let modifiedArgs = ObjectExtends.union(['Warning : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+
+    console.warn.apply(console, modifiedArgs);
+  }
+
+  print_console_info() {
+    let modifiedArgs = ObjectExtends.union(['Info : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+
+    console.info.apply(console, modifiedArgs);
+  }
+
+  print_console_error() {
+    let modifiedArgs = ObjectExtends.union(['Error : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+
+    console.error.apply(console, modifiedArgs);
+  }
+
+  throw_new_error(_message) {
+    throw new Error('Error : ' + _message + ' ' + this.DEBUG_FILE_NAME_EXPLAIN);
+  }
+
+
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /* ------------------ Event Handing Methods End --------------------------------------------------------------------------------- */
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2034,7 +2080,7 @@ class ElementNode {
       componentName: this.getComponentName(),
       createDate: (new Date(this.createDate)).toString(),
       updateDate: (new Date(this.updateDate)).toString(),
-    }
+    };
 
     exportObject.dynamicContextPassive = this.dynamicContextPassive;
     exportObject.dynamicContextSID = this.dynamicContextSID;

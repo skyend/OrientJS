@@ -77,7 +77,7 @@
   <!-- ==========================
     BREADCRUMB - START
   =========================== -->
-  <section class="breadcrumb-wrapper" en-ctrl-hidden='false' en-dc-source-id='[cms]csdp.json' en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db' en-dc-inject-params='a={{http-param@hello}}' en-dc-ns='csdp-product'>
+  <section class="breadcrumb-wrapper">
 
     <!-- <div en-type='ref' en-ref-type='Fragment' en-ref-target-id='index'>
     </div> -->
@@ -187,8 +187,8 @@
         <div
           class="col-sm-9"
           en-id='bc-list'
-          en-dc-source-id='broadcast_series'
-          en-dc-request-id='cbfbdb66-1d3f-4bcd-ae92-f13514ae167f'
+          en-dc-source-id='[cms]broadcast_series.json'
+          en-dc-request-id='list'
           en-dc-ns='broadcast_series-list'>
 
         {{ns@broadcast_series-list.items[en@repeat-n].nid}}
@@ -198,10 +198,7 @@
           <!-- POST - START -->
           <article class="post" en-ctrl-repeat-n="{{ ns@broadcast_series-list.items.length}}">
             <div class="post-left"
-            en-dynamic-context='true'
-            en-dc-source-id='csdp'
-            en-dc-request-id='b4bb86b0-6434-4c1b-ad43-c671389c49db'
-            en-dc-ns='csdp-product'>
+           >
 
               <div class="author">
                 <img src="assets/images/avatar/avatar_01.jpg" class="img-responsive img-circle" alt="">
@@ -664,7 +661,7 @@
     BLOG - END
   =========================== -->
 
-  <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='footer'>
+  <div en-type='ref' en-ref-type='ElementNode' en-ref-target-id='[html]/publish-template/fragments/shared/footer.html'>
     <!-- Header -->
   </div>
 </div>

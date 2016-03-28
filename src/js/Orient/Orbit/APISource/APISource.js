@@ -171,7 +171,7 @@ export default class APISource {
   assemblyURLWithRequest(_reqId) {
 
     let urlSnippet = this.getRequestLocation(_reqId);
-    if (/http:\/\//.test(urlSnippet)) {
+    if (!/http:\/\//.test(urlSnippet)) {
 
       return this.host + urlSnippet;
     } else {

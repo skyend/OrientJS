@@ -255,6 +255,7 @@ class HTMLElementNode extends TagBaseElementNode {
     // 자식노드도 생성
     var child_ = null;
     let prevElementNode = null;
+    let elementNodeBuildResult;
     for (var i = 0; i < childNodes.length; i++) {
       child_ = childNodes[i];
 
@@ -281,13 +282,16 @@ class HTMLElementNode extends TagBaseElementNode {
         }
 
         newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
+
       } else {
         let type = Factory.checkElementNodeType(child_);
 
         newChildElementNode = Factory.takeElementNode(undefined, {}, type, this.environment);
       }
 
-      if (newChildElementNode.buildByElement(child_) === null) continue;
+      elementNodeBuildResult = newChildElementNode.buildByElement(child_);
+
+      if (elementNodeBuildResult === null) continue;
 
       newChildElementNode.prevSibling = prevElementNode;
       children.push(newChildElementNode);

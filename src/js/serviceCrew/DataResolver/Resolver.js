@@ -145,7 +145,6 @@ class Resolver {
       this.argsMapDict[_syntax] = argsMap;
     }
 
-
     argsMap = argsMap.map(function(_argHolder, _i) {
       //console.log(_syntax);
       return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject, _caller);
@@ -153,7 +152,7 @@ class Resolver {
 
     // 마지막에 Shortcut 객체 삽입.
     argsMap.push(Shortcut);
-    argsMap.push(_externalGetterInterface.executeI18n ? _externalGetterInterface.executeI18n : function() {
+    argsMap.push(_externalGetterInterface.executeI18n ? _externalGetterInterface.executeI18n : function executeI18n_NotFound() {
       return 'Error: Couldn\'n I18N Text. Required the Environment.';
       //throw new Error(`text 사용 불가능. ${_syntax}`);
     });
