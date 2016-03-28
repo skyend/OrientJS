@@ -49,7 +49,7 @@
         var orbitEnvrionment = new Orbit(window);
         window.orbit = orbitEnvrionment;
 
-        orbitEnvrionment.config.retriveConfig('/publish-template/config/config.json', function(){
+        orbitEnvrionment.config.retriveConfig('/client/publish-template/config/config.json', function(){
           
           var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
           Orient.replaceRender(masterElementNode, document.body);
@@ -72,9 +72,9 @@ a
 
     <!-- Page Grid -->
 
-    <!-- <div en-type='ref' en-ref-target-id='json:/publish-template/json/testComponent.json'></div> -->
+    <!-- <div en-type='ref' en-ref-target-id='json:/client/publish-template/json/testComponent.json'></div> -->
 
-    <div en-type='ref'  test-prop='Test Prop' en-ref-target-id='[html]/publish-template/fragments/test/tab.html'> </div>
+    <div en-type='ref'  test-prop='Test Prop' en-ref-target-id='[html]/client/publish-template/fragments/test/tab.html'> </div>
     <form action='Test.html' method='post'>
       <input type='submit'>
       <input type='text' value='test' name='test'>

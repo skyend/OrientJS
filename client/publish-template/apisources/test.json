@@ -11,7 +11,7 @@
     "name": "pakcages",
     "method": "get",
     "crud": "**",
-    "customURL": "/publish-template/json/availablePackages.json",
+    "customURL": "/client/publish-template/json/availablePackages.json",
     "fields": []
   }]
 }

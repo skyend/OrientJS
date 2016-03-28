@@ -94,7 +94,7 @@
           console.log("Style load complete");
         });
 
-        orbitEnvrionment.config.retriveConfig('/publish-template/config/config.json', function(){
+        orbitEnvrionment.config.retriveConfig('/client/publish-template/config/config.json', function(){
 
           var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
           Orient.replaceRender(masterElementNode, document.body);
@@ -113,7 +113,7 @@
 
 
     <!-- fragment include -->
-    <div en-type='ref'  en-ref-target-id='/publish-template/fragments/sub1/blogBody.html'>
+    <div en-type='ref'  en-ref-target-id='/client/publish-template/fragments/sub1/blogBody.html'>
       <!-- Will attach a blogBody fragment -->
     </div>
 
