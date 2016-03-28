@@ -1,7 +1,7 @@
- class ListenerInterface {
-   constructor() {
+class ListenerInterface {
+  constructor() {
 
-   }
- }
+  }
+}
 
- export default ListenerInterface;
+export default ListenerInterface;

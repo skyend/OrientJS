@@ -39,7 +39,8 @@ var busboy = require('connect-busboy'); //middleware for form/file upload
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+//app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 
 var bodyParser = require('body-parser');
 
@@ -74,12 +75,12 @@ app.use(function(req, res, next) {
 
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/gelateria', express.static(path.join(__dirname, '../client/dist'))); // builder service
 
 app.use('/static', express.static(path.join(__dirname, 'staticStore'))); // static service
-// app.use('/', routes);
+app.use('/', routes);
 // app.use('/test', test);
 // app.use('/projects', projects);
 // app.use('/services', services);
