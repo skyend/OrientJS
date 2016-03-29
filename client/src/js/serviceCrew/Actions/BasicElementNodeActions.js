@@ -296,8 +296,18 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   let that = this;
 
   let fields = {};
+  let foundElements;
+  if (this.environment) {
+    foundElements = this.environment.document.querySelector('[transfer-value]').map(function(_domElement) {
+      return _domElement.___en;
+    });
+  } else {
+    foundElements = window.document.querySelector('[transfer-value]').map(function(_domElement) {
+      return _domElement.___en;
+    });
+  }
 
-  that.findChildren('[transfer-value]').map(function(_elementNode) {
+  foundElements.map(function(_elementNode) {
 
     let pass = true;
 

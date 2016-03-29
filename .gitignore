@@ -21,5 +21,4 @@ npm-debug.log
 !/server/staticStore/svg/README.md
 !/server/staticStore/json/README.md
 
-#/server/public/temporary-publish/foundation/built-foundation.js
-#/server/public/temporary-publish/foundation/built-foundation-min.js
+/server/.built_by

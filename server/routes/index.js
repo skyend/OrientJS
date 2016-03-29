@@ -8,4 +8,20 @@ router.get('/', function(req, res, next) {
   });
 });
 
+
+router.get('/health', function(req, res) {
+
+  res.render('monitor/health', {
+    //pid: process.pid,
+    memory: process.memoryUsage(),
+    uptime: process.uptime()
+  });
+
+  // res.send(new Buffer(JSON.stringify({
+  //   pid: process.pid,
+  //   memory: process.memoryUsage(),
+  //   uptime: process.uptime()
+  // })));
+});
+
 module.exports = router;

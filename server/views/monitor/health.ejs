@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      ServiceBuilder :: Install
+    </title>
+    <link type='text/css' rel='stylesheet' href='/stylesheets/installer/default.css'/>
+    <script type='text/javascript' src='/gelateria/orbit.js'></script>
+    <script type='text/javascript' src='/gelateria/orient.js'></script>
+    <script>
+      var orbit = new Orbit(window);
+      orbit.config.retrieveConfig('/service-static/config/installer.json', function(){
+
+      });
+    </script>
+
+    <style>
+      .percentage_bar {
+        width:100%;
+        height: 20px;
+        background-color: #fff;
+        border:2px solid #333;
+        border-radius: 5px;
+        position: relative;
+      }
+
+      .percentage_bar > .bar {
+        height: 100%;
+        background-color: rgb(30, 99, 218);
+        text-align: center;
+        color: rgb(255, 255, 255);
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1> Gelateria Health for Admin </h1>
+
+    <pre>
+      PID - ***
+
+      Memory Usage
+        rss - <%= memory.rss %>
+        heap total - <%= memory.heapTotal %>
+        heap used  - <%= memory.heapUsed %>
+
+      Uptime - <%= uptime %>s
+    </pre>
+
+    Memory
+    <div class='percentage_bar' style='width:300px;'>
+      <div class='bar' style='width:<%=  memory.heapUsed / memory.heapTotal  * 100 %>%;'>
+        <%=  memory.heapUsed / memory.heapTotal  * 100 %>%
+      </div>
+    </div>
+  </body>
+</html>

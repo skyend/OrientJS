@@ -5,8 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+import SuperAgent from './lib/SuperAgent.js';
+
+var agent = new SuperAgent(__dirname);
+global.agent = agent;
 
 var routes = require('./routes/index');
+import route_installer from './routes/installer';
+
 // var projects = require('./routes/project');
 // var services = require('./routes/service');
 // var pages = require('./routes/page');
@@ -22,6 +28,8 @@ var routes = require('./routes/index');
 
 // var test = require('./routes/test');
 var app = express();
+
+
 // url = 'mongodb://localhost:27017/gelateria';
 //
 // var mongoose = require("mongoose");
@@ -72,15 +80,27 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(function(req, res, next) {
+  let namespace = req.originalUrl.split('/')[1];
+
+  if (/^(service-static)|(static)|(installer)$/.test(namespace)) {
+    next();
+    return;
+  } else if (global.agent.isBuilt) {
+    next();
+  } else {
+    res.redirect('/installer');
+  }
+});
 
 app.use(cookieParser());
 
-// app.use(express.static(path.join(__dirname, 'public')));
-
+app.use('/service-static', express.static(path.join(__dirname, 'public')));
 app.use('/gelateria', express.static(path.join(__dirname, '../client/dist'))); // builder service
-
 app.use('/static', express.static(path.join(__dirname, 'staticStore'))); // static service
 app.use('/', routes);
+app.use('/installer', route_installer);
+
 // app.use('/test', test);
 // app.use('/projects', projects);
 // app.use('/services', services);
@@ -128,16 +148,9 @@ app.use(function(err, req, res, next) {
 });
 
 
-app.ioServerReady = function(_io) {
 
-  _io.on('connection', function(socket) {
-    socket.emit('news', {
-      hello: 'world'
-    });
-    socket.on('my other event', function(data) {
-      console.log(data);
-    });
-  });
+app.serverReady = function(_server, _io) {
+  console.log("Ready");
 };
 
 

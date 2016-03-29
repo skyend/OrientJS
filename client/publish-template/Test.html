@@ -49,8 +49,8 @@
         var orbitEnvrionment = new Orbit(window);
         window.orbit = orbitEnvrionment;
 
-        orbitEnvrionment.config.retriveConfig('/client/publish-template/config/config.json', function(){
-          
+        orbitEnvrionment.config.retrieveConfig('/client/publish-template/config/config.json', function(){
+
           var masterElementNode = Orient.buildComponentByElement(document.body, {}, orbitEnvrionment);
           Orient.replaceRender(masterElementNode, document.body);
         });

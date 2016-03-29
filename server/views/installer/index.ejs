@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      ServiceBuilder :: Install
+    </title>
+    <link type='text/css' rel='stylesheet' href='/stylesheets/installer/default.css'/>
+    <script type='text/javascript' src='/gelateria/orbit.js'></script>
+    <script type='text/javascript' src='/gelateria/orient.js'></script>
+    <script>
+      var orbit = new Orbit(window);
+      orbit.config.retrieveConfig('/service-static/config/installer.json', function(){
+        document.body.write('aa');
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

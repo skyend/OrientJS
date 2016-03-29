@@ -109,7 +109,7 @@ class Config {
 
 
   // 외부 config 파일을 사용할 때 이 메서드를 사용한다.
-  retriveConfig(_configURL, _complete) {
+  retrieveConfig(_configURL, _complete) {
     // 1. 로딩
     // 2. import
     let that = this;
