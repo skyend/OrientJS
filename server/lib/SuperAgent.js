@@ -3,6 +3,8 @@ var debug = require('debug')('SuperAgent');
 
 import Logger from './SuperAgent/Logger.js';
 import IOConfig from './SuperAgent/io/Config.js';
+import DataStore from './SuperAgent/io/DataStore.js';
+import MemoryStore from './SuperAgent/io/MemoryStore.js';
 
 import Errors from '../define/errors.json';
 global.ERROR_CODES = Errors;
@@ -13,6 +15,7 @@ global.FATAL_CODES = FatalCodes;
 
 class SuperAgent {
   constructor(_rootDirname) {
+    this.built = false;
     this.rootDirname = _rootDirname;
 
     // Config
@@ -21,13 +24,38 @@ class SuperAgent {
     this.initLoggers();
   }
 
+  // Synchronous Block
+  warmup(_callback) {
+    this.config.readConfig(path.join(this.rootDirname, 'config/profile.json'));
+    this.builtCheck();
+    this.initWithConfig();
+    _callback();
+  }
+
+  initWithConfig() {
+    this.initLoggers();
+    this.initStores();
+  }
+
+  initStores() {
+    this.dataStore = new DataStore(this.config.dataStoreConfigSet);
+    this.dataStore.connect(function() {
+
+    });
+    this.memStore = new MemoryStore(this.config.memoryStoreConfigSet);
+  }
+
   initLoggers() {
-    let logDirpath = path.join(this.rootDirname, '/logs/'); // default logPath : root/logs/
+    let defaultLogDirpath = path.join(this.rootDirname, '/logs/'); // default logPath : root/logs/
+    let logDirpath = defaultLogDirpath;
+
     if (this.config.getField('log_absolte_dirpath')) {
       logDirpath = this.config.getField('log_absolte_dirpath');
     }
 
     this.log = new Logger(path.join(logDirpath, '/report.log'));
+    this.accessLog = new Logger(path.join(logDirpath, '/access.log'));
+
     // // Loggers
     // this.fatalLogger = new Logger(path.join(logDirpath, '/fatal.log'), 'crit');
     // this.errorLogger = new Logger(path.join(logDirpath, '/errors.log'), 'error');
@@ -37,18 +65,13 @@ class SuperAgent {
     // this.devLogger = new Logger(path.join(logDirpath, '/dev.log'), 'debug');
   }
 
-  warmup(_callback) {
-    this.config.readConfig(path.join(this.rootDirname, 'config/profile.json'), () => {
-      this.init();
-    });
-  }
-
-  init() {
-    this.initLoggers();
+  builtCheck() {
+    // 임시. 인스톨러 구현 후에 처리
+    this.built = true;
   }
 
   get isBuilt() {
-
+    return this.built;
   }
 
   get rootDirname() {

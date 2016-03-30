@@ -1,21 +1,33 @@
 import fs from 'fs';
 
+
+const ENOENT = "ENOENT";
+
 class Config {
   constructor() {
     this.fields = {};
   }
 
-  readConfig(_path, _complete) {
-    fs.readFile(_path, 'utf8', (err, data) => {
-      if (err) agent.log.ctit(`NOT_FOUND_CONFIG`);
-      try {
-        this.fields = JSON.parse(data);
-        _complete();
-      } catch (_e) {
-        throw _e;
-        agent.log.crit("INVALID_CONFIG_FORMAT");
+  //synchronous
+  readConfig(_path) {
+    try {
+      let filetext = fs.readFileSync(_path, 'utf8');
+
+      this.fields = JSON.parse(filetext);
+
+    } catch (_e) {
+      let code = _e.code;
+
+      if (code === ENOENT) {
+        agent.log.crit(`NOT_FOUND_CONFIG`);
+      } else if (_e instanceof SyntaxError) {
+        agent.log.crit("Config SyntaxError. Detail: %s", _e.message);
+      } else {
+        agent.log.crit("UNKNOWN ERROR. Hint: %s", _e);
       }
-    });
+
+      process.exit(1);
+    }
   }
 
   writeConfig(_path, _complete) {
@@ -24,6 +36,22 @@ class Config {
 
   getField(_key) {
     return this.fields[_key];
+  }
+
+  get absoluteDirPath() {
+    return this.getField('log_absolte_dirpath');
+  }
+
+  get port() {
+    return this.getField('port') || '3000';
+  }
+
+  get dataStoreConfigSet() {
+    return this.getField('data_store');
+  }
+
+  get memoryStoreConfigSet() {
+    return this.getField('memory_store');
   }
 }
 

@@ -5,12 +5,19 @@
       ServiceBuilder :: Install
     </title>
     <link type='text/css' rel='stylesheet' href='/stylesheets/installer/default.css'/>
+    <script src="/socket.io/socket.io.js"></script>
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
     <script>
       var orbit = new Orbit(window);
       orbit.config.retrieveConfig('/service-static/config/installer.json', function(){
 
+      });
+
+      var socket = io.connect(window.location.host);
+      socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
       });
     </script>
 
@@ -30,7 +37,6 @@
         text-align: center;
         color: rgb(255, 255, 255);
       }
-
     </style>
   </head>
   <body>

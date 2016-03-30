@@ -443,5 +443,3 @@ actionStore.registerAction('remove-cookie', ['name', 'path'], function() {
 });
 
 //****** ElementNode default Actions *****//
-
-console.log(actionStore);

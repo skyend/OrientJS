@@ -5,9 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// 고정
 import SuperAgent from './lib/SuperAgent.js';
-
-var agent = new SuperAgent(__dirname);
+let agent = new SuperAgent(__dirname);
 global.agent = agent;
 
 var routes = require('./routes/index');
@@ -151,6 +151,14 @@ app.use(function(err, req, res, next) {
 
 app.serverReady = function(_server, _io) {
   console.log("Ready");
+  _io.on('connection', function(socket) {
+    socket.emit('news', {
+      hello: 'world'
+    });
+    socket.on('my other event', function(data) {
+      console.log(data);
+    });
+  });
 };
 
 

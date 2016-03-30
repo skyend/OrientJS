@@ -1,17 +1,23 @@
 {
-  "log_absolte_dirpath": "C:\\Users\\user\\kop-work\\ion\\Gelateria_ServiceBuilder\\server\\logs",
-  "port": "",
+  "log_absolte_dirpath2": "C:\\Users\\user\\kop-work\\ion\\Gelateria_ServiceBuilder\\server\\logs",
+
+  "port": "3000",
+
   "data_store": {
-    "type": "mongodb",
+    "target": "mongodb",
     "host": "localhost",
     "port": "27017",
-    "db": "gelateria"
+    "db": "gelateria",
+    "id": "",
+    "pw": ""
   },
 
   "memory_store": {
-    "type": "redis",
+    "target": "redis",
     "host": "localhost",
     "port": "6379",
-    "db": "gelateria"
+    "db": "gelateria",
+    "id": "",
+    "pw": ""
   }
 }
