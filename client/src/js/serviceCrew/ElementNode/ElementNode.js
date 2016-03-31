@@ -184,6 +184,10 @@ class ElementNode {
     return this._prevSibling;
   }
 
+  get isAttachedDOM() {
+    return this._isAttachedDOM;
+  }
+
   get environment() {
     return this.__environment;
   }
@@ -235,6 +239,20 @@ class ElementNode {
 
     if (this._prevSibling) {
       this._prevSibling._nextSibling = this;
+    }
+  }
+
+  set isAttachedDOM(_isAttachedDOM) {
+    if (_isAttachedDOM !== this._isAttachedDOM) {
+      this._isAttachedDOM = _isAttachedDOM;
+
+      if (_isAttachedDOM === true) {
+
+        this.tryEventScope('first-rendered', {}, null);
+      } else {
+
+        //this.tryEventScope('', {}, null);
+      }
     }
   }
 
@@ -440,9 +458,15 @@ class ElementNode {
     return this.forwardDOM;
   }
 
+
+
   attachForwardDOM(_target) {
     _target.appendChild(this.forwardDOM);
     this.isAttachedDOM = true;
+
+    if (this.isMaster) {
+      this.tryEventScope('did-mount', {}, null);
+    }
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
@@ -450,6 +474,10 @@ class ElementNode {
   attachForwardDOMByReplace(_parentTarget, _old) {
     _parentTarget.replaceChild(this.forwardDOM, _old);
     this.isAttachedDOM = true;
+
+    if (this.isMaster) {
+      this.tryEventScope('did-mount', {}, null);
+    }
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
@@ -1015,6 +1043,7 @@ class ElementNode {
 
   getMaster() {
     let masterElementNode = null;
+
     this.climbParents(function(_forefatherEN) {
       if (_forefatherEN.isMaster) {
 
@@ -1850,7 +1879,7 @@ class ElementNode {
     if (valueScope)
       return valueScope.shapeValue;
     else
-      throw new Error(`선언 되지 않은 변수를 참조합니다.`);
+      throw new Error(`선언 되지 않은 변수[${_name}]를 참조합니다.`);
   }
 
   executeDC() {

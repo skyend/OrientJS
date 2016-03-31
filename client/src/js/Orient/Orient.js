@@ -51,7 +51,7 @@ class Neutron {
   }
 
   static mount(_elementNode, _targetDOMElement) {
-    _targetDOMElement.attachForwardDOM(_elementNode);
+    _elementNode.attachForwardDOM(_targetDOMElement);
   }
 
   static mountByReplace(_elementNode, _targetDOMElement) {
@@ -102,7 +102,15 @@ class Neutron {
     return APIRequest;
   }
 
+  // ElementNode 를 찾는다.
+  static DirectAccess(_forfatherElement, _enID) {
 
+  }
+
+  // ElementNode 를 찾는다.
+  static DirectAccessEN(_forfatherElementNode, _enID) {
+
+  }
 
   /*
     ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████

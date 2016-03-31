@@ -96,7 +96,7 @@ class Orbit {
 
   interpret(_text, _defaultDataObject) {
     return this.resolver.resolve(_text, {
-      getServiceConfig: this.forInterpret_config_func,
+      getENVConfig: this.forInterpret_config_func,
       executeI18n: this.forInterpret_executeI18N_func
     }, _defaultDataObject, this);
   }

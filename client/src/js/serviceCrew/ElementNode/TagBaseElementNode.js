@@ -626,6 +626,14 @@
        this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
 
      // done
+     if (_domElement.getAttribute('en-event-did-mount') !== null) // Did Mount
+       this.setEvent('did-mount', _domElement.getAttribute('en-event-did-mount'));
+     // done
+     if (_domElement.getAttribute('en-event-first-rendered') !== null) // Did Mount
+       this.setEvent('first-rendered', _domElement.getAttribute('en-event-first-rendered'));
+
+
+     // done
      // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
      //   this.setEvent('will-hide', _domElement.getAttribute('en-event-will-hide'));
      //

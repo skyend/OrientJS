@@ -126,8 +126,8 @@ class RefElementNode extends HTMLElementNode {
           for (let i = 0; i < this.attributes.length; i++) {
             masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
           }
-
-          let prevForwardDOM = rootElementNode.getDOMNode();
+          //
+          // let prevForwardDOM = masterElementNode.getDOMNode();
           masterElementNode.constructDOMs({});
           masterElementNode.attachForwardDOM(that.forwardDOM);
         }
