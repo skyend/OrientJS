@@ -22,11 +22,27 @@ class DataStore {
     console.log(this.config);
   }
 
-  getRecord(_recordId, _conditions, _filter) {
+  get driver() {
+    return this._driver;
+  }
+
+  set driver(_driver) {
+    this._driver = _driver;
+  }
+
+  getRecord(_recordId, _conditions, _filter, _callback) {
 
   }
 
-  saveRecord(_recordId, _conditions) {
+  deleteRecord(_conditions, _callback) {
+
+  }
+
+  saveRecord(_conditions, _record, _callback) {
+
+  }
+
+  updateRecord(_conditions, _record, _callback) {
 
   }
 }

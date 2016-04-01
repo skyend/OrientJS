@@ -27,8 +27,7 @@ class MongoDBDriver {
     Mongoose.connect(url);
 
     Mongoose.connection.on('error', () => {
-      agent.log.crit('Fail connect to mongoDB.');
-      process.exit(1);
+      agent.log.error('Fail connect to mongoDB.');
     });
 
     Mongoose.connection.once('open', () => {
@@ -43,7 +42,11 @@ class MongoDBDriver {
     return Mongoose.model(_key, MongooseSchemas[_key]);
   }
 
-  findUserById(_id) {
+  createUser(_json, _callback) {
+
+  }
+
+  findUser(_finder) {
 
   }
 }

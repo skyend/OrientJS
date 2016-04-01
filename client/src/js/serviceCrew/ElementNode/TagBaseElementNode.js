@@ -586,8 +586,11 @@
      }
 
      // Controls
-     if (_domElement.getAttribute('en-ctrl-repeat-n') !== null)
+     if (_domElement.getAttribute('en-ctrl-repeat-n') !== null) {
+       if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 바인드 할 수 없습니다.");
+
        this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
+     }
 
      if (_domElement.getAttribute('en-ctrl-hidden') !== null)
        this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));

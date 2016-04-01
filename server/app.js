@@ -10,9 +10,10 @@ import SuperAgent from './lib/SuperAgent.js';
 let agent = new SuperAgent(__dirname);
 global.agent = agent;
 
-var routes = require('./routes/index');
+import routes from './routes/index';
+import route_admin from './routes/admin';
 import route_installer from './routes/installer';
-
+import route_api_user from './routes/api/user';
 // var projects = require('./routes/project');
 // var services = require('./routes/service');
 // var pages = require('./routes/page');
@@ -99,7 +100,10 @@ app.use('/service-static', express.static(path.join(__dirname, 'public')));
 app.use('/gelateria', express.static(path.join(__dirname, '../client/dist'))); // builder service
 app.use('/static', express.static(path.join(__dirname, 'staticStore'))); // static service
 app.use('/', routes);
+app.use('/admin', route_admin);
 app.use('/installer', route_installer);
+
+app.use('/api/user', route_api_user);
 
 // app.use('/test', test);
 // app.use('/projects', projects);

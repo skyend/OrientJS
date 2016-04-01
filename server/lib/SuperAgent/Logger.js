@@ -10,10 +10,12 @@ export default function(filename) {
         json: false,
         filename: filename
       })
-    ]
+    ],
   });
 
+
   logger.setLevels(winston.config.syslog.levels);
-  logger.exitOnError = false;
+
+  //logger.exitOnError = true;
   return logger;
 };

@@ -3,8 +3,14 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('sign/signin', {
-    title: 'Express'
+  res.render('index', {
+    title: 'Service Builder'
+  });
+});
+
+router.get('/admin/dashboard', function(req, res, next) {
+  res.render('admin/index', {
+    title: 'Service Builder'
   });
 });
 

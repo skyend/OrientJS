@@ -11,8 +11,6 @@ import TypeCaster from '../Data/TypeCaster';
   데이터가 존재하는 곳에 데이터 리졸버가 존재한다.
 */
 
-let i = 0;
-
 class Resolver {
   constructor(_upperResolver) {
 
@@ -281,6 +279,7 @@ class Resolver {
 
         if (valueScope) {
           data = valueScope.shapeValue;
+
         } else {
           throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
         }

@@ -2,6 +2,7 @@
   "log_absolte_dirpath2": "C:\\Users\\user\\kop-work\\ion\\Gelateria_ServiceBuilder\\server\\logs",
 
   "port": "3000",
+  "allow_signup": true,
 
   "data_store": {
     "target": "mongodb",

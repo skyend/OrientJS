@@ -1,11 +1,79 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
 <html>
-  <head>
-    <title>
-      ServiceBuilder
-    </title>
-  </head>
-  <body>
-      Welcome
-  </body>
+	<head>
+		<title>Eventually by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/service-static/index/assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="/service-static/index/assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="/service-static/index/assets/css/ie9.css" /><![endif]-->
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type='text/javascript' src='/gelateria/orbit.js'></script>
+    <script type='text/javascript' src='/gelateria/orient.js'></script>
+    <script>
+      window.onload = function(){
+        var orbit = new Orbit(window);
+        var targetElement = document.getElementById('signup-form');
+        // var targetElement = document.body;
+        var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
+        Orient.replaceRender(masterElementNode, targetElement);
+
+        var socket = io.connect(window.location.host);
+        socket.on('news', function (data) {
+          console.log(data);
+          socket.emit('my other event', { my: 'data' });
+        });
+      }
+    </script>
+
+    <!-- Scripts -->
+			<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+			<!-- <script src="/service-static/index/assets/js/main.js"></script> -->
+	</head>
+	<body >
+
+		<!-- Header -->
+			<header id="header">
+				<h1><%= title %></h1>
+				<p>A simple template for telling the world when you'll launch<br />
+				your next big thing. Brought to you by <a href="/admin/">Pass Admin</a>.</p>
+			</header>
+
+		<!-- Signup Form -->
+			<form id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
+
+        <en:value name='email' type='string' value=''></en:value>
+        <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
+        <en:task name='update' action='update' en-executor='{{: this.getMaster() }}'></en:task>
+
+				<input type="email" name="email" value='{{: val@email }}' id="email" placeholder="Email Address" en-event-keyup='task@email-input' />
+
+				<input type="submit" value="Sign Up" en-event-click='{{ location.href=`/admin/signup?email=`+ val@email; }}'/>
+        <input type="submit" value="Sign In" en-event-click='{{ location.href=`/admin/signin?email=`+ val@email; }}'/>
+			</form>
+
+		<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; Untitled.</li><li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+
+
+      <!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+      <script src="/service-static/index/assets/js/main.js"></script>
+	</body>
 </html>

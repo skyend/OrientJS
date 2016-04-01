@@ -19,14 +19,12 @@ class Config {
       let code = _e.code;
 
       if (code === ENOENT) {
-        agent.log.crit(`NOT_FOUND_CONFIG`);
+        agent.log.error(`NOT_FOUND_CONFIG`);
       } else if (_e instanceof SyntaxError) {
-        agent.log.crit("Config SyntaxError. Detail: %s", _e.message);
+        agent.log.error("Config SyntaxError. Detail: %s", _e.message);
       } else {
-        agent.log.crit("UNKNOWN ERROR. Hint: %s", _e);
+        agent.log.error("UNKNOWN ERROR. Hint: %s", _e);
       }
-
-      process.exit(1);
     }
   }
 
