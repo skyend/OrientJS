@@ -208,6 +208,12 @@ class HTMLElementNode extends TagBaseElementNode {
 
     if (/^html|grid|ref$/.test(this.getType()))
       this.childrenIteration(function(_child) {
+        if (_child.isRepeater()) {
+          for (let i = 0; i < _child.clonePool.length; i++) {
+            _child.clonePool[i].treeExplore(_explorerFunc);
+          }
+        }
+
         if (/^html|grid|ref$/.test(_child.getType()))
           _child.treeExplore(_explorerFunc);
         else // string type
