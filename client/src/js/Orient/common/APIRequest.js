@@ -5,7 +5,7 @@ import HTTPRequest from './HTTPRequest';
 const REGEXP_APISOURCE_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
 class APIRequest {
-  static RequestAPI(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype) {
+  static RequestAPI(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
 
     // apiSource 의 class 확인
     // http 와 https class 는 직접 요청 처리 그 외 class는 env 를 통해 실행.
@@ -18,7 +18,7 @@ class APIRequest {
 
 
     if (/^https?$/.test(sourceType)) {
-      HTTPRequest.request('get', sourceTarget, _paramObject, function(_err, _res) {
+      HTTPRequest.request(_methodOverride || 'get', sourceTarget, _paramObject, function(_err, _res) {
         if (_err !== null) return _callback(_err, null);
 
 

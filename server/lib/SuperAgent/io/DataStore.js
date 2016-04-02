@@ -29,22 +29,6 @@ class DataStore {
   set driver(_driver) {
     this._driver = _driver;
   }
-
-  getRecord(_recordId, _conditions, _filter, _callback) {
-
-  }
-
-  deleteRecord(_conditions, _callback) {
-
-  }
-
-  saveRecord(_conditions, _record, _callback) {
-
-  }
-
-  updateRecord(_conditions, _record, _callback) {
-
-  }
 }
 
 export default DataStore;

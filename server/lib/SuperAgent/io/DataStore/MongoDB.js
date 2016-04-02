@@ -34,20 +34,23 @@ class MongoDBDriver {
       agent.log.info("mongo db connection OK.");
       _callback();
     });
-
-    console.log(this._getModel('user'));
   }
 
-  _getModel(_key) {
+  getModel(_key) {
     return Mongoose.model(_key, MongooseSchemas[_key]);
   }
 
-  createUser(_json, _callback) {
 
-  }
-
-  findUser(_finder) {
-
+  /*
+     ██████ ██████  ██    ██ ██████
+    ██      ██   ██ ██    ██ ██   ██
+    ██      ██████  ██    ██ ██   ██
+    ██      ██   ██ ██    ██ ██   ██
+     ██████ ██   ██  ██████  ██████   s
+  */
+  createUser(_userData, _callback) {
+    let UserModel = this.getModel('user');
+    console.log(UserModel);
   }
 }
 

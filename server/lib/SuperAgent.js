@@ -5,6 +5,7 @@ import Logger from './SuperAgent/Logger.js';
 import IOConfig from './SuperAgent/io/Config.js';
 import DataStore from './SuperAgent/io/DataStore.js';
 import MemoryStore from './SuperAgent/io/MemoryStore.js';
+import Librarian from './SuperAgent/Librarian.js';
 
 import Errors from '../define/errors.json';
 global.ERROR_CODES = Errors;
@@ -20,6 +21,8 @@ class SuperAgent {
 
     // Config
     this.config = new IOConfig();
+
+    this.businessMan = new Librarian(this);
 
     this.initLoggers();
   }

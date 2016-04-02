@@ -178,6 +178,14 @@
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
     <script>
+
+      Orient.registerFunction('createUser', function(){
+        console.log('create');
+        this.executeTask('submit', function(){
+          console.log('execute Task');
+        });
+      });
+
       window.onload = function(){
         var orbit = new Orbit(window);
         var targetElement = document.getElementById('register-form');
@@ -201,13 +209,17 @@
       <div class="register-box-body">
         <p class="login-box-msg">Register a new membership</p>
 
-        <form id='register-form' action="../../index.html" method="post">
+        <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;">
           <en:value name='fullname' type='string' value=''></en:value>
           <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
           <en:value name='confirm' type='string' value=''></en:value>
 
           <en:task name='render' action='update' en-executor='{{: this.getMaster() }}'></en:task>
+
+
+          <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[http]/api/user/register' arg-requestId=''></en:task>
+
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='fullname' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>

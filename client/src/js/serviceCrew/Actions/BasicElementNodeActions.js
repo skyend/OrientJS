@@ -298,16 +298,14 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   let fields = {};
   let foundElements;
   if (this.environment) {
-    foundElements = this.environment.document.querySelector('[transfer-value]').map(function(_domElement) {
-      return _domElement.___en;
-    });
+    foundElements = this.environment.document.querySelector('[transfer-value]') || [];
   } else {
-    foundElements = window.document.querySelector('[transfer-value]').map(function(_domElement) {
-      return _domElement.___en;
-    });
+    foundElements = window.document.querySelector('[transfer-value]') || [];
   }
 
-  foundElements.map(function(_elementNode) {
+  foundElements.map(function(_domElement) {
+    return _domElement.___en;
+  }).map(function(_elementNode) {
 
     let pass = true;
 
@@ -327,10 +325,15 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     }
   });
 
+  let requestMethodForHTTP = 'get';
+  if (this.getDOMNode().getAttribute('method')) {
+    requestMethodForHTTP = this.getDOMNode().getAttribute('method');
+  }
+
   console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
   console.log(apiSourceId, requestId, fields);
 
-  Orient.APIRequest.requestAPI(this.environment, apiSourceId, requestId, fields, function(_err, _retrievedObject, _statusCode) {
+  Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, fields, function(_err, _retrievedObject, _statusCode) {
     // http error 코드일 경우
     if (_retrievedObject === null) {
 
@@ -343,7 +346,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     }
 
     _callback(_actionResult);
-  }, enctype);
+  }, enctype, requestMethodForHTTP);
 });
 
 

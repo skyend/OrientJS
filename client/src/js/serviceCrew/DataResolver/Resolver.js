@@ -159,7 +159,7 @@ class Resolver {
       let result = vfunction.apply(_caller, argsMap);
       return result;
     } catch (_e) {
-
+      console.info(_e);
       console.error('<Binder Error> ', _e, `Problem {{${_syntax}}}`, argsMap);
       return _e;
     }
