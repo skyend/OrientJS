@@ -46,6 +46,17 @@ class Neutron {
     return masterElementNode;
   }
 
+  static buildComponentByElementSafeOrigin(_domElement, _props = {}, _env = null) {
+    let masterType = ElementNodeFactory.checkElementNodeType(_domElement);
+
+    // build
+    // 랜더링 전에 Env 세팅
+    let masterElementNode = ElementNodeFactory.takeElementNode(undefined, _props, masterType, _env, true);
+    masterElementNode.buildByElement(_domElement, true);
+
+    return masterElementNode;
+  }
+
   static renderVirtual(_elementNode) {
     _elementNode.constructDOMs({});
   }

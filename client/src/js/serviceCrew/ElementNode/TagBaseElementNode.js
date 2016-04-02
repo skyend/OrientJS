@@ -182,6 +182,11 @@
      console.error(`Attribute '${_name}' 가 정의되지 않았습니다.`);
    }
 
+
+   getAttributeWithResolve(_attrName) {
+     return this.interpret(this.getAttribute(_attrName));
+   }
+
    // id
    getIdAtrribute() {
      return this.getAttribute('id');
@@ -429,10 +434,6 @@
    }
 
 
-
-
-
-
    /*
      CreateNode
        HTMLNode를 생성한다.
@@ -529,10 +530,11 @@
      }
    }
 
-   buildByElement(_domElement) {
+   buildByElement(_domElement, _absorbOriginDOM) {
 
      // for Debug
      this.sourceElement = _domElement;
+
 
      this.copyAllAtrributeFromDOMElement(_domElement);
 
@@ -673,6 +675,16 @@
        if (matched !== null) {
          this.setPipeEvent(matched[1], attributes[i].nodeValue);
        }
+     }
+
+     // 빌드시에 참조된 DOM을 흡수하는 경우, 참조된 DOM을 forwardDOM으로 편입시키며 en Event 를 바인딩 한다.
+     // 이 시점에서 Event 를 바인딩하는 이유는 Event 바인딩은 최초랜더링 시에 forwardDOM이 생성될 때만 이벤트가 바인딩 되므로
+     // 참조된 DOM을 흡수하여 빌드 한 후에 랜더링때는 backupDOM으로 DOM이 생성되기 때문이다.
+     if (_absorbOriginDOM === true) {
+       this.forwardDOM = _domElement;
+       this.forwardDOM.___en = this;
+       this.isAttachedDOM = true;
+       this.bindDOMEvents({}, _domElement);
      }
    }
 

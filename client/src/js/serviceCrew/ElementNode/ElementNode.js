@@ -111,8 +111,7 @@ class ElementNode {
     // forwardDOM 이 화면에 랜더링 되지 않은 경우도 x,y 값이 -1을 갖는다.
     this.indexOccupyRange = new Point(-1, -1);
 
-    // 상위 forwardDOM 에서 차지중인 index 위치
-    this.attachedIndexInParentDOM = -1;
+
     this.isAttachedDOM = false;
 
     // ElementNode 컴포넌트의 최상위 ElementNode
@@ -347,10 +346,6 @@ class ElementNode {
 
   getControlWithResolve(_controlName) {
     return this.interpret(this.controls[_controlName]);
-  }
-
-  getAttributeWithResolve(_attrName) {
-    return this.interpret(this.attributes[_attrName]);
   }
 
   ////////////////////

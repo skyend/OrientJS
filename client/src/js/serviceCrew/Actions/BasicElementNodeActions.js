@@ -297,15 +297,15 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
 
   let fields = {};
   let foundElements;
-  if (this.environment) {
-    foundElements = this.environment.document.querySelector('[transfer-value]') || [];
-  } else {
-    foundElements = window.document.querySelector('[transfer-value]') || [];
+  let foundElementNodes = [];
+  foundElements = this.getDOMNode().querySelectorAll('[transfer-value]') || [];
+  console.log(foundElements);
+  for (let i = 0; i < foundElements.length; i++) {
+    foundElementNodes.push(foundElements[i].___en);
   }
+  console.log(foundElementNodes);
 
-  foundElements.map(function(_domElement) {
-    return _domElement.___en;
-  }).map(function(_elementNode) {
+  foundElementNodes.map(function(_elementNode) {
 
     let pass = true;
 
@@ -313,7 +313,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
       if (_parent === that) {
 
         return null;
-      } else if (_parent.getAttribute('ignore-transfer') !== undefined) {
+      } else if (_parent.hasAttribute('ignore-transfer')) {
 
         pass = false;
         return null;

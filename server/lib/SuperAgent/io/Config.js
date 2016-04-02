@@ -51,6 +51,14 @@ class Config {
   get memoryStoreConfigSet() {
     return this.getField('memory_store');
   }
+
+  get allowSignup() {
+    return this.getField('allow_signup');
+  }
+
+  get firstMemberISSuper() {
+    return this.getField('first_member_is_super');
+  }
 }
 
 export default Config;

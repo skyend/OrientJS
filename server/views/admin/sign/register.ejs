@@ -181,17 +181,32 @@
 
       Orient.registerFunction('createUser', function(){
         console.log('create');
-        this.executeTask('submit', function(){
-          console.log('execute Task');
+        var that = this;
+
+        this.executeTask('submit', function(_prevActionResult){
+          var resultData = _prevActionResult.data;
+
+          if( resultData.error ){
+            alert('Error : '+ resultData.error.code);
+          } else {
+            alert("Success Create User");
+            location.href = '/admin/signin?email='+that.getValue('email');
+          }
         });
       });
 
       window.onload = function(){
         var orbit = new Orbit(window);
         var targetElement = document.getElementById('register-form');
+        targetElement.onclick = function(){
+          console.log("hello");
+        }
         // var targetElement = document.body;
-        var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
-        Orient.replaceRender(masterElementNode, targetElement);
+        var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetElement, {}, orbit);
+        console.log(masterElementNode);
+        // masterElementNode.constructDOMs({});
+        // masterElementNode.update()
+       Orient.replaceRender(masterElementNode, targetElement);
 
         var socket = io.connect(window.location.host);
         socket.on('news', function (data) {
@@ -224,25 +239,25 @@
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='fullname' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="text" class="form-control" value='{{: val@fullname }}' placeholder="Full name" en-event-keyup='task@keyup'>
+            <input type="text" name='fullname' class="form-control" value='{{: val@fullname }}' transfer-value='{{: val@fullname }}' placeholder="Full name" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="email" class="form-control" value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup'>
+            <input type="email" name='email' class="form-control" value='{{: val@email }}' transfer-value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='pw' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="password" class="form-control" value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup'>
+            <input type="password" name='pw' class="form-control" value='{{: val@pw }}' transfer-value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='confirm' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="password" class="form-control" value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup'>
+            <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
           </div>
           <div class="row">

@@ -138,8 +138,9 @@ class RefElementNode extends HTMLElementNode {
     return returnHolder;
   }
 
-  buildByElement(_domElement) {
-    super.buildByElement(_domElement, ['en-ref-target-id', 'en-']);
+  buildByElement(_domElement, _absorbOriginDOM) {
+    super.buildByElement(_domElement, _absorbOriginDOM);
+
     let attributes = _domElement.attributes;
     let attr;
 

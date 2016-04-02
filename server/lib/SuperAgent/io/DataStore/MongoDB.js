@@ -50,7 +50,41 @@ class MongoDBDriver {
   */
   createUser(_userData, _callback) {
     let UserModel = this.getModel('user');
-    console.log(UserModel);
+    UserModel.create(_userData, function(_err, _doc) {
+      if (_err !== null) {
+
+        agent.log.error("Mongodb Fail createUser");
+        _callback(_err, null);
+      } else {
+
+        agent.log.info("Mongodb Created New User");
+        _callback(null, _doc);
+      }
+    })
+  }
+
+  getUserCount(_callback) {
+    let UserModel = this.getModel('user');
+    UserModel.count(function(_err, _c) {
+      if (_err !== null) {
+        agent.log.error("Mongodb Get User Count" + _err);
+      }
+
+      _callback(_err, _c);
+    });
+  }
+
+  getUserByEmail(_email, _callback) {
+    let UserModel = this.getModel('user');
+    UserModel.findOne({
+      email: _email
+    }, function(_err, _userDoc) {
+      if (_err !== null) {
+        agent.log.error("MongoDB get user by email" + _err);
+      }
+
+      _callback(_err, _userDoc);
+    });
   }
 }
 

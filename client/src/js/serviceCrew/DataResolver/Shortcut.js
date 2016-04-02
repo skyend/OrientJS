@@ -12,6 +12,7 @@ const MONTH_MAP = {
   'en': []
 };
 
+
 class Shortcut {
 
   // 삼항연산 메서드
@@ -118,6 +119,10 @@ class Shortcut {
     return ArrayHandler.findIndex(_array, function(_v) {
       return _v === _value;
     });
+  }
+
+  static filter(_value) {
+
   }
 }
 

@@ -7,8 +7,8 @@ import DataStore from './SuperAgent/io/DataStore.js';
 import MemoryStore from './SuperAgent/io/MemoryStore.js';
 import Librarian from './SuperAgent/Librarian.js';
 
-import Errors from '../define/errors.json';
-global.ERROR_CODES = Errors;
+import Errors from '../define/errors.js';
+global.ERRORS = Errors;
 
 import FatalCodes from '../define/FatalCodes.json';
 global.FATAL_CODES = FatalCodes;

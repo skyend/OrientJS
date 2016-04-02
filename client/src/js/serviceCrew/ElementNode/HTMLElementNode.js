@@ -242,8 +242,8 @@ class HTMLElementNode extends TagBaseElementNode {
    * DomElement 을 자신에게 매핑하여 자신을 빌드한다.
    * child는 재귀로 호출한다.
    */
-  buildByElement(_domElement) {
-    super.buildByElement(_domElement);
+  buildByElement(_domElement, _absorbOriginDOM) {
+    super.buildByElement(_domElement, _absorbOriginDOM);
 
     // this.setType('html');
 
@@ -289,7 +289,7 @@ class HTMLElementNode extends TagBaseElementNode {
         newChildElementNode = Factory.takeElementNode(undefined, {}, type, this.environment);
       }
 
-      elementNodeBuildResult = newChildElementNode.buildByElement(child_);
+      elementNodeBuildResult = newChildElementNode.buildByElement(child_, _absorbOriginDOM);
 
       if (elementNodeBuildResult === null) continue;
 

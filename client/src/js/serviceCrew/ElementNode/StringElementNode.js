@@ -112,11 +112,17 @@ class StringElementNode extends ElementNode {
     this.setText("Text");
   }
 
-  buildByElement(_stringNode) {
+  buildByElement(_stringNode, _absorbOriginDOM) {
     this.setType('string');
 
     // for Debug
     this.sourceElement = _stringNode;
+    if (_absorbOriginDOM === true) {
+      this.forwardDOM = _stringNode;
+      this.forwardDOM.___en = this;
+      this.isAttachedDOM = true;
+    }
+
     // null을 반환한 ElementNode는 유효하지 않은 ElementNode로 상위 ElementNode의 자식으로 편입되지 못 한다.
     // 공백과 줄바꿈으로만 이루어진 TextNode는 필요하지 않은 요소이다.
     if (/^[\s\n][\s\n]+$/.test(_stringNode.nodeValue)) return null;

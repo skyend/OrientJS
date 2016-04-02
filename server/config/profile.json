@@ -3,6 +3,7 @@
 
   "port": "3000",
   "allow_signup": true,
+  "first_member_is_super": true,
 
   "data_store": {
     "target": "mongodb",
