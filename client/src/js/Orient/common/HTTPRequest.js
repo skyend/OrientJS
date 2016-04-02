@@ -6,7 +6,7 @@ class HTTPRequest {
       SuperAgent.get(_url)
         .query(_fields)
         .end(function(err, res) {
-
+          console.log(err, res);
           _complete(err || null, res || null);
         });
 
@@ -15,7 +15,7 @@ class HTTPRequest {
         .type('form')
         .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
         .end(function(err, res) {
-
+          console.log(err, res);
           _complete(err || null, res || null);
         });
     }
@@ -38,7 +38,6 @@ class HTTPRequest {
     return formData;
   }
 
-
   static requestSync(_method, _url, _data) {
     var self = this;
 
@@ -56,8 +55,57 @@ class HTTPRequest {
     if (req.status == 200) {
       return req.responseText;
     } else {
-      //console.error(req);
-      //throw new Error("could not load iCafe Node Scheme Specification");
+
+      return undefined;
+    }
+  }
+
+
+  static requestSync__(_method, _url, _data, _complete, _enctype = 'application/x-www-form-urlencoded') {
+    var self = this;
+
+    var req;
+    if (window.XMLHttpRequest) {
+      req = new XMLHttpRequest();
+    } else {
+      req = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    // 동기 방식 로딩
+    req.open(_method, _url, false);
+    if (_method !== 'get') {
+      req.setRequestHeader("Content-type", _enctype);
+      req.send();
+    } else {
+      req.send();
+    }
+
+    console.log(req);
+    let statusType = Math.floor(req.status / 100);
+
+    // 1xx, 2xx, 3xx
+    if (statusType < 4) {
+
+      if (typeof _complete === 'function') {
+        _complete(err || null, res || null);
+      } else {
+        return req.responseText;
+      }
+    } else {
+      // 4xx, 5xx
+
+
+      if (typeof _complete === 'function') {
+        _complete({
+          status: req.status,
+          statusCode: req.status,
+          statusType: statusType,
+          text: req.responseText,
+          type: type
+        }, null);
+      } else {
+        return req.responseText;
+      }
 
       return undefined;
     }

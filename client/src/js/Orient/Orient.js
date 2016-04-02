@@ -113,6 +113,10 @@ class Neutron {
     return APIRequest;
   }
 
+  static get HTTPRequest() {
+    return HTTPRequest;
+  }
+
   // ElementNode 를 찾는다.
   static DirectAccess(_forfatherElement, _enID) {
 
