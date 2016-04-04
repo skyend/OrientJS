@@ -10,6 +10,8 @@ import APISourceFactory from './Orbit/APISource/Factory';
 import OrbitDocument from './Orbit/Document';
 import ObjectExtends from '../util/ObjectExtends';
 
+import events from 'events';
+
 class Orbit {
   /**
     _window : Browser Window Object
@@ -17,6 +19,9 @@ class Orbit {
     _retriever : 프레임웤 리소스를 확장하는 객체
   */
   constructor(_window, _inlineConfig, _retriever) {
+    // Orbit 에서 커스텀 이벤트를 사용 할 수 있도록 EventEmitter를 포함한다.
+    ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
+
     let that = this;
 
     if (_window) {
@@ -110,8 +115,19 @@ class Orbit {
   }
 
 
-  appendScript() {
 
+  // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.
+  ready(_func){
+    if( !this.readied ){
+      this.on('ready', _func);
+    } else {
+      _func();
+    }
+  }
+
+  signalReady(){
+    this.readied = true;
+    this.emit('ready');
   }
 
   /*
