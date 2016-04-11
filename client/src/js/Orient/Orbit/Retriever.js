@@ -90,6 +90,8 @@ class Retriever {
     try {
       return JSON.parse(data);
     } catch (e) {
+      // undefined를 반환한다.
+      // i18n처리에서 undefined를 반환받으면 다음 후보 i18n 언어셋을 로딩하도록 되어 있기 때문이다.
       return undefined;
     }
   }
