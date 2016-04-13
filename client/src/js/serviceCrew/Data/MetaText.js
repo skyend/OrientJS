@@ -62,12 +62,12 @@ class MetaText extends MetaData {
   }
 
   get byBoolean() {
-    if (this.variable === 'true') {
+    if (this.variable === 'true' || this.variable === true) {
       return true;
-    } else if (this.variable === 'false') {
+    } else if (this.variable === 'false' || this.variable === false) {
       return false;
     } else {
-      throw new Error("Boolean 으로 변환 할 수 없습니다.");
+      throw new Error(`${typeof this.variable} 타입인 '${this.variable}' 을 Boolean 으로 변환 할 수 없습니다.`);
     }
   }
 

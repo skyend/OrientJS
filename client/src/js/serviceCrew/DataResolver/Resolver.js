@@ -278,8 +278,12 @@ class Resolver {
         let valueScope = _externalGetterInterface.getScope(varName, 'value');
 
         if (valueScope) {
-          data = valueScope.shapeValue;
 
+          try {
+            data = valueScope.shapeValue;
+          } catch (_e) {
+            throw _e;
+          }
         } else {
           throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
         }

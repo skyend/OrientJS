@@ -204,6 +204,8 @@
         <form id='login-form' action="../../index2.html" method="post">
           <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
+          <en:value name='aa' type='boolean' value='{{: true }}' resolve-on></en:value>
+          {{: val@aa }}
           <en:task name='render' action='update' en-executor='{{: this.getMaster() }}'></en:task>
 
           <div class="form-group has-feedback">
