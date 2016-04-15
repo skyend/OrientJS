@@ -15,6 +15,7 @@ import ObjectExtends from '../util/ObjectExtends';
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
 
+let CLEAR_BIND_ERROR = false;
 
 class Neutron {
 
@@ -134,6 +135,16 @@ class Neutron {
 
   }
 
+  // BindError 를 숨긴다.
+  static ClearBindError() {
+    window.CLEAR_BIND_ERROR = true;
+  }
+
+  // BindError를 표시한다.
+  static OccursBindError() {
+    window.CLEAR_BIND_ERROR = false;
+  }
+
   /*
     ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
     ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██
@@ -167,5 +178,6 @@ class Neutron {
   }
 
 }
+
 
 export default window.Orient = Neutron;

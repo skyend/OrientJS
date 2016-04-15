@@ -101,6 +101,7 @@ class DynamicContext {
       }
 
       return function(_callback) {
+
         APIRequest.RequestAPI(that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _statusCode) {
 
           that.dataResolver.setNS(nss[_i], _retrievedObject);

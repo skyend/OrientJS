@@ -698,26 +698,31 @@ class ElementNode {
       that.rebuildDynamicContext();
 
       that.debug('dc', 'Will fire');
-      that.dynamicContext.fire(function(_err) {
-        that.debug('dc', 'burn');
+      try {
+        that.dynamicContext.fire(function(_err) {
+          that.debug('dc', 'burn');
 
-        if (_err) return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
+          if (_err) return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
 
-        that.tryEventScope('will-dc-bind', {
-          dynamicContext: that.dynamicContext
-        }, null, function done(_result) {
-          if (that.afterContinue(_result) === false) return;
-
-          that.update({
-            keepDC: 'once'
-          });
-
-          that.tryEventScope('complete-bind', {
+          that.tryEventScope('will-dc-bind', {
             dynamicContext: that.dynamicContext
-          }, null);
+          }, null, function done(_result) {
+            if (that.afterContinue(_result) === false) return;
 
+            that.update({
+              keepDC: 'once'
+            });
+
+            that.tryEventScope('complete-bind', {
+              dynamicContext: that.dynamicContext
+            }, null);
+
+          });
         });
-      });
+      } catch (_e) {
+        _e.message += that.DEBUG_FILE_NAME_EXPLAIN;
+        throw _e;
+      }
       return;
 
     });
@@ -2023,7 +2028,7 @@ class ElementNode {
   }
 
   get DEBUG_FILE_NAME_EXPLAIN() {
-    return `Reference file : ${this.DEBUG_FILE_NAME}`;
+    return `<From: ${this.DEBUG_FILE_NAME}>`;
   }
 
   print_console_warn() {

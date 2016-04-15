@@ -160,7 +160,10 @@ class Resolver {
       return result;
     } catch (_e) {
       console.info(_e);
-      console.error('<Binder Error> ', _e, `Problem {{${_syntax}}}`, argsMap);
+
+      if (!window.CLEAR_BIND_ERROR) {
+        console.error('<Binder Error> ', _e, `Problem {{${_syntax}}}`, argsMap);
+      }
       return _e;
     }
   }

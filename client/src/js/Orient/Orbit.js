@@ -100,6 +100,7 @@ class Orbit {
   }
 
   interpret(_text, _defaultDataObject) {
+
     return this.resolver.resolve(_text, {
       getENVConfig: this.forInterpret_config_func,
       executeI18n: this.forInterpret_executeI18N_func
@@ -114,20 +115,47 @@ class Orbit {
     return this.bindedInterpretSupporters.getConfig;
   }
 
+  // will Deprecate
+  pageMetaCompatibility(_renderCallback, _finalCallback) {
+    let pageMetaEl = document.getElementById('page-meta');
+    let pageMetaText = pageMetaEl.innerHTML;
+    let pageMeta = JSON.parse(pageMetaText);
 
+    // Early Scripts
+    this.orbitDocument.loadExtraJSSerial(pageMeta.earlyScripts || [], (_failures) => {
+      _renderCallback();
+
+      this.orbitDocument.loadExtraJSSerial(pageMeta.scripts || [], () => {
+        _finalCallback();
+      });
+    });
+
+    this.orbitDocument.loadExtraCSSPararllel(pageMeta.styles || [], () => {
+      console.log("Style load complete");
+    });
+  }
+
+  foundationCompatibility() {
+    this.pageMetaCompatibility(() => {
+      var masterElementNode = Orient.buildComponentByElement(this.orbitDocument.document.body, {}, this);
+      Orient.replaceRender(masterElementNode, this.orbitDocument.document.body);
+    }, () => {
+      this.signalReady();
+    });
+  }
 
   // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.
-  ready(_func){
-    if( !this.readied ){
-      this.on('ready', _func);
+  ready(_func) {
+    if (!this.readied) {
+      this.on('load', _func);
     } else {
       _func();
     }
   }
 
-  signalReady(){
+  signalReady() {
     this.readied = true;
-    this.emit('ready');
+    this.emit('load');
   }
 
   /*

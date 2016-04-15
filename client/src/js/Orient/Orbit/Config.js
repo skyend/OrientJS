@@ -129,7 +129,8 @@ class Config {
   }
 
   // Config 에 입력된 필드값을 가져온다.
-  getField(_name) {
+  getField(_name) {;
+
     if (this[_name]) {
       return this[_name];
     } else {
