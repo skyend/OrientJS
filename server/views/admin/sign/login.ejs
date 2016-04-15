@@ -190,6 +190,14 @@
           console.log(data);
           socket.emit('my other event', { my: 'data' });
         });
+
+        Orient.registerFunction('returnLoginChainCode', function(_resultData){
+          if( _resultData.sessionKey !== null ){
+            return 'success';
+          } else {
+            return 'fail';
+          }
+        });
       }
     </script>
   </head>
@@ -201,23 +209,32 @@
       <div class="login-box-body">
         <p class="login-box-msg">Sign in to start your session</p>
 
-        <form id='login-form' action="../../index2.html" method="post">
+        <form id='login-form' method="post" en-event-submit='task@submit' onsubmit="return false" >
           <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
-          <en:value name='aa' type='boolean' value='{{: true }}' resolve-on></en:value>
-          {{: val@aa }}
+
           <en:task name='render' action='update' en-executor='{{: this.getMaster() }}'></en:task>
+
+          <en:task name='submit' action="sendAPISourceForm"
+                                  arg-apiSourceId='[http]/api/user/signin'
+                                  arg-requestId=''
+                                  arg-chainCodeCriterion='{{: func@returnLoginChainCode }}'
+                                  chain-success='success'
+                                  chain-fail='fail-alert'></en:task>
+          <en:task name='fail-alert' action='alert' arg-message='{{: feature@prev-result.data.error.code }}'></en:task>
+          <en:task name='success' action='set-cookie' arg-name='sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission'></en:task>
+          <en:task name='admission' action='move-location' arg-location='/dashboard/'></en:task>
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="email" class="form-control" value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup'>
+            <input type="email" name='email' class="form-control" value='{{: val@email }}' transfer-value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='pw' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="password" class="form-control" value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup'>
+            <input type="password" name='pw' class="form-control" value='{{: val@pw }}' transfer-value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup'>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">

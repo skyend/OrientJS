@@ -36,19 +36,39 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script type='text/javascript' src='/gelateria/orbit.js'></script>
+    <script type='text/javascript' src='/gelateria/orient.js'></script>
+    <script>
+      window.onload = function(){
+        var orbit = new Orbit(window);
+        var targetElement = document.getElementById('login-form');
+        // var targetElement = document.body;
+
+        var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
+
+        Orient.replaceRender(masterElementNode, targetElement);
+
+        var socket = io.connect(window.location.host);
+        socket.on('news', function (data) {
+          console.log(data);
+          socket.emit('my other event', { my: 'data' });
+        });
+      }
+    </script>
   </head>
   <body class="hold-transition skin-blue sidebar-mini">
   <div class="wrapper">
 
-    <%- include ./common/head.ejs %>
+    <%- include ../common/head.ejs %>
 
     <!-- Left side column. contains the logo and sidebar -->
-    <%- include ./common/sidebar.ejs %>
+    <%- include ../common/sidebar.ejs %>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
-      <%- include ./common/location-bar.ejs %>
+      <%- include ../common/location-bar.ejs %>
 
       <!-- Main content -->
       <section class="content">
@@ -117,18 +137,26 @@
         </div>
         <!-- /.row -->
        <div class='row'>
+        <div class='col-lg-3'>
+a
+        </div>
 
-         Main COntents 
+        <div class='col-lg-7'>
+b
+        </div>
+        <div class='col-lg-2'>
+c
+        </div>
        </div>
 
       </section>
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <%- include ./common/footer.ejs %>
+    <%- include ../common/footer.ejs %>
 
     <!-- Control Sidebar -->
-    <%- include ./common/control-sidebar.ejs %>
+    <%- include ../common/control-sidebar.ejs %>
 
     <!-- /.control-sidebar -->
     <!-- Add the sidebar's background. This div must be placed

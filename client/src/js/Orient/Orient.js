@@ -1,3 +1,5 @@
+import Cookie from './common/Cookie';
+
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import HTTPRequest from './common/HTTPRequest';
 import APIRequest from './common/APIRequest';
@@ -12,6 +14,7 @@ import TagBaseElementNode from '../serviceCrew/ElementNode/TagBaseElementNode';
 import ObjectExtends from '../util/ObjectExtends';
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
+
 
 class Neutron {
 
@@ -115,6 +118,10 @@ class Neutron {
 
   static get HTTPRequest() {
     return HTTPRequest;
+  }
+
+  static get Cookie() {
+    return Cookie;
   }
 
   // ElementNode 를 찾는다.

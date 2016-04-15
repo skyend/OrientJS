@@ -8,12 +8,6 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/admin/dashboard', function(req, res, next) {
-  res.render('admin/index', {
-    title: 'Service Builder'
-  });
-});
-
 
 router.get('/health', function(req, res) {
 

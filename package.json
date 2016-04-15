@@ -2,7 +2,9 @@
   "name": "ServiceBuilder",
   "version": "0.0.1",
   "scripts": {
-    "start": "webpack-dev-server -d --hot --inline"
+    "start": "webpack-dev-server -d",
+    "start-server": "babel-node server/bin/www",
+    "debug-server": "DEBUG=* babel-node server/bin/www"
   },
   "private": true,
   "dependencies": {
@@ -53,11 +55,15 @@
     "mongoose": "^4.3.1",
     "morgan": "~1.6.1",
     "node-libs-browser": "^0.5.2",
+    "nodemailer": "^2.3.2",
+    "nodemailer-smtp-transport": "^2.4.2",
+    "object-key-filter": "0.0.4",
     "react": "^0.13.3",
     "react-ace": "^2.1.1",
     "react-notification-system": "^0.1.14",
     "react-tools": "^0.13.3",
     "recursive-readdir": "^1.3.0",
+    "redis": "^2.6.0-1",
     "serve-favicon": "~2.3.0",
     "sha1": "^1.1.1",
     "sha1-hex": "^1.0.0",
@@ -70,6 +76,7 @@
     "unirest": "^0.4.2",
     "unzip": "^0.1.11",
     "url-loader": "^0.5.6",
+    "uuid": "^2.0.2",
     "v8flags": "^2.0.10",
     "webpack": "1.12.2",
     "winston": "^2.2.0"

@@ -86,6 +86,8 @@ class MongoDBDriver {
       _callback(_err, _userDoc);
     });
   }
+
+
 }
 
 export default MongoDBDriver;

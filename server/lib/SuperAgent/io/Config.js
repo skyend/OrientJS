@@ -59,6 +59,10 @@ class Config {
   get firstMemberISSuper() {
     return this.getField('first_member_is_super');
   }
+
+  get smtp() {
+    return this.getField('smtp');
+  }
 }
 
 export default Config;

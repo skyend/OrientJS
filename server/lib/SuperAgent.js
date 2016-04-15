@@ -5,6 +5,7 @@ import Logger from './SuperAgent/Logger.js';
 import IOConfig from './SuperAgent/io/Config.js';
 import DataStore from './SuperAgent/io/DataStore.js';
 import MemoryStore from './SuperAgent/io/MemoryStore.js';
+import MailService from './SuperAgent/io/MailService/MailService.js';
 import Librarian from './SuperAgent/Librarian.js';
 
 import Errors from '../define/errors.js';
@@ -32,20 +33,30 @@ class SuperAgent {
     this.config.readConfig(path.join(this.rootDirname, 'config/profile.json'));
     this.builtCheck();
     this.initWithConfig();
+    this.log.info("Server start up");
     _callback();
   }
 
   initWithConfig() {
     this.initLoggers();
     this.initStores();
+
+    this.mail = new MailService(this.config.smtp);
+    this.mail.connect(() => {
+
+    });
   }
 
   initStores() {
     this.dataStore = new DataStore(this.config.dataStoreConfigSet);
-    this.dataStore.connect(function() {
+    this.dataStore.connect(() => {
 
     });
+
     this.memStore = new MemoryStore(this.config.memoryStoreConfigSet);
+    this.memStore.connect(() => {
+
+    });
   }
 
   initLoggers() {
@@ -58,6 +69,7 @@ class SuperAgent {
 
     this.log = new Logger(path.join(logDirpath, '/report.log'));
     this.accessLog = new Logger(path.join(logDirpath, '/access.log'));
+    this.mailLog = new Logger(path.join(logDirpath, '/mail.log'));
 
     // // Loggers
     // this.fatalLogger = new Logger(path.join(logDirpath, '/fatal.log'), 'crit');
