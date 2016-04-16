@@ -41,7 +41,7 @@ class Factory {
 
   getInstanceWithRemote(_typeName, _target, _complete) {
     let that = this;
-    console.log(this.orbit);
+
     this.orbit.retriever.loadAPISource(_target, function(_sheet) {
       let jsonSheet;
       try {

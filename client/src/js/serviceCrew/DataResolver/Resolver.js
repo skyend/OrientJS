@@ -105,6 +105,7 @@ class Resolver {
             if (openfirst) {
               openfirst = false;
             }
+
             if (firstClosed) {
               throw new Error("Interpret 형식이 맞지 않습니다 바인딩 블럭이 열리고({{) 닫기 위해서는 }가 두번 연속되어야 합니다." + _matter);
             }
@@ -159,11 +160,15 @@ class Resolver {
       let result = vfunction.apply(_caller, argsMap);
       return result;
     } catch (_e) {
-      console.info(_e);
 
+      // CLEAR_BIND_ERROR 가 꺼져있지 않으면 에러를 throw 한다. 후에 컨셉 수정하기
       if (!window.CLEAR_BIND_ERROR) {
-        console.error('<Binder Error> ', _e, `Problem {{${_syntax}}}`, argsMap);
+        let error = new Error(`${_e.message} [Matter sentence : {${_syntax}}]`);
+        error.interpretArguments = argsMap;
+
+        throw error;
       }
+
       return _e;
     }
   }

@@ -5,6 +5,14 @@ import HTTPRequest from './HTTPRequest';
 const REGEXP_APISOURCE_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
 class APIRequest {
+  constructor(_env) {
+    this.env = _env;
+  }
+
+  request(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
+    APIRequest.RequestAPI(this.env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride);
+  }
+
   static RequestAPI(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
 
     // apiSource 의 class 확인

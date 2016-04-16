@@ -591,7 +591,11 @@ class ElementNode {
       // clone pool 이 변경되는 순간
       // 남은 clone 요소의 forwardDOM 을 제거한다.
       for (let remain = i; remain < this.clonePool.length; remain++) {
-        this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
+        // jquery 류의 Dom 조작 라이브러리와 호환을 위해 forwardDOM이 부모에 대해 유효할 때 remove를 하도록 한다.
+        if (this.parent.forwardDOM.contains(this.clonePool[remain].forwardDOM)) {
+          this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
+        }
+
         this.clonePool[remain].isAttachedDOM = false;
       }
 
@@ -693,7 +697,7 @@ class ElementNode {
     that.tryEventScope('will-dc-request', {
       dynamicContext: this.dynamicContext
     }, null, function done(_result) {
-      if (that.afterContinue(_result) === false) return;
+      if (that.checkAfterContinue(_result) === false) return;
 
       that.rebuildDynamicContext();
 
@@ -707,7 +711,7 @@ class ElementNode {
           that.tryEventScope('will-dc-bind', {
             dynamicContext: that.dynamicContext
           }, null, function done(_result) {
-            if (that.afterContinue(_result) === false) return;
+            if (that.checkAfterContinue(_result) === false) return;
 
             that.update({
               keepDC: 'once'
@@ -774,7 +778,7 @@ class ElementNode {
         that.tryEventScope(_key, {
           eventKey: _key
         }, _e, function(_result) {
-          if (that.afterContinue(_result) === false) return;
+          if (that.checkAfterContinue(_result) === false) return;
         });
 
         return eventReturn;
@@ -1086,11 +1090,23 @@ class ElementNode {
     let solved = _matterText;
     let dc = this.availableDynamicContext;
 
-    if (dc) {
-      solved = dc.interpret(solved, injectGetterInterface, this);
-      return solved;
-    } else {
-      return this.defaultResolver.resolve(solved, injectGetterInterface, null, this);
+    try {
+      if (dc) {
+        solved = dc.interpret(solved, injectGetterInterface, this);
+        return solved;
+      } else {
+        return this.defaultResolver.resolve(solved, injectGetterInterface, null, this);
+      }
+    } catch (_e) {
+
+      // groupCollapsed 는 IE11부터
+      (console.groupCollapsed || console.log)(`%c<BindError> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+      console.log(`Full sentence : ${_matterText}`);
+      if (_e.interpretArguments) {
+        console.log('BindBlock Arguments :', _e.interpretArguments);
+      }
+      console.log(_e.stack);
+      console.groupEnd && console.groupEnd();
     }
   }
 
@@ -1536,7 +1552,7 @@ class ElementNode {
   */
 
   // 이벤트 발생지점 이후 처리를 진행 할 것인가 말 것인가를 반환
-  afterContinue(_result) {
+  checkAfterContinue(_result) {
     if (_result) {
       if (_result.returns) {
         if (_result.returns.continue === false) {
@@ -1829,7 +1845,7 @@ class ElementNode {
     /***** Emit Event 'will-update' *****/
     /************************************/
     this.tryEventScope('will-update', {}, null, function done(_result) {
-      if (that.afterContinue(_result) === false) return;
+      if (that.checkAfterContinue(_result) === false) return;
 
       that.updateForwardDOM(_options);
     });

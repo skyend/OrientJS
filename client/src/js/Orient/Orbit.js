@@ -32,6 +32,7 @@ class Orbit {
 
     /* Initial Members */
     this.config = new Config(_inlineConfig);
+    this.api = new APIRequest(this);
     this.orbitDocument = new OrbitDocument(this.window, this);
     this.apiSourceFactory = new APISourceFactory(this);
     this.resolver = new Resolver();
@@ -131,7 +132,7 @@ class Orbit {
     });
 
     this.orbitDocument.loadExtraCSSPararllel(pageMeta.styles || [], () => {
-      console.log("Style load complete");
+      console.info("Style load complete");
     });
   }
 

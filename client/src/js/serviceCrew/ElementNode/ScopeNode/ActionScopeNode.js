@@ -13,7 +13,7 @@ class ActionScopeNode extends ScopeNode {
 
   static CreateByScopeDom(_scopeDom) {
     let newScopeNode = new ActionScopeNode(ActionScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeNode);
+    //console.log(newScopeNode);
     return newScopeNode;
   }
 

@@ -50,7 +50,7 @@ class TaskScopeNode extends ScopeNode {
 
   static CreateByScopeDom(_scopeDom) {
     let newScopeNode = new TaskScopeNode(TaskScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    console.log(newScopeNode);
+
     return newScopeNode;
   }
 

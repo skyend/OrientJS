@@ -14,6 +14,8 @@ import TagBaseElementNode from '../serviceCrew/ElementNode/TagBaseElementNode';
 import ObjectExtends from '../util/ObjectExtends';
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
+import Shortcut from '../serviceCrew/DataResolver/Shortcut';
+
 
 let CLEAR_BIND_ERROR = false;
 
@@ -123,6 +125,10 @@ class Neutron {
 
   static get Cookie() {
     return Cookie;
+  }
+
+  static get Shortcut() {
+    return Shortcut;
   }
 
   // ElementNode 를 찾는다.

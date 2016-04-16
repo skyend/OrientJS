@@ -79,7 +79,7 @@ class MetaData {
     try {
       return JSON.parse(this.variable);
     } catch (_e) {
-      throw new Error("Fail Parse JSON " + this.variable);
+      throw new Error(`Fail Parse JSON. target : '${this.variable}', Native error message:${_e.message}`);
     }
   }
 

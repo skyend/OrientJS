@@ -78,7 +78,6 @@ class RefElementNode extends HTMLElementNode {
           return;
         }
 
-        console.log(_masterElementNodes);
         that.masterElementNodes = _masterElementNodes;
 
         that.loadedTargetId = targetId;

@@ -430,7 +430,19 @@
    }
 
    mappingAttributeDirect(_dom, _name, _value) {
-     _dom.setAttribute(_name, _value);
+     try {
+       _dom.setAttribute(_name, _value);
+     } catch (_e) {
+       if (_e instanceof DOMException) {
+         let error = new Error(`잘못 된 attribute명 입니다. origin:${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, this.DEBUG_FILE_NAME);
+         error.stack = _e.stack;
+
+         console.info('Error Help :', _e, this.sourceElement, this.DEBUG_FILE_NAME_EXPLAIN);
+         throw error;
+       }
+
+       throw _e;
+     }
    }
 
 
