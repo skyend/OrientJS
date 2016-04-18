@@ -44,6 +44,8 @@ class HTTPRequest {
 
           _complete(err || null, res || null);
         });
+    } else if (_method === 'put') {
+      throw new Error(`지원하지 않는 HTTP메소드(${_method}) 입니다.`);
     }
   }
 

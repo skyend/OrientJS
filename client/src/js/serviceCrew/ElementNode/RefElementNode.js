@@ -69,6 +69,11 @@ class RefElementNode extends HTMLElementNode {
 
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
+
+    if (!targetId) {
+      this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
+    }
+
     if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
       this.forwardDOM.innerHTML = '';
 

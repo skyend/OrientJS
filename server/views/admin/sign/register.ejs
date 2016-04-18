@@ -187,11 +187,20 @@
           var resultData = _prevActionResult.data;
 
           if( resultData.error ){
-            alert('Error : '+ resultData.error.code);
+
+            that.setValue("modal-title", '회원가입 실패');
+            that.setValue("modal-message", 'Error: '+resultData.error.code);
           } else {
-            alert("Success Create User");
-            location.href = '/admin/signin?email='+that.getValue('email');
+
+            that.setValue("modal-title", '회원가입 완료');
+            that.setValue("modal-message", `이메일(${ that.getValue('email') })을 확인하여 이메일 인증을 완료 해 주세요.`);
+
+            // location.href = '/admin/signin?email='+that.getValue('email');
           }
+
+          var modal = that.getMaster().findById('modal');
+          that.setValue("modal-opened", true);
+          modal.update();
         });
       });
 
@@ -225,6 +234,12 @@
         <p class="login-box-msg">Register a new membership</p>
 
         <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;">
+          <en:value name='modal-title' type='string' value=''></en:value>
+          <en:value name='modal-message' type='string' value=''></en:value>
+          <en:value name='modal-opened' type='boolean' value='false'></en:value>
+
+
+
           <en:value name='fullname' type='string' value=''></en:value>
           <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
@@ -274,6 +289,16 @@
               <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
             </div>
             <!-- /.col -->
+          </div>
+
+          <div en-id='modal' en-type='ref' en-ref-target-id='[html]/service-static/components/modal.html'
+                head-text='{{: val@modal-title }}'
+                message='{{: val@modal-message }}'
+                opened='{{: val@modal-opened }}'
+                en-ctrl-hidden='{{: ! val@modal-opened:boolean }}'
+                en-pipe-event-close='task@close'>
+            <en:task name='close' action='set' arg-name='modal-opened' arg-value='{{: false }}' chain-success='update'></en:task>
+            <en:task name='update' action='update' >
           </div>
         </form>
 

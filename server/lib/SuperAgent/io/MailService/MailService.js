@@ -35,7 +35,7 @@ class MailService {
   }
 
   // ejs 템플릿으로 email 전송 / req.app.get('views')
-  sendMail(_to, _subject, _htmlText) {
+  sendMail(_to, _subject, _htmlText, _complete) {
     var mailOptions = {
       from: `ServiceBuilder Orbit <${this.config.auth.user}>`,
       to: _to,
@@ -49,7 +49,9 @@ class MailService {
 
       if (error) {
         agent.mailLog.error("SendError : To: '%s', Subject '%s' \nError:%s", _to, _subject, error);
+        _complete(error, null);
       } else {
+        _complete(null, response);
         console.log("Message sent : " + response.message);
       }
     });

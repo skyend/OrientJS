@@ -1048,6 +1048,8 @@ class ElementNode {
   getMaster() {
     let masterElementNode = null;
 
+    if (this.isMaster) return this;
+
     this.climbParents(function(_forefatherEN) {
       if (_forefatherEN.isMaster) {
 
@@ -1100,15 +1102,17 @@ class ElementNode {
     } catch (_e) {
 
       // groupCollapsed 는 IE11부터
-      (console.groupCollapsed || console.log)(`%c<BindError> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+      console.groupCollapsed(`%c<BindError> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
       console.log(`Full sentence : ${_matterText}`);
       if (_e.interpretArguments) {
         console.log('BindBlock Arguments :', _e.interpretArguments);
       }
       console.log(_e.stack);
-      console.groupEnd && console.groupEnd();
+      console.groupEnd()
     }
   }
+
+
 
   getRepeatNOnTree() {
     if (this.isRepeated) {

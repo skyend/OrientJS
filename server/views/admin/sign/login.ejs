@@ -198,6 +198,17 @@
             return 'fail';
           }
         });
+
+        Orient.registerAction("open-modal", ["title","message"], function(){
+          this.setValue("modal-title", title);
+          this.setValue("modal-message", message);
+
+          var modal = this.getMaster().findById('modal');
+          this.setValue("modal-opened", true);
+          modal.update();
+
+          _callback(_actionResult);
+        });
       }
     </script>
   </head>
@@ -210,6 +221,10 @@
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form id='login-form' method="post" en-event-submit='task@submit' onsubmit="return false" >
+          <en:value name='modal-title' type='string' value=''></en:value>
+          <en:value name='modal-message' type='string' value=''></en:value>
+          <en:value name='modal-opened' type='boolean' value='false'></en:value>
+
           <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
 
@@ -221,7 +236,7 @@
                                   arg-chainCodeCriterion='{{: func@returnLoginChainCode }}'
                                   chain-success='success'
                                   chain-fail='fail-alert'></en:task>
-          <en:task name='fail-alert' action='alert' arg-message='{{: feature@prev-result.data.error.code }}'></en:task>
+          <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: feature@prev-result.data.error.code }}'></en:task>
           <en:task name='success' action='set-cookie' arg-name='sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission'></en:task>
           <en:task name='admission' action='move-location' arg-location='/dashboard/'></en:task>
 
@@ -251,6 +266,16 @@
             </div>
             <!-- /.col -->
           </div>
+
+          <div en-id='modal' en-type='ref' en-ref-target-id='[html]/service-static/components/modal.html'
+                head-text='{{: val@modal-title }}'
+                message='{{: val@modal-message }}'
+                opened='{{: val@modal-opened }}'
+                en-ctrl-hidden='{{: ! val@modal-opened:boolean }}'
+                en-pipe-event-close='task@close'>
+            <en:task name='close' action='set' arg-name='modal-opened' arg-value='{{: false }}' chain-success='update'></en:task>
+            <en:task name='update' action='update' >
+          </div>
         </form>
 
         <!-- <div class="social-auth-links text-center">
@@ -263,7 +288,7 @@
         <!-- /.social-auth-links -->
 
         <a href="#">I forgot my password</a><br>
-        <a href="register.html" class="text-center">Register a new membership</a>
+        <a href="/admin/signup" class="text-center">Register a new membership</a>
 
       </div>
       <!-- /.login-box-body -->

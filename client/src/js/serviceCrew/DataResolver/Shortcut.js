@@ -124,6 +124,20 @@ class Shortcut {
   static filter(_value) {
 
   }
+
+  // 비어있는 Object인지 검사 key 가 0개면 빈 오브젝트임
+  static isEmpty(_object) {
+    let keys = Object.keys(_object);
+
+    return keys.length === 0;
+  }
+
+  // 비어있지 않은 오브젝트인지 검사
+  static isntEmpty(_object) {
+    let keys = Object.keys(_object);
+
+    return keys.length > 0;
+  }
 }
 
 export default Shortcut;

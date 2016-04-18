@@ -1,8 +1,11 @@
 {
   "log_absolte_dirpath2": "C:\\Users\\user\\kop-work\\ion\\Gelateria_ServiceBuilder\\server\\logs",
 
-  "port": "3000",
-  "allow_signup": false,
+  "external_url": "http://localhost:9090",
+  "host": "localhost",
+  "port": "9090",
+
+  "allow_signup": true,
   "first_member_is_super": true,
 
   "data_store": {

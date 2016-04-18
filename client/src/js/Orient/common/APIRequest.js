@@ -40,6 +40,7 @@ class APIRequest {
       if (!_env) throw new Error('Error: Couldn\'n APISource Request. Required the Environment.');
 
       _env.apiSourceFactory.getInstanceWithRemote(sourceType, sourceTarget, function(_apiSource) {
+        console.log(_apiSource);
 
         _apiSource.executeRequest(_requestId, _paramObject, {}, function(_err, _retrievedObject, _statusCode) {
           if (_err !== null) return _callback(_err, null);

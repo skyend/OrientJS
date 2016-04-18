@@ -208,4 +208,6 @@ class Orbit {
   }
 }
 
+Orbit.version = '0.10.1';
+
 export default window.Orbit = Orbit;

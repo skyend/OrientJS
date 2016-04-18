@@ -29,8 +29,16 @@ function profile(req, res, next) {
 }
 
 function emailAuthorize(req, res, next) {
-  // Todo..
-  // 이메일 인증
+  let key = req.query.key;
+  let email = req.query.email;
+
+  agent.businessMan.emailCertifyUser(key, email, (_err, _result) => {
+    if (_err !== null) {
+      res.send(_err);
+    } else {
+      res.redirect(`/admin/signin?email=${email}`);
+    }
+  });
 }
 
 

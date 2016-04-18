@@ -185,5 +185,6 @@ class Neutron {
 
 }
 
+Neutron.version = '0.10.1';
 
 export default window.Orient = Neutron;

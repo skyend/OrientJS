@@ -1,4 +1,7 @@
 import Redis from 'redis';
+import uuid from 'uuid';
+import bcrypt from 'bcrypt-nodejs';
+
 
 class RedisDriver {
   constructor(_config) {
@@ -46,10 +49,11 @@ class RedisDriver {
      ██████ ██   ██  ██████  ██████
   */
 
-  createSession(_sessionKey, _dataObj, _callback) {
+  createSession(_dataObj, _callback) {
+    let sessionKey = bcrypt.hashSync(uuid.v1() + uuid.v4());
 
-    this.client.hset('session', _sessionKey, JSON.stringify(_dataObj), (_err, _res) => {
-      _callback(_err, _res);
+    this.client.hset('session', sessionKey, JSON.stringify(_dataObj), (_err, _res) => {
+      _callback(_err, sessionKey);
     });
   }
 }

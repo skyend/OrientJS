@@ -40,8 +40,16 @@ class Config {
     return this.getField('log_absolte_dirpath');
   }
 
+  get host() {
+    return this.getField('host') || 'localhost';
+  }
+
   get port() {
     return this.getField('port') || '3000';
+  }
+
+  get external_url() {
+    return this.getField('external_url');
   }
 
   get dataStoreConfigSet() {
