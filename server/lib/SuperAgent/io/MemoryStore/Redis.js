@@ -56,6 +56,12 @@ class RedisDriver {
       _callback(_err, sessionKey);
     });
   }
+
+  readSession(_sessionKey, _callback) {
+    this.client.hget('session', _sessionKey, (_err, _res) => {
+      _callback(_err, JSON.parse(_res));
+    });
+  }
 }
 
 export default RedisDriver;

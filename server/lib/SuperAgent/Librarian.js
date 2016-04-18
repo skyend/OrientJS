@@ -12,6 +12,40 @@ class Librarian {
     this.agent = _agent;
   }
 
+  getUserBySession(_sessionKey, _callback) {
+    Async.waterfall([
+      (_cb) => {
+        this.agent.memStore.driver.readSession(_sessionKey, (_err, _sessionData) => {
+          if (_err) {
+            _cb(ERRORS.SESSION.READ_ERROR, null);
+          } else {
+            if (_sessionData) {
+              _cb(null, _sessionData);
+            } else {
+              _cb(ERRORS.SESSION.NOT_FOUND);
+            }
+          }
+        });
+      }, (_sessionData, _cb) => {
+
+        let id = _sessionData.id;
+        let email = _sessionData.email;
+        console.log(_sessionData);
+        this.agent.dataStore.driver.getUserById(id, (_err, _userData) => {
+          if (_err) {
+            _cb(ERRORS.SESSION.NOT_FOUND_RELATED_USER);
+          } else {
+            _cb(null, _userData);
+          }
+        });
+      }
+    ], (_err, _userData) => {
+      if (_err) _callback(_err, null);
+      else _callback(null, _userData);
+    })
+
+  }
+
   assignSession(_userData, _callback) {
     this.agent.memStore.driver.createSession(_userData, (_err, _sessionKey) => {
       if (_err !== null) return _callback(ERRORS.SIGNIN.FAILED_CREATE_SESSION, null);
@@ -77,8 +111,7 @@ class Librarian {
   }
 
   registerUser(_req, _data, _callback) {
-    // config 에 allowSignup이 true 가 아니면 관리자만 사용자를 등록 할 수 있도록 처리 해야 함.
-    if (!this.agent.config.allowSignup) return _callback(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+
 
     if (!_data.fullname) return _callback(ERRORS.SIGNUP.FULLNAME_FIELD_IS_REQUIRED);
     if (!_data.email) return _callback(ERRORS.SIGNUP.EMAIL_FIELD_IS_REQUIRED);
@@ -87,6 +120,30 @@ class Librarian {
     if (_data.pw !== _data.confirm) return _callback(ERRORS.SIGNUP.PASSWORD_IS_NOT_MATCHED);
 
     Async.waterfall([
+        (_cb) => {
+          // config 에 allowSignup이 true 가 아니면 관리자만 사용자를 등록 할 수 있도록 처리 해야 함.
+          // 관리자의 유저 생성 체크
+          if (this.agent.config.allowSignup) {
+            _cb(null);
+          } else {
+            if (_req.cookies) {
+              let sid = _req.cookies['ion-sb.sid'];
+
+              this.getUserBySession(sid, (_err, _userData) => {
+
+                if (_err) {
+                  _cb(_err);
+                } else {
+                  if (_userData.superuser) {
+                    _cb(null);
+                  } else {
+                    _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+                  }
+                }
+              });
+            }
+          }
+        },
         (_cb) => {
           // email 중복체크
 

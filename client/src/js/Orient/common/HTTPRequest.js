@@ -60,7 +60,7 @@ class HTTPRequest {
     let fieldKeys = Object.keys(_fields);
 
     for (let i = 0; i < fieldKeys.length; i++) {
-      formData.append(_key, _fields[fieldKeys[i]]);
+      formData.append(fieldKeys[i], _fields[fieldKeys[i]]);
     }
 
     return formData;

@@ -5,7 +5,7 @@
   "host": "localhost",
   "port": "9090",
 
-  "allow_signup": true,
+  "allow_signup": false,
   "first_member_is_super": true,
 
   "data_store": {

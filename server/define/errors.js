@@ -35,6 +35,11 @@ export default {
     "DO_CERTIFY_EMAIL": createError("SIGNIN.DO_CERTIFY_EMAIL", "do certify email"), // 인증 메일 전송 요청 필요
     "USER_IS_NOT_AVAILABLE_USER": createError("SIGNIN.USER_IS_NOT_AVAILABLE_USER", "user is not available"),
     "USER_NOT_FOUND": createError("SIGNIN.USER_NOT_FOUND", "User not found")
+  },
 
+  "SESSION": {
+    "READ_ERROR": createError("SESSION.READ_ERROR", "Fail read session read."),
+    "NOT_FOUND": createError("SESSION.NOT_FOUND", "Session not found"),
+    "NOT_FOUND_RELATED_USER": createError("SESSION.NOT_FOUND_RELATED_USER", "Not found related user")
   }
 };

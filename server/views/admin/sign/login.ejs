@@ -237,7 +237,7 @@
                                   chain-success='success'
                                   chain-fail='fail-alert'></en:task>
           <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: feature@prev-result.data.error.code }}'></en:task>
-          <en:task name='success' action='set-cookie' arg-name='sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission'></en:task>
+          <en:task name='success' action='set-cookie' arg-name='ion-sb.sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission'></en:task>
           <en:task name='admission' action='move-location' arg-location='/dashboard/'></en:task>
 
           <div class="form-group has-feedback">

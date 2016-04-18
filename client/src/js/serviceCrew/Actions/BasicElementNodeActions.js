@@ -361,7 +361,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     }
 
     _callback(_actionResult);
-  }, enctype, requestMethodForHTTP);
+  }, enctype || (this.hasAttribute('enctype') ? this.getAttributeWithResolve('enctype') : undefined), requestMethodForHTTP);
 });
 
 
