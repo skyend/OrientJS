@@ -223,7 +223,13 @@ export default class APISource {
 
   // Proposal Override
   processAfterResponse(_err, _res, _passCB) {
-    _passCB(_err, _res.body, _res.statusCode);
+    if (_err) {
+
+      _passCB(_err, null, null);
+    } else {
+
+      _passCB(null, _res.body, _res);
+    }
   }
 
 

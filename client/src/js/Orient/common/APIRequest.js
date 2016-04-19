@@ -29,8 +29,7 @@ class APIRequest {
       HTTPRequest.request(_methodOverride || 'get', sourceTarget, _paramObject, function(_err, _res) {
         if (_err !== null) return _callback(_err, null);
 
-
-        _callback(null, _res.body || _res.text, _res.statusCode);
+        _callback(null, _res.body || _res.text, _res);
       }, _enctype);
     } else {
       // apisource JSON을 로드한다.

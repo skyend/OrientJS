@@ -102,9 +102,20 @@ class DynamicContext {
 
       return function(_callback) {
 
-        APIRequest.RequestAPI(that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _statusCode) {
+        APIRequest.RequestAPI(that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _response) {
+          if (_err) {
 
-          that.dataResolver.setNS(nss[_i], _retrievedObject);
+            that.dataResolver.setNS(nss[_i], null);
+            that.dataResolver.setNS(`${nss[_i]}_err`, _err);
+            that.dataResolver.setNS(`${nss[_i]}_status`, null);
+            that.dataResolver.setNS(`${nss[_i]}_level`, null);
+          } else {
+
+            that.dataResolver.setNS(nss[_i], _retrievedObject);
+            that.dataResolver.setNS(`${nss[_i]}_status`, _response.statusCode);
+            that.dataResolver.setNS(`${nss[_i]}_level`, Math.floor(_response.statusCode / 100));
+          }
+
           _callback(null, _retrievedObject);
         });
       }

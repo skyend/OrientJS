@@ -32,7 +32,11 @@ class HTTPRequest {
         .end(function(err, res) {
           HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${_url}]\n`, 'log', [res]);
 
-          _complete(err || null, res || null);
+          if (err) {
+            _complete(err, null, null);
+          } else {
+            _complete(err, res, res.statusCode);
+          }
         });
 
     } else if (_method === 'post') {
@@ -41,7 +45,11 @@ class HTTPRequest {
         .end(function(err, res) {
           HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${_url}\n`, "log", [res]);
 
-          _complete(err || null, res || null);
+          if (err) {
+            _complete(err, null, null);
+          } else {
+            _complete(err, res, res.statusCode);
+          }
         });
     } else if (_method === 'put') {
       throw new Error(`지원하지 않는 HTTP메소드(${_method}) 입니다.`);
