@@ -606,6 +606,10 @@
        this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
      }
 
+     if (_domElement.getAttribute('en-ctrl-fixed-container') !== null) {
+       this.setControl('fixed-container', _domElement.getAttribute("en-ctrl-fixed-container"));
+     }
+
      if (_domElement.getAttribute('en-ctrl-hidden') !== null)
        this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
@@ -648,7 +652,6 @@
      // done
      if (_domElement.getAttribute('en-event-first-rendered') !== null) // Did Mount
        this.setEvent('first-rendered', _domElement.getAttribute('en-event-first-rendered'));
-
 
      // done
      // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide

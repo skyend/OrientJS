@@ -32,7 +32,10 @@ class HTMLElementNode extends TagBaseElementNode {
     // console.log(returnHolder);
     if (this.isRepeater()) return returnHolder;
     if (returnHolder.length === 0) return returnHolder;
-
+    let fixedContainer = this.getControlWithResolve('fixed-container');
+    if (fixedContainer === 'true' || fixedContainer === true) {
+      return;
+    }
 
     // children construct
     let children = this.children;
