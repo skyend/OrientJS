@@ -59,6 +59,19 @@ class Orbit {
 
       that.i18n.languageDecider = this.getField('LANGUAGE_DECIDER');
       that.i18n.languageDefault = this.getField('LANGUAGE_DEFAULT');
+
+      let mode = this.getField("MODE") || 'op'; // debug(디버그) || dev(개발) || op(운영)
+
+      if (mode === 'op') {
+        //
+      } else if (mode === 'dev') {
+        window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
+        window.ORIENT_OCCURS_BIND_ERROR = true;
+      } else if (mode === 'debug') {
+        window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
+        window.DEBUG_OCCURS_HTTP_REQUEST_LOG = true;
+        window.ORIENT_OCCURS_BIND_ERROR = true;
+      }
     });
 
     // Framework Interpreters

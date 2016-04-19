@@ -368,42 +368,46 @@
        }
      }
 
-     // #Normals
-     _domNode.setAttribute('en-id', this.getId());
-     _domNode.setAttribute('en-type', this.getType());
-     if (this.getName())
-       _domNode.setAttribute('en-name', this.getName());
-     if (this.behavior)
-       _domNode.setAttribute('en-behavior', this.behavior);
+     if (window.ORIENT_SHOW_SPECIAL_ATTRIBUTES) {
+       // #Normals
+       _domNode.setAttribute('en-id', this.getId());
+       _domNode.setAttribute('en-type', this.getType());
+       if (this.getName())
+         _domNode.setAttribute('en-name', this.getName());
+       if (this.behavior)
+         _domNode.setAttribute('en-behavior', this.behavior);
 
-     // #Controls
-     if (this.getControl('repeat-n'))
-       _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
-     if (this.getControl('hidden'))
-       _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+       // #Controls
+       if (this.getControl('repeat-n'))
+         _domNode.setAttribute('en-ctrl-repeat-n', this.getControl('repeat-n'));
+       if (this.getControl('hidden'))
+         _domNode.setAttribute('en-ctrl-hidden', this.getControl('hidden'));
+       if (this.getControl('fixed-container'))
+         _domNode.setAttribute('en-ctrl-fixed-container', this.getControl('fixed-container'));
 
-     // #DynamicContext
-     if (this.dynamicContextSID)
-       _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
-     if (this.dynamicContextPassive !== undefined)
-       _domNode.setAttribute('en-dc-passive', String(this.dynamicContextPassive));
-     if (this.dynamicContextRID)
-       _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
-     if (this.dynamicContextNS)
-       _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
-     if (this.dynamicContextInjectParams)
-       _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
+       // #DynamicContext
+       if (this.dynamicContextSID)
+         _domNode.setAttribute('en-dc-source-id', this.dynamicContextSID);
+       if (this.dynamicContextPassive !== undefined)
+         _domNode.setAttribute('en-dc-passive', String(this.dynamicContextPassive));
+       if (this.dynamicContextRID)
+         _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
+       if (this.dynamicContextNS)
+         _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
+       if (this.dynamicContextInjectParams)
+         _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
 
-     // #Events
-     // dom defaults events
-     if (this.getEvent('click'))
-       _domNode.setAttribute('en-event-click', this.getEvent('click'));
+       // #Events
+       // dom defaults events
+       if (this.getEvent('click'))
+         _domNode.setAttribute('en-event-click', this.getEvent('click'));
 
-     if (this.getEvent('mouseenter'))
-       _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
+       if (this.getEvent('mouseenter'))
+         _domNode.setAttribute('en-event-mouseenter', this.getEvent('mouseenter'));
 
-     if (this.getEvent('complete-bind'))
-       _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
+       if (this.getEvent('complete-bind'))
+         _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
+     }
    }
 
    mappingAttribute(_dom, _attribute, _options) {

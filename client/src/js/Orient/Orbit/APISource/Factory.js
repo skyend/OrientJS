@@ -42,7 +42,7 @@ class Factory {
   getInstanceWithRemote(_typeName, _target, _complete) {
     let that = this;
 
-    this.orbit.retriever.loadAPISource(_target, function(_sheet) {
+    this.orbit.retriever.loadAPISource(_target, function(_sheet, _filepath) {
       let jsonSheet;
       try {
         jsonSheet = JSON.parse(_sheet);
@@ -50,7 +50,11 @@ class Factory {
         throw _e;
       }
 
-      _complete(that.getInstance(_typeName, jsonSheet));
+      let instance = that.getInstance(_typeName, jsonSheet);
+      instance.__filepath__ = _filepath;
+      instance.__name__ = _target;
+
+      _complete(instance);
     });
   }
 

@@ -98,6 +98,16 @@ class Config {
     return this._STYLES || [];
   }
 
+  set MODE(_MODE) {
+    this._MODE = _MODE;
+
+    this.emit('update');
+  }
+
+  get MODE() {
+    return this._MODE;
+  }
+
   //
   set configObject(_configO) {
     this._configObject = _configO;
@@ -154,6 +164,7 @@ class Config {
     this._DIR_I18N = _config['DIR_I18N'];
     this._DIR_COMPONENT = _config['DIR_COMPONENT'];
     this._DIR_API_SOURCE = _config['DIR_API_SOURCE'];
+    this._MODE = _config['MODE'];
 
     this.configObject = _config;
 
@@ -170,6 +181,7 @@ class Config {
     config['DIR_I18N'] = this._DIR_I18N; // 직접 속성에 접근하는 이유는 Default 로 잡힌 값을 export하지 않기 위함
     config['DIR_COMPONENT'] = this._DIR_COMPONENT;
     config['DIR_API_SOURCE'] = this._DIR_API_SOURCE;
+    config['MODE'] = this._MODE;
 
     ObjectExtends.mergeByRef(config, this.configObject, false);
 

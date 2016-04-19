@@ -207,12 +207,11 @@ export default class APISource {
     let that = this;
     let req = this.findRequest(_requestId);
 
-    console.log(req, _cb, _enctypeOrComplete);
+    if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(req.getFieldsObject(), _fields, true));
     let resolvedFieldObject = this.resolvefieldObject(fieldObject);
 
-    console.log('pass');
 
     this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), resolvedFieldObject, function(_err, _res) {
 

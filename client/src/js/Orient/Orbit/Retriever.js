@@ -32,10 +32,10 @@ class Retriever {
     }
 
     this.orbit.HTTPRequest.request('get', url, {}, function(_err, _res) {
-      if (_err !== null) return console.error("Error : Fail api source sheet loading", 'detail :', _err);
+      if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
 
       let responseText = _res.text;
-      _cb(responseText);
+      _cb(responseText, url);
     });
   }
 

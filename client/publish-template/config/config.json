@@ -12,6 +12,7 @@
 
   "commonScripts": [],
   "commonStyles": [],
+
   "DIR_I18N": "/client/publish-template/i18n/",
   "DIR_COMPONENT": "/client/publish-template/component/",
   "DIR_API_SOURCE": "/client/publish-template/apisources/",
