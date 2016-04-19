@@ -508,6 +508,7 @@
        }
      }
 
+     this.forwardDOM.__renderstemp__ = this.renderSerialNumber;
      //this.backupDOM = null;
    }
 

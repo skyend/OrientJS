@@ -3,6 +3,7 @@ import Factory from './Factory.js';
 // import React from 'react';
 // import Sizzle from 'sizzle';
 import Point from '../../util/Point';
+import ObjectExtends from '../../util/ObjectExtends';
 
 "use strict";
 
@@ -32,6 +33,8 @@ class HTMLElementNode extends TagBaseElementNode {
     // console.log(returnHolder);
     if (this.isRepeater()) return returnHolder;
     if (returnHolder.length === 0) return returnHolder;
+
+    // Fixed Container Processing
     let fixedContainer = this.getControlWithResolve('fixed-container');
     if (fixedContainer === 'true' || fixedContainer === true) {
       return;
@@ -41,18 +44,36 @@ class HTMLElementNode extends TagBaseElementNode {
     let children = this.children;
     let length = children.length;
     let child;
+
+
     for (let i = 0; i < length; i++) {
       child = children[i];
 
       child.constructDOMs(_options);
-
+      // 복구에 대한 신뢰
       if (child.isRepeater()) {
         for (let j = 0; j < child.clonePool.length; j++) {
+
           this.updateChild(child.clonePool[j]);
         }
       } else {
 
         this.updateChild(child);
+      }
+    }
+
+
+    let childNodes = ObjectExtends.arrayToArray(this.forwardDOM.childNodes);
+    let childNode;
+    for (let i = 0; i < childNodes.length; i++) {
+      childNode = childNodes[i];
+
+      if (childNode.___en) {
+        if (childNode.__renderstemp__ !== childNode.___en.renderSerialNumber) {
+          this.forwardDOM.removeChild(childNode);
+        }
+      } else {
+        this.forwardDOM.removeChild(childNode);
       }
     }
 
@@ -271,6 +292,7 @@ class HTMLElementNode extends TagBaseElementNode {
       // en- 으로 시작되는 태그를 ScopeNode로 취급한다.
       if (/^en:|script/i.test(child_.nodeName)) {
         this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
+
         continue;
       }
 

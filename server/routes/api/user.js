@@ -16,7 +16,6 @@ function login(req, res, next) {
 function register(req, res, next) {
 
   agent.businessMan.registerUser(req, req.body, function(_err, _userId) {
-
     res.json({
       error: _err,
       userId: _userId

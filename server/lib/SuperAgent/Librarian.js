@@ -121,7 +121,7 @@ class Librarian {
 
     Async.waterfall([
         (_cb) => {
-          // config 에 allowSignup이 true 가 아니면 관리자만 사용자를 등록 할 수 있도록 처리 해야 함.
+          // config 에 allowSignup이 true 가 아니면 관리자만 사용자를 등록 할 수 있도록 처리.
           // 관리자의 유저 생성 체크
           if (this.agent.config.allowSignup) {
             _cb(null);
@@ -130,7 +130,6 @@ class Librarian {
               let sid = _req.cookies['ion-sb.sid'];
 
               this.getUserBySession(sid, (_err, _userData) => {
-
                 if (_err) {
                   _cb(_err);
                 } else {

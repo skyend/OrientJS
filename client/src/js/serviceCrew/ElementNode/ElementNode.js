@@ -31,6 +31,7 @@ import Point from '../../util/Point';
 
 const SIGN_BY_ELEMENTNODE = 'EN';
 const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
+const MAX_RENDER_SERIAL_NUMBER = 700000;
 
 class ElementNode {
   static get SIGN_BY_ELEMENTNODE() {
@@ -116,6 +117,8 @@ class ElementNode {
 
     // ElementNode 컴포넌트의 최상위 ElementNode
     this.isMaster = _isMaster || false;
+
+    this.renderSerialNumber = 1;
 
     //////////////////////////
     // 처리로직
@@ -346,6 +349,20 @@ class ElementNode {
 
   getControlWithResolve(_controlName) {
     return this.interpret(this.controls[_controlName]);
+  }
+
+  set renderSerialNumber(_renderSerialNumber) {
+    this._renderSerialNumber = _renderSerialNumber;
+  }
+
+  get renderSerialNumber() {
+    return this._renderSerialNumber;
+  }
+
+  increaseRenderSerialNumber() {
+    this.renderSerialNumber++;
+
+    if (this.renderSerialNumber === MAX_RENDER_SERIAL_NUMBER) this.renderSerialNumber = 0;
   }
 
   ////////////////////
@@ -654,8 +671,11 @@ class ElementNode {
 
   // 단독으로 자신의 DOM을 생성하는 메서드
   constructDOM(_options) {
+    this.increaseRenderSerialNumber();
+
     let htmlNode = this.createNode(_options);
     htmlNode.___en = this;
+    htmlNode.__renderstemp__ = this.renderSerialNumber;
 
     // [2] Attribute and text 매핑
     this.mappingAttributes(htmlNode, _options);
@@ -1604,7 +1624,7 @@ class ElementNode {
       this.__progressEvent(_name, _elementNodeEvent, _originDomEvent, function done(_result) {
 
         // for original of clone
-        this.emit(`event-join-${_name}`, _name, this, result);
+        //this.emit(`event-join-${_name}`, _name, this, result);
 
         if (typeof _nextProcedure === 'function') _nextProcedure(_result);
       });
@@ -1948,14 +1968,14 @@ class ElementNode {
         arguments[2] : completeCallback
       */
 
-      this.__executeTask(taskScope, {}, null, arguments[2], arguments[1]);
+      this.__executeTask(taskScope, {}, null, arguments[2] || function() {}, arguments[1]);
     } else if (arguments.length === 2) {
       /*
         arguments[0] : TaskName
         arguments[1] : completeCallback
       */
 
-      this.__executeTask(taskScope, {}, null, arguments[1]);
+      this.__executeTask(taskScope, {}, null, arguments[1] || function() {});
     }
   }
 
@@ -2081,19 +2101,19 @@ class ElementNode {
   }
 
   print_console_warn() {
-    let modifiedArgs = ObjectExtends.union(['Warning : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    let modifiedArgs = ObjectExtends.union(['Warning : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
     console.warn.apply(console, modifiedArgs);
   }
 
   print_console_info() {
-    let modifiedArgs = ObjectExtends.union(['Info : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    let modifiedArgs = ObjectExtends.union(['Info : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
     console.info.apply(console, modifiedArgs);
   }
 
   print_console_error() {
-    let modifiedArgs = ObjectExtends.union(['Error : '], ObjectExtends.argumentsToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    let modifiedArgs = ObjectExtends.union(['Error : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
     console.error.apply(console, modifiedArgs);
   }

@@ -79,6 +79,7 @@ class StringElementNode extends ElementNode {
       this.forwardDOM.nodeValue = this.backupDOM.nodeValue;
     }
 
+    this.forwardDOM.__renderstemp__ = this.renderSerialNumber;
     //this.backupDOM = null;
   }
 

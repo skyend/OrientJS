@@ -206,21 +206,25 @@
 
       window.onload = function(){
         var orbit = new Orbit(window);
-        var targetElement = document.getElementById('register-form');
-        targetElement.onclick = function(){
-          console.log("hello");
-        }
-        // var targetElement = document.body;
-        var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetElement, {}, orbit);
-        console.log(masterElementNode);
-        // masterElementNode.constructDOMs({});
-        // masterElementNode.update()
-       Orient.replaceRender(masterElementNode, targetElement);
 
-        var socket = io.connect(window.location.host);
-        socket.on('news', function (data) {
-          console.log(data);
-          socket.emit('my other event', { my: 'data' });
+        orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
+
+          var targetElement = document.getElementById('register-form');
+          targetElement.onclick = function(){
+            console.log("hello");
+          }
+          // var targetElement = document.body;
+          var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetElement, {}, orbit);
+          console.log(masterElementNode);
+          // masterElementNode.constructDOMs({});
+          // masterElementNode.update()
+          Orient.replaceRender(masterElementNode, targetElement);
+
+          var socket = io.connect(window.location.host);
+          socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+          });
         });
       }
     </script>
@@ -233,7 +237,7 @@
       <div class="register-box-body">
         <p class="login-box-msg">Register a new membership</p>
 
-        <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;" enctype="multipart/form-data">
+        <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;">
           <en:value name='modal-title' type='string' value=''></en:value>
           <en:value name='modal-message' type='string' value=''></en:value>
           <en:value name='modal-opened' type='boolean' value='false'></en:value>
@@ -254,25 +258,25 @@
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='fullname' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="text" name='fullname' class="form-control" value='{{: val@fullname }}' transfer-value='{{: val@fullname }}' placeholder="Full name" en-event-keyup='task@keyup'>
+            <input type="text" name='fullname' class="form-control" value='{{: val@fullname }}' transfer-value='{{: val@fullname }}' placeholder="Full name" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="email" name='email' class="form-control" value='{{: val@email }}' transfer-value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup'>
+            <input type="email" name='email' class="form-control" value='{{: val@email }}' transfer-value='{{: val@email }}' placeholder="Email" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='pw' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="password" name='pw' class="form-control" value='{{: val@pw }}' transfer-value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup'>
+            <input type="password" name='pw' class="form-control" value='{{: val@pw }}' transfer-value='{{: val@pw }}' placeholder="Password" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='confirm' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-            <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup'>
+            <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
           </div>
           <div class="form-group has-feedback">

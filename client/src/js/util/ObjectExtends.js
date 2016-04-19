@@ -111,7 +111,7 @@ class ObjectExtends {
     return newArr;
   }
 
-  static argumentsToArray(_arguments) {
+  static arrayToArray(_arguments) {
     let argArray = [];
 
     for (let i = 0; i < _arguments.length; i++) {
