@@ -36,9 +36,8 @@ class HTTPRequest {
         });
 
     } else if (_method === 'post') {
-      SuperAgent.post(_url)
-        .type('form')
-        .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
+      (_enctype === 'multipart/form-data' ? SuperAgent.post(_url) : SuperAgent.post(_url).type('form'))
+      .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
         .end(function(err, res) {
           HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${_url}\n`, "log", [res]);
 
