@@ -41,10 +41,10 @@ class APIRequest {
       _env.apiSourceFactory.getInstanceWithRemote(sourceType, sourceTarget, function(_apiSource) {
 
 
-        _apiSource.executeRequest(_requestId, _paramObject, {}, function(_err, _retrievedObject, _statusCode) {
+        _apiSource.executeRequest(_requestId, _paramObject, {}, function(_err, _retrievedObject, _response) {
           if (_err !== null) return _callback(_err, null);
 
-          _callback(null, _retrievedObject, _statusCode);
+          _callback(null, _retrievedObject, _response);
         }, _enctype);
       })
 

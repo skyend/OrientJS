@@ -642,13 +642,22 @@
      if (_domElement.getAttribute('en-event-will-dc-request') !== null) // will DC request
        this.setEvent('will-dc-request', _domElement.getAttribute('en-event-will-dc-request'));
 
+     if (_domElement.getAttribute('en-event-will-dc-request-join') !== null) // Join will DC request
+       this.setEvent('will-dc-request-join', _domElement.getAttribute('en-event-will-dc-request-join'));
+
      // done
      if (_domElement.getAttribute('en-event-will-dc-bind') !== null) // Complete Bind
        this.setEvent('will-dc-bind', _domElement.getAttribute('en-event-will-dc-bind'));
 
+     if (_domElement.getAttribute('en-event-will-dc-bind-join') !== null) // Join will DC bind
+       this.setEvent('will-dc-bind-join', _domElement.getAttribute('en-event-will-dc-bind-join'));
+
      // done
      if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
        this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
+
+     if (_domElement.getAttribute('en-event-complete-bind-join') !== null) // Join complete-bind
+       this.setEvent('complete-bind-join', _domElement.getAttribute('en-event-complete-bind-join'));
 
      // done
      if (_domElement.getAttribute('en-event-did-mount') !== null) // Did Mount

@@ -567,6 +567,8 @@ class ElementNode {
           }, this.getType(), this.environment, null);
 
           repeatedElementNode.setParent(this.parent);
+
+          this.bindJoinEvents(repeatedElementNode);
         }
 
         repeatedElementNode.repeatItem = repeatSource[i];
@@ -667,7 +669,6 @@ class ElementNode {
     this.debug('construct', 'created htmlNode ', htmlNode);
     return htmlNode;
   }
-
 
   isRepeater() {
     return this.getControl('repeat-n') && !this.isRepeated;
@@ -784,6 +785,28 @@ class ElementNode {
         return eventReturn;
       });
     });
+  }
+
+  bindJoinEvents(_clonedElementNode) {
+
+    // DC이벤트는 업데이트가 일어날 때 발생한다.
+    if (this.hasEvent('will-dc-request-join')) {
+      _clonedElementNode.on('event-join-will-dc-request', function(_eventName, _clone, _eventResult) {
+        // Todo..
+      });
+    }
+
+    if (this.hasEvent('will-dc-bind-join')) {
+      _clonedElementNode.on('event-join-will-dc-join', function(_eventName, _clone, _eventResult) {
+        // Todo..
+      });
+    }
+
+    if (this.hasEvent('complete-bind-join')) {
+      _clonedElementNode.on('event-join-complete-bind', function(_eventName, _clone, _eventResult) {
+        // Todo..
+      });
+    }
   }
 
 
@@ -1574,9 +1597,15 @@ class ElementNode {
   // 이벤트가 바인드 되어 있지 않다면 바로 _nextProcedure를 실행한다.
   tryEventScope(_name, _elementNodeEvent, _originDomEvent, _nextProcedure) {
     if (this.hasEvent(_name)) {
+      // event 발생
+
 
       // 이벤트 실행 후 다음 function이 있냐에 따라 다음 처리를 수행한다.
       this.__progressEvent(_name, _elementNodeEvent, _originDomEvent, function done(_result) {
+
+        // for original of clone
+        this.emit(`event-join-${_name}`, _name, this, result);
+
         if (typeof _nextProcedure === 'function') _nextProcedure(_result);
       });
     } else {
