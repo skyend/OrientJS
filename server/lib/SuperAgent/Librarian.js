@@ -30,7 +30,7 @@ class Librarian {
 
         let id = _sessionData.id;
         let email = _sessionData.email;
-        console.log(_sessionData);
+
         this.agent.dataStore.driver.getUserById(id, (_err, _userData) => {
           if (_err) {
             _cb(ERRORS.SESSION.NOT_FOUND_RELATED_USER);
