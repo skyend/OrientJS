@@ -700,7 +700,9 @@ class ElementNode {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
         // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
 
-        this.scopeNodes[i].plainValue = this.interpret(this.scopeNodes[i].plainValue);
+        // 값이 string일때만 resolve를 실행한다.
+        if (typeof this.scopeNodes[i].shapeValue === 'string')
+          this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].shapeValue);
       }
     }
   }

@@ -19,6 +19,10 @@ class APIFarmSource extends ICEAPISource {
     return this.host + this.getMetaPath();
   }
 
+  getDefaultFields() {
+    return {};
+  }
+
   loadTypeOfService(_complete) {
     SuperAgent.get(this.getMetaURL())
       .end(function(err, res) {

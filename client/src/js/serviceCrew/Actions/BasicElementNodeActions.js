@@ -204,7 +204,6 @@ actionStore.registerAction('input-value-validate', ['type'], function() {
 
   }
 
-
   if (testRegExp.test(value)) {
     _actionResult.code = 'pass';
   } else {
@@ -237,6 +236,10 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
 
     case 'email':
       _actionResult.code = validate(/^[\w\d]+@[\w\d-]+\.[\w]+$/, text);
+      break;
+
+    case 'id6':
+      _actionResult.code = validate(/^[\w\d]{6,}$/, text);
       break;
 
     case 'password':

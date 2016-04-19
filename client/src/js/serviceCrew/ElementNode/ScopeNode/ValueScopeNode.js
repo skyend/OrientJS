@@ -1,5 +1,6 @@
 import ScopeNode from './ScopeNode';
 import MetaText from '../../Data/MetaText';
+import MetaData from '../../Data/MetaData';
 import ObjectExtends from '../../../util/ObjectExtends';
 
 const DataTypes = Object.freeze({
@@ -34,21 +35,23 @@ class ValueScopeNode extends ScopeNode {
 
   // 본 모습 : 자신의 데이터타입에 맞춰 데이터를 반환한다.
   get shapeValue() {
-    try {
-      switch (this.dataType) {
-        case DataTypes.String:
-          return this.value.byString;
-        case DataTypes.Number:
-          return this.value.byNumber;
-        case DataTypes.Boolean:
-          return this.value.byBoolean;
-        case DataTypes.Array:
-        case DataTypes.Object:
-          return this.value.byObject;
-      }
-    } catch (_e) {
-      throw _e;
-    }
+    return this.value.variable;
+
+    // try {
+    //   switch (this.dataType) {
+    //     case DataTypes.String:
+    //       return this.value.byString;
+    //     case DataTypes.Number:
+    //       return this.value.byNumber;
+    //     case DataTypes.Boolean:
+    //       return this.value.byBoolean;
+    //     case DataTypes.Array:
+    //     case DataTypes.Object:
+    //       return this.value.byObject;
+    //   }
+    // } catch (_e) {
+    //   throw _e;
+    // }
   }
 
   get plainValue() {
@@ -79,24 +82,25 @@ class ValueScopeNode extends ScopeNode {
 
   // 입력된 데이터를 데이터 타입에 따라 분별하여 자신에게 저장한다.
   set shapeValue(_shape) {
+    this.value.variable = _shape;
 
-    switch (this.dataType) {
-      case DataTypes.String:
-        this.value.fromString = _shape;
-        break;
-      case DataTypes.Number:
-        this.value.fromNumber = _shape;
-        break;
-      case DataTypes.Boolean:
-        this.value.fromBoolean = _shape;
-        break;
-      case DataTypes.Array:
-      case DataTypes.Object:
-        this.value.fromObject = _shape;
-        break;
-      default:
-        throw new Error("invalid value type :" + this.dataType);
-    }
+    // switch (this.dataType) {
+    //   case DataTypes.String:
+    //     this.value.fromString = _shape;
+    //     break;
+    //   case DataTypes.Number:
+    //     this.value.fromNumber = _shape;
+    //     break;
+    //   case DataTypes.Boolean:
+    //     this.value.fromBoolean = _shape;
+    //     break;
+    //   case DataTypes.Array:
+    //   case DataTypes.Object:
+    //     this.value.fromObject = _shape;
+    //     break;
+    //   default:
+    //     throw new Error("invalid value type :" + this.dataType);
+    // }
   }
 
 
@@ -126,7 +130,9 @@ class ValueScopeNode extends ScopeNode {
     super.import(_scopeData);
     this.resolveOn = _scopeData.resolveOn;
     this.dataType = _scopeData.dataType;
-    this.value = new MetaText(_scopeData.value || '');
+    this.value = new MetaData({
+      seed: _scopeData.value || ''
+    });
   }
 
   export () {
