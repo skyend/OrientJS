@@ -91,10 +91,11 @@ class Action {
       setChain  : 이용가능 한 체인 명 지정
       _callback : Action 실행이 완료 되었을 때 호출하는 Callback 메서드. 인자로 actionResult 인스턴스를 입력하여야 한다.
   */
-  execute(_argsMap, _caller, _window, _notice) {
+  execute(_argsMap, _caller, _upperActionResult, _notice) {
     let functionParamDefineArray = []; // 제일 마지막 요소는 function의 body 이자 action의 body가 삽입된다.
     let actionArgArray = []; //action이 실행 될 때 입력될 인수 배열 위의 functionParamDefineArray와 각각의 요소가 (마지막을 제외한.body)대응해야 한다.
     let emptyActionResult = new ActionResult();
+    emptyActionResult.setUpperActionResult(_upperActionResult);
 
     // action ArgArray 의 배치구조
     // actionParam, ... , actionResult instance, _ActionResult Class, _callback(Callback)
@@ -130,8 +131,8 @@ class Action {
       _notice(_actionResult);
     });
 
-    functionParamDefineArray.push("__window__");
-    actionArgArray.push(_window);
+    // functionParamDefineArray.push("__window__");
+    // actionArgArray.push(_window);
 
     //functionParamDefineArray.push('with(__window__){' + this.actionBody + '}');
     functionParamDefineArray.push(this.actionBody);

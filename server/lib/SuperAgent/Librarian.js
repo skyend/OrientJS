@@ -12,7 +12,37 @@ class Librarian {
     this.agent = _agent;
   }
 
-  getUserBySession(_sessionKey, _callback) {
+  filterUserDocForPublic(_userDoc) {
+    return _.omit(_userDoc.toJSON(), 'password', '_id', '__v');
+  }
+
+  getSessionUserByQuery(_req, _callback) {
+    let sid = _req.query['ion-sb.sid'];
+    let crypted_uid = _req.query['ion-sb.uid'];
+
+    this.getUserBySession(sid, crypted_uid, (_err, _userData) => {
+      if (_err) {
+        _callback(_err, null);
+      } else {
+        _callback(null, this.filterUserDocForPublic(_userData));
+      }
+    });
+  }
+
+  getSessionUserByCookie(_req, _callback) {
+    let sid = _req.cookies['ion-sb.sid'];
+    let crypted_uid = _req.cookies['ion-sb.uid'];
+
+    this.getUserBySession(sid, crypted_uid, (_err, _userData) => {
+      if (_err) {
+        _callback(_err, null);
+      } else {
+        _callback(null, this.filterUserDocForPublic(_userData));
+      }
+    });
+  }
+
+  getUserBySession(_sessionKey, _crypted_uid, _callback) {
     Async.waterfall([
       (_cb) => {
         this.agent.memStore.driver.readSession(_sessionKey, (_err, _sessionData) => {
@@ -33,17 +63,39 @@ class Librarian {
 
         this.agent.dataStore.driver.getUserById(id, (_err, _userData) => {
           if (_err) {
-            _cb(ERRORS.SESSION.NOT_FOUND_RELATED_USER);
+            _cb(ERRORS.SESSION.COULD_NOT_FIND_RELATED_USER);
+          } else if (_userData === null) {
+
+            _cb(ERRORS.SESSION.NOT_FOUND_RELATED_USER, null);
           } else {
-            _cb(null, _userData);
+
+            try {
+              if (bcrypt.compareSync(_userData.id, _crypted_uid)) {
+                _cb(null, _userData);
+              } else {
+                _cb(ERRORS.SESSION.INVALID_SESSION, null);
+              }
+            } catch (_e) {
+              _cb(ERRORS.SESSION.INVALID_SESSION, null);
+            }
           }
         });
+      },
+      (_userData, _cb) => {
+        if (_userData.deleted !== true && _userData.active) {
+          if (_userData.certified) {
+            _cb(null, _userData);
+          } else {
+            _cb(ERRORS.SESSION.INVALID_SESSION_OF_USER, null);
+          }
+        } else {
+          _cb(ERRORS.SIGNIN.INVALID_SESSION_OF_USER, null);
+        }
       }
     ], (_err, _userData) => {
       if (_err) _callback(_err, null);
       else _callback(null, _userData);
-    })
-
+    });
   }
 
   assignSession(_userData, _callback) {
@@ -85,33 +137,42 @@ class Librarian {
         }
       },
       (_userData, _cb) => {
+        let compared;
+        try {
+          compared = bcrypt.compareSync(_pw, _userData.password);
+        } catch (_e) {
+          // 비밀번호 비교 실패
+          // 데이터 베이스에 저장된 password 해시가 변조되었음을 뜻한다.
+          this.agent.log.crit("User password temporary modified. User id:%s email:%s", _userData.id, _userData.email);
 
-        if (bcrypt.compareSync(_pw, _userData.password)) {
+          _cb(ERRORS.SIGNIN.NORMAL);
+          return;
+        }
 
+        if (compared) {
 
           this.assignSession(_.pick(_userData, 'email', 'id'), (_err, _sessionKey) => {
             // session 생성
             if (_err !== null) {
               _cb(_err, null);
             } else {
-              _cb(null, _sessionKey);
+              _cb(null, _userData, _sessionKey);
             }
           });
         } else {
           _cb(ERRORS.SIGNIN.PASSWORD_IS_NOT_MATCHED, null);
         }
       }
-    ], (_err, _sessionKey) => {
+    ], (_err, _userData, _sessionKey) => {
       if (_err) {
         _callback(_err, null);
       } else {
-        _callback(null, _sessionKey);
+        _callback(null, _sessionKey, bcrypt.hashSync(_userData.id));
       }
     });
   }
 
   registerUser(_req, _data, _callback) {
-
 
     if (!_data.fullname) return _callback(ERRORS.SIGNUP.FULLNAME_FIELD_IS_REQUIRED);
     if (!_data.email) return _callback(ERRORS.SIGNUP.EMAIL_FIELD_IS_REQUIRED);
@@ -128,15 +189,23 @@ class Librarian {
           } else {
             if (_req.cookies) {
               let sid = _req.cookies['ion-sb.sid'];
+              let crypted_uid = _req.cookies['ion-sb.uid'];
 
-              this.getUserBySession(sid, (_err, _userData) => {
+              this.getUserBySession(sid, crypted_uid, (_err, _userData) => {
                 if (_err) {
-                  _cb(_err);
+                  //_cb(_err);
+
+                  // 이유를 캡슐화
+                  _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
                 } else {
-                  if (_userData.superuser) {
-                    _cb(null);
+                  if (_userData !== null) {
+                    if (_userData.superuser) {
+                      _cb(null);
+                    } else {
+                      _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+                    }
                   } else {
-                    _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+                    _cb(ERRORS.NORMAL);
                   }
                 }
               });
@@ -223,14 +292,13 @@ class Librarian {
           });
         }
       ],
-      function done(_err, _userData) {
+      (_err, _userData) => {
         if (_err) {
           _callback(_err, null);
         } else {
           _callback(null, _userData);
         }
-      }
-    )
+      });
   }
 
   emailCertifyUser(_key, _email, _callback) {
@@ -253,15 +321,17 @@ class Librarian {
         this.agent.dataStore.driver.getUserById(userid, (_err, _userData) => {
           if (_err !== null) {
 
-            _cb(ERRORS.NOT_FOUND_CERTIFICATION_USER);
+            _cb(ERRORS.SIGNUP.COULD_NOT_FIND_CERTIFICATION_USER);
           } else {
             if (_userData !== null) {
               if (_userData.email === _email) {
                 // 인증성공
                 _cb(null, _userData);
               } else {
-                _cb(ERRORS.USER_NOT_MATCHED_CERTIFICATION);
+                _cb(ERRORS.SIGNUP.USER_NOT_MATCHED_CERTIFICATION);
               }
+            } else {
+              _cb(ERRORS.SIGNUP.NOT_FOUND_CERTIFICATION_USER);
             }
           }
         });

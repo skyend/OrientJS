@@ -67,6 +67,28 @@ class ActionResult {
   set code(_code) {
     this._code = String(_code);
   }
+
+  setUpperActionResult(_actionResult) {
+    this.upperResult = _actionResult;
+  }
+
+  getUpperByTaskName(_taskName) {
+    let found = null;
+
+    let curr = this;
+    while (curr = curr.upperResult) {
+      if (curr.origin === `task@${_taskName}`) {
+        found = curr;
+        break;
+      }
+    }
+
+    if (found) {
+      return found;
+    } else {
+      throw new Error("상위의 ActionResult를 찾을 수 없습니다.");
+    }
+  }
 }
 
 export default ActionResult;

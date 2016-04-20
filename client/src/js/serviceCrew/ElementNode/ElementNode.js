@@ -520,6 +520,17 @@ class ElementNode {
     return null;
   }
 
+
+  reconstructDOMs() {
+    this.hiddenForwardDOM = this.forwardDOM;
+    this.forwardDOM = null;
+
+    this.treeExplore(function(_child) {
+      _child.forwardDOM = null;
+      _child.isAttachedDOM = false;
+    });
+  }
+
   /*
       ConstructDOMsInner
 
@@ -700,9 +711,11 @@ class ElementNode {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
         // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
 
+
         // 값이 string일때만 resolve를 실행한다.
         if (typeof this.scopeNodes[i].shapeValue === 'string')
           this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].shapeValue);
+
       }
     }
   }
@@ -1807,7 +1820,7 @@ class ElementNode {
 
     // 액션을 실행하고 결과를 콜백으로 통보 받는다.
     //action.execute(executeParamMap, this, this.forwardDOM.ownerDocument.defaultView, function(_actionResult) {
-    action.execute(executeParamMap, executor, null, function(_actionResult) {
+    action.execute(executeParamMap, executor, _prevActionResult, function(_actionResult) {
       let chainedTask;
 
       // task chain 처리

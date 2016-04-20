@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<!--
+	Eventually by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Error</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/service-static/index/assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="/service-static/index/assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="/service-static/index/assets/css/ie9.css" /><![endif]-->
+
+    <!-- Scripts -->
+			<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+			<!-- <script src="/service-static/index/assets/js/main.js"></script> -->
+
+      <script src="/socket.io/socket.io.js"></script>
+      <script type='text/javascript' src='/gelateria/orbit.js'></script>
+      <script type='text/javascript' src='/gelateria/orient.js'></script>
+      <script>
+        window.onload = function(){
+          // var orbit = new Orbit(window);
+
+          var targetElement = document.getElementById('run');
+          // var targetElement = document.body;
+          var masterElementNode = Orient.buildComponentByElement(targetElement, {});
+          Orient.replaceRender(masterElementNode, targetElement);
+
+          var socket = io.connect(window.location.host);
+          socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+          });
+        }
+      </script>
+
+	</head>
+	<body >
+
+
+		<!-- Header -->
+			<header id="header">
+		    [<%= status %>] <%= title %>
+			</header>
+
+			<div id='run'>
+         <%= message %>
+
+         이 페이지는 {{: val@remain_second }}초 후에 이동 됩니다.<br/> 바로 이동하실 경우 <a href='<%= redirection %>'> 이곳 </a>을 클릭하세요.
+			</div>
+
+
+			<footer id="footer">
+
+				<ul class="copyright">
+					<li>&copy; Untitled.</li><li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</footer>
+
+
+      <!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+      <script src="/service-static/index/assets/js/main.js"></script>
+	</body>
+</html>

@@ -26,9 +26,15 @@ class APIRequest {
 
 
     if (/^https?$/.test(sourceType)) {
-      HTTPRequest.request(_methodOverride || 'get', sourceTarget, _paramObject, function(_err, _res) {
-        if (_err !== null) return _callback(_err, null);
+      HTTPRequest.request(_methodOverride || 'get', sourceTarget, _paramObject, function(_err, _res, _statusCode) {
 
+        if (_err !== null) {
+          if (_res) {
+            return _callback(_err, _res.body || _res.text, _res);
+          } else {
+            return _callback(_err, null);
+          }
+        }
         _callback(null, _res.body || _res.text, _res);
       }, _enctype);
     } else {
@@ -40,9 +46,14 @@ class APIRequest {
 
       _env.apiSourceFactory.getInstanceWithRemote(sourceType, sourceTarget, function(_apiSource) {
 
-
         _apiSource.executeRequest(_requestId, _paramObject, {}, function(_err, _retrievedObject, _response) {
-          if (_err !== null) return _callback(_err, null);
+          if (_err !== null) {
+            if (_retrievedObject) {
+              return _callback(_err, _retrievedObject, _res);
+            } else {
+              return _callback(_err, null);
+            }
+          }
 
           _callback(null, _retrievedObject, _response);
         }, _enctype);

@@ -180,34 +180,37 @@
     <script>
       window.onload = function(){
         var orbit = new Orbit(window);
-        var targetElement = document.getElementById('login-form');
-        // var targetElement = document.body;
-        var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
-        Orient.replaceRender(masterElementNode, targetElement);
+        orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
 
-        var socket = io.connect(window.location.host);
-        socket.on('news', function (data) {
-          console.log(data);
-          socket.emit('my other event', { my: 'data' });
-        });
+          var targetElement = document.getElementById('login-form');
+          // var targetElement = document.body;
+          var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
+          Orient.replaceRender(masterElementNode, targetElement);
 
-        Orient.registerFunction('returnLoginChainCode', function(_resultData){
-          if( _resultData.sessionKey !== null ){
-            return 'success';
-          } else {
-            return 'fail';
-          }
-        });
+          var socket = io.connect(window.location.host);
+          socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+          });
 
-        Orient.registerAction("open-modal", ["title","message"], function(){
-          this.setValue("modal-title", title);
-          this.setValue("modal-message", message);
+          Orient.registerFunction('returnLoginChainCode', function(_resultData){
+            if( _resultData.sessionKey !== null ){
+              return 'success';
+            } else {
+              return 'fail';
+            }
+          });
 
-          var modal = this.getMaster().findById('modal');
-          this.setValue("modal-opened", true);
-          modal.update();
+          Orient.registerAction("open-modal", ["title","message"], function(){
+            this.setValue("modal-title", title);
+            this.setValue("modal-message", message);
 
-          _callback(_actionResult);
+            var modal = this.getMaster().findById('modal');
+            this.setValue("modal-opened", true);
+            modal.update();
+
+            _callback(_actionResult);
+          });
         });
       }
     </script>
@@ -234,11 +237,12 @@
                                   arg-apiSourceId='[http]/api/user/signin'
                                   arg-requestId=''
                                   arg-chainCodeCriterion='{{: func@returnLoginChainCode }}'
-                                  chain-success='success'
+                                  chain-success='admission'
                                   chain-fail='fail-alert'></en:task>
-          <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: feature@prev-result.data.error.code }}'></en:task>
-          <en:task name='success' action='set-cookie' arg-name='ion-sb.sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission'></en:task>
-          <en:task name='admission' action='move-location' arg-location='/dashboard/'></en:task>
+          <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: feature@prev-result.data.error.reason }}'></en:task>
+          <en:task name='admission' action='set-cookie' arg-name='ion-sb.sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission2'></en:task>
+          <en:task name='admission2' action='set-cookie' arg-name='ion-sb.uid' arg-value='{{: feature@prev-result.getUpperByTaskName("submit").data.hashed_uid }}' chain-next='enter' ></en:task>
+          <en:task name='enter' action='move-location' arg-location='/admin/dashboard'></en:task>
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>

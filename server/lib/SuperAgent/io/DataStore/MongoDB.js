@@ -1,5 +1,6 @@
 import Mongoose from 'mongoose';
 import uuid from 'uuid';
+import bcrypt from 'bcrypt-nodejs';
 
 /**
  * Schema Imports
@@ -127,7 +128,7 @@ class MongoDBDriver {
   }
 
   createUserEmailCertification(_id, _callback) {
-    let key = uuid.v4();
+    let key = uuid.v4() + uuid.v1() + uuid.v4();
 
     let ECModel = this.getModel('EmailCertification');
 

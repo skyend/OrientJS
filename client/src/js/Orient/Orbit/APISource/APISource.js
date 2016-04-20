@@ -185,8 +185,11 @@ export default class APISource {
     let key;
     for (let i = 0; i < keys.length; i++) {
       key = keys[i];
-
-      resolvedObject[key] = this.orbit.interpret(_fieldObject[key]);
+      if (typeof _fieldObject[key] === 'string') {
+        resolvedObject[key] = this.orbit.interpret(_fieldObject[key]);
+      } else {
+        resolvedObject[key] = _fieldObject[key];
+      }
     }
 
     return resolvedObject;
@@ -209,11 +212,11 @@ export default class APISource {
 
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
-    let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(req.getFieldsObject(), _fields, true));
-    let resolvedFieldObject = this.resolvefieldObject(fieldObject);
+    let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
+    // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
 
 
-    this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), resolvedFieldObject, function(_err, _res) {
+    this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
     }, _enctypeOrComplete);

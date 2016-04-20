@@ -149,12 +149,19 @@ class Orbit {
     });
   }
 
-  foundationCompatibility() {
+  foundationCompatibility(_callback, _callbackFinal) {
     this.pageMetaCompatibility(() => {
       var masterElementNode = Orient.buildComponentByElement(this.orbitDocument.document.body, {}, this);
       Orient.replaceRender(masterElementNode, this.orbitDocument.document.body);
+
+      if (_callback) {
+        _callback(masterElementNode);
+      }
     }, () => {
       this.signalReady();
+      if (_callbackFinal) {
+        _callbackFinal(masterElementNode);
+      }
     });
   }
 

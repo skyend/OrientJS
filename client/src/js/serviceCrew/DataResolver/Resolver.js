@@ -163,6 +163,7 @@ class Resolver {
 
       // ORIENT_SHOW_BIND_ERROR 가 켜져있으면 에러를 throw 한다. 후에 컨셉 수정하기
       if (window.ORIENT_OCCURS_BIND_ERROR) {
+
         let error = new Error(`${_e.message} [Matter sentence : {${_syntax}}]`);
         error.interpretArguments = argsMap;
 

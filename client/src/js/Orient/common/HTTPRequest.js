@@ -33,9 +33,13 @@ class HTTPRequest {
           HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${_url}]\n`, 'log', [res]);
 
           if (err) {
-            _complete(err, null, null);
+            if (res) {
+              _complete(err, res, res.statusCode);
+            } else {
+              _complete(err, null);
+            }
           } else {
-            _complete(err, res, res.statusCode);
+            _complete(null, res, res.statusCode);
           }
         });
 
@@ -46,9 +50,13 @@ class HTTPRequest {
           HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${_url}\n`, "log", [res]);
 
           if (err) {
-            _complete(err, null, null);
+            if (res) {
+              _complete(err, res, res.statusCode);
+            } else {
+              _complete(err, null);
+            }
           } else {
-            _complete(err, res, res.statusCode);
+            _complete(null, res, res.statusCode);
           }
         });
     } else if (_method === 'put') {

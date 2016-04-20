@@ -339,29 +339,21 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
   console.log(apiSourceId, requestId, fields);
 
-  Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, fields, (_err, _retrievedObject, _statusCode) => {
-    // http error 코드일 경우
+  Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, fields, (_err, _retrievedObject, _originResponse) => {
+    // http error 코드일 경우 
 
+    if (chainCodeCriterion) {
 
-    if (_retrievedObject === null) {
-
-      _actionResult.code = _statusCode;
-      _actionResult.data = null;
-    } else {
-
-      if (chainCodeCriterion) {
-
-        if (chainCodeCriterion instanceof Function) {
-          _actionResult.code = chainCodeCriterion(_retrievedObject);
-        } else {
-          _actionResult.code = _retrievedObject[chainCodeCriterion];
-        }
+      if (chainCodeCriterion instanceof Function) {
+        _actionResult.code = chainCodeCriterion(_retrievedObject);
       } else {
-        _actionResult.code = _retrievedObject['result'];
+        _actionResult.code = _retrievedObject[chainCodeCriterion];
       }
-
-      _actionResult.data = _retrievedObject;
+    } else {
+      _actionResult.code = _retrievedObject['result'];
     }
+
+    _actionResult.data = _retrievedObject;
 
     _callback(_actionResult);
   }, enctype || (this.hasAttribute('enctype') ? this.getAttributeWithResolve('enctype') : undefined), requestMethodForHTTP);

@@ -3,28 +3,52 @@ var router = express.Router();
 
 
 function login(req, res, next) {
-  agent.businessMan.signinUser(req.body.email, req.body.pw, function(_err, _sessionKey) {
-
-    res.json({
-      error: _err,
-      sessionKey: _sessionKey,
-      email: req.body.email
-    });
+  agent.businessMan.signinUser(req.body.email, req.body.pw, function(_err, _sessionKey, _crypted_uid) {
+    if (_err) {
+      res.status(_err.code);
+      res.json({
+        error: _err
+      });
+    } else {
+      res.status(200).json({
+        error: null,
+        sessionKey: _sessionKey,
+        hashed_uid: _crypted_uid,
+        email: req.body.email
+      });
+    }
   });
 }
 
 function register(req, res, next) {
 
   agent.businessMan.registerUser(req, req.body, function(_err, _userId) {
-    res.json({
-      error: _err,
-      userId: _userId
-    });
+    if (_err) {
+      res.status(_err.code);
+      res.json({
+        error: _err
+      });
+    } else {
+      res.status(200).json({
+        error: null,
+        userId: _userId
+      });
+    }
   });
 }
 
 function profile(req, res, next) {
+
   // profile 반환
+  agent.businessMan.getSessionUserByQuery(req, (_err, _userData) => {
+    if (_err) {
+      res.status(_err.code).send({
+        error: _err
+      });
+    } else {
+      res.status(200).send(_userData);
+    }
+  })
 }
 
 function emailAuthorize(req, res, next) {
@@ -33,7 +57,9 @@ function emailAuthorize(req, res, next) {
 
   agent.businessMan.emailCertifyUser(key, email, (_err, _result) => {
     if (_err !== null) {
-      res.send(_err);
+      res.status(_err.code).send({
+        error: _err
+      });
     } else {
       res.redirect(`/admin/signin?email=${email}`);
     }
