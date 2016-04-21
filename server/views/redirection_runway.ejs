@@ -18,6 +18,193 @@
 			<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
 			<!-- <script src="/service-static/index/assets/js/main.js"></script> -->
 
+      <style>
+  		.error-wrap {
+  /*font-size: 100px;
+  margin-top: calc(50vh - 70px);*/
+  position: relative;
+  text-align: center;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  font-size: 50px;
+  font-weight: normal;
+  height: 70px;
+  }
+  .error-wrap p {
+  font-size: 25px;
+  position: absolute;
+  width: 100%;
+  top: 130px;
+  line-height: 34px;
+  }
+  .error-wrap a {
+  color: rgba(255, 255, 255, 0.9);
+  }
+
+  .error {
+  /*text-align: center;*/
+  /*width: 100%;*/
+  position: absolute;
+  top: 0;
+  }
+  .error:nth-child(2) {
+  margin-left: 1px;
+  text-shadow: -1px 0 rgba(255, 0, 0, 0.4);
+  background: url(../img/bg.jpg);
+  background-size: cover;
+  background-position: fixed;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+  -webkit-animation: noise-anim 2s infinite linear alternate-reverse;
+  				animation: noise-anim 2s infinite linear alternate-reverse;
+  z-index: 10;
+  }
+  .error:nth-child(3) {
+  margin-left: -1px;
+  text-shadow: -1px 0 rgba(0, 0, 255, 0.4);
+  background: url(../img/bg.jpg);
+  background-size: cover;
+  background-position: fixed;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+  -webkit-animation: noise-anim-2 3s infinite linear alternate-reverse;
+  				animation: noise-anim-2 3s infinite linear alternate-reverse;
+  z-index: 10;
+  }
+
+  @-webkit-keyframes noise-anim {
+    0% {
+      clip: rect(28px, 9999px, 50px, 0);
+    }
+    5% {
+      clip: rect(93px, 9999px, 76px, 0);
+    }
+    10% {
+      clip: rect(2px, 9999px, 60px, 0);
+    }
+    15.0% {
+      clip: rect(8px, 9999px, 47px, 0);
+    }
+    20% {
+      clip: rect(87px, 9999px, 97px, 0);
+    }
+    25% {
+      clip: rect(39px, 9999px, 45px, 0);
+    }
+    30.0% {
+      clip: rect(25px, 9999px, 25px, 0);
+    }
+    35% {
+      clip: rect(39px, 9999px, 66px, 0);
+    }
+    40% {
+      clip: rect(95px, 9999px, 62px, 0);
+    }
+    45% {
+      clip: rect(28px, 9999px, 3px, 0);
+    }
+    50% {
+      clip: rect(11px, 9999px, 98px, 0);
+    }
+    55.0% {
+      clip: rect(63px, 9999px, 9px, 0);
+    }
+    60.0% {
+      clip: rect(19px, 9999px, 16px, 0);
+    }
+    65% {
+      clip: rect(34px, 9999px, 30px, 0);
+    }
+    70% {
+      clip: rect(78px, 9999px, 15px, 0);
+    }
+    75% {
+      clip: rect(19px, 9999px, 40px, 0);
+    }
+    80% {
+      clip: rect(41px, 9999px, 53px, 0);
+    }
+    85.0% {
+      clip: rect(80px, 9999px, 23px, 0);
+    }
+    90% {
+      clip: rect(76px, 9999px, 94px, 0);
+    }
+    95% {
+      clip: rect(21px, 9999px, 28px, 0);
+    }
+    100% {
+      clip: rect(27px, 9999px, 22px, 0);
+    }
+  }
+
+  @keyframes noise-anim {
+    0% {
+      clip: rect(28px, 9999px, 50px, 0);
+    }
+    5% {
+      clip: rect(93px, 9999px, 76px, 0);
+    }
+    10% {
+      clip: rect(2px, 9999px, 60px, 0);
+    }
+    15.0% {
+      clip: rect(8px, 9999px, 47px, 0);
+    }
+    20% {
+      clip: rect(87px, 9999px, 97px, 0);
+    }
+    25% {
+      clip: rect(39px, 9999px, 45px, 0);
+    }
+    30.0% {
+      clip: rect(25px, 9999px, 25px, 0);
+    }
+    35% {
+      clip: rect(39px, 9999px, 66px, 0);
+    }
+    40% {
+      clip: rect(95px, 9999px, 62px, 0);
+    }
+    45% {
+      clip: rect(28px, 9999px, 3px, 0);
+    }
+    50% {
+      clip: rect(11px, 9999px, 98px, 0);
+    }
+    55.0% {
+      clip: rect(63px, 9999px, 9px, 0);
+    }
+    60.0% {
+      clip: rect(19px, 9999px, 16px, 0);
+    }
+    65% {
+      clip: rect(34px, 9999px, 30px, 0);
+    }
+    70% {
+      clip: rect(78px, 9999px, 15px, 0);
+    }
+    75% {
+      clip: rect(19px, 9999px, 40px, 0);
+    }
+    80% {
+      clip: rect(41px, 9999px, 53px, 0);
+    }
+    85.0% {
+      clip: rect(80px, 9999px, 23px, 0);
+    }
+    90% {
+      clip: rect(76px, 9999px, 94px, 0);
+    }
+    95% {
+      clip: rect(21px, 9999px, 28px, 0);
+    }
+    100% {
+      clip: rect(27px, 9999px, 22px, 0);
+    }
+  }
+
+  		</style>
+
       <script src="/socket.io/socket.io.js"></script>
       <script type='text/javascript' src='/gelateria/orbit.js'></script>
       <script type='text/javascript' src='/gelateria/orient.js'></script>
@@ -41,16 +228,44 @@
 	</head>
 	<body >
 
+    <div class='error-wrap'>
+      <div class='error'>
+        Redirection
+      </div>
+      <div class='error'>
+        Redirection
+      </div>
+      <div class='error'>
+        Redirection
+      </div>
+      <div class='error'>
+        Redirection
+      </div>
+    </div>
+
 
 		<!-- Header -->
 			<header id="header">
 		    [<%= status %>] <%= title %>
 			</header>
 
-			<div id='run'>
-         <%= message %>
+			<div id='run' en-event-first-rendered='task@loop'>
+        <en:task name='update' action='update' en-executor='{{: this.getMaster() }}' chain-success='check'></en:task>
 
-         이 페이지는 {{: val@remain_second }}초 후에 이동 됩니다.<br/> 바로 이동하실 경우 <a href='<%= redirection %>'> 이곳 </a>을 클릭하세요.
+        <en:task name='loop' action='loop' arg-fps='1' chain-next="decreaseSec"></en:task>
+        <en:task name='decreaseSec' action='set' arg-name='remain_second' arg-value='{{: val@remain_second - 1 }}' chain-success='update'></en:task>
+
+        <en:task name='check' action='if' arg-conditionResult='{{: val@remain_second === 0 }}' chain-true='move'></en:task>
+        <en:task name='move' action='move-location' arg-location='<%= redirection %>'></en:task>
+
+        <en:value name='remain_second' type='number' value="10"></en:value>
+         <pre><%= message %></pre>
+
+
+         <br/>
+         이 페이지는 {{: val@remain_second }}초 후에 이동 됩니다.
+
+         바로 이동하실 경우 <a href='<%= redirection %>'> 이곳 </a>을 클릭하세요.
 			</div>
 
 

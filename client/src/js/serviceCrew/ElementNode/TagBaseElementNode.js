@@ -500,8 +500,9 @@
          this.forwardDOM.value = attrValue;
        }
 
-       if (attrName === 'checked' && this.forwardDOM.checked !== attrValue)
+       if (attrName === 'checked' && this.forwardDOM.checked !== attrValue) {
          this.forwardDOM.checked = attrValue;
+       }
 
        if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
          this.forwardDOM.setAttribute(attrName, attrValue);

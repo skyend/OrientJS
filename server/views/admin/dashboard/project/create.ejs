@@ -7,16 +7,16 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="/service-static/admin/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/service-static/admin/bootstrap/css/bootstrap.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/service-static/admin/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/service-static/admin/dist/css/AdminLTE.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="/service-static/admin/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/service-static/admin/dist/css/skins/_all-skins.css">
     <!-- iCheck -->
     <link rel="stylesheet" href="/service-static/admin/plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
@@ -60,129 +60,104 @@
       }
     </script>
   </head>
-  <body class="hold-transition skin-blue sidebar-mini">
+  <body class="hold-transition skin-black sidebar-mini">
   <div id='wrapper' class="wrapper">
 
-    <%- include ../common/head.ejs %>
+    <%- include ../../common/head.ejs %>
 
     <!-- Left side column. contains the logo and sidebar -->
-    <%- include ../common/sidebar.ejs %>
+    <%- include ../../common/sidebar.ejs %>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
-      <%- include ../common/location-bar.ejs %>
+      <%- include ../../common/location-bar.ejs %>
 
       <!-- Main content -->
       <section class="content">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-aqua">
-              <div class="inner">
-                <h3>150</h3>
 
-                <p>Projects</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-green">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-yellow">
-              <div class="inner">
-                <h3>44</h3>
-
-                <p>User Registrations</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-xs-6">
-            <!-- small box -->
-            <div class="small-box bg-red">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-        </div>
         <!-- /.row -->
        <div class='row'>
-
-
         <div class='col-lg-6'>
           <div class="box box-default">
             <div class="box-header with-border">
               <i class="fa fa-plane"></i>
 
-              <h2 class="box-title">Projects</h2>
+              <h2 class="box-title">Create Form</h2>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+              <form class="form-horizontal" en-id='project-create-form'>
+                <en:task name='render' action="update" en-executor='project-create-form'></en:task>
 
-              <form en-id='new-project-form' en-event-submit='task@submit' onsubmit="return false;">
-                <en:task name='submit' action='move-location' arg-location='/admin/project/create?project-name={{: val@project-name }}'></en:task>
+                <en:value name='name' type='string' value='{{: http-param@project-name || "" }}' resolve-on></en:value>
+                <en:value name='desc' type='string' value=''></en:value>
+                <en:value name='access' type='string' value='private'></en:value>
 
-                <en:task name='render' action='update' en-executor='new-project-form'></en:task>
 
-                <en:value name='project-name' type='string' value=''></en:value>
+                <div class="box-body">
+                  <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Project Name</label>
 
-                <div class="input-group input-group-lg">
-                  <en:task name='changed' action='set' arg-name='project-name' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
-
-                  <!-- /btn-group -->
-                  <input name='project-name' type="text" class="form-control" value='{{: val@project-name }}' en-event-keyup='task@changed' en-event-change='task@changed'>
-
-                  <div class="input-group-btn">
-                    <button type="submit" class="btn btn-danger">Create</button>
+                    <div class="col-sm-10">
+                      <en:task name='changed' action='set' arg-name='name' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
+                      <input type="text" class="form-control" value='{{: val@name }}' placeholder="Email" en-event-keyup='task@changed' en-event-change='task@changed'>
+                    </div>
                   </div>
-                </div>
 
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+
+                    <div class="col-sm-10">
+                      <en:task name='changed' action='set' arg-name='desc' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
+
+                      <textarea class="form-control" rows="4" placeholder="Enter ..." en-event-keyup='task@changed'>{{: val@desc }}</textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Template Zip</label>
+
+                    <div class="col-sm-10">
+                      <input type="file" id="exampleInputFile" accept='.zip'>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Access</label>
+
+                    <div class="col-sm-10">
+                      <en:task name='preventDefault' action='stopPropagation' chain-next='changed'></en:task>
+                      <en:task name='changed' action='set' trace arg-name='access' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
+
+                      <input type="radio" id="exampleInputFile" value='private' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label> Private </label> <br/>
+                      <input type="radio" id="exampleInputFile" value='internal' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label> Internal </label> <br/>
+                      <input type="radio" id="exampleInputFile" value='public' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label> Public </label> <br/>
+                    </div>
+                  </div>
+
+                  <!-- <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox"> Remember me
+                        </label>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                  <button type="button" class="btn btn-default" onclick='location.href="/admin/dashboard/"'>Cancel</button>
+                  <button type="submit" class="btn btn-info pull-right">Create</button>
+                </div>
+                <!-- /.box-footer -->
               </form>
 
-            </div>
-            <div class="box-body">
-              <div class="info-box" en-ctrl-repeat-n='5'>
-                <span class="info-box-icon bg-yellow"><i class="fa fa-puzzle-piece"></i></span>
-
-                <div class="info-box-content">
-                  <span class="info-box-text"> Test {{: en@repeat-n }} </span>
-                  <span class="info-box-number">13,648</span>
-                </div>
-                <!-- /.info-box-content -->
-              </div>
             </div>
             <!-- /.box-body -->
           </div>
@@ -194,10 +169,10 @@
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <%- include ../common/footer.ejs %>
+    <%- include ../../common/footer.ejs %>
 
     <!-- Control Sidebar -->
-    <%- include ../common/control-sidebar.ejs %>
+    <%- include ../../common/control-sidebar.ejs %>
 
     <!-- /.control-sidebar -->
     <!-- Add the sidebar's background. This div must be placed

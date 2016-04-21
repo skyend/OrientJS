@@ -54,7 +54,12 @@ router.get('/dashboard', function(req, res, next) {
       });
     } else {
       res.render('admin/dashboard/index', {
-        title: 'Service Builder'
+        title: 'Service Builder',
+        user: _userData,
+        page: {
+          name: "Dashboard",
+          path: ['dashboard']
+        }
       });
     }
   })

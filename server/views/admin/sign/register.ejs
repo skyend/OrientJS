@@ -27,7 +27,7 @@
         transition: opacity 2s ease-in-out;
         height: 100%;
         left: 0;
-        opacity: 0.25;
+        opacity: 0.5;
         position: fixed;
         top: 0;
         width: 100%;
@@ -239,11 +239,11 @@
       <div class="register-box-body">
         <p class="login-box-msg">Register a new membership</p>
 
-        <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;">
+        <form id='register-form' action="../../index.html" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;" enctype="multipart/form-data">
           <en:value name='modal-title' type='string' value=''></en:value>
           <en:value name='modal-message' type='string' value=''></en:value>
           <en:value name='modal-opened' type='boolean' value='false'></en:value>
-
+          <en:value name='bool-test' type='boolean' value='{{: true }}' resolve-on></en:value>
 
 
           <en:value name='fullname' type='string' value=''></en:value>
@@ -281,8 +281,7 @@
             <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
           </div>
-
-
+  
           <div class="row">
             <div class="col-xs-8">
               <!-- <div class="checkbox icheck">

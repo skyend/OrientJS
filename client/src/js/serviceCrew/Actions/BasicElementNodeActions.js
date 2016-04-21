@@ -116,6 +116,15 @@ actionStore.registerAction('set', ['name', 'value'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('toggle-val', ['name'], function() {
+  let value = this.getValue(name);
+
+  this.setValue(name, value ? false : true);
+
+  _callback(_actionResult);
+});
+
+
 actionStore.registerAction('attr-to', ['eid', 'selector', 'name', 'value', 'taskChain'], function() {
   let targetElementNode;
   if (eid !== undefined) {
@@ -340,7 +349,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   console.log(apiSourceId, requestId, fields);
 
   Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, fields, (_err, _retrievedObject, _originResponse) => {
-    // http error 코드일 경우 
+    // http error 코드일 경우
 
     if (chainCodeCriterion) {
 

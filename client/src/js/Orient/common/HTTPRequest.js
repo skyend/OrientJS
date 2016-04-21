@@ -26,6 +26,17 @@ class HTTPRequest {
   }
 
   static request(_method, _url, _fields = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
+    // let fieldKeys = Object.keys(_fields);
+    //
+    // let key, item;
+    // for (let i = 0; i < fieldKeys.length; i++) {
+    //   key = fieldKeys[i];
+    //   item = _fields[key];
+    //
+    // }
+
+
+
     if (_method === 'get') {
       SuperAgent.get(_url)
         .query(_fields)

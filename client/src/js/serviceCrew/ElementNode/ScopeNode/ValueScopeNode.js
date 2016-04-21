@@ -103,7 +103,6 @@ class ValueScopeNode extends ScopeNode {
     }
   }
 
-
   /**
   Task Implement
   **/
@@ -122,6 +121,7 @@ class ValueScopeNode extends ScopeNode {
     scopeSpecObject.dataType = DataTypes[_dom.getAttribute('type')];
     scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
     scopeSpecObject.resolveOn = _dom.getAttribute('resolve-on') !== null ? true : false;
+    scopeSpecObject.initializer = _dom.getAttribute('initializer') !== null ? _dom.getAttribute('initializer') : null;
 
     return scopeSpecObject;
   }
@@ -131,6 +131,7 @@ class ValueScopeNode extends ScopeNode {
     this.resolveOn = _scopeData.resolveOn;
     this.dataType = _scopeData.dataType;
     this.value = new MetaText(_scopeData.value || '');
+    this.initializer = _scopeData.initializer;
   }
 
   export () {
@@ -138,7 +139,7 @@ class ValueScopeNode extends ScopeNode {
     exportObject.resolveOn = this.resolveOn;
     exportObject.dataType = this.dataType;
     exportObject.value = ObjectExtends.clone(this.value.export());
-
+    exportObject.initializer = this.initializer;
     return exportObject;
   }
 }

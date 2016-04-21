@@ -546,8 +546,8 @@ class ElementNode {
     // hidden 일 때 false
     let returnElementNodes = []; // 현재 생성된 DOM에 대응하는 ElementNode를 반환한다.
 
-
     this.scopesResolve();
+
 
     this.debug("construct", "start", _options);
 
@@ -711,11 +711,13 @@ class ElementNode {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
         // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
 
+        //this.scopeNodes[i].plainValue = this.interpret(this.scopeNodes[i].plainValue);
 
-        // 값이 string일때만 resolve를 실행한다.
-        if (typeof this.scopeNodes[i].shapeValue === 'string')
-          this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].shapeValue);
-
+        try {
+          this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].plainValue);
+        } catch (_e) {
+          console.warn(_e);
+        }
       }
     }
   }

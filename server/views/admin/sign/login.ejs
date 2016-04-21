@@ -28,7 +28,7 @@
         transition: opacity 2s ease-in-out;
         height: 100%;
         left: 0;
-        opacity: 0.25;
+        opacity: 0.5;
         position: fixed;
         top: 0;
         width: 100%;
@@ -194,7 +194,7 @@
           });
 
           Orient.registerFunction('returnLoginChainCode', function(_resultData){
-            if( _resultData.sessionKey !== null ){
+            if( _resultData.error === null  ){
               return 'success';
             } else {
               return 'fail';
@@ -224,13 +224,16 @@
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form id='login-form' method="post" en-event-submit='task@submit' onsubmit="return false" >
+          <!-- Values -->
           <en:value name='modal-title' type='string' value=''></en:value>
           <en:value name='modal-message' type='string' value=''></en:value>
           <en:value name='modal-opened' type='boolean' value='false'></en:value>
 
-          <en:value name='email' type='string' value='{{: http-param@email || "" }}' resolve-on></en:value>
+          <en:value name='email' type='string' value='{{: http-param@email || Orient.Cookie.get("ion-sb.remember-email") || "" }}' resolve-on></en:value>
           <en:value name='pw' type='string' value=''></en:value>
+          <en:value name='remember-me' type='boolean' value='{{: Orient.Cookie.get("ion-sb.remember-email") ? true : false }}' resolve-on></en:value>
 
+          <!-- Tasks -->
           <en:task name='render' action='update' en-executor='{{: this.getMaster() }}'></en:task>
 
           <en:task name='submit' action="sendAPISourceForm"
@@ -239,10 +242,14 @@
                                   arg-chainCodeCriterion='{{: func@returnLoginChainCode }}'
                                   chain-success='admission'
                                   chain-fail='fail-alert'></en:task>
-          <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: feature@prev-result.data.error.reason }}'></en:task>
+          <en:task name='fail-alert' action='open-modal' arg-title='로그인 실패' arg-message='{{: "[" + feature@prev-result.data.error.code + "] " + feature@prev-result.data.error.reason }}'></en:task>
           <en:task name='admission' action='set-cookie' arg-name='ion-sb.sid' arg-value='{{: feature@prev-result.data.sessionKey }}' chain-next='admission2'></en:task>
-          <en:task name='admission2' action='set-cookie' arg-name='ion-sb.uid' arg-value='{{: feature@prev-result.getUpperByTaskName("submit").data.hashed_uid }}' chain-next='enter' ></en:task>
+          <en:task name='admission2' action='set-cookie' arg-name='ion-sb.uid' arg-value='{{: feature@prev-result.getUpperByTaskName("submit").data.hashed_uid }}' chain-next='remember-email' ></en:task>
+          <en:task name='remember-email' action='set-cookie' arg-name='ion-sb.remember-email' arg-value='{{: val@remember-me ? val@email : "" }}' chain-next='enter' ></en:task>
           <en:task name='enter' action='move-location' arg-location='/admin/dashboard'></en:task>
+
+
+
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
@@ -258,12 +265,21 @@
           </div>
           <div class="row">
             <div class="col-xs-8">
-              <div class="checkbox icheck">
+
+              <div class="checkbox icheck " en-event-click='task@preventDefault'>
+                <en:task name='preventDefault' action='preventDefault' chain-next='toggle'></en:task>
+                <en:task name='toggle' action='toggle-val' arg-name='remember-me' chain-next='render'></en:task>
+
                 <label>
-                  <input type="checkbox"> Remember Me
+                  <div class="icheckbox_square-blue {{: val@remember-me ? 'checked':''}}" >
+                    <input type="checkbox" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);">
+                    <ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);" >
+                    </ins>
+                  </div> Remember Me
                 </label>
               </div>
             </div>
+
             <!-- /.col -->
             <div class="col-xs-4">
               <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
@@ -304,7 +320,7 @@
     <!-- Bootstrap 3.3.6 -->
     <script src="/service-static/admin/bootstrap/js/bootstrap.min.js"></script>
     <!-- iCheck -->
-    <script src="/service-static/admin/plugins/iCheck/icheck.min.js"></script>
+    <!-- <script src="/service-static/admin/plugins/iCheck/icheck.min.js"></script> -->
     <script>
       $(function () {
         $('input').iCheck({

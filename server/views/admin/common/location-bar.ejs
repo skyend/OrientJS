@@ -1,10 +1,18 @@
 <section class="content-header">
   <h1>
-    Dashboard
-    <small>Control panel</small>
+    <%= page.name %>
+    <small><%= page.subname %> </small>
   </h1>
   <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active">Dashboard</li>
+
+    <% for(var i=0; i < page.path.length ; i++) {%>
+      <li>
+        <%if ( i === 0) { %>
+        <i class="fa fa-dashboard"></i>
+        <% } %>
+
+        <%= page.path[i] %>
+      </li>
+    <% } %>
   </ol>
 </section>
