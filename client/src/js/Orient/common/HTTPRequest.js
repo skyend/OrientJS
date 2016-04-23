@@ -92,7 +92,7 @@ class HTTPRequest {
     return formData;
   }
 
-  static requestSync(_method, _url, _data) {
+  static requestSync(_method, _url, _data = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
     var self = this;
 
     var req;
@@ -107,7 +107,12 @@ class HTTPRequest {
     req.send();
 
     if (req.status == 200) {
-      return req.responseText;
+      if (typeof _complete === 'function') {
+        _complete(req);
+      } else {
+        return req.responseText;
+      }
+
     } else {
 
       return undefined;
@@ -115,7 +120,7 @@ class HTTPRequest {
   }
 
 
-  static requestSync__(_method, _url, _data, _complete, _enctype = 'application/x-www-form-urlencoded') {
+  static requestSync__(_method, _url, _data = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
     var self = this;
 
     var req;

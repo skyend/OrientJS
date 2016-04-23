@@ -6,6 +6,12 @@ class Retriever {
     this.dirpath_i18n = _options['relative-dir-i18n'];
     this.dirpath_apisource = _options['relative-dir-apisource'];
     this.dirpath_component = _options['relative-dir-component'];
+
+    this.caches = {
+      i18n: {},
+      apisource: {},
+      component: {}
+    };
   }
 
   get loadAPISource() {
@@ -50,7 +56,7 @@ class Retriever {
     return this._loadComponentSheet;
   }
 
-  _loadComponentSheet(_loadTarget, _cb) {
+  _getComponentURL(_loadTarget) {
     let url;
 
     // 상대경로인가 절대경로인가 판단
@@ -64,12 +70,32 @@ class Retriever {
       url = this.dirpath_component + _loadTarget;
     }
 
-    this.orbit.HTTPRequest.request('get', url, {}, function(_err, _res) {
-      if (_err !== null) throw new Error("fail static component sheet loading");
+    return url;
+  }
 
+  _loadComponentSheet(_loadTarget, _cb) {
+    if (this.caches.component[_loadTarget] !== undefined) {
+      _cb(this.caches.component[_loadTarget]);
+      return;
+    }
+
+    this.orbit.HTTPRequest.request('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
+      if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
       let responseText = _res.text;
+      this.caches.component[_loadTarget] = responseText;
       _cb(responseText);
     });
+  }
+
+  _loadComponentSheetSync(_loadTarget, _cb) {
+
+    try {
+      let result = this.orbit.HTTPRequest.requestSync('get', this._getComponentURL(_loadTarget));
+
+      this.caches.component[_loadTarget] = responseText;
+    } catch (_e) {
+      throw new Error("fail static component sheet loading <" + _e + ">");
+    }
   }
 
   // 메서드 반환

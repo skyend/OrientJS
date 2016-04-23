@@ -41,7 +41,7 @@ class APIRequest {
       // apisource JSON을 로드한다.
       // env 의 APISOurce Factory에 접근한다.
       // JSON을 APISource로 빌드한다.
-      if (!_requestId) throw new Error(`APISource(${_apiSourceTarget})에 대응하는 RequestID를 찾을 수 없습니다. 구성을 확인 해 주세요.`);
+      if (!_requestId) throw new Error(`APISource(${_apiSourceDesc})에 대응하는 RequestID를 찾을 수 없습니다. 구성을 확인 해 주세요.`);
       if (!_env) throw new Error('Error: Couldn\'n APISource Request. Required the Environment.');
 
       _env.apiSourceFactory.getInstanceWithRemote(sourceType, sourceTarget, function(_apiSource) {

@@ -9,11 +9,6 @@ import '../Actions/RefElementNodeActions';
 
 "use strict";
 
-let RefferenceType = Object.freeze({
-  ElementNode: 'ElementNode',
-  Fragment: 'Fragment',
-  NONE: 'NONE'
-});
 
 const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
@@ -56,8 +51,8 @@ class RefElementNode extends HTMLElementNode {
     super.mappingAttributes(_domNode, _options);
 
 
-    if (this.refTargetId)
-      _domNode.setAttribute('en-ref-target-id', this.refTargetId);
+    // if (this.refTargetId)
+    //   _domNode.setAttribute('en-ref-target-id', this.refTargetId);
   }
 
 
@@ -75,43 +70,57 @@ class RefElementNode extends HTMLElementNode {
     }
 
     if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
-      this.forwardDOM.innerHTML = '';
 
-      this.loadComponent(targetId, function(_masterElementNodes) {
-        if (!_masterElementNodes) {
-          console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
-          return;
-        }
+      that.tryEventScope('ref-will-mount', {
 
-        that.masterElementNodes = _masterElementNodes;
+      }, null, (_result) => {
+        this.loadComponent(targetId, (_masterElementNodes) => {
 
-        that.loadedTargetId = targetId;
+          this.forwardDOM.innerHTML = '';
 
-        // that.scopeNodes.map(function(_scopeNode) {
-        //   if (_scopeNode.type === 'param') {
-        //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-        //   }
-        // });
-
-        // for (let i = 0; i < that.attributes.length; i++) {
-        //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-        // }
-
-        let masterElementNode;
-        for (let i = 0; i < that.masterElementNodes.length; i++) {
-          masterElementNode = that.masterElementNodes[i];
-
-          for (let i = 0; i < that.attributes.length; i++) {
-            masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));
+          if (!_masterElementNodes) {
+            console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
+            return;
           }
 
-          masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
+          that.masterElementNodes = _masterElementNodes;
 
-          masterElementNode.setParent(that);
-          masterElementNode.constructDOMs({});
-          masterElementNode.attachForwardDOM(that.forwardDOM);
-        }
+          that.loadedTargetId = targetId;
+
+          // that.scopeNodes.map(function(_scopeNode) {
+          //   if (_scopeNode.type === 'param') {
+          //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+          //   }
+          // });
+
+          // for (let i = 0; i < that.attributes.length; i++) {
+          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+          // }
+
+          let masterElementNode;
+          for (let i = 0; i < that.masterElementNodes.length; i++) {
+            masterElementNode = that.masterElementNodes[i];
+
+            for (let i = 0; i < that.attributes.length; i++) {
+              masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));
+            }
+
+            masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
+
+            masterElementNode.setParent(that);
+            masterElementNode.constructDOMs({});
+            masterElementNode.attachForwardDOM(that.forwardDOM);
+          }
+        });
+
+
+        that.tryEventScope('ref-did-mount', {
+
+        }, null, (_result) => {
+
+        });
       });
+
     } else {
       if (this.masterElementNodes) {
         //
@@ -120,9 +129,9 @@ class RefElementNode extends HTMLElementNode {
         //     that.masterElementNodes.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
         //   }
         // });
+        console.log(this.masterElementNodes);
 
 
-        this.forwardDOM.innerHTML = '';
         let masterElementNode;
         for (let i = 0; i < this.masterElementNodes.length; i++) {
           masterElementNode = this.masterElementNodes[i];
@@ -132,8 +141,8 @@ class RefElementNode extends HTMLElementNode {
           }
           //
           // let prevForwardDOM = masterElementNode.getDOMNode();
-          masterElementNode.constructDOMs({});
-          masterElementNode.attachForwardDOM(that.forwardDOM);
+          masterElementNode.update();
+          //masterElementNode.attachForwardDOM(that.forwardDOM);
         }
       }
     }
@@ -150,6 +159,15 @@ class RefElementNode extends HTMLElementNode {
 
     if (_domElement.getAttribute('en-ref-target-id') !== null)
       this.refTargetId = _domElement.getAttribute('en-ref-target-id');
+
+    if (_domElement.getAttribute('en-ref-sync') !== null)
+      this.refTargetId = _domElement.getAttribute('en-ref-sync');
+
+    if (_domElement.getAttribute('en-event-ref-will-mount') !== null) // Did Mount
+      this.setEvent('ref-will-mount', _domElement.getAttribute('en-event-ref-will-mount'));
+
+    if (_domElement.getAttribute('en-event-ref-did-mount') !== null) // Did Mount
+      this.setEvent('ref-did-mount', _domElement.getAttribute('en-event-ref-did-mount'));
   }
 
   appendChild(_elementNode) {
@@ -220,16 +238,16 @@ class RefElementNode extends HTMLElementNode {
   import (_elementNodeDataObject) {
     let result = super.import(_elementNodeDataObject);
     this.refDesc = RefferenceType[_elementNodeDataObject.refDesc] || null;
-    this.refType = RefferenceType[_elementNodeDataObject.refType || 'NONE'];
     this.refTargetId = _elementNodeDataObject.refTargetId;
+    this.refSync = _elementNodeDataObject.refSync || false;
     return result;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.ref = this.refDesc || null;
-    result.refType = RefferenceType[this.refType || 'NONE'];
     result.refTargetId = this.refTargetId;
+    result.refSync = this.refSync;
     return result;
   }
 }

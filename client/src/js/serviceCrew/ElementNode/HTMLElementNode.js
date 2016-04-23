@@ -62,7 +62,7 @@ class HTMLElementNode extends TagBaseElementNode {
       }
     }
 
-
+    // 유효하지 않은 DOM트리 제거
     let childNodes = ObjectExtends.arrayToArray(this.forwardDOM.childNodes);
     let childNode;
     for (let i = 0; i < childNodes.length; i++) {

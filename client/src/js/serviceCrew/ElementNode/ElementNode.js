@@ -633,10 +633,10 @@ class ElementNode {
     } else {
 
       // hidden 처리
-      if (this.getControl('hidden') !== undefined) {
+      if (this.getControl('hidden') !== undefined || _options.hiddenForce) {
         let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
 
-        if (hidden === true || hidden === 'true') {
+        if (hidden === true || hidden === 'true' || _options.hiddenForce) {
 
           this.debug("construct", "hidden", _options);
 
