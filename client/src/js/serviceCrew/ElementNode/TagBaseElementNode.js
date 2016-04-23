@@ -659,6 +659,12 @@
      if (_domElement.getAttribute('en-event-will-dc-bind-join') !== null) // Join will DC bind
        this.setEvent('will-dc-bind-join', _domElement.getAttribute('en-event-will-dc-bind-join'));
 
+     if (_domElement.getAttribute('en-event-dc-did-load') !== null) // dc did loaded (success)
+       this.setEvent('dc-did-load', _domElement.getAttribute('en-event-dc-did-load'));
+
+     if (_domElement.getAttribute('en-event-dc-fail-load') !== null) // dc did load (fail)
+       this.setEvent('dc-fail-load', _domElement.getAttribute('en-event-dc-fail-load'));
+
      // done
      if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
        this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));

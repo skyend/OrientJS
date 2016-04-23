@@ -745,22 +745,36 @@ class ElementNode {
         that.dynamicContext.fire(function(_err) {
           that.debug('dc', 'burn');
 
-          if (_err) return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
-
-          that.tryEventScope('will-dc-bind', {
-            dynamicContext: that.dynamicContext
-          }, null, function done(_result) {
-            if (that.checkAfterContinue(_result) === false) return;
-
-            that.update({
-              keepDC: 'once'
-            });
-
-            that.tryEventScope('complete-bind', {
+          if (_err) {
+            that.tryEventScope('dc-fail-load', {
               dynamicContext: that.dynamicContext
             }, null);
 
-          });
+            return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
+          }
+
+          that.tryEventScope('dc-did-load', {
+            dynamicContext: that.dynamicContext
+          }, null);
+
+
+          if (!that.dynamicContextSync) {
+            // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
+            that.tryEventScope('will-dc-bind', {
+              dynamicContext: that.dynamicContext
+            }, null, function done(_result) {
+              if (that.checkAfterContinue(_result) === false) return;
+
+              that.update({
+                keepDC: 'once'
+              });
+
+              that.tryEventScope('complete-bind', {
+                dynamicContext: that.dynamicContext
+              }, null);
+
+            });
+          }
         });
       } catch (_e) {
         _e.message += that.DEBUG_FILE_NAME_EXPLAIN;
