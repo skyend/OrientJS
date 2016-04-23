@@ -41,6 +41,7 @@ class DynamicContext {
     this.sourceIDs = _props.sourceIDs;
     this.requestIDs = _props.requestIDs || '';
     this.namespaces = _props.namespaces;
+    this.isSync = _props.sync;
     this.injectParams = _props.injectParams || '';
 
 
@@ -102,7 +103,7 @@ class DynamicContext {
 
       return function(_callback) {
 
-        APIRequest.RequestAPI(that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _response) {
+        APIRequest[that.isSync ? 'RequestAPISync' : 'RequestAPI'](that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _response) {
           if (_err) {
 
             that.dataResolver.setNS(nss[_i], null);
@@ -113,7 +114,7 @@ class DynamicContext {
 
             that.dataResolver.setNS(nss[_i], _retrievedObject);
             that.dataResolver.setNS(`${nss[_i]}_status`, _response.statusCode);
-            that.dataResolver.setNS(`${nss[_i]}_level`, Math.floor(_response.statusCode / 100));
+            that.dataResolver.setNS(`${nss[_i]}_level`, _response.statusType);
           }
 
           _callback(null, _retrievedObject);

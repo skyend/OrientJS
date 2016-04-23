@@ -58,6 +58,25 @@ class Factory {
     });
   }
 
+  getInstanceWithRemoteSync(_typeName, _target, _complete) {
+    let that = this;
+
+    this.orbit.retriever.loadAPISourceSync(_target, function(_sheet, _filepath) {
+      let jsonSheet;
+      try {
+        jsonSheet = JSON.parse(_sheet);
+      } catch (_e) {
+        throw _e;
+      }
+
+      let instance = that.getInstance(_typeName, jsonSheet);
+      instance.__filepath__ = _filepath;
+      instance.__name__ = _target;
+
+      _complete(instance);
+    });
+  }
+
   static get APISource() {
     return APISource;
   }

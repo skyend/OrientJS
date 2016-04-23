@@ -67,7 +67,7 @@ class Factory {
   }
 
   // HTML 텍스트를 ElementNode 컴포넌트로 변환한다.
-  static convertToMasterElementNodesByHTMLSheet(_htmlText, _env) {
+  static convertToMasterElementNodesByHTMLSheet(_htmlText, _props, _env) {
     let realizeContainer = document.createElement('div');
     realizeContainer.innerHTML = _htmlText;
 
@@ -79,7 +79,7 @@ class Factory {
       type = Factory.checkElementNodeType(realizeContainer.childNodes[i]);
       if (type === 'comment') continue;
 
-      masterElementNode = Factory.takeElementNode(undefined, undefined, type, _env, true);
+      masterElementNode = Factory.takeElementNode(undefined, _props, type, _env, true);
       elementNodeBuildResult = masterElementNode.buildByElement(realizeContainer.childNodes[i]);
       if (elementNodeBuildResult === null) continue;
 
@@ -89,14 +89,14 @@ class Factory {
     return masterElementNodes;
   }
 
-  static convertToMasterElementNodesByJSONSheet(_jsonObject, _env) {
+  static convertToMasterElementNodesByJSONSheet(_jsonObject, _props, _env) {
 
     if (_jsonObject instanceof Array) {
       return _jsonObject.map(function(_elementNodeO) {
-        return Factory.takeElementNode(_elementNodeO, undefined, _elementNodeO.type, _env, true);
-      })
+        return Factory.takeElementNode(_elementNodeO, _props, _elementNodeO.type, _env, true);
+      });
     } else {
-      return [Factory.takeElementNode(_jsonObject, undefined, _jsonObject.type, _env, true)];
+      return [Factory.takeElementNode(_jsonObject, _props, _jsonObject.type, _env, true)];
     }
   }
 

@@ -95,27 +95,63 @@ class HTTPRequest {
   static requestSync(_method, _url, _data = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
     var self = this;
 
-    var req;
+    var req, sendData, url = _url;
     if (window.XMLHttpRequest) {
       req = new XMLHttpRequest();
     } else {
       req = new ActiveXObject("Microsoft.XMLHTTP");
     }
 
-    // 동기 방식 로딩
-    req.open(_method, _url, false);
-    req.send();
+    if (_method !== 'get') {
+      throw new Error("동기 요청은 현재 GET Method 만을 지원합니다.");
+    }
 
-    if (req.status == 200) {
-      if (typeof _complete === 'function') {
-        _complete(req);
+    if (_method === 'get') {
+      let queryDataKeys = Object.keys(_data);
+      let queries = queryDataKeys.map(function(_key) {
+        return `${_key}=${_data[_key]}`;
+      });
+
+
+      if (url.lastIndexOf('?') !== -1) {
+        url += `&${queries.join('&')}`;
       } else {
+        url += `?${queries.join('&')}`;
+      }
+    }
+
+    // 동기 방식 로딩
+    req.open(_method, url, false);
+
+    try {
+      req.send(sendData);
+      HTTPRequest.Log(`XMLHttpRequest[GET] - URL: [${_url}]\n`, 'log', [req]);
+
+      if (typeof _complete === 'function') {
+
+        /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
+        req.statusType = Math.floor(req.status / 100);
+        req.statusCode = req.status;
+        req.text = req.responseText;
+        try {
+          req.body = JSON.parse(req.responseText);
+        } catch (_e) {
+          req.body = null;
+        }
+
+        _complete(null, req);
+      } else {
+
         return req.responseText;
       }
+    } catch (_e) {
+      HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${_e}], URL: [${_url}]\n`, 'log');
 
-    } else {
-
-      return undefined;
+      if (typeof _complete === 'function') {
+        _complete(_e, null);
+      } else {
+        return null;
+      }
     }
   }
 

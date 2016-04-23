@@ -555,6 +555,7 @@ class ElementNode {
     if (this.isDynamicContext() && this.dynamicContextPassive === false) {
       if (_options.keepDC === false || _options.keepDC === undefined) {
         this.executeDynamicContext();
+
       } else if (_options.keepDC === 'once') {
         _options.keepDC = false;
       }
@@ -877,6 +878,7 @@ class ElementNode {
       sourceIDs: this.interpret(this.dynamicContextSID),
       requestIDs: this.interpret(this.dynamicContextRID),
       namespaces: this.interpret(this.dynamicContextNS),
+      sync: this.dynamicContextSync,
       injectParams: this.interpret(this.dynamicContextInjectParams)
     }, this.availableDynamicContext);
     // console.log(newDynamicContext);
@@ -2155,6 +2157,7 @@ class ElementNode {
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
+    this.dynamicContextSync = _elementNodeDataObject.dynamicContextSync;
     this.dynamicContextInjectParams = _elementNodeDataObject.dynamicContextInjectParams;
 
     this.componentName = _elementNodeDataObject.componentName;
@@ -2201,6 +2204,7 @@ class ElementNode {
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;
+    exportObject.dynamicContextSync = this.dynamicContextSync;
     exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
 
     return exportObject;

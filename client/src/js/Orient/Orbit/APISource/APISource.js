@@ -222,6 +222,22 @@ export default class APISource {
     }, _enctypeOrComplete);
   }
 
+  executeRequestSync(_requestId, _fields, _head, _cb, _enctypeOrComplete) {
+    let that = this;
+    let req = this.findRequest(_requestId);
+
+    if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
+
+    let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
+    // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
+
+
+    this.orbit.HTTPRequest.requestSync(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
+
+      that.processAfterResponse(_err, _res, _cb);
+    }, _enctypeOrComplete);
+  }
+
 
   // Proposal Override
   processAfterResponse(_err, _res, _passCB) {

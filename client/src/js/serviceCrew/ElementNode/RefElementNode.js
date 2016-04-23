@@ -161,7 +161,7 @@ class RefElementNode extends HTMLElementNode {
       this.refTargetId = _domElement.getAttribute('en-ref-target-id');
 
     if (_domElement.getAttribute('en-ref-sync') !== null)
-      this.refTargetId = _domElement.getAttribute('en-ref-sync');
+      this.refSync = _domElement.getAttribute('en-ref-sync') || true;
 
     if (_domElement.getAttribute('en-event-ref-will-mount') !== null) // Did Mount
       this.setEvent('ref-will-mount', _domElement.getAttribute('en-event-ref-will-mount'));
@@ -197,21 +197,21 @@ class RefElementNode extends HTMLElementNode {
 
 
     if (this.environment) {
-      this.environment.retriever.loadComponentSheet(targetId, function(_responseSheet) {
+      this.environment.retriever[this.refSync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, function(_responseSheet) {
 
-        let masterElementNodes = that.convertMastersByType(type, _responseSheet);
+        let masterElementNodes = that.convertMastersByType(type, undefined, _responseSheet);
 
         _complete(masterElementNodes);
       });
     } else {
-      Orient.HTTPRequest.request('get', targetId, {}, function(_err, _res) {
+      Orient.HTTPRequest[this.refSync ? 'requestSync' : 'request']('get', targetId, {}, function(_err, _res) {
         if (_err !== null) throw new Error("fail static component loading");
 
         let responseText = _res.text;
         // let loadedContentType = _res.xhr.getResponseHeader('content-type');
         // let contentType_only = loadedContentType.split(';')[0];
 
-        let masterElementNodes = that.convertMastersByType(type, responseText);
+        let masterElementNodes = that.convertMastersByType(type, undefined, responseText);
 
         _complete(masterElementNodes);
       });
@@ -220,13 +220,13 @@ class RefElementNode extends HTMLElementNode {
     }
   }
 
-  convertMastersByType(_type, _responseText) {
+  convertMastersByType(_type, _props = {}, _responseText) {
     if (_type === 'html') {
-      return Factory.convertToMasterElementNodesByHTMLSheet(_responseText, this.environment);
+      return Factory.convertToMasterElementNodesByHTMLSheet(_responseText, _props, this.environment);
     } else if (_type === 'json') {
-      return Factory.convertToMasterElementNodesByJSONSheet(JSON.parse(_responseText), this.environment);
+      return Factory.convertToMasterElementNodesByJSONSheet(JSON.parse(_responseText), _props, this.environment);
     } else if (_type === 'js') {
-      return Factory.extractByJSModule(_responseText, this.environment);
+      // return Factory.extractByJSModule(_responseText, this.environment);
     }
   }
 
@@ -237,7 +237,6 @@ class RefElementNode extends HTMLElementNode {
 
   import (_elementNodeDataObject) {
     let result = super.import(_elementNodeDataObject);
-    this.refDesc = RefferenceType[_elementNodeDataObject.refDesc] || null;
     this.refTargetId = _elementNodeDataObject.refTargetId;
     this.refSync = _elementNodeDataObject.refSync || false;
     return result;
@@ -245,7 +244,6 @@ class RefElementNode extends HTMLElementNode {
 
   export (_withoutId) {
     let result = super.export(_withoutId);
-    result.ref = this.refDesc || null;
     result.refTargetId = this.refTargetId;
     result.refSync = this.refSync;
     return result;

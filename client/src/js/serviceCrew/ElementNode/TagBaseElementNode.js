@@ -394,6 +394,8 @@
          _domNode.setAttribute('en-dc-request-id', this.dynamicContextRID);
        if (this.dynamicContextNS)
          _domNode.setAttribute('en-dc-ns', this.dynamicContextNS);
+       if (this.dynamicContextSync)
+         _domNode.setAttribute('en-dc-sync', '');
        if (this.dynamicContextInjectParams)
          _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
 
@@ -599,6 +601,9 @@
        } else {
          this.dynamicContextPassive = false;
        }
+
+       if (_domElement.getAttribute('en-dc-sync') !== null)
+         this.dynamicContextSync = true;
 
        if (_domElement.getAttribute('en-dc-attitude') !== null) {
          throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");

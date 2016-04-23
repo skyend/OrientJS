@@ -4,7 +4,6 @@ import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import HTTPRequest from './common/HTTPRequest';
 import APIRequest from './common/APIRequest';
 
-import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import ElementNode from '../serviceCrew/ElementNode/ElementNode';
 import HTMLElementNode from '../serviceCrew/ElementNode/HTMLElementNode';
 import RefElementNode from '../serviceCrew/ElementNode/RefElementNode';
@@ -66,11 +65,11 @@ class Neutron {
 
   static buildComponentBySheet(_sheetType, _sheet, _props = {}, _env = null) {
     if (_sheetType === 'html') {
-      return ElementNodeFactory.convertToMasterElementNodesByHTMLSheet(_sheet, _env);
+      return ElementNodeFactory.convertToMasterElementNodesByHTMLSheet(_sheet, _props, _env);
     } else if (_sheetType === 'json') {
-      return ElementNodeFactory.convertToMasterElementNodesByJSONSheet(JSON.parse(_sheet), _env);
+      return ElementNodeFactory.convertToMasterElementNodesByJSONSheet(JSON.parse(_sheet), _props, _env);
     } else if (_sheetType === 'js') {
-      return ElementNodeFactory.extractByJSModule(_sheet, _env);
+      // return ElementNodeFactory.extractByJSModule(_sheet, _props, _env);
     }
   }
 

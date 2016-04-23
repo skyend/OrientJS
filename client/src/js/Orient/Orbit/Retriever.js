@@ -24,7 +24,23 @@ class Retriever {
     return this._loadAPISource;
   }
 
+  get loadAPISourceSync() {
+    if (this._extender) {
+      if (this._extender.loadAPISourceSync) {
+        return this._extender.loadAPISourceSync;
+      }
+    }
+
+    return this._loadAPISourceSync;
+  }
+
+
   _loadAPISource(_loadTarget, _cb) {
+    if (this.caches.apisource[_loadTarget] !== undefined) {
+      _cb(this.caches.apisource[_loadTarget]);
+      return;
+    }
+
     // 상대경로인가 절대경로인가 판단
     let url;
     if (/^\//.test(_loadTarget)) {
@@ -37,10 +53,42 @@ class Retriever {
       url = this.dirpath_apisource + _loadTarget;
     }
 
-    this.orbit.HTTPRequest.request('get', url, {}, function(_err, _res) {
+    this.orbit.HTTPRequest.request('get', url, {}, (_err, _res) => {
       if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
 
       let responseText = _res.text;
+
+      // caching
+      this.caches.apisource[_loadTarget] = responseText;
+      _cb(responseText, url);
+    });
+  }
+
+  _loadAPISourceSync(_loadTarget, _cb) {
+    if (this.caches.apisource[_loadTarget] !== undefined) {
+      _cb(this.caches.apisource[_loadTarget]);
+      return;
+    }
+
+    // 상대경로인가 절대경로인가 판단
+    let url;
+    if (/^\//.test(_loadTarget)) {
+      url = _loadTarget;
+    } else if (/^https?:\/\//.test(_loadTarget)) {
+      // URL
+      url = _loadTarget;
+    } else {
+      // 상대경로
+      url = this.dirpath_apisource + _loadTarget;
+    }
+
+    this.orbit.HTTPRequest.requestSync('get', url, {}, (_err, _res) => {
+      if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
+
+      let responseText = _res.text;
+
+      // caching
+      this.caches.apisource[_loadTarget] = responseText;
       _cb(responseText, url);
     });
   }
@@ -54,6 +102,16 @@ class Retriever {
     }
 
     return this._loadComponentSheet;
+  }
+
+  get loadComponentSheetSync() {
+    if (this._extender) {
+      if (this._extender.loadComponentSheetSync) {
+        return this._extender.loadComponentSheetSync;
+      }
+    }
+
+    return this._loadComponentSheetSync;
   }
 
   _getComponentURL(_loadTarget) {
@@ -82,20 +140,31 @@ class Retriever {
     this.orbit.HTTPRequest.request('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
       if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
       let responseText = _res.text;
+
+      // caching
       this.caches.component[_loadTarget] = responseText;
       _cb(responseText);
     });
   }
 
   _loadComponentSheetSync(_loadTarget, _cb) {
-
-    try {
-      let result = this.orbit.HTTPRequest.requestSync('get', this._getComponentURL(_loadTarget));
-
-      this.caches.component[_loadTarget] = responseText;
-    } catch (_e) {
-      throw new Error("fail static component sheet loading <" + _e + ">");
+    if (this.caches.component[_loadTarget] !== undefined) {
+      _cb(this.caches.component[_loadTarget]);
+      return;
     }
+
+    let result = this.orbit.HTTPRequest.requestSync('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
+      if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
+      if (_res.statusType === 2 || _res.statusType === 3) {
+        let responseText = _res.text;
+
+        // caching
+        this.caches.component[_loadTarget] = responseText;
+        _cb(responseText);
+      } else {
+        _cb(null);
+      }
+    });
   }
 
   // 메서드 반환
