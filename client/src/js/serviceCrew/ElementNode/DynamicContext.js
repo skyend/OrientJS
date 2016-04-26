@@ -83,11 +83,15 @@ class DynamicContext {
   fire(_complete) {
     let that = this;
 
-    let sources = this.sourceIDs.split(',');
-    let injectParams = this.injectParams.split(',');
-    let requestIDs = this.requestIDs.split(',');
-    let nss = this.namespaces.split(',');
+    // let sources = this.sourceIDs.split(',');
+    // let injectParams = this.injectParams.split(',');
+    // let requestIDs = this.requestIDs.split(',');
+    // let nss = this.namespaces.split(',');
 
+    let sources = [this.sourceIDs];
+    let injectParams = [this.injectParams];
+    let requestIDs = [this.requestIDs];
+    let nss = [this.namespaces];
 
     let parallelFunctions = sources.map(function(_apiSource, _i) {
 

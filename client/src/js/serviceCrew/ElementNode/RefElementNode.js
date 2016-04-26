@@ -128,8 +128,7 @@ class RefElementNode extends HTMLElementNode {
         //   if (_scopeNode.type === 'param') {
         //     that.masterElementNodes.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
         //   }
-        // });
-        console.log(this.masterElementNodes);
+        // }); 
 
 
         let masterElementNode;

@@ -59,8 +59,7 @@ class Retriever {
       let responseText = _res.text;
 
       // caching
-      this.caches.apisource[_loadTarget] = responseText;
-      _cb(responseText, url);
+      _cb(this.caches.apisource[_loadTarget] = responseText, url);
     });
   }
 
@@ -88,8 +87,7 @@ class Retriever {
       let responseText = _res.text;
 
       // caching
-      this.caches.apisource[_loadTarget] = responseText;
-      _cb(responseText, url);
+      _cb(this.caches.apisource[_loadTarget] = responseText, url);
     });
   }
 
@@ -142,8 +140,7 @@ class Retriever {
       let responseText = _res.text;
 
       // caching
-      this.caches.component[_loadTarget] = responseText;
-      _cb(responseText);
+      _cb(this.caches.component[_loadTarget] = responseText);
     });
   }
 
@@ -159,8 +156,7 @@ class Retriever {
         let responseText = _res.text;
 
         // caching
-        this.caches.component[_loadTarget] = responseText;
-        _cb(responseText);
+        _cb(this.caches.component[_loadTarget] = responseText);
       } else {
         _cb(null);
       }

@@ -255,7 +255,7 @@
 
 
           <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[http]/api/user/register' arg-requestId=''></en:task>
-
+         
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='fullname' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
@@ -281,7 +281,7 @@
             <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
           </div>
-  
+
           <div class="row">
             <div class="col-xs-8">
               <!-- <div class="checkbox icheck">

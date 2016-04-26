@@ -633,7 +633,7 @@ class ElementNode {
       this.clonePool = newClonePool;
     } else {
 
-      // hidden 처리
+      // show 컨트롤이
       if (this.getControl('hidden') !== undefined || _options.hiddenForce) {
         let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
 
@@ -746,13 +746,14 @@ class ElementNode {
           that.debug('dc', 'burn');
 
           if (_err) {
+            // fix
             that.tryEventScope('dc-fail-load', {
               dynamicContext: that.dynamicContext
             }, null);
 
             return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
           }
-
+          // fix
           that.tryEventScope('dc-did-load', {
             dynamicContext: that.dynamicContext
           }, null);
@@ -760,6 +761,8 @@ class ElementNode {
 
           if (!that.dynamicContextSync) {
             // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
+
+            // fix
             that.tryEventScope('will-dc-bind', {
               dynamicContext: that.dynamicContext
             }, null, function done(_result) {
@@ -769,6 +772,7 @@ class ElementNode {
                 keepDC: 'once'
               });
 
+              // fix
               that.tryEventScope('complete-bind', {
                 dynamicContext: that.dynamicContext
               }, null);

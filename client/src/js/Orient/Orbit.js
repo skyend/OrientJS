@@ -67,6 +67,7 @@ class Orbit {
       } else if (mode === 'dev') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
         window.ORIENT_OCCURS_BIND_ERROR = true;
+
       } else if (mode === 'debug') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
         window.DEBUG_OCCURS_HTTP_REQUEST_LOG = true;
@@ -151,8 +152,11 @@ class Orbit {
 
   foundationCompatibility(_callback, _callbackFinal) {
     this.pageMetaCompatibility(() => {
+
+      console.time("First Built up");
       var masterElementNode = Orient.buildComponentByElement(this.orbitDocument.document.body, {}, this);
       Orient.replaceRender(masterElementNode, this.orbitDocument.document.body);
+      console.timeEnd("First Built up");
 
       if (_callback) {
         _callback(masterElementNode);

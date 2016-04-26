@@ -48,7 +48,7 @@
 
 		<!-- Signup Form -->
 			<form id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
-
+				1vvas{{: 1 }}sss {{: 2 }} aaaa1
         <en:value name='email' type='string' value=''></en:value>
         <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
         <en:task name='update' action='update' en-executor='{{: this.getMaster() }}'></en:task>

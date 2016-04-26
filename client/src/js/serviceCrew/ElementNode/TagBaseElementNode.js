@@ -624,6 +624,9 @@
      if (_domElement.getAttribute('en-ctrl-hidden') !== null)
        this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
 
+     if (_domElement.getAttribute('en-ctrl-show') !== null)
+       this.setControl('show', _domElement.getAttribute('en-ctrl-show'));
+
      // Event reads
      // 모든 DOM 이벤트를 인식한다.
      for (let i = 0; i < DOM_EVENTS.length; i++) {

@@ -37,7 +37,7 @@ class Resolver {
       return _matter;
     }
 
-    return this.__interpret3(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _defaultDataObject, _caller);
+    return this.__interpret4(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _defaultDataObject, _caller);
   }
 
 
@@ -128,7 +128,76 @@ class Resolver {
     return dataSeries.join('');
   }
 
+
+  __interpret4(_matter, _externalGetterInterface, _defaultDataObject, _caller) {
+    let length = _matter.length;
+    let slices = [];
+
+    let found;
+    let end = -1,
+      start = -1,
+      cursor = 0;
+
+    let slice;
+    while (found = this.__findBindBlock(_matter.slice(cursor))) {
+
+      if (found === -1) {
+        if (slices.length > 0) {
+          slice = _matter.slice(end);
+          if (slice) slices.push(slice.replace('\{\{', '{{').replace('\}\}', '}}'));
+        }
+        break;
+      } else {
+        start = cursor + found[0];
+        end = cursor + found[1];
+
+        // 감지된 영역의 앞부분 문자열 조각
+        slice = _matter.slice(cursor, start);
+        if (slice) slices.push(slice.replace('\{\{', '{{').replace('\}\}', '}}'));
+
+        // 감지된 바인딩블럭
+        slice = _matter.slice(start + 2, end - 2);
+        slices.push(this.__executeSyntax(slice, _externalGetterInterface, _defaultDataObject, _caller));
+
+        // 커서 이동
+        cursor = end;
+      }
+    }
+
+    if (slices.length === 0) {
+      return _matter;
+    } else {
+      if (slices.length === 1) {
+        return slices[0];
+      } else {
+        return slices.join('');
+      }
+    }
+  }
+
+  __findBindBlock(_string, _start, _end) {
+    let start = -1,
+      end = -1;
+    start = _string.indexOf("{{");
+
+    if (start > -1) {
+      end = _string.indexOf("}}");
+      if (end > -1) {
+        if (end < start) {
+          throw new Error("바인딩 블럭의 닫힘[}}]이 열림[{{]보다 앞에 있습니다.");
+        } else {
+          return [start, end + 2];
+        }
+      } else {
+        throw new Error("바인딩 블럭이 닫히지 않았습니다.");
+      }
+    } else {
+      return -1;
+    }
+  }
+
   __executeSyntax(_syntax, _externalGetterInterface, _defaultDataObject, _caller) {
+
     let that = this;
     // let argsMap = [];
     // let vfunction = this.__getVirtualFunctionWithParamMap(_syntax, argsMap);
