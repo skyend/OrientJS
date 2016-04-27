@@ -394,6 +394,12 @@ actionStore.registerAction('preventDefault', [], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('stopImmediatePropagation', [], function() {
+  _event.originEvent.stopImmediatePropagation();
+
+  _callback(_actionResult);
+});
+
 actionStore.registerAction('singleReturn', ['returnValue'], function() {
   _actionResult.returns = returnValue;
   _callback(_actionResult);

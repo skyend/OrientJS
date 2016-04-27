@@ -57,6 +57,13 @@ class RedisDriver {
     });
   }
 
+  removeSession(_sessionKey, _callback) {
+    this.client.hdel('session', _sessionKey, (_err, _res) => {
+      console.log(_res);
+      _callback(_err);
+    });
+  }
+
   readSession(_sessionKey, _callback) {
     this.client.hget('session', _sessionKey, (_err, _res) => {
       _callback(_err, JSON.parse(_res));

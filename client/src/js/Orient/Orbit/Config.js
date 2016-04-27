@@ -9,8 +9,9 @@ const DEFAULT_API_SOURCE_PATH = '/api/';
 const DEFAULT_COMPONENT_PATH = '/component/';
 
 class Config {
-  constructor(_inlineConfig) {
+  constructor(_inlineConfig, _orbit) {
     ObjectExtends.liteExtends(this, Events.EventEmitter.prototype);
+    this.orbit = _orbit;
 
     if (_inlineConfig) {
       this.import(_inlineConfig);
@@ -139,7 +140,7 @@ class Config {
   }
 
   // Config 에 입력된 필드값을 가져온다.
-  getField(_name) {;
+  getField(_name) {
 
     if (this[_name]) {
       return this[_name];

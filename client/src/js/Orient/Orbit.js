@@ -31,7 +31,7 @@ class Orbit {
     }
 
     /* Initial Members */
-    this.config = new Config(_inlineConfig);
+    this.config = new Config(_inlineConfig, this);
     this.api = new APIRequest(this);
     this.orbitDocument = new OrbitDocument(this.window, this);
     this.apiSourceFactory = new APISourceFactory(this);

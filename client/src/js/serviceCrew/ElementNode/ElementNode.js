@@ -297,6 +297,14 @@ class ElementNode {
     return this._nodeEvents;
   }
 
+  get methods() {
+    return this._methods;
+  }
+
+  getMethod(_name) {
+    return this.methods[_name];
+  }
+
   getEvent(_name) {
     return this._nodeEvents[_name];
   }
@@ -402,12 +410,51 @@ class ElementNode {
     this.controls[_controlName] = _value;
   }
 
+  set methods(_methods) {
+    this._methods = _methods;
+  }
+
   set nodeEvents(_nodeEvents) {
     this._nodeEvents = _nodeEvents;
   }
 
   setEvent(_name, _value) {
     this._nodeEvents[_name] = _value;
+  }
+
+  setMethod(_name, _methodSource, _force) {
+    this.methods[_name] = _methodSource;
+
+    if (this.hasOwnProperty(_name) && _force !== true) {
+      throw new Error(`${_name} 속성은 예약되어 있거나 이미 정의된 Method 입니다. 강제로 변경하길 원하신다면 force Parameter(3번째 인수)를 true 로 입력하십시오.`);
+    }
+
+    let methodSourceType = typeof _methodSource;
+
+    if (methodSourceType !== 'function' && methodSourceType !== 'string') {
+      throw new Error(`MethodSource[${_methodSource}] 는 Function 타입이거나 바인딩 블럭으로 이루어진 String이어야 합니다.`);
+    }
+
+    Object.defineProperty(this, _name, {
+      get: () => {
+        if (typeof _methodSource === 'function') {
+
+          return _methodSource.bind(this);
+        } else if (typeof _methodSource === 'string') {
+          let retrievedFunction = this.interpret(_methodSource);
+          let retrievedFunctionType = typeof retrievedFunction;
+
+          if (retrievedFunctionType === 'function') {
+            return retrievedFunction.bind(this);
+          } else {
+            throw new Error(`Method[${_name}] 를 가져 올 수 없습니다.  는 [${retrievedFunctionType}] 타입 일 수 없습니다.`);
+          }
+        } else {
+          // Method를 Set 할 때 체크하므로 else 에 걸릴 일은 없다.
+          throw new Error(`${_methodSource} 는 Method 로 사용 할 수 없습니다. 바인딩 블럭을 사용하여 Function을 반환 하도록 하거나, Function을 입력하세요.`);
+        }
+      }
+    });
   }
 
   set pipeEvents(_pipeEvents) {
@@ -826,8 +873,7 @@ class ElementNode {
     // 자신에게 설정된 모든 이벤트를 Dom에 바인딩한다.
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
-
-      _dom.addEventListener(_key, function(_e) {
+      function handler(_e) {
         console.log("DOM Event fire :" + _key);
 
         let eventReturn;
@@ -835,11 +881,20 @@ class ElementNode {
         that.tryEventScope(_key, {
           eventKey: _key
         }, _e, function(_result) {
+          eventReturn = _result;
+
           if (that.checkAfterContinue(_result) === false) return;
         });
 
         return eventReturn;
-      });
+      }
+
+
+      if (/^deep-/.test(_key)) {
+        _dom.addEventListener(_key.replace(/^deep-/, ''), handler, true);
+      } else {
+        _dom.addEventListener(_key, handler);
+      }
     });
   }
 
@@ -1592,7 +1647,6 @@ class ElementNode {
 
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
 
-
   /*
   ██████  ██ ██████  ███████
   ██   ██ ██ ██   ██ ██
@@ -2041,6 +2095,13 @@ class ElementNode {
     this.pipeEvents[_eventName] = _eventDesc;
   }
 
+  // Method 에 제공할(컴포넌트의 확장용 ) this오브젝트를 얻는다.
+  getMethodOwner() {
+    return {
+
+    }
+  }
+
 
   /*
       ██████  ███████ ██████  ██    ██  ██████  ███████ ██████
@@ -2180,6 +2241,10 @@ class ElementNode {
 
     this.componentName = _elementNodeDataObject.componentName;
 
+    this.methods = Object.keys(_elementNodeDataObject.methods || {}).map((_key) => {
+      this.setMethod(_key, _elementNodeDataObject.methods[_key], true);
+    });
+
     this.controls = _elementNodeDataObject.controls || {
       'repeat-n': '',
       'hidden': ''
@@ -2206,6 +2271,7 @@ class ElementNode {
       id: _withoutId ? undefined : this.id + (_idAppender || ''),
       type: this.getType(),
       name: this.getName(),
+      methods: ObjectExtends.clone(this.methods),
       controls: ObjectExtends.clone(this.getControls()),
       scopeNodes: ObjectExtends.clone(this.scopeNodes.map(function(_scopeNode) {
         return _scopeNode.export();

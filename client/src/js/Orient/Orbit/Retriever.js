@@ -36,10 +36,6 @@ class Retriever {
 
 
   _loadAPISource(_loadTarget, _cb) {
-    if (this.caches.apisource[_loadTarget] !== undefined) {
-      _cb(this.caches.apisource[_loadTarget]);
-      return;
-    }
 
     // 상대경로인가 절대경로인가 판단
     let url;
@@ -51,6 +47,11 @@ class Retriever {
     } else {
       // 상대경로
       url = this.dirpath_apisource + _loadTarget;
+    }
+
+    if (this.caches.apisource[_loadTarget] !== undefined) {
+      _cb(this.caches.apisource[_loadTarget], url);
+      return;
     }
 
     this.orbit.HTTPRequest.request('get', url, {}, (_err, _res) => {
@@ -59,15 +60,13 @@ class Retriever {
       let responseText = _res.text;
 
       // caching
-      _cb(this.caches.apisource[_loadTarget] = responseText, url);
+      this.caches.apisource[_loadTarget] = responseText;
+      _cb(this.caches.apisource[_loadTarget], url);
     });
   }
 
   _loadAPISourceSync(_loadTarget, _cb) {
-    if (this.caches.apisource[_loadTarget] !== undefined) {
-      _cb(this.caches.apisource[_loadTarget]);
-      return;
-    }
+
 
     // 상대경로인가 절대경로인가 판단
     let url;
@@ -81,13 +80,19 @@ class Retriever {
       url = this.dirpath_apisource + _loadTarget;
     }
 
+    if (this.caches.apisource[_loadTarget] !== undefined) {
+      _cb(this.caches.apisource[_loadTarget], url);
+      return;
+    }
+
     this.orbit.HTTPRequest.requestSync('get', url, {}, (_err, _res) => {
       if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
 
       let responseText = _res.text;
 
       // caching
-      _cb(this.caches.apisource[_loadTarget] = responseText, url);
+      this.caches.apisource[_loadTarget] = responseText;
+      _cb(this.caches.apisource[_loadTarget], url);
     });
   }
 
@@ -140,7 +145,9 @@ class Retriever {
       let responseText = _res.text;
 
       // caching
-      _cb(this.caches.component[_loadTarget] = responseText);
+      this.caches.component[_loadTarget] = responseText;
+
+      _cb(this.caches.component[_loadTarget]);
     });
   }
 
@@ -150,13 +157,17 @@ class Retriever {
       return;
     }
 
+    console.log("Load Component", _loadTarget, this.caches.component[_loadTarget]);
+
     let result = this.orbit.HTTPRequest.requestSync('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
       if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
       if (_res.statusType === 2 || _res.statusType === 3) {
         let responseText = _res.text;
 
         // caching
-        _cb(this.caches.component[_loadTarget] = responseText);
+        this.caches.component[_loadTarget] = responseText;
+
+        _cb(this.caches.component[_loadTarget]);
       } else {
         _cb(null);
       }

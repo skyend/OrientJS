@@ -6,6 +6,7 @@
  "use strict";
 
  const PIPE_EVENT_SPLIT_REGEXP = /^en-pipe-event-([\w\-\_\d]+)$/;
+ const METHOD_SPLIT_REGEXP = /^en-method-([\w\-\_\d\$]+)$/;
 
  const DOM_EVENTS = [
    // Mouse Events
@@ -632,6 +633,9 @@
      for (let i = 0; i < DOM_EVENTS.length; i++) {
        if (_domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`) !== null) // Click
          this.setEvent(DOM_EVENTS[i], _domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`));
+
+       if (_domElement.getAttribute(`en-event-deep-${DOM_EVENTS[i]}`) !== null) // Click
+         this.setEvent('deep-' + DOM_EVENTS[i], _domElement.getAttribute(`en-event-deep-${DOM_EVENTS[i]}`));
      }
 
      // Gelato Events
@@ -710,16 +714,7 @@
      //   this.setEvent('did-value-change', _domElement.getAttribute('en-event-did-attr-change'));
 
 
-     // Pipe Event 적용
-     var attributes = _domElement.attributes;
-     let matched;
-     for (var i = 0; i < attributes.length; i++) {
-       matched = attributes[i].name.match(PIPE_EVENT_SPLIT_REGEXP);
 
-       if (matched !== null) {
-         this.setPipeEvent(matched[1], attributes[i].nodeValue);
-       }
-     }
 
      // 빌드시에 참조된 DOM을 흡수하는 경우, 참조된 DOM을 forwardDOM으로 편입시키며 en Event 를 바인딩 한다.
      // 이 시점에서 Event 를 바인딩하는 이유는 Event 바인딩은 최초랜더링 시에 forwardDOM이 생성될 때만 이벤트가 바인딩 되므로
@@ -744,10 +739,23 @@
      for (var i = 0; i < attributes.length; i++) {
        attrName = attributes[i].name;
 
-       // en 으로 시작하는 모든 attribute 는 무시한다.
-       if (/(^en-)|(^__vid__$)/.test(attrName)) continue;
+       // en 으로 시작하는 모든 attribute 는 특수 예약 attribute로 따로 처리한다.
+       if (/(^en-)|(^__vid__$)/.test(attrName)) {
+         // Pipe Event 적용
 
-       this.defineNewAttribute(attrName, attributes[i].nodeValue);
+         let matched = attributes[i].name.match(PIPE_EVENT_SPLIT_REGEXP);
+         if (matched !== null) {
+           this.setPipeEvent(matched[1], attributes[i].nodeValue);
+         }
+
+         matched = attributes[i].name.match(METHOD_SPLIT_REGEXP);
+         if (matched !== null) {
+
+           this.setMethod(matched[1], attributes[i].nodeValue);
+         }
+       } else {
+         this.defineNewAttribute(attrName, attributes[i].nodeValue);
+       }
      }
    }
 

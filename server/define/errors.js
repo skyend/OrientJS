@@ -44,7 +44,9 @@ export default {
     "USER_NOT_FOUND": createError(400, "SIGNIN.USER_NOT_FOUND", "User not found")
   },
 
+
   "SESSION": {
+    "FAIL_DELETE_SESSION": createError(500, "SESSION.FAIL_DELETE_SESSION", "Fail delete session"),
     "READ_ERROR": createError(400, "SESSION.READ_ERROR", "Fail read session read."),
     "NOT_FOUND": createError(400, "SESSION.NOT_FOUND", "Session not found"), // 세션을 찾을 수 없음
     "NOT_FOUND_RELATED_USER": createError(400, "SESSION.NOT_FOUND_RELATED_USER", "Not found related user"), // 데이터베이스에 세션에 해당하는 유저가 존재하지 않음

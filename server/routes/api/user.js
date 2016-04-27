@@ -20,6 +20,26 @@ function login(req, res, next) {
   });
 }
 
+function logout(req, res) {
+
+  agent.businessMan.signoutUser(req.query.sid, function(_err) {
+    if (_err) {
+      res.status(_err.code);
+      res.json({
+        error: _err
+      });
+    } else {
+      if (req.method === 'POST') {
+        res.status(200).json({
+          error: null
+        });
+      } else if (req.method === 'GET') {
+        res.redirect('/');
+      }
+    }
+  });
+}
+
 function register(req, res, next) {
 
   agent.businessMan.registerUser(req, req.body, function(_err, _userId) {
@@ -69,15 +89,15 @@ function emailAuthorize(req, res, next) {
 
 /* GET home page. */
 router.post('/register', register);
-router.get('/register', register);
 
 router.get('/email-authorize', emailAuthorize);
 
 /* GET home page. */
-router.post('/signin', login);
 router.get('/signin', login);
+router.post('/signin', login);
 
-router.post('/profile', profile);
+router.get('/signout', logout);
+
 router.get('/profile', profile);
 
 export default router;

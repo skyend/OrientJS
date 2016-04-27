@@ -88,8 +88,9 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form class="form-horizontal" en-id='project-create-form'>
+              <form class="form-horizontal" method='post' en-id='project-create-form' enctype="multipart/form-data" onsubmit="return false;" en-event-submit='task@submit'>
                 <en:task name='render' action="update" en-executor='project-create-form'></en:task>
+                <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[http]/api/project/create'></en:task>
 
                 <en:value name='name' type='string' value='{{: http-param@project-name || "" }}' resolve-on></en:value>
                 <en:value name='desc' type='string' value=''></en:value>
@@ -102,7 +103,7 @@
 
                     <div class="col-sm-10">
                       <en:task name='changed' action='set' arg-name='name' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
-                      <input type="text" class="form-control" value='{{: val@name }}' placeholder="Email" en-event-keyup='task@changed' en-event-change='task@changed'>
+                      <input type="text" class="form-control" name='name' value='{{: val@name }}' transfer-value='{{: val@name }}' placeholder="Email" en-event-keyup='task@changed' en-event-change='task@changed'>
                     </div>
                   </div>
 
@@ -112,7 +113,7 @@
                     <div class="col-sm-10">
                       <en:task name='changed' action='set' arg-name='desc' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
 
-                      <textarea class="form-control" rows="4" placeholder="Enter ..." en-event-keyup='task@changed'>{{: val@desc }}</textarea>
+                      <textarea class="form-control" rows="4" placeholder="Enter ..." name='desc' transfer-value='{{: val@desc }}' en-event-keyup='task@changed'>{{: val@desc }}</textarea>
                     </div>
                   </div>
 
@@ -120,7 +121,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Template Zip</label>
 
                     <div class="col-sm-10">
-                      <input type="file" id="exampleInputFile" accept='.zip'>
+                      <input type="file" name="template-zip" accept='.zip' transfer-value='{{: this.forwardDOM.files[0] }}'>
                     </div>
                   </div>
 
@@ -129,14 +130,15 @@
 
                     <div class="col-sm-10">
                       <en:task name='preventDefault' action='stopPropagation' chain-next='changed'></en:task>
-                      <en:task name='changed' action='set' trace arg-name='access' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
+                      <en:task name='changed' action='set' arg-name='access' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
+                      <input name='access' type='hidden' transfer-value='{{: val@access }}'/>
 
-                      <input type="radio" id="exampleInputFile" value='private' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
-                      <label> Private </label> <br/>
-                      <input type="radio" id="exampleInputFile" value='internal' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
-                      <label> Internal </label> <br/>
-                      <input type="radio" id="exampleInputFile" value='public' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
-                      <label> Public </label> <br/>
+                      <input type="radio" id="radio_access_private" value='private' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label for='radio_access_private'> Private </label> <br/>
+                      <input type="radio" id="radio_access_internal" value='internal' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label for='radio_access_internal'> Internal </label> <br/>
+                      <input type="radio" id="radio_access_public" value='public' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
+                      <label for='radio_access_public'> Public </label> <br/>
                     </div>
                   </div>
 

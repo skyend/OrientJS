@@ -16,6 +16,13 @@
     <div class="navbar-custom-menu">
       <ul class="nav navbar-nav">
         <!-- Messages: style can be found in dropdown.less-->
+        <% if( user.superuser ){ %>
+        <li class="dropdown messages-menu">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-cog"></i>
+          </a>
+        </li>
+        <% } %>
         <li class="dropdown messages-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-envelope-o"></i>
@@ -246,7 +253,9 @@
                 <a href="#" class="btn btn-default btn-flat">Profile</a>
               </div>
               <div class="pull-right">
-                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                <a href="/api/user/signout?sid={{: Orient.Cookie.get('ion-sb.sid') }}" class="btn btn-default btn-flat">
+                  Sign out
+                </a>
               </div>
             </li>
           </ul>

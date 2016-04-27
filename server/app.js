@@ -15,6 +15,7 @@ import route_admin from './routes/admin';
 import route_admin_project from './routes/admin/project';
 import route_installer from './routes/installer';
 import route_api_user from './routes/api/user';
+import route_api_project from './routes/api/project';
 // var projects = require('./routes/project');
 // var services = require('./routes/service');
 // var pages = require('./routes/page');
@@ -107,7 +108,9 @@ app.use('/admin/project', route_admin_project);
 
 app.use('/installer', route_installer);
 
+// API Routing
 app.use('/api/user', route_api_user);
+app.use('/api/project', route_api_project);
 
 // app.use('/test', test);
 // app.use('/projects', projects);

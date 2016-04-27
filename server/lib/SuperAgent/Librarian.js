@@ -105,6 +105,13 @@ class Librarian {
     });
   }
 
+  signoutUser(_sessionKey, _callback) {
+    this.agent.memStore.driver.removeSession(_sessionKey, (_err) => {
+      if (_err !== null) return _callback(ERRORS.SESSION.FAIL_DELETE_SESSION, null);
+      _callback(null);
+    });
+  }
+
   signinUser(_emailId, _pw, _callback) {
     if (!_emailId) return _callback(ERRORS.SIGNIN.EMAIL_FIELD_IS_REQUIRED);
     if (!_pw) return _callback(ERRORS.SIGNIN.PW_FIELD_IS_REQUIRED);
