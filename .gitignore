@@ -22,4 +22,5 @@ npm-debug.log
 !/server/staticStore/json/README.md
 
 /server/.built_by
+/server/temp/
 *.log

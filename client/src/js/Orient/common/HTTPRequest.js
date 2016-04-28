@@ -175,6 +175,8 @@ class HTTPRequest {
       req.send();
     }
 
+
+
     console.log(req);
     let statusType = Math.floor(req.status / 100);
 

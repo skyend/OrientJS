@@ -4,12 +4,8 @@ var router = express.Router();
 /* GET home page. */
 router.get('/signin', function(req, res, next) {
 
-  res.render('admin/sign/login', {
-    title: 'Service Builder'
-  });
-  return;
 
-  // profile 반환
+
   agent.businessMan.getSessionUserByCookie(req, (_err, _userData) => {
     if (_userData) {
       res.redirect('/admin/dashboard');
@@ -18,15 +14,21 @@ router.get('/signin', function(req, res, next) {
         title: 'Service Builder'
       });
     }
-  })
-
-
+  });
 });
 
 router.get('/signup', function(req, res, next) {
-  res.render('admin/sign/register', {
-    title: 'Service Builder'
+  agent.businessMan.getSessionUserByCookie(req, (_err, _userData) => {
+    if (_userData) {
+      res.redirect('/admin/dashboard');
+    } else {
+      res.render('admin/sign/register', {
+        title: 'Service Builder'
+      });
+    }
   });
+
+
 
   // profile 반환
   // agent.businessMan.getSessionUserByCookie(req, (_err, _userData) => {

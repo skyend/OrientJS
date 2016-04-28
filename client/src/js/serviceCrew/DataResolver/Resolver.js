@@ -406,10 +406,29 @@ class Resolver {
       case 'local-data':
         data = window.localStorage.getItem(varName);
         break;
+      case 'local-object':
+        data = window.localStorage.getItem(varName);
+
+        try {
+          data = JSON.parse(data);
+        } catch (_e) {
+          throw new Error(`localStorage 의 '${varName}' item을 JSON Object로 변환 할 수 없습니다.`);
+        }
+        break;
 
       case 'session-data':
         data = window.sessionStorage.getItem(varName);
         break;
+      case 'session-object':
+        data = window.sessionStorage.getItem(varName);
+
+        try {
+          data = JSON.parse(data);
+        } catch (_e) {
+          throw new Error(`sessionStorage 의 '${varName}' item을 JSON Object로 변환 할 수 없습니다.`);
+        }
+        break;
+
         // case 'device':
         //   throw new Error("device category 는 아직 지원하지 않습니다.");
         //   data = this.resolveWithDevice(varName);
@@ -418,6 +437,7 @@ class Resolver {
         //   throw new Error("geo-location category 는 아직 지원하지 않습니다.");
         //   data = this.resolveWithHttpParam(varName);
         //   break;
+
       case 'prop':
         data = _externalGetterInterface.getProperty(varName);
         break;

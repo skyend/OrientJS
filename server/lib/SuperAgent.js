@@ -5,6 +5,7 @@ import Logger from './SuperAgent/Logger.js';
 import IOConfig from './SuperAgent/io/Config.js';
 import DataStore from './SuperAgent/io/DataStore.js';
 import MemoryStore from './SuperAgent/io/MemoryStore.js';
+import FileStore from './SuperAgent/io/File.js';
 import MailService from './SuperAgent/io/MailService/MailService.js';
 import Librarian from './SuperAgent/Librarian.js';
 
@@ -57,6 +58,8 @@ class SuperAgent {
     this.memStore.connect(() => {
 
     });
+
+    this.fileStore = new FileStore(this);
   }
 
   initLoggers() {

@@ -53,5 +53,16 @@ export default {
     "COULD_NOT_FIND_RELATED_USER": createError(400, "SESSION.COULD_NOT_FIND_RELATED_USER", "Couldn't find user."), // DataBase find Error
     "INVALID_SESSION_OF_USER": createError(400, "SESSION.INVALID_SESSION_OF_USER", "Invalid session of user"),
     "INVALID_SESSION": createError(400, "SESSION.INVALID_SESSION", "Invalid session")
+  },
+
+  "UPLOAD_TEMPLATE": {
+    "TEMPLATE_UPLOAD_PATH_IS_NOT_DIRECTORY": createError(500, "UPLOAD_TEMPLATE.TEMPLATE_UPLOAD_PATH_IS_NOT_DIRECTORY", "Temp template upload directory is not Directory."),
+  },
+
+  "PROJECT": {
+    "CREATE": {
+      "FAIL_UPLOAD_TEMPLATE_ZIP": createError(500, "PROJECT.CREATE.FAIL_UPLOAD_TEMPLATE_ZIP", "Fail upload template zip"),
+      "ERROR": createError(500, "PROJECT.CREATE.ERROR", "Error"),
+    }
   }
 };
