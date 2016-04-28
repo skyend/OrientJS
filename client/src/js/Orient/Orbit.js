@@ -30,8 +30,13 @@ class Orbit {
       throw new Error("Need the window.");
     }
 
+    // Framework Default Interpreters
+    this.bindedInterpretSupporters = {};
+
     /* Initial Members */
     this.config = new Config(_inlineConfig, this);
+    this.bindedInterpretSupporters.getConfig = this.config.getField.bind(this.config); // config interpreter
+
     this.api = new APIRequest(this);
     this.orbitDocument = new OrbitDocument(this.window, this);
     this.apiSourceFactory = new APISourceFactory(this);
@@ -40,6 +45,7 @@ class Orbit {
       languageDecider: '',
       languageDefault: ''
     });
+    this.bindedInterpretSupporters.executeI18n = this.i18n.executeI18n.bind(this.i18n); // i18n interpreter
 
     this._retriever = new BuiltinRetriever(that, {
       'relative-dir-i18n': this.config.getField('DIR_I18N'),
@@ -75,11 +81,7 @@ class Orbit {
       }
     });
 
-    // Framework Interpreters
-    this.bindedInterpretSupporters = {
-      executeI18n: this.i18n.executeI18n.bind(this.i18n), // with Framework
-      getConfig: this.config.getField.bind(this.config), // with Framework
-    };
+
   }
 
   set window(_window) {

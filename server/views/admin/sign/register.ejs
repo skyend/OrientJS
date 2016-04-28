@@ -210,7 +210,7 @@
         var orbit = new Orbit(window);
 
         orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
-
+          console.log(this);
           var targetElement = document.getElementById('register-form');
           targetElement.onclick = function(){
             console.log("hello");
@@ -255,7 +255,7 @@
 
 
           <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[http]/api/user/register' arg-requestId=''></en:task>
-         
+
 
           <div class="form-group has-feedback">
             <en:task name='keyup' action='set' arg-name='fullname' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>

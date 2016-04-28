@@ -134,19 +134,27 @@ class Config {
 
         _complete();
       } else {
-        throw new Error(`Fail load config.`);
+        throw new Error(`Fail load config. ${_err}`);
       }
     });
   }
 
   // Config 에 입력된 필드값을 가져온다.
   getField(_name) {
-
+    // 대상 field값이 string type 이 아니라면 그대로 반환하며 string타입 이라면 바인딩처리하여 반환한다.
     if (this[_name]) {
-      return this[_name];
+      if (typeof this[_name] === 'string') {
+        return this.orbit.interpret(this[_name]);
+      } else {
+        return this[_name];
+      }
     } else {
       if (this.configObject) {
-        return this.configObject[_name];
+        if (typeof this.configObject[_name] === 'string') {
+          return this.orbit.interpret(this.configObject[_name]);
+        } else {
+          return this.configObject[_name];
+        }
       }
     }
   }

@@ -37,6 +37,7 @@ class Resolver {
       return _matter;
     }
 
+
     return this.__interpret4(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _defaultDataObject, _caller);
   }
 
@@ -393,11 +394,21 @@ class Resolver {
       case 'cookie':
         data = this.resolveWithCookie(varName);
         break;
+
       case 'http-param':
         data = this.resolveWithHttpParam(varName);
         break;
+
       case 'location':
         data = this.resolveWithLocation(varName);
+        break;
+
+      case 'local-data':
+        data = window.localStorage.getItem(varName);
+        break;
+
+      case 'session-data':
+        data = window.sessionStorage.getItem(varName);
         break;
         // case 'device':
         //   throw new Error("device category 는 아직 지원하지 않습니다.");
