@@ -4,9 +4,9 @@
  * @param _keyPath
  * @returns {*}
  */
-function getValueByKeyPath(_object, _keyPath) {
+function getValueByKeyPath(_object, _keyPath, _spliter = '/') {
 
-  var splitPath = _keyPath.split('/');
+  var splitPath = _keyPath.split(_spliter);
 
   var currValue = _object;
 

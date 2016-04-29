@@ -40,7 +40,7 @@ class File {
           });
         } else {
           this.agent.log.fatal(`Fail template upload. Temp template upload directory is not Directory.`);
-          _callback(ERRORS.UPLOAD_TEMPLATE.TEMPLATE_UPLOAD_PATH_IS_NOT_DIRECTORY);
+          _callback(ERRORS("UPLOAD_TEMPLATE.TEMPLATE_UPLOAD_PATH_IS_NOT_DIRECTORY"));
         }
       }
     });

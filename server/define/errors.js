@@ -1,16 +1,7 @@
-function createError(_code, _key, _message) {
-  let e = new Error(_message);
-  e.key = _key;
-  e.code = _code;
-  e.reason = _message;
-  return e;
-}
+import ObjectExplorer from '../../client/src/js/util/ObjectExplorer';
 
 
-
-
-
-export default {
+const ERRORS_DICT = {
   "FAIL_REGISTER_USER": new Error("fail register user"),
   "DB_ERROR": createError(400, "DB_ERROR", "DB Error"),
   "NORMAL": createError(400, "NORMAL", "normal"),
@@ -63,6 +54,32 @@ export default {
     "CREATE": {
       "FAIL_UPLOAD_TEMPLATE_ZIP": createError(500, "PROJECT.CREATE.FAIL_UPLOAD_TEMPLATE_ZIP", "Fail upload template zip"),
       "ERROR": createError(500, "PROJECT.CREATE.ERROR", "Error"),
+      "FAIL_CREATE_PROJECT": createError(500, "PROJECT.CREATE.FAIL_CREATE_PROJECT", "Fail create project."),
+      "FAIL_CREATE_ROOTDIR": createError(500, "PROJECT.CREATE.FAIL_CREATE_ROOTDIR", "Fail create rootdir."),
+      "FAIL_ROOTDIR_LINK": createError(500, "PROJECT.CREATE.FAIL_ROOTDIR_LINK", "Fail create rootdir and project relation."),
     }
   }
 };
+
+
+function createError(_code, _key, _message) {
+  let e = new Error(_message);
+  e.key = _key;
+  e.code = _code;
+  e.reason = _message;
+  return e;
+}
+
+function RETRIEVE(_ERROR_PATH) {
+  let errorObject = ObjectExplorer.getValueByKeyPath(ERRORS_DICT, _ERROR_PATH, '.');
+
+  if (errorObject) {
+    return errorObject;
+  }
+
+  throw new Error(`Not found Error'${_ERROR_PATH}' Object. `);
+}
+
+
+
+export default RETRIEVE;

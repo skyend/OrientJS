@@ -1,5 +1,8 @@
 let mongoose = require('mongoose');
 
+
+// Virtual File Node
+
 export default mongoose.Schema({
   dir: Boolean, // 디렉토리 인가 파일 인가
   name: String,

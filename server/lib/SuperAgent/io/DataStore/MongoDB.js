@@ -8,19 +8,31 @@ import _ from 'underscore';
  */
 import UserSchema from './MongoDB/mgSchema/user.js';
 import EmailCertificationSchema from './MongoDB/mgSchema/email_certify_queue.js';
+import ProjectScheme from './MongoDB/mgSchema/project.js';
+import UserRelProjectScheme from './MongoDB/mgSchema/user_rel_project.js';
+import VfnodeSchema from './MongoDB/mgSchema/vfnode.js';
+import FileSchema from './MongoDB/mgSchema/file.js';
+import ProjectRootVFNodeSchema from './MongoDB/mgSchema/project_root_vfnode.js';
 
 
 import UserExtends from './MongoDB/extends/user.js';
+import ProjectExtends from './MongoDB/extends/project.js';
 
 const MongooseSchemas = {
   'user': UserSchema,
-  'EmailCertification': EmailCertificationSchema
+  'EmailCertification': EmailCertificationSchema,
+
+  'Project': ProjectScheme,
+  'UserRelProject': UserRelProjectScheme,
+  'ProjectRootVFNode': ProjectRootVFNodeSchema,
+  'VFNode': VfnodeSchema,
+  'File': FileSchema,
 };
 
 
 class MongoDBDriver {
   constructor(_config) {
-    _.extend(this, UserExtends);
+    _.extend(this, UserExtends, ProjectExtends);
 
     this.config = _config;
   }

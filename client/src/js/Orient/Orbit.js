@@ -152,11 +152,11 @@ class Orbit {
     });
   }
 
-  foundationCompatibility(_callback, _callbackFinal) {
+  foundationCompatibility(_callback, _callbackFinal, _absorbOriginDOM) {
     this.pageMetaCompatibility(() => {
 
       console.time("First Built up");
-      var masterElementNode = Orient.buildComponentByElement(this.orbitDocument.document.body, {}, this);
+      var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](this.orbitDocument.document.body, {}, this);
       Orient.replaceRender(masterElementNode, this.orbitDocument.document.body);
       console.timeEnd("First Built up");
 

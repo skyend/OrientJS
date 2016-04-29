@@ -40,12 +40,12 @@ export default {
       (_cb) => {
         this.agent.memStore.driver.readSession(_sessionKey, (_err, _sessionData) => {
           if (_err) {
-            _cb(ERRORS.SESSION.READ_ERROR, null);
+            _cb(ERRORS("SESSION.READ_ERROR"), null);
           } else {
             if (_sessionData) {
               _cb(null, _sessionData);
             } else {
-              _cb(ERRORS.SESSION.NOT_FOUND);
+              _cb(ERRORS("SESSION.NOT_FOUND"));
             }
           }
         });
@@ -56,20 +56,20 @@ export default {
 
         this.agent.dataStore.driver.getUserById(id, (_err, _userData) => {
           if (_err) {
-            _cb(ERRORS.SESSION.COULD_NOT_FIND_RELATED_USER);
+            _cb(ERRORS("SESSION.COULD_NOT_FIND_RELATED_USER"));
           } else if (_userData === null) {
 
-            _cb(ERRORS.SESSION.NOT_FOUND_RELATED_USER, null);
+            _cb(ERRORS("SESSION.NOT_FOUND_RELATED_USER"), null);
           } else {
 
             try {
               if (bcrypt.compareSync(_userData.id, _crypted_uid)) {
                 _cb(null, _userData);
               } else {
-                _cb(ERRORS.SESSION.INVALID_SESSION, null);
+                _cb(ERRORS("SESSION.INVALID_SESSION"), null);
               }
             } catch (_e) {
-              _cb(ERRORS.SESSION.INVALID_SESSION, null);
+              _cb(ERRORS("SESSION.INVALID_SESSION"), null);
             }
           }
         });
@@ -79,10 +79,10 @@ export default {
           if (_userData.certified) {
             _cb(null, _userData);
           } else {
-            _cb(ERRORS.SESSION.INVALID_SESSION_OF_USER, null);
+            _cb(ERRORS("SESSION.INVALID_SESSION_OF_USER"), null);
           }
         } else {
-          _cb(ERRORS.SIGNIN.INVALID_SESSION_OF_USER, null);
+          _cb(ERRORS("SIGNIN.INVALID_SESSION_OF_USER"), null);
         }
       }
     ], (_err, _userData) => {
@@ -93,30 +93,30 @@ export default {
 
   assignSession: function(_userData, _callback) {
     this.agent.memStore.driver.createSession(_userData, (_err, _sessionKey) => {
-      if (_err !== null) return _callback(ERRORS.SIGNIN.FAILED_CREATE_SESSION, null);
+      if (_err !== null) return _callback(ERRORS("SIGNIN.FAILED_CREATE_SESSION"), null);
       _callback(null, _sessionKey);
     });
   },
 
   signoutUser: function(_sessionKey, _callback) {
     this.agent.memStore.driver.removeSession(_sessionKey, (_err) => {
-      if (_err !== null) return _callback(ERRORS.SESSION.FAIL_DELETE_SESSION, null);
+      if (_err !== null) return _callback(ERRORS("SESSION.FAIL_DELETE_SESSION"), null);
       _callback(null);
     });
   },
 
   signinUser: function(_emailId, _pw, _callback) {
-    if (!_emailId) return _callback(ERRORS.SIGNIN.EMAIL_FIELD_IS_REQUIRED);
-    if (!_pw) return _callback(ERRORS.SIGNIN.PW_FIELD_IS_REQUIRED);
+    if (!_emailId) return _callback(ERRORS("SIGNIN.EMAIL_FIELD_IS_REQUIRED"));
+    if (!_pw) return _callback(ERRORS("SIGNIN.PW_FIELD_IS_REQUIRED"));
 
     Async.waterfall([
       (_cb) => {
         this.agent.dataStore.driver.getUserByEmail(_emailId, (_err, _userData) => {
 
           if (_err !== null) {
-            _cb(ERRORS.SIGNIN.NORMAL, null);
+            _cb(ERRORS("SIGNIN.NORMAL"), null);
           } else if (_userData === null) {
-            _cb(ERRORS.SIGNIN.USER_NOT_FOUND, null);
+            _cb(ERRORS("SIGNIN.USER_NOT_FOUND"), null);
           } else {
             _cb(null, _userData);
           }
@@ -130,10 +130,10 @@ export default {
           if (_userData.certified) {
             _cb(null, _userData);
           } else {
-            _cb(ERRORS.SIGNIN.DO_CERTIFY_EMAIL, null);
+            _cb(ERRORS("SIGNIN.DO_CERTIFY_EMAIL"), null);
           }
         } else {
-          _cb(ERRORS.SIGNIN.USER_IS_NOT_AVAILABLE_USER, null);
+          _cb(ERRORS("SIGNIN.USER_IS_NOT_AVAILABLE_USER"), null);
         }
       },
       (_userData, _cb) => {
@@ -145,7 +145,7 @@ export default {
           // 데이터 베이스에 저장된 password 해시가 변조되었음을 뜻한다.
           this.agent.log.crit("User password temporary modified. User id:%s email:%s", _userData.id, _userData.email);
 
-          _cb(ERRORS.SIGNIN.NORMAL);
+          _cb(ERRORS("SIGNIN.NORMAL"));
           return;
         }
 
@@ -160,7 +160,7 @@ export default {
             }
           });
         } else {
-          _cb(ERRORS.SIGNIN.PASSWORD_IS_NOT_MATCHED, null);
+          _cb(ERRORS("SIGNIN.PASSWORD_IS_NOT_MATCHED"), null);
         }
       }
     ], (_err, _userData, _sessionKey) => {
@@ -174,11 +174,11 @@ export default {
 
   registerUser: function(_req, _data, _callback) {
 
-    if (!_data.fullname) return _callback(ERRORS.SIGNUP.FULLNAME_FIELD_IS_REQUIRED);
-    if (!_data.email) return _callback(ERRORS.SIGNUP.EMAIL_FIELD_IS_REQUIRED);
-    if (!_data.pw) return _callback(ERRORS.SIGNUP.PW_FIELD_IS_REQUIRED);
-    if (!_data.confirm) return _callback(ERRORS.SIGNUP.CONFIRM_FIELD_IS_REQUIRED);
-    if (_data.pw !== _data.confirm) return _callback(ERRORS.SIGNUP.PASSWORD_IS_NOT_MATCHED);
+    if (!_data.fullname) return _callback(ERRORS("SIGNUP.FULLNAME_FIELD_IS_REQUIRED"));
+    if (!_data.email) return _callback(ERRORS("SIGNUP.EMAIL_FIELD_IS_REQUIRED"));
+    if (!_data.pw) return _callback(ERRORS("SIGNUP.PW_FIELD_IS_REQUIRED"));
+    if (!_data.confirm) return _callback(ERRORS("SIGNUP.CONFIRM_FIELD_IS_REQUIRED"));
+    if (_data.pw !== _data.confirm) return _callback(ERRORS("SIGNUP.PASSWORD_IS_NOT_MATCHED"));
 
     Async.waterfall([
         (_cb) => {
@@ -196,16 +196,16 @@ export default {
                   //_cb(_err);
 
                   // 이유를 캡슐화
-                  _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+                  _cb(ERRORS("SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP"));
                 } else {
                   if (_userData !== null) {
                     if (_userData.superuser) {
                       _cb(null);
                     } else {
-                      _cb(ERRORS.SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP);
+                      _cb(ERRORS("SIGNUP.SYSTEM_IS_NOT_ALLOW_FREE_SIGNUP"));
                     }
                   } else {
-                    _cb(ERRORS.NORMAL);
+                    _cb(ERRORS("NORMAL"));
                   }
                 }
               });
@@ -217,9 +217,9 @@ export default {
 
           this.agent.dataStore.driver.getUserByEmail(_data.email, function(_err, _userData) {
             if (_err !== null) {
-              _cb(ERRORS.SIGNUP.NORMAL, null);
+              _cb(ERRORS("SIGNUP.NORMAL"), null);
             } else if (_userData !== null) {
-              _cb(ERRORS.SIGNUP.ALREADY_USED_EMAIL, null);
+              _cb(ERRORS("SIGNUP.ALREADY_USED_EMAIL"), null);
             } else {
               _cb(null);
             }
@@ -229,7 +229,7 @@ export default {
           // 현재 유저 수 카운트
           this.agent.dataStore.driver.getUserCount(function(_err, _count) {
             if (_err !== null) {
-              _cb(ERRORS.SIGNUP.NORMAL, null);
+              _cb(ERRORS("SIGNUP.NORMAL"), null);
             } else {
               _cb(null, _count);
             }
@@ -256,7 +256,7 @@ export default {
           }, function(_err, _result) {
             if (_err !== null) {
 
-              _cb(ERRORS.SIGNUP.NORMAL, null);
+              _cb(ERRORS("SIGNUP.NORMAL"), null);
             } else {
 
               _cb(null, _result);
@@ -267,7 +267,7 @@ export default {
           // 인증서 데이터베이스에 발급
           this.agent.dataStore.driver.createUserEmailCertification(_userData.id, (_err, _result) => {
             if (_err !== null) {
-              _cb(ERRORS.SIGNUP.FAIL_CREATE_CERTIFICATION, null, null);
+              _cb(ERRORS("SIGNUP.FAIL_CREATE_CERTIFICATION"), null, null);
             } else {
               _cb(null, _result.key, _userData);
             }
@@ -285,7 +285,7 @@ export default {
 
           this.agent.mail.sendMail(_userData.email, 'welcome I-ON Service Builder', body, (_err, _res) => {
             if (_err !== null) {
-              _cb(ERRORS.SIGNUP.FAIL_SENT_MAIL);
+              _cb(ERRORS("SIGNUP.FAIL_SENT_MAIL"));
             } else {
               _cb(null, _userData);
             }
@@ -306,10 +306,10 @@ export default {
       (_cb) => {
         this.agent.dataStore.driver.getEmailCertification(_key, (_err, _cert) => {
           if (_err !== null) {
-            _cb(ERRORS.SIGNUP.FAIL_CERTIFY_USER);
+            _cb(ERRORS("SIGNUP.FAIL_CERTIFY_USER"));
           } else {
             if (_cert === null) {
-              _cb(ERRORS.SIGNUP.NOT_FOUND_CERTIFICATION);
+              _cb(ERRORS("SIGNUP.NOT_FOUND_CERTIFICATION"));
             } else {
               _cb(null, _cert);
             }
@@ -321,17 +321,17 @@ export default {
         this.agent.dataStore.driver.getUserById(userid, (_err, _userData) => {
           if (_err !== null) {
 
-            _cb(ERRORS.SIGNUP.COULD_NOT_FIND_CERTIFICATION_USER);
+            _cb(ERRORS("SIGNUP.COULD_NOT_FIND_CERTIFICATION_USER"));
           } else {
             if (_userData !== null) {
               if (_userData.email === _email) {
                 // 인증성공
                 _cb(null, _userData);
               } else {
-                _cb(ERRORS.SIGNUP.USER_NOT_MATCHED_CERTIFICATION);
+                _cb(ERRORS("SIGNUP.USER_NOT_MATCHED_CERTIFICATION"));
               }
             } else {
-              _cb(ERRORS.SIGNUP.NOT_FOUND_CERTIFICATION_USER);
+              _cb(ERRORS("SIGNUP.NOT_FOUND_CERTIFICATION_USER"));
             }
           }
         });
@@ -342,7 +342,7 @@ export default {
           certified: true
         }, (_err, _userData) => {
           if (_err !== null) {
-            _cb(ERRORS.DB_ERROR, null);
+            _cb(ERRORS("DB_ERROR"), null);
           } else {
             _cb(null, _userData);
           }
@@ -351,7 +351,7 @@ export default {
       (_userData, _cb) => {
         this.agent.dataStore.driver.deleteEmailCertification(_key, (_err) => {
           if (_err !== null) {
-            _cb(ERRORS.SIGNUP.FAIL_REMOVE_CERTIFICATION, null);
+            _cb(ERRORS("SIGNUP.FAIL_REMOVE_CERTIFICATION"), null);
           } else {
             _cb(null, _userData);
           }

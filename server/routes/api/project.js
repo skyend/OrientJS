@@ -29,7 +29,7 @@ function create(req, res) {
         agent.fileStore.writeProjectTemplateZip(file, outputFilename, (_err) => {
 
           if (_err !== null) {
-            let error = ERRORS.PROJECT.CREATE.FAIL_UPLOAD_TEMPLATE_ZIP;
+            let error = ERRORS("PROJECT.CREATE.FAIL_UPLOAD_TEMPLATE_ZIP");
 
             _res.status(error.code).send({
               error: error
@@ -44,7 +44,7 @@ function create(req, res) {
     req.busboy.on('finish', (_err) => {
       debug('Done parsing form!');
       if (_err) {
-        let error = ERRORS.PROJECT.CREATE.ERROR;
+        let error = ERRORS("PROJECT.CREATE.ERROR");
 
         _res.status(error.code).send({
           error: error
@@ -53,11 +53,11 @@ function create(req, res) {
 
         agent.businessMan.createProject(_user, projectFormDatas, (_err, _project) => {
           if (_err !== null) {
-            res.status(_err.code).res({
+            res.status(_err.code).send({
               error: _err
             });
           } else {
-            res.res({
+            res.send({
               error: null,
               project: _project
             });
