@@ -5,7 +5,7 @@ import uuid from 'uuid';
 
 export default {
   createProject: function(_user, _fields, _callback) {
-    console.log(_fields, _user);
+
     /*
       1. 프로젝트 생성
       2. 마스터 유저 할당
@@ -19,7 +19,7 @@ export default {
           access: _fields.access,
           description: _fields.desc,
         }, (_err, _projectDoc) => {
-          console.log(_err, _projectDoc);
+
           if (_err !== null) {
             _cb(ERRORS("PROJECT.CREATE.FAIL_CREATE_PROJECT"), null);
           } else {
@@ -30,8 +30,9 @@ export default {
 
       (_projectDoc, _cb) => {
         // 프로젝트의 마스터 유저 관계 생성
+
         this.agent.dataStore.driver.createProjectUserRelation(_projectDoc.id, _user.id, 'master', (_err, _relDoc) => {
-          console.log(_err, _relDoc);
+
           if (_err !== null) {
             _cb(ERRORS("PROJECT.CREATE.FAIL_CREATE_PROJECT_USER_REL"), null);
           } else {

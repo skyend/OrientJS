@@ -159,15 +159,22 @@ app.use(function(err, req, res, next) {
 });
 
 
-
 app.serverReady = function(_server, _io) {
   console.log("Ready");
   _io.on('connection', function(socket) {
+    console.log(">>>>>>>>>>>>>>>>>>> connected");
+    console.log(socket.handshake.headers.cookie);
+
     socket.emit('news', {
       hello: 'world'
     });
+
     socket.on('my other event', function(data) {
       console.log(data);
+    });
+
+    socket.on('close', function(data) {
+      console.log(">>>>>>>>>>>>>>>>>> closed;")
     });
   });
 };

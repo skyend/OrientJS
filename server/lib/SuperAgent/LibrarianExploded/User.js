@@ -6,8 +6,22 @@ import bcrypt from 'bcrypt-nodejs';
 
 export default {
   filterUserDocForPublic: function(_userDoc) {
-    return _.omit(_userDoc.toJSON(), 'password', '_id', '__v');
+    return _.omit(_userDoc.toJSON(), 'password', '__v');
   },
+
+  getSessionUserDocByCookie: function(_req, _callback) {
+    let sid = _req.cookies['ion-sb.sid'];
+    let crypted_uid = _req.cookies['ion-sb.uid'];
+
+    this.getUserBySession(sid, crypted_uid, (_err, _userDoc) => {
+      if (_err) {
+        _callback(_err, null);
+      } else {
+        _callback(null, _userDoc);
+      }
+    });
+  },
+
 
   getSessionUserByQuery: function(_req, _callback) {
     let sid = _req.query['ion-sb.sid'];
@@ -23,14 +37,12 @@ export default {
   },
 
   getSessionUserByCookie: function(_req, _callback) {
-    let sid = _req.cookies['ion-sb.sid'];
-    let crypted_uid = _req.cookies['ion-sb.uid'];
 
-    this.getUserBySession(sid, crypted_uid, (_err, _userData) => {
+    this.getSessionUserDocByCookie(_req, (_err, _userDoc) => {
       if (_err) {
         _callback(_err, null);
       } else {
-        _callback(null, this.filterUserDocForPublic(_userData));
+        _callback(null, this.filterUserDocForPublic(_userDoc));
       }
     });
   },

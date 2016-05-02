@@ -15,8 +15,8 @@ import FileSchema from './MongoDB/mgSchema/file.js';
 import ProjectRootVFNodeSchema from './MongoDB/mgSchema/project_root_vfnode.js';
 
 
-import UserExtends from './MongoDB/extends/user.js';
-import ProjectExtends from './MongoDB/extends/project.js';
+import UserExtends from './MongoDB/MongoDBExploded/user.js';
+import ProjectExtends from './MongoDB/MongoDBExploded/project.js';
 
 const MongooseSchemas = {
   'user': UserSchema,

@@ -1,5 +1,5 @@
-import User from './Librarian/User.js';
-import Project from './Librarian/Project.js';
+import User from './LibrarianExploded/User.js';
+import Project from './LibrarianExploded/Project.js';
 
 import Async from 'async';
 import filter from 'object-key-filter';

@@ -17,6 +17,7 @@ export default {
   createProjectUserRelation: function(_projectId, _userId, _permission, _callback) {
     let ProjectUserRelModel = this.getModel("UserRelProject");
 
+
     ProjectUserRelModel.create({
       project_id: _projectId,
       user_id: _userId,

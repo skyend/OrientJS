@@ -6,7 +6,7 @@ import uuid from 'uuid';
 
 function create(req, res) {
 
-  agent.businessMan.getSessionUserByCookie(req, function(_err, _user) {
+  agent.businessMan.getSessionUserDocByCookie(req, function(_err, _userDoc) {
     let projectFormDatas = {};
 
     if (_err) {
@@ -17,7 +17,8 @@ function create(req, res) {
 
     req.busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
       console.log('Field [' + fieldname + ']: value: ' + inspect(val), val);
-      projectFormDatas[fieldname] = inspect(val);
+
+      projectFormDatas[fieldname] = val;
     });
 
     req.busboy.on('file', (fieldname, file, filename) => {
@@ -51,7 +52,7 @@ function create(req, res) {
         });
       } else {
 
-        agent.businessMan.createProject(_user, projectFormDatas, (_err, _project) => {
+        agent.businessMan.createProject(_userDoc, projectFormDatas, (_err, _project) => {
           if (_err !== null) {
             res.status(_err.code).send({
               error: _err
@@ -65,7 +66,6 @@ function create(req, res) {
         });
       }
     });
-
 
     req.pipe(req.busboy);
   });
