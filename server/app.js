@@ -13,6 +13,8 @@ global.agent = agent;
 import routes from './routes/index';
 import route_admin from './routes/admin';
 import route_admin_project from './routes/admin/project';
+import route_admin_task from './routes/admin/task';
+
 import route_installer from './routes/installer';
 import route_api_user from './routes/api/user';
 import route_api_project from './routes/api/project';
@@ -105,7 +107,7 @@ app.use('/', routes);
 
 app.use('/admin', route_admin);
 app.use('/admin/project', route_admin_project);
-
+app.use('/admin/task', route_admin_task);
 app.use('/installer', route_installer);
 
 // API Routing
@@ -165,9 +167,12 @@ app.serverReady = function(_server, _io) {
     console.log(">>>>>>>>>>>>>>>>>>> connected");
     console.log(socket.handshake.headers.cookie);
 
-    socket.emit('news', {
-      hello: 'world'
-    });
+    setInterval(function() {
+      socket.emit('news', {
+        hello: 'world'
+      });
+
+    }, 1000);
 
     socket.on('my other event', function(data) {
       console.log(data);

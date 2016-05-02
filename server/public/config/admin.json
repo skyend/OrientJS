@@ -1,3 +1,5 @@
 {
-  "MODE": "debug"
+  "MODE": "debug",
+
+  "DIR_COMPONENT": "/service-static/components/"
 }

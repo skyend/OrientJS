@@ -43,7 +43,9 @@
     <script>
       window.onload = function(){
         var orbit = new Orbit(window);
-          orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
+        orbit.io.connect(io, window.location.host);
+
+        orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
           var targetElement = document.getElementById('wrapper');
           // var targetElement = document.body;
 
@@ -51,11 +53,6 @@
 
           Orient.replaceRender(masterElementNode, targetElement);
 
-          var socket = io.connect(window.location.host);
-          socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('my other event', { my: 'data' });
-          });
         });
       }
     </script>
@@ -63,15 +60,15 @@
   <body class="hold-transition skin-black sidebar-mini">
   <div id='wrapper' class="wrapper">
 
-    <%- include ../../common/head.ejs %>
+    <%- include ../common/head.ejs %>
 
     <!-- Left side column. contains the logo and sidebar -->
-    <%- include ../../common/sidebar.ejs %>
+    <%- include ../common/sidebar.ejs %>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
-      <%- include ../../common/location-bar.ejs %>
+      <%- include ../common/location-bar.ejs %>
 
       <!-- Main content -->
       <section class="content">
@@ -166,16 +163,18 @@
           </div>
         </div>
 
+
+         <div class='col-lg-6' en-type='ref' en-ref-target-id='[html]console-panel.html'></div>
        </div>
 
       </section>
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <%- include ../../common/footer.ejs %>
+    <%- include ../common/footer.ejs %>
 
     <!-- Control Sidebar -->
-    <%- include ../../common/control-sidebar.ejs %>
+    <%- include ../common/control-sidebar.ejs %>
 
     <!-- /.control-sidebar -->
     <!-- Add the sidebar's background. This div must be placed

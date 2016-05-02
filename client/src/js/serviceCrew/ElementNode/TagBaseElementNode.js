@@ -611,6 +611,10 @@
        }
      }
 
+     if (_domElement.getAttribute('en-io-on') !== null) {
+       this.ioListenNames = _domElement.getAttribute('en-io-on');
+     }
+
      // Controls
      if (_domElement.getAttribute('en-ctrl-repeat-n') !== null) {
        if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 바인드 할 수 없습니다.");
@@ -685,6 +689,15 @@
      // done
      if (_domElement.getAttribute('en-event-first-rendered') !== null) // Did Mount
        this.setEvent('first-rendered', _domElement.getAttribute('en-event-first-rendered'));
+
+     // done
+     if (_domElement.getAttribute('en-event-io-received') !== null) // Socket io Received
+       this.setEvent('io-received', _domElement.getAttribute('en-event-io-received'));
+
+     if (_domElement.getAttribute('en-event-io-sent') !== null) // Socket io sent
+       this.setEvent('io-sent', _domElement.getAttribute('en-event-io-sent'));
+
+
 
      // done
      // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide

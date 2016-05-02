@@ -2,7 +2,6 @@ import winston from 'winston';
 
 export default function(filename) {
 
-
   var logger = new winston.Logger({
     transports: [
       new winston.transports.Console(),

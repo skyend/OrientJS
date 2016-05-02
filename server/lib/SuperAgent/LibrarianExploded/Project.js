@@ -64,6 +64,8 @@ export default {
         });
       }
     ], (_err, _projectDoc) => {
+      let inst = this.getNewWorker('TemplateParser', {});
+
       if (_err !== null) _callback(_err, null)
       else _callback(null, _projectDoc);
     });

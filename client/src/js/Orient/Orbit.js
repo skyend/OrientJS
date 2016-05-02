@@ -1,7 +1,7 @@
 //import request from 'superagent';
 import HTTPRequest from './common/HTTPRequest';
 import APIRequest from './common/APIRequest';
-
+import IO from './Orbit/IO';
 import Config from './Orbit/Config';
 import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
@@ -38,6 +38,7 @@ class Orbit {
     this.bindedInterpretSupporters.getConfig = this.config.getField.bind(this.config); // config interpreter
 
     this.api = new APIRequest(this);
+    this.io = new IO(this);
     this.orbitDocument = new OrbitDocument(this.window, this);
     this.apiSourceFactory = new APISourceFactory(this);
     this.resolver = new Resolver();
@@ -45,6 +46,7 @@ class Orbit {
       languageDecider: '',
       languageDefault: ''
     });
+
     this.bindedInterpretSupporters.executeI18n = this.i18n.executeI18n.bind(this.i18n); // i18n interpreter
 
     this._retriever = new BuiltinRetriever(that, {

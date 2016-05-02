@@ -9,7 +9,7 @@ export default {
 
   },
 
-  progress: function(_userId, _workId, _lines) {
+  progressWork: function(_userId, _workId, _lines) {
     // session 체크하여
 
   }

@@ -118,7 +118,9 @@ class ElementNode {
     // ElementNode 컴포넌트의 최상위 ElementNode
     this.isMaster = _isMaster || false;
 
-    this.renderSerialNumber = 1;
+    this.renderSerialNumber = 0;
+
+    this.connectedSocketIO = false;
 
     //////////////////////////
     // 처리로직
@@ -596,6 +598,9 @@ class ElementNode {
     this.scopesResolve();
 
 
+    this.connectSocketIO();
+
+
     this.debug("construct", "start", _options);
 
     // DC 실행
@@ -767,6 +772,33 @@ class ElementNode {
           console.warn(_e);
         }
       }
+    }
+  }
+
+
+  connectSocketIO() {
+    if (!this.ioListenNames) return;
+    if (!this.environment) throw new Error("Socket IO 이벤트를 청취하기 위해서는 SocketIO 인터페이스를 지원하는 Environment 가 필요 합니다.");
+
+    if (this.connectedSocketIO === false) {
+
+      let names = this.interpret(this.ioListenNames).split(',');
+      let name;
+      for (let i = 0; i < names.length; i++) {
+        name = names[i];
+
+        this.environment.io.on(name, (_name, _data, _socket) => {
+          this.tryEventScope('io-received', {
+            subject: _name,
+            data: _data,
+            socket: _socket
+          }, null, function done(_result) {
+
+          });
+        }, `${this.id}_${name}`);
+      }
+
+      this.connectedSocketIO = true;
     }
   }
 
@@ -2239,6 +2271,9 @@ class ElementNode {
     this.dynamicContextSync = _elementNodeDataObject.dynamicContextSync;
     this.dynamicContextInjectParams = _elementNodeDataObject.dynamicContextInjectParams;
 
+    // Socket IO
+    this.ioListenNames = _elementNodeDataObject.ioListenNames;
+
     this.componentName = _elementNodeDataObject.componentName;
 
     this.methods = Object.keys(_elementNodeDataObject.methods || {}).map((_key) => {
@@ -2284,12 +2319,16 @@ class ElementNode {
       updateDate: (new Date(this.updateDate)).toString(),
     };
 
+    // DC
     exportObject.dynamicContextPassive = this.dynamicContextPassive;
     exportObject.dynamicContextSID = this.dynamicContextSID;
     exportObject.dynamicContextRID = this.dynamicContextRID;
     exportObject.dynamicContextNS = this.dynamicContextNS;
     exportObject.dynamicContextSync = this.dynamicContextSync;
     exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
+
+    // Socket IO
+    exportObject.ioListenNames = this.ioListenNames;
 
     return exportObject;
   }

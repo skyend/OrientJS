@@ -5,13 +5,13 @@ import Common from './common';
 
 router.get('*', Common.checkIsMember);
 
-router.get('/create', function(req, res) {
+router.get('/', function(req, res) {
 
-  res.render('admin/project/create', {
+  res.render('admin/task/index', {
     user: req.user,
     page: {
-      name: "Create Project",
-      path: ['Dashboard', 'project', 'create']
+      name: "Task List",
+      path: ['Dashboard', 'tasks']
     }
   });
 });

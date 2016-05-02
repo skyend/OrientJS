@@ -1,0 +1,22 @@
+<div class="box box-default" >
+  <en:value name='server-message' type='string' value=''></en:value>
+  <div class="box-header with-border">
+    <i class="fa fa-plane"></i>
+
+    <h2 class="box-title"> Console </h2>
+  </div>
+
+  <!-- /.box-header -->
+  <script type='text/x-javascript' en-scope-type='function' name='update_message'>
+  return function(_event){
+    console.log(_event);
+
+    this.setValue('server-message', this.getValue('server-message') + '\n' + _event.data.hello );
+    this.update();
+  }
+  </script>
+  <textarea class="box-body bg-black"  en-io-on='news' en-event-io-received='{{ func@update_message( feature@event ) }}' style='width:100%;max-width:100%' rows='30' disabled>
+    {{: val@server-message }}
+  </textarea>
+  <!-- /.box-body -->
+</div>
