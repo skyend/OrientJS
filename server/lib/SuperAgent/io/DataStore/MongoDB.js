@@ -13,10 +13,11 @@ import UserRelProjectScheme from './MongoDB/mgSchema/user_rel_project.js';
 import VfnodeSchema from './MongoDB/mgSchema/vfnode.js';
 import FileSchema from './MongoDB/mgSchema/file.js';
 import ProjectRootVFNodeSchema from './MongoDB/mgSchema/project_root_vfnode.js';
-
+import WorkSchema from './MongoDB/mgSchema/work.js';
 
 import UserExtends from './MongoDB/MongoDBExploded/user.js';
 import ProjectExtends from './MongoDB/MongoDBExploded/project.js';
+import WorkExtends from './MongoDB/MongoDBExploded/work.js';
 
 const MongooseSchemas = {
   'user': UserSchema,
@@ -27,12 +28,14 @@ const MongooseSchemas = {
   'ProjectRootVFNode': ProjectRootVFNodeSchema,
   'VFNode': VfnodeSchema,
   'File': FileSchema,
+
+  'Work': WorkSchema
 };
 
 
 class MongoDBDriver {
   constructor(_config) {
-    _.extend(this, UserExtends, ProjectExtends);
+    _.extend(this, UserExtends, ProjectExtends, WorkExtends);
 
     this.config = _config;
   }

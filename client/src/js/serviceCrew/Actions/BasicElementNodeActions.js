@@ -307,10 +307,10 @@ actionStore.registerAction('loop', ['fps'], function() {
 /***
  * chainCodeCriterion : Key Name or Function
  */
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype'], function() {
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields'], function() {
   let that = this;
 
-  let fields = {};
+  let transferFields = {};
   let foundElements;
   let foundElementNodes = [];
   foundElements = this.getDOMNode().querySelectorAll('[transfer-value]') || [];
@@ -336,9 +336,13 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     });
 
     if (pass) {
-      fields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
+      transferFields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
     }
   });
+
+  // 추가 필드 머지
+  __orient__ObjectExtends.mergeByRef(transferFields, fields || {}, true);
+
 
   let requestMethodForHTTP = 'get';
   if (this.getDOMNode().getAttribute('method')) {
@@ -348,7 +352,7 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
   console.log(apiSourceId, requestId, fields);
 
-  Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, fields, (_err, _retrievedObject, _originResponse) => {
+  Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, transferFields, (_err, _retrievedObject, _originResponse) => {
     // http error 코드일 경우
 
     if (chainCodeCriterion) {

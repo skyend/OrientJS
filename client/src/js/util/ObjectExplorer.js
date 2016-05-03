@@ -94,8 +94,18 @@ function objectExplore(_object, _explorer, _key) {
   }
 }
 
-module.exports = {
+var ROOT_OBJECT;
+
+try {
+  ROOT_OBJECT = window;
+} catch (_e) {
+  ROOT_OBJECT = global;
+}
+
+ROOT_OBJECT.__orient__ObjectExplorer = {
   stringReplacement: stringReplacement,
   getValueByKeyPath: getValueByKeyPath,
   explore: objectExplore
 };
+
+module.exports = ROOT_OBJECT.__orient__ObjectExplorer;

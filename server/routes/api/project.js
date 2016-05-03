@@ -6,7 +6,7 @@ import uuid from 'uuid';
 
 function create(req, res) {
 
-  agent.businessMan.getSessionUserDocByCookie(req, function(_err, _userDoc) {
+  agent.businessMan.getSessionUserDocByCookie(req, function(_err, _userDoc, _socketSession) {
     let projectFormDatas = {};
 
     if (_err) {
@@ -36,7 +36,7 @@ function create(req, res) {
               error: error
             });
           } else {
-            projectFormDatas.templatePath = outputFilename;
+            projectFormDatas.template_filename = outputFilename;
           }
         });
       }
@@ -52,7 +52,7 @@ function create(req, res) {
         });
       } else {
 
-        agent.businessMan.createProject(_userDoc, projectFormDatas, (_err, _project) => {
+        agent.businessMan.createProject(_userDoc, _socketSession, projectFormDatas, (_err, _project) => {
           if (_err !== null) {
             res.status(_err.code).send({
               error: _err

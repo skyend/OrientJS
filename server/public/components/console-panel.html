@@ -7,16 +7,19 @@
   </div>
 
   <!-- /.box-header -->
-  <script type='text/x-javascript' en-scope-type='function' name='update_message'>
-  return function(_event){
-    console.log(_event);
+  <pre class="box-body bg-black"  en-io-on='{{: prop@listen-names }}' en-event-io-received='{{ func@update_message( feature@event ) }}'
+            style='width:100%;max-width:100%; max-height:500px; overflow:auto;'>
+      <script type='text/x-javascript' en-scope-type='function' name='update_message'>
+      return function(_event){
+        var dom = this.getDOMNode();
 
-    this.setValue('server-message', this.getValue('server-message') + '\n' + _event.data.hello );
-    this.update();
-  }
-  </script>
-  <textarea class="box-body bg-black"  en-io-on='news' en-event-io-received='{{ func@update_message( feature@event ) }}' style='width:100%;max-width:100%' rows='30' disabled>
-    {{: val@server-message }}
-  </textarea>
+        this.setValue('server-message', this.getValue('server-message') + '\n<span class="text-gray">' + new Date().toLocaleString() + '</span> - '+ _event.data.line );
+        this.update();
+
+        dom.scrollTop = dom.scrollHeight;
+      }
+      </script>
+      <span en-type='string' en-enableHtml>{{: val@server-message }}</span>
+  </pre>
   <!-- /.box-body -->
 </div>

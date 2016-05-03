@@ -22,7 +22,7 @@ class IO {
       // Listen Queue
       let listen;
       for (let i = 0; i < this.listenQueue.length; i++) {
-        console.log(i);
+
         listen = this.listenQueue[i];
         this.addListener(listen.name, listen.callback, listen.id);
       }
@@ -53,10 +53,12 @@ class IO {
 
   addListener(_listenName, _callback, _id) {
     let forwardListener = function(_data) {
+      console.log(_listenName, _data);
       _callback(_listenName, _data, this.connection);
     };
 
     forwardListener.id = _id;
+    console.log(_listenName);
 
     this.connection.on(_listenName, forwardListener);
   }

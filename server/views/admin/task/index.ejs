@@ -51,11 +51,7 @@
 
           Orient.replaceRender(masterElementNode, targetElement);
 
-          var socket = io.connect(window.location.host);
-          socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('my other event', { my: 'data' });
-          });
+          orbit.io.connect(io, window.location.host);
         });
       }
     </script>

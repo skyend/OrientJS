@@ -45,6 +45,10 @@ class File {
       }
     });
   }
+
+  getAbsolutePathOfProjectTemplate(_templateFilename) {
+    return path.join(this.templateDirPath, _templateFilename)
+  }
 }
 
 export default File;

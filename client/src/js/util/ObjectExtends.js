@@ -129,5 +129,13 @@ class ObjectExtends {
 }
 
 
+var ROOT_OBJECT;
 
+try {
+  ROOT_OBJECT = window;
+} catch (_e) {
+  ROOT_OBJECT = global;
+}
+
+ROOT_OBJECT.__orient__ObjectExtends = ObjectExtends;
 export default ObjectExtends;

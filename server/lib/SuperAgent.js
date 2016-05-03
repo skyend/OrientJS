@@ -6,6 +6,8 @@ import IOConfig from './SuperAgent/io/Config.js';
 import DataStore from './SuperAgent/io/DataStore.js';
 import MemoryStore from './SuperAgent/io/MemoryStore.js';
 import FileStore from './SuperAgent/io/File.js';
+import SocketStore from './SuperAgent/io/SocketStore.js';
+
 import MailService from './SuperAgent/io/MailService/MailService.js';
 import Librarian from './SuperAgent/Librarian.js';
 
@@ -14,7 +16,6 @@ global.ERRORS = Errors;
 
 import FatalCodes from '../define/FatalCodes.json';
 global.FATAL_CODES = FatalCodes;
-
 
 class SuperAgent {
   constructor(_rootDirname) {
@@ -60,6 +61,8 @@ class SuperAgent {
     });
 
     this.fileStore = new FileStore(this);
+
+    this.socketStore = new SocketStore(this);
   }
 
   initLoggers() {
@@ -71,6 +74,7 @@ class SuperAgent {
     }
 
     this.log = new Logger(path.join(logDirpath, '/report.log'));
+    this.websockLog = new Logger(path.join(logDirpath, '/websock.log'));
     this.accessLog = new Logger(path.join(logDirpath, '/access.log'));
     this.mailLog = new Logger(path.join(logDirpath, '/mail.log'));
 

@@ -14,6 +14,8 @@ export default mongoose.Schema({
 
   relations: Array, // 작업에 관련한 콜렉션 명과 콜렉션 내의 연관 Document ID
 
-  beginning_time: : Number, // 작업 시작 타임스탬프
-  finished_time: Number // 작업 완료 타임스탬프 , 작업중에는 null.
+  workParams: Object,
+
+  beginning_time: Date, // 작업 시작 타임스탬프
+  finished_time: Date // 작업 완료 타임스탬프 , 작업중에는 null.
 });

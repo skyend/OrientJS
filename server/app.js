@@ -18,6 +18,10 @@ import route_admin_task from './routes/admin/task';
 import route_installer from './routes/installer';
 import route_api_user from './routes/api/user';
 import route_api_project from './routes/api/project';
+
+import io_connect_listener from './routes/io/connect';
+
+
 // var projects = require('./routes/project');
 // var services = require('./routes/service');
 // var pages = require('./routes/page');
@@ -87,6 +91,7 @@ app.use(function(req, res, next) {
 
 app.use(function(req, res, next) {
   let namespace = req.originalUrl.split('/')[1];
+
 
   if (/^(service-static)|(static)|(installer)$/.test(namespace)) {
     next();
@@ -163,25 +168,8 @@ app.use(function(err, req, res, next) {
 
 app.serverReady = function(_server, _io) {
   console.log("Ready");
-  _io.on('connection', function(socket) {
-    console.log(">>>>>>>>>>>>>>>>>>> connected");
-    console.log(socket.handshake.headers.cookie);
 
-    setInterval(function() {
-      socket.emit('news', {
-        hello: 'world'
-      });
-
-    }, 1000);
-
-    socket.on('my other event', function(data) {
-      console.log(data);
-    });
-
-    socket.on('close', function(data) {
-      console.log(">>>>>>>>>>>>>>>>>> closed;")
-    });
-  });
+  _io.on('connection', io_connect_listener);
 };
 
 

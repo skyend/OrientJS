@@ -13,11 +13,13 @@ export default {
     let sid = _req.cookies['ion-sb.sid'];
     let crypted_uid = _req.cookies['ion-sb.uid'];
 
-    this.getUserBySession(sid, crypted_uid, (_err, _userDoc) => {
+    this.getUserBySession(sid, crypted_uid, (_err, _userDoc, _socketSession) => {
       if (_err) {
+
         _callback(_err, null);
       } else {
-        _callback(null, _userDoc);
+
+        _callback(null, _userDoc, _socketSession);
       }
     });
   },
@@ -27,22 +29,22 @@ export default {
     let sid = _req.query['ion-sb.sid'];
     let crypted_uid = _req.query['ion-sb.uid'];
 
-    this.getUserBySession(sid, crypted_uid, (_err, _userData) => {
+    this.getUserBySession(sid, crypted_uid, (_err, _userData, _socketSession) => {
       if (_err) {
         _callback(_err, null);
       } else {
-        _callback(null, this.filterUserDocForPublic(_userData));
+        _callback(null, this.filterUserDocForPublic(_userData), _socketSession);
       }
     });
   },
 
   getSessionUserByCookie: function(_req, _callback) {
 
-    this.getSessionUserDocByCookie(_req, (_err, _userDoc) => {
+    this.getSessionUserDocByCookie(_req, (_err, _userDoc, _socketSession) => {
       if (_err) {
         _callback(_err, null);
       } else {
-        _callback(null, this.filterUserDocForPublic(_userDoc));
+        _callback(null, this.filterUserDocForPublic(_userDoc), _socketSession);
       }
     });
   },
@@ -98,8 +100,10 @@ export default {
         }
       }
     ], (_err, _userData) => {
+      let socketSession = this.agent.socketStore.getSession(_sessionKey);
+
       if (_err) _callback(_err, null);
-      else _callback(null, _userData);
+      else _callback(null, _userData, socketSession || null);
     });
   },
 
@@ -136,7 +140,6 @@ export default {
       },
       (_userData, _cb) => {
         // 유저 삭제/활성 인증 확인
-
 
         if (_userData.deleted !== true && _userData.active) {
           if (_userData.certified) {
