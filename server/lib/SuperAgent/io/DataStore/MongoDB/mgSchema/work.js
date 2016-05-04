@@ -5,7 +5,7 @@ export default mongoose.Schema({
 
   workerClass: String, // 작업자
 
-  log: String, // 작업 로그
+  log_lines: Array, // 작업 로그 스트링 배열
 
   name: String, // 작업 명
   desc: String, // 작업 내용

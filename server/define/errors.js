@@ -58,6 +58,13 @@ const ERRORS_DICT = {
       "FAIL_CREATE_ROOTDIR": createError(500, "PROJECT.CREATE.FAIL_CREATE_ROOTDIR", "Fail create rootdir."),
       "FAIL_ROOTDIR_LINK": createError(500, "PROJECT.CREATE.FAIL_ROOTDIR_LINK", "Fail create rootdir and project relation."),
     }
+  },
+
+  "WORK": {
+    "PROJECT_TEMPLATE_PARSER": {
+      "FAILED_START": createError(500, "WORK.PROJECT_TEMPLATE_PARSER.FAILED_START", "failed start project template parser."),
+      "FAILED_CREATE_WORKER": createError(500, "WORK.PROJECT_TEMPLATE_PARSER.FAILED_CREATE_WORKER", "failed create project template parser worker."),
+    }
   }
 };
 

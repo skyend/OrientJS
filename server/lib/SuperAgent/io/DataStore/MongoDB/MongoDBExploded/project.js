@@ -35,28 +35,6 @@ export default {
     });
   },
 
-  createVFNode: function(_toDir, _name, _refferenceFileId, _refferences = [], _callback) {
-    let VFNodeModel = this.getModel("VFNode");
-    let createData = {
-      dir: _toDir, // 디렉토리 인가 파일 인가
-      name: _name,
-      refferenceFile: _refferenceFileId, // 디렉토리가 아닌 경우 File 의 ObjectID
-      refferences: _refferences, // 자신에게 속하는 파일 vfnode ID
-    };
-
-    VFNodeModel.create(createData, (_err, _vfnodeDoc) => {
-      if (_err !== null) {
-        agent.log.error("MongoDB Fail create vfnode. Data:%s, detail:%s", JSON.stringify(createData), _err);
-
-        _callback(_err, null);
-      } else {
-        agent.log.info("MongoDB created vfnode. data:%s", JSON.stringify(createData));
-
-        _callback(null, _vfnodeDoc);
-      }
-    });
-  },
-
   createProjectRootDir: function(_projectId, _vfnodeId, _callback) {
     let ProjectRootVFNodeModel = this.getModel("ProjectRootVFNode");
 

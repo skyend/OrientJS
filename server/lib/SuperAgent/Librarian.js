@@ -1,5 +1,6 @@
 import User from './LibrarianExploded/User.js';
 import Project from './LibrarianExploded/Project.js';
+import VFNode from './LibrarianExploded/VFNode.js';
 
 import Async from 'async';
 import filter from 'object-key-filter';
@@ -10,11 +11,18 @@ import bcrypt from 'bcrypt-nodejs';
 // Workers
 import Worker_ProjectTemplateParser from './Worker/ProjectTemplateParser';
 
+/*
+    ██████  ██    ██ ███████ ██ ███    ██ ███████ ███████ ███████ ███    ███  █████  ███    ██
+    ██   ██ ██    ██ ██      ██ ████   ██ ██      ██      ██      ████  ████ ██   ██ ████   ██
+    ██████  ██    ██ ███████ ██ ██ ██  ██ █████   ███████ ███████ ██ ████ ██ ███████ ██ ██  ██
+    ██   ██ ██    ██      ██ ██ ██  ██ ██ ██           ██      ██ ██  ██  ██ ██   ██ ██  ██ ██
+    ██████   ██████  ███████ ██ ██   ████ ███████ ███████ ███████ ██      ██ ██   ██ ██   ████
+*/
 
 class Librarian {
   constructor(_agent) {
     this.agent = _agent;
-    _.extend(this, User, Project);
+    _.extend(this, User, Project, VFNode);
   }
 
   getWorkerClass(_name) {
@@ -24,7 +32,7 @@ class Librarian {
     }
   }
 
-  getNewWorker(_userDoc, _socketSession, _name, _params, _callback) {
+  getNewWorker(_userDoc, _socketSession, _name, _params, _callback, _workFinishCallback, _workErrorCallback) {
     let workerClass = this.getWorkerClass(_name);
 
     if (workerClass) {
@@ -33,7 +41,7 @@ class Librarian {
 
           _callback(_err, null);
         } else {
-          let workInstance = new workerClass(this.agent, _userDoc, _socketSession, _workDoc, _params);
+          let workInstance = new workerClass(this.agent, _userDoc, _socketSession, _workDoc, _params, _workFinishCallback, _workErrorCallback);
 
           _callback(null, workInstance);
         }

@@ -12,8 +12,32 @@
       <script type='text/x-javascript' en-scope-type='function' name='update_message'>
       return function(_event){
         var dom = this.getDOMNode();
+        var data = _event.data;
+        let prevText = this.getValue('server-message');
 
-        this.setValue('server-message', this.getValue('server-message') + '\n<span class="text-gray">' + new Date().toLocaleString() + '</span> - '+ _event.data.line );
+        let nextText,cdate;
+
+        switch( _event.subject ){
+          case "work_start":
+            cdate = new Date(data.time).toLocaleString();
+
+            nextText = prevText + '\n<span class="text-gray">' + cdate + '</span> - [WorkStart] '+ data.work_name;
+            break;
+          case "work_progress":
+            cdate = new Date(data.time).toLocaleString();
+
+            nextText = prevText + '\n<span class="text-gray">' + cdate + '</span> - [WorkProgress] '+ data.work_name + ' : ' + data.messege;
+            break;
+          case "work_finish":
+            cdate = new Date(data.time).toLocaleString();
+
+            nextText = prevText + '\n<span class="text-gray">' + cdate + '</span> - [WorkFinish] '+ data.work_name;
+            break;
+          default :
+            nextText = prevText + '\n<span class="text-gray">' + new Date().toLocaleString() + '</span> - '+ JSON.stringify(_event.data);
+        }
+
+        this.setValue('server-message', nextText);
         this.update();
 
         dom.scrollTop = dom.scrollHeight;

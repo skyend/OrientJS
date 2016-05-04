@@ -18,6 +18,7 @@ import WorkSchema from './MongoDB/mgSchema/work.js';
 import UserExtends from './MongoDB/MongoDBExploded/user.js';
 import ProjectExtends from './MongoDB/MongoDBExploded/project.js';
 import WorkExtends from './MongoDB/MongoDBExploded/work.js';
+import VFnodeExtends from './MongoDB/MongoDBExploded/vfnode.js';
 
 const MongooseSchemas = {
   'user': UserSchema,
@@ -35,7 +36,7 @@ const MongooseSchemas = {
 
 class MongoDBDriver {
   constructor(_config) {
-    _.extend(this, UserExtends, ProjectExtends, WorkExtends);
+    _.extend(this, UserExtends, ProjectExtends, WorkExtends, VFnodeExtends);
 
     this.config = _config;
   }

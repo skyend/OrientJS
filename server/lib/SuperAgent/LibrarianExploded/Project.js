@@ -46,7 +46,7 @@ export default {
 
       (_projectDoc, _relDoc, _cb) => {
         // 프로젝트에 rootDir 추가
-        this.agent.dataStore.driver.createVFNode(true, "root", null, [], (_err, _vfnodeDoc) => {
+        this.agent.dataStore.driver.createVFNode(_userDoc.id, true, "root", null, [], (_err, _vfnodeDoc) => {
           if (_err !== null) {
             _cb(ERRORS("PROJECT.CREATE.FAIL_CREATE_ROOTDIR"), null);
           } else {
@@ -75,50 +75,33 @@ export default {
             stored_template_file_name: _fields.template_filename
           }, (_err, _worker) => {
 
-            _worker.start();
-          });
+            if (_err !== null) {
+              _cb(ERRORS('WORK.PROJECT_TEMPLATE_PARSER.FAILED_CREATE_WORKER'));
+            } else {
+              _worker.start((_err) => {
+                if (_err !== null) {
+                  _cb(ERRORS('WORK.PROJECT_TEMPLATE_PARSER.FAILED_START'));
+                }
+              });
+            }
+          }, () => {
+            // work Finish
 
+            _cb(null, _projectDoc);
+          }, (_err) => {
+            // work error
+
+            _cb(_err, null);
+          });
 
         } else {
           _cb(null, _projectDoc);
         }
       }
     ], (_err, _projectDoc) => {
-      this.agent.socketStore.tryEmit(_socketSession, 'create-project', {
-        line: 'project create success'
-      });
 
       if (_err !== null) _callback(_err, null)
       else _callback(null, _projectDoc);
-
-      // if (_fields.template_filename) {
-      //   let inst = this.getNewWorker(_userDoc.id, 'ProjectTemplateParser', {
-      //     project_id: _projectDoc.id,
-      //     stored_template_file_name: _fields.template_filename,
-      //     socketSession: _socketSession,
-      //     user: this.filterUserDocForPublic(_userDoc),
-      //     callback: function(_err, _result) {
-      //       this.agent.socketStore.tryEmit(_socketSession, 'create-project', {
-      //         line: 'project create success'
-      //       });
-      //
-      //
-      //       if (_err !== null) _callback(_err, null)
-      //       else _callback(null, _result);
-      //     }
-      //   }, (_err, _worker) => {
-      //
-      //   });
-      // } else {
-      //
-      //   this.agent.socketStore.tryEmit(_socketSession, 'create-project', {
-      //     line: 'project create success'
-      //   });
-      //
-      //   if (_err !== null) _callback(_err, null)
-      //   else _callback(null, _projectDoc);
-      // }
-
     });
   },
 

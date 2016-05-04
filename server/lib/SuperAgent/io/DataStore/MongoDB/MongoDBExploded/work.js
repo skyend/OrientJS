@@ -4,11 +4,9 @@ export default {
     let data = {
       workerClass: _workClass,
       user_id: _user_id,
-      workParams: _workParams,
-      beginning_time: new Date()
+      workParams: _workParams
     };
 
-    console.log(_workParams);
 
     WorkModel.create(data, (_err, _workDoc) => {
       if (_err) {
@@ -21,5 +19,14 @@ export default {
         _callback(null, _workDoc);
       }
     });
+  },
+
+  updateWork: function(_work_id, _data, _callback) {
+    Model.findOneAndUpdate({
+      id: _work_id
+    }, {
+      name: 'jason borne'
+    }, options, callback)
+
   }
 }
