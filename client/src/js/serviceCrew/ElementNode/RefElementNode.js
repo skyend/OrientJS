@@ -108,7 +108,7 @@ class RefElementNode extends HTMLElementNode {
             masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
 
             masterElementNode.setParent(that);
-            masterElementNode.constructDOMs({});
+            masterElementNode.constructDOMs(_options);
             masterElementNode.attachForwardDOM(that.forwardDOM);
           }
         });
@@ -128,7 +128,7 @@ class RefElementNode extends HTMLElementNode {
         //   if (_scopeNode.type === 'param') {
         //     that.masterElementNodes.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
         //   }
-        // }); 
+        // });
 
 
         let masterElementNode;
@@ -138,9 +138,9 @@ class RefElementNode extends HTMLElementNode {
           for (let i = 0; i < this.attributes.length; i++) {
             masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
           }
-          //
+
           // let prevForwardDOM = masterElementNode.getDOMNode();
-          masterElementNode.update();
+          masterElementNode.update(_options);
           //masterElementNode.attachForwardDOM(that.forwardDOM);
         }
       }

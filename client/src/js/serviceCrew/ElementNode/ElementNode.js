@@ -605,7 +605,7 @@ class ElementNode {
 
     // DC 실행
     if (this.isDynamicContext() && this.dynamicContextPassive === false) {
-      if (_options.keepDC === false || _options.keepDC === undefined) {
+      if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
         this.executeDynamicContext();
 
       } else if (_options.keepDC === 'once') {
@@ -760,14 +760,21 @@ class ElementNode {
 
   scopesResolve() {
     let sn_len = this.scopeNodes.length;
+    let savedPlainValue, resolveResult;
     for (let i = 0; i < sn_len; i++) {
       if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
+        savedPlainValue = this.scopeNodes[i].plainValue;
         // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
 
         //this.scopeNodes[i].plainValue = this.interpret(this.scopeNodes[i].plainValue);
 
         try {
-          this.scopeNodes[i].shapeValue = this.interpret(this.scopeNodes[i].plainValue);
+          resolveResult = this.interpret(savedPlainValue);
+
+
+          if (!(resolveResult instanceof Error)) {
+            this.scopeNodes[i].shapeValue = resolveResult;
+          }
         } catch (_e) {
           console.warn(_e);
         }
@@ -857,6 +864,9 @@ class ElementNode {
               }, null);
 
             });
+          } else {
+            // sync 는 이벤트를 타지 않는다는 알림
+
           }
         });
       } catch (_e) {
@@ -1275,7 +1285,9 @@ class ElementNode {
         console.log('BindBlock Arguments :', _e.interpretArguments);
       }
       console.log(_e.stack);
-      console.groupEnd()
+      console.groupEnd();
+
+      return _e;
     }
   }
 

@@ -7,7 +7,6 @@ export default {
       workParams: _workParams
     };
 
-
     WorkModel.create(data, (_err, _workDoc) => {
       if (_err) {
         agent.log.error("Mongodb fail create work detail:" + _err);
@@ -24,9 +23,8 @@ export default {
   updateWork: function(_work_id, _data, _callback) {
     Model.findOneAndUpdate({
       id: _work_id
-    }, {
-      name: 'jason borne'
-    }, options, callback)
+    }, _data, (_err, _updatedWorkDoc) => {
 
+    });
   }
 }
