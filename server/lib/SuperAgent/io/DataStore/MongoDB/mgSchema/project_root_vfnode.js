@@ -1,6 +1,11 @@
 let mongoose = require('mongoose');
 
-export default mongoose.Schema({
+let schema = mongoose.Schema({
   project_id: 'ObjectId',
   vfnode_id: 'ObjectId'
 });
+
+
+schema.MODEL_NAME = "PROJECT_ROOT_VFNODE";
+
+export default schema;

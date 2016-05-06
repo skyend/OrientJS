@@ -57,6 +57,10 @@ const ERRORS_DICT = {
       "FAIL_CREATE_PROJECT": createError(500, "PROJECT.CREATE.FAIL_CREATE_PROJECT", "Fail create project."),
       "FAIL_CREATE_ROOTDIR": createError(500, "PROJECT.CREATE.FAIL_CREATE_ROOTDIR", "Fail create rootdir."),
       "FAIL_ROOTDIR_LINK": createError(500, "PROJECT.CREATE.FAIL_ROOTDIR_LINK", "Fail create rootdir and project relation."),
+    },
+
+    "VFNODE": {
+      "ROOT_FIND_FAIL": createError(500, "PROJECT.VFNODE.ROOT_FIND_FAIL", "Fail find project root vfnode")
     }
   },
 

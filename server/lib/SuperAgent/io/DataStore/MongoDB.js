@@ -63,7 +63,7 @@ class MongoDBDriver {
   }
 
   getModel(_key) {
-    return Mongoose.model(_key, MongooseSchemas[_key]);
+    return Mongoose.model(MongooseSchemas[_key].MODEL_NAME, MongooseSchemas[_key]);
   }
 
 }

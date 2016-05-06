@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 
-export default mongoose.Schema({
+let schema = mongoose.Schema({
   user_id: 'ObjectId', // 작업 유발자
 
   workerClass: String, // 작업자
@@ -19,3 +19,8 @@ export default mongoose.Schema({
   beginning_time: Date, // 작업 시작 타임스탬프
   finished_time: Date // 작업 완료 타임스탬프 , 작업중에는 null.
 });
+
+
+schema.MODEL_NAME = "WORK";
+
+export default schema;

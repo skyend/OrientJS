@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
 
-export default mongoose.Schema({
+let schema = mongoose.Schema({
   project_id: 'ObjectId',
   user_id: 'ObjectId',
   permission: {
@@ -8,3 +8,8 @@ export default mongoose.Schema({
     enum: ['master', 'publisher', 'guest']
   }
 });
+
+
+schema.MODEL_NAME = "USER_REL_PROJECT";
+
+export default schema;

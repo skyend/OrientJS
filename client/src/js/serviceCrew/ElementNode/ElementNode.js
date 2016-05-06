@@ -773,7 +773,11 @@ class ElementNode {
 
 
           if (!(resolveResult instanceof Error)) {
-            this.scopeNodes[i].shapeValue = resolveResult;
+
+            if (typeof resolveResult === 'string')
+              this.scopeNodes[i].plainValue = resolveResult;
+            else
+              this.scopeNodes[i].shapeValue = resolveResult;
           }
         } catch (_e) {
           console.warn(_e);

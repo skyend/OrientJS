@@ -14,7 +14,6 @@ class ProjectTemplateParser extends Worker {
   constructor(_agent, _userDoc, _socketSession, _workDoc, _workParams, _finishCallback, _errorCallback) {
     super(_agent, _userDoc, _socketSession, _workDoc, _workParams, _finishCallback, _errorCallback);
 
-
     this.project_id = _workParams.project_id;
     this.template_file_name = _workParams.stored_template_file_name;
 
@@ -44,12 +43,16 @@ class ProjectTemplateParser extends Worker {
     console.log('parseZip', _rootVFNodeDoc);
 
     async.eachSeries(zipEntries, (zipEntry, _next) => {
-        //console.log(zipEntry, `extra:${ zipEntry.extra}, name:${zipEntry.name}, entryName:${zipEntry.entryName}`); // outputs zip entries information
+        //console.log(zipEntry, `extra:${ zipEntry.extra }, name:${zipEntry.name}, entryName:${zipEntry.entryName}`); // outputs zip entries information
 
         this.log(zipEntry.entryName, () => {});
 
         // project 의 root directory 는 이미 만들어 져 있으므로 패스에 'root/'를 추가한다.
-        let seperated = this.filename_seperator(path.join('root/', zipEntry.entryName));
+        let rootSolvedPath = path.join('root/', zipEntry.entryName);
+
+        // 디렉토리가 아니면 file 이므로 filename_seperator 두번째 인자로 zipEntry.isDirectory 의 역을 입력한다.
+        let seperated = this.filename_seperator(rootSolvedPath, !zipEntry.isDirectory);
+
 
         this.dir_resolve(_rootVFNodeDoc, seperated.dirPathArray, (_err) => {
           if (zipEntry.isDirectory) {
@@ -85,36 +88,40 @@ class ProjectTemplateParser extends Worker {
    */
   dir_resolve(_rootVFNodeDoc, _dirPathArray, _callback) {
 
-
-    let upperDirname;
-    async.eachSeries(_dirPathArray, (_dirname, _next) => {
-      if (upperDirname) {
-
-        console.log('Upper Dirname', upperDirname);
-      } else {
-
-        // // upperDirname 이 세팅되어 있지 않으면 루트에 템플릿루트를 생성한다.
-        // this.agent.businessMan.createEmptyDir(this.userDoc.id, _dirname, (_err, _vfnodeDoc) => {
-        //   if (_err) {
-        //     _next(_err);
-        //   } else {
-        //     _rootVFNodeDoc.refferences.push(_vfnodeDoc.id);
-        //     _rootVFNodeDoc.save((_err) => {
-        //
-        //       upperDirname = _dirname;
-        //
-        //       if (_err) {
-        //         _next(_err);
-        //       } else {
-        //         _next(null);
-        //       }
-        //     });
-        //   }
-        // });
-      }
-    }, (_err) => {
+    this.agent.businessMan.explorerProjectVFNodeDirStem(this.project_id, _dirPathArray, (_err, _vfnodeDocSeries, _createdVFNodes) => {
 
     });
+
+
+    // let upperDirname;
+    // async.eachSeries(_dirPathArray, (_dirname, _next) => {
+    //   if (upperDirname) {
+    //
+    //     console.log('Upper Dirname', upperDirname);
+    //   } else {
+    //
+    //     // // upperDirname 이 세팅되어 있지 않으면 루트에 템플릿루트를 생성한다.
+    //     // this.agent.businessMan.createEmptyDir(this.userDoc.id, _dirname, (_err, _vfnodeDoc) => {
+    //     //   if (_err) {
+    //     //     _next(_err);
+    //     //   } else {
+    //     //     _rootVFNodeDoc.refferences.push(_vfnodeDoc.id);
+    //     //     _rootVFNodeDoc.save((_err) => {
+    //     //
+    //     //       upperDirname = _dirname;
+    //     //
+    //     //       if (_err) {
+    //     //         _next(_err);
+    //     //       } else {
+    //     //         _next(null);
+    //     //       }
+    //     //     });
+    //     //   }
+    //     // });
+    //   }
+    // }, (_err) => {
+    //
+    // });
   }
 
   /**
@@ -123,13 +130,21 @@ class ProjectTemplateParser extends Worker {
    * return
    *  { filename: String, dirPath: String, dirPathArray: Array }
    */
-  filename_seperator(_filename) {
-    let seperated = _filename.split('/');
-    let filename_element = seperated[seperated.length - 1];
-    let dirPathSlice = seperated.slice(0, seperated.length - 1);
+  filename_seperator(_filename, _lastIsFile) {
+    let seperated = _filename.split(path.sep);
+    let filename_element;
+    let dirPathSlice;
+
+    if (_lastIsFile) {
+      filename_element = seperated[seperated.length - 1];
+      dirPathSlice = seperated.slice(0, seperated.length - 1);
+    } else {
+      filename_element = null;
+      dirPathSlice = seperated.slice(0, seperated.length - 1);
+    }
 
     return {
-      filename: filename_element === '' ? null : filename_element,
+      filename: filename_element !== null ? filename_element : null,
       dirPath: dirPathSlice.join('/'),
       dirPathArray: dirPathSlice,
       origin: _filename

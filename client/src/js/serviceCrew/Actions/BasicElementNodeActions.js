@@ -264,14 +264,17 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
       break;
 
     case 'birthdate':
+      // 19910211
       _actionResult.code = validate(/^\d{4}\d{2}\d{2}$/, text);
       break;
 
     case 'birth-date':
+      // 1991-02-11
       _actionResult.code = validate(/^\d{4}-\d{1,2}-\d{1,2}$/, text);
       break;
 
     case 'birth-day':
+      // 02-11
       _actionResult.code = validate(/^\d{1,2}-\d{1,2}$/, text);
       break;
 
@@ -314,11 +317,10 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   let foundElements;
   let foundElementNodes = [];
   foundElements = this.getDOMNode().querySelectorAll('[transfer-value]') || [];
-  console.log(foundElements);
+
   for (let i = 0; i < foundElements.length; i++) {
     foundElementNodes.push(foundElements[i].___en);
   }
-  console.log(foundElementNodes);
 
   foundElementNodes.map(function(_elementNode) {
 

@@ -31,7 +31,7 @@ class SocketStore {
 
   removeUserSessionBySocket(_sid, _socket, _callback) {
     if (this.sessions[_sid] === undefined) {
-      throw new Error("삭제할 소켓 세션이 없습니다.");
+      this.agent.log.warn("삭제할 소켓 세션이 없습니다.");
     } else {
       if (this.sessions[_sid].sockets.length === 1) {
         delete this.sessions[_sid];

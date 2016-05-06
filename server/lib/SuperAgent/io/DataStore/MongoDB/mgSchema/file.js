@@ -1,6 +1,11 @@
 let mongoose = require('mongoose');
 
-export default mongoose.Schema({
+let schema = mongoose.Schema({
   text: String,
   type: String
 });
+
+
+schema.MODEL_NAME = "FILE";
+
+export default schema;
