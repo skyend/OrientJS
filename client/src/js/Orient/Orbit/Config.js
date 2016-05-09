@@ -118,6 +118,15 @@ class Config {
     return this._configObject || {};
   }
 
+  get ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET() {
+    return this.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET;
+  }
+
+  set ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET(_flag) {
+    this.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET = _flag;
+    window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET = _flag;
+  }
+
 
   // 외부 config 파일을 사용할 때 이 메서드를 사용한다.
   retrieveConfig(_configURL, _complete) {
@@ -174,6 +183,9 @@ class Config {
     this._DIR_COMPONENT = _config['DIR_COMPONENT'];
     this._DIR_API_SOURCE = _config['DIR_API_SOURCE'];
     this._MODE = _config['MODE'];
+
+
+    window['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'] = _config['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'];
 
     this.configObject = _config;
 

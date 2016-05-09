@@ -1283,13 +1283,15 @@ class ElementNode {
     } catch (_e) {
 
       // groupCollapsed 는 IE11부터
-      console.groupCollapsed(`%c<BindError> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+      console.groupCollapsed(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
       console.log(`Full sentence : ${_matterText}`);
       if (_e.interpretArguments) {
         console.log('BindBlock Arguments :', _e.interpretArguments);
       }
-      console.log(_e.stack);
       console.groupEnd();
+
+      if (window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET)
+        throw _e;
 
       return _e;
     }

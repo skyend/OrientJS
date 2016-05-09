@@ -71,7 +71,7 @@ class RefElementNode extends HTMLElementNode {
 
     if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
 
-      that.tryEventScope('ref-will-mount', {
+      that.tryEventScope('component-will-mount', {
 
       }, null, (_result) => {
         this.loadComponent(targetId, (_masterElementNodes) => {

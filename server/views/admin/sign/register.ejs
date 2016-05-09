@@ -212,9 +212,11 @@
         orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
           console.log(this);
           var targetElement = document.getElementById('register-form');
+
           targetElement.onclick = function(){
             console.log("hello");
           }
+
           // var targetElement = document.body;
           var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetElement, {}, orbit);
           console.log(masterElementNode);
@@ -232,6 +234,7 @@
     </script>
   </head>
   <body class="hold-transition register-page">
+
     <div class="register-box">
 
       <%- include ./head.ejs %>
@@ -244,6 +247,7 @@
           <en:value name='modal-message' type='string' value=''></en:value>
           <en:value name='modal-opened' type='boolean' value='false'></en:value>
           <en:value name='bool-test' type='boolean' value='{{: true }}' resolve-on></en:value>
+          {{: a }}
 
 
           <en:value name='fullname' type='string' value=''></en:value>

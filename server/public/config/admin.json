@@ -1,5 +1,7 @@
 {
   "MODE": "debug",
 
-  "DIR_COMPONENT": "/service-static/components/"
+  "DIR_COMPONENT": "/service-static/components/",
+
+  "ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET": true
 }

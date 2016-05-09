@@ -124,6 +124,26 @@
    'touchstart'
  ];
 
+ const ELEMENT_NODE_EVENTS = [
+   "will-update",
+   "did-update",
+   "will-refresh",
+   "did-refresh",
+   "will-dc-request",
+   "will-dc-request-join",
+   "will-dc-bind",
+   "will-dc-bind-join",
+   "dc-did-load",
+   "dc-fail-load",
+   "complete-bind",
+   "complete-bind-join",
+   "did-mount",
+   "first-rendered",
+   "io-received",
+   "io-sent",
+   "component-will-mount",
+ ];
+
  var SUPPORT_HTML_TAG_STYLES = {};
  try {
    if (window) {
@@ -643,62 +663,14 @@
          this.setEvent('deep-' + DOM_EVENTS[i], _domElement.getAttribute(`en-event-deep-${DOM_EVENTS[i]}`));
      }
 
-     // Gelato Events
-     // done
-     if (_domElement.getAttribute('en-event-will-update') !== null) // will Update
-       this.setEvent('will-update', _domElement.getAttribute('en-event-will-update'));
-     // done
-     if (_domElement.getAttribute('en-event-did-update') !== null) // did Update
-       this.setEvent('did-update', _domElement.getAttribute('en-event-did-update'));
-     // done
-     if (_domElement.getAttribute('en-event-will-refresh') !== null) // will refresh
-       this.setEvent('will-refresh', _domElement.getAttribute('en-event-will-refresh'));
-     // done
-     if (_domElement.getAttribute('en-event-did-refresh') !== null) // did refresh
-       this.setEvent('did-refresh', _domElement.getAttribute('en-event-did-refresh'));
+     let eventKey, eventValue;
+     for (let i = 0; i < ELEMENT_NODE_EVENTS.length; i++) {
+       eventKey = ELEMENT_NODE_EVENTS[i];
+       eventValue = _domElement.getAttribute(`en-event-${eventKey}`);
 
-     //done
-     if (_domElement.getAttribute('en-event-will-dc-request') !== null) // will DC request
-       this.setEvent('will-dc-request', _domElement.getAttribute('en-event-will-dc-request'));
-
-     if (_domElement.getAttribute('en-event-will-dc-request-join') !== null) // Join will DC request
-       this.setEvent('will-dc-request-join', _domElement.getAttribute('en-event-will-dc-request-join'));
-
-     // done
-     if (_domElement.getAttribute('en-event-will-dc-bind') !== null) // Complete Bind
-       this.setEvent('will-dc-bind', _domElement.getAttribute('en-event-will-dc-bind'));
-
-     if (_domElement.getAttribute('en-event-will-dc-bind-join') !== null) // Join will DC bind
-       this.setEvent('will-dc-bind-join', _domElement.getAttribute('en-event-will-dc-bind-join'));
-
-     if (_domElement.getAttribute('en-event-dc-did-load') !== null) // dc did loaded (success)
-       this.setEvent('dc-did-load', _domElement.getAttribute('en-event-dc-did-load'));
-
-     if (_domElement.getAttribute('en-event-dc-fail-load') !== null) // dc did load (fail)
-       this.setEvent('dc-fail-load', _domElement.getAttribute('en-event-dc-fail-load'));
-
-     // done
-     if (_domElement.getAttribute('en-event-complete-bind') !== null) // Complete Bind
-       this.setEvent('complete-bind', _domElement.getAttribute('en-event-complete-bind'));
-
-     if (_domElement.getAttribute('en-event-complete-bind-join') !== null) // Join complete-bind
-       this.setEvent('complete-bind-join', _domElement.getAttribute('en-event-complete-bind-join'));
-
-     // done
-     if (_domElement.getAttribute('en-event-did-mount') !== null) // Did Mount
-       this.setEvent('did-mount', _domElement.getAttribute('en-event-did-mount'));
-     // done
-     if (_domElement.getAttribute('en-event-first-rendered') !== null) // Did Mount
-       this.setEvent('first-rendered', _domElement.getAttribute('en-event-first-rendered'));
-
-     // done
-     if (_domElement.getAttribute('en-event-io-received') !== null) // Socket io Received
-       this.setEvent('io-received', _domElement.getAttribute('en-event-io-received'));
-
-     if (_domElement.getAttribute('en-event-io-sent') !== null) // Socket io sent
-       this.setEvent('io-sent', _domElement.getAttribute('en-event-io-sent'));
-
-
+       if (eventValue !== null) // will Update
+         this.setEvent(eventKey, eventValue);
+     }
 
      // done
      // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
