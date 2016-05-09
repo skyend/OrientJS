@@ -993,13 +993,19 @@ class ElementNode {
   }
 
   rebuildDynamicContext() {
+    let resolvedSourceId = this.interpret(this.dynamicContextSID);
+    let resolvedRequestId = this.interpret(this.dynamicContextRID);
+    let resolvedNamespaces = this.interpret(this.dynamicContextNS);
+    let resolvedInjectParams = this.interpret(this.dynamicContextInjectParams);
+
     let newDynamicContext = new DynamicContext(this.environment, {
-      sourceIDs: this.interpret(this.dynamicContextSID),
-      requestIDs: this.interpret(this.dynamicContextRID),
-      namespaces: this.interpret(this.dynamicContextNS),
+      sourceIDs: resolvedSourceId,
+      requestIDs: resolvedRequestId,
+      namespaces: resolvedNamespaces,
       sync: this.dynamicContextSync,
-      injectParams: this.interpret(this.dynamicContextInjectParams)
+      injectParams: resolvedInjectParams
     }, this.availableDynamicContext);
+
     // console.log(newDynamicContext);
     this.dynamicContext = newDynamicContext;
   }
@@ -1293,7 +1299,7 @@ class ElementNode {
       if (window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET)
         throw _e;
 
-      return _e;
+      return _e.message;
     }
   }
 
@@ -1853,6 +1859,21 @@ class ElementNode {
     _funcDesc.apply(this, [enEvent, _completeProcess]);
   }
 
+
+  /*
+    private executeTask
+    Parameters
+      _taskScope : TaskScopeNode객체
+      _enEvent : Orient 에서 정의된 Event의 내용을 포함하는 오브젝트
+      _originEvent : Task 실행의 시발점이 된 DOM 이벤트 오브젝트
+      _completeProcess : Function or Callback Dictionary by Chain code
+      _prevActionResult : 이전 액션 실행 결과
+      _TASK_STACK : Task chain 및 실행 추적 배열
+      _mandator : 최초 위임한 자
+
+    Return
+      undefined
+  */
   __executeTask(_taskScope, _enEvent, _originEvent, _completeProcess, _prevActionResult, _TASK_STACK, _mandator) {
 
 
@@ -1971,7 +1992,15 @@ class ElementNode {
         if (chainedTask)
           that.__executeTask(chainedTask, _enEvent, _originEvent, _completeProcess, _actionResult, __TASK_STACK__);
         else {
-          if (typeof _completeProcess === 'function') _completeProcess(_actionResult);
+          if (typeof _completeProcess === 'function') {
+            _completeProcess(_actionResult);
+          } else if (typeof _completeProcess === 'object' && (_completeProcess !== undefined)) {
+            let code = _actionResult.code;
+
+            if (_completeProcess[code] !== undefined) {
+              _completeProcess[code](_actionResult);
+            }
+          }
         }
       }
     });
@@ -2109,14 +2138,14 @@ class ElementNode {
         arguments[2] : completeCallback
       */
 
-      this.__executeTask(taskScope, {}, null, arguments[2] || function() {}, arguments[1]);
+      this.__executeTask(taskScope, {}, null, arguments[2], arguments[1]);
     } else if (arguments.length === 2) {
       /*
         arguments[0] : TaskName
         arguments[1] : completeCallback
       */
 
-      this.__executeTask(taskScope, {}, null, arguments[1] || function() {});
+      this.__executeTask(taskScope, {}, null, arguments[1]);
     }
   }
 
