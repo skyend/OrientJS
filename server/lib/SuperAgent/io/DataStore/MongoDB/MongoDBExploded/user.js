@@ -1,3 +1,5 @@
+import uuid from 'uuid';
+
 export default {
   createUser: function(_userData, _callback) {
     let UserModel = this.getModel('user');

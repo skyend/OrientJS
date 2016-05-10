@@ -30,6 +30,10 @@ class Orbit {
       throw new Error("Need the window.");
     }
 
+
+    this.bodyAppearControlStyleDOM;
+    this.bodyOpacity = undefined;
+
     // Framework Default Interpreters
     this.bindedInterpretSupporters = {};
 
@@ -154,13 +158,56 @@ class Orbit {
     });
   }
 
-  foundationCompatibility(_callback, _callbackFinal, _absorbOriginDOM) {
+  bodyDisappear() {
+    let styleDOM = this.orbitDocument.document.createElement('style');
+
+    this.bodyOpacity = 0;
+
+    this.bodyAppearControlStyleDOM = styleDOM;
+    this.orbitDocument.document.head.appendChild(this.bodyAppearControlStyleDOM);
+
+    this.updateBodyOpacity();
+  }
+
+  bodyAppear() {
+    var itvid = setInterval(() => {
+      this.bodyOpacity += 0.1;
+      this.updateBodyOpacity();
+
+      if (this.bodyOpacity >= 1) clearInterval(itvid);
+    }, 20);
+  }
+
+  updateBodyOpacity() {
+    if (this.bodyOpacity >= 1) {
+      this.bodyAppearControlStyleDOM.innerHTML = `body { }`;
+    } else {
+      this.bodyAppearControlStyleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
+    }
+  }
+
+  foundationCompatibility(_selector, _callback, _callbackFinal, _absorbOriginDOM) {
     this.pageMetaCompatibility(() => {
+      let targetDomNodes, targetDomNode;
+      if (_selector) {
+        targetDomNodes = this.orbitDocument.document.querySelectorAll(_selector);
+      } else {
+        targetDomNodes = [this.orbitDocument.document.body];
+      }
+
 
       console.time("First Built up");
-      var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](this.orbitDocument.document.body, {}, this);
-      Orient.replaceRender(masterElementNode, this.orbitDocument.document.body);
+      for (let i = 0; i < targetDomNodes.length; i++) {
+        targetDomNode = targetDomNodes[i];
+        var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
+
+        Orient.replaceRender(masterElementNode, targetDomNode);
+      }
       console.timeEnd("First Built up");
+
+      if (this.bodyAppearControlStyleDOM) {
+        this.bodyAppear();
+      }
 
       if (_callback) {
         _callback(masterElementNode);
@@ -236,6 +283,6 @@ class Orbit {
   }
 }
 
-Orbit.version = '0.10.1';
+Orbit.version = '0.10.3';
 
 export default window.Orbit = Orbit;

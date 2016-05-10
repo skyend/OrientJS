@@ -23,6 +23,8 @@ class RefElementNode extends HTMLElementNode {
     this.loadedRefs = false;
 
     this.loadedTargetId = null;
+
+    this.masterElementNodes = [];
   }
 
   get refference() {
@@ -60,7 +62,23 @@ class RefElementNode extends HTMLElementNode {
     let returnHolder = super.constructDOMs(_options);
     let that = this;
 
-    if (returnHolder.length === 0) return returnHolder;
+    if (returnHolder.length === 0) {
+
+
+      // 하위 masterElementNodes 의 attach상태를 변경
+      this.masterElementNodes.map(function(_masterElementNode) {
+        _masterElementNode.forwardDOM = null;
+        _masterElementNode.isAttachedDOM = false;
+
+        if (_masterElementNode.treeExplore)
+          _masterElementNode.treeExplore(function(_child) {
+            _child.forwardDOM = null;
+            _child.isAttachedDOM = false;
+          });
+      });
+
+      return returnHolder;
+    }
 
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 

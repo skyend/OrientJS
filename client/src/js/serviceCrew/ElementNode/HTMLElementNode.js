@@ -296,11 +296,13 @@ class HTMLElementNode extends TagBaseElementNode {
         continue;
       }
 
-      // comment node 는 무시
-      if (child_.nodeName === '#comment') continue;
       var newChildElementNode;
+      // comment node 는 무시
+      if (child_.nodeName === '#comment') {
 
-      if (child_.nodeName === '#text') {
+
+        continue;
+      } else if (child_.nodeName === '#text') {
         if (child_.parentNode !== null) {
 
           // 부모 태그가  pre 태그의 경우 공백과 탭 줄바꿈을 그대로 유지하여 랜더링 함으로 그대로 생성을 진행 하도록 한다.

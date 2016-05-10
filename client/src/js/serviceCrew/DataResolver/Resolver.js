@@ -271,7 +271,7 @@ class Resolver {
     });
 
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
-    functionCreateArgs.push('text'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
+    functionCreateArgs.push('i18nTEXT'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
 
     functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)|(:)|(&#58;)/, 'return ');
 
@@ -310,7 +310,7 @@ class Resolver {
       geo            : 현재 접속자의 지구상 위치에 관한 정보
       device         : 접속자의 platform과 browser에 관한 정보
       service        : Service Config (미지원)
-      fragment       : Fragment Parameter - 참조된 프래그먼트 내에서만 사용 가능
+      prop           : Property - ElementNode의 Property 를 사용함
       ~past-action-result  : 이전 액션의 실행 결과 - en:task 의 argument 필드에서만 사용 가능~ feature@prev-result 로 전근방식 변경
       ~event: 발생한 이벤트 객체 - en:task argument 필드에서만 사용가능~
       ''(공백 카테고리) : _defaultDataObject로 입력된 오브젝트를 키로 접근 하여 데이터를 얻는다. // I18N 에서 사용한다.

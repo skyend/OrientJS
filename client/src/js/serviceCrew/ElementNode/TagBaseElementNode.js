@@ -142,6 +142,10 @@
    "io-received",
    "io-sent",
    "component-will-mount",
+
+
+   // Dispatched Dom Event, Event Integration
+   "input", // keyup, change, input
  ];
 
  var SUPPORT_HTML_TAG_STYLES = {};
