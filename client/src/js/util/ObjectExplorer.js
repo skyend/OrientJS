@@ -80,7 +80,7 @@ function objectExplore(_object, _explorer, _key) {
       for (let i = 0; i < _object.length; i++) {
         item = _object[i];
 
-        objectExplore(item, _explorer, _key + '/' + i);
+        objectExplore(item, _explorer, (_key || '') + '/' + i);
       }
     } else {
       let keys = Object.keys(_object);

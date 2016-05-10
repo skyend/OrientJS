@@ -24,7 +24,8 @@ class ObjectExtends {
     }
   }
 
-  static clone(_object, _deep) {
+  // _interpolator 가 입력되면 clone과 동시에 값을 변경한다.
+  static clone(_object, _deep, _interpolator) {
     let keys = Object.keys(_object);
     let clonedObj;
     let value, key;
@@ -44,17 +45,17 @@ class ObjectExtends {
         case 'string':
         case 'boolean': // true ,false
         case 'undefined': // undefined
-          clonedObj[key] = value;
+          clonedObj[key] = _interpolator ? _interpolator(value) : value;
           break;
         case 'object':
           if (_deep) {
             if (value === null) {
               clonedObj[key] = null;
             } else {
-              clonedObj[key] = ObjectExtends.clone(value, _deep);
+              clonedObj[key] = ObjectExtends.clone(value, _deep, _interpolator);
             }
           } else {
-            clonedObj[key] = value;
+            clonedObj[key] = _interpolator ? _interpolator(value) : value;
           }
       }
     }

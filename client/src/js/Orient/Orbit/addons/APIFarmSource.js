@@ -20,7 +20,25 @@ class APIFarmSource extends ICEAPISource {
   }
 
   getDefaultFields() {
-    return {};
+    let defaultFields = {};
+    let farm_api_options = this.orbit.config.getField("API_FARM_OPTIONS");
+
+    if (farm_api_options) {
+      if (farm_api_options.common_fields) {
+        let fields = farm_api_options.common_fields,
+          field, field_name, field_value;
+        for (let i = 0; i < fields.length; i++) {
+          field = fields[i]; // object
+          field_name = field.name;
+          field_value = field.value;
+          if (field_value) {
+            defaultFields[field_name] = field_value;
+          }
+        }
+      }
+    }
+
+    return defaultFields;
   }
 
   loadTypeOfService(_complete) {
@@ -44,7 +62,6 @@ class APIFarmSource extends ICEAPISource {
       that.meta = _result;
     })
   }
-
 
   getRequestLocation(_reqId) {
     let req = this.findRequest(_reqId);

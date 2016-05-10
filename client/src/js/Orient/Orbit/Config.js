@@ -150,22 +150,51 @@ class Config {
 
   // Config 에 입력된 필드값을 가져온다.
   getField(_name) {
+    let fieldValue = undefined;
+
     // 대상 field값이 string type 이 아니라면 그대로 반환하며 string타입 이라면 바인딩처리하여 반환한다.
     if (this[_name]) {
-      if (typeof this[_name] === 'string') {
-        return this.orbit.interpret(this[_name]);
-      } else {
-        return this[_name];
-      }
+      fieldValue = this[_name];
     } else {
       if (this.configObject) {
-        if (typeof this.configObject[_name] === 'string') {
-          return this.orbit.interpret(this.configObject[_name]);
-        } else {
-          return this.configObject[_name];
+        if (this.configObject[_name]) {
+          fieldValue = this.configObject[_name];
         }
       }
     }
+
+    if (fieldValue === undefined) console.warn(`찾을 수 없는 config 필드[${_name}] 입니다.`);
+
+    switch (typeof fieldValue) {
+      case "string":
+        return this.orbit.interpret(fieldValue);
+      case "object":
+        return ObjectExtends.clone(fieldValue, true, (_value) => {
+          if (typeof _value === 'string') {
+            return this.orbit.interpret(_value);
+          }
+
+          return _value;
+        });
+      default:
+        return fieldValue;
+    }
+
+    // if (this[_name]) {
+    //   if (typeof this[_name] === 'string') {
+    //     return this.orbit.interpret(this[_name]);
+    //   } else {
+    //     return this[_name];
+    //   }
+    // } else {
+    //   if (this.configObject) {
+    //     if (typeof this.configObject[_name] === 'string') {
+    //       return this.orbit.interpret(this.configObject[_name]);
+    //     } else {
+    //       return this.configObject[_name];
+    //     }
+    //   }
+    // }
   }
 
   setExtraField(_name, _value) {

@@ -3,5 +3,9 @@
 
   "DIR_COMPONENT": "/service-static/components/",
 
-  "ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET": true
+  "ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET": true,
+
+  "test": {
+    "config": "{{: config@DIR_COMPONENT }}"
+  }
 }

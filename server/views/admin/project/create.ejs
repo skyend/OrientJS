@@ -42,7 +42,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       window.onload = function(){
-        var orbit = new Orbit(window);
+        window.orbit = new Orbit(window);
 
 
         orbit.config.retrieveConfig('/service-static/config/admin.json', function(){
@@ -120,7 +120,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">Template Zip</label>
 
                     <div class="col-sm-10">
-                      <input type="file" name="template-zip" accept='.zip' transfer-value='{{: this.forwardDOM.files[0] }}'>
+                      <input type="file" name="template-zip" accept='.zip' transfer-value='{{: this.forwardDOM ? this.forwardDOM.files[0]:null }}'>
                     </div>
                   </div>
 

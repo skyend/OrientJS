@@ -24,14 +24,15 @@ export default {
 
   },
 
-  explorerProjectVFNodeDirStem: function(_projectId, _dirpathArray, _callback) {
-    // 디렉토리 패스를 탐색
-
+  explorerProjectVFNodeDirStemWithSolve: function(_projectId, _dirpathArray, _callback) {
+    // 디렉토리 패스를 탐색하며 없는 디렉토리는 생성한다.
 
     let upperVFNodeDoc = null;
 
 
     async.eachSeries(_dirpathArray, (_dirname, _cb) => {
+
+      // 상위 VFNodeDoc 이 잡혀있지 않은경우 상위 NodeDoc을 가져온다.
       if (upperVFNodeDoc === null) {
         this.agent.dataStore.driver.getProjectRootVFNodeDoc(_projectId, (_err, _vfnodeDoc) => {
           if (_err) {
@@ -46,10 +47,6 @@ export default {
         let foundIndex = _.findIndex(upperVFNodeDoc.refferences, (_vfnode_id) => {
 
         });
-
-
-
-
       }
     }, (_err, _result) => {
       if (_err) {

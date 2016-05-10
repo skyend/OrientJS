@@ -88,7 +88,7 @@ class ProjectTemplateParser extends Worker {
    */
   dir_resolve(_rootVFNodeDoc, _dirPathArray, _callback) {
 
-    this.agent.businessMan.explorerProjectVFNodeDirStem(this.project_id, _dirPathArray, (_err, _vfnodeDocSeries, _createdVFNodes) => {
+    this.agent.businessMan.explorerProjectVFNodeDirStemWithSolve(this.project_id, _dirPathArray, (_err, _vfnodeDocSeries, _createdVFNodes) => {
 
     });
 

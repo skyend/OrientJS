@@ -177,6 +177,7 @@ class Resolver {
   }
 
   __findBindBlock(_string, _start, _end) {
+
     let start = -1,
       end = -1;
     start = _string.indexOf("{{");
