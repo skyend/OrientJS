@@ -45,12 +45,22 @@ export default {
       },
 
       (_projectDoc, _relDoc, _cb) => {
-        // 프로젝트에 rootDir 추가
+        // 프로젝트의 rootDir 로 사용 될 vfnode 생성
         this.agent.dataStore.driver.createVFNode(_userDoc.id, true, "root", null, [], (_err, _vfnodeDoc) => {
           if (_err !== null) {
             _cb(ERRORS("PROJECT.CREATE.FAIL_CREATE_ROOTDIR"), null);
           } else {
             _cb(null, _projectDoc, _relDoc, _vfnodeDoc);
+
+            this.createChildDirVFNode(_userDoc.id, _vfnodeDoc.id, "test2", (_err, _upperDirDoc, _childVFNodeDirDoc) => {
+              console.log('===================>>>', _err, '========= UpperDirDoc', _upperDirDoc, '========= Sub Doc', _childVFNodeDirDoc);
+
+              this.createChildFileVFNode(_userDoc.id, _vfnodeDoc.id, "test2.html", null, (_err, _upperDirDoc, _childVFNodeFileDoc) => {
+                console.log('===================>>>>>>> ', _err, '========= UpperDirDoc', _upperDirDoc, '========= Sub Doc', _childVFNodeFileDoc);
+              });
+            });
+
+
           }
         });
       },
@@ -68,6 +78,7 @@ export default {
       },
 
       (_projectDoc, _relDoc, _vfnodeDoc, _cb) => {
+        console.log('create project', _fields);
         if (_fields.template_filename) {
 
           this.getNewWorker(_userDoc, _socketSession, 'ProjectTemplateParser', {

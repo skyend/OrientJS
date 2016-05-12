@@ -1,6 +1,7 @@
 import User from './LibrarianExploded/User.js';
 import Project from './LibrarianExploded/Project.js';
 import VFNode from './LibrarianExploded/VFNode.js';
+import Work from './LibrarianExploded/Work.js';
 
 import Async from 'async';
 import filter from 'object-key-filter';
@@ -22,7 +23,7 @@ import Worker_ProjectTemplateParser from './Worker/ProjectTemplateParser';
 class Librarian {
   constructor(_agent) {
     this.agent = _agent;
-    _.extend(this, User, Project, VFNode);
+    _.extend(this, User, Project, VFNode, Work);
   }
 
   getWorkerClass(_name) {

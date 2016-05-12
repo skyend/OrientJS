@@ -38,6 +38,7 @@ class APIRequest {
             return _callback(_err, null);
           }
         }
+
         _callback(null, _res.body || _res.text, _res);
       }, _enctype);
     } else {

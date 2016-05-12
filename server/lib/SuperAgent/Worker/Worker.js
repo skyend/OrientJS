@@ -17,12 +17,15 @@ class Worker extends events.EventEmitter {
   start(_callback) {
     this.workDoc.beginning_time = new Date();
 
-    this.workDoc.save((_err) => {
+    this.agent.businessMan.updateWork(this.workDoc.id, {
+      beginning_time: new Date()
+    }, (_err, _updatedWorkDoc) => {
 
       if (_err !== null) {
 
         _callback(_err);
       } else {
+        this.workDoc = _updatedWorkDoc;
 
         _callback(null);
 
@@ -38,13 +41,16 @@ class Worker extends events.EventEmitter {
     let current = new Date();
     this.workDoc.log_lines.push(current.toUTCString() + ' - ' + _message);
 
-    // workDocument에 log 추가 기록 및 socket 알림
-    this.workDoc.save((_err) => {
+
+    this.agent.businessMan.updateWork(this.workDoc.id, {
+      log_lines: this.workDoc.log_lines
+    }, (_err, _updatedWorkDoc) => {
 
       if (_err !== null) {
 
         _callback(_err);
       } else {
+        this.workDoc = _updatedWorkDoc;
 
         _callback(null);
 
@@ -55,6 +61,7 @@ class Worker extends events.EventEmitter {
         });
       }
     });
+
   }
 
   error(_error, _message, _callback) {
@@ -62,12 +69,15 @@ class Worker extends events.EventEmitter {
     this.workDoc.log_lines.push(current.toUTCString() + ' - ' + _error);
     // workDocument에 log 추가 기록 및 socket 알림
 
-    this.workDoc.save((_err) => {
+    this.agent.businessMan.updateWork(this.workDoc.id, {
+      log_lines: this.workDoc.log_lines
+    }, (_err, _updatedWorkDoc) => {
 
       if (_err !== null) {
 
         _callback(_err);
       } else {
+        this.workDoc = _updatedWorkDoc;
 
         _callback(null);
 
@@ -78,7 +88,6 @@ class Worker extends events.EventEmitter {
           error: _err
         });
       }
-
       this.errorCallback(_error);
     });
   }
@@ -87,12 +96,15 @@ class Worker extends events.EventEmitter {
     // workDocument 에 finish 기록 및 socket 알림
     this.workDoc.finished_time = new Date();
 
-    this.workDoc.save((_err) => {
+    this.agent.businessMan.updateWork(this.workDoc.id, {
+      finished_time: this.workDoc.finished_time
+    }, (_err, _updatedWorkDoc) => {
 
       if (_err !== null) {
 
         _callback(_err);
       } else {
+        this.workDoc = _updatedWorkDoc;
 
         _callback(null);
 

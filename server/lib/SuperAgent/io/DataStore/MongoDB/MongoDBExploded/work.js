@@ -9,7 +9,7 @@ export default {
 
     WorkModel.create(data, (_err, _workDoc) => {
       if (_err) {
-        agent.log.error("Mongodb fail create work detail:" + _err);
+        agent.log.error("Mongodb fail create work. detail:" + _err);
 
         _callback(_err, null);
       } else {
@@ -21,10 +21,17 @@ export default {
   },
 
   updateWork: function(_work_id, _data, _callback) {
-    Model.findOneAndUpdate({
-      id: _work_id
-    }, _data, (_err, _updatedWorkDoc) => {
+    let WorkModel = this.getModel('Work');
 
+    WorkModel.findByIdAndUpdate(_work_id, _data, (_err, _updatedWorkDoc) => {
+      if (_err) {
+        agent.log.error("Mongodb fail update work. detail:" + _err);
+        _callback(_err, null);
+      } else {
+        agent.log.info("Mongodb updated work#%s. data:%s", _work_id, JSON.stringify(_data));
+        console.log(_updatedWorkDoc);
+        _callback(null, _updatedWorkDoc);
+      }
     });
   }
 }

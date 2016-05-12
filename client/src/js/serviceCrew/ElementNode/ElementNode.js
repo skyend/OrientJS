@@ -697,9 +697,27 @@ class ElementNode {
           this.forwardDOM = null;
 
           if (this.treeExplore) {
+
             this.treeExplore(function(_child) {
               _child.forwardDOM = null;
               _child.isAttachedDOM = false;
+
+              if (_child.type === 'ref') {
+                let masterElementNode;
+                for (let i = 0; i < _child.masterElementNodes.length; i++) {
+                  masterElementNode = _child.masterElementNodes[i];
+
+                  masterElementNode.forwardDOM = null;
+                  masterElementNode.isAttachedDOM = false;
+
+                  if (masterElementNode.treeExplore) {
+                    masterElementNode.treeExplore((_child) => {
+                      _child.forwardDOM = null;
+                      _child.isAttachedDOM = false;
+                    });
+                  }
+                }
+              }
             });
           }
 
@@ -858,9 +876,13 @@ class ElementNode {
             }, null, function done(_result) {
               if (that.checkAfterContinue(_result) === false) return;
 
-              that.update({
-                keepDC: 'once'
-              });
+              if (that.dynamicContextPassive) {
+                that.update();
+              } else {
+                that.update({
+                  keepDC: 'once'
+                });
+              }
 
               // fix
               that.tryEventScope('complete-bind', {

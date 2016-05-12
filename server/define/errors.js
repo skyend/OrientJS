@@ -60,7 +60,14 @@ const ERRORS_DICT = {
     },
 
     "VFNODE": {
-      "ROOT_FIND_FAIL": createError(500, "PROJECT.VFNODE.ROOT_FIND_FAIL", "Fail find project root vfnode")
+      "ROOT_FIND_FAIL": createError(500, "PROJECT.VFNODE.ROOT_FIND_FAIL", "Fail find project root vfnode"),
+      "FAIL_CREATE_DIR": createError(500, "PROJECT.VFNODE.FAIL_CREATE_DIR", "Fail create dir"),
+      "FAIL_CREATE_FILE": createError(500, "PROJECT.VFNODE.FAIL_CREATE_FILE", "Fail create filenode"),
+      "FAIL_READ": createError(500, "PROJECT.VFNODE.FAIL_READ", "Fail read vfnode"),
+      "CREATE": {
+        "ALREADY_EXISTS_CHILDNODE_NAME": createError(406, "PROJECT.VFNODE.CREATE.ALREADY_EXISTS_CHILDNODE_NAME", "fail create name is already exsists."),
+        "UPPER_VFNODE_IS_NOT_DIRECTORY": createError(406, "PROJECT.VFNODE.CREATE.UPPER_VFNODE_IS_NOT_DIRECTORY", "fail create upper vfnode is not directory."),
+      },
     }
   },
 
@@ -68,7 +75,8 @@ const ERRORS_DICT = {
     "PROJECT_TEMPLATE_PARSER": {
       "FAILED_START": createError(500, "WORK.PROJECT_TEMPLATE_PARSER.FAILED_START", "failed start project template parser."),
       "FAILED_CREATE_WORKER": createError(500, "WORK.PROJECT_TEMPLATE_PARSER.FAILED_CREATE_WORKER", "failed create project template parser worker."),
-    }
+    },
+    "FAILED_WORKDOC_UPDATE": createError(500, "WORK.FAILED_UPDATE", "failed update work document.")
   }
 };
 

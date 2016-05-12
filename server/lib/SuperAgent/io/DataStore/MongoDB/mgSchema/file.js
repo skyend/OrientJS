@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 
 let schema = mongoose.Schema({
-  text: String,
+  description: Buffer,
   type: String
 });
 

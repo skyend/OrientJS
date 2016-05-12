@@ -1,5 +1,7 @@
 // import async from 'async';
 import ObjectExtends from '../../util/ObjectExtends';
+import ArrayHandler from '../../util/ArrayHandler';
+
 import async from 'async';
 
 const ERROR_LOAD_SCRIPT = new Error("Error : fail load script.");
@@ -9,7 +11,10 @@ class OrbitDocument {
   constructor(_window, _orbit) {
     this.orbit = _orbit;
     this.window = _window;
-    this.extraLoadedScripts = [];
+
+
+    this.requestedResources = [];
+    this.responsedResources = [];
   }
 
 
@@ -42,40 +47,103 @@ class OrbitDocument {
   }
 
   loadReferencingElement(_type, _url, _callback) {
-
+    let type = _type;
     let extraElement;
-    if (_type === 'js') {
-      extraElement = this.document.createElement('script');
+    let interpretedUrl = this.orbit.interpret(_url);
 
-      extraElement.setAttribute('src', this.orbit.interpret(_url));
-      extraElement.setAttribute('type', 'text/Javascript');
-    } else if (_type === 'css') {
-      extraElement = this.document.createElement('link');
+    if (!type) {
+      if (/\.js(\?[^\.]*)?$/i.test(interpretedUrl)) {
+        type = 'js';
+      } else if (/\.css(\?[^\.]*)?$/i.test(interpretedUrl)) {
+        type = 'css';
+      } else {
+        throw new Error("알 수 없는 type 입니다.");
+      }
+    }
 
-      extraElement.setAttribute('href', this.orbit.interpret(_url));
-      extraElement.setAttribute('type', 'text/css');
-      extraElement.setAttribute('rel', 'stylesheet');
-    } else if (_type === 'favicon') {
-      extraElement = this.document.createElement('link');
+    /**
+      중복 체크
+    */
 
-      extraElement.setAttribute('href', this.orbit.interpret(_url));
-      extraElement.setAttribute('rel', 'shortcut icon');
+    // 응답리스트에 존재 하는지 체크 후 존재한다면 바로 _callback 실행 후 메서드 종료
+    let foundCompleteIndex = ArrayHandler.findIndex(this.responsedResources, (_obj) => {
+      return _obj.url === interpretedUrl;
+    });
+
+    if (foundCompleteIndex > -1) {
+      if (typeof _callback === 'function') return _callback(null);
     }
 
 
+    // 요청리스트에 존재 하는지 체크 후 존재한다면 extraElement만 가져와 입력 후 아래에서 이벤트를 추가하도록 유도
+    let foundrequestedRIndex = ArrayHandler.findIndex(this.requestedResources, (_obj) => {
+      return _obj.url === interpretedUrl;
+    });
 
-    extraElement.onerror = function(_event) {
-      if (typeof _callback !== 'function') return;
+    if (foundrequestedRIndex > -1) {
+      extraElement = this.requestedResources[foundrequestedRIndex];
+    }
 
-      _callback(ERROR_LOAD_SCRIPT);
-    };
-    extraElement.onload = function(_event) {
-      if (typeof _callback !== 'function') return;
 
-      _callback(null);
-    };
+    if (!extraElement) {
+      if (type === 'js') {
+        extraElement = this.document.createElement('script');
 
-    this.head.appendChild(extraElement);
+        extraElement.setAttribute('src', interpretedUrl);
+        extraElement.setAttribute('type', 'text/Javascript');
+      } else if (type === 'css') {
+        extraElement = this.document.createElement('link');
+
+        extraElement.setAttribute('href', interpretedUrl);
+        extraElement.setAttribute('type', 'text/css');
+        extraElement.setAttribute('rel', 'stylesheet');
+      } else if (type === 'favicon') {
+        extraElement = this.document.createElement('link');
+
+        extraElement.setAttribute('href', interpretedUrl);
+        extraElement.setAttribute('rel', 'shortcut icon');
+      }
+    }
+
+
+    extraElement.addEventListener('error', (_event) => {
+
+      // 요청된 리소스 리스트에 입력된 상태가 아니었을 때 응답 항목으로 추가한다.
+      if (foundrequestedRIndex === -1) {
+        this.responsedResources.push({
+          url: interpretedUrl,
+          element: extraElement,
+          error: _event
+        });
+      }
+
+      if (typeof _callback === 'function') _callback(ERROR_LOAD_SCRIPT);
+    });
+
+    extraElement.addEventListener('load', (_event) => {
+
+      // 요청된 리소스 리스트에 입력된 상태가 아니었을 때 응답 항목으로 추가한다.
+      if (foundrequestedRIndex === -1) {
+        this.responsedResources.push({
+          url: interpretedUrl,
+          element: extraElement
+        });
+      }
+
+      if (typeof _callback === 'function') _callback(null);
+    });
+
+    // 요청된 리소스 리스트에 입력
+    this.requestedResources.push({
+      url: interpretedUrl,
+      element: extraElement
+    });
+
+
+    // 요청된 리소스가 아닐 경우에만 추가
+    if (foundrequestedRIndex === -1) {
+      this.head.appendChild(extraElement);
+    }
   }
 
   loadExtraJSSerial(_srcList, _callback) {

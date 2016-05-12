@@ -9,6 +9,11 @@ import '../Actions/RefElementNodeActions';
 
 "use strict";
 
+const SETTING_START_STRING = "@Settings";
+const SETTING_START_STRING_LENGTH = SETTING_START_STRING.length;
+
+const SETTING_END_STRING = "@End";
+const SETTING_END_STRING_LENGTH = SETTING_END_STRING.length;
 
 const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
@@ -92,7 +97,7 @@ class RefElementNode extends HTMLElementNode {
       that.tryEventScope('component-will-mount', {
 
       }, null, (_result) => {
-        this.loadComponent(targetId, (_masterElementNodes) => {
+        this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
 
           this.forwardDOM.innerHTML = '';
 
@@ -214,23 +219,22 @@ class RefElementNode extends HTMLElementNode {
 
 
     if (this.environment) {
-      this.environment.retriever[this.refSync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, function(_responseSheet) {
+      this.environment.retriever[this.refSync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, (_responseSheet) => {
 
-        let masterElementNodes = that.convertMastersByType(type, undefined, _responseSheet);
+        this.interpretComponentSheet(type, _responseSheet, _targetId, (_masterElementNodes, _settings) => {
 
-        _complete(masterElementNodes);
+          _complete(_masterElementNodes, _settings);
+        });
       });
     } else {
-      Orient.HTTPRequest[this.refSync ? 'requestSync' : 'request']('get', targetId, {}, function(_err, _res) {
+      Orient.HTTPRequest[this.refSync ? 'requestSync' : 'request']('get', targetId, {}, (_err, _res) => {
         if (_err !== null) throw new Error("fail static component loading");
 
         let responseText = _res.text;
-        // let loadedContentType = _res.xhr.getResponseHeader('content-type');
-        // let contentType_only = loadedContentType.split(';')[0];
+        this.interpretComponentSheet(type, responseText, _targetId, (_masterElementNodes, _settings) => {
 
-        let masterElementNodes = that.convertMastersByType(type, undefined, responseText);
-
-        _complete(masterElementNodes);
+          _complete(_masterElementNodes, _settings);
+        });
       });
 
       //throw new Error(`LoadError : Could not load Component. Need Environment(Recommend Orbit Framework).`);
@@ -245,6 +249,114 @@ class RefElementNode extends HTMLElementNode {
     } else if (_type === 'js') {
       // return Factory.extractByJSModule(_responseText, this.environment);
     }
+  }
+
+  // masterElementNode 들과 setting 오브젝트를 반환
+  interpretComponentSheet(_type, _sheet, _targetId, _callback) {
+    let masterElementNodes = this.convertMastersByType(_type, undefined, _sheet);
+
+    if (_type === 'html') {
+      let matcher = /^<!--[\n\s]+@Settings/g;
+
+      if (_sheet.match(matcher) !== null) {
+        let settingStartCursor = _sheet.indexOf(SETTING_START_STRING),
+          settingEndCursor = _sheet.indexOf(SETTING_END_STRING),
+          settingCommentEndCursor = _sheet.indexOf('-->');
+
+        if (settingEndCursor < settingCommentEndCursor) {
+          let settingsBlock = _sheet.slice(settingStartCursor + SETTING_START_STRING_LENGTH, settingEndCursor);
+
+          let componentSettingObject = this.htmlSettingBlockInterpret(settingsBlock);
+
+          // 일반 env_include 는 처리만 실행한다.
+          if (componentSettingObject['env_include']) {
+            this.processingCSetting_include(componentSettingObject['env_include']);
+          }
+
+
+          // 동기 env_include 는 처리를 실행 후 완료후에 _callback을 실행한다.
+
+          if (componentSettingObject['env_include_async']) {
+            if (this.refSync) {
+              // 경고
+              // component load type is
+              // component will be load by async. because component load type is sync, but dependent resource is async
+              // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
+              console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
+            }
+
+            this.processingCSetting_include_sync(componentSettingObject['env_include_async'], () => {
+              _callback(masterElementNodes, componentSettingObject);
+            });
+          } else {
+            _callback(masterElementNodes, null);
+          }
+
+        } else {
+          throw new Error('Component Settings Block is Invalid');
+        }
+
+      }
+    }
+
+    _callback(masterElementNodes, {});
+  }
+
+
+  htmlSettingBlockInterpret(_settingBlock) {
+    let settingLines = _settingBlock.split('\n');
+    let settingObjects = {};
+
+    let lineMatcher = /^@(\w+)[\s\t]+(.*);/;
+    let line, matched, keyword, desc;
+    for (let i = 0; i < settingLines.length; i++) {
+      line = settingLines[i];
+      matched = line.match(lineMatcher);
+
+      if (matched !== null) {
+        keyword = matched[1];
+        desc = matched[2];
+
+
+        switch (keyword) {
+          case "env_include_async":
+          case "env_include":
+            if (settingObjects[keyword] === undefined) {
+              settingObjects[keyword] = [];
+            }
+
+            settingObjects[keyword].push(desc);
+            break;
+          default:
+            throw new Error(`${keyword} is not supported setting.`);
+        }
+      }
+    }
+
+    return settingObjects;
+  }
+
+  processingCSetting_include(_includeList, _callback) {
+
+    let includeList = _includeList.map((_include) => {
+      return this.interpret(eval(_include));
+    });
+
+    this.environment.orbitDocument.loadReferencingElementParallel(undefined, includeList, () => {
+      _callback && _callback();
+    });
+  }
+
+  processingCSetting_include_sync(_includeList, _callback) {
+
+    let includeList = _includeList.map((_include) => {
+      return this.interpret(eval(_include));
+    });
+
+    this.environment.orbitDocument.loadReferencingElementSerial(undefined, includeList, () => {
+
+      _callback && _callback();
+    });
   }
 
   resetRefInstance() {

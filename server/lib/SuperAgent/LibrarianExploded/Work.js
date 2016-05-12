@@ -1,16 +1,15 @@
 // DB와 Socket.io 세션을 체크 하여 유저에게 알림
 
 export default {
-  // startWork: function(_userId, _wName, _wRelations, _wDesc) {
-  //
-  // },
-  //
-  // endWork: function(_userId, _workId) {
-  //
-  // },
-  //
-  // progressWork: function(_userId, _workId, _lines) {
-  //   // session 체크하여
-  //
-  // }
+
+  updateWork: function(_id, _data, _callback) {
+
+    this.agent.dataStore.driver.updateWork(_id, _data, (_err, _updatedWorkDoc) => {
+      if (_err) {
+        _callback(ERRORS.WORK.FAILED_UPDATE, null);
+      } else {
+        _callback(null, _updatedWorkDoc);
+      }
+    });
+  }
 }

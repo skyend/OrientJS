@@ -24,6 +24,48 @@ export default {
     });
   },
 
+  getVFNode: function(_vfnode_id, _withRefsPopulate, _withFilePopulate, _callback) {
+    let VFNodeModel = this.getModel("VFNode");
+
+    let query = VFNodeModel.findById(_vfnode_id);
+    let populateList = [];
+
+    if (_withRefsPopulate) {
+      populateList.push('refferences');
+    }
+
+    if (_withFilePopulate) {
+      populateList.push('refferenceFile');
+    }
+
+    query = query.populate.apply(query, populateList);
+
+    query.exec((_err, _result) => {
+      if (_err) {
+        agent.log.error("MongoDB Fail read vfnode. byid:%s, withRefsPopulate:%s, widthFilePopulate:%s, detail:%s", _vfnode_id, _withRefsPopulate, _withFilePopulate, _err);
+        _callback(_err, null);
+      } else {
+        _callback(null, _result);
+      }
+    });
+  },
+
+  updateVFNode(_vfnode_id, _data, _callback) {
+    let VFNodeModel = this.getModel("VFNode");
+
+    VFNodeModel.findByIdAndUpdate(_vfnode_id, _data, (_err, _updatedVFNodeDoc) => {
+      if (_err) {
+        agent.log.error("Mongodb fail update vfnode. detail:" + _err);
+
+        _callback(_err, null);
+      } else {
+        agent.log.info("Mongodb updated vfnode#%s. data:%s", _vfnode_id, JSON.stringify(_data));
+
+        _callback(null, _updatedVFNodeDoc);
+      }
+    });
+  },
+
   getProjectRootVFNodeDoc: function(_project_id, _callback) {
     let VFNodeModel = this.getModel('VFNode');
     let VFNodeProjectRelModel = this.getModel('ProjectRootVFNode');

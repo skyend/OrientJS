@@ -349,7 +349,7 @@ class Resolver {
         //   data = this.resolveWithHttpParam(varName);
         //   break;
       case 'val-plain':
-        console.log(_externalGetterInterface.getScope(varName, 'value'));
+
         try {
           data = _externalGetterInterface.getScope(varName, 'value').plainValue;
         } catch (_e) {
