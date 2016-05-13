@@ -103,9 +103,9 @@ export default {
         _upperVFNodeDoc.refferences.push(_childVFNodeDoc.id);
 
 
-        this.updateVFNode(_upperVFNodeDoc.id, {
-          refferences:
-        })
+        // this.updateVFNode(_upperVFNodeDoc.id, {
+        //   refferences:
+        // })
 
 
 

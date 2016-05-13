@@ -171,11 +171,11 @@ class Orbit {
 
   bodyAppear() {
     var itvid = setInterval(() => {
-      this.bodyOpacity += 0.1;
+      this.bodyOpacity += 0.25;
       this.updateBodyOpacity();
 
       if (this.bodyOpacity >= 1) clearInterval(itvid);
-    }, 20);
+    }, 1000 / 30);
   }
 
   updateBodyOpacity() {

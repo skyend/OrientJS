@@ -84,7 +84,6 @@ class OrbitDocument {
       extraElement = this.requestedResources[foundrequestedRIndex];
     }
 
-
     if (!extraElement) {
       if (type === 'js') {
         extraElement = this.document.createElement('script');
@@ -102,9 +101,12 @@ class OrbitDocument {
 
         extraElement.setAttribute('href', interpretedUrl);
         extraElement.setAttribute('rel', 'shortcut icon');
+      } else {
+        throw new Error(`${type} is not support referencing element type.`);
       }
     }
 
+    console.log(extraElement);
 
     extraElement.addEventListener('error', (_event) => {
 

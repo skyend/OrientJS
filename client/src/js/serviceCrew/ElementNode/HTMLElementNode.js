@@ -81,6 +81,14 @@ class HTMLElementNode extends TagBaseElementNode {
     return returnHolder;
   }
 
+  applyHiddenState() {
+    super.applyHiddenState();
+
+    this.childrenIteration((_child) => {
+      _child.applyHiddenState();
+    });
+  }
+
   updateChild(_child) {
     // let prevSibling = _child.prevSibling;
     // let nextSibling = _child.nextSibling;

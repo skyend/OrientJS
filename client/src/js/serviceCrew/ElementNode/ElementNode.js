@@ -696,6 +696,9 @@ class ElementNode {
           this.hiddenForwardDOM = this.forwardDOM;
           this.forwardDOM = null;
 
+          // 자신을 포함한 자기 아래의 hiddenState 까지 변경한다.
+          // this.applyHiddenState();
+
           if (this.treeExplore) {
 
             this.treeExplore(function(_child) {
@@ -770,6 +773,15 @@ class ElementNode {
 
     this.debug('construct', 'created htmlNode ', htmlNode);
     return htmlNode;
+  }
+
+
+  applyHiddenState(_onlyForwardDOM) {
+    this.forwardDOM = null;
+
+    // if (!_onlyForwardDOM)
+    this.isAttachedDOM = false;
+
   }
 
   isRepeater() {
@@ -2168,6 +2180,34 @@ class ElementNode {
       */
 
       this.__executeTask(taskScope, {}, null, arguments[1]);
+    } else {
+      /*
+        arguments[0] : TaskName
+      */
+
+      this.__executeTask(taskScope, {}, null, null);
+    }
+  }
+
+  execActionDirect(_actionName, _argMap, _callback) {
+    let action = this.__getAction(_actionName);
+
+    if (action) {
+      let paramList = action.params;
+      let paramMap = {};
+
+      for (let i = 0; i < paramList.length; i++) {
+        paramMap[paramList[i]] = null;
+      }
+
+      ObjectExtends.mergeByRef(paramMap, _argMap || {}, true);
+
+      action.execute(paramMap, this, null, (_actionResult) => {
+
+        _callback && _callback(_actionResult);
+      });
+    } else {
+      throw new Error(`'${_actionName}' Action is not declared.`);
     }
   }
 

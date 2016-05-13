@@ -134,7 +134,22 @@ class RefElementNode extends HTMLElementNode {
             masterElementNode.constructDOMs(_options);
             masterElementNode.attachForwardDOM(that.forwardDOM);
           }
+
+
+          // after include 처리
+          if (_componentSettings) {
+
+            if (_componentSettings.env_after_include) {
+              console.log(this.getDOMNode().innerHTML);
+              that.processingCSetting_include(_componentSettings.env_after_include);
+            }
+
+            if (_componentSettings.env_after_include_async) {
+              that.processingCSetting_include_async(_componentSettings.env_after_include_async);
+            }
+          }
         });
+
 
 
         that.tryEventScope('ref-did-mount', {
@@ -171,6 +186,18 @@ class RefElementNode extends HTMLElementNode {
 
 
     return returnHolder;
+  }
+
+  applyHiddenState() {
+    super.applyHiddenState();
+
+    let masterElementNode;
+    for (let i = 0; i < this.masterElementNodes.length; i++) {
+      masterElementNode = this.masterElementNodes[i];
+
+      masterElementNode.applyHiddenState();
+    }
+
   }
 
   buildByElement(_domElement, _absorbOriginDOM) {
@@ -269,6 +296,7 @@ class RefElementNode extends HTMLElementNode {
           let componentSettingObject = this.htmlSettingBlockInterpret(settingsBlock);
 
           // 일반 env_include 는 처리만 실행한다.
+
           if (componentSettingObject['env_include']) {
             this.processingCSetting_include(componentSettingObject['env_include']);
           }
@@ -285,11 +313,11 @@ class RefElementNode extends HTMLElementNode {
               console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
             }
 
-            this.processingCSetting_include_sync(componentSettingObject['env_include_async'], () => {
+            this.processingCSetting_include_async(componentSettingObject['env_include_async'], () => {
               _callback(masterElementNodes, componentSettingObject);
             });
           } else {
-            _callback(masterElementNodes, null);
+            _callback(masterElementNodes, componentSettingObject);
           }
 
         } else {
@@ -321,6 +349,8 @@ class RefElementNode extends HTMLElementNode {
         switch (keyword) {
           case "env_include_async":
           case "env_include":
+          case "env_after_include":
+          case "env_after_include_async":
             if (settingObjects[keyword] === undefined) {
               settingObjects[keyword] = [];
             }
@@ -347,7 +377,7 @@ class RefElementNode extends HTMLElementNode {
     });
   }
 
-  processingCSetting_include_sync(_includeList, _callback) {
+  processingCSetting_include_async(_includeList, _callback) {
 
     let includeList = _includeList.map((_include) => {
       return this.interpret(eval(_include));

@@ -227,6 +227,7 @@ class Resolver {
       //throw new Error(`text 사용 불가능. ${_syntax}`);
     });
 
+
     try {
       let result = vfunction.apply(_caller, argsMap);
 
@@ -274,7 +275,7 @@ class Resolver {
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
     functionCreateArgs.push('i18nTEXT'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
 
-    functionBody = functionBody.replace(/^(<<)|(&lt;&lt;)|(:)|(&#58;)/, 'return ');
+    functionBody = functionBody.replace(/^((<<)|(&lt;&lt;)|(:)|(&#58;))/, 'return ');
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
