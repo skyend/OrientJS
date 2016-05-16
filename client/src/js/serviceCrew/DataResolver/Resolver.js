@@ -275,7 +275,20 @@ class Resolver {
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
     functionCreateArgs.push('i18nTEXT'); // text 메서드(i18n 처리)를 인자로 받기 위해 인수필드에 예비한다.
 
-    functionBody = functionBody.replace(/^((<<)|(&lt;&lt;)|(:)|(&#58;))/, 'return ');
+
+
+    // auto 리턴 플래그가 포함 된 경우 식 블럭을 괄호로 감싸 줄바꿈이 포람된 경우에도 유효한 반환을 하도록 한다.
+    let isAutoReturn = false;
+    functionBody = functionBody.replace(/^((<<)|(&lt;&lt;)|(:)|(&#58;))/, function(_full, _matched) {
+      isAutoReturn = true;
+      return "return ( ";
+    });
+
+    if (isAutoReturn) {
+      functionBody = functionBody + ");";
+    }
+
+
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 

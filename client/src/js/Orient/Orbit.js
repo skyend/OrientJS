@@ -171,7 +171,7 @@ class Orbit {
 
   bodyAppear() {
     var itvid = setInterval(() => {
-      this.bodyOpacity += 0.25;
+      this.bodyOpacity += 1;
       this.updateBodyOpacity();
 
       if (this.bodyOpacity >= 1) clearInterval(itvid);

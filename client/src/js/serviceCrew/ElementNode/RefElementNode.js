@@ -4,6 +4,8 @@ import Factory from './Factory';
 
 import ActionStore from '../Actions/ActionStore';
 
+import ArrayHandler from '../../util/ArrayHandler';
+
 // Actions Import
 import '../Actions/RefElementNodeActions';
 
@@ -92,9 +94,9 @@ class RefElementNode extends HTMLElementNode {
       this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
     }
 
-    if (this.loadedTargetId === null || this.loadedTargetId !== targetId) {
+    if (this.loadedTargetId === null || this.loadedTargetId !== targetId || this.refAlwaysRemount) {
 
-      that.tryEventScope('component-will-mount', {
+      that.tryEventScope('ref-will-mount', {
 
       }, null, (_result) => {
         this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
@@ -131,8 +133,22 @@ class RefElementNode extends HTMLElementNode {
             masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
 
             masterElementNode.setParent(that);
+
+
+            masterElementNode.tryEventScope('component-will-mount', {
+
+            }, null, (_result) => {
+
+            });
+
             masterElementNode.constructDOMs(_options);
             masterElementNode.attachForwardDOM(that.forwardDOM);
+
+            masterElementNode.tryEventScope('component-did-mount', {
+
+            }, null, (_result) => {
+
+            });
           }
 
 
@@ -211,6 +227,9 @@ class RefElementNode extends HTMLElementNode {
 
     if (_domElement.getAttribute('en-ref-sync') !== null)
       this.refSync = _domElement.getAttribute('en-ref-sync') || true;
+
+    if (_domElement.getAttribute('en-ref-remount-always') !== null)
+      this.refAlwaysRemount = _domElement.getAttribute('en-ref-remount-always') || true;
 
     if (_domElement.getAttribute('en-event-ref-will-mount') !== null) // Did Mount
       this.setEvent('ref-will-mount', _domElement.getAttribute('en-event-ref-will-mount'));
@@ -389,6 +408,19 @@ class RefElementNode extends HTMLElementNode {
     });
   }
 
+  // 자신에게 로드된 masterElementNodes중 해당 ID를 가진 컴포넌트를 찾아 반환한다.
+  findLoadedComponent(_en_id) {
+    let foundIndex = ArrayHandler.findIndex(this.masterElementNodes, (_masterElementNode) => {
+      return _masterElementNode.id === _en_id;
+    });
+
+    if (foundIndex > -1) {
+      return this.masterElementNodes[foundIndex];
+    }
+
+    throw new Error(`Not found Component#${_en_id} in ${this.interpret(this.refTargetId)}. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+  }
+
   resetRefInstance() {
     this.loadedRefs = false;
     this.loadedInstance = null;
@@ -398,6 +430,7 @@ class RefElementNode extends HTMLElementNode {
     let result = super.import(_elementNodeDataObject);
     this.refTargetId = _elementNodeDataObject.refTargetId;
     this.refSync = _elementNodeDataObject.refSync || false;
+    this.refAlwaysRemount = _elementNodeDataObject.refAlwaysRemount || false;
     return result;
   }
 
@@ -405,6 +438,7 @@ class RefElementNode extends HTMLElementNode {
     let result = super.export(_withoutId);
     result.refTargetId = this.refTargetId;
     result.refSync = this.refSync;
+    result.refAlwaysRemount = this.refAlwaysRemount;
     return result;
   }
 }

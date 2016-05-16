@@ -33,6 +33,11 @@ const SIGN_BY_ELEMENTNODE = 'EN';
 const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
 const MAX_RENDER_SERIAL_NUMBER = 700000;
 
+
+
+const GET_TEMPORARY_ID_STORE = Identifier.chars32SequenceStore();
+
+
 class ElementNode {
   static get SIGN_BY_ELEMENTNODE() {
     return SIGN_BY_ELEMENTNODE;
@@ -428,7 +433,7 @@ class ElementNode {
     this.methods[_name] = _methodSource;
 
     if (this.hasOwnProperty(_name) && _force !== true) {
-      throw new Error(`${_name} 속성은 예약되어 있거나 이미 정의된 Method 입니다. 강제로 변경하길 원하신다면 force Parameter(3번째 인수)를 true 로 입력하십시오.`);
+      throw new Error(`${_name} 속성은 예약되어 있거나 이미 정의된 Method 입니다. 강제로 변경하길 원하신다면 force Parameter(3번째 인수)를 true 로 입력하십시오.(정상동작은 보장 할 수 없습니다.)`);
     }
 
     let methodSourceType = typeof _methodSource;
@@ -444,6 +449,7 @@ class ElementNode {
           return _methodSource.bind(this);
         } else if (typeof _methodSource === 'string') {
           let retrievedFunction = this.interpret(_methodSource);
+
           let retrievedFunctionType = typeof retrievedFunction;
 
           if (retrievedFunctionType === 'function') {
@@ -525,9 +531,10 @@ class ElementNode {
     _target.appendChild(this.forwardDOM);
     this.isAttachedDOM = true;
 
-    if (this.isMaster) {
-      this.tryEventScope('did-mount', {}, null);
-    }
+
+    // if (this.isMaster) {
+    //   this.tryEventScope('component-did-mount', {}, null);
+    // }
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
@@ -536,9 +543,10 @@ class ElementNode {
     _parentTarget.replaceChild(this.forwardDOM, _old);
     this.isAttachedDOM = true;
 
-    if (this.isMaster) {
-      this.tryEventScope('did-mount', {}, null);
-    }
+
+    // if (this.isMaster) {
+    //   this.tryEventScope('component-did-mount', {}, null);
+    // }
     // this.forwardDOM = this.backupDOM;
     // this.backupDOM = null;
   }
@@ -1283,7 +1291,7 @@ class ElementNode {
       return masterElementNode;
     }
 
-    console.error(`Not found Master ElementNode.`, this);
+    console.error(`Not found Master ElementNode. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
   }
 
   /////////////
@@ -1579,7 +1587,14 @@ class ElementNode {
 
 
     let ScopeNodeClass = ScopeNodeFactory.getClass(scopeType);
-    let scopeNodeInstance = ScopeNodeClass.CreateByScopeDom(_scopeDom);
+    let scopeNodeInstance;
+
+    try {
+      scopeNodeInstance = ScopeNodeClass.CreateByScopeDom(_scopeDom);
+    } catch (_e) {
+      _e.message += _e.message + this.DEBUG_FILE_NAME_EXPLAIN;
+      throw _e;
+    }
 
     return scopeNodeInstance;
   }
@@ -2028,7 +2043,7 @@ class ElementNode {
         else {
           if (typeof _completeProcess === 'function') {
             _completeProcess(_actionResult);
-          } else if (typeof _completeProcess === 'object' && (_completeProcess !== undefined)) {
+          } else if (typeof _completeProcess === 'object' && _completeProcess) {
             let code = _actionResult.code;
 
             if (_completeProcess[code] !== undefined) {
@@ -2101,10 +2116,15 @@ class ElementNode {
     /************************************/
     /***** Emit Event 'will-update' *****/
     /************************************/
-    this.tryEventScope('will-update', {}, null, function done(_result) {
+    this.tryEventScope('component-will-update', {}, null, (_result) => {
       if (that.checkAfterContinue(_result) === false) return;
 
       that.updateForwardDOM(_options);
+
+      /***********************************/
+      /***** Emit Event 'component-did-update' *****/
+      /***********************************/
+      this.tryEventScope('component-did-update', {}, null, (_result) => {});
     });
   }
 
@@ -2125,11 +2145,10 @@ class ElementNode {
       root 일 경우 랜더링을 통해 영역에 부착 하도록 하는 로직 필요.
       ** environment 와 elementNode 의 결합관계를 제거해야함 **
     ***/
-
-    /***********************************/
-    /***** Emit Event 'did-update' *****/
-    /***********************************/
-    this.tryEventScope('did-update', {}, null);
+    // /***********************************/
+    // /***** Emit Event 'did-update' *****/
+    // /***********************************/
+    // this.tryEventScope('did-update', {}, null, (_result) => {});
   }
 
 
@@ -2369,7 +2388,10 @@ class ElementNode {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   import (_elementNodeDataObject) {
-    this.id = _elementNodeDataObject.id || Identifier.genUUID().toUpperCase();
+    // this.id = _elementNodeDataObject.id || Identifier.genUUID().toUpperCase();
+    this.id = _elementNodeDataObject.id || "!?ID_" + GET_TEMPORARY_ID_STORE();
+
+
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 

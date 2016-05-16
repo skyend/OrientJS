@@ -127,25 +127,34 @@
  const ELEMENT_NODE_EVENTS = [
    "will-update",
    "did-update",
+
    "will-refresh",
    "did-refresh",
+
    "will-dc-request",
    "will-dc-request-join",
    "will-dc-bind",
    "will-dc-bind-join",
+
    "dc-did-load",
    "dc-fail-load",
+
    "complete-bind",
    "complete-bind-join",
-   "did-mount",
-   "first-rendered",
+
+   "first-rendered", // -> component-did-mount
    "io-received",
    "io-sent",
+
+   "component-will-update",
+   "component-did-update",
+
    "component-will-mount",
+   "component-did-mount",
 
+   "ref-did-mount",
+   "ref-will-mount",
 
-   // Dispatched Dom Event, Event Integration
-   "input", // keyup, change, input
  ];
 
  var SUPPORT_HTML_TAG_STYLES = {};

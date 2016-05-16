@@ -70,7 +70,7 @@ class HTTPRequest {
             _complete(null, res, res.statusCode);
           }
         });
-    } else if (_method === 'put') {
+    } else {
       throw new Error(`지원하지 않는 HTTP메소드(${_method}) 입니다.`);
     }
   }

@@ -103,33 +103,17 @@ export default {
         _upperVFNodeDoc.refferences.push(_childVFNodeDoc.id);
 
 
-        // this.updateVFNode(_upperVFNodeDoc.id, {
-        //   refferences:
-        // })
-
-
-
-
-
-
-
-
-        // 비즈니스맨으로 업데이트 구현해야함
-        _upperVFNodeDoc.save((_err, _updatedVFNodeDoc) => {
+        this.updateAndRetrieveVFNode(_upperVFNodeDoc.id, {
+          refferences: _upperVFNodeDoc.refferences
+        }, (_err, _updatedVFNodeDoc) => {
           if (_err) {
-            _cb(_err, null, null);
+            _cb(_err);
           } else {
             _cb(null, _updatedVFNodeDoc, _childVFNodeDoc);
+
+            console.log('UPDATED VFNODE DOC', _updatedVFNodeDoc);
           }
         });
-
-
-
-
-
-
-
-
 
       }
     ], (_err, _upperVFNodeDoc, _childVFNodeDoc) => {
@@ -169,12 +153,22 @@ export default {
     });
   },
 
-  updateVFNode: function(_vfnode_id, _updateFields, _callback) {
+  updateAndRetrieveVFNode: function(_vfnode_id, _updateFields, _callback) {
     this.agent.dataStore.driver.updateVFNode(_vfnode_id, _updateFields, (_err, _updatedVFNodeDoc) => {
       if (_err) {
         _callback(ERRORS("PROJECT.VFNODE.FAIL_UPDATE"), null);
       } else {
-        _callback(null, _updatedVFNodeDoc);
+        if (_updatedVFNodeDoc.dir) {
+
+          this.getVFNodeAsDirById(_vfnode_id, (_err, _latest_vfnodeDoc) => {
+            _callback(null, _latest_vfnodeDoc);
+          });
+        } else {
+
+          this.getVFNodeAsFileById(_vfnode_id, (_err, _latest_vfnodeDoc) => {
+            _callback(null, _latest_vfnodeDoc);
+          });
+        }
       }
     });
   },

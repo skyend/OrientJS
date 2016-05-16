@@ -3,6 +3,7 @@ import Cookie from './common/Cookie';
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';
 import HTTPRequest from './common/HTTPRequest';
 import APIRequest from './common/APIRequest';
+import OConsole from './common/Console';
 
 import ElementNode from '../serviceCrew/ElementNode/ElementNode';
 import HTMLElementNode from '../serviceCrew/ElementNode/HTMLElementNode';
@@ -149,6 +150,10 @@ class Neutron {
   // ElementNode 를 찾는다.
   static DirectAccessEN(_forfatherElementNode, _enID) {
 
+  }
+
+  static get Console() {
+    return OConsole.instance();
   }
 
   // BindError 를 숨긴다.

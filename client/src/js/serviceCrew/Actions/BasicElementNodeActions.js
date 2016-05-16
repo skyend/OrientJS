@@ -366,20 +366,27 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, transferFields, (_err, _retrievedObject, _originResponse) => {
     // http error 코드일 경우
 
-    if (chainCodeCriterion) {
-
-      if (chainCodeCriterion instanceof Function) {
-        _actionResult.code = chainCodeCriterion(_retrievedObject);
-      } else {
-        _actionResult.code = _retrievedObject[chainCodeCriterion];
-      }
+    if (_err) {
+      _actionResult.code = 'error';
+      _actionResult.data = _err;
     } else {
-      _actionResult.code = _retrievedObject['result'];
+
+      if (chainCodeCriterion) {
+
+        if (chainCodeCriterion instanceof Function) {
+          _actionResult.code = chainCodeCriterion(_retrievedObject);
+        } else {
+          _actionResult.code = _retrievedObject[chainCodeCriterion];
+        }
+      } else {
+        _actionResult.code = _retrievedObject['result'];
+      }
+
+      _actionResult.data = _retrievedObject;
+
     }
-
-    _actionResult.data = _retrievedObject;
-
     _callback(_actionResult);
+
   }, enctype || (this.hasAttribute('enctype') ? this.getAttributeWithResolve('enctype') : undefined), requestMethodForHTTP);
 });
 

@@ -67,7 +67,7 @@ class TaskScopeNode extends ScopeNode {
 
     // 확장클래스에서 사용하는 attribute 읽기 및 지정
     scopeSpecObject.action = _dom.getAttribute('action');
-    if (!/\w+/.test(scopeSpecObject.action || '')) throw new Error("TaskScope 선언에는 action 이 포함되어야 합니다.");
+    if (!/\w+/.test(scopeSpecObject.action || '')) throw new Error(`TaskScope 선언에는 action 이 포함되어야 합니다. Task Name:[${scopeSpecObject.name}]`);
 
     scopeSpecObject.args = [];
     scopeSpecObject.chains = [];
