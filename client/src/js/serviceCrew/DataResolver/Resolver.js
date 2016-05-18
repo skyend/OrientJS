@@ -292,7 +292,6 @@ class Resolver {
 
     functionCreateArgs.push(functionBody.replace(/^[\n\s]*/, ''));
 
-
     try {
       functionResult = Function.constructor.apply(this, functionCreateArgs);
 

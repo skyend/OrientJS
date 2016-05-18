@@ -22,6 +22,8 @@ const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 class RefElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+    HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+
     this.type = 'ref';
 
     this.loadedMasters = null;

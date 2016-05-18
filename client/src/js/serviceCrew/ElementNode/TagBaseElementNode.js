@@ -170,6 +170,7 @@
  class TagBaseElementNode extends ElementNode {
    constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
      super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+     ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
 
      this.tagName;
      this.attributes;
@@ -187,6 +188,11 @@
      }
    }
 
+
+   test() {
+     super.test();
+     console.log('test tagbase');
+   }
 
    get behavior() {
      return this._behavior;
@@ -590,8 +596,10 @@
      // for Debug
      this.sourceElement = _domElement;
 
-
+     $$('will copy');
      this.copyAllAtrributeFromDOMElement(_domElement);
+
+     $$('copy');
      if (this.realization === null) this.realization = _domElement;
 
      // Normals
@@ -684,7 +692,6 @@
        if (eventValue !== null) // will Update
          this.setEvent(eventKey, eventValue);
      }
-
      // done
      // if (_domElement.getAttribute('en-event-will-hide') !== null) // will hide
      //   this.setEvent('will-hide', _domElement.getAttribute('en-event-will-hide'));
@@ -724,6 +731,8 @@
        this.isAttachedDOM = true;
        this.bindDOMEvents({}, _domElement);
      }
+
+     $$('copy2');
    }
 
 

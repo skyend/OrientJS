@@ -3,6 +3,7 @@ import MetaData from './MetaData';
 class MetaText extends MetaData {
   constructor(_object) {
     super(_object);
+    MetaData.call(this, _object);
 
     this.import(_object);
   }

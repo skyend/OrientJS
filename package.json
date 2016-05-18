@@ -87,6 +87,7 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "babel-preset-es2015-webpack2": "^1.0.0",
     "html-webpack-plugin": "^1.5.2",
     "jquery.json-viewer": "^1.0.0",
     "react-hot-loader": "^1.3.0"

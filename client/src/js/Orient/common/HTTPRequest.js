@@ -9,9 +9,12 @@ class HTTPRequest {
     switch (_level) {
       case "log":
         // groupCollapsed 는 IE11부터
-        (console.groupCollapsed || console.log).apply(console, logParams);
+        // (console.groupCollapsed || console.log).apply(console, logParams);
+        // console.log.apply(console, _extras);
+        // console.groupEnd && console.groupEnd();
+
+        console.log.apply(console, logParams);
         console.log.apply(console, _extras);
-        console.groupEnd && console.groupEnd();
         break;
       case "info":
         console.info.apply(console, logParams);

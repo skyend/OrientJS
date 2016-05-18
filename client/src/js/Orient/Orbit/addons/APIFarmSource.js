@@ -5,6 +5,8 @@ import SuperAgent from 'superagent';
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
+    ICEAPISource.call(this, _APISourceData, _orbit);
+
     this.clazz = 'APIFarmSource';
 
     this.host = this.orbit.config.getField('FARM_HOST');

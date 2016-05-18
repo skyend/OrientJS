@@ -6,6 +6,7 @@ let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 class FunctionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
+    ScopeNode.call(this, _scopeData);
     this.type = 'function';
   }
 

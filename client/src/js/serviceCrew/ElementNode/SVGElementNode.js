@@ -11,6 +11,7 @@ class SVGElementNode extends HTMLElementNode {
 
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+    HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'svg';
   }
 

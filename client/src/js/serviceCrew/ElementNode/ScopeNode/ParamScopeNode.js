@@ -3,6 +3,7 @@ import ValueScopeNode from './ValueScopeNode';
 class ParamScopeNode extends ValueScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
+    ValueScopeNode.call(this, _scopeData);
     this.type = 'param';
 
     console.log('param scope member created');

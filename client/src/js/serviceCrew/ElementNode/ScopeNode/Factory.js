@@ -5,6 +5,10 @@ import ParamScopeNode from './ParamScopeNode';
 import FunctionScopeNode from './FunctionScopeNode';
 
 class ScopeNodeFactory {
+  constructor() {
+
+  }
+
   static getClass(_type) {
 
     switch (_type) {

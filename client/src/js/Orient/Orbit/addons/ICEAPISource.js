@@ -7,6 +7,8 @@ import ObjectExtends from '../../../util/ObjectExtends';
 class ICEAPISource extends Orbit.APIFactory.APISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
+    Orbit.APIFactory.APISource.call(this, _APISourceData, _orbit);
+
     this.clazz = 'ICEAPISource';
 
     this.nodeTypeMeta = null;

@@ -1,3 +1,4 @@
+import './common/polyfill';
 import Cookie from './common/Cookie';
 
 import ElementNodeFactory from '../serviceCrew/ElementNode/Factory';

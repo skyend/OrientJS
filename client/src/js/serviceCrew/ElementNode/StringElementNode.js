@@ -4,6 +4,8 @@ import ElementNode from './ElementNode.js';
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+    ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+
     this.type = 'string';
     this.text;
   }

@@ -198,7 +198,7 @@
           } else {
             console.log('open modal');
             that.setValue("modal-title", '회원가입 완료');
-            that.setValue("modal-message", `이메일(${ that.getValue('email') })을 확인하여 이메일 인증을 완료 해 주세요.`);
+            that.setValue("modal-message", "이메일(" + that.getValue('email') + ")을 확인하여 이메일 인증을 완료 해 주세요.");
 
             // location.href = '/admin/signin?email='+that.getValue('email');
           }

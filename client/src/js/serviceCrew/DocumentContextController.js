@@ -11,6 +11,7 @@ import HasElementNodeContextController from './HasElementNodeContextController.j
 class DocumentContextController extends HasElementNodeContextController {
   constructor(_document, _params, _serviceManager, _fragmentOption) {
     super();
+    HasElementNodeContextController.call(this);
 
     this.attached = false;
     this.context = null;

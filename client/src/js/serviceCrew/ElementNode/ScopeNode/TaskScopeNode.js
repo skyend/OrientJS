@@ -44,19 +44,23 @@ class TaskChain {
 class TaskScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
+    ScopeNode.call(this, _scopeData);
     this.type = 'task';
 
   }
 
   static CreateByScopeDom(_scopeDom) {
+    $$("static CreateByScopeDom Task")
     let newScopeNode = new TaskScopeNode(TaskScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-
+    $$("static CreateByScopeDom2 Task")
     return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
+    $$('BuildScopeSpecObjectByScopeDom ');
+
     let attr, formatMathed;
-    let scopeSpecObject = super.BuildScopeSpecObjectByScopeDom(_dom);
+    let scopeSpecObject = ScopeNode.BuildScopeSpecObjectByScopeDom(_dom);
     let attrs = _dom.attributes;
     let length = attrs.length;
 

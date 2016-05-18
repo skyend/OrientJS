@@ -4,6 +4,8 @@ import ContextController from './ContextController.js';
 export default class CSSContextController extends ContextController {
   constructor(_css, _serviceManager) {
     super();
+    ContextController.call(this);
+
     this.serviceManager = _serviceManager;
 
     this.subject = new CSS(_css);

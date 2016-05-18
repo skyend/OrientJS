@@ -48,7 +48,7 @@
 			</header>
 
 		<!-- Signup Form -->
-			<form id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
+			<form name='signup_form' id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
 
         <en:value name='email' type='string' value=''></en:value>
         <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
@@ -56,8 +56,8 @@
 
 				<input type="email" name="email" value='{{: val@email }}' id="email" placeholder="Email Address" en-event-keyup='task@email-input' />
 
-				<input type="submit" value="Sign Up" en-event-click='{{ location.href=`/admin/signup?email=`+ val@email; }}'/>
-        <input type="submit" value="Sign In" en-event-click='{{ location.href=`/admin/signin?email=`+ val@email; }}'/>
+				<input type="submit" value="Sign Up" en-event-click='{{ location.href="/admin/signup?email="+ val@email; }}'/>
+        <input type="submit" value="Sign In" en-event-click='{{ location.href="/admin/signin?email="+ val@email; }}'/>
 			</form>
 
 		<!-- Footer -->
