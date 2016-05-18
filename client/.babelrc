@@ -1,4 +1,10 @@
 {
-  "plugins": ["transform-es3-member-expression-literals", "transform-es3-property-literals"],
+  "plugins": [
+    "transform-es3-member-expression-literals",
+    "transform-es3-property-literals",
+    "transform-es2015-classes",
+    "transform-proto-to-assign",
+    "transform-class-properties"
+  ],
   "presets": ["es2015"]
 }

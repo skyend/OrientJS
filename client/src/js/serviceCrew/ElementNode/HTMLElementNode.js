@@ -15,8 +15,6 @@ class HTMLElementNode extends TagBaseElementNode {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = 'html';
 
-    // children
-    this.children;
   }
 
   setEnvironment(_env) {

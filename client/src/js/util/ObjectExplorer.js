@@ -4,7 +4,8 @@
  * @param _keyPath
  * @returns {*}
  */
-function getValueByKeyPath(_object, _keyPath, _spliter = '/') {
+function getValueByKeyPath(_object, _keyPath, _spliter) {
+  let spliter = _spliter || '/';
 
   var splitPath = _keyPath.split(_spliter);
 

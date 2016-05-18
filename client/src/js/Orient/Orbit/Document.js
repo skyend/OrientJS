@@ -81,7 +81,7 @@ class OrbitDocument {
     });
 
     if (foundrequestedRIndex > -1) {
-      extraElement = this.requestedResources[foundrequestedRIndex];
+      extraElement = this.requestedResources[foundrequestedRIndex].element;
     }
 
     if (!extraElement) {
@@ -106,7 +106,7 @@ class OrbitDocument {
       }
     }
 
-    console.log(extraElement);
+
 
     extraElement.addEventListener('error', (_event) => {
 

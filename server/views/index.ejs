@@ -20,6 +20,7 @@
     <script>
       window.onload = function(){
         var orbit = new Orbit(window);
+				window.orbit = orbit;
         var targetElement = document.getElementById('signup-form');
         // var targetElement = document.body;
         var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);

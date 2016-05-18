@@ -1,5 +1,6 @@
 var Clean = require('clean-webpack-plugin');
 var webpack = require('webpack');
+var babelPolyfill = require("babel-polyfill");
 //var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -15,6 +16,10 @@ module.exports = {
 
     // main: ['./client/src/js/main.js'],
     //'built-foundation': ['./client/src/stand-alone-foundation/main.js'],
+    // 'orient': ['babel-polyfill', './client/src/js/Orient/Orient.js'],
+    // 'orbit': ['babel-polyfill', './client/src/js/Orient/Orbit.js'],
+    // 'orbit.api.cms': ['babel-polyfill', './client/src/js/Orient/Orbit/addons/ICEAPISource'],
+    // 'orbit.api.farm': ['babel-polyfill', './client/src/js/Orient/Orbit/addons/APIFarmSource']
     'orient': ['./client/src/js/Orient/Orient.js'],
     'orbit': ['./client/src/js/Orient/Orbit.js'],
     'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],

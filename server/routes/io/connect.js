@@ -2,7 +2,7 @@ export default function(_socket) {
   console.log(">>>>>>>>>>>>>>>>>>> new client connected");
 
 
-  let cookies_string = _socket.handshake.headers.cookie;
+  let cookies_string = _socket.handshake.headers.cookie || '';
   let cookies = {};
   cookies_string.split('; ').map(function(_cookiePair) {
     let pair = _cookiePair.split('=');

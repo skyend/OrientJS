@@ -170,12 +170,15 @@
  class TagBaseElementNode extends ElementNode {
    constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
      super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+
      this.tagName;
      this.attributes;
      this.css;
      this.rectangle; // 영역 정보 { width: (px|%|remain|auto), height:(px|%|remain|auto), shift-(left|right|top|bottom): (px|%),} // shift : 지정 값만큼 해당방향으로 밀어준다
      // remain : 부모의 영역중 자신외의 다른 child가 차지하는 공간을 모두 합하여 부모의 영역에서 그만큼 감소 시켰을 때 남은 값
      this.phase; // 위상 자신의 위치정보를 가진다. { horizon: (px|%|left|center|top), vertical: (px|%|top|middle|bottom) }
+
+
 
      if (typeof _elementNodeDataObject !== 'object') {
        // 새 엘리먼트가 생성되었다.
@@ -200,6 +203,7 @@
    }
 
    findAttributeIndex(_name) {
+
      return ArrayHandler.findIndex(this.attributes, function(_v) {
        return _v.name === _name;
      });
@@ -339,6 +343,7 @@
      let that = this;
 
      let duplIndex = this.findAttributeIndex(_name);
+
 
      if (duplIndex === -1) {
        let newAttribute = new MetaText({
@@ -587,7 +592,6 @@
 
 
      this.copyAllAtrributeFromDOMElement(_domElement);
-
      if (this.realization === null) this.realization = _domElement;
 
      // Normals
@@ -727,6 +731,7 @@
    copyAllAtrributeFromDOMElement(_domElement) {
      this.setTagName(_domElement.nodeName);
 
+
      // __vid__ attribute를 제외하고 요소의 모든 attribute를 카피한다.
      var attributes = _domElement.attributes;
      let attrName;
@@ -734,9 +739,11 @@
      for (var i = 0; i < attributes.length; i++) {
        attrName = attributes[i].name;
 
+
        // en 으로 시작하는 모든 attribute 는 특수 예약 attribute로 따로 처리한다.
-       if (/(^en-)|(^__vid__$)/.test(attrName)) {
+       if (/^(en-)|(__vid__$)/.test(attrName)) {
          // Pipe Event 적용
+
 
          let matched = attributes[i].name.match(PIPE_EVENT_SPLIT_REGEXP);
          if (matched !== null) {
@@ -749,8 +756,10 @@
            this.setMethod(matched[1], attributes[i].nodeValue);
          }
        } else {
+
          this.defineNewAttribute(attrName, attributes[i].nodeValue);
        }
+
      }
    }
 

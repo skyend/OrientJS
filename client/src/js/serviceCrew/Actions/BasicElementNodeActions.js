@@ -244,7 +244,7 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
       break;
 
     case 'email':
-      _actionResult.code = validate(/^[\w\d]+@[\w\d-]+\.[\w]+$/, text);
+      _actionResult.code = validate(/^[\w\d]+@[\w\d-]+(\.[\w]+)+$/, text);
       break;
 
     case 'id6':
@@ -310,7 +310,7 @@ actionStore.registerAction('loop', ['fps'], function() {
 /***
  * chainCodeCriterion : Key Name or Function
  */
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields'], function() {
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], function() {
   let that = this;
 
   let transferFields = {};
@@ -355,9 +355,10 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   console.log(apiSourceId, requestId, fields);
   console.log("AAA");
 
-  {
+  if (before_chain) {
+
     // before 체인 발생
-    _actionResult.code = 'before';
+    _actionResult.code = before_chain;
     _callback(_actionResult);
   }
 

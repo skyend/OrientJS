@@ -49,6 +49,7 @@ class ElementNode {
     //_.extendOwn(this, Events.EventEmitter.prototype);
     this[SIGN_BY_ELEMENTNODE] = SIGN_BY_ELEMENTNODE;
 
+
     // 미리 삽입된 프로퍼티
     var preInjectProps = _preInjectProps || {};
 
@@ -131,14 +132,14 @@ class ElementNode {
     // 처리로직
     //////////////////////////
     // 이미 있는 엘리먼트를 로드한 경우 데이터를 객체에 맵핑해준다.
-    if (typeof _elementNodeDataObject === 'object') {
-      this.import(_elementNodeDataObject);
-    } else {
-      // 새 엘리먼트가 생성되었다.
-      this.createDate = new Date();
-      this.controls = {};
-      this.comment = '';
-    }
+    // if (typeof _elementNodeDataObject === 'object') {
+    this.import(_elementNodeDataObject);
+    // } else {
+    //   // 새 엘리먼트가 생성되었다.
+    //   this.createDate = new Date();
+    //   this.controls = {};
+    //   this.comment = '';
+    // }
   }
 
   get isElementNode() {

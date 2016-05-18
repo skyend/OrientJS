@@ -195,15 +195,14 @@ class Orbit {
         targetDomNodes = [this.orbitDocument.document.body];
       }
 
-
-      console.time("First Built up");
+      console.time && console.time("First Built up");
       for (let i = 0; i < targetDomNodes.length; i++) {
         targetDomNode = targetDomNodes[i];
         var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
 
         Orient.replaceRender(masterElementNode, targetDomNode);
       }
-      console.timeEnd("First Built up");
+      console.timeEnd && console.timeEnd("First Built up");
 
       if (this.bodyAppearControlStyleDOM) {
         this.bodyAppear();

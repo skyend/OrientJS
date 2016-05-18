@@ -20,6 +20,14 @@ import Shortcut from '../serviceCrew/DataResolver/Shortcut';
 
 let CLEAR_BIND_ERROR = false;
 
+
+
+window.$$ = function(_message, _data) {
+  console.log(_message, ' - ', _data);
+  window.test = _data;
+}
+
+
 class Neutron {
 
 
@@ -48,7 +56,9 @@ class Neutron {
     // build
     // 랜더링 전에 Env 세팅
     let masterElementNode = ElementNodeFactory.takeElementNode(undefined, _props, masterType, _env, true);
+
     masterElementNode.buildByElement(_domElement);
+
 
     return masterElementNode;
   }
@@ -101,6 +111,7 @@ class Neutron {
   }
 
   static getNodeByDOM(_domElement) {
+    if (!_domElement) throw new Error(`Could not get ElementNode. ${_domElement} is not DOMNode.`);
     if (_domElement.isElementNode) return _domElement;
 
     return _domElement.___en || null;
@@ -116,6 +127,14 @@ class Neutron {
     let functionStore = FunctionStore.instance();
 
     functionStore.registerFunction(_name, _function);
+  }
+
+  static retrieveFunction(_name) {
+    let functionStore = FunctionStore.instance();
+
+    let functionO = functionStore.getFunction(_name);
+
+    return functionO.executableFunction;
   }
 
   static get actionStore() {

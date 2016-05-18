@@ -1,6 +1,7 @@
 import DateDistance from '../Builtins/Classes/DateDistance';
 import Date2 from '../Builtins/Classes/Date2';
 import ArrayHandler from '../../util/ArrayHandler';
+import ObjectExplorer from '../../util/ObjectExplorer';
 
 const DAY_MAP = {
   'ko': ['월', '화', '수', '목', '금', '토', '일'],
@@ -137,6 +138,10 @@ class Shortcut {
     let keys = Object.keys(_object);
 
     return keys.length > 0;
+  }
+
+  static get(_obj, _path) {
+    return ObjectExplorer.getValueByKeyPath(_obj, _path, '.');
   }
 }
 
