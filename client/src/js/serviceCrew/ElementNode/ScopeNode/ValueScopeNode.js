@@ -109,17 +109,17 @@ class ValueScopeNode extends ScopeNode {
   Task Implement
   **/
   static CreateByScopeDom(_scopeDom) {
-    $$("static CreateByScopeDom")
+
     let newScopeNode = new ValueScopeNode(ValueScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    $$("static CreateByScopeDom 2")
+
     return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
-    $$("static BuildScopeSpecObjectByScopeDom")
+
     let scopeSpecObject = ScopeNode.BuildScopeSpecObjectByScopeDom(_dom);
-    $$("static BuildScopeSpecObjectByScopeDom 2")
-      // 확장클래스에서 사용하는 attribute 읽기 및 지정
+
+    // 확장클래스에서 사용하는 attribute 읽기 및 지정
 
     // type attribute 는 dataType 으로 지정된다.
     scopeSpecObject.dataType = DataTypes[_dom.getAttribute('type')];

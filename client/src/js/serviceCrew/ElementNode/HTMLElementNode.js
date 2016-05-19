@@ -302,18 +302,18 @@ class HTMLElementNode extends TagBaseElementNode {
     let elementNodeBuildResult;
     for (var i = 0; i < childNodes.length; i++) {
       child_ = childNodes[i];
-      $$('child iteration A' + i + ' ' + child_.nodeName, child_);
+
 
       // en- 으로 시작되는 태그를 ScopeNode로 취급한다.
       if (/^en:|script/i.test(child_.nodeName)) {
-        $$('child iteration A-1 ' + i + ' ' + child_.nodeName, child_);
+
 
         this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
-        $$('child iteration A-2 ' + i + ' ' + child_.nodeName, child_);
+
         continue;
       }
 
-      $$('child iteration B' + i, child_);
+
 
       var newChildElementNode;
       // comment node 는 무시
@@ -332,18 +332,18 @@ class HTMLElementNode extends TagBaseElementNode {
             }
           }
         }
-        $$('child iteration C' + i, child_);
+
         newChildElementNode = Factory.takeElementNode(undefined, {}, 'string', this.environment);
 
       } else {
         let type = Factory.checkElementNodeType(child_);
-        $$('child iteration D' + i, child_);
+
         newChildElementNode = Factory.takeElementNode(undefined, {}, type, this.environment);
       }
 
-      $$('child buildByElement ' + childNodes.length, child_);
+
       elementNodeBuildResult = newChildElementNode.buildByElement(child_, _absorbOriginDOM);
-      $$('child buildByElement end ' + childNodes.length, child_);
+
 
       if (elementNodeBuildResult === null) continue;
 

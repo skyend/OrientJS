@@ -49,9 +49,8 @@ class ElementNode {
 
     //_.extendOwn(this, Events.EventEmitter.prototype);
     this[SIGN_BY_ELEMENTNODE] = SIGN_BY_ELEMENTNODE;
-    console.log('called en', this);
 
-    window.test = this;
+
 
     // 미리 삽입된 프로퍼티
     var preInjectProps = _preInjectProps || {};
@@ -144,7 +143,7 @@ class ElementNode {
     //   this.comment = '';
     // }
 
-    $$('end');
+
   }
 
   get isElementNode() {
@@ -1578,7 +1577,7 @@ class ElementNode {
   buildScopeNodeByScopeDom(_scopeDom) {
     let scopeDomNodeName = _scopeDom.nodeName;
     let scopeType;
-    $$('buildScopeNodeByScopeDom A ')
+
     let matches = String(_scopeDom.nodeName).match(/^en:(\w+)$/i);
 
     if (matches === null) {
@@ -1590,21 +1589,20 @@ class ElementNode {
       scopeType = matches[1].toLowerCase();
     }
 
-    $$('buildScopeNodeByScopeDom B ')
 
     let ScopeNodeClass = ScopeNodeFactory.getClass(scopeType);
     let scopeNodeInstance;
 
-    $$('buildScopeNodeByScopeDom C ' + scopeType, ScopeNodeClass.CreateByScopeDom)
+
     try {
       scopeNodeInstance = ScopeNodeClass.CreateByScopeDom(_scopeDom);
-      $$('buildScopeNodeByScopeDom D ')
+
     } catch (_e) {
-      $$('buildScopeNodeByScopeDom E ' + _e)
+
       _e.message += _e.message + this.DEBUG_FILE_NAME_EXPLAIN;
       throw _e;
     }
-    $$('buildScopeNodeByScopeDom F ')
+
     return scopeNodeInstance;
   }
 
@@ -1630,6 +1628,33 @@ class ElementNode {
 
   }
 
+  // 상위트리에 존재하는 attribute를 찾아 해당 값을 변경한다.
+  setScopeAttribute(_name, _value) {
+    let owner = this.findAttributeOwner(_name);
+
+    if (owner) {
+      owner.setAttribute(_name, _value);
+    } else {
+      throw new Error(`${name} Atrribute의 값을 변경할 수 없습니다. Attribute '${_name}' 을 가진 Element를 찾을 수 없었습니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+    }
+  }
+
+  findAttributeOwner(_name) {
+    if (this.hasAttribute(_name)) {
+      return this;
+    }
+    let target;
+
+    this.climbParents((_parent) => {
+
+      if (_parent.hasAttribute(_name)) {
+        target = _parent;
+        return null;
+      }
+    });
+
+    return target;
+  }
 
   /***************************************
 
@@ -2181,6 +2206,20 @@ class ElementNode {
       return valueScope.shapeValue;
     else
       throw new Error(`선언 되지 않은 변수[${_name}]를 참조합니다.`);
+  }
+
+  setAttrR(_name, _value) {
+    this.setScopeAttribute(_name, _value);
+  }
+
+  getAttrR(_name) {
+    let owner = this.findAttributeOwner(_name);
+
+    if (owner) {
+      return owner.getAttributeWithResolve(_name);
+    } else {
+      throw new Error(`Attribute ${_name}을 찾아 올 수 없습니다. Attribute ${_name}을 가진 Element가 없습니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+    }
   }
 
   executeDC() {

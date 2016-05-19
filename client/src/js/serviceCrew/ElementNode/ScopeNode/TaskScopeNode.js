@@ -50,14 +50,14 @@ class TaskScopeNode extends ScopeNode {
   }
 
   static CreateByScopeDom(_scopeDom) {
-    $$("static CreateByScopeDom Task")
+
     let newScopeNode = new TaskScopeNode(TaskScopeNode.BuildScopeSpecObjectByScopeDom(_scopeDom));
-    $$("static CreateByScopeDom2 Task")
+
     return newScopeNode;
   }
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
-    $$('BuildScopeSpecObjectByScopeDom ');
+
 
     let attr, formatMathed;
     let scopeSpecObject = ScopeNode.BuildScopeSpecObjectByScopeDom(_dom);

@@ -116,6 +116,16 @@ actionStore.registerAction('set', ['name', 'value'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('set-attr', ['name', 'value'], function() {
+  this.setAttrR(name, value);
+  _actionResult.data = {
+    name: name,
+    value: value
+  };
+
+  _callback(_actionResult);
+});
+
 actionStore.registerAction('toggle-val', ['name'], function() {
   let value = this.getValue(name);
 

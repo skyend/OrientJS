@@ -596,10 +596,10 @@
      // for Debug
      this.sourceElement = _domElement;
 
-     $$('will copy');
+
      this.copyAllAtrributeFromDOMElement(_domElement);
 
-     $$('copy');
+
      if (this.realization === null) this.realization = _domElement;
 
      // Normals
@@ -732,7 +732,6 @@
        this.bindDOMEvents({}, _domElement);
      }
 
-     $$('copy2');
    }
 
 
