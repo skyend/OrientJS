@@ -7,7 +7,7 @@
     <div class="user-panel" en-io-on='conn-status,disconnect' en-event-io-received='{{ func@received-status( feature@event ) }}'>
       <en:value name='connection-status' type='string' value='offline'></en:value>
       <script type='text/x-javascript' en-scope-type='function' name='received-status'>
-        return function(_event){
+          function hello(_event){
 
           var subject = _event.subject;
           var data = _event.data;
@@ -28,6 +28,7 @@
 
           this.update();
         }
+        window.hello = hello;
       </script>
       <div class="pull-left image">
         <img src="/service-static/admin/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">

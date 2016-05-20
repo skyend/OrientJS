@@ -31,9 +31,9 @@ import Point from '../../util/Point';
 
 const SIGN_BY_ELEMENTNODE = 'EN';
 const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
-const MAX_RENDER_SERIAL_NUMBER = 700000;
-
-
+const MAX_RENDER_SERIAL_NUMBER = 70000000;
+const SCOPE_TEXT_OPTIONS_REGEXP = /@([\w\:\-\_\d]+)/g;
+const SCOPE_TEXT_OPTION_SEPARATE_REGEXP = /^@([\w\-\_\d]+?)(?:\:(.*))?$/;
 
 const GET_TEMPORARY_ID_STORE = Identifier.chars32SequenceStore();
 
@@ -183,6 +183,10 @@ class ElementNode {
   }
 
   get properties() {
+    return this._properties;
+  }
+
+  get prop() {
     return this._properties;
   }
 
@@ -1296,7 +1300,7 @@ class ElementNode {
       return masterElementNode;
     }
 
-    console.error(`Not found Master ElementNode. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
+    throw new Error(`Not found Master ElementNode. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
   }
 
   /////////////
@@ -1335,13 +1339,19 @@ class ElementNode {
       }
     } catch (_e) {
 
-      // groupCollapsed 는 IE11부터
-      (console.groupCollapsed ? console.groupCollapsed : console.log)(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
-      console.log(`Full sentence : ${_matterText}`);
+      console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+      console.log(`%cFull sentence : ${_matterText}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
       if (_e.interpretArguments) {
-        console.log('BindBlock Arguments :', _e.interpretArguments);
+        console.log('%cBindBlock Arguments :', 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;', _e.interpretArguments);
       }
-      console.groupEnd && console.groupEnd();
+
+      // groupCollapsed 는 IE11부터
+      // console.groupCollapsed(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+      // console.log(`Full sentence : ${_matterText}`);
+      // if (_e.interpretArguments) {
+      //   console.log('BindBlock Arguments :', _e.interpretArguments);
+      // }
+      // console.groupEnd && console.groupEnd();
 
       if (window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET)
         throw _e;
@@ -1593,17 +1603,74 @@ class ElementNode {
     let ScopeNodeClass = ScopeNodeFactory.getClass(scopeType);
     let scopeNodeInstance;
 
+    if (!ScopeNodeClass) {
+      throw new Error(`해당 ScopeType${scopeType}의 Class를 찾을 수 없습니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+    }
 
     try {
       scopeNodeInstance = ScopeNodeClass.CreateByScopeDom(_scopeDom);
-
     } catch (_e) {
 
-      _e.message += _e.message + this.DEBUG_FILE_NAME_EXPLAIN;
+      _e.message = _e.message + this.DEBUG_FILE_NAME_EXPLAIN;
       throw _e;
     }
 
     return scopeNodeInstance;
+  }
+
+  buildScopeNodeByScopeText(_scopeText) {
+    let lines = _scopeText.split('\n');
+    let headLine = lines.shift();
+
+    let options = headLine.match(SCOPE_TEXT_OPTIONS_REGEXP);
+    if (options === null) throw new Error(`ScopeNode 의 선언 Text형식이 잘못 되었습니다. Text:${_scopeText} \n${this.DEBUG_FILE_NAME_EXPLAIN}`);
+
+    let name, type, etcs = [];
+    let option, key, value;
+    for (let i = 0; i < options.length; i++) {
+      option = options[i];
+      let optionMatched = option.match(SCOPE_TEXT_OPTION_SEPARATE_REGEXP);
+      if (optionMatched === null) continue;
+      key = optionMatched[1];
+      value = optionMatched[2];
+
+      switch (key) {
+        case 'Scope':
+        case 'scope':
+          continue;
+        case 'name':
+          name = value;
+          break;
+        case 'type':
+          type = value;
+          break;
+        default:
+          etcs.push({
+            name: key,
+            value: value
+          });
+      }
+    }
+
+    if (name && type) {
+      let scriptElement = document.createElement('script');
+      scriptElement.setAttribute('name', name);
+      scriptElement.setAttribute('en-scope-type', type);
+
+      let etc;
+      for (let i = 0; i < etcs.length; i++) {
+        etc = etcs[i];
+        scriptElement.setAttribute(etc.name, etc.value);
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        scriptElement.innerHTML += lines[i] + '\n';
+      }
+
+      return this.buildScopeNodeByScopeDom(scriptElement);
+    } else {
+      throw new Error(`Scope의 선언에는 name[${name}] 과 type[${type}] 이 필요합니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+    }
   }
 
   // Done
@@ -2061,6 +2128,7 @@ class ElementNode {
           let nextTaskName = _taskScope.getChainedTaskName(_actionResult.code);
 
           if (/\w+/.test(nextTaskName || '')) {
+
             chainedTask = that.__getTask(nextTaskName);
 
             // code 에 대응하는 task 명이 지정되어 있지만

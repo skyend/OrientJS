@@ -503,4 +503,8 @@ actionStore.registerAction('remove-cookie', ['name', 'path'], function() {
   _callback(_actionResult);
 });
 
+actionStore.registerAction('void', ['board'], function() {
+  _callback(_actionResult);
+});
+
 //****** ElementNode default Actions *****//

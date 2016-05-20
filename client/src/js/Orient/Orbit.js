@@ -13,6 +13,10 @@ import ObjectExtends from '../util/ObjectExtends';
 
 import events from 'events';
 
+import browser from 'detect-browser';
+const BROWSER_NAME = browser.name;
+const BROWSER_VER = parseInt(browser.version);
+
 class Orbit {
   /**
     _window : Browser Window Object
@@ -280,6 +284,18 @@ class Orbit {
 
   static get HTTPRequest() {
     return HTTPRequest;
+  }
+
+  static get B() {
+    return browser
+  }
+
+  static get bn() {
+    return BROWSER_NAME;
+  }
+
+  static get bv() {
+    return BROWSER_VER;
   }
 }
 

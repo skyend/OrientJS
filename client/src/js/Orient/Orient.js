@@ -18,6 +18,9 @@ import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
 import Shortcut from '../serviceCrew/DataResolver/Shortcut';
 
+import browser from 'detect-browser';
+const BROWSER_NAME = browser.name;
+const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
@@ -184,6 +187,18 @@ class Neutron {
   // BindError를 표시한다.
   static OccursBindError() {
     window.CLEAR_BIND_ERROR = false;
+  }
+
+  static get B() {
+    return browser
+  }
+
+  static get bn() {
+    return BROWSER_NAME;
+  }
+
+  static get bv() {
+    return BROWSER_VER;
   }
 
   /*

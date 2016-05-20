@@ -5,7 +5,9 @@ import SuperAgent from 'superagent';
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
-    ICEAPISource.call(this, _APISourceData, _orbit);
+    if (Orbit.bn === 'ie' && Orbit.bv == 9) {
+      ICEAPISource.call(this, _APISourceData, _orbit);
+    }
 
     this.clazz = 'APIFarmSource';
 

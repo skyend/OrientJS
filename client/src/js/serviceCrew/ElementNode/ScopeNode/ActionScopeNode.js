@@ -7,7 +7,10 @@ let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 class ActionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    ScopeNode.call(this, _scopeData);
+    if (Orient.bn === 'ie' && Orient.bv == 9) {
+      ScopeNode.call(this, _scopeData);
+    }
+
     this.type = 'action';
 
   }
@@ -20,7 +23,7 @@ class ActionScopeNode extends ScopeNode {
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
     let attr, formatMathed;
-    let scopeSpecObject = super.BuildScopeSpecObjectByScopeDom(_dom);
+    let scopeSpecObject = ScopeNode.BuildScopeSpecObjectByScopeDom(_dom);
     let attrs = _dom.attributes;
     let length = attrs.length;
 

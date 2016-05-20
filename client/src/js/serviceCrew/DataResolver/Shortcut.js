@@ -143,6 +143,16 @@ class Shortcut {
   static get(_obj, _path) {
     return ObjectExplorer.getValueByKeyPath(_obj, _path, '.');
   }
+
+  static object2paramstr(_obj) {
+    let keys = Object.keys(_obj);
+
+    let paramArr = keys.map((_key) => {
+      return _key + "=" + _obj[_key];
+    });
+
+    return paramArr.join('&');
+  }
 }
 
 export default Shortcut;

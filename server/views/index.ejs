@@ -49,6 +49,17 @@
 
 		<!-- Signup Form -->
 			<form name='signup_form' id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
+				<!--@Scope @type:action @name:test @param-test
+					return function(){
+						alert('test'+(1<2 ? true :false));
+					}
+				-->
+				<script name='test2' en-scope-type='function'>
+					!function test2(){
+						alert('test2');
+					}
+					alert('ttttttt');
+				</script>
 
         <en:value name='email' type='string' value=''></en:value>
         <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>

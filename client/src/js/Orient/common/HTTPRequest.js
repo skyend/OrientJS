@@ -3,6 +3,7 @@ import SuperAgent from 'superagent';
 class HTTPRequest {
   static Log(_message, _level = "log", _extras = []) {
     if (!window.DEBUG_OCCURS_HTTP_REQUEST_LOG) return;
+    if (!(window.console && window.console.log && window.console.log.apply)) return;
 
     let logParams = ['%c' + _message, 'background: #333; color: rgb(229, 249, 78); padding:2px;'];
 

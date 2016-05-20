@@ -170,7 +170,9 @@
  class TagBaseElementNode extends ElementNode {
    constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
      super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-     ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+     if (Orient.bn === 'ie' && Orient.bv == 9) {
+       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+     }
 
      this.tagName;
      this.attributes;

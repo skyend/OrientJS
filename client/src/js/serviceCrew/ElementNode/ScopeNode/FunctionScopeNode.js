@@ -6,7 +6,10 @@ let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 class FunctionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    ScopeNode.call(this, _scopeData);
+    if (Orient.bn === 'ie' && Orient.bv == 9) {
+      ScopeNode.call(this, _scopeData);
+    }
+
     this.type = 'function';
   }
 
@@ -18,9 +21,15 @@ class FunctionScopeNode extends ScopeNode {
 
   static BuildScopeSpecObjectByScopeDom(_dom) {
 
-    let scopeSpecObject = super.BuildScopeSpecObjectByScopeDom(_dom);
+    let scopeSpecObject = ScopeNode.BuildScopeSpecObjectByScopeDom(_dom);
 
-    scopeSpecObject.functionReturner = _dom.innerHTML;
+    let scopeBody = _dom.innerHTML;
+    let lines = scopeBody.split('\n');
+    lines = lines.map(function(_line) {
+      return _line.replace(/^[\s\t]*\![\s\t]*?function/, 'return function');
+    });
+
+    scopeSpecObject.functionReturner = lines.join('\n');
 
     return scopeSpecObject;
   }
@@ -43,6 +52,7 @@ class FunctionScopeNode extends ScopeNode {
 
   extractFunction() {
     // function Returner 를 실행하여 실제 Function을 얻는다.
+
     let executableFunction = new Function(this.functionReturner)();
     if (typeof executableFunction === 'function') {
       this.executableFunction = executableFunction;

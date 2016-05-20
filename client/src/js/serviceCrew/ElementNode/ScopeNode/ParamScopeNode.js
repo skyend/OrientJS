@@ -3,7 +3,9 @@ import ValueScopeNode from './ValueScopeNode';
 class ParamScopeNode extends ValueScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    ValueScopeNode.call(this, _scopeData);
+    if (Orient.bn === 'ie' && Orient.bv == 9) {
+      ValueScopeNode.call(this, _scopeData);
+    }
     this.type = 'param';
 
     console.log('param scope member created');

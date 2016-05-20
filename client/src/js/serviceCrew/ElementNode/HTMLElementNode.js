@@ -13,8 +13,9 @@ const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    TagBaseElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-
+    if (Orient.bn === 'ie' && Orient.bv == 9) {
+      TagBaseElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+    }
     this.type = 'html';
 
   }
@@ -318,8 +319,11 @@ class HTMLElementNode extends TagBaseElementNode {
       var newChildElementNode;
       // comment node 는 무시
       if (child_.nodeName === '#comment') {
+        let text = child_.nodeValue;
 
-
+        if (/^\@scope/i.test(text)) {
+          this.appendScopeNode(this.buildScopeNodeByScopeText(text));
+        }
         continue;
       } else if (child_.nodeName === '#text') {
         if (child_.parentNode !== null) {
