@@ -50,7 +50,7 @@
           var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
 
           Orient.replaceRender(masterElementNode, targetElement);
-          
+
           orbit.io.connect(io, window.location.host);
         });
       }
@@ -58,7 +58,12 @@
   </head>
   <body class="hold-transition skin-blue sidebar-mini">
   <div id='wrapper' class="wrapper">
-
+    <script en-scope-type='action' name='a'>
+      !function(){
+        console.log('hello');
+        
+      }
+    </script>
     <%- include ../common/head.ejs %>
 
     <!-- Left side column. contains the logo and sidebar -->

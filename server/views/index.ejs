@@ -54,11 +54,16 @@
 						alert('test'+(1<2 ? true :false));
 					}
 				-->
+
+				<!-- <div en-dc-source-id='[http]/service-static/config/admins.json' en-dc-ns='t' en-event-dc-did-load='{{ throw new Error("a") }}'>
+					{{: ns@t }}
+				</div> -->
+
+
 				<script name='test2' en-scope-type='function'>
 					!function test2(){
 						alert('test2');
 					}
-					alert('ttttttt');
 				</script>
 
         <en:value name='email' type='string' value=''></en:value>

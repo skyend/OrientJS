@@ -1,5 +1,6 @@
 import ScopeNode from './ScopeNode';
 
+const FUNCTION_START_CAPTURE_REGEXP = /^[\s\t]*\![\s\t]*?function/;
 
 let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 
@@ -26,7 +27,7 @@ class FunctionScopeNode extends ScopeNode {
     let scopeBody = _dom.innerHTML;
     let lines = scopeBody.split('\n');
     lines = lines.map(function(_line) {
-      return _line.replace(/^[\s\t]*\![\s\t]*?function/, 'return function');
+      return _line.replace(FUNCTION_START_CAPTURE_REGEXP, 'return function');
     });
 
     scopeSpecObject.functionReturner = lines.join('\n');

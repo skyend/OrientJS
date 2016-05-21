@@ -104,10 +104,10 @@ class RefElementNode extends HTMLElementNode {
       }, null, (_result) => {
         this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
 
-          this.forwardDOM.innerHTML = '';
+          this.clearContainer();
 
           if (!_masterElementNodes) {
-            console.warn(`Fragment Load Warning. "${targetId}" was not load.`);
+            this.print_console_warn(`Fragment Load Warning. "${targetId}" was not load.`);
             return;
           }
 
@@ -159,7 +159,6 @@ class RefElementNode extends HTMLElementNode {
           if (_componentSettings) {
 
             if (_componentSettings.env_after_include) {
-              console.log(this.getDOMNode().innerHTML);
               that.processingCSetting_include(_componentSettings.env_after_include);
             }
 
@@ -427,6 +426,15 @@ class RefElementNode extends HTMLElementNode {
   resetRefInstance() {
     this.loadedRefs = false;
     this.loadedInstance = null;
+  }
+
+  // 자신의 component가 include 될 공간을 청소한다.
+  clearContainer() {
+    let dom = this.forwardDOM;
+
+    while (dom.childNodes.length > 0) {
+      dom.removeChild(dom.childNodes[0]);
+    }
   }
 
   import (_elementNodeDataObject) {

@@ -7,7 +7,6 @@
 
 @End
 -->
-
 <div class="box box-default" >
   <en:value name='server-message' type='string' value=''></en:value>
   <div class="box-header with-border">
@@ -20,7 +19,7 @@
   <pre class="box-body bg-black"  en-io-on='{{: prop@listen-names }}' en-event-io-received='{{ func@update_message( feature@event ) }}'
             style='width:100%;max-width:100%; max-height:500px; overflow:auto;'>
       <script type='text/x-javascript' en-scope-type='function' name='update_message'>
-      return function(_event){
+      ! function(_event){
         var dom = this.getDOMNode();
         var data = _event.data;
         let prevText = this.getValue('server-message');

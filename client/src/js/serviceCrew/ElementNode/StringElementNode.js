@@ -59,7 +59,7 @@ class StringElementNode extends ElementNode {
     CreateNode
       HTMLNode를 생성한다.
   */
-  createNode(_options) {
+  createNode(_options, _text = '') {
     let htmlDoc;
 
     if (this.environment) {
@@ -69,16 +69,19 @@ class StringElementNode extends ElementNode {
     }
 
     if (this.wrappingTag !== null) {
-      return htmlDoc.createElement(this.wrappingTag);
+      let element = htmlDoc.createElement(this.wrappingTag);
+      element.innerHTML = _text;
+      return element;
     }
 
-    return htmlDoc.createTextNode('');
+    return htmlDoc.createTextNode(_text);
   }
 
   applyForward() {
     if (this.wrappingTag !== null) {
       this.forwardDOM.innerHTML = this.backupDOM.innerHTML;
     } else {
+
       this.forwardDOM.nodeValue = this.backupDOM.nodeValue;
     }
 
@@ -87,11 +90,12 @@ class StringElementNode extends ElementNode {
   }
 
   mappingAttributes(_domNode, _options) {
-    let text = _options.resolve ? this.interpret(this.getText()) : this.getText();;
+    let text = _options.resolve ? this.interpret(this.getText()) : this.getText();
+
 
     if (_domNode.nodeName === '#text') {
 
-      _domNode.nodeValue = text;
+      _domNode.nodeValue = text || '';
     } else {
       _domNode.setAttribute('en-id', this.getId());
       _domNode.setAttribute('en-type', this.getType());

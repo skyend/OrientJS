@@ -30,7 +30,7 @@ import Point from '../../util/Point';
 "use strict";
 
 const SIGN_BY_ELEMENTNODE = 'EN';
-const EVENT_EFFECT_MATCHER = /^([\w-]+)@([\w-]+)$/;
+const EVENT_TASK_MATCHER = /^([\w-]+)@([\w-]+)$/;
 const MAX_RENDER_SERIAL_NUMBER = 70000000;
 const SCOPE_TEXT_OPTIONS_REGEXP = /@([\w\:\-\_\d]+)/g;
 const SCOPE_TEXT_OPTION_SEPARATE_REGEXP = /^@([\w\-\_\d]+?)(?:\:(.*))?$/;
@@ -1960,10 +1960,10 @@ class ElementNode {
     if (typeof _desc === 'function') {
 
       this.__executeEventAsFunction(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
-    } else if (/^\{\{.+?\}\}$/.test(_desc)) {
+    } else if (/^\{\{\:?.+?\}\}$/.test(_desc)) {
 
       this.__executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
-    } else if (_desc.match(EVENT_EFFECT_MATCHER) !== null) {
+    } else if (_desc.match(EVENT_TASK_MATCHER) !== null) {
 
       let scope = this.interpret(`{{<< ${_desc}}}`);
       if (!scope) throw new Error(` ${_desc} Task 를 찾지 못 하였습니다.`);
@@ -2475,21 +2475,33 @@ class ElementNode {
   }
 
   print_console_warn() {
-    let modifiedArgs = ObjectExtends.union(['Warning : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    if (window.console) {
+      if (window.console.warn.apply instanceof Function) {
+        let modifiedArgs = ObjectExtends.union(['Warning : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
-    console.warn.apply(console, modifiedArgs);
+        console.warn.apply(console, modifiedArgs);
+      }
+    }
   }
 
   print_console_info() {
-    let modifiedArgs = ObjectExtends.union(['Info : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    if (window.console) {
+      if (window.console.info.apply instanceof Function) {
+        let modifiedArgs = ObjectExtends.union(['Info : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
-    console.info.apply(console, modifiedArgs);
+        console.info.apply(console, modifiedArgs);
+      }
+    }
   }
 
   print_console_error() {
-    let modifiedArgs = ObjectExtends.union(['Error : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
+    if (window.console) {
+      if (window.console.error.apply instanceof Function) {
+        let modifiedArgs = ObjectExtends.union(['Error : '], ObjectExtends.arrayToArray(arguments), [this.DEBUG_FILE_NAME_EXPLAIN]);
 
-    console.error.apply(console, modifiedArgs);
+        console.error.apply(console, modifiedArgs);
+      }
+    }
   }
 
   throw_new_error(_message) {
