@@ -1,5 +1,26 @@
 import SuperAgent from 'superagent';
 
+
+
+/*
+IE9 전용 // 싱크로 동작함
+
+//Orient.HTTPRequest.requestSync('get',  "http://52.79.106.100:38080/api/cms/category/singleDepth.json?site_id=joykolon&ctgry_gb=20&ctgry_level=A&up_ctgry_id=", {}, function(_r, _res){ console.log(_r,_res); } );
+
+// 1. Create XDR object:
+var xdr = new XDomainRequest();
+
+// 2. Open connection with server using GET method:
+xdr.open("get",  "http://52.79.106.100:38080/api/cms/category/singleDepth.json?site_id=joykolon&ctgry_gb=20&ctgry_level=A&up_ctgry_id=");
+
+xdr.onload = function(_a,_b){ console.log('hh',arguments,_a,_b) };
+
+// 3. Send string data to server:
+xdr.send();
+
+console.log('aa',xdr);
+
+*/
 class HTTPRequest {
   static Log(_message, _level = "log", _extras = []) {
     if (!window.DEBUG_OCCURS_HTTP_REQUEST_LOG) return;
@@ -38,14 +59,18 @@ class HTTPRequest {
     //   item = _fields[key];
     //
     // }
-
+    let url = _url;
+    if (!/^https?:\/\//.test(url)) {
+      url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+    }
 
 
     if (_method === 'get') {
-      SuperAgent.get(_url)
+      SuperAgent.get(url)
         .query(_fields)
+        .set('Accept', 'application/json, */*')
         .end(function(err, res) {
-          HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${_url}]\n`, 'log', [res]);
+          HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${url}]\n`, 'log', [res]);
 
           if (err) {
             if (res) {
@@ -59,10 +84,11 @@ class HTTPRequest {
         });
 
     } else if (_method === 'post') {
-      (_enctype === 'multipart/form-data' ? SuperAgent.post(_url) : SuperAgent.post(_url).type('form'))
-      .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
+      (_enctype === 'multipart/form-data' ? SuperAgent.post(url) : SuperAgent.post(url).type('form'))
+      .set('Accept', 'application/json, */*')
+        .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
         .end(function(err, res) {
-          HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${_url}\n`, "log", [res]);
+          HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${url}\n`, "log", [res]);
 
           if (err) {
             if (res) {
@@ -100,6 +126,11 @@ class HTTPRequest {
     var self = this;
 
     var req, sendData, url = _url;
+
+    if (!/^https?:\/\//.test(url)) {
+      url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+    }
+
     if (window.XMLHttpRequest) {
       req = new XMLHttpRequest();
     } else {
@@ -125,11 +156,11 @@ class HTTPRequest {
     }
 
     // 동기 방식 로딩
-    req.open(_method, url, false);
+    req.open(_method, url, true);
 
     try {
       req.send(sendData);
-      HTTPRequest.Log(`XMLHttpRequest[GET] - URL: [${_url}]\n`, 'log', [req]);
+      HTTPRequest.Log(`XMLHttpRequest[GET] - URL: [${url}]\n`, 'log', [req]);
 
       if (typeof _complete === 'function') {
 
@@ -149,7 +180,7 @@ class HTTPRequest {
         return req.responseText;
       }
     } catch (_e) {
-      HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${_e}], URL: [${_url}]\n`, 'log');
+      HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${_e}], URL: [${url}]\n`, 'log');
 
       if (typeof _complete === 'function') {
         _complete(_e, null);

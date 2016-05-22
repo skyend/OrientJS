@@ -62,9 +62,10 @@ class RefElementNode extends HTMLElementNode {
   mappingAttributes(_domNode, _options) {
     super.mappingAttributes(_domNode, _options);
 
-
-    // if (this.refTargetId)
-    //   _domNode.setAttribute('en-ref-target-id', this.refTargetId);
+    if (window.ORIENT_SHOW_SPECIAL_ATTRIBUTES) {
+      if (this.refTargetId)
+        _domNode.setAttribute('en-ref-target-id', this.refTargetId);
+    }
   }
 
 

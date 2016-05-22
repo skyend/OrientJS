@@ -2391,6 +2391,8 @@ class ElementNode {
     Keys: dc, construct, hidden
   **/
   debug(_key) {
+    if (!(console.info.apply instanceof Function)) return;
+
     if (this.type !== 'string') {
       if (this.hasAttribute('trace')) {
 
