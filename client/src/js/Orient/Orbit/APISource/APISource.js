@@ -3,7 +3,7 @@ import Request from './Request.js';
 import ArrayHandler from '../../../util/ArrayHandler';
 import ObjectExtends from '../../../util/ObjectExtends';
 
-import SuperAgent from 'superagent';
+
 
 export default class APISource {
   constructor(_APISourceData, _orbit) {

@@ -1,5 +1,5 @@
 import ICEAPISource from './ICEAPISource';
-import SuperAgent from 'superagent';
+
 
 
 class APIFarmSource extends ICEAPISource {

@@ -141,7 +141,7 @@ class Retriever {
     }
 
     this.orbit.HTTPRequest.request('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
-      if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
+      if (_err !== null) return console.error("fail static component sheet loading <" + _err + ">");
       let responseText = _res.text;
 
       // caching
@@ -160,7 +160,7 @@ class Retriever {
     console.log("Load Component", _loadTarget, this.caches.component[_loadTarget]);
 
     let result = this.orbit.HTTPRequest.requestSync('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
-      if (_err !== null) throw new Error("fail static component sheet loading <" + _err + ">");
+      if (_err !== null) return console.error("fail static component sheet loading <" + _err + ">");
       if (_res.statusType === 2 || _res.statusType === 3) {
         let responseText = _res.text;
 

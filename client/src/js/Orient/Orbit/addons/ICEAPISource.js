@@ -1,6 +1,6 @@
 "use strict";
 
-import SuperAgent from 'superagent';
+
 import ArrayHandler from '../../../util/ArrayHandler';
 import ObjectExtends from '../../../util/ObjectExtends';
 

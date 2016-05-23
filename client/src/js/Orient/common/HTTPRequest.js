@@ -1,6 +1,7 @@
 import SuperAgent from 'superagent';
 
-
+// import JqueryForm from 'jquery-form';
+// import JqueryTransportXDR from 'jquery-transport-xdr';
 
 /*
 IE9 전용 // 싱크로 동작함
@@ -60,15 +61,14 @@ class HTTPRequest {
     //
     // }
     let url = _url;
-    if (!/^https?:\/\//.test(url)) {
-      url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
-    }
+    // if (!/^https?:\/\//.test(url)) {
+    //   url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+    // }
 
 
     if (_method === 'get') {
       SuperAgent.get(url)
         .query(_fields)
-        .set('Accept', 'application/json, */*')
         .end(function(err, res) {
           HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${url}]\n`, 'log', [res]);
 
@@ -85,8 +85,7 @@ class HTTPRequest {
 
     } else if (_method === 'post') {
       (_enctype === 'multipart/form-data' ? SuperAgent.post(url) : SuperAgent.post(url).type('form'))
-      .set('Accept', 'application/json, */*')
-        .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
+      .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
         .end(function(err, res) {
           HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${url}\n`, "log", [res]);
 
@@ -127,9 +126,9 @@ class HTTPRequest {
 
     var req, sendData, url = _url;
 
-    if (!/^https?:\/\//.test(url)) {
-      url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
-    }
+    // if (!/^https?:\/\//.test(url)) {
+    //   url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+    // }
 
     if (window.XMLHttpRequest) {
       req = new XMLHttpRequest();
@@ -156,7 +155,7 @@ class HTTPRequest {
     }
 
     // 동기 방식 로딩
-    req.open(_method, url, true);
+    req.open(_method, url, false);
 
     try {
       req.send(sendData);
