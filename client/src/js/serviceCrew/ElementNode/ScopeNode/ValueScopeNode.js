@@ -22,7 +22,7 @@ const DataTypes = Object.freeze({
 class ValueScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if (Orient.bn === 'ie' && Orient.bv == 9) {
+    if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ScopeNode.call(this, _scopeData);
     }
 

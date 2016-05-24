@@ -7,7 +7,7 @@ let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 class FunctionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if (Orient.bn === 'ie' && Orient.bv == 9) {
+    if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ScopeNode.call(this, _scopeData);
     }
 
@@ -54,6 +54,7 @@ class FunctionScopeNode extends ScopeNode {
   extractFunction() {
     // function Returner 를 실행하여 실제 Function을 얻는다.
     let executableFunction;
+    // console.log(this.functionReturner);
 
     try {
       executableFunction = new Function(this.functionReturner);

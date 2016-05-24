@@ -18,6 +18,27 @@
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
     <script>
+			function iframePostSendTest(_e, _target){
+
+
+					var iframe = document.createElement('iframe');
+
+					var clonedInputF = _e.target.cloneNode(true);
+
+					document.head.appendChild(iframe);
+
+					iframe.onload = function(){
+						console.log('iframe loaded')
+						var iframeDocument = 	iframe.contentDocument;
+						iframeDocument.body.innerHTML = '<form name="sender" method="post" action="/service-static/config/admin.json" enctype="multipart/form-data">' + '</form>';
+						iframeDocument.sender.appendChild(clonedInputF);
+						console.log(clonedInputF);
+						window.input = clonedInputF;
+
+						iframeDocument.sender.submit();
+					}
+			}
+
       window.onload = function(){
         var orbit = new Orbit(window);
 				window.orbit = orbit;
@@ -74,6 +95,9 @@
 
 				<input type="submit" value="Sign Up" en-event-click='{{ location.href="/admin/signup?email="+ val@email; }}'/>
         <input type="submit" value="Sign In" en-event-click='{{ location.href="/admin/signin?email="+ val@email; }}'/>
+
+				iframePostSendTest
+				<input type='file' name='file' en-event-change='{{ iframePostSendTest( feature@event.originEvent , this ) }}' />
 			</form>
 
 		<!-- Footer -->

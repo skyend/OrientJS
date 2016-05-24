@@ -1339,10 +1339,12 @@ class ElementNode {
       }
     } catch (_e) {
 
-      console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
-      console.log(`%cFull sentence : ${_matterText}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
-      if (_e.interpretArguments) {
-        console.log('%cBindBlock Arguments :', 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;', _e.interpretArguments);
+      if (window.ORIENT_CLEAR_BD_LOG !== true) {
+        console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+        console.log(`%cFull sentence : ${_matterText}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+        if (_e.interpretArguments) {
+          console.log('%cBindBlock Arguments :', 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;', _e.interpretArguments);
+        }
       }
 
       // groupCollapsed 는 IE11부터

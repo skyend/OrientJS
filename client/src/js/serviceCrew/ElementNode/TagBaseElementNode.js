@@ -170,7 +170,7 @@
  class TagBaseElementNode extends ElementNode {
    constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
      super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-     if (Orient.bn === 'ie' && Orient.bv == 9) {
+     if (Orient.bn === 'ie' && Orient.bv <= 10) {
        ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
      }
 
@@ -212,7 +212,7 @@
 
    findAttributeIndex(_name) {
 
-     return ArrayHandler.findIndex(this.attributes, function(_v) {
+     return ArrayHandler.findIndex(this.getAttributes(), function(_v) {
        return _v.name === _name;
      });
    }

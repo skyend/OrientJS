@@ -5,7 +5,7 @@ import ICEAPISource from './ICEAPISource';
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
-    if (Orbit.bn === 'ie' && Orbit.bv == 9) {
+    if (Orbit.bn === 'ie' && Orbit.bv <= 10) {
       ICEAPISource.call(this, _APISourceData, _orbit);
     }
 

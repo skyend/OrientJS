@@ -4,7 +4,7 @@ import ElementNode from './ElementNode.js';
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    if (Orient.bn === 'ie' && Orient.bv == 9) {
+    if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
     this.type = 'string';

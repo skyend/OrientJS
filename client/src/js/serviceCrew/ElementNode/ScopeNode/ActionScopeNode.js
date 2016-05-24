@@ -9,7 +9,7 @@ const ACTION_START_CAPTURE_REGEXP = /^[\s\t]*\![\s\t]*?function/;
 class ActionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if (Orient.bn === 'ie' && Orient.bv == 9) {
+    if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ScopeNode.call(this, _scopeData);
     }
 

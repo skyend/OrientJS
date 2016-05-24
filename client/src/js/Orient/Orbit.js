@@ -80,6 +80,7 @@ class Orbit {
       let mode = this.getField("MODE") || 'op'; // debug(디버그) || dev(개발) || op(운영)
 
       if (mode === 'op') {
+        window.ORIENT_CLEAR_BD_LOG = true;
         //
       } else if (mode === 'dev') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
