@@ -302,7 +302,9 @@ class RefElementNode extends HTMLElementNode {
 
   // masterElementNode 들과 setting 오브젝트를 반환
   interpretComponentSheet(_type, _sheet, _targetId, _callback) {
+    console.time(`Build Component Sheet - ${_targetId}`);
     let masterElementNodes = this.convertMastersByType(_type, undefined, _sheet);
+    console.timeEnd(`Build Component Sheet - ${_targetId}`);
 
     if (_type === 'html') {
       let matcher = /^<!--[\n\s]+@Settings/g;

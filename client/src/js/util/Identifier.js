@@ -33,7 +33,7 @@ var Identifier = {
     let bin = _number.toString(2);
 
     let builtString = "";
-    let chunkCount = Math.ceil(bin.length / 5); // 6비트는 0~63의 수를 표현
+    let chunkCount = Math.ceil(bin.length / 5); // 6비트는 0~31의 수를 표현
 
     let start;
     for (let i = 0; i < chunkCount; i++) {
@@ -45,18 +45,30 @@ var Identifier = {
     return builtString;
   },
 
-  chars64SequenceStore: function() {
+  chars64SequenceStore: function(_maxRewind) {
     let seq = 0;
 
     return function() {
+      if (_maxRewind) {
+        if (seq > _maxRewind) {
+          seq = 0;
+        }
+      }
+
       return Identifier.numberTo64Hash(seq++);
     };
   },
 
-  chars32SequenceStore: function() {
+  chars32SequenceStore: function(_maxRewind) {
     let seq = 0;
 
     return function() {
+      if (_maxRewind) {
+        if (seq > _maxRewind) {
+          seq = 0;
+        }
+      }
+
       return Identifier.numberTo32Hash(seq++);
     };
   }

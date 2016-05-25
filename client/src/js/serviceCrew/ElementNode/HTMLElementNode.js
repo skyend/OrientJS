@@ -288,6 +288,8 @@ class HTMLElementNode extends TagBaseElementNode {
    * child는 재귀로 호출한다.
    */
   buildByElement(_domElement, _absorbOriginDOM) {
+    //    console.time('Build By ElementNode[html]');
+
     super.buildByElement(_domElement, _absorbOriginDOM);
 
     // this.setType('html');
@@ -306,18 +308,16 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
       // en- 으로 시작되는 태그를 ScopeNode로 취급한다.
-      if (/^en:|script/i.test(child_.nodeName)) {
-
+      if (/^en:/i.test(child_.nodeName) || (child_.nodeName.toLowerCase() === 'script' && child_.getAttribute('en-scope-type') !== null)) {
 
         this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
-
         continue;
       }
 
 
 
       var newChildElementNode;
-      // comment node 는 무시
+      // comment node 는 Scope 선언자가 있는지 확인 하고 존재한다면 Scope 로 빌드
       if (child_.nodeName === '#comment') {
         let text = child_.nodeValue;
 
@@ -360,6 +360,7 @@ class HTMLElementNode extends TagBaseElementNode {
     // 선택적 재귀끝  //
     ////////////
     this.children = children;
+    //    console.timeEnd('Build By ElementNode[html]');
   }
 
   // 해당 _child를 제일 마지막 인덱스로 이동시킨다.

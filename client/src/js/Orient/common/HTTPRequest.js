@@ -1,11 +1,12 @@
-import SuperAgent from 'superagent';
 import browser from 'detect-browser';
 import Classer from '../../util/Classer';
-
+import Identifier from '../../util/Identifier.js';
 
 const B_NAME = browser.name;
 const B_VER = parseInt(browser.version);
-console.log(B_NAME, '--', B_VER);
+
+
+const GET_IE_MULTIPART_IFRAME_ID_STORE = Identifier.chars32SequenceStore(9999999);
 
 // import JqueryForm from 'jquery-form';
 // import JqueryTransportXDR from 'jquery-transport-xdr';
@@ -93,128 +94,78 @@ class HTTPRequest {
 
 
 
-  static request(_method, _url, _fields = {}, _complete, _enctype = 'application/x-www-form-urlencoded', _async = true) {
+  static request(_method, _url, _fields = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true) {
     let method = _method.toLowerCase();
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
 
+    // Object 로 입력된 필드 목록을 Array 로 변환한다.
+    let rawFieldArray = HTTPRequest.fieldConvertToArray(_fields);
+
+    // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
+    let cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
 
     // multipart post 체크와 메소드 체크
     if (method === 'post') {
-      if (enctype === 'multipart/form-data') {
+      if (_enctype === 'multipart/form-data') {
         is_multipart_post = true;
       }
     } else if (method === 'get') {
+      if (_enctype !== 'application/x-www-form-urlencoded') {
+        throw new Error(`HTTP Method 는 GET 으로 지정되어 있지만, Enctype 은 'application/x-www-form-urlencoded' 가 아닙니다.`);
+      }
       //
     } else {
       throw new Error(`지원하지 않는 HTTP메소드(${_method}) 입니다.`);
     }
 
+
     // URL 구성
     // 프로토콜이 생략되어 있는 URL이면 프로토콜과 호스트를 앞에 붙여 절대 URL로 완성한다.
     if (!/^https?:\/\//.test(url)) {
-      url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+      // 상대경로도 아닐 때
+      if (!/^\.\.?\//.test(url)) {
+        url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
+      }
     }
 
     // 크로스 도메인확인
     // URL이 현재 protocol 과 host 가 일치하는지 확인한다.
-    if ((new RegExp('^' + location.protocol + '//' + location.host + '/')).test(url)) {
+    if ((new RegExp('^' + location.protocol + '//' + location.host + '/')).test(url) || /^\.\.?\//.test(url)) {
       isSameOrigin = true;
     } else {
       isSameOrigin = false;
     }
 
     // console.log('a', is_multipart_post);
+    let finalData = null;
+    let finalURL = url;
 
-    // Multipart Post
     if (is_multipart_post) {
 
       // post 이고 multipart/form-data의 경우
-      if (B_NAME === 'ie' && B_VER <= 9) {
+      if (B_NAME === 'ie' && B_VER <= 10) {
 
         /*
-        ██ ███████  █████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
-        ██ ██      ██   ██     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
-        ██ █████    ██████     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
-        ██ ██           ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
-        ██ ███████  █████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
+        ██ ███████  ██  ██████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
+        ██ ██      ███ ██  ████     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
+        ██ █████    ██ ██ ██ ██     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
+        ██ ██       ██ ████  ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
+        ██ ███████  ██  ██████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
         */
 
-
-
-
-        return HTTPRequest.requestMultipartPostIE9below(_url, _fields, _complete, _async);
+        return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, _callback, _async);
       }
 
-      let Request;
-      if (B_NAME === 'ie' && B_VER === 10) {
-        if (isSameOrigin) {
-          Request = XMLHttpRequest;
-        } else {
-          Request = XDomainRequest;
-        }
-      } else {
-        Request = XMLHttpRequest;
-      }
-
-      // FormData
-      let req = new Request();
-
-      let formData = HTTPRequest.convertFieldsToFormData(_fields);
-      if (req.setRequestHeader)
-        req.setRequestHeader("Content-type", _enctype);
-
-      // OPEN
-      req.open(method, url, _async);
-
-      req.onload = function(_e) {
-
-        /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
-        req.statusType = Math.floor(req.status / 100);
-        req.statusCode = req.status;
-        req.text = req.responseText;
-
-        try {
-          req.body = JSON.parse(req.responseText);
-        } catch (_e) {
-          req.body = null;
-        }
-
-
-        _complete(null, req);
-      };
-
-      req.onerror = function(_e) {
-        // console.log('onerror', _e);
-        throw new Error(`Request Error by ${Request}`);
-        // _complete(new Error(`Request Error by ${Request}`), null);
-      };
-
-      req.send(formData);
+      finalData = HTTPRequest.convertFieldsToFormData(cookedFieldArray);
     } else if (_enctype === 'application/x-www-form-urlencoded') {
       // get / post 모두 데이터포맷은 같다
       // console.log('application/x-www-form-urlencoded');
-      let Request;
-
-      if (B_NAME === 'ie' && B_VER <= 10) {
-        if (isSameOrigin) {
-          Request = XMLHttpRequest;
-          // console.log('>> XMLHttpRequest');
-        } else {
-          Request = XDomainRequest;
-          // console.log('>> XDomainRequest');
-        }
-      } else {
-        Request = XMLHttpRequest;
-      }
-      let req = new Request();
-
 
       // query 생성
-      let queryDataKeys = Object.keys(_fields);
-      let queries = queryDataKeys.map(function(_key) {
-        return `${_key}=${ encodeURIComponent(_fields[_key]) }`;
+      let queries = cookedFieldArray.map(function(_fieldPair) {
+        return `${_fieldPair[0]}=${ encodeURIComponent(_fieldPair[1]) }`;
       });
 
       let urlencodedQueries = queries.join('&');
@@ -222,116 +173,192 @@ class HTTPRequest {
       // Method 가 get 이면 query 들을 조합하여 URL에 더한다.
       if (method === 'get') {
         if (url.lastIndexOf('?') !== -1) {
-          url += `&${urlencodedQueries}`;
+          finalURL = `${url}&${urlencodedQueries}`;
         } else {
-          url += `?${urlencodedQueries}`;
+          finalURL = `${url}?${urlencodedQueries}`;
         }
-      }
-
-      // OPEN
-      req.open(_method, url, _async);
-
-      if (req.setRequestHeader)
-        req.setRequestHeader("Content-type", _enctype);
-
-      req.onprogress = function(_e) {
-        console.log('onprogress', _e);
-      };
-
-      req.onload = function(_e) {
-
-        /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
-        req.statusType = Math.floor(req.status / 100);
-        req.statusCode = req.status;
-        req.text = req.responseText;
-
-        try {
-          req.body = JSON.parse(req.responseText);
-        } catch (_e) {
-          req.body = null;
-        }
-
-
-        _complete(null, req);
-
-        // console.log('onload');
-        // console.dir(req);
-      };
-
-      req.onerror = function(_e) {
-        // console.log('onerror', _e);
-        throw new Error(`Request Error by ${Request}`);
-        // _complete(new Error(`Request Error by ${Request}`), null);
-      };
-
-
-      // SEND
-      if (method === 'get') {
-        req.send();
       } else {
-        // post, ... others
-        req.send(urlencodedQueries);
+        finalData = urlencodedQueries;
+      }
+    }
+
+    let Request;
+    if (B_NAME === 'ie' && B_VER <= 10) {
+      if (isSameOrigin) {
+        Request = XMLHttpRequest;
+        // console.log('>> XMLHttpRequest');
+      } else {
+        Request = XDomainRequest;
+        // console.log('>> XDomainRequest');
+      }
+    } else {
+      Request = XMLHttpRequest;
+    }
+    let request = new Request();
+
+    // OPEN
+    request.open(_method, finalURL, _async);
+
+    if (request.setRequestHeader) {
+      if (_enctype !== 'multipart/form-data') {
+        request.setRequestHeader("Content-type", _enctype);
+      }
+    }
+
+    request.onprogress = function(_e) {
+      //console.log('onprogress', _e);
+    };
+
+    request.onload = function(_e) {
+      //console.log('onload', _e);
+
+      /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
+      request.statusType = Math.floor(request.status / 100);
+      request.statusCode = request.status;
+      request.text = request.responseText;
+
+      try {
+        request.body = JSON.parse(request.responseText);
+      } catch (_e) {
+        request.body = null;
       }
 
-      // console.log('sent');
-    }
-  }
+      _callback(null, request);
 
-  static requestMultipartPostIE9below() {
+      // console.log('onload');
+      // console.dir(req);
+    };
 
-  }
-
-  static _request(_method, _url, _fields = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
-    // let fieldKeys = Object.keys(_fields);
-    //
-    // let key, item;
-    // for (let i = 0; i < fieldKeys.length; i++) {
-    //   key = fieldKeys[i];
-    //   item = _fields[key];
-    //
-    // }
-    let url = _url;
-    // if (!/^https?:\/\//.test(url)) {
-    //   url = url.replace(/^\/?/, location.protocol + '//' + location.host + '/');
-    // }
+    request.onerror = function(_e) {
+      // console.log('onerror', _e);
+      console.log(_e);
+      throw new Error(`Request Error by ${Request}`);
+      // _callback(new Error(`Request Error by ${Request}`), null);
+    };
 
 
-    if (_method === 'get') {
-      SuperAgent.get(url)
-        .query(_fields)
-        .end(function(err, res) {
-          HTTPRequest.Log(`XMLHttpRequest[GET] - Error: [${err}], URL: [${url}]\n`, 'log', [res]);
-
-          if (err) {
-            if (res) {
-              _complete(err, res, res.statusCode);
-            } else {
-              _complete(err, null);
-            }
-          } else {
-            _complete(null, res, res.statusCode);
-          }
-        });
-
-    } else if (_method === 'post') {
-      (_enctype === 'multipart/form-data' ? SuperAgent.post(url) : SuperAgent.post(url).type('form'))
-      .send(_enctype === 'multipart/form-data' ? this.convertFieldsToFormData(_fields) : _fields)
-        .end(function(err, res) {
-          HTTPRequest.Log(`%c XMLHttpRequest[POST] - Error: ${err}, URL: ${url}\n`, "log", [res]);
-
-          if (err) {
-            if (res) {
-              _complete(err, res, res.statusCode);
-            } else {
-              _complete(err, null);
-            }
-          } else {
-            _complete(null, res, res.statusCode);
-          }
-        });
+    // SEND
+    if (method === 'get') {
+      request.send();
     } else {
-      throw new Error(`지원하지 않는 HTTP메소드(${_method}) 입니다.`);
+      // post, ... others
+      request.send(finalData);
     }
+  }
+
+  /*
+    fieldConvertToArray
+      Object 타입의 필드 목록을 Array로 변환한다.
+      Array 타입의 필드 목록을 그대로 반환한다.
+  */
+  static fieldConvertToArray(_fields) {
+    if (_fields instanceof Array) {
+      return _fields;
+    } else {
+      if (_fields instanceof Object) {
+        let keys, key;
+        keys = Object.keys(_fields);
+
+        return keys.map(function(_key) {
+          return [_key, _fields[_key]];
+        });
+      } else {
+        return [];
+      }
+    }
+  }
+
+  static requestMultipartPostIE10below(_url, _rawFieldArray, _callback, _async) {
+    let iframe = document.createElement('iframe');
+
+    iframe.setAttribute('id', 'ie-multipart-post-' + GET_IE_MULTIPART_IFRAME_ID_STORE());
+
+    document.head.appendChild(iframe);
+
+  }
+
+  /*
+    convertRawFieldsToRealFieldsData
+      필드 목록중 가공되지 않고 가공이 가능한 형태의 필드가 존재할 경우
+      필드에서 전송가능한 데이터를 추출하여 필드의 값으로 변경한다.
+
+    가공대상 Raw Object
+     * HTMLInputElement
+     * HTMLTextAreaElement
+     * FileList
+     * File
+     * Array
+     * String
+     * Number
+     * Boolean
+
+  */
+  static convertRawFieldsToRealFieldsData(_rawFieldArray) {
+    let cookedFieldArray = [];
+
+    let rawFieldPair;
+    let key, value, valueType;
+    for (let i = 0; i < _rawFieldArray.length; i++) {
+
+      rawFieldPair = _rawFieldArray[i];
+      key = rawFieldPair[0];
+      value = rawFieldPair[1];
+      valueType = typeof value;
+
+
+      if (valueType === 'string' || valueType === 'number' || valueType === 'boolean') {
+
+        cookedFieldArray.push([key, value]);
+      } else if (window.FileList && value instanceof window.File) {
+
+        cookedFieldArray.push([key, value]);
+      } else if (value instanceof HTMLInputElement) {
+        // Input Element
+
+        let type = value.getAttribute('type');
+
+        switch (type) {
+          case "file":
+
+            for (let j = 0; j < value.files.length; j++) {
+              cookedFieldArray.push([key, value.files[j]]);
+            }
+
+            break;
+          default:
+            value = value.value;
+            break;
+        }
+      } else if (value instanceof HTMLTextAreaElement) {
+        // Textarea Element
+        value = value.value;
+
+        cookedFieldArray.push([key, value]);
+      } else if (value instanceof Array || (window.FileList && value instanceof window.FileList)) {
+        // Array or FileList
+
+        for (let j = 0; j < value.length; j++) {
+          cookedFieldArray.push([key, value[j]]);
+        }
+      } else if (value instanceof Function) {
+
+        cookedFieldArray.push([key, value.toString()]);
+      } else if (value instanceof Object) {
+        // Not supported Object
+
+        throw new Error(`${value.constructor ? value.constructor.name : typeof value} is not supported Raw Transfer Field Type. [fieldname:${key}]`);
+      } else {
+        // Default
+
+        if (value === null || value === undefined) {
+          HTTPRequest.Log(`value of ${key} is ${value}.`, 'warn');
+
+          continue;
+        }
+      }
+    }
+
+    return cookedFieldArray;
   }
 
   // IE10+
@@ -341,73 +368,32 @@ class HTTPRequest {
       return _fields;
     }
 
-    let formData = new FormData();
-    let fieldKeys = Object.keys(_fields);
+    let newFormData = new FormData();
 
-    for (let i = 0; i < fieldKeys.length; i++) {
-      formData.append(fieldKeys[i], _fields[fieldKeys[i]]);
-    }
+    if (_fields instanceof Array) {
+      let field;
 
-    return formData;
-  }
+      for (let i = 0; i < _fields.length; i++) {
+        field = _fields[i];
 
-  static requestSync(_method, _url, _data = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
-    HTTPRequest.request(_method, _url, _data, _complete, _enctype, false);
-  }
-
-
-  static requestSync__(_method, _url, _data = {}, _complete, _enctype = 'application/x-www-form-urlencoded') {
-    var self = this;
-
-    var req;
-    if (window.XMLHttpRequest) {
-      req = new XMLHttpRequest();
-    } else {
-      req = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-
-    // 동기 방식 로딩
-    req.open(_method, _url, false);
-    if (_method !== 'get') {
-      req.setRequestHeader("Content-type", _enctype);
-      req.send();
-    } else {
-      req.send();
-    }
-
-
-
-    console.log(req);
-    let statusType = Math.floor(req.status / 100);
-
-    // 1xx, 2xx, 3xx
-    if (statusType < 4) {
-
-      if (typeof _complete === 'function') {
-        _complete(err || null, res || null);
-      } else {
-        return req.responseText;
+        newFormData.append(field[0], field[1]);
       }
     } else {
-      // 4xx, 5xx
+      let fieldKeys = Object.keys(_fields);
+      let fieldKey;
 
-
-      if (typeof _complete === 'function') {
-        _complete({
-          status: req.status,
-          statusCode: req.status,
-          statusType: statusType,
-          text: req.responseText,
-          type: type
-        }, null);
-      } else {
-        return req.responseText;
+      for (let i = 0; i < fieldKeys.length; i++) {
+        fieldKey = fieldKeys[i];
+        newFormData.append(fieldKeys[i], _fields[fieldKey]);
       }
-
-      return undefined;
     }
+
+    return newFormData;
   }
 
+  static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded') {
+    HTTPRequest.request(_method, _url, _data, _callback, _enctype, false);
+  }
 }
 
 export default HTTPRequest;

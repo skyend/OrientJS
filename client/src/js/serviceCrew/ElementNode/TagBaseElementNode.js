@@ -514,6 +514,8 @@
 
 
    applyForward() {
+     if (!(this.forwardDOM && this.backupDOM)) return console.warn('forwardDOM 또는 backupDOM이 존재하지 않습니다. applyForward 는 무시됩니다.');
+
      let oldAttributes = this.forwardDOM.attributes;
      let newAttributes = this.backupDOM.attributes;
      let attrName;
@@ -651,6 +653,10 @@
 
        if (_domElement.getAttribute('en-dc-attitude') !== null) {
          throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
+       }
+
+       if (_domElement.getAttribute('en-dc-render-dont-care-loading')) {
+         this.dynamicContextRenderDontCareLoading = _domElement.getAttribute('en-dc-render-dont-care-loading');
        }
      }
 

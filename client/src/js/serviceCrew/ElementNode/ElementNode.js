@@ -621,14 +621,27 @@ class ElementNode {
     this.debug("construct", "start", _options);
 
     // DC 실행
-    if (this.isDynamicContext() && this.dynamicContextPassive === false) {
-      if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
-        this.executeDynamicContext();
+    if (this.isDynamicContext()) {
+      if (this.dynamicContextPassive === false) {
+        if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
+          this.executeDynamicContext();
 
-      } else if (_options.keepDC === 'once') {
-        _options.keepDC = false;
+        } else if (_options.keepDC === 'once') {
+          _options.keepDC = false;
+        }
+      }
+
+      if (!this.dynamicContextRenderDontCareLoading) {
+        console.log(this.dynamicContext, this);
+        if (this.dynamicContext) {
+          if (this.dynamicContext.isLoading === true) {
+            return [];
+          }
+        }
       }
     }
+
+
 
     // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
     if (this.isRepeater()) {
@@ -971,7 +984,7 @@ class ElementNode {
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
       function handler(_e) {
-        console.log("DOM Event fire :" + _key);
+        console.log("DOM Event fire :" + _key + ' ' + that.DEBUG_FILE_NAME_EXPLAIN);
 
         let eventReturn;
 
@@ -986,6 +999,20 @@ class ElementNode {
         return eventReturn;
       }
 
+      if (Orient.bn === 'ie' && Orient.bv >= 10) {
+
+        if (_key === 'input') {
+          if (/^deep-/.test(_key)) {
+            _dom.addEventListener('keyup', handler, true);
+            _dom.addEventListener('change', handler, true);
+          } else {
+            _dom.addEventListener('keyup', handler);
+            _dom.addEventListener('change', handler);
+          }
+
+          return;
+        }
+      }
 
       if (/^deep-/.test(_key)) {
         _dom.addEventListener(_key.replace(/^deep-/, ''), handler, true);
@@ -1595,7 +1622,15 @@ class ElementNode {
     if (matches === null) {
       // SCRIPT 블럭
       if (_scopeDom.nodeName === 'SCRIPT') {
-        scopeType = _scopeDom.getAttribute("en-scope-type").toLowerCase();
+        let scopeTypeAttr = _scopeDom.getAttribute("en-scope-type");
+        if (scopeTypeAttr !== null) {
+
+          scopeType = scopeTypeAttr.toLowerCase();
+        } else {
+          console.warn(`Script 선언에는 en-scope-type 어트리뷰트가 필요 합니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          return;
+          // throw new Error(`Script 선언에는 en-scope-type 어트리뷰트가 필요 합니다. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+        }
       }
     } else {
       scopeType = matches[1].toLowerCase();
@@ -2533,6 +2568,7 @@ class ElementNode {
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
     this.dynamicContextSync = _elementNodeDataObject.dynamicContextSync;
     this.dynamicContextInjectParams = _elementNodeDataObject.dynamicContextInjectParams;
+    this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dynamicContextRenderDontCareLoading;
 
     // Socket IO
     this.ioListenNames = _elementNodeDataObject.ioListenNames;
@@ -2589,6 +2625,7 @@ class ElementNode {
     exportObject.dynamicContextNS = this.dynamicContextNS;
     exportObject.dynamicContextSync = this.dynamicContextSync;
     exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
+    exportObject.dynamicContextRenderDontCareLoading = this.dynamicContextRenderDontCareLoading;
 
     // Socket IO
     exportObject.ioListenNames = this.ioListenNames;

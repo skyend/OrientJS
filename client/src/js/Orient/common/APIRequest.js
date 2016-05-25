@@ -77,7 +77,6 @@ class APIRequest {
     let sourceType = sourceMatches[1],
       sourceTarget = sourceMatches[2];
 
-
     if (/^https?$/.test(sourceType)) {
       HTTPRequest.request(_methodOverride || 'get', sourceTarget, _paramObject, function(_err, _res, _statusCode) {
 

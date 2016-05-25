@@ -94,6 +94,7 @@ class Neutron {
 
   static mount(_elementNode, _targetDOMElement) {
     _elementNode.attachForwardDOM(_targetDOMElement);
+
   }
 
   static mountByReplace(_elementNode, _targetDOMElement) {
@@ -104,6 +105,7 @@ class Neutron {
 
   // render = renderVirtual + mount
   static render(_elementNode, _targetDOMElement) {
+
     this.renderVirtual(_elementNode);
     this.mount(_elementNode, _targetDOMElement);
   }
