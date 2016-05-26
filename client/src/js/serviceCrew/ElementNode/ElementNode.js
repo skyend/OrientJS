@@ -448,7 +448,7 @@ class ElementNode {
     let methodSourceType = typeof _methodSource;
 
     if (methodSourceType !== 'function' && methodSourceType !== 'string') {
-      throw new Error(`MethodSource[${_methodSource}] 는 Function 타입이거나 바인딩 블럭으로 이루어진 String이어야 합니다.`);
+      throw new Error(`${_name} Method를 부여할 수 없습니다. MethodSource[${_methodSource}] 는 Function 타입이거나 바인딩 블럭으로 이루어진 String이어야 합니다.`);
     }
 
     Object.defineProperty(this, _name, {
@@ -632,7 +632,6 @@ class ElementNode {
       }
 
       if (!this.dynamicContextRenderDontCareLoading) {
-        console.log(this.dynamicContext, this);
         if (this.dynamicContext) {
           if (this.dynamicContext.isLoading === true) {
             return [];
@@ -2562,7 +2561,7 @@ class ElementNode {
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
-    this.dynamicContextPassive = _elementNodeDataObject.dynamicContextPassive;
+    this.dynamicContextPassive = _elementNodeDataObject.dynamicContextPassive || false;
     this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
     this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
     this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;

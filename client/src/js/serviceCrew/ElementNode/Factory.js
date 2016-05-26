@@ -68,7 +68,6 @@ class Factory {
 
   // HTML 텍스트를 ElementNode 컴포넌트로 변환한다.
   static convertToMasterElementNodesByHTMLSheet(_htmlText, _props, _env) {
-    console.log(_props);
 
     console.time('Fill html container');
     let realizeContainer = document.createElement('div');
