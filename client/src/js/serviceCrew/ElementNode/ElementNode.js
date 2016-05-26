@@ -768,14 +768,7 @@ class ElementNode {
       //   this.backupDOM = constructedDOM;
       // }
 
-      // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
-      if (this.isAttachedDOM) {
-        //console.log('to backup', constructedDOM);
-        this.backupDOM = constructedDOM;
-      } else {
-        //console.log('to forward', constructedDOM);
-        this.forwardDOM = constructedDOM;
-      }
+
 
       returnElementNodes.push(this);
     }
@@ -801,6 +794,16 @@ class ElementNode {
     }
 
     this.debug('construct', 'created htmlNode ', htmlNode);
+
+    // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
+    if (this.isAttachedDOM) {
+      //console.log('to backup', constructedDOM);
+      this.backupDOM = htmlNode;
+    } else {
+      //console.log('to forward', constructedDOM);
+      this.forwardDOM = htmlNode;
+    }
+
     return htmlNode;
   }
 
@@ -2300,6 +2303,11 @@ class ElementNode {
   */
   setValue(_name, _value) {
     this.setValueScopeData(_name, _value);
+  }
+
+  updateSingle(_options) {
+    this.constructDOM(_options);
+    this.applyForward(_options);
   }
 
   getValue(_name) {

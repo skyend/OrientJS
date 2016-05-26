@@ -91,6 +91,8 @@ class RefElementNode extends HTMLElementNode {
       return returnHolder;
     }
 
+
+
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
 
@@ -228,8 +230,8 @@ class RefElementNode extends HTMLElementNode {
     if (_domElement.getAttribute('en-ref-target-id') !== null)
       this.refTargetId = _domElement.getAttribute('en-ref-target-id');
 
-    if (_domElement.getAttribute('en-ref-sync') !== null)
-      this.refSync = _domElement.getAttribute('en-ref-sync') || true;
+    if (_domElement.getAttribute('en-ref-async') !== null)
+      this.refAsync = _domElement.getAttribute('en-ref-async') || true;
 
     if (_domElement.getAttribute('en-ref-remount-always') !== null)
       this.refAlwaysRemount = _domElement.getAttribute('en-ref-remount-always') || true;
@@ -268,7 +270,7 @@ class RefElementNode extends HTMLElementNode {
 
 
     if (this.environment) {
-      this.environment.retriever[this.refSync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, (_responseSheet) => {
+      this.environment.retriever[this.refAsync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, (_responseSheet) => {
 
         this.interpretComponentSheet(type, _responseSheet, _targetId, (_masterElementNodes, _settings) => {
 
@@ -276,7 +278,7 @@ class RefElementNode extends HTMLElementNode {
         });
       });
     } else {
-      Orient.HTTPRequest[this.refSync ? 'requestSync' : 'request']('get', targetId, {}, (_err, _res) => {
+      Orient.HTTPRequest[this.refAsync ? 'requestSync' : 'request']('get', targetId, {}, (_err, _res) => {
         if (_err !== null) throw new Error("fail static component loading");
 
         let responseText = _res.text;
@@ -320,16 +322,15 @@ class RefElementNode extends HTMLElementNode {
           let componentSettingObject = this.htmlSettingBlockInterpret(settingsBlock);
 
           // 일반 env_include 는 처리만 실행한다.
-
           if (componentSettingObject['env_include']) {
             this.processingCSetting_include(componentSettingObject['env_include']);
           }
 
 
-          // 동기 env_include 는 처리를 실행 후 완료후에 _callback을 실행한다.
+          // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
 
           if (componentSettingObject['env_include_async']) {
-            if (this.refSync) {
+            if (this.refAsync === false) {
               // 경고
               // component load type is
               // component will be load by async. because component load type is sync, but dependent resource is async
@@ -380,6 +381,9 @@ class RefElementNode extends HTMLElementNode {
             }
 
             settingObjects[keyword].push(desc);
+            break;
+          case "trace":
+            settingObjects['trace'] = true;
             break;
           default:
             throw new Error(`${keyword} is not supported setting.`);
@@ -443,7 +447,7 @@ class RefElementNode extends HTMLElementNode {
   import (_elementNodeDataObject) {
     let result = super.import(_elementNodeDataObject);
     this.refTargetId = _elementNodeDataObject.refTargetId;
-    this.refSync = _elementNodeDataObject.refSync || false;
+    this.refAsync = _elementNodeDataObject.refAsync || false;
     this.refAlwaysRemount = _elementNodeDataObject.refAlwaysRemount || false;
     return result;
   }
@@ -451,7 +455,7 @@ class RefElementNode extends HTMLElementNode {
   export (_withoutId) {
     let result = super.export(_withoutId);
     result.refTargetId = this.refTargetId;
-    result.refSync = this.refSync;
+    result.refAsync = this.refAsync;
     result.refAlwaysRemount = this.refAlwaysRemount;
     return result;
   }

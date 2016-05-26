@@ -75,6 +75,19 @@ actionStore.registerAction('update', ['keep_dc', 'resolve'], function() {
 
 });
 
+
+actionStore.registerAction('update-single', ['keep_dc', 'resolve'], function() {
+
+  this.updateSingle({
+    keepDC: keep_dc || false,
+    resolve: resolve
+  });
+
+  _actionResult.code = 'success';
+  _callback(_actionResult);
+
+});
+
 actionStore.registerAction('update-to', ['eid', 'taskChain'], function() {
   _actionResult.taskChain = taskChain;
 

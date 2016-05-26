@@ -313,13 +313,22 @@ class TagBaseElementNode extends ElementNode {
     this.css = _css;
   }
 
-  // Inline Style
-  setInlineStyle(_style) {
-    this.setAttribute('style', _style);
+  // tstyle 에 저장된 내용은 랜더링 시에 반영된다.
+  // Temporary Style
+  setTStyle(_name, _value) {
+
+    this.tstyle = this.tstyle || {};
+    this.tstyle[_name] = _value;
   }
 
-  setRectangle(_rectangle) {
-    this.rectangle = _rectangle;
+  delTStyle(_name) {
+    delete this.tstyle[_name];
+
+    let styleKeys = Object.keys(this.tstyle);
+
+    if (styleKeys.length === 0) {
+      this.tstyle = null;
+    }
   }
 
   // attribute
@@ -458,6 +467,11 @@ class TagBaseElementNode extends ElementNode {
     let options = _options || {};
     let value = options.resolve ? this.interpret(_attribute.byString) : _attribute.byString;
     let name = _attribute.name;
+
+    // Temporary Style 적용
+    if (this.tstyle) {
+      ObjectExtends.mergeByRef(_dom.style, this.tstyle, true);
+    }
 
     // value 의 최종 값이 null 이라면 Attribute가 아얘 추가되지 않도록 함수를 종료한다.
     if (value === null) return;
@@ -601,105 +615,6 @@ class TagBaseElementNode extends ElementNode {
     this.copyAllAtrributeFromDOMElement(_domElement);
 
 
-
-
-
-
-    // Normals
-    //  if (_domElement.getAttribute('en-id') !== null) {
-    //    if (/@/.test(_domElement.getAttribute('en-id'))) {
-    //      throw new Error("ElementNode Id로 @가 사용 될 수 없습니다.");
-    //    }
-    //
-    //    this.setId(_domElement.getAttribute('en-id'));
-    //  }
-    //
-    //  if (_domElement.getAttribute('en-type') !== null)
-    //    this.setType(_domElement.getAttribute('en-type'));
-    //
-    //  if (_domElement.getAttribute('en-behavior') !== null)
-    //    this.behavior = _domElement.getAttribute('en-behavior');
-    //
-    //  if (_domElement.getAttribute('en-name') !== null)
-    //    this.setName(_domElement.getAttribute('en-name'));
-    //
-    //  // DynamicContext
-    //  if (_domElement.getAttribute('en-dc-source-id') !== null) {
-    //    this.dynamicContextSID = _domElement.getAttribute('en-dc-source-id');
-    //
-    //    if (_domElement.getAttribute('en-dc-request-id') !== null)
-    //      this.dynamicContextRID = _domElement.getAttribute('en-dc-request-id');
-    //
-    //    if (_domElement.getAttribute('en-dc-inject-params') !== null)
-    //      this.dynamicContextInjectParams = _domElement.getAttribute('en-dc-inject-params');
-    //
-    //    if (_domElement.getAttribute('en-dc-ns') !== null)
-    //      this.dynamicContextNS = _domElement.getAttribute('en-dc-ns');
-    //
-    //
-    //    if (_domElement.getAttribute('en-dc-passive') !== null) {
-    //      if (_domElement.getAttribute('en-dc-passive') === 'false') {
-    //        this.dynamicContextPassive = false;
-    //      } else {
-    //        this.dynamicContextPassive = true;
-    //      }
-    //    } else {
-    //      this.dynamicContextPassive = false;
-    //    }
-    //
-    //    if (_domElement.getAttribute('en-dc-sync') !== null)
-    //      this.dynamicContextSync = true;
-    //
-    //    if (_domElement.getAttribute('en-dc-attitude') !== null) {
-    //      throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
-    //    }
-    //
-    //    if (_domElement.getAttribute('en-dc-render-dont-care-loading')) {
-    //      this.dynamicContextRenderDontCareLoading = _domElement.getAttribute('en-dc-render-dont-care-loading');
-    //    }
-    //  }
-    //
-    //  if (_domElement.getAttribute('en-io-on') !== null) {
-    //    this.ioListenNames = _domElement.getAttribute('en-io-on');
-    //  }
-    //
-    //  // Controls
-    //  if (_domElement.getAttribute('en-ctrl-repeat-n') !== null) {
-    //    if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 바인드 할 수 없습니다.");
-    //
-    //    this.setControl('repeat-n', _domElement.getAttribute('en-ctrl-repeat-n'));
-    //  }
-    //
-    //  if (_domElement.getAttribute('en-ctrl-fixed-container') !== null) {
-    //    this.setControl('fixed-container', _domElement.getAttribute("en-ctrl-fixed-container"));
-    //  }
-    //
-    //  if (_domElement.getAttribute('en-ctrl-hidden') !== null)
-    //    this.setControl('hidden', _domElement.getAttribute('en-ctrl-hidden'));
-    //
-    //  if (_domElement.getAttribute('en-ctrl-show') !== null)
-    //    this.setControl('show', _domElement.getAttribute('en-ctrl-show'));
-    //
-    //
-    //  // Event reads
-    //  // 모든 DOM 이벤트를 인식한다.
-    //  for (let i = 0; i < DOM_EVENTS.length; i++) {
-    //    if (_domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`) !== null) // Click
-    //      this.setEvent(DOM_EVENTS[i], _domElement.getAttribute(`en-event-${DOM_EVENTS[i]}`));
-    //
-    //    if (_domElement.getAttribute(`en-event-deep-${DOM_EVENTS[i]}`) !== null) // Click
-    //      this.setEvent('deep-' + DOM_EVENTS[i], _domElement.getAttribute(`en-event-deep-${DOM_EVENTS[i]}`));
-    //  }
-    //
-    //  let eventKey, eventValue;
-    //  for (let i = 0; i < ELEMENT_NODE_EVENTS.length; i++) {
-    //    eventKey = ELEMENT_NODE_EVENTS[i];
-    //    eventValue = _domElement.getAttribute(`en-event-${eventKey}`);
-    //
-    //    if (eventValue !== null) // will Update
-    //      this.setEvent(eventKey, eventValue);
-    //  }
-
     // 빌드시에 참조된 DOM을 흡수하는 경우, 참조된 DOM을 forwardDOM으로 편입시키며 en Event 를 바인딩 한다.
     // 이 시점에서 Event 를 바인딩하는 이유는 Event 바인딩은 최초랜더링 시에 forwardDOM이 생성될 때만 이벤트가 바인딩 되므로
     // 참조된 DOM을 흡수하여 빌드 한 후에 랜더링때는 backupDOM으로 DOM이 생성되기 때문이다.
@@ -786,7 +701,7 @@ class TagBaseElementNode extends ElementNode {
             // Controls
           case 'en-ctrl-repeat-n':
 
-            if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 바인드 할 수 없습니다.");
+            if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 사용 할 수 없습니다.");
 
             this.setControl('repeat-n', attrValue);
 

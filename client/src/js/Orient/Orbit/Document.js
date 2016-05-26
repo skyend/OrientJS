@@ -51,6 +51,11 @@ class OrbitDocument {
     let extraElement;
     let interpretedUrl = this.orbit.interpret(_url);
 
+    // 결과가 null 이면 무시한다.
+    if (interpretedUrl === null) {
+      return _callback(null, null);
+    }
+
     if (!type) {
       if (/\.js(\?[^\.]*)?$/i.test(interpretedUrl)) {
         type = 'js';
@@ -119,7 +124,7 @@ class OrbitDocument {
         });
       }
 
-      if (typeof _callback === 'function') _callback(ERROR_LOAD_SCRIPT);
+      if (typeof _callback === 'function') _callback(ERROR_LOAD_SCRIPT, null);
     });
 
     extraElement.addEventListener('load', (_event) => {
@@ -132,7 +137,7 @@ class OrbitDocument {
         });
       }
 
-      if (typeof _callback === 'function') _callback(null);
+      if (typeof _callback === 'function') _callback(null, _event);
     });
 
     // 요청된 리소스 리스트에 입력

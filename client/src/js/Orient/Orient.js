@@ -105,15 +105,34 @@ class Neutron {
 
   // render = renderVirtual + mount
   static render(_elementNode, _targetDOMElement) {
+    _elementNode.tryEventScope('component-will-mount', {
 
-    this.renderVirtual(_elementNode);
-    this.mount(_elementNode, _targetDOMElement);
+    }, null, (_result) => {
+
+      this.renderVirtual(_elementNode);
+      this.mount(_elementNode, _targetDOMElement);
+
+      _elementNode.tryEventScope('component-did-mount', {
+
+      }, null, (_result) => {});
+    });
+
   }
 
   // replaceRender = renderVirtual + mountByReplace
   static replaceRender(_elementNode, _targetDOMElement) {
-    this.renderVirtual(_elementNode);
-    this.mountByReplace(_elementNode, _targetDOMElement);
+    _elementNode.tryEventScope('component-will-mount', {
+
+    }, null, (_result) => {
+
+      this.renderVirtual(_elementNode);
+      this.mountByReplace(_elementNode, _targetDOMElement);
+
+      _elementNode.tryEventScope('component-did-mount', {
+
+      }, null, (_result) => {});
+    });
+
   }
 
   static getNodeByDOM(_domElement) {
