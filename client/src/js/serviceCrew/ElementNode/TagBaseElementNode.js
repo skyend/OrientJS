@@ -767,26 +767,23 @@ class TagBaseElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.tagName = _elementNodeDataObject.tagName;
-    this.behavior = _elementNodeDataObject.behavior;
-    this.attributes = _elementNodeDataObject.attributes || [];
+    this.tagName = _elementNodeDataObject.tname;
+    this.behavior = _elementNodeDataObject.beh;
+    this.attributes = _elementNodeDataObject.a || [];
     this.attributes = this.attributes.map(function(_attributeO) {
       return new MetaText(_attributeO);
     });
-
-    this.zIndex = _elementNodeDataObject.zIndex;
   }
 
   export (_withoutId, _idAppender) {
     let result = super.export(_withoutId, _idAppender);
-    result.behavior = this.behavior;
-    result.attributes = ObjectExtends.clone(this.attributes.map(function(_attribute) {
+    result.beh = this.behavior;
+    result.a = ObjectExtends.clone(this.attributes.map(function(_attribute) {
       return _attribute.export();
     }));
 
-    result.zIndex = this.zIndex;
-    result.tagName = this.getTagName();
-    result.inherentCSS = this.getCSS(); // empty 타입을 제외하고 모든 요소의 고유CSS를 익스포트한다.
+
+    result.tname = this.getTagName();
     return result;
   }
 }

@@ -109,6 +109,31 @@ class Config {
     return this._MODE;
   }
 
+  set INIT_FUNCTION_SPLITED(_ia) {
+    this._INIT_FUNCTION_SPLITED = _ia;
+  }
+
+  get INIT_FUNCTION_SPLITED() {
+    return this._INIT_FUNCTION_SPLITED;
+  }
+
+  get_INIT_FUNCTION() {
+    if (!(this.INIT_FUNCTION_SPLITED instanceof Array)) throw new Error(`config : INIT_FUNCTION_SPLITED is not Array.`);
+
+    let joinedFunctionString = 'return' + this.INIT_FUNCTION_SPLITED.join('\n');
+
+    let funcExtractor = new Function(joinedFunctionString);
+    let extractedFunction = funcExtractor();
+
+    if (typeof extractedFunction !== 'function') {
+      throw new Error(`config : INIT_FUNCTION_SPLITED was wrote invalid. start >> function(_orbit,_callback){`);
+    }
+
+    let bindedFunction = this.extractedFunction.bind(this);
+
+    return bindedFunction;
+  }
+
   //
   set configObject(_configO) {
     this._configObject = _configO;
@@ -117,6 +142,7 @@ class Config {
   get configObject() {
     return this._configObject || {};
   }
+
 
   get ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET() {
     return this.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET;
@@ -134,14 +160,23 @@ class Config {
     // 2. import
     let that = this;
 
-    HTTPRequest.request('get', _configURL, {}, function(_err, _res) {
+    HTTPRequest.request('get', _configURL, {}, (_err, _res) => {
 
       if (_res !== null) {
-        that.import(_res.body);
+        that.import(_res.json);
 
         that.emit('update');
 
-        _complete();
+        if (this.INIT_FUNCTION_SPLITED) {
+          let initFunc = this.get_INIT_FUNCTION();
+
+          initFunc(this.orbit, function() {
+            _complete();
+          });
+        } else {
+          _complete();
+        }
+
       } else {
         throw new Error(`Fail load config. ${_err}`);
       }
@@ -212,7 +247,7 @@ class Config {
     this._DIR_COMPONENT = _config['DIR_COMPONENT'];
     this._DIR_API_SOURCE = _config['DIR_API_SOURCE'];
     this._MODE = _config['MODE'];
-
+    this._INIT_FUNCTION_SPLITED = _config['INIT_FUNCTION_SPLITED'];
 
     window['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'] = _config['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'];
 
@@ -232,6 +267,7 @@ class Config {
     config['DIR_COMPONENT'] = this._DIR_COMPONENT;
     config['DIR_API_SOURCE'] = this._DIR_API_SOURCE;
     config['MODE'] = this._MODE;
+    config['INIT_FUNCTION_SPLITED'] = this._INIT_FUNCTION_SPLITED;
 
     ObjectExtends.mergeByRef(config, this.configObject, false);
 

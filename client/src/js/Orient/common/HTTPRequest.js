@@ -1,6 +1,7 @@
 import browser from 'detect-browser';
 import Classer from '../../util/Classer';
 import Identifier from '../../util/Identifier.js';
+import ObjectExtends from '../../util/ObjectExtends.js';
 
 const B_NAME = browser.name;
 const B_VER = parseInt(browser.version);
@@ -66,29 +67,43 @@ if(window.XDomainRequest){
 class HTTPRequest {
   static Log(_message, _level = "log", _extras = []) {
     if (!window.DEBUG_OCCURS_HTTP_REQUEST_LOG) return;
-    if (!(window.console && window.console.log && window.console.log.apply)) return;
 
-    let logParams = ['%c' + _message, 'background: #333; color: rgb(229, 249, 78); padding:2px;'];
 
-    switch (_level) {
-      case "log":
-        // groupCollapsed 는 IE11부터
-        // (console.groupCollapsed || console.log).apply(console, logParams);
-        // console.log.apply(console, _extras);
-        // console.groupEnd && console.groupEnd();
+    let logParams;
+    logParams = [_message];
+    try {
+      switch (_level) {
+        case "log":
+          if (B_NAME !== 'ie')
+            logParams = ['%c' + _message, 'background: #333; color: rgb(199, 232, 232); padding:2px;'];
 
-        console.log.apply(console, logParams);
-        console.log.apply(console, _extras);
-        break;
-      case "info":
-        console.info.apply(console, logParams);
-        break;
-      case "warn":
-        console.warn.apply(console, logParams);
-        break;
-      case "error":
-        console.error.apply(console, logParams);
-        break;
+          console.log.apply(console, ObjectExtends.union2(logParams, _extras));
+          break;
+        case "info":
+          if (B_NAME !== 'ie')
+            logParams = ['%c' + _message, 'background: #333; color: rgb(21, 211, 243); padding:2px;'];
+
+          console.info.apply(console, ObjectExtends.union2(logParams, _extras));
+          break;
+        case "warn":
+          if (B_NAME !== 'ie')
+            logParams = ['%c' + _message, 'background: #333; color: rgb(243, 156, 21); padding:2px;'];
+
+          console.warn.apply(console, ObjectExtends.union2(logParams, _extras));
+          break;
+        case "error":
+          if (B_NAME !== 'ie')
+            logParams = ['%c' + _message, 'background: #333; color: rgb(228, 46, 46); padding:2px;'];
+
+          console.error.apply(console, ObjectExtends.union2(logParams, _extras));
+          break;
+      }
+
+    } catch (_e) {
+      if (_level === 'error') {
+
+        throw new Error(_message);
+      }
     }
   }
 
@@ -223,20 +238,25 @@ class HTTPRequest {
         request.body = null;
       }
 
-      _callback(null, request);
+      HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "info", [request]);
 
-      // console.log('onload');
-      // console.dir(req);
+      _callback(null, request);
     };
 
     request.onerror = function(_e) {
       // console.log('onerror', _e);
-      console.log(_e);
-      throw new Error(`Request Error by ${Request}`);
+      HTTPRequest.Log(`Error : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "error", [request, _e]);
+      //throw new Error(`Request Error by ${Classer.getFunctionName(Request)}\n${finalURL}`);
       // _callback(new Error(`Request Error by ${Request}`), null);
     };
 
+    request.ontimeout = function(_e) {
+      // console.log('onerror', _e);
+      HTTPRequest.Log(`Timeout : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "error", [request, _e]);
+      // _callback(new Error(`Request Error by ${Request}`), null);
+    };
 
+    HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "log");
     // SEND
     if (method === 'get') {
       request.send();

@@ -22,6 +22,7 @@ class Factory {
 
     // else if (type === 'react') elementNodeCLASS = ReactElementNode;
     //else if (type === 'grid') elementNodeCLASS = GridElementNode;
+    else if (type === undefined || type === null) elementNodeCLASS = HTMLElementNode;
     else {
       // 감지된 plugin에서 새로 정의된 ElementNode가 있는지 확인한다.
       throw new Error(`unkown elementNode type ${type}`);
@@ -56,8 +57,9 @@ class Factory {
         return 'html';
       } else if (/^html|string|ref|svg$/.test(typeAttribute)) {
         return typeAttribute;
+      } else if (typeAttribute === undefined || typeAttribute === null) {
+        return 'html';
       } else {
-
         // plugin으로 지원하는 ElementNode가 있는지 확인한다.
         if (null) { // 감지된 plugin에서 지원하지 않을경우
           throw new Error(`${typeAttribute} 지원하지 않는 ElementNode 타입입니다.`)
@@ -95,14 +97,19 @@ class Factory {
   }
 
   static convertToMasterElementNodesByJSONSheet(_jsonObject, _props, _env) {
+    let masterElementNodes;
 
+    console.time('Build by json');
     if (_jsonObject instanceof Array) {
-      return _jsonObject.map(function(_elementNodeO) {
+      masterElementNodes = _jsonObject.map(function(_elementNodeO) {
         return Factory.takeElementNode(_elementNodeO, _props, _elementNodeO.type, _env, true);
       });
     } else {
-      return [Factory.takeElementNode(_jsonObject, _props, _jsonObject.type, _env, true)];
+      masterElementNodes = [Factory.takeElementNode(_jsonObject, _props, _jsonObject.type, _env, true)];
     }
+    console.timeEnd('Build by json');
+
+    return masterElementNodes;
   }
 
   /*

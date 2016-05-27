@@ -11,6 +11,12 @@ class Classer {
 
     return matches[1];
   }
+
+  static getFunctionName(_function) {
+    let matches = _function.toString().match(GET_NAME_IN_CONSTRUCTOR);
+
+    return matches[1];
+  }
 }
 
 export default Classer;

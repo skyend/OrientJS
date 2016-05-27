@@ -175,16 +175,16 @@ class StringElementNode extends ElementNode {
 
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
-    this.enableHTML = _elementNodeDataObject.enableHTML || false;
+    this.enableHTML = _elementNodeDataObject.enhtml || false;
     this.text = _elementNodeDataObject.text || false;
-    this.wrappingTag = _elementNodeDataObject.wrappingTag || null;
+    this.wrappingTag = _elementNodeDataObject.wrtag || null;
   }
 
   export (_withoutId, _idAppender) {
     let result = super.export(_withoutId, _idAppender);
     result.text = this.getText();
-    result.enableHTML = this.enableHTML;
-    result.wrappingTag = this.wrappingTag;
+    result.enhtml = this.enableHTML;
+    result.wrtag = this.wrappingTag;
     return result;
   }
 }

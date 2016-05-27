@@ -92,6 +92,7 @@ class ObjectExtends {
   }
 
   // all argument merge
+  // 첫번째 인수와 그 이후의 인수로 들어온 객체를 첫번째 인수로 들어온 배열에 더한다.
   static union() {
     let newArr = arguments[0];
 
@@ -102,6 +103,7 @@ class ObjectExtends {
     return newArr;
   }
 
+  // 첫번째 인수로 들어온 배열에 두번째 인수로 들어온 배열을 머지한다.
   static union2(_arr1, _arr2) {
     let newArr = ObjectExtends.clone(_arr1);
 

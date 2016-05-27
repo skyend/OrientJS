@@ -305,7 +305,14 @@ class RefElementNode extends HTMLElementNode {
   // masterElementNode 들과 setting 오브젝트를 반환
   interpretComponentSheet(_type, _sheet, _targetId, _callback) {
     console.time(`Build Component Sheet - ${_targetId}`);
-    let masterElementNodes = this.convertMastersByType(_type, undefined, _sheet);
+
+    let masterElementNodes;
+    try {
+      masterElementNodes = this.convertMastersByType(_type, undefined, _sheet);
+    } catch (_e) {
+      this.print_console_error(`Fail build ${_targetId} to components. native:${_e} \n${this.DEBUG_FILE_NAME_EXPLAIN}\n${_sheet}`);
+    }
+
     console.timeEnd(`Build Component Sheet - ${_targetId}`);
 
     if (_type === 'html') {
@@ -446,17 +453,17 @@ class RefElementNode extends HTMLElementNode {
 
   import (_elementNodeDataObject) {
     let result = super.import(_elementNodeDataObject);
-    this.refTargetId = _elementNodeDataObject.refTargetId;
-    this.refAsync = _elementNodeDataObject.refAsync || false;
-    this.refAlwaysRemount = _elementNodeDataObject.refAlwaysRemount || false;
+    this.refTargetId = _elementNodeDataObject.reftid;
+    this.refAsync = _elementNodeDataObject.refasync || false;
+    this.refAlwaysRemount = _elementNodeDataObject.refar || false;
     return result;
   }
 
   export (_withoutId) {
     let result = super.export(_withoutId);
-    result.refTargetId = this.refTargetId;
-    result.refAsync = this.refAsync;
-    result.refAlwaysRemount = this.refAlwaysRemount;
+    result.reftid = this.refTargetId;
+    result.refasync = this.refAsync;
+    result.refar = this.refAlwaysRemount;
     return result;
   }
 }

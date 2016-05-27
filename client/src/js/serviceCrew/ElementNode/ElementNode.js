@@ -622,7 +622,7 @@ class ElementNode {
 
     // DC 실행
     if (this.isDynamicContext()) {
-      if (this.dynamicContextPassive === false) {
+      if (this.dynamicContextPassive !== true) {
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
           this.executeDynamicContext();
 
@@ -2563,33 +2563,30 @@ class ElementNode {
 
   import (_elementNodeDataObject) {
     // this.id = _elementNodeDataObject.id || Identifier.genUUID().toUpperCase();
-    this.id = _elementNodeDataObject.id || "!?ID_" + GET_TEMPORARY_ID_STORE();
+    this.id = _elementNodeDataObject.id || "!en_" + GET_TEMPORARY_ID_STORE();
 
 
     this.type = _elementNodeDataObject.type;
     this.name = _elementNodeDataObject.name;
 
-    this.dynamicContextPassive = _elementNodeDataObject.dynamicContextPassive || false;
-    this.dynamicContextSID = _elementNodeDataObject.dynamicContextSID;
-    this.dynamicContextRID = _elementNodeDataObject.dynamicContextRID;
-    this.dynamicContextNS = _elementNodeDataObject.dynamicContextNS;
-    this.dynamicContextSync = _elementNodeDataObject.dynamicContextSync;
-    this.dynamicContextInjectParams = _elementNodeDataObject.dynamicContextInjectParams;
-    this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dynamicContextRenderDontCareLoading;
+    this.dynamicContextPassive = _elementNodeDataObject.dcp;
+    this.dynamicContextSID = _elementNodeDataObject.dcsid;
+    this.dynamicContextRID = _elementNodeDataObject.dcrid;
+    this.dynamicContextNS = _elementNodeDataObject.dcns;
+    this.dynamicContextSync = _elementNodeDataObject.dcsync;
+    this.dynamicContextInjectParams = _elementNodeDataObject.dcip;
+    this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dcrdcl;
 
     // Socket IO
-    this.ioListenNames = _elementNodeDataObject.ioListenNames;
+    this.ioListenNames = _elementNodeDataObject.iln;
 
-    this.componentName = _elementNodeDataObject.componentName;
+    this.componentName = _elementNodeDataObject.cn;
 
     this.methods = Object.keys(_elementNodeDataObject.methods || {}).map((_key) => {
       this.setMethod(_key, _elementNodeDataObject.methods[_key], true);
     });
 
-    this.controls = _elementNodeDataObject.controls || {
-      'repeat-n': '',
-      'hidden': ''
-    };
+    this.controls = _elementNodeDataObject.controls || {};
 
     this.scopeNodes = _elementNodeDataObject.scopeNodes ? _elementNodeDataObject.scopeNodes.map(function(_scopeNodeObject) {
       return new(ScopeNodeFactory.getClass(_scopeNodeObject.type))(_scopeNodeObject);
@@ -2600,8 +2597,8 @@ class ElementNode {
 
     this.comment = _elementNodeDataObject.comment || '';
 
-    this.createDate = _elementNodeDataObject.createDate;
-    this.updateDate = _elementNodeDataObject.updateDate;
+    this.createDate = _elementNodeDataObject.cd;
+    this.updateDate = _elementNodeDataObject.ud;
   }
 
 
@@ -2610,32 +2607,67 @@ class ElementNode {
   export (_withoutId, _idAppender) {
     var exportObject = {
       id: _withoutId ? undefined : this.id + (_idAppender || ''),
-      type: this.getType(),
       name: this.getName(),
-      methods: ObjectExtends.clone(this.methods),
-      controls: ObjectExtends.clone(this.getControls()),
-      scopeNodes: ObjectExtends.clone(this.scopeNodes.map(function(_scopeNode) {
-        return _scopeNode.export();
-      })),
-      nodeEvents: ObjectExtends.clone(this.nodeEvents),
-      pipeEvents: ObjectExtends.clone(this.pipeEvents),
-      comment: this.getComment(),
-      componentName: this.getComponentName(),
-      createDate: (new Date(this.createDate)).toString(),
-      updateDate: (new Date(this.updateDate)).toString(),
+      cn: this.getComponentName()
     };
 
+    if (this.type !== 'html') {
+      exportObject.type = this.getType();
+    }
+
+    if (this.getComment()) {
+      exportObject.comment = this.getComment();
+    }
+
+    if (Orient.Shortcut.isntEmpty(this.methods || {})) {
+      exportObject.methods = ObjectExtends.clone(this.methods);
+    }
+
+    if (Orient.Shortcut.isntEmpty(this.controls || {})) {
+      exportObject.controls = ObjectExtends.clone(this.getControls());
+    }
+
+    if (Orient.Shortcut.isntEmpty(this.scopeNodes || [])) {
+      exportObject.scopeNodes = ObjectExtends.clone(this.scopeNodes.map(function(_scopeNode) {
+        return _scopeNode.export();
+      }));
+    }
+
+    if (Orient.Shortcut.isntEmpty(this.nodeEvents || {})) {
+      exportObject.nodeEvents = ObjectExtends.clone(this.nodeEvents);
+    }
+
+    if (Orient.Shortcut.isntEmpty(this.pipeEvents || {})) {
+      exportObject.pipeEvents = ObjectExtends.clone(this.pipeEvents);
+    }
+
+    if (this.createDate) {
+      exportObject.cd = new Date(this.createDate);
+    }
+
+    if (this.updateDate) {
+      exportObject.ud = new Date(this.updateDate);
+    }
+
     // DC
-    exportObject.dynamicContextPassive = this.dynamicContextPassive;
-    exportObject.dynamicContextSID = this.dynamicContextSID;
-    exportObject.dynamicContextRID = this.dynamicContextRID;
-    exportObject.dynamicContextNS = this.dynamicContextNS;
-    exportObject.dynamicContextSync = this.dynamicContextSync;
-    exportObject.dynamicContextInjectParams = this.dynamicContextInjectParams;
-    exportObject.dynamicContextRenderDontCareLoading = this.dynamicContextRenderDontCareLoading;
+    if (this.dynamicContextPassive)
+      exportObject.dcp = this.dynamicContextPassive;
+    if (this.dynamicContextSID)
+      exportObject.dcsid = this.dynamicContextSID;
+    if (this.dynamicContextRID)
+      exportObject.dcrid = this.dynamicContextRID;
+    if (this.dynamicContextNS)
+      exportObject.dcns = this.dynamicContextNS;
+    if (this.dynamicContextSync)
+      exportObject.dcsync = this.dynamicContextSync;
+    if (this.dynamicContextInjectParams)
+      exportObject.dcip = this.dynamicContextInjectParams;
+    if (this.dynamicContextRenderDontCareLoading)
+      exportObject.dcrdcl = this.dynamicContextRenderDontCareLoading;
 
     // Socket IO
-    exportObject.ioListenNames = this.ioListenNames;
+    if (this.ioListenNames)
+      exportObject.iln = this.ioListenNames;
 
     return exportObject;
   }

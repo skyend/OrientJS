@@ -318,6 +318,7 @@ class HTMLElementNode extends TagBaseElementNode {
 
       var newChildElementNode;
       // comment node 는 Scope 선언자가 있는지 확인 하고 존재한다면 Scope 로 빌드
+
       if (child_.nodeName === '#comment') {
         let text = child_.nodeValue;
 
@@ -431,22 +432,22 @@ class HTMLElementNode extends TagBaseElementNode {
   import (_elementNodeDataObject) {
     super.import(_elementNodeDataObject);
 
-    this.children = this.inspireChildren(_elementNodeDataObject.children || []);
+    this.children = this.inspireChildren(_elementNodeDataObject.c || []);
   }
 
   export (_withoutId, _idAppender) {
     let result = super.export(_withoutId, _idAppender);
-    result.children = [];
+    result.c = [];
 
     this.children.map(function(_child) {
       if (!_child.isGhost) {
         // 자식이 고스트가 아닌경우만 export한다.
-        result.children.push(_child.export(_withoutId, _idAppender));
+        result.c.push(_child.export(_withoutId, _idAppender));
       } else {
 
         // 자식이 고스트이면서 반복된 요소일 떄는 export한다.
         if (!_child.isRepeated) {
-          result.children.push(_child.export(_withoutId, _idAppender));
+          result.c.push(_child.export(_withoutId, _idAppender));
         }
       }
 

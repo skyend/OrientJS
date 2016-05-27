@@ -128,17 +128,40 @@ class Shortcut {
 
   // 비어있는 Object인지 검사 key 가 0개면 빈 오브젝트임
   static isEmpty(_object) {
+
     let keys = Object.keys(_object);
 
     return keys.length === 0;
   }
 
+  isEmptyOrVoid(_object) {
+    if (_object) {
+      return Shortcut.isEmpty(_object)
+    } else {
+      return true;
+    }
+  }
+
   // 비어있지 않은 오브젝트인지 검사
   static isntEmpty(_object) {
-    let keys = Object.keys(_object);
+    let length;
 
-    return keys.length > 0;
+    if (_object instanceof Array) {
+
+      length = _object.length;
+    } else if (_object instanceof Object) {
+      let keys = Object.keys(_object);
+
+      length = keys.length;
+    } else {
+
+      return false;
+    }
+
+    return length > 0;
   }
+
+
 
   static get(_obj, _path) {
     return ObjectExplorer.getValueByKeyPath(_obj, _path, '.');

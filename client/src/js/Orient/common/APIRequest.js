@@ -33,13 +33,13 @@ class APIRequest {
 
         if (_err !== null) {
           if (_res) {
-            return _callback(_err, _res.body || _res.text, _res);
+            return _callback(_err, _res.json || _res.text, _res);
           } else {
             return _callback(_err, null);
           }
         }
 
-        _callback(null, _res.body || _res.text, _res);
+        _callback(null, _res.json || _res.text, _res);
       }, _enctype);
     } else {
       // apisource JSON을 로드한다.
@@ -82,12 +82,12 @@ class APIRequest {
 
         if (_err !== null) {
           if (_res) {
-            return _callback(_err, _res.body || _res.text, _res);
+            return _callback(_err, _res.json || _res.text, _res);
           } else {
             return _callback(_err, null);
           }
         }
-        _callback(null, _res.body || _res.text, _res);
+        _callback(null, _res.json || _res.text, _res);
       }, _enctype);
     } else {
       // apisource JSON을 로드한다.

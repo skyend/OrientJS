@@ -246,7 +246,7 @@ export default class APISource {
       _passCB(_err, null, null);
     } else {
 
-      _passCB(null, _res.body, _res);
+      _passCB(null, _res.json, _res);
     }
   }
 
