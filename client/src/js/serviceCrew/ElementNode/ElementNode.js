@@ -2577,6 +2577,9 @@ class ElementNode {
     this.dynamicContextInjectParams = _elementNodeDataObject.dcip;
     this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dcrdcl;
 
+    // 참조되는 컴포넌트의 대표자
+    this.componentRepresenter = _elementNodeDataObject.cr;
+
     // Socket IO
     this.ioListenNames = _elementNodeDataObject.iln;
 
@@ -2664,6 +2667,9 @@ class ElementNode {
       exportObject.dcip = this.dynamicContextInjectParams;
     if (this.dynamicContextRenderDontCareLoading)
       exportObject.dcrdcl = this.dynamicContextRenderDontCareLoading;
+
+    if (this.componentRepresenter === true)
+      exportObject.cr = this.componentRepresenter;
 
     // Socket IO
     if (this.ioListenNames)

@@ -214,12 +214,27 @@ export default class APISource {
 
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
-
-
+    // console.log(fieldObject);
+    // let keys = Object.keys(fieldObject);
+    // let isValid = true;
+    // let matterFields = [];
+    // keys.map(function(_key) {
+    //   if (_key) {
+    //     if (fieldObject[_key] === null || fieldObject[_key] === undefined) {
+    //       matterFields.push(_key);
+    //       isValid = false;
+    //     }
+    //   }
+    // });
+    //
+    // if (isValid) {
     this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
     }, _enctypeOrComplete);
+    // } else {
+    //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
+    // }
   }
 
   executeRequestSync(_requestId, _fields, _head, _cb, _enctypeOrComplete) {
@@ -230,12 +245,27 @@ export default class APISource {
 
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
+    // let keys = Object.keys(fieldObject);
+    //
+    // let matterFields = [];
+    // let isValid = true;
+    // keys.map(function(_key) {
+    //   if (_key) {
+    //     if (fieldObject[_key] === null || fieldObject[_key] === undefined) {
+    //       matterFields.push(_key);
+    //       isValid = false;
+    //     }
+    //   }
+    // });
 
-
+    // if (isValid) {
     this.orbit.HTTPRequest.requestSync(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
     }, _enctypeOrComplete);
+    // } else {
+    //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
+    // }
   }
 
 

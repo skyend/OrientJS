@@ -7,6 +7,7 @@ const B_NAME = browser.name;
 const B_VER = parseInt(browser.version);
 
 
+
 const GET_IE_MULTIPART_IFRAME_ID_STORE = Identifier.chars32SequenceStore(9999999);
 
 // import JqueryForm from 'jquery-form';
@@ -102,7 +103,7 @@ class HTTPRequest {
     } catch (_e) {
       if (_level === 'error') {
 
-        throw new Error(_message);
+        //throw new Error(_message);
       }
     }
   }
@@ -117,6 +118,8 @@ class HTTPRequest {
 
     // Object 로 입력된 필드 목록을 Array 로 변환한다.
     let rawFieldArray = HTTPRequest.fieldConvertToArray(_fields);
+
+    rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
 
     // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
     let cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
@@ -233,9 +236,9 @@ class HTTPRequest {
       request.text = request.responseText;
 
       try {
-        request.body = JSON.parse(request.responseText);
+        request.json = JSON.parse(request.responseText);
       } catch (_e) {
-        request.body = null;
+        request.json = null;
       }
 
       HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "info", [request]);
@@ -245,15 +248,21 @@ class HTTPRequest {
 
     request.onerror = function(_e) {
       // console.log('onerror', _e);
-      HTTPRequest.Log(`Error : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "error", [request, _e]);
+      let message = `Error : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}`;
+      HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
+
       //throw new Error(`Request Error by ${Classer.getFunctionName(Request)}\n${finalURL}`);
-      // _callback(new Error(`Request Error by ${Request}`), null);
+
+      _callback(new Error(message), null);
     };
 
     request.ontimeout = function(_e) {
       // console.log('onerror', _e);
-      HTTPRequest.Log(`Timeout : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "error", [request, _e]);
-      // _callback(new Error(`Request Error by ${Request}`), null);
+      let message = `Timeout : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}`;
+
+      HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
+
+      _callback(new Error(message), null);
     };
 
     HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "log");
@@ -272,20 +281,33 @@ class HTTPRequest {
       Array 타입의 필드 목록을 그대로 반환한다.
   */
   static fieldConvertToArray(_fields) {
+    let convertedFields;
+
     if (_fields instanceof Array) {
-      return _fields;
+      convertedFields = _fields;
     } else {
       if (_fields instanceof Object) {
         let keys, key;
         keys = Object.keys(_fields);
 
-        return keys.map(function(_key) {
+        convertedFields = keys.map(function(_key) {
           return [_key, _fields[_key]];
         });
       } else {
         return [];
       }
     }
+
+    return convertedFields;
+  }
+
+  static availableFieldsFilter(_fields) {
+    return _fields.filter(function(_field) {
+      if (_field[1] === undefined || _field[1] === null) {
+        return false;
+      }
+      return true;
+    });
   }
 
   static requestMultipartPostIE10below(_url, _rawFieldArray, _callback, _async) {

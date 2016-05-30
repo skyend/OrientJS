@@ -473,11 +473,15 @@ class TagBaseElementNode extends ElementNode {
       ObjectExtends.mergeByRef(_dom.style, this.tstyle, true);
     }
 
+
+
+
     // value 의 최종 값이 null 이라면 Attribute가 아얘 추가되지 않도록 함수를 종료한다.
     if (value === null) return;
 
     switch (name) {
       case 'style':
+
         if (typeof value === 'object' && value !== undefined) {
           ObjectExtends.mergeByRef(_dom.style, value, true);
           return;
@@ -716,6 +720,22 @@ class TagBaseElementNode extends ElementNode {
             break;
           case 'en-ctrl-show':
             this.setControl('show', attrValue);
+            break;
+
+          case 'en-build-attr-src':
+            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
+
+            this.defineNewAttribute('src', attrValue);
+            break;
+
+          case 'en-build-attr-style':
+            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
+
+            this.defineNewAttribute('style', attrValue);
+            break;
+
+          case 'en-component-representer':
+            this.componentRepresenter = true;
             break;
 
           default:

@@ -47,6 +47,8 @@ class Factory {
       try {
         jsonSheet = JSON.parse(_sheet);
       } catch (_e) {
+        _e.message += `<File: ${_filepath}>\n${_sheet}`;
+
         throw _e;
       }
 
@@ -66,6 +68,8 @@ class Factory {
       try {
         jsonSheet = JSON.parse(_sheet);
       } catch (_e) {
+        _e.message += `<File: ${_filepath}>\n${_sheet}`;
+
         throw _e;
       }
 

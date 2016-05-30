@@ -35,6 +35,10 @@ class RefElementNode extends HTMLElementNode {
     this.loadedTargetId = null;
 
     this.masterElementNodes = [];
+
+    // 대표 masterElementNode
+    // masterElementNode 중 en-component-representer 을 지정한다.
+    this.representerMasterElementNode = null;
   }
 
   get refference() {
@@ -57,6 +61,10 @@ class RefElementNode extends HTMLElementNode {
 
   set refTargetId(_refTargetId) {
     this._refTargetId = _refTargetId;
+  }
+
+  get component() {
+    return this.representerMasterElementNode;
   }
 
   mappingAttributes(_domNode, _options) {
@@ -101,6 +109,7 @@ class RefElementNode extends HTMLElementNode {
     }
 
     if (this.loadedTargetId === null || this.loadedTargetId !== targetId || this.refAlwaysRemount) {
+      that.componentRepresenter = null;
 
       that.tryEventScope('ref-will-mount', {
 
@@ -127,10 +136,17 @@ class RefElementNode extends HTMLElementNode {
           // for (let i = 0; i < that.attributes.length; i++) {
           //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
           // }
+          if (that.masterElementNodes.length === 1) {
+            that.representerMasterElementNode = that.masterElementNodes[0];
+          }
 
           let masterElementNode;
           for (let i = 0; i < that.masterElementNodes.length; i++) {
+
             masterElementNode = that.masterElementNodes[i];
+            if (masterElementNode.componentRepresenter) {
+              that.representerMasterElementNode = masterElementNode;
+            }
 
             for (let i = 0; i < that.attributes.length; i++) {
               masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));

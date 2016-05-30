@@ -120,7 +120,7 @@ class Config {
   get_INIT_FUNCTION() {
     if (!(this.INIT_FUNCTION_SPLITED instanceof Array)) throw new Error(`config : INIT_FUNCTION_SPLITED is not Array.`);
 
-    let joinedFunctionString = 'return' + this.INIT_FUNCTION_SPLITED.join('\n');
+    let joinedFunctionString = 'return ' + this.INIT_FUNCTION_SPLITED.join('\n');
 
     let funcExtractor = new Function(joinedFunctionString);
     let extractedFunction = funcExtractor();
@@ -129,7 +129,7 @@ class Config {
       throw new Error(`config : INIT_FUNCTION_SPLITED was wrote invalid. start >> function(_orbit,_callback){`);
     }
 
-    let bindedFunction = this.extractedFunction.bind(this);
+    let bindedFunction = extractedFunction.bind(this);
 
     return bindedFunction;
   }
@@ -171,6 +171,7 @@ class Config {
           let initFunc = this.get_INIT_FUNCTION();
 
           initFunc(this.orbit, function() {
+
             _complete();
           });
         } else {
@@ -205,6 +206,7 @@ class Config {
         return this.orbit.interpret(fieldValue);
       case "object":
         return ObjectExtends.clone(fieldValue, true, (_value) => {
+
           if (typeof _value === 'string') {
             return this.orbit.interpret(_value);
           }
