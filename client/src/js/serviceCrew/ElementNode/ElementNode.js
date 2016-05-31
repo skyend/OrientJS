@@ -624,6 +624,11 @@ class ElementNode {
     if (this.isDynamicContext()) {
       if (this.dynamicContextPassive !== true) {
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
+
+          /******
+           DC가 없거나 로딩되지 않았을 때 만 DC를 실행한다.
+          */
+          //  if (!(this.dynamicContext && this.dynamicContext.isLoaded))
           this.executeDynamicContext();
 
         } else if (_options.keepDC === 'once') {

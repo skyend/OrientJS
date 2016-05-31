@@ -55,6 +55,7 @@ class DynamicContext {
 
     this.apisources = [];
     this.isLoading = false;
+    this.isLoaded = false;
   }
 
   get interpretInterfaceFollowObject() {
@@ -133,6 +134,7 @@ class DynamicContext {
       if (_err !== null) return _complete(_err);
       that.emit('complete-load');
       that.isLoading = false;
+      that.isLoaded = true;
       _complete(null);
     });
   }
@@ -154,6 +156,12 @@ class DynamicContext {
     }
 
     return paramObject;
+  }
+
+
+  reset() {
+    this.dataResolver.empty();
+    this.isLoaded = false;
   }
 
   feedbackLoadState() {

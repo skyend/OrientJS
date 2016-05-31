@@ -41,6 +41,9 @@ class Resolver {
     return this.__interpret4(typeof _matter !== 'string' ? String(_matter) : _matter, _externalGetterInterface, _defaultDataObject, _caller);
   }
 
+  empty() {
+    this.dataSpace = {};
+  }
 
   // 내부에 오브젝트 선언 불가 // 안쓰면 되지?ㅋㅋㅋㅋ // 오브젝트 변수는 따로 선언 하면 되지ㅋㅋ // 어차피 쓸 일도 없어ㅋㅋ
   __interpret3(_matter, _externalGetterInterface, _defaultDataObject, _caller) {

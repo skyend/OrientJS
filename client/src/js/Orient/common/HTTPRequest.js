@@ -241,14 +241,14 @@ class HTTPRequest {
         request.json = null;
       }
 
-      HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "info", [request]);
+      HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "info", [request]);
 
       _callback(null, request);
     };
 
     request.onerror = function(_e) {
       // console.log('onerror', _e);
-      let message = `Error : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}`;
+      let message = `Error : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
       HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
 
       //throw new Error(`Request Error by ${Classer.getFunctionName(Request)}\n${finalURL}`);
@@ -258,14 +258,14 @@ class HTTPRequest {
 
     request.ontimeout = function(_e) {
       // console.log('onerror', _e);
-      let message = `Timeout : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}`;
+      let message = `Timeout : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
       HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
 
       _callback(new Error(message), null);
     };
 
-    HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}] - URL: ${finalURL}\n`, "log");
+    HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "log");
     // SEND
     if (method === 'get') {
       request.send();

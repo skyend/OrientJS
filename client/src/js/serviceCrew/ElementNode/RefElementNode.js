@@ -111,6 +111,7 @@ class RefElementNode extends HTMLElementNode {
     if (this.loadedTargetId === null || this.loadedTargetId !== targetId || this.refAlwaysRemount) {
       that.componentRepresenter = null;
 
+
       that.tryEventScope('ref-will-mount', {
 
       }, null, (_result) => {
@@ -284,11 +285,12 @@ class RefElementNode extends HTMLElementNode {
       type = matches[1];
     }
 
-
     if (this.environment) {
       this.environment.retriever[this.refAsync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, (_responseSheet) => {
+        if (!_responseSheet) throw new Error(`Not found component sheet. <target:${targetId}> ${this.DEBUG_FILE_NAME_EXPLAIN}`);
 
         this.interpretComponentSheet(type, _responseSheet, _targetId, (_masterElementNodes, _settings) => {
+
 
           _complete(_masterElementNodes, _settings);
         });
@@ -362,6 +364,7 @@ class RefElementNode extends HTMLElementNode {
             }
 
             this.processingCSetting_include_async(componentSettingObject['env_include_async'], () => {
+
               _callback(masterElementNodes, componentSettingObject);
             });
           } else {
@@ -372,10 +375,13 @@ class RefElementNode extends HTMLElementNode {
           throw new Error('Component Settings Block is Invalid');
         }
 
+      } else {
+        _callback(masterElementNodes, {});
       }
-    }
+    } else {
 
-    _callback(masterElementNodes, {});
+      _callback(masterElementNodes, {});
+    }
   }
 
 

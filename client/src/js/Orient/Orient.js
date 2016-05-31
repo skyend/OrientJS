@@ -14,6 +14,11 @@ import StringElementNode from '../serviceCrew/ElementNode/StringElementNode';
 import TagBaseElementNode from '../serviceCrew/ElementNode/TagBaseElementNode';
 
 import ObjectExtends from '../util/ObjectExtends';
+import ArrayHandler from '../util/ArrayHandler';
+import Identifier from '../util/Identifier';
+import ObjectExplorer from '../util/ObjectExplorer';
+
+
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
 import Shortcut from '../serviceCrew/DataResolver/Shortcut';
@@ -220,6 +225,26 @@ class Neutron {
 
   static get bv() {
     return BROWSER_VER;
+  }
+
+  // fix
+  static get ObjectExtends() {
+    return ObjectExtends;
+  }
+
+  // fix
+  static get ObjectExplorer() {
+    return ObjectExplorer;
+  }
+
+  // fix
+  static get Identifier() {
+    return Identifier;
+  }
+
+  // fix
+  static get ArrayHandler() {
+    return ArrayHandler;
   }
 
   /*
