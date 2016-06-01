@@ -337,14 +337,18 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   let that = this;
 
   let transferFields = {};
-  let foundElements;
+  let foundElements = this.getDOMNode().querySelectorAll('*') || [];
   let foundElementNodes = [];
-  foundElements = this.getDOMNode().querySelectorAll('[transfer-value]') || [];
+  let foundElement;
 
   for (let i = 0; i < foundElements.length; i++) {
-    foundElementNodes.push(foundElements[i].___en);
+    foundElement = foundElements[i];
+
+    if (foundElement.___en && foundElement.___en.hasAttribute('transfer-value'))
+      foundElementNodes.push(foundElement.___en);
   }
 
+  let name, value;
   foundElementNodes.map(function(_elementNode) {
 
     let pass = true;
@@ -361,9 +365,15 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     });
 
     if (pass) {
-      transferFields[_elementNode.getAttributeWithResolve('name')] = _elementNode.getAttributeWithResolve('transfer-value');
+      name = _elementNode.getAttributeWithResolve('name');
+      value = _elementNode.getAttributeWithResolve('transfer-value');
+
+      if (name && value) {
+        transferFields[name] = value;
+      }
     }
   });
+
 
   // 추가 필드 머지
   __orient__ObjectExtends.mergeByRef(transferFields, fields || {}, true);
@@ -376,7 +386,6 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
 
   console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
   console.log(apiSourceId, requestId, fields);
-  console.log("AAA");
 
   if (before_chain) {
 

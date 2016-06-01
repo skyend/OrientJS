@@ -14,6 +14,13 @@
 		<!--[if lte IE 8]><link rel="stylesheet" href="/service-static/index/assets/css/ie8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="/service-static/index/assets/css/ie9.css" /><![endif]-->
 
+
+		<script type='text/javascript' src='/service-static/scripts/jquery-1.12.4.min.js'></script>
+		<!--[if lte IE 11]>
+		<script type='text/javascript' src='/service-static/scripts/jquery.form.js'></script>
+		<script type='text/javascript' src='/service-static/scripts/jquery.transport.xdr.min.js'></script>
+		<![endif]-->
+
     <script src="/socket.io/socket.io.js"></script>
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
@@ -22,20 +29,34 @@
 
 
 					var iframe = document.createElement('iframe');
-
+					iframe.setAttribute('src','about:blank');
 					var clonedInputF = _e.target.cloneNode(true);
 
+					console.log(_e.target,iframe.contentDocument);
+					console.log(clonedInputF);
 					document.head.appendChild(iframe);
 
-					iframe.onload = function(){
-						console.log('iframe loaded')
-						var iframeDocument = 	iframe.contentDocument;
-						iframeDocument.body.innerHTML = '<form name="sender" method="post" action="/service-static/config/admin.json" enctype="multipart/form-data">' + '</form>';
-						iframeDocument.sender.appendChild(clonedInputF);
-						console.log(clonedInputF);
+					iframe.onload = function(_e){
+						window.testload =_e;
+						console.log('iframe loaded');
+						var iframeDocument = iframe.contentDocument;
+						console.log(iframeDocument);
+						var form = document.createElement('form');
+						form.setAttribute('method', 'post');
+						form.setAttribute('action',"http://52.79.106.100:58080/api/occ/cart/show.json?site_id=joykolon&session_id=b41b0b70-a5db-4662-b24c-8c406b169c12");
+						form.setAttribute('enctype', 'multipart/form-data');
+
+						form.appendChild(clonedInputF);
+						iframeDocument.body.appendChild(form);
 						window.input = clonedInputF;
 
-						iframeDocument.sender.submit();
+ 						//form.submit();
+						$(form).ajaxSubmit({
+							success:function(responseText, statusText, xhr, $form){
+								console.log(responseText,statusText);
+								console.dir(xhr);
+							}
+						})
 					}
 			}
 
@@ -99,8 +120,6 @@
 				iframePostSendTest
 				<input type='file' name='file' en-event-change='{{ iframePostSendTest( feature@event.originEvent , this ) }}' />
 
-
-				<div class='col-lg-6' en-type='ref' en-ref-target-id='[html]/service-static/components/bigTestComponent.html' listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
 			</form>
 
 		<!-- Footer -->
