@@ -17,7 +17,7 @@ import ObjectExtends from '../util/ObjectExtends';
 import ArrayHandler from '../util/ArrayHandler';
 import Identifier from '../util/Identifier';
 import ObjectExplorer from '../util/ObjectExplorer';
-
+import BrowserStorage from '../util/BrowserStorage';
 
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
@@ -245,6 +245,10 @@ class Neutron {
   // fix
   static get ArrayHandler() {
     return ArrayHandler;
+  }
+
+  static get BrowserStorage() {
+    return BrowserStorage;
   }
 
   /*

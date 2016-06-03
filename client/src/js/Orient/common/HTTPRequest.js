@@ -115,17 +115,17 @@ class HTTPRequest {
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
-    console.log('raw fields');
-    console.dir(_fields);
-    window.fields = _fields;
+
+
+
     // Object 로 입력된 필드 목록을 Array 로 변환한다.
     let rawFieldArray = HTTPRequest.fieldConvertToArray(_fields);
     rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
-    window.fields2 = rawFieldArray;
+
 
     // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
     let cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
-    window.fields3 = cookedFieldArray;
+
 
     // multipart post 체크와 메소드 체크
     if (method === 'post') {
@@ -186,6 +186,7 @@ class HTTPRequest {
 
       // query 생성
       let queries = cookedFieldArray.map(function(_fieldPair) {
+
         return `${_fieldPair[0]}=${ encodeURIComponent(_fieldPair[1]) }`;
       });
 
@@ -350,7 +351,7 @@ class HTTPRequest {
       key = rawFieldPair[0];
       value = rawFieldPair[1];
       valueType = typeof value;
-      console.log('key > ', key);
+
 
       if (valueType === 'string' || valueType === 'number' || valueType === 'boolean') {
 
@@ -360,7 +361,6 @@ class HTTPRequest {
         cookedFieldArray.push([key, value]);
       } else if (value instanceof HTMLInputElement) {
         // Input Element
-        console.log('file');
         let type = value.getAttribute('type');
 
         switch (type) {
@@ -403,8 +403,6 @@ class HTTPRequest {
         }
       }
     }
-
-    console.dir(cookedFieldArray);
 
     return cookedFieldArray;
   }

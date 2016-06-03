@@ -1,6 +1,7 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ObjectExtends from '../../util/ObjectExtends.js';
 import ArrayHandler from '../../util/ArrayHandler.js';
+import BrowserStorage from '../../util/BrowserStorage.js';
 import APIRequest from '../../Orient/common/APIRequest';
 
 import async from 'async';
@@ -38,19 +39,20 @@ class DynamicContext {
 
     // 모든 다중 요청의 구분은 콤마(,)로 한다.
     // 다중요청을 사용 할 때 모든 필드의 순서를 맞추어 주어야 한다.
-    this.sourceIDs = _props.sourceIDs;
-    this.requestIDs = _props.requestIDs || '';
-    this.namespaces = _props.namespaces;
+    this.sourceID = _props.sourceIDs;
+    this.requestID = _props.requestIDs || '';
+    this.namespace = _props.namespaces;
     this.isSync = _props.sync;
-    this.injectParams = _props.injectParams || '';
-
+    this.injectParam = _props.injectParams || '';
+    this.localCacheName = _props.localCache || null;
+    this.sessionCacheName = _props.sessionCache || null;
 
 
     // sourceID 에 대한 예외처리를 하지 않는 이유는 sourceID가 존재하지 않으면 DynamicContext가 생성되지 않으므로.
 
 
-    if (!this.namespaces) {
-      throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceIDs}', 연관 RequestID : '${this.requestIDs}'`);
+    if (!this.namespace) {
+      throw new Error(`RequestID 가 지정되지 않았습니다. 연관 SourceID : '${this.sourceID}', 연관 RequestID : '${this.requestID}'`);
     }
 
     this.apisources = [];
@@ -84,16 +86,37 @@ class DynamicContext {
   fire(_complete) {
     let that = this;
 
-    // let sources = this.sourceIDs.split(',');
-    // let injectParams = this.injectParams.split(',');
-    // let requestIDs = this.requestIDs.split(',');
-    // let nss = this.namespaces.split(',');
+    // let sources = this.sourceID.split(',');
+    // let injectParam = this.injectParam.split(',');
+    // let requestID = this.requestID.split(',');
+    // let nss = this.namespace.split(',');
 
-    let sources = [this.sourceIDs];
-    let injectParams = [this.injectParams];
-    let requestIDs = [this.requestIDs];
-    let nss = [this.namespaces];
 
+
+    let sources = [this.sourceID];
+    let injectParams = [this.injectParam];
+    let requestIDs = [this.requestID];
+    let nss = [this.namespace];
+
+
+    let usingCache;
+    let cacheName;
+    let cacheGetter;
+    let cacheSetter;
+
+    if (this.checkUsingLocalCache()) {
+      cacheGetter = BrowserStorage.getLocal.bind(BrowserStorage);
+      cacheSetter = BrowserStorage.setLocal.bind(BrowserStorage);
+
+      usingCache = true;
+      cacheName = this.localCacheName;
+    } else if (this.checkUsingSessionCache()) {
+      cacheGetter = BrowserStorage.getSession.bind(BrowserStorage);
+      cacheSetter = BrowserStorage.setSession.bind(BrowserStorage);
+
+      usingCache = true;
+      cacheName = this.sessionCacheName;
+    }
 
 
     let parallelFunctions = sources.map(function(_apiSource, _i) {
@@ -110,18 +133,27 @@ class DynamicContext {
 
       return function(_callback) {
 
+        if (usingCache) {
+
+          let cachedRetrievedObject = cacheGetter(that.getCachingName(cacheName));
+          // let cacheData_ERR = BrowserStorage.getLocal(this.getCacheName(`${this.localCacheName}_err`));
+          // let cacheData_STATUS = BrowserStorage.getLocal(this.getCacheName(`${this.localCacheName}_status`));
+          // let cacheData_LEVEL = BrowserStorage.getLocal(this.getCacheName(`${this.localCacheName}_level`));
+
+          if (cachedRetrievedObject) {
+            that.setResultToNS(nss[_i], null, cachedRetrievedObject, null);
+            _complete(null, cachedRetrievedObject);
+            return;
+          }
+        }
+
         APIRequest[that.isSync ? 'RequestAPISync' : 'RequestAPI'](that.environment, _apiSource, requestID, paramsObject, function(_err, _retrievedObject, _response) {
-          if (_err) {
+          that.setResultToNS(nss[_i], _err, _retrievedObject, _response);
 
-            that.dataResolver.setNS(nss[_i], null);
-            that.dataResolver.setNS(`${nss[_i]}_err`, _err);
-            that.dataResolver.setNS(`${nss[_i]}_status`, null);
-            that.dataResolver.setNS(`${nss[_i]}_level`, null);
-          } else {
-
-            that.dataResolver.setNS(nss[_i], _retrievedObject);
-            that.dataResolver.setNS(`${nss[_i]}_status`, _response.statusCode);
-            that.dataResolver.setNS(`${nss[_i]}_level`, _response.statusType);
+          if (usingCache) {
+            if (_retrievedObject) {
+              cacheSetter(that.getCachingName(cacheName), _retrievedObject);
+            }
           }
 
           _callback(null, _retrievedObject);
@@ -139,6 +171,19 @@ class DynamicContext {
     });
   }
 
+  setResultToNS(_ns, _err, _retrievedObject, _response) {
+
+    if (_err) {
+      this.dataResolver.setNS(_ns, null);
+      this.dataResolver.setNS(`${_ns}_err`, _err);
+      this.dataResolver.setNS(`${_ns}_status`, null);
+      this.dataResolver.setNS(`${_ns}_level`, null);
+    } else {
+      this.dataResolver.setNS(_ns, _retrievedObject);
+      this.dataResolver.setNS(`${_ns}_status`, _response && _response.statusCode);
+      this.dataResolver.setNS(`${_ns}_level`, _response && _response.statusType);
+    }
+  }
 
   parseParamString(_paramString) {
     let paramsPairs = _paramString.split('&');
@@ -166,6 +211,26 @@ class DynamicContext {
 
   feedbackLoadState() {
 
+  }
+
+  checkUsingLocalCache() {
+    if (this.localCacheName === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  checkUsingSessionCache() {
+    if (this.sessionCacheName === null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  getCachingName(_name) {
+    return `$dc_${_name}`;
   }
 
 

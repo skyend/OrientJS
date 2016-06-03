@@ -117,6 +117,14 @@ class Config {
     return this._INIT_FUNCTION_SPLITED;
   }
 
+  set INIT_FUNCTION(_if) {
+    this._INIT_FUNCTION = _if;
+  }
+
+  get INIT_FUNCTION() {
+    return this._INIT_FUNCTION;
+  }
+
   get_INIT_FUNCTION() {
     if (!(this.INIT_FUNCTION_SPLITED instanceof Array)) throw new Error(`config : INIT_FUNCTION_SPLITED is not Array.`);
 
@@ -159,11 +167,23 @@ class Config {
     // 1. 로딩
     // 2. import
     let that = this;
+    let configFileType = _configURL.replace(/.*?\.(\w+)$/, '$1');
+
 
     HTTPRequest.request('get', _configURL, {}, (_err, _res) => {
+      let importObject;
 
       if (_res !== null) {
-        that.import(_res.json);
+        if (configFileType === 'json') {
+
+          importObject = _res.json;
+        } else if (configFileType === 'js') {
+          let configExtractor = new Function('var CONFIG; \n' + _res.responseText + '\n return CONFIG;');
+
+          importObject = configExtractor.apply(this);
+        }
+
+        that.import(importObject);
 
         that.emit('update');
 
@@ -174,6 +194,10 @@ class Config {
 
             _complete();
           });
+        } else if (this.INIT_FUNCTION) {
+          this.INIT_FUNCTION.apply(this, [this.orbit, function() {
+            _complete();
+          }]);
         } else {
           _complete();
         }
@@ -250,6 +274,8 @@ class Config {
     this._DIR_API_SOURCE = _config['DIR_API_SOURCE'];
     this._MODE = _config['MODE'];
     this._INIT_FUNCTION_SPLITED = _config['INIT_FUNCTION_SPLITED'];
+    this._INIT_FUNCTION = _config['INIT_FUNCTION'];
+
 
     window['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'] = _config['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'];
 
@@ -270,6 +296,7 @@ class Config {
     config['DIR_API_SOURCE'] = this._DIR_API_SOURCE;
     config['MODE'] = this._MODE;
     config['INIT_FUNCTION_SPLITED'] = this._INIT_FUNCTION_SPLITED;
+    config['INIT_FUNCTION'] = this.INIT_FUNCTION;
 
     ObjectExtends.mergeByRef(config, this.configObject, false);
 

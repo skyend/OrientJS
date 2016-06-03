@@ -212,7 +212,11 @@ export default class APISource {
 
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
-    let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
+
+
+    console.log('tttt->', this.getDefaultFields(), this.resolvefieldObject(req.getFieldsObject()), req.getFieldsObject());
+
+    let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true), true);
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
     // console.log(fieldObject);
     // let keys = Object.keys(fieldObject);

@@ -3,7 +3,7 @@ import ArrayHandler from '../../util/ArrayHandler.js';
 import JSCookie from 'js-cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
-import TypeCaster from '../Data/TypeCaster';
+import TypeCaster from '../../util/TypeCaster';
 // import ElementNode from '../ElementNode/ElementNode';
 
 //import _ from 'underscore';

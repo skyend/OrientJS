@@ -185,9 +185,47 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children = newChildList;
   }
 
-  findById(_id) {
+  findById(_id, _absolute) {
+    let targetSplitedId = _id.split('@');
+
+
     return this.findRecursive(function(_compareElement) {
-      return _compareElement.id == _id;
+
+      // _absolute 옵션이 있는 경우 ID가 완전히 일치하는 요소를 찾는다.
+      if (_absolute) {
+        return _compareElement.id === _id;
+      }
+
+      if (targetSplitedId.length === 1) {
+        // no depth
+        if (_compareElement.isGhost) {
+          let splited = _compareElement.id.split('@');
+
+          return splited[0] === _id;
+        } else {
+
+          return _compareElement.id === _id;
+        }
+      } else {
+        // has depth
+
+        if (_compareElement.isGhost) {
+          let splited = _compareElement.id.split('@');
+
+          for (let i = 0; i < targetSplitedId.length; i++) {
+            if (splited[i]) {
+              if (splited[i] !== targetSplitedId[i]) {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return false;
     });
   }
 

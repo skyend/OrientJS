@@ -450,6 +450,12 @@ class TagBaseElementNode extends ElementNode {
       if (this.dynamicContextInjectParams)
         _domNode.setAttribute('en-dc-inject-params', this.dynamicContextInjectParams);
 
+      if (this.dynamicContextLocalCache)
+        _domNode.setAttribute('en-dc-local-cache', this.dynamicContextLocalCache);
+
+      if (this.dynamicContextSessionCache)
+        _domNode.setAttribute('en-dc-session-cache', this.dynamicContextSessionCache);
+
       // #Events
       // dom defaults events
       if (this.getEvent('click'))
@@ -552,6 +558,9 @@ class TagBaseElementNode extends ElementNode {
 
         if (attrName === 'checked')
           this.forwardDOM.checked = null;
+
+        if (attrName === 'selected-index')
+          this.forwardDOM.selectedItem = null;
       }
     }
 
@@ -566,6 +575,10 @@ class TagBaseElementNode extends ElementNode {
 
       if (attrName === 'checked' && this.forwardDOM.checked !== attrValue) {
         this.forwardDOM.checked = attrValue;
+      }
+
+      if (attrName === 'selected-index' && this.forwardDOM.selectedIndex !== attrValue) {
+        this.forwardDOM.selectedIndex = attrValue;
       }
 
       if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
@@ -678,6 +691,12 @@ class TagBaseElementNode extends ElementNode {
             break;
           case 'en-dc-ns':
             this.dynamicContextNS = attrValue;
+            break;
+          case 'en-dc-local-cache':
+            this.dynamicContextLocalCache = attrValue;
+            break;
+          case 'en-dc-session-cache':
+            this.dynamicContextSessionCache = attrValue;
             break;
           case 'en-dc-passive':
             if (attrValue === 'false') {

@@ -27,7 +27,6 @@
     <script>
 			function iframePostSendTest(_e, _target){
 
-
 					var iframe = document.createElement('iframe');
 					iframe.setAttribute('src','about:blank');
 					var clonedInputF = _e.target.cloneNode(true);
@@ -74,6 +73,11 @@
           socket.emit('my other event', { my: 'data' });
         });
       }
+
+
+			window.onunload=function(){
+				console.log('unload');
+			}
     </script>
 
     <!-- Scripts -->

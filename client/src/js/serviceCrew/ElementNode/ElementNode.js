@@ -1081,14 +1081,20 @@ class ElementNode {
     let resolvedSourceId = this.interpret(this.dynamicContextSID);
     let resolvedRequestId = this.interpret(this.dynamicContextRID);
     let resolvedNamespaces = this.interpret(this.dynamicContextNS);
+
     let resolvedInjectParams = this.interpret(this.dynamicContextInjectParams);
+
+    let resolvedLocalCache = this.interpret(this.dynamicContextLocalCache);
+    let resolvedSessionCache = this.interpret(this.dynamicContextSessionCache);
 
     let newDynamicContext = new DynamicContext(this.environment, {
       sourceIDs: resolvedSourceId,
       requestIDs: resolvedRequestId,
       namespaces: resolvedNamespaces,
       sync: this.dynamicContextSync,
-      injectParams: resolvedInjectParams
+      injectParams: resolvedInjectParams,
+      localCache: resolvedLocalCache,
+      sessionCache: resolvedSessionCache,
     }, this.availableDynamicContext);
 
     // console.log(newDynamicContext);
@@ -2581,6 +2587,8 @@ class ElementNode {
     this.dynamicContextSync = _elementNodeDataObject.dcsync;
     this.dynamicContextInjectParams = _elementNodeDataObject.dcip;
     this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dcrdcl;
+    this.dynamicContextLocalCache = _elementNodeDataObject.dclc;
+    this.dynamicContextSessionCache = _elementNodeDataObject.dcsc;
 
     // 참조되는 컴포넌트의 대표자
     this.componentRepresenter = _elementNodeDataObject.cr;
@@ -2672,6 +2680,10 @@ class ElementNode {
       exportObject.dcip = this.dynamicContextInjectParams;
     if (this.dynamicContextRenderDontCareLoading)
       exportObject.dcrdcl = this.dynamicContextRenderDontCareLoading;
+    if (this.dynamicContextLocalCache)
+      exportObject.dclc = this.dynamicContextLocalCache;
+    if (this.dynamicContextSessionCache)
+      exportObject.dcsc = this.dynamicContextSessionCache;
 
     if (this.componentRepresenter === true)
       exportObject.cr = this.componentRepresenter;

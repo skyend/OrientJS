@@ -337,15 +337,20 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
   let that = this;
 
   let transferFields = {};
-  let foundElements = this.getDOMNode().querySelectorAll('*') || [];
+  // name Attribute 를 가진 TagElement 를 검색한다.
+  let foundElements = this.getDOMNode().querySelectorAll('[name]') || [];
   let foundElementNodes = [];
   let foundElement;
+  let foundElementNode;
 
+  // name Attribute를 가진 TagElement중 transfer-value 필드를 가진 ElementNode를 검색한다.
   for (let i = 0; i < foundElements.length; i++) {
     foundElement = foundElements[i];
+    foundElementNode = Orient.getNodeByDOM(foundElement);
 
-    if (foundElement.___en && foundElement.___en.hasAttribute('transfer-value'))
+    if (foundElementNode !== null && foundElementNode.hasAttribute('transfer-value')) {
       foundElementNodes.push(foundElement.___en);
+    }
   }
 
   let name, value;
