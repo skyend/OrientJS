@@ -561,6 +561,9 @@ class TagBaseElementNode extends ElementNode {
 
         if (attrName === 'selected-index')
           this.forwardDOM.selectedItem = null;
+
+        if (attrName === 'selected')
+          this.forwardDOM.selected = null;
       }
     }
 
@@ -579,6 +582,10 @@ class TagBaseElementNode extends ElementNode {
 
       if (attrName === 'selected-index' && this.forwardDOM.selectedIndex !== attrValue) {
         this.forwardDOM.selectedIndex = attrValue;
+      }
+
+      if (attrName === 'selected' && this.forwardDOM.selected !== attrValue) {
+        this.forwardDOM.selected = attrValue;
       }
 
       if (this.forwardDOM.getAttribute(attrName) !== attrValue) {

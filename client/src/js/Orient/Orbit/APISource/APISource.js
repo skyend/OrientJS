@@ -180,7 +180,7 @@ export default class APISource {
   }
 
   resolvefieldObject(_fieldObject) {
-    let keys = Object.keys(_fieldObject)
+    let keys = Object.keys(_fieldObject);
     let resolvedObject = {};
     let key;
     for (let i = 0; i < keys.length; i++) {
@@ -212,11 +212,8 @@ export default class APISource {
 
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
-
-
-    console.log('tttt->', this.getDefaultFields(), this.resolvefieldObject(req.getFieldsObject()), req.getFieldsObject());
-
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true), true);
+
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
     // console.log(fieldObject);
     // let keys = Object.keys(fieldObject);
@@ -248,6 +245,8 @@ export default class APISource {
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
+
+
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
     // let keys = Object.keys(fieldObject);
     //

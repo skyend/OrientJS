@@ -110,21 +110,13 @@ class HTTPRequest {
 
 
 
-  static request(_method, _url, _fields = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true) {
+  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true) {
     let method = _method.toLowerCase();
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
 
 
-
-    // Object 로 입력된 필드 목록을 Array 로 변환한다.
-    let rawFieldArray = HTTPRequest.fieldConvertToArray(_fields);
-    rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
-
-
-    // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
-    let cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
 
 
     // multipart post 체크와 메소드 체크
@@ -157,6 +149,22 @@ class HTTPRequest {
       isSameOrigin = true;
     } else {
       isSameOrigin = false;
+    }
+
+
+    // for application/x-www-form-urlencoded ,multipart/form-data
+    let rawFieldArray = [],
+      cookedFieldArray = [];
+
+    switch (_enctype) {
+      case 'application/x-www-form-urlencoded':
+      case 'multipart/form-data':
+        // Object 로 입력된 필드 목록을 Array 로 변환한다.
+        rawFieldArray = HTTPRequest.fieldConvertToArray(_data);
+        rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
+        // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
+        cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
+        break;
     }
 
     // console.log('a', is_multipart_post);
@@ -203,6 +211,7 @@ class HTTPRequest {
         finalData = urlencodedQueries;
       }
     }
+
 
     let Request;
     if (B_NAME === 'ie' && B_VER <= 9) {

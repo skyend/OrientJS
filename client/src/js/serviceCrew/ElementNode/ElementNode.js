@@ -38,6 +38,8 @@ const SCOPE_TEXT_OPTION_SEPARATE_REGEXP = /^@([\w\-\_\d]+?)(?:\:(.*))?$/;
 const GET_TEMPORARY_ID_STORE = Identifier.chars32SequenceStore();
 
 
+const GET_ERORR_ID_STORE = Identifier.chars32SequenceStore();
+
 class ElementNode {
   static get SIGN_BY_ELEMENTNODE() {
     return SIGN_BY_ELEMENTNODE;
@@ -1082,6 +1084,7 @@ class ElementNode {
     let resolvedRequestId = this.interpret(this.dynamicContextRID);
     let resolvedNamespaces = this.interpret(this.dynamicContextNS);
 
+
     let resolvedInjectParams = this.interpret(this.dynamicContextInjectParams);
 
     let resolvedLocalCache = this.interpret(this.dynamicContextLocalCache);
@@ -1378,6 +1381,7 @@ class ElementNode {
         return this.defaultResolver.resolve(solved, injectGetterInterface, null, this);
       }
     } catch (_e) {
+      _e.message = `[#${GET_ERORR_ID_STORE()}]` + _e.message;
 
       if (window.ORIENT_CLEAR_BD_LOG !== true) {
         console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');

@@ -125,6 +125,14 @@ class Config {
     return this._INIT_FUNCTION;
   }
 
+  set GLOBAL_SCRIPTS(_GLOBAL_SCRIPTS) {
+    this._GLOBAL_SCRIPTS = _GLOBAL_SCRIPTS;
+  }
+
+  get GLOBAL_SCRIPTS() {
+    return this._GLOBAL_SCRIPTS;
+  }
+
   get_INIT_FUNCTION() {
     if (!(this.INIT_FUNCTION_SPLITED instanceof Array)) throw new Error(`config : INIT_FUNCTION_SPLITED is not Array.`);
 
@@ -187,20 +195,23 @@ class Config {
 
         that.emit('update');
 
-        if (this.INIT_FUNCTION_SPLITED) {
-          let initFunc = this.get_INIT_FUNCTION();
+        that.orbit.orbitDocument.loadExtraJSSerial(this.GLOBAL_SCRIPTS || [], () => {
 
-          initFunc(this.orbit, function() {
+          if (this.INIT_FUNCTION_SPLITED) {
+            let initFunc = this.get_INIT_FUNCTION();
 
+            initFunc(this.orbit, function() {
+
+              _complete();
+            });
+          } else if (this.INIT_FUNCTION) {
+            this.INIT_FUNCTION.apply(this, [this.orbit, function() {
+              _complete();
+            }]);
+          } else {
             _complete();
-          });
-        } else if (this.INIT_FUNCTION) {
-          this.INIT_FUNCTION.apply(this, [this.orbit, function() {
-            _complete();
-          }]);
-        } else {
-          _complete();
-        }
+          }
+        });
 
       } else {
         throw new Error(`Fail load config. ${_err}`);
@@ -275,7 +286,7 @@ class Config {
     this._MODE = _config['MODE'];
     this._INIT_FUNCTION_SPLITED = _config['INIT_FUNCTION_SPLITED'];
     this._INIT_FUNCTION = _config['INIT_FUNCTION'];
-
+    this._GLOBAL_SCRIPTS = _config['GLOBAL_SCRIPTS'];
 
     window['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'] = _config['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'];
 
@@ -295,8 +306,9 @@ class Config {
     config['DIR_COMPONENT'] = this._DIR_COMPONENT;
     config['DIR_API_SOURCE'] = this._DIR_API_SOURCE;
     config['MODE'] = this._MODE;
-    config['INIT_FUNCTION_SPLITED'] = this._INIT_FUNCTION_SPLITED;
+    config['INIT_FUNCTION_SPLITED'] = ObjectExtends.clone(this._INIT_FUNCTION_SPLITED);
     config['INIT_FUNCTION'] = this.INIT_FUNCTION;
+    config['GLOBAL_SCRIPTS'] = ObjectExtends.clone(this.GLOBAL_SCRIPTS);
 
     ObjectExtends.mergeByRef(config, this.configObject, false);
 

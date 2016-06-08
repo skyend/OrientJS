@@ -10,11 +10,12 @@ class APIRequest {
   }
 
   request(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
-    APIRequest.RequestAPI(this.env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride);
+
+    APIRequest.RequestAPI(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride);
   }
 
   requestSync(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
-    APIRequest.RequestAPISync(this.env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride);
+    APIRequest.RequestAPISync(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride);
   }
 
   static RequestAPISync(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
