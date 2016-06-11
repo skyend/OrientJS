@@ -133,6 +133,23 @@ class Config {
     return this._GLOBAL_SCRIPTS;
   }
 
+  set GLOBAL_STYLES(_GLOBAL_STYLES) {
+    this._GLOBAL_STYLES = _GLOBAL_STYLES;
+  }
+
+  get GLOBAL_STYLES() {
+    return this._GLOBAL_STYLES;
+  }
+
+  set GLOBAL_VALUES(_GLOBAL_VALUES) {
+    this._GLOBAL_VALUES = _GLOBAL_VALUES;
+  }
+
+  get GLOBAL_VALUES() {
+    return this._GLOBAL_VALUES;
+  }
+
+
   get_INIT_FUNCTION() {
     if (!(this.INIT_FUNCTION_SPLITED instanceof Array)) throw new Error(`config : INIT_FUNCTION_SPLITED is not Array.`);
 
@@ -195,6 +212,7 @@ class Config {
 
         that.emit('update');
 
+        that.orbit.orbitDocument.loadExtraCSSPararllel(this.GLOBAL_STYLES || []);
         that.orbit.orbitDocument.loadExtraJSSerial(this.GLOBAL_SCRIPTS || [], () => {
 
           if (this.INIT_FUNCTION_SPLITED) {
@@ -287,10 +305,17 @@ class Config {
     this._INIT_FUNCTION_SPLITED = _config['INIT_FUNCTION_SPLITED'];
     this._INIT_FUNCTION = _config['INIT_FUNCTION'];
     this._GLOBAL_SCRIPTS = _config['GLOBAL_SCRIPTS'];
+    this._GLOBAL_STYLES = _config['GLOBAL_STYLES'];
+    this._GLOBAL_VALUES = _config['GLOBAL_VALUES'];
 
     window['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'] = _config['ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET'];
 
     this.configObject = _config;
+
+    let globalValuesKeys = Object.keys(this.GLOBAL_VALUES || {});
+    for (let i = 0; i < globalValuesKeys.length; i++) {
+      window[globalValuesKeys[i]] = this.GLOBAL_VALUES[globalValuesKeys[i]];
+    }
 
     this.emit('update');
   }
@@ -309,6 +334,8 @@ class Config {
     config['INIT_FUNCTION_SPLITED'] = ObjectExtends.clone(this._INIT_FUNCTION_SPLITED);
     config['INIT_FUNCTION'] = this.INIT_FUNCTION;
     config['GLOBAL_SCRIPTS'] = ObjectExtends.clone(this.GLOBAL_SCRIPTS);
+    config['GLOBAL_STYLES'] = ObjectExtends.clone(this.GLOBAL_STYLES);
+    config['GLOBAL_VALUES'] = ObjectExtends.clone(this.GLOBAL_VALUES);
 
     ObjectExtends.mergeByRef(config, this.configObject, false);
 

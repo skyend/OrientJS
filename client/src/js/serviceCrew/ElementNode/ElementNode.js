@@ -820,7 +820,6 @@ class ElementNode {
 
     // if (!_onlyForwardDOM)
     this.isAttachedDOM = false;
-
   }
 
   isRepeater() {
@@ -2269,6 +2268,22 @@ class ElementNode {
 
   update(_options) {
     let that = this;
+
+    if (_options && _options['clean'] === true) {
+      if (this.parent) {
+        if (this.parent.getDOMNode().contains(this.getDOMNode())) {
+          this.parent.getDOMNode().removeChild(this.getDOMNode());
+
+          this.applyHiddenState();
+
+        } else {
+          this.print_console_error('DOM요소가 상위의 자식이 아닙니다.');
+        }
+      } else {
+        this.print_console_error('자신이 최상위인 요소는 Clean 업데이트를 할 수 없습니다.');
+      }
+    }
+
     /************************************/
     /***** Emit Event 'will-update' *****/
     /************************************/
@@ -2491,7 +2506,8 @@ class ElementNode {
                 console.debug.apply(console, args);
                 break;
               case "trace":
-                console.trace.apply(console, args);
+                if (console.trace)
+                  console.trace.apply(console, args);
                 break;
               default:
                 console.log.apply(console, args);

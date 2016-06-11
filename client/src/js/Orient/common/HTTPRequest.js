@@ -248,10 +248,23 @@ class HTTPRequest {
       request.statusCode = request.status;
       request.text = request.responseText;
 
-      try {
-        request.json = JSON.parse(request.responseText);
-      } catch (_e) {
-        request.json = null;
+      if (request.getAllResponseHeaders) {
+        request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
+      } else {
+        request.responseHeader = {
+          'Content-Type': request.contentType
+        }
+      }
+
+      // 컨텐트 타입이 application/json JSON 데이터 적재
+      if (/^application\/json/.test(request.responseHeader['Content-Type'])) {
+
+        try {
+          request.json = JSON.parse(request.responseText);
+        } catch (_e) {
+          request.json = null;
+          request.jsonParseError = _e;
+        }
       }
 
       HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "info", [request]);
@@ -260,6 +273,24 @@ class HTTPRequest {
     };
 
     request.onerror = function(_e) {
+      if (request.getAllResponseHeaders) {
+        request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
+      } else {
+        request.responseHeader = {
+          'Content-Type': request.contentType
+        }
+      }
+
+      // 컨텐트 타입이 application/json JSON 데이터 적재
+      if (/^application\/json/i.test(request.responseHeader['Content-Type'])) {
+        try {
+          request.json = JSON.parse(request.responseText);
+        } catch (_e) {
+          request.json = null;
+          request.jsonParseError = _e;
+        }
+      }
+
       // console.log('onerror', _e);
       let message = `Error : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
       HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
@@ -270,6 +301,14 @@ class HTTPRequest {
     };
 
     request.ontimeout = function(_e) {
+      if (request.getAllResponseHeaders) {
+        request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
+      } else {
+        request.responseHeader = {
+          'Content-type': request.contentType
+        }
+      }
+
       // console.log('onerror', _e);
       let message = `Timeout : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
@@ -279,6 +318,11 @@ class HTTPRequest {
     };
 
     HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "log");
+
+    if (window.HTTPREQ_TRACE_STACK) {
+      if (console.trace)
+        console.trace(`Send Trace: ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`);
+    }
 
     // SEND
     if (method === 'get') {
@@ -448,6 +492,26 @@ class HTTPRequest {
 
   static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded') {
     HTTPRequest.request(_method, _url, _data, _callback, _enctype, false);
+  }
+
+  static parseResponseHeaders(_responseHeaderText) {
+    let headLines = _responseHeaderText.split('\n');
+    let headObject = {};
+
+    let pair, headLine, key, value;
+    for (let i = 0; i < headLines.length; i++) {
+      headLine = headLines[i];
+
+      pair = headLine.split(':');
+      key = pair[0];
+      value = pair[1];
+      if (key)
+        headObject[key] = (value || '').trim();
+    }
+
+
+
+    return headObject;
   }
 }
 

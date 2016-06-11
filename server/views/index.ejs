@@ -17,9 +17,9 @@
 
 		<script type='text/javascript' src='/service-static/scripts/jquery-1.12.4.min.js'></script>
 		<!--[if lte IE 11]>
+		<![endif]-->
 		<script type='text/javascript' src='/service-static/scripts/jquery.form.js'></script>
 		<script type='text/javascript' src='/service-static/scripts/jquery.transport.xdr.min.js'></script>
-		<![endif]-->
 
     <script src="/socket.io/socket.io.js"></script>
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
@@ -42,7 +42,7 @@
 						console.log(iframeDocument);
 						var form = document.createElement('form');
 						form.setAttribute('method', 'post');
-						form.setAttribute('action',"http://52.79.106.100:58080/api/occ/cart/show.json?site_id=joykolon&session_id=b41b0b70-a5db-4662-b24c-8c406b169c12");
+						form.setAttribute('action',"http://52.79.106.100:58080/api/occ/cart/show.json");
 						form.setAttribute('enctype', 'multipart/form-data');
 
 						form.appendChild(clonedInputF);
@@ -51,6 +51,8 @@
 
  						//form.submit();
 						$(form).ajaxSubmit({
+							url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
+							dataType:'json',
 							success:function(responseText, statusText, xhr, $form){
 								console.log(responseText,statusText);
 								console.dir(xhr);

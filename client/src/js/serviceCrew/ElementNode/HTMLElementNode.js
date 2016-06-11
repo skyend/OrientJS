@@ -17,14 +17,8 @@ class HTMLElementNode extends TagBaseElementNode {
       TagBaseElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
     this.type = 'html';
-
   }
 
-  test() {
-    super.test();
-    console.log('test html');
-
-  }
 
   setEnvironment(_env) {
     super.setEnvironment(_env);
