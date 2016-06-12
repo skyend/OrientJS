@@ -142,7 +142,8 @@ class DynamicContext {
 
           if (cachedRetrievedObject) {
             that.setResultToNS(nss[_i], null, cachedRetrievedObject, null);
-            _complete(null, cachedRetrievedObject);
+            _callback(null, cachedRetrievedObject);
+            console.log('>>>2', that);
             return;
           }
         }
@@ -165,6 +166,7 @@ class DynamicContext {
     async.parallel(parallelFunctions, function(_err, _results) {
       if (_err !== null) return _complete(_err);
       that.emit('complete-load');
+
       that.isLoading = false;
       that.isLoaded = true;
       _complete(null);

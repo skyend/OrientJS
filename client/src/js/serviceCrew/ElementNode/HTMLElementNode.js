@@ -257,15 +257,6 @@ class HTMLElementNode extends TagBaseElementNode {
     return false;
   }
 
-  // findChildren(_selector) {
-  //   let elements = Sizzle(_selector, this.forwardDOM);
-  //   console.log(_selector, elements, this.forwardDOM);
-  //
-  //   return elements.map(function(_childDom) {
-  //     return _childDom.___en;
-  //   });
-  // }
-
   // alias : result[Array] == this.children.map(Function)
   childrenIteration(_processFunc) {
     return this.children.map(_processFunc);
@@ -292,13 +283,6 @@ class HTMLElementNode extends TagBaseElementNode {
       });
   }
 
-  clearRealizationChildren() {
-    if (this.realization === null) return;
-
-    while (this.realization.childNodes.length > 0) {
-      this.realization.removeChild(this.realization.childNodes[0]);
-    }
-  }
 
   // buildByComponent(_component) {
   //   super.buildByComponent(_component);
@@ -486,6 +470,18 @@ class HTMLElementNode extends TagBaseElementNode {
     });
 
     return result;
+  }
+
+
+
+  exportAsScript() {
+    // 컴포넌트 지시자 필요
+    // ref없이 컴포넌트 지시자로 지정한 객체로 component가 동작하도록
+
+    Orient.createInstance('html', 'div', { /* etc data */ }, { /* properties */ })
+    Orient.createInstance('html', 'div', {
+      children: [Orient.createInstance('html', 'div'), Orient.createInstance('html', 'div')]
+    })
   }
 }
 

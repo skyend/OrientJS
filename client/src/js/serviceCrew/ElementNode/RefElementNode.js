@@ -5,6 +5,7 @@ import Factory from './Factory';
 import ActionStore from '../Actions/ActionStore';
 
 import ArrayHandler from '../../util/ArrayHandler';
+import BrowserStorage from '../../util/BrowserStorage';
 
 // Actions Import
 import '../Actions/RefElementNodeActions';
@@ -117,75 +118,36 @@ class RefElementNode extends HTMLElementNode {
       }, null, (_result) => {
         this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
 
-          this.clearContainer();
 
-          if (!_masterElementNodes) {
-            this.print_console_warn(`Fragment Load Warning. "${targetId}" was not load.`);
-            return;
+          // 일반 env_include 는 처리만 실행한다.
+          if (_componentSettings['env_include']) {
+            this.processingCSetting_include(_componentSettings['env_include']);
           }
 
-          that.masterElementNodes = _masterElementNodes;
+          // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
 
-          that.loadedTargetId = targetId;
-
-          // that.scopeNodes.map(function(_scopeNode) {
-          //   if (_scopeNode.type === 'param') {
-          //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-          //   }
-          // });
-
-          // for (let i = 0; i < that.attributes.length; i++) {
-          //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-          // }
-          if (that.masterElementNodes.length === 1) {
-            that.representerMasterElementNode = that.masterElementNodes[0];
-          }
-
-          let masterElementNode;
-          for (let i = 0; i < that.masterElementNodes.length; i++) {
-
-            masterElementNode = that.masterElementNodes[i];
-            if (masterElementNode.componentRepresenter) {
-              that.representerMasterElementNode = masterElementNode;
+          if (_componentSettings['env_include_async']) {
+            if (this.refAsync === false) {
+              // 경고
+              // component load type is
+              // component will be load by async. because component load type is sync, but dependent resource is async
+              // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
+              console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
             }
 
-            for (let i = 0; i < that.attributes.length; i++) {
-              masterElementNode.setProperty(that.attributes[i].name, that.interpret(that.attributes[i].variable));
-            }
+            this.processingCSetting_include_async(_componentSettings['env_include_async'], () => {
+              that.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, () => {
 
-            masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
-
-            masterElementNode.setParent(that);
-
-
-            masterElementNode.tryEventScope('component-will-mount', {
-
-            }, null, (_result) => {
-
+              });
             });
-
-            masterElementNode.constructDOMs(_options);
-            masterElementNode.attachForwardDOM(that.forwardDOM);
-
-            masterElementNode.tryEventScope('component-did-mount', {
-
-            }, null, (_result) => {
+          } else {
+            that.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, () => {
 
             });
           }
 
 
-          // after include 처리
-          if (_componentSettings) {
 
-            if (_componentSettings.env_after_include) {
-              that.processingCSetting_include(_componentSettings.env_after_include);
-            }
-
-            if (_componentSettings.env_after_include_async) {
-              that.processingCSetting_include_async(_componentSettings.env_after_include_async);
-            }
-          }
         });
 
 
@@ -224,6 +186,78 @@ class RefElementNode extends HTMLElementNode {
 
 
     return returnHolder;
+  }
+
+  mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
+    this.clearContainer();
+
+    if (!_masterElementNodes) {
+      this.print_console_warn(`Fragment Load Warning. "${targetId}" was not load.`);
+      return;
+    }
+
+    this.masterElementNodes = _masterElementNodes;
+
+    this.loadedTargetId = targetId;
+
+    // that.scopeNodes.map(function(_scopeNode) {
+    //   if (_scopeNode.type === 'param') {
+    //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+    //   }
+    // });
+
+    // for (let i = 0; i < that.attributes.length; i++) {
+    //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+    // }
+    if (this.masterElementNodes.length === 1) {
+      this.representerMasterElementNode = this.masterElementNodes[0];
+    }
+
+    let masterElementNode;
+    for (let i = 0; i < this.masterElementNodes.length; i++) {
+
+      masterElementNode = this.masterElementNodes[i];
+      if (masterElementNode.componentRepresenter) {
+        this.representerMasterElementNode = masterElementNode;
+      }
+
+      for (let i = 0; i < this.attributes.length; i++) {
+        masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
+      }
+
+      masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
+
+      masterElementNode.setParent(this);
+
+
+      masterElementNode.tryEventScope('component-will-mount', {
+
+      }, null, (_result) => {
+
+      });
+
+      masterElementNode.constructDOMs(_options);
+      masterElementNode.attachForwardDOM(this.forwardDOM);
+
+      masterElementNode.tryEventScope('component-did-mount', {
+
+      }, null, (_result) => {
+
+      });
+    }
+
+
+    // after include 처리
+    if (_componentSettings) {
+
+      if (_componentSettings.env_after_include) {
+        this.processingCSetting_include(_componentSettings.env_after_include);
+      }
+
+      if (_componentSettings.env_after_include_async) {
+        this.processingCSetting_include_async(_componentSettings.env_after_include_async);
+      }
+    }
   }
 
   applyHiddenState() {
@@ -285,30 +319,88 @@ class RefElementNode extends HTMLElementNode {
       type = matches[1];
     }
 
+    if (window.ORIENT_REF_COMPONENT_CACHING) {
+      let cacheCheck = this.readCachedComponentJSON(_targetId, (_masterElementNodes, _settings) => {
+        if (_masterElementNodes !== null) {
+          _complete(_masterElementNodes, _settings);
+        }
+      });
+
+      if (cacheCheck) {
+        return;
+      }
+    }
+
+
+    let loaderFunction;
     if (this.environment) {
-      this.environment.retriever[this.refAsync ? 'loadComponentSheetSync' : 'loadComponentSheet'](targetId, (_responseSheet) => {
+      if (this.refAsync) {
+        loaderFunction = this.environment.retriever.loadComponentSheet.bind(this.environment.retriever);
+      } else {
+        loaderFunction = this.environment.retriever.loadComponentSheetSync.bind(this.environment.retriever);
+      }
+
+      if (window.ORIENT_REF_FORCE_ASYNC) loaderFunction = this.environment.retriever.loadComponentSheet;
+
+
+      loaderFunction(targetId, (_responseSheet) => {
         if (!_responseSheet) throw new Error(`Not found component sheet. <target:${targetId}> ${this.DEBUG_FILE_NAME_EXPLAIN}`);
 
         this.interpretComponentSheet(type, _responseSheet, _targetId, (_masterElementNodes, _settings) => {
-
+          if (window.ORIENT_REF_COMPONENT_CACHING) this.cachingComponentJSON(_targetId, _masterElementNodes, _settings);
 
           _complete(_masterElementNodes, _settings);
         });
       });
     } else {
-      Orient.HTTPRequest[this.refAsync ? 'requestSync' : 'request']('get', targetId, {}, (_err, _res) => {
+      if (this.refAsync) {
+        loaderFunction = Orient.HTTPRequest.request.bind(Orient.HTTPRequest);
+      } else {
+        loaderFunction = Orient.HTTPRequest.requestSync.bind(Orient.HTTPRequest);
+      }
+
+      if (window.ORIENT_REF_FORCE_ASYNC) loaderFunction = Orient.HTTPRequest.request;
+
+      loaderFunction('get', targetId, {}, (_err, _res) => {
         if (_err !== null) throw new Error("fail static component loading");
 
         let responseText = _res.text;
         this.interpretComponentSheet(type, responseText, _targetId, (_masterElementNodes, _settings) => {
+          if (window.ORIENT_REF_COMPONENT_CACHING) this.cachingComponentJSON(_targetId, _masterElementNodes, _settings);
 
           _complete(_masterElementNodes, _settings);
         });
       });
-
-      //throw new Error(`LoadError : Could not load Component. Need Environment(Recommend Orbit Framework).`);
     }
   }
+
+  cachingComponentJSON(_name, _masterElementNodes, _settings) {
+    let masterElementNodes = [];
+
+    masterElementNodes = _masterElementNodes.map(function(_masterElementNode) {
+
+      return _masterElementNode.export(true);
+    });
+
+    BrowserStorage.setLocal(`_component_${_name}`, {
+      component: masterElementNodes,
+      settings: _settings
+    });
+  }
+
+  readCachedComponentJSON(_name, _callback) {
+    let componentData = BrowserStorage.getLocal(`_component_${_name}`);
+
+    if (componentData) {
+      _callback(Factory.convertToMasterElementNodesByJSONSheet(componentData.component, {}, this.environment), componentData.settings);
+      return true;
+    } else {
+      _callback(null);
+      return false;
+    }
+  }
+
+
 
   convertMastersByType(_type, _props = {}, _responseText) {
     if (_type === 'html') {
@@ -347,29 +439,32 @@ class RefElementNode extends HTMLElementNode {
           let componentSettingObject = this.htmlSettingBlockInterpret(settingsBlock);
 
           // 일반 env_include 는 처리만 실행한다.
-          if (componentSettingObject['env_include']) {
-            this.processingCSetting_include(componentSettingObject['env_include']);
-          }
+          // if (componentSettingObject['env_include']) {
+          //   this.processingCSetting_include(componentSettingObject['env_include']);
+          // }
+          //
+          //
+          // // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
+          //
+          // if (componentSettingObject['env_include_async']) {
+          //   if (this.refAsync === false) {
+          //     // 경고
+          //     // component load type is
+          //     // component will be load by async. because component load type is sync, but dependent resource is async
+          //     // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
+          //     console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
+          //   }
+          //
+          //   this.processingCSetting_include_async(componentSettingObject['env_include_async'], () => {
+          //
+          //     _callback(masterElementNodes, componentSettingObject);
+          //   });
+          // } else {
+          //   _callback(masterElementNodes, componentSettingObject);
+          // }
 
 
-          // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
-
-          if (componentSettingObject['env_include_async']) {
-            if (this.refAsync === false) {
-              // 경고
-              // component load type is
-              // component will be load by async. because component load type is sync, but dependent resource is async
-              // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
-              console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
-            }
-
-            this.processingCSetting_include_async(componentSettingObject['env_include_async'], () => {
-
-              _callback(masterElementNodes, componentSettingObject);
-            });
-          } else {
-            _callback(masterElementNodes, componentSettingObject);
-          }
+          _callback(masterElementNodes, componentSettingObject);
 
         } else {
           throw new Error('Component Settings Block is Invalid');
