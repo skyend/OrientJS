@@ -104,7 +104,7 @@ class Retriever {
       }
     }
 
-    return this._loadComponentSheet;
+    return this._loadComponentSheet.bind(this);
   }
 
   get loadComponentSheetSync() {
@@ -114,7 +114,7 @@ class Retriever {
       }
     }
 
-    return this._loadComponentSheetSync;
+    return this._loadComponentSheetSync.bind(this);
   }
 
   _getComponentURL(_loadTarget) {
