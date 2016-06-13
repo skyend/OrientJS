@@ -173,19 +173,19 @@ class HTTPRequest {
 
     if (is_multipart_post) {
 
-      // post 이고 multipart/form-data의 경우
-      if (B_NAME === 'ie' && B_VER <= 9) {
-
-        /*
-        ██ ███████  ██  ██████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
-        ██ ██      ███ ██  ████     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
-        ██ █████    ██ ██ ██ ██     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
-        ██ ██       ██ ████  ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
-        ██ ███████  ██  ██████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
-        */
-
-        return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, _callback, _async);
-      }
+      // // post 이고 multipart/form-data의 경우
+      // if (B_NAME === 'ie' && B_VER <= 9) {
+      //
+      //   /*
+      //   ██ ███████  ██  ██████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
+      //   ██ ██      ███ ██  ████     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
+      //   ██ █████    ██ ██ ██ ██     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
+      //   ██ ██       ██ ████  ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
+      //   ██ ███████  ██  ██████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
+      //   */
+      //
+      //   return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, _callback, _async);
+      // }
 
       finalData = HTTPRequest.convertFieldsToFormData(cookedFieldArray);
     } else if (_enctype === 'application/x-www-form-urlencoded') {

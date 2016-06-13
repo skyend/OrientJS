@@ -30,7 +30,8 @@
 					var iframe = document.createElement('iframe');
 					iframe.setAttribute('src','about:blank');
 					var clonedInputF = _e.target.cloneNode(true);
-
+					window.t = _e.target;
+					window.tt = clonedInputF;
 					console.log(_e.target,iframe.contentDocument);
 					console.log(clonedInputF);
 					document.head.appendChild(iframe);
@@ -44,20 +45,21 @@
 						form.setAttribute('method', 'post');
 						form.setAttribute('action',"http://52.79.106.100:58080/api/occ/cart/show.json");
 						form.setAttribute('enctype', 'multipart/form-data');
+						form.setAttribute('target', 'iframe');
 
 						form.appendChild(clonedInputF);
 						iframeDocument.body.appendChild(form);
 						window.input = clonedInputF;
-
+						console.log('ajaxSubmit');
  						//form.submit();
-						$(form).ajaxSubmit({
-							url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
-							dataType:'json',
-							success:function(responseText, statusText, xhr, $form){
-								console.log(responseText,statusText);
-								console.dir(xhr);
-							}
-						})
+						// $(form).ajaxSubmit({
+						// 	url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
+						// 	dataType:'json',
+						// 	success:function(responseText, statusText, xhr, $form){
+						// 		console.log(responseText,statusText);
+						// 		console.dir(xhr);
+						// 	}
+						// })
 					}
 			}
 

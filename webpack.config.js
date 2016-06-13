@@ -86,7 +86,7 @@ module.exports = {
   // },
 
   plugins: [
-    new Clean(['client/dist']),
+    //new Clean(['client/dist']),
     // new webpack.HotModuleReplacementPlugin(),
     // new webpack.NoErrorsPlugin(),
 

@@ -320,12 +320,13 @@ class RefElementNode extends HTMLElementNode {
     }
 
     if (window.ORIENT_REF_COMPONENT_CACHING) {
-      let cacheCheck = this.readCachedComponentJSON(_targetId, (_masterElementNodes, _settings) => {
-        if (_masterElementNodes !== null) {
-          _complete(_masterElementNodes, _settings);
-        }
-      });
-
+      let caller = () => {
+        let cacheCheck = this.readCachedComponentJSON(_targetId, (_masterElementNodes, _settings) => {
+          if (_masterElementNodes !== null) {
+            _complete(_masterElementNodes, _settings);
+          }
+        });
+      }
       if (cacheCheck) {
         return;
       }
