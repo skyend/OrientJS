@@ -28,7 +28,7 @@ const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
-
+const VERSION = '0.14.1';
 
 
 window.$$ = function(_message, _data) {
@@ -285,6 +285,6 @@ class Neutron {
 
 }
 
-Neutron.version = '0.11.21';
+Neutron.version = VERSION;
 
 export default window.Orient = Neutron;
