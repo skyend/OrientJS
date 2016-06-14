@@ -419,10 +419,13 @@ class HTTPRequest {
         switch (type) {
           case "file":
 
-            for (let j = 0; j < value.files.length; j++) {
-              cookedFieldArray.push([key, value.files[j]]);
+            // IE9 이하에서 file API를 지원하지 않아, files 필드가 있을 때에만 file을 추출하여 처리 하도록 한다.
+            // 그러므로 ie9이하에서는 Multipart전송에서 file 전송이 제외된다.
+            if (value.files) {
+              for (let j = 0; j < value.files.length; j++) {
+                cookedFieldArray.push([key, value.files[j]]);
+              }
             }
-
             break;
           default:
             value = value.value;

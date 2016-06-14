@@ -1,13 +1,15 @@
 import ElementNode from './ElementNode.js';
 "use strict"
 
+
+const FINAL_TYPE_CONTEXT = 'string';
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
-    this.type = 'string';
+    this.type = FINAL_TYPE_CONTEXT;
     this.text;
   }
 

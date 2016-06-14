@@ -17,7 +17,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.12.5';
+const VERSION = '0.12.7';
 
 class Orbit {
   /**

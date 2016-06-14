@@ -167,9 +167,12 @@ try {
 }
 
 
+const FINAL_TYPE_CONTEXT = 'base';
 class TagBaseElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
+    this.type = FINAL_TYPE_CONTEXT;
+
     if (Orient.bn === 'ie' && Orient.bv <= 10) {
       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
@@ -408,16 +411,16 @@ class TagBaseElementNode extends ElementNode {
     for (let i = 0; i < this.attributes.length; i++) {
       this.mappingAttribute(_domNode, this.attributes[i], _options);
     }
-
-    var currentRect = this.getCurrentRectangle();
-    let rectKeys = Object.keys(currentRect);
-    let rectKey;
-    for (let i = 0; i < rectKeys.length; i++) {
-      rectKey = rectKeys[i];
-      if (/^\d+/.test(currentRect[rectKey])) {
-        _domNode.style[rectKey] = currentRect[rectKey];
-      }
-    }
+    // 
+    // var currentRect = this.getCurrentRectangle();
+    // let rectKeys = Object.keys(currentRect);
+    // let rectKey;
+    // for (let i = 0; i < rectKeys.length; i++) {
+    //   rectKey = rectKeys[i];
+    //   if (/^\d+/.test(currentRect[rectKey])) {
+    //     _domNode.style[rectKey] = currentRect[rectKey];
+    //   }
+    // }
 
     if (window.ORIENT_SHOW_SPECIAL_ATTRIBUTES) {
       // #Normals

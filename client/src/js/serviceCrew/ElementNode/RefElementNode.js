@@ -20,13 +20,14 @@ const SETTING_END_STRING_LENGTH = SETTING_END_STRING.length;
 
 const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
+const FINAL_TYPE_CONTEXT = 'ref';
 class RefElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     if (Orient.bn === 'ie' && Orient.bv <= 10) {
       HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
-    this.type = 'ref';
+    this.type = FINAL_TYPE_CONTEXT;
 
     this.loadedMasters = null;
 
@@ -320,13 +321,12 @@ class RefElementNode extends HTMLElementNode {
     }
 
     if (window.ORIENT_REF_COMPONENT_CACHING) {
-      let caller = () => {
-        let cacheCheck = this.readCachedComponentJSON(_targetId, (_masterElementNodes, _settings) => {
-          if (_masterElementNodes !== null) {
-            _complete(_masterElementNodes, _settings);
-          }
-        });
-      }
+      let cacheCheck = this.readCachedComponentJSON(_targetId, (_masterElementNodes, _settings) => {
+        if (_masterElementNodes !== null) {
+          _complete(_masterElementNodes, _settings);
+        }
+      });
+
       if (cacheCheck) {
         return;
       }

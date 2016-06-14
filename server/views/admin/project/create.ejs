@@ -59,7 +59,7 @@
     </script>
   </head>
   <body class="hold-transition skin-black sidebar-mini">
-  <div id='wrapper' class="wrapper">
+  <div id='wrapper' class="wrapper" test='{{: "aa" }}'>
 
     <%- include ../common/head.ejs %>
 
@@ -138,6 +138,47 @@
                       <label for='radio_access_internal'> Internal </label> <br/>
                       <input type="radio" id="radio_access_public" value='public' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
                       <label for='radio_access_public'> Public </label> <br/>
+
+
+                      <div en-ctrl-repeat-n='{{
+                        switch( val@access ){
+                          case "private":
+                            return 0;
+                          case "internal":
+                            return 5;
+                          case "public":
+                            return 10;
+                        }
+                      }}'>
+                       repeat Test A-{{: en@repeat-n }}
+                      </div>
+                      <div en-ctrl-repeat-n='{{
+                        switch( val@access ){
+                          case "private":
+                            return 0;
+                          case "internal":
+                            return 5;
+                          case "public":
+                            return 10;
+                        }
+                      }}' en-ctrl-hidden='{{: en@repeat-n % 2 === 0 ? false:true }}'>
+                       repeat Test A-{{: en@repeat-n }} - show 짝수
+                      </div>
+                      <div >
+                       C
+                      </div>
+                      <div en-ctrl-repeat-n='{{
+                        switch( val@access ){
+                          case "private":
+                            return 0;
+                          case "internal":
+                            return 1;
+                          case "public":
+                            return 2;
+                        }
+                      }}'>
+                       repeat Test B-{{: en@repeat-n }}
+                      </div>
                     </div>
                   </div>
 

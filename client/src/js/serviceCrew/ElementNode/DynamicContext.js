@@ -128,7 +128,8 @@ class DynamicContext {
       let param;
       for (let i = 0; i < paramsPairs.length; i++) {
         param = paramsPairs[i].split('=');
-        paramsObject[param[0]] = param[1];
+        // 0번 인덱스를 제외한 나머지 인덱스 요소들을
+        paramsObject[param.shift()] = param.join('=');
       }
 
       return function(_callback) {

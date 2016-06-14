@@ -36,10 +36,9 @@ const SCOPE_TEXT_OPTIONS_REGEXP = /@([\w\:\-\_\d]+)/g;
 const SCOPE_TEXT_OPTION_SEPARATE_REGEXP = /^@([\w\-\_\d]+?)(?:\:(.*))?$/;
 
 const GET_TEMPORARY_ID_STORE = Identifier.chars32SequenceStore();
-
-
 const GET_ERORR_ID_STORE = Identifier.chars32SequenceStore();
 
+const FINAL_TYPE_CONTEXT = 'base';
 class ElementNode {
   static get SIGN_BY_ELEMENTNODE() {
     return SIGN_BY_ELEMENTNODE;
@@ -48,6 +47,7 @@ class ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     //Object.assign(this, events.EventEmitter.prototype);
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
+    this.type = FINAL_TYPE_CONTEXT;
 
     //_.extendOwn(this, Events.EventEmitter.prototype);
     this[SIGN_BY_ELEMENTNODE] = SIGN_BY_ELEMENTNODE;
@@ -89,7 +89,7 @@ class ElementNode {
     this.parent = null;
 
 
-    this.realization = null;
+
     this.clonePool = []; // repeated
     this.cloned = false;
     this.backupDOM = null;
@@ -647,6 +647,21 @@ class ElementNode {
       }
     }
 
+    // Real DOM 이 부착되어 있을 때
+    // if (this.forwardDOM !== null) {
+    //   let runningDOM = this.forwardDOM;
+    //   runningDOM.___en = this;
+    //
+    //   if (!this.isRepeater()) {
+    //     this.mappingAttributes(runningDOM);
+    //   } else {
+    //
+    //   }
+    // } else {
+    //
+    // }
+
+
 
 
     // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
@@ -779,6 +794,9 @@ class ElementNode {
 
       returnElementNodes.push(this);
     }
+
+
+
 
     return returnElementNodes;
   }

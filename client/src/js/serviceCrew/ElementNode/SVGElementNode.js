@@ -4,6 +4,7 @@ import Factory from './Factory';
 
 const XML_NS = "http://www.w3.org/2000/svg";
 
+const FINAL_TYPE_CONTEXT = 'svg';
 class SVGElementNode extends HTMLElementNode {
   static get XML_NS() {
     return XML_NS;
@@ -14,7 +15,7 @@ class SVGElementNode extends HTMLElementNode {
     if (Orient.bn === 'ie' && Orient.bv <= 10) {
       HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
-    this.type = 'svg';
+    this.type = FINAL_TYPE_CONTEXT;
   }
 
   /*

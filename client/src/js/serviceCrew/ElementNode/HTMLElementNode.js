@@ -9,14 +9,15 @@ import ObjectExtends from '../../util/ObjectExtends';
 
 const REGEXP_REAL_EN_ID_SPLITTER = /@\d+$/;
 
-
+const FINAL_TYPE_CONTEXT = 'html';
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     if (Orient.bn === 'ie' && Orient.bv <= 10) {
       TagBaseElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
-    this.type = 'html';
+
+    this.type = FINAL_TYPE_CONTEXT;
   }
 
 
