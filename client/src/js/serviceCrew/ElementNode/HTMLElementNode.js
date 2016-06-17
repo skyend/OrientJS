@@ -83,6 +83,119 @@ class HTMLElementNode extends TagBaseElementNode {
     return returnHolder;
   }
 
+
+  // 자식이 부모에게 요청
+  attachDOMChild(_idx, _child) {
+    let domnode = this.getDOMNode();
+
+    if (domnode.childNodes[_idx]) {
+      domnode.insertBefore(_child.getDOMNode(), domnode.childNodes[_idx]);
+    } else {
+      domnode.appendChild(_child.getDOMNode());
+    }
+    // 뒤에 있으면 잡아서 appendBefore 없으면 appendChild
+  }
+
+  // 자식이 부모에게 요청
+  dettachDOMChild(_child) {
+
+    this.getDOMNode().removeChild(_child.getDOMNode());
+  }
+
+  unmountComponent(_options) {
+
+
+    // 자식모두에게 unmount render
+    let child, repeat_child;
+    for (let i = 0; i < this.children.length; i++) {
+      child = this.children[i];
+
+      if (child.isRepeater()) {
+        for (let repeat_i = 0; repeat_i < child.clonePool.length; repeat_i++) {
+          repeat_child = child.clonePool[repeat_i];
+
+          repeat_child.render(_options, true);
+        }
+      } else {
+        child.render(_options, true);
+      }
+    }
+
+    // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
+    super.unmountComponent(_options);
+  }
+
+  mountComponent(_options, _parentCount, _mountIndex) {
+    super.mountComponent(_options, _parentCount, _mountIndex);
+
+    this.renderChild(_options, _parentCount);
+  }
+
+  updateComponent(_options, _parentCount, _mountIndex) {
+    super.updateComponent(_options, _parentCount, _mountIndex);
+
+    this.renderChild(_options, _parentCount);
+  }
+
+  renderChild(_options, _parentCount) {
+    let child, repeat_child;
+    let count = 0;
+    for (let i = 0; i < this.children.length; i++) {
+      child = this.children[i];
+
+      if (child.isRepeater()) {
+        let prevRepeatLength = child.clonePool.length;
+        let repeatIngredient = _options.resolve ? child.getControlWithResolve('repeat-n') : parseInt(child.getControl('repeat-n'));
+        let repeatCount;
+
+        if (repeatIngredient instanceof Array) {
+
+          repeatCount = repeatIngredient.length;
+        } else if (typeof repeatIngredient === 'number' && !isNaN(repeatIngredient)) {
+
+          repeatCount = repeatIngredient;
+          repeatIngredient = null;
+        } else {
+          throw new Error(`invalid repeat value ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+        }
+
+
+        // 반복자 소스 요소는 unmount 를 진행한다.
+        child.render(_options, true);
+
+        for (let repeat_i = 0; repeat_i < Math.max(repeatCount, prevRepeatLength); repeat_i++) {
+          if (repeat_i < repeatCount) {
+            repeat_child = child.clonePool[repeat_i];
+
+            // clonePool 인덱스에 해당하는 요소가 존재 하지 않는 경우 복제하여 clonePool에 push
+            if (!repeat_child) {
+              repeat_child = Factory.takeElementNode(child.export(false, `@${repeat_i}`), {
+                isGhost: true,
+                repeatOrder: repeat_i,
+                repeatItem: repeatIngredient ? repeatIngredient[repeat_i] : null,
+                isRepeated: true
+              }, child.getType(), child.environment, null);
+
+              child.clonePool.push(repeat_child);
+            }
+
+            repeat_child.parent = this;
+            count = repeat_child.render(_options, false, count);
+            count++;
+          } else {
+            // 현재 반복 인덱스보다 높은 요소는 unmount 진행
+            //child.clonePool[repeat_i].render(_options, true);
+            let willbeunmount = child.clonePool.pop();
+            willbeunmount.render(_options, true);
+          }
+        }
+      } else {
+        count = child.render(_options, false, count);
+        count++;
+      }
+    }
+  }
+
   applyHiddenState() {
     super.applyHiddenState();
 
@@ -314,7 +427,7 @@ class HTMLElementNode extends TagBaseElementNode {
     //////////////////
     // 자식노드 재귀처리 //
     var children = [];
-    var childNodes = _domElement.childNodes;
+    var childNodes = ObjectExtends.arrayToArray(_domElement.childNodes);
 
     // 자식노드도 생성
     var child_ = null;
@@ -328,6 +441,8 @@ class HTMLElementNode extends TagBaseElementNode {
       if (/^en:/i.test(child_.nodeName) || (child_.nodeName.toLowerCase() === 'script' && child_.getAttribute('en-scope-type') !== null)) {
 
         this.appendScopeNode(this.buildScopeNodeByScopeDom(child_));
+
+        _domElement.removeChild(child_);
         continue;
       }
 
@@ -350,6 +465,7 @@ class HTMLElementNode extends TagBaseElementNode {
           // 부모 태그가 pre 태그가 아닌 경우 text노드의 nodeValue 즉 내용이 공백과 줄바꿈 탭으로만 이루어 져 있을 경우 택스트 노드 생성을 스킵하도록 한다.
           if (child_.parentNode.nodeName.toLowerCase() === "pre") {
             if (/^[\s\n]+$/g.test(child_.nodeValue)) {
+              _domElement.removeChild(child_);
               continue;
             }
           }
@@ -367,7 +483,10 @@ class HTMLElementNode extends TagBaseElementNode {
       elementNodeBuildResult = newChildElementNode.buildByElement(child_, _absorbOriginDOM);
 
 
-      if (elementNodeBuildResult === null) continue;
+      if (elementNodeBuildResult === null) {
+        _domElement.removeChild(child_);
+        continue;
+      }
 
       newChildElementNode.prevSibling = prevElementNode;
       children.push(newChildElementNode);

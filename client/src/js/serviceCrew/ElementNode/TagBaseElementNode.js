@@ -152,10 +152,44 @@ const ELEMENT_NODE_EVENTS = [
   "component-will-mount",
   "component-did-mount",
 
+  "component-will-unmount",
+  "component-did-unmount",
+
   "ref-did-mount",
   "ref-will-mount",
 
 ];
+
+
+const RESERVED_DOM_ATTRIBUTES = {
+  'value': {
+    sync_field: 'value'
+  },
+
+  'checked': {
+    sync_field: 'checked'
+  },
+
+  'selected-index': {
+    sync_field: 'selectedIndex'
+  },
+
+  'selected-item': {
+    sync_field: 'selectedItem'
+  },
+
+  'selected': {
+    sync_field: 'selected'
+  }
+}
+
+const ATTRIBUTE_STATE = {
+  OLD: -1,
+  NOT_MODIFIED: 0,
+  NEW: 1,
+  MODIFIED: 2
+};
+
 
 var SUPPORT_HTML_TAG_STYLES = {};
 try {
@@ -192,7 +226,7 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-
+  // will deprecate
   test() {
     super.test();
     console.log('test tagbase');
@@ -235,11 +269,13 @@ class TagBaseElementNode extends ElementNode {
     return this.interpret(this.getAttribute(_attrName));
   }
 
+  // will deprecate
   // id
   getIdAtrribute() {
     return this.getAttribute('id');
   }
 
+  // will deprecate
   // classes
   getClasses() {
     return this.getAttribute('class');
@@ -250,11 +286,13 @@ class TagBaseElementNode extends ElementNode {
     return this.attributes;
   }
 
+  // will deprecate
   // Inline Style
   getInlineStyle() {
     return this.getAttribute('style');
   }
 
+  // will deprecate
   getRectangle() {
     return this.rectangle;
   }
@@ -262,13 +300,14 @@ class TagBaseElementNode extends ElementNode {
   getBoundingRect() {
 
     var boundingRect;
-    var realElement = this.getRealization();
+    var realElement = this.getDOMNode();
 
     boundingRect = realElement.getBoundingClientRect();
 
     return boundingRect;
   }
 
+  // will deprecate
   getCurrentRectangle() {
     //    console.log(this);
     //switch (this.environment.contextController.getScreenSizing()) {
@@ -380,6 +419,7 @@ class TagBaseElementNode extends ElementNode {
   //   this.setAttribute(_name, _value)
   // }
 
+  // will deprecate
   setRectanglePartWithScreenMode(_partName, _partValue, _screenMode) {
     var rectangleRef = this.getRectangleByScreenMode(_screenMode);
     console.log(arguments);
@@ -399,6 +439,7 @@ class TagBaseElementNode extends ElementNode {
     // }
   }
 
+  // will deprecate
   setRectanglePartWithKeepingUnit(_partValue, _partName) {
     //console.log(valueWithUnitSeperator(_partValue));
   }
@@ -408,19 +449,89 @@ class TagBaseElementNode extends ElementNode {
   }
 
   mappingAttributes(_domNode, _options) {
-    for (let i = 0; i < this.attributes.length; i++) {
-      this.mappingAttribute(_domNode, this.attributes[i], _options);
+
+    let oldAttributes = _domNode.attributes;
+    let calculatedAttr = {};
+    let attrName;
+    let attrValue;
+    for (let i = 0; i < _domNode.attributes.length; i++) {
+      attrName = oldAttributes[i].nodeName;
+      attrValue = oldAttributes[i].nodeValue;
+
+      calculatedAttr[attrName] = {
+        v: attrValue, // value
+        s: ATTRIBUTE_STATE.OLD // state // OLD 어트리뷰트는 삭제된다.
+      };
     }
-    // 
-    // var currentRect = this.getCurrentRectangle();
-    // let rectKeys = Object.keys(currentRect);
-    // let rectKey;
-    // for (let i = 0; i < rectKeys.length; i++) {
-    //   rectKey = rectKeys[i];
-    //   if (/^\d+/.test(currentRect[rectKey])) {
-    //     _domNode.style[rectKey] = currentRect[rectKey];
-    //   }
-    // }
+
+    for (let i = 0; i < this.attributes.length; i++) {
+      attrName = this.attributes[i].name;
+      attrValue = this.attributes[i].variable;
+      attrValue = _options.resolve ? this.interpret(attrValue) : attrValue;
+
+      if (attrValue !== null) {
+        if (attrValue instanceof Object) {
+
+          if (attrName === 'style') {
+            /*
+              convert
+              {
+                fontFamily : 'sans-serif',
+                WebkitTransition: 'none'
+              }
+              to
+              >  font-family:'sans-serif';-webkit-transition:'none';
+            */
+            let styleKeys = Object.keys(attrValue);
+            let toInlineStyleStringArray = styleKeys.map(function(_key) {
+              return _key.replace(/([A-Z])/g, function(_full, _capital) {
+                return '-' + _capital.toLowerCase();
+              }) + ':' + attrValue[_key];
+            });
+
+            attrValue = toInlineStyleStringArray.join(';');
+          }
+        }
+
+
+        if (calculatedAttr[attrName] && calculatedAttr[attrName].v === attrValue) {
+
+          calculatedAttr[attrName].s = ATTRIBUTE_STATE.NOT_MODIFIED;
+        } else {
+          calculatedAttr[attrName] = {
+            v: attrValue,
+            s: ATTRIBUTE_STATE.MODIFIED
+          };
+
+          // calculatedAttr[attrName].v = attrValue;
+          // calculatedAttr[attrName].s = ATTRIBUTE_STATE.MODIFIED;
+        }
+      }
+    }
+
+    let calculatedAttrKeys = Object.keys(calculatedAttr);
+
+    let state, name, value;
+    for (let i = 0; i < calculatedAttrKeys.length; i++) {
+      name = calculatedAttrKeys[i];
+      state = calculatedAttr[name].s;
+      value = calculatedAttr[name].v;
+
+      if (state === ATTRIBUTE_STATE.OLD) {
+        _domNode.removeAttribute(name);
+
+        if (RESERVED_DOM_ATTRIBUTES[name]) {
+          _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = null;
+        }
+      } else if (state === ATTRIBUTE_STATE.MODIFIED) {
+        _domNode.setAttribute(name, value);
+
+        if (RESERVED_DOM_ATTRIBUTES[name]) {
+          _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = value;
+        }
+      }
+    }
+
 
     if (window.ORIENT_SHOW_SPECIAL_ATTRIBUTES) {
       // #Normals
@@ -476,7 +587,7 @@ class TagBaseElementNode extends ElementNode {
     let options = _options || {};
     let value = options.resolve ? this.interpret(_attribute.byString) : _attribute.byString;
     let name = _attribute.name;
-
+    console.log(name, value);
     // Temporary Style 적용
     if (this.tstyle) {
       ObjectExtends.mergeByRef(_dom.style, this.tstyle, true);
@@ -501,10 +612,13 @@ class TagBaseElementNode extends ElementNode {
         break;
     }
 
+
+
     this.mappingAttributeDirect(_dom, name, value);
   }
 
   mappingAttributeDirect(_dom, _name, _value) {
+
     try {
       _dom.setAttribute(_name, _value);
     } catch (_e) {
@@ -518,6 +632,47 @@ class TagBaseElementNode extends ElementNode {
 
       throw _e;
     }
+  }
+
+  applyForward() {
+    if (!(this.forwardDOM && this.backupDOM)) return console.warn('forwardDOM 또는 backupDOM이 존재하지 않습니다. applyForward 는 무시됩니다.');
+
+    let oldAttributes = this.forwardDOM.attributes;
+    let newAttributes = this.backupDOM.attributes;
+    let attrName;
+    let attrValue;
+
+    // 사라질 예정의 attribute제거
+    for (let i = 0; i < oldAttributes.length; i++) {
+      attrName = oldAttributes[i].nodeName;
+      attrValue = oldAttributes[i].nodeValue;
+
+      // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
+      if (!this.backupDOM.hasAttribute(attrName)) {
+        this.forwardDOM.removeAttribute(attrName);
+
+        if (RESERVED_DOM_ATTRIBUTES[attrName]) {
+          this.forwardDOM[RESERVED_DOM_ATTRIBUTES[attrName].sync_field] = null;
+        }
+      }
+    }
+
+    // 변경된 attribute반영
+    for (let i = 0; i < newAttributes.length; i++) {
+      attrName = newAttributes[i].nodeName;
+      attrValue = newAttributes[i].nodeValue;
+
+      if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
+        this.forwardDOM.setAttribute(attrName, attrValue);
+
+        if (RESERVED_DOM_ATTRIBUTES[attrName] && this.forwardDOM.value !== attrValue) {
+          this.forwardDOM[RESERVED_DOM_ATTRIBUTES[attrName].sync_field] = attrValue;
+        }
+      }
+    }
+
+    this.forwardDOM.__renderstemp__ = this.renderSerialNumber;
+    //this.backupDOM = null;
   }
 
 
@@ -539,66 +694,7 @@ class TagBaseElementNode extends ElementNode {
   }
 
 
-  applyForward() {
-    if (!(this.forwardDOM && this.backupDOM)) return console.warn('forwardDOM 또는 backupDOM이 존재하지 않습니다. applyForward 는 무시됩니다.');
 
-    let oldAttributes = this.forwardDOM.attributes;
-    let newAttributes = this.backupDOM.attributes;
-    let attrName;
-    let attrValue;
-
-    // 사라질 예정의 attribute제거
-    for (let i = 0; i < oldAttributes.length; i++) {
-      attrName = oldAttributes[i].nodeName;
-      attrValue = oldAttributes[i].nodeValue;
-
-      // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
-      if (!this.backupDOM.hasAttribute(attrName)) {
-        this.forwardDOM.removeAttribute(attrName);
-
-        if (attrName === 'value')
-          this.forwardDOM.value = null;
-
-        if (attrName === 'checked')
-          this.forwardDOM.checked = null;
-
-        if (attrName === 'selected-index')
-          this.forwardDOM.selectedItem = null;
-
-        if (attrName === 'selected')
-          this.forwardDOM.selected = null;
-      }
-    }
-
-    // 변경된 attribute반영
-    for (let i = 0; i < newAttributes.length; i++) {
-      attrName = newAttributes[i].nodeName;
-      attrValue = newAttributes[i].nodeValue;
-
-      if (attrName === 'value' && this.forwardDOM.value !== attrValue) {
-        this.forwardDOM.value = attrValue;
-      }
-
-      if (attrName === 'checked' && this.forwardDOM.checked !== attrValue) {
-        this.forwardDOM.checked = attrValue;
-      }
-
-      if (attrName === 'selected-index' && this.forwardDOM.selectedIndex !== attrValue) {
-        this.forwardDOM.selectedIndex = attrValue;
-      }
-
-      if (attrName === 'selected' && this.forwardDOM.selected !== attrValue) {
-        this.forwardDOM.selected = attrValue;
-      }
-
-      if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
-        this.forwardDOM.setAttribute(attrName, attrValue);
-      }
-    }
-
-    this.forwardDOM.__renderstemp__ = this.renderSerialNumber;
-    //this.backupDOM = null;
-  }
 
   ///////////
   // Remove Attribute
@@ -649,7 +745,7 @@ class TagBaseElementNode extends ElementNode {
       this.forwardDOM = _domElement;
       this.forwardDOM.___en = this;
       this.isAttachedDOM = true;
-      this.bindDOMEvents({}, _domElement);
+      this.bindDOMEvents(_domElement, {});
     }
 
   }

@@ -614,23 +614,311 @@ class ElementNode {
     // hidden 일 때 false
     let returnElementNodes = []; // 현재 생성된 DOM에 대응하는 ElementNode를 반환한다.
 
-    this.scopesResolve();
+    // this.scopesResolve();
+    //
+    //
+    // this.connectSocketIO();
+    //
+    //
+    // this.debug("construct", "start", _options);
+    //
+    // // DC 실행
+    // if (this.isDynamicContext()) {
+    //   if (this.dynamicContextPassive !== true) {
+    //     if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
+    //
+    //       /******
+    //        DC가 없거나 로딩되지 않았을 때 만 DC를 실행한다.
+    //       */
+    //       //  if (!(this.dynamicContext && this.dynamicContext.isLoaded))
+    //       this.executeDynamicContext();
+    //
+    //     } else if (_options.keepDC === 'once') {
+    //       _options.keepDC = false;
+    //     }
+    //   }
+    //
+    //   if (!this.dynamicContextRenderDontCareLoading) {
+    //     if (this.dynamicContext) {
+    //       if (this.dynamicContext.isLoading === true) {
+    //         return [];
+    //       }
+    //     }
+    //   }
+    // }
 
 
-    this.connectSocketIO();
+    this.render(_options);
 
 
-    this.debug("construct", "start", _options);
 
-    // DC 실행
+
+    // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
+    // if (this.isRepeater()) {
+    //   // repeat 처리
+    //
+    //   let i = 0;
+    //   let repeatSource = _options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n');
+    //   let repeatLength;
+    //
+    //   let repeatedElementNode;
+    //   let newClonePool = [];
+    //
+    //   if (typeof repeatSource === 'object') {
+    //     if (repeatSource !== null && repeatSource !== undefined) {
+    //       repeatLength = repeatSource.length;
+    //     }
+    //   } else if (typeof repeatSource === 'string') {
+    //     repeatLength = parseInt(repeatSource);
+    //   } else {
+    //     repeatLength = parseInt(repeatSource);
+    //   }
+    //
+    //   let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
+    //   for (i = 0; i < repeatLength; i++) {
+    //
+    //     repeatedElementNode = this.clonePool[i];
+    //
+    //     if (repeatedElementNode === undefined) {
+    //       repeatedElementNode = Factory.takeElementNode(this.export(false, `@${i}`), {
+    //         isGhost: true,
+    //         repeatOrder: i,
+    //         repeatItem: repeatSource[i],
+    //         isRepeated: true
+    //       }, this.getType(), this.environment, null);
+    //
+    //       repeatedElementNode.setParent(this.parent);
+    //
+    //       this.bindJoinEvents(repeatedElementNode);
+    //     }
+    //
+    //     repeatedElementNode.repeatItem = repeatSource[i];
+    //
+    //     repeatedElementNode.prevSibling = prevElement;
+    //
+    //     newClonePool.push(repeatedElementNode);
+    //
+    //     if (repeatedElementNode.constructDOMs(_options).length > 0) {
+    //       returnElementNodes.push(repeatedElementNode);
+    //     }
+    //
+    //     prevElement = repeatedElementNode;
+    //   }
+    //
+    //   /*************/
+    //   // 제일 마지막 Element의 nextSibling을 자신의 nextSibling으로 세팅한다.
+    //   if (prevElement) {
+    //     prevElement.nextSibling = this.nextSibling;
+    //   }
+    //
+    //   // clone pool 이 변경되는 순간
+    //   // 남은 clone 요소의 forwardDOM 을 제거한다.
+    //   for (let remain = i; remain < this.clonePool.length; remain++) {
+    //     // jquery 류의 Dom 조작 라이브러리와 호환을 위해 forwardDOM이 부모에 대해 유효할 때 remove를 하도록 한다.
+    //     if (this.parent.forwardDOM.contains(this.clonePool[remain].forwardDOM)) {
+    //       this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
+    //     }
+    //
+    //     this.clonePool[remain].isAttachedDOM = false;
+    //   }
+    //
+    //   this.clonePool = newClonePool;
+    // } else {
+    //
+    //   // show 컨트롤이
+    //   if (this.getControl('hidden') !== undefined || _options.hiddenForce) {
+    //     let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
+    //
+    //     if (hidden === true || hidden === 'true' || _options.hiddenForce) {
+    //
+    //       this.debug("construct", "hidden", _options);
+    //
+    //       this.hiddenForwardDOM = this.forwardDOM;
+    //       this.forwardDOM = null;
+    //
+    //       // 자신을 포함한 자기 아래의 hiddenState 까지 변경한다.
+    //       // this.applyHiddenState();
+    //
+    //       if (this.treeExplore) {
+    //
+    //         this.treeExplore(function(_child) {
+    //           _child.forwardDOM = null;
+    //           _child.isAttachedDOM = false;
+    //
+    //           if (_child.type === 'ref') {
+    //             let masterElementNode;
+    //             for (let i = 0; i < _child.masterElementNodes.length; i++) {
+    //               masterElementNode = _child.masterElementNodes[i];
+    //
+    //               masterElementNode.forwardDOM = null;
+    //               masterElementNode.isAttachedDOM = false;
+    //
+    //               if (masterElementNode.treeExplore) {
+    //                 masterElementNode.treeExplore((_child) => {
+    //                   _child.forwardDOM = null;
+    //                   _child.isAttachedDOM = false;
+    //                 });
+    //               }
+    //             }
+    //           }
+    //         });
+    //       }
+    //
+    //       return [];
+    //     }
+    //   }
+    //
+    //   let constructedDOM = this.constructDOM(_options);
+    //
+    //   // root 로 시작된 render는 단 한번 생성되는 DOM을 forwardDOM 으로 바로 편입 시키며
+    //   // root 가 아닌 render에서는 생성되는 DOM을 backupDOM 으로 사용한다.
+    //   // if (_options.root) {
+    //   //   this.forwardDOM = constructedDOM;
+    //   //   _options.root = false;
+    //   // } else {
+    //   //   this.backupDOM = constructedDOM;
+    //   // }
+    //
+    //
+    //
+    //   returnElementNodes.push(this);
+    // }
+
+
+
+
+    return returnElementNodes;
+  }
+
+
+
+
+  // this.forwardDOM이 없을 때
+  mountComponent(_options, _mountIndex) {
+    let domnode = this.createNode(_options);
+
+    this.mappingAttributes(domnode, _options);
+    this.bindDOMEvents(domnode, _options);
+
+    this.forwardDOM = domnode;
+    domnode.__orient_mount_index = _mountIndex;
+
+    console.log(_mountIndex, this.parent, this, this.id);
+    if (this.parent)
+      this.parent.attachDOMChild(_mountIndex, this);
+  }
+
+  // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
+  unmountComponent(_options) {
+    if (this.parent) {
+      this.parent.dettachDOMChild(this);
+      this.forwardDOM = null;
+    }
+  }
+
+  // this.forwardDOM이 존재할 때
+  updateComponent(_options, _mountIndex) {
+    let domNode = this.getDOMNode();
+    this.mappingAttributes(domNode, _options);
+    this.bindDOMEvents(domNode, _options);
+
+    domNode.__orient_mount_index = _mountIndex;
+  }
+
+
+
+  /**
+    render
+
+    parameters
+      _options : 랜더링흐름에 공유되는 옵션 오브젝트
+      // _domIndex : 부모 DOM에서의 자신의 위치
+      //   - -1 : 자신이 Unmount 되어야 한다.
+      //   - _domIndex > -1 : 자신이 부착 될 부모DOM 에서의 child Index
+  */
+  render(_options, _unmount, _mountIndex) {
+    let domNode = this.getDOMNode();
+
+
+
+
+    // this.connectSocketIO();
+
+    this.debug("render", "start", _options);
+
+
+
+    /*
+      랜더링 옵션
+        * careUnknown : Orient 가 알지 못 하는 태그를 보호하며 랜더링 한다. ( ex: modified dom by jquery )
+          - default : false // 알지 못 하는 DOM을 만났을 때 Error 발생.
+        * resolve : 바인딩 블럭을 바인딩 처리하여 결과를 매핑한다.
+          - default : false
+        * keepDC : DynamicContext 를 랜더링 때 실행 한다.
+          - default : false
+    */
+
+    // 자신이 hidden 으로 전환 될 경우 _mountIndex 에서 1을 뺀 값이 returnCount 로 반환된다.
+    let returnCount = _mountIndex;
+    if (!_unmount) {
+      let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
+      let isHidden = hidden === true || hidden === 'true';
+
+      if (domNode === null) {
+        if (isHidden) {
+          return returnCount - 1;
+        }
+        this.scopesResolve();
+        if (this.renderWithDC(_options)) {
+          this.tryEventScope('component-will-mount', null, null, (_result) => {
+
+            this.mountComponent(_options, _mountIndex);
+            this.tryEventScope('component-did-mount', null, null);
+          });
+        }
+      } else {
+        if (isHidden) {
+          this.tryEventScope('component-will-unmount', null, null, (_result) => {
+            this.unmountComponent(_options);
+            this.tryEventScope('component-did-unmount', null, null);
+          });
+
+          returnCount = returnCount - 1;
+        } else {
+          this.scopesResolve();
+          if (this.renderWithDC(_options)) {
+            this.tryEventScope('component-will-update', null, null, (_result) => {
+
+              this.updateComponent(_options, _mountIndex);
+              this.tryEventScope('component-did-update', null, null);
+
+            });
+          }
+        }
+      }
+    } else {
+      if (domNode !== null) {
+        this.tryEventScope('component-will-unmount', null, null, (_result) => {
+          this.unmountComponent(_options);
+          this.tryEventScope('component-did-unmount', null, null);
+        });
+      }
+    }
+
+    return returnCount;
+  }
+
+  renderWithDC(_options) {
+    // DC 일때
     if (this.isDynamicContext()) {
+
+      // active 모드인 경우
       if (this.dynamicContextPassive !== true) {
+
+        // keepDC 가 부정 일 때
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
 
-          /******
-           DC가 없거나 로딩되지 않았을 때 만 DC를 실행한다.
-          */
-          //  if (!(this.dynamicContext && this.dynamicContext.isLoaded))
+          // DC실행
           this.executeDynamicContext();
 
         } else if (_options.keepDC === 'once') {
@@ -638,168 +926,27 @@ class ElementNode {
         }
       }
 
-      if (!this.dynamicContextRenderDontCareLoading) {
+      // dc가 로드여부와 상관없이 랜더링을 진행 할 것인가 체크
+      // dc 로드가 되지 않아도 랜더링 진행을 허용하지 않음
+      if (this.dynamicContextRenderDontCareLoading === false) {
+
+        // dynamicContext 가 생성되어 있는가?
         if (this.dynamicContext) {
+
+          // DC로딩이 완료 되었는가?
           if (this.dynamicContext.isLoading === true) {
-            return [];
+
+            return true;
+          } else {
+            return false;
           }
         }
       }
     }
 
-    // Real DOM 이 부착되어 있을 때
-    // if (this.forwardDOM !== null) {
-    //   let runningDOM = this.forwardDOM;
-    //   runningDOM.___en = this;
-    //
-    //   if (!this.isRepeater()) {
-    //     this.mappingAttributes(runningDOM);
-    //   } else {
-    //
-    //   }
-    // } else {
-    //
-    // }
-
-
-
-
-    // repeat 에 따라 자신이 하나 또는 하나이상이 될 수 있다.
-    if (this.isRepeater()) {
-      // repeat 처리
-
-      let i = 0;
-      let repeatSource = _options.resolve ? this.getControlWithResolve('repeat-n') : this.getControl('repeat-n');
-      let repeatLength;
-
-      let repeatedElementNode;
-      let newClonePool = [];
-
-      if (typeof repeatSource === 'object') {
-        if (repeatSource !== null && repeatSource !== undefined) {
-          repeatLength = repeatSource.length;
-        }
-      } else if (typeof repeatSource === 'string') {
-        repeatLength = parseInt(repeatSource);
-      } else {
-        repeatLength = parseInt(repeatSource);
-      }
-
-      let prevElement = this.prevSibling; // 반복 요소는 자신이 복제되어 배열로 입력되므로 자신의 이전 형제가 첫 prevElement 로 세팅된다.
-      for (i = 0; i < repeatLength; i++) {
-
-        repeatedElementNode = this.clonePool[i];
-
-        if (repeatedElementNode === undefined) {
-          repeatedElementNode = Factory.takeElementNode(this.export(false, `@${i}`), {
-            isGhost: true,
-            repeatOrder: i,
-            repeatItem: repeatSource[i],
-            isRepeated: true
-          }, this.getType(), this.environment, null);
-
-          repeatedElementNode.setParent(this.parent);
-
-          this.bindJoinEvents(repeatedElementNode);
-        }
-
-        repeatedElementNode.repeatItem = repeatSource[i];
-
-        repeatedElementNode.prevSibling = prevElement;
-
-        newClonePool.push(repeatedElementNode);
-
-        if (repeatedElementNode.constructDOMs(_options).length > 0) {
-          returnElementNodes.push(repeatedElementNode);
-        }
-
-        prevElement = repeatedElementNode;
-      }
-
-      /*************/
-      // 제일 마지막 Element의 nextSibling을 자신의 nextSibling으로 세팅한다.
-      if (prevElement) {
-        prevElement.nextSibling = this.nextSibling;
-      }
-
-      // clone pool 이 변경되는 순간
-      // 남은 clone 요소의 forwardDOM 을 제거한다.
-      for (let remain = i; remain < this.clonePool.length; remain++) {
-        // jquery 류의 Dom 조작 라이브러리와 호환을 위해 forwardDOM이 부모에 대해 유효할 때 remove를 하도록 한다.
-        if (this.parent.forwardDOM.contains(this.clonePool[remain].forwardDOM)) {
-          this.parent.forwardDOM.removeChild(this.clonePool[remain].forwardDOM);
-        }
-
-        this.clonePool[remain].isAttachedDOM = false;
-      }
-
-      this.clonePool = newClonePool;
-    } else {
-
-      // show 컨트롤이
-      if (this.getControl('hidden') !== undefined || _options.hiddenForce) {
-        let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
-
-        if (hidden === true || hidden === 'true' || _options.hiddenForce) {
-
-          this.debug("construct", "hidden", _options);
-
-          this.hiddenForwardDOM = this.forwardDOM;
-          this.forwardDOM = null;
-
-          // 자신을 포함한 자기 아래의 hiddenState 까지 변경한다.
-          // this.applyHiddenState();
-
-          if (this.treeExplore) {
-
-            this.treeExplore(function(_child) {
-              _child.forwardDOM = null;
-              _child.isAttachedDOM = false;
-
-              if (_child.type === 'ref') {
-                let masterElementNode;
-                for (let i = 0; i < _child.masterElementNodes.length; i++) {
-                  masterElementNode = _child.masterElementNodes[i];
-
-                  masterElementNode.forwardDOM = null;
-                  masterElementNode.isAttachedDOM = false;
-
-                  if (masterElementNode.treeExplore) {
-                    masterElementNode.treeExplore((_child) => {
-                      _child.forwardDOM = null;
-                      _child.isAttachedDOM = false;
-                    });
-                  }
-                }
-              }
-            });
-          }
-
-          return [];
-        }
-      }
-
-      let constructedDOM = this.constructDOM(_options);
-
-      // root 로 시작된 render는 단 한번 생성되는 DOM을 forwardDOM 으로 바로 편입 시키며
-      // root 가 아닌 render에서는 생성되는 DOM을 backupDOM 으로 사용한다.
-      // if (_options.root) {
-      //   this.forwardDOM = constructedDOM;
-      //   _options.root = false;
-      // } else {
-      //   this.backupDOM = constructedDOM;
-      // }
-
-
-
-      returnElementNodes.push(this);
-    }
-
-
-
-
-    return returnElementNodes;
+    return true;
   }
+
 
   // 단독으로 자신의 DOM을 생성하는 메서드
   constructDOM(_options) {
@@ -815,7 +962,7 @@ class ElementNode {
     // [3] Children Construct
     if (this.type !== 'string') {
       // Event 바인딩
-      this.bindDOMEvents(_options, htmlNode);
+      this.bindDOMEvents(htmlNode, _options);
     }
 
     this.debug('construct', 'created htmlNode ', htmlNode);
@@ -1002,13 +1149,16 @@ class ElementNode {
     throw new Error("Implement this method on ElementNode[" + this.getType() + "]");
   }
 
-  bindDOMEvents(options, _dom) {
+  bindDOMEvents(_dom, options) {
     let eventKeys = Object.keys(this.nodeEvents);
     let that = this;
 
     // 자신에게 설정된 모든 이벤트를 Dom에 바인딩한다.
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
+      // 이미 바인딩 된 기록이 있을 경우 바인딩을 하지 않는다.
+      if (_dom[`_orient_binded_event_${_key}`]) return;
+
       function handler(_e) {
         console.log("DOM Event fire :" + _key + ' ' + that.DEBUG_FILE_NAME_EXPLAIN);
 
@@ -1042,8 +1192,10 @@ class ElementNode {
 
       if (/^deep-/.test(_key)) {
         _dom.addEventListener(_key.replace(/^deep-/, ''), handler, true);
+        _dom[`_orient_binded_event_${_key}`] = true;
       } else {
         _dom.addEventListener(_key, handler);
+        _dom[`_orient_binded_event_${_key}`] = true;
       }
     });
   }
@@ -1984,6 +2136,8 @@ class ElementNode {
   // 이벤트가 바인드 되어 있다면 이벤트 처리 후 nextProcedure를 실행하고
   // 이벤트가 바인드 되어 있지 않다면 바로 _nextProcedure를 실행한다.
   tryEventScope(_name, _elementNodeEvent, _originDomEvent, _nextProcedure) {
+    //console.log('Fire event :', _name, this.id);
+
     if (this.hasEvent(_name)) {
       // event 발생
 

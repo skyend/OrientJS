@@ -189,6 +189,25 @@ class RefElementNode extends HTMLElementNode {
     return returnHolder;
   }
 
+  unmountComponent(_options) {
+
+
+    // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
+    super.unmountComponent(_options);
+  }
+
+  mountComponent(_options, _parentCount, _mountIndex) {
+    super.mountComponent(_options, _parentCount, _mountIndex);
+
+
+  }
+
+  updateComponent(_options, _parentCount, _mountIndex) {
+    super.updateComponent(_options, _parentCount, _mountIndex);
+
+
+  }
+
   mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
     this.clearContainer();
 
