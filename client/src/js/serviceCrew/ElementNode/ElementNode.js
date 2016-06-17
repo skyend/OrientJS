@@ -802,6 +802,7 @@ class ElementNode {
 
     this.forwardDOM = domnode;
     domnode.__orient_mount_index = _mountIndex;
+    domnode.___en = this;
 
     // console.log(_mountIndex, this.parent, this, this.id);
     if (this.parent)
@@ -823,6 +824,7 @@ class ElementNode {
     this.bindDOMEvents(domNode, _options);
 
     domNode.__orient_mount_index = _mountIndex;
+    domNode.___en = this;
   }
 
 
@@ -844,7 +846,7 @@ class ElementNode {
 
     // this.connectSocketIO();
 
-    this.debug("render", "start", _options);
+    this.debug("render", "render start", _options);
 
 
 
@@ -870,16 +872,21 @@ class ElementNode {
         }
         this.scopesResolve();
         if (this.renderWithDC(_options)) {
+          this.debug("render", "will mount", _options);
           this.tryEventScope('component-will-mount', null, null, (_result) => {
 
             this.mountComponent(_options, _mountIndex);
+            this.debug("render", "did mount", _options);
             this.tryEventScope('component-did-mount', null, null);
           });
         }
       } else {
         if (isHidden) {
+          this.debug("render", "will unmount", _options);
           this.tryEventScope('component-will-unmount', null, null, (_result) => {
             this.unmountComponent(_options);
+
+            this.debug("render", "did unmount", _options);
             this.tryEventScope('component-did-unmount', null, null);
           });
 
@@ -887,9 +894,11 @@ class ElementNode {
         } else {
           this.scopesResolve();
           if (this.renderWithDC(_options)) {
+            this.debug("render", "will update", _options);
             this.tryEventScope('component-will-update', null, null, (_result) => {
 
               this.updateComponent(_options, _mountIndex);
+              this.debug("render", "did update", _options);
               this.tryEventScope('component-did-update', null, null);
 
             });
@@ -898,8 +907,11 @@ class ElementNode {
       }
     } else {
       if (domNode !== null) {
+        this.debug("render", "will unmount", _options);
         this.tryEventScope('component-will-unmount', null, null, (_result) => {
           this.unmountComponent(_options);
+
+          this.debug("render", "did unmount", _options);
           this.tryEventScope('component-did-unmount', null, null);
         });
       }
@@ -927,7 +939,7 @@ class ElementNode {
       }
 
       // dc가 로드여부와 상관없이 랜더링을 진행 할 것인가 체크
-      // dc 로드가 되지 않아도 랜더링 진행을 허용하지 않음
+      // dc 로드가 되지 않으면 랜더링 진행을 허용하지 않음
       if (this.dynamicContextRenderDontCareLoading === false) {
 
         // dynamicContext 가 생성되어 있는가?
@@ -940,6 +952,8 @@ class ElementNode {
           } else {
             return false;
           }
+        } else {
+          return false;
         }
       }
     }
@@ -2642,21 +2656,21 @@ class ElementNode {
     if (this.type !== 'string') {
       if (this.hasAttribute('trace')) {
 
+        let args = [];
+        args.push(`${_key.toUpperCase()} : [${this.id}]`);
+        for (let i = 1; i < arguments.length; i++) {
+          args.push(arguments[i]);
+        }
 
         if (!_key && !(args.length > 0)) throw new Error("Key 와 다음 내용을 입력하지 않았습니다. log사용을 위해서는 this.log(KEY, LOG MESSAGES ... )를 사용해야 합니다.");
 
         let trace = this.getAttribute('trace');
         if (trace === '') {
-          console.info.apply(console, arguments);
+          console.info.apply(console, args);
           return;
         }
 
-        let args = [];
-        args.push(this.id);
-        for (let i = 1; i < arguments.length; i++) {
-          args.push(arguments[i]);
-        }
-        args.push(this);
+
 
         // trace = dc:error,construct:warn
         let keyPair = this.getAttribute('trace').split(',');

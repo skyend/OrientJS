@@ -71,10 +71,10 @@ class Factory {
   // HTML 텍스트를 ElementNode 컴포넌트로 변환한다.
   static convertToMasterElementNodesByHTMLSheet(_htmlText, _props, _env) {
 
-    console.time('Fill html container');
+    // console.time('Fill html container');
     let realizeContainer = document.createElement('div');
     realizeContainer.innerHTML = _htmlText;
-    console.timeEnd('Fill html container');
+    // console.timeEnd('Fill html container');
 
     let masterElementNodes = [];
     let type;
@@ -85,9 +85,9 @@ class Factory {
       if (type === 'comment') continue;
 
       masterElementNode = Factory.takeElementNode(undefined, _props, type, _env, true);
-      console.time('Build from html container');
+      // console.time('Build from html container');
       elementNodeBuildResult = masterElementNode.buildByElement(realizeContainer.childNodes[i]);
-      console.timeEnd('Build from html container');
+      // console.timeEnd('Build from html container');
       if (elementNodeBuildResult === null) continue;
 
       masterElementNodes.push(masterElementNode);

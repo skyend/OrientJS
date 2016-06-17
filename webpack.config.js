@@ -25,10 +25,11 @@ module.exports = {
 
 
 
-    // 'orient': ['./client/src/js/Orient/Orient.js'],
-    // 'orbit': ['./client/src/js/Orient/Orbit.js'],
-    // 'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],
-    'orbit.api.farm': ['./client/src/js/Orient/Orbit/addons/APIFarmSource']
+    'orient': ['./client/src/js/Orient/Orient.js'],
+    'orbit': ['./client/src/js/Orient/Orbit.js'],
+    'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],
+    'orbit.api.farm': ['./client/src/js/Orient/Orbit/addons/APIFarmSource'],
+    // 'C:\\Users\\user\\kop-work\\svn-station\\JoyKolon_PC\\ion\\ice-wcms\\JoyKolon_PC\\foundation\\orbit.api.farm2': ['./client/src/js/Orient/Orbit/addons/APIFarmSource']
   },
 
   output: {
@@ -106,9 +107,14 @@ module.exports = {
       filename: 'index.html'
     }),
     // ,
-    new CopyWebpackPlugin([{
-      from: 'orbit.api.farm.js',
-    }])
+    // new CopyWebpackPlugin([{
+    //   from: {
+    //     glob: 'client/dist/*',
+    //     dot: true
+    //   },
+    //
+    //   to: 'client/dist/test'
+    // }])
     /*,
         new HtmlWebpackPlugin({
           title: 'Gelateria Workspace',

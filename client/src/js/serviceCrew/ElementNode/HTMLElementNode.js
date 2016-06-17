@@ -155,8 +155,11 @@ class HTMLElementNode extends TagBaseElementNode {
 
           repeatCount = repeatIngredient;
           repeatIngredient = null;
+        } else if (typeof repeatIngredient === 'string' && /^\d+$/.test(repeatIngredient)) {
+          repeatCount = parseInt(repeatIngredient);
+          repeatIngredient = null;
         } else {
-          throw new Error(`invalid repeat value ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          throw new Error(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
         }
 
 
