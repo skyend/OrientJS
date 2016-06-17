@@ -803,7 +803,7 @@ class ElementNode {
     this.forwardDOM = domnode;
     domnode.__orient_mount_index = _mountIndex;
 
-    console.log(_mountIndex, this.parent, this, this.id);
+    // console.log(_mountIndex, this.parent, this, this.id);
     if (this.parent)
       this.parent.attachDOMChild(_mountIndex, this);
   }

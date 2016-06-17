@@ -21,6 +21,34 @@ const SETTING_END_STRING_LENGTH = SETTING_END_STRING.length;
 const REGEXP_REF_TARGET_MEAN = /^\[([\w\d-_]+)\](.+)$/;
 
 const FINAL_TYPE_CONTEXT = 'ref';
+
+
+class RefComponentWrapper {
+  constructor() {
+    this.wrapperDOM = null;
+  }
+
+  get wrapperDOM() {
+    return this._wrapperDOM;
+  }
+
+  set wrapperDOM(_dom) {
+    this._wrapperDOM = _dom;
+  }
+
+  attachDOMChild(_idx, _refComponent) {
+    console.log(_idx, _refComponent);
+    let domnode = this.wrapperDOM;
+
+    if (domnode.childNodes[_idx]) {
+      domnode.insertBefore(_refComponent.getDOMNode(), domnode.childNodes[_idx]);
+    } else {
+      domnode.appendChild(_refComponent.getDOMNode());
+    }
+  }
+}
+
+
 class RefElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
@@ -33,7 +61,7 @@ class RefElementNode extends HTMLElementNode {
 
     this.loadedInstance = null;
     this.loadedRefs = false;
-
+    this.mountedRefs = false;
     this.loadedTargetId = null;
 
     this.masterElementNodes = [];
@@ -41,6 +69,8 @@ class RefElementNode extends HTMLElementNode {
     // 대표 masterElementNode
     // masterElementNode 중 en-component-representer 을 지정한다.
     this.representerMasterElementNode = null;
+
+    this.componentWrapper = new RefComponentWrapper();
   }
 
   get refference() {
@@ -189,27 +219,97 @@ class RefElementNode extends HTMLElementNode {
     return returnHolder;
   }
 
+  attachDOMChild(_idx, _refComponent) {
+    console.log(_idx, _refComponent);
+    let domnode = this.getDOMNode();
+
+    if (domnode.childNodes[_idx]) {
+      domnode.insertBefore(_refComponent.getDOMNode(), domnode.childNodes[_idx]);
+    } else {
+      domnode.appendChild(_refComponent.getDOMNode());
+    }
+  }
+
   unmountComponent(_options) {
+
 
 
     // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
     super.unmountComponent(_options);
+    this.componentWrapper.wrapperDOM = null;
   }
 
   mountComponent(_options, _parentCount, _mountIndex) {
     super.mountComponent(_options, _parentCount, _mountIndex);
+    this.componentWrapper.wrapperDOM = this.getDOMNode();
 
-
+    this.renderRefComponents(_options);
   }
 
   updateComponent(_options, _parentCount, _mountIndex) {
     super.updateComponent(_options, _parentCount, _mountIndex);
+    this.componentWrapper.wrapperDOM = this.getDOMNode();
 
+    this.renderRefComponents(_options);
+  }
 
+  renderRefComponents(_options) {
+    // if (this.componentWrapper.mounted) {
+    //
+    // }
+
+    if (this.mountedRefs) {
+      for (let i = 0; i < this.masterElementNodes.length; i++) {
+
+        masterElementNode = this.masterElementNodes[i];
+
+        for (let i = 0; i < this.attributes.length; i++) {
+          masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
+        }
+
+        masterElementNode.render(_options);
+      }
+    } else {
+      let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
+
+      if (!targetId) {
+        this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
+      }
+
+      this.componentRepresenter = null;
+      this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
+
+        // 일반 env_include 는 처리만 실행한다.
+        if (_componentSettings['env_include']) {
+          this.processingCSetting_include(_componentSettings['env_include']);
+        }
+
+        // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
+
+        if (_componentSettings['env_include_async']) {
+          if (this.refAsync === false) {
+            // 경고
+            // component load type is
+            // component will be load by async. because component load type is sync, but dependent resource is async
+            // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
+            console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
+          }
+
+          this.processingCSetting_include_async(_componentSettings['env_include_async'], () => {
+            this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, () => {
+              this.mountedRefs = true;
+            });
+          });
+        } else {
+          this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, () => {
+            this.mountedRefs = true;
+          });
+        }
+      });
+    }
   }
 
   mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
-    this.clearContainer();
 
     if (!_masterElementNodes) {
       this.print_console_warn(`Fragment Load Warning. "${targetId}" was not load.`);
@@ -249,21 +349,7 @@ class RefElementNode extends HTMLElementNode {
 
       masterElementNode.setParent(this);
 
-
-      masterElementNode.tryEventScope('component-will-mount', {
-
-      }, null, (_result) => {
-
-      });
-
-      masterElementNode.constructDOMs(_options);
-      masterElementNode.attachForwardDOM(this.forwardDOM);
-
-      masterElementNode.tryEventScope('component-did-mount', {
-
-      }, null, (_result) => {
-
-      });
+      masterElementNode.render(_options, false, i);
     }
 
 

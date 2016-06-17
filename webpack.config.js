@@ -1,10 +1,12 @@
 var Clean = require('clean-webpack-plugin');
 var webpack = require('webpack');
 var babelPolyfill = require("babel-polyfill");
-//var CopyWebpackPlugin = require('copy-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
+  context: __dirname,
+
   entry: {
     //app: ['./client/src/app.jsx'],
     venders: ['react'],
@@ -20,9 +22,12 @@ module.exports = {
     // 'orbit': ['babel-polyfill', './client/src/js/Orient/Orbit.js'],
     // 'orbit.api.cms': ['babel-polyfill', './client/src/js/Orient/Orbit/addons/ICEAPISource'],
     // 'orbit.api.farm': ['babel-polyfill', './client/src/js/Orient/Orbit/addons/APIFarmSource']
-    'orient': ['./client/src/js/Orient/Orient.js'],
-    'orbit': ['./client/src/js/Orient/Orbit.js'],
-    'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],
+
+
+
+    // 'orient': ['./client/src/js/Orient/Orient.js'],
+    // 'orbit': ['./client/src/js/Orient/Orbit.js'],
+    // 'orbit.api.cms': ['./client/src/js/Orient/Orbit/addons/ICEAPISource'],
     'orbit.api.farm': ['./client/src/js/Orient/Orbit/addons/APIFarmSource']
   },
 
@@ -99,12 +104,11 @@ module.exports = {
       inject: 'body',
       chunks: ['config', 'venders', 'main'],
       filename: 'index.html'
-    })
+    }),
     // ,
-    // new CopyWebpackPlugin([{
-    //   from: './built-foundation*',
-    //   to: '../'
-    // }])
+    new CopyWebpackPlugin([{
+      from: 'orbit.api.farm.js',
+    }])
     /*,
         new HtmlWebpackPlugin({
           title: 'Gelateria Workspace',

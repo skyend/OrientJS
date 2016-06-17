@@ -457,6 +457,8 @@ class HTMLElementNode extends TagBaseElementNode {
         if (/^\@scope/i.test(text)) {
           this.appendScopeNode(this.buildScopeNodeByScopeText(text));
         }
+
+        _domElement.removeChild(child_);
         continue;
       } else if (child_.nodeName === '#text') {
         if (child_.parentNode !== null) {
