@@ -28,7 +28,7 @@ const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
-const VERSION = '0.14.3';
+const VERSION = '0.14.6';
 
 
 window.$$ = function(_message, _data) {
