@@ -85,13 +85,77 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
   // 자식이 부모에게 요청
-  attachDOMChild(_idx, _child) {
+  attachDOMChild(_idx, _mountChildDOM, _mountChild) {
     let domnode = this.getDOMNode();
 
-    if (domnode.childNodes[_idx]) {
-      domnode.insertBefore(_child.getDOMNode(), domnode.childNodes[_idx]);
+
+    if (_idx !== null) {
+
+      if (domnode.childNodes[_idx]) {
+        domnode.insertBefore(_mountChildDOM, domnode.childNodes[_idx]);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     } else {
-      domnode.appendChild(_child.getDOMNode());
+      // 마운트 index가 null 인 경우 직접 mount 위치를 찾아서 자식을 붙인다.
+
+      let prevSiblingMountedIndex = 0,
+        realMountIndex, nextSibling;
+
+      let child, childDOM, ghostChildPool, ghostChild, ghostChildDOM, breakUpperLoop = false;
+      for (let j = 0; j < this.children.length; j++) {
+        child = this.children[j];
+
+
+        if (child.isRepeater()) {
+          ghostChildPool = child.clonePool;
+
+          for (let i = 0; i < ghostChildPool.length; i++) {
+            ghostChild = ghostChildPool[i];
+            ghostChildDOM = ghostChild.getDOMNode();
+
+
+            if (_mountChild === ghostChild) {
+
+              if (ghostChildDOM) {
+                throw new Error(`${ghostChild.id} Component is Already mounted GhostChild.`);
+              } else {
+                breakUpperLoop = true;
+                break;
+              }
+            } else {
+              if (ghostChildDOM) {
+                prevSiblingMountedIndex++;
+              }
+            }
+          }
+
+          if (breakUpperLoop) break;
+        } else {
+          childDOM = child.getDOMNode();
+
+          if (child === _mountChild) {
+            if (childDOM) {
+              throw new Error(`${child.id} Component is Already mounted Child.`);
+            } else {
+              break;
+            }
+          } else {
+            if (childDOM) {
+              prevSiblingMountedIndex++;
+            }
+          }
+        }
+      }
+
+      realMountIndex = prevSiblingMountedIndex + 1;
+      nextSibling = domnode.childNodes[realMountIndex];
+
+      if (nextSibling) {
+        domnode.insertBefore(_mountChildDOM, nextSibling);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     }
     // 뒤에 있으면 잡아서 appendBefore 없으면 appendChild
   }

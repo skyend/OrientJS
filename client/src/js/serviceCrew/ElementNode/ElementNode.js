@@ -794,23 +794,25 @@ class ElementNode {
 
 
   // this.forwardDOM이 없을 때
-  mountComponent(_options, _mountIndex) {
+  mountComponent(_options, _mountIndex = null) {
     let domnode = this.createNode(_options);
-
+    let mountIndex = _mountIndex;
     this.mappingAttributes(domnode, _options);
     this.bindDOMEvents(domnode, _options);
 
-    this.forwardDOM = domnode;
-    domnode.__orient_mount_index = _mountIndex;
+    domnode.__orient_mount_index = mountIndex;
     domnode.___en = this;
 
     // console.log(_mountIndex, this.parent, this, this.id);
-    if (this.parent)
-      this.parent.attachDOMChild(_mountIndex, this);
+    if (this.parent) {
+      this.parent.attachDOMChild(mountIndex, domnode, this);
+      this.forwardDOM = domnode;
+    }
   }
 
   // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
   unmountComponent(_options) {
+    //console.log('unmount');
     if (this.parent) {
       this.parent.dettachDOMChild(this);
       this.forwardDOM = null;
@@ -838,7 +840,7 @@ class ElementNode {
       //   - -1 : 자신이 Unmount 되어야 한다.
       //   - _domIndex > -1 : 자신이 부착 될 부모DOM 에서의 child Index
   */
-  render(_options, _unmount, _mountIndex) {
+  render(_options, _unmount, _mountIndex = null) {
     let domNode = this.getDOMNode();
 
 

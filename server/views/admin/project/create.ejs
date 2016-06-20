@@ -97,16 +97,16 @@
 
 
                 <div class="box-body">
-                  <div class="form-group">
+                  <div class="form-group" idx='1'>
                     <label for="inputEmail3" class="col-sm-2 control-label">Project Name</label>
 
                     <div class="col-sm-10">
                       <en:task name='changed' action='set' arg-name='name' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='render'></en:task>
-                      <input type="text" class="form-control" name='name' value='{{: val@name }}' transfer-value='{{: val@name }}' placeholder="Email" en-event-keyup='task@changed' en-event-change='task@changed'>
+                      <input type="text" class="form-control" name='name' value='{{: val@name }}' transfer-value='{{: val@name }}' placeholder="Email" enc-event-keyup='task@changed' en-event-change='task@changed'>
                     </div>
                   </div>
 
-                  <div class="form-group">
+                  <div class="form-group" idx='2' en-event-component-did-mount='{{: console.log("2 did mount") }}' en-event-component-did-unmount='{{: console.log("2 did unmount") }}'>
                     <label for="inputPassword3" class="col-sm-2 control-label">Description</label>
 
                     <div class="col-sm-10">
@@ -116,7 +116,7 @@
                     </div>
                   </div>
 
-                  <div class="form-group">
+                  <div class="form-group" idx='3'>
                     <label for="inputPassword3" class="col-sm-2 control-label">Template Zip</label>
 
                     <div class="col-sm-10">
@@ -124,7 +124,7 @@
                     </div>
                   </div>
 
-                  <div class="form-group">
+                  <div class="form-group" idx='4'>
                     <label for="inputPassword3" class="col-sm-2 control-label">Access</label>
 
                     <div class="col-sm-10">
