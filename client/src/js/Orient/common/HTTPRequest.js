@@ -1,3 +1,4 @@
+import events from 'events';
 import browser from 'detect-browser';
 import Classer from '../../util/Classer';
 import Identifier from '../../util/Identifier.js';
@@ -6,7 +7,7 @@ import ObjectExtends from '../../util/ObjectExtends.js';
 const B_NAME = browser.name;
 const B_VER = parseInt(browser.version);
 
-
+var HTTP_REQUEST = 0;
 
 const GET_IE_MULTIPART_IFRAME_ID_STORE = Identifier.chars32SequenceStore(9999999);
 
@@ -110,7 +111,7 @@ class HTTPRequest {
 
 
 
-  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true) {
+  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true, _dontModifiyData = false) {
     let method = _method.toLowerCase();
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
@@ -156,15 +157,18 @@ class HTTPRequest {
     let rawFieldArray = [],
       cookedFieldArray = [];
 
-    switch (_enctype) {
-      case 'application/x-www-form-urlencoded':
-      case 'multipart/form-data':
-        // Object 로 입력된 필드 목록을 Array 로 변환한다.
-        rawFieldArray = HTTPRequest.fieldConvertToArray(_data);
-        rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
-        // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
-        cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
-        break;
+    // Data Modify
+    if (_dontModifiyData === false) {
+      switch (_enctype) {
+        case 'application/x-www-form-urlencoded':
+        case 'multipart/form-data':
+          // Object 로 입력된 필드 목록을 Array 로 변환한다.
+          rawFieldArray = HTTPRequest.fieldConvertToArray(_data);
+          rawFieldArray = HTTPRequest.availableFieldsFilter(rawFieldArray);
+          // 가공되지 않은 필드가 목록에 포함 되어 있을 때 필드로 사용가능한 오브젝트에서 실제 값을 추출하여 변환한다.
+          cookedFieldArray = HTTPRequest.convertRawFieldsToRealFieldsData(rawFieldArray);
+          break;
+      }
     }
 
     // console.log('a', is_multipart_post);
@@ -187,18 +191,24 @@ class HTTPRequest {
       //   return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, _callback, _async);
       // }
 
-      finalData = HTTPRequest.convertFieldsToFormData(cookedFieldArray);
+      finalData = _dontModifiyData ? _data : HTTPRequest.convertFieldsToFormData(cookedFieldArray);
     } else if (_enctype === 'application/x-www-form-urlencoded') {
       // get / post 모두 데이터포맷은 같다
       // console.log('application/x-www-form-urlencoded');
 
+      let queries, urlencodedQueries;
+
       // query 생성
-      let queries = cookedFieldArray.map(function(_fieldPair) {
+      if (_dontModifiyData === false) {
+        queries = cookedFieldArray.map(function(_fieldPair) {
 
-        return `${_fieldPair[0]}=${ encodeURIComponent(_fieldPair[1]) }`;
-      });
+          return `${_fieldPair[0]}=${ encodeURIComponent(_fieldPair[1]) }`;
+        });
 
-      let urlencodedQueries = queries.join('&');
+        urlencodedQueries = queries.join('&');
+      } else {
+        urlencodedQueries = _data;
+      }
 
       // Method 가 get 이면 query 들을 조합하여 URL에 더한다.
       if (method === 'get') {
@@ -242,7 +252,7 @@ class HTTPRequest {
 
     request.onload = function(_e) {
       //console.log('onload', _e);
-
+      HTTPRequest.DECREASE_SEND_COUNT();
       /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
       request.statusType = Math.floor(request.status / 100);
       request.statusCode = request.status;
@@ -273,6 +283,8 @@ class HTTPRequest {
     };
 
     request.onerror = function(_e) {
+      HTTPRequest.DECREASE_SEND_COUNT();
+
       if (request.getAllResponseHeaders) {
         request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
       } else {
@@ -301,6 +313,8 @@ class HTTPRequest {
     };
 
     request.ontimeout = function(_e) {
+      HTTPRequest.DECREASE_SEND_COUNT();
+
       if (request.getAllResponseHeaders) {
         request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
       } else {
@@ -323,6 +337,8 @@ class HTTPRequest {
       if (console.trace)
         console.trace(`Send Trace: ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`);
     }
+
+    HTTPRequest.INCREASE_SEND_COUNT();
 
     // SEND
     if (method === 'get') {
@@ -493,8 +509,8 @@ class HTTPRequest {
     return newFormData;
   }
 
-  static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded') {
-    HTTPRequest.request(_method, _url, _data, _callback, _enctype, false);
+  static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded', _dontModifiyData) {
+    HTTPRequest.request(_method, _url, _data, _callback, _enctype, false, _dontModifiyData);
   }
 
   static parseResponseHeaders(_responseHeaderText) {
@@ -516,6 +532,29 @@ class HTTPRequest {
 
     return headObject;
   }
+
+  static INCREASE_SEND_COUNT() {
+    HTTP_REQUEST++;
+
+    // console.log(HTTP_REQUEST);
+  }
+
+  static DECREASE_SEND_COUNT() {
+    HTTP_REQUEST--;
+
+    // console.log(HTTP_REQUEST);
+
+    if (HTTP_REQUEST === 0) {
+      // HTTPRequest.emit('end');
+    }
+  }
 }
+//
+// ObjectExtends.liteExtends(HTTPRequest, events.EventEmitter.prototype);
+//
+//
+// HTTPRequest.on('end', function() {
+//   alert("END");
+// });
 
 export default HTTPRequest;

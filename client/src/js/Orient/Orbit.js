@@ -194,7 +194,7 @@ class Orbit {
     }
   }
 
-  foundationCompatibility(_selector, _callback, _callbackFinal, _absorbOriginDOM) {
+  foundationCompatibility(_selector, _callback, _callbackFinal, _absorbOriginDOM = true) {
     this.pageMetaCompatibility(() => {
       let targetDomNodes, targetDomNode;
       if (_selector) {

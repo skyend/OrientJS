@@ -33,34 +33,34 @@ Action Function Scope 내 의 고정 인자
   _ActionResult : 새로운 ActionResult 인스턴스를 생성 할 수 있는 ActionResult 클래스
   _callback : Action 실행이 완료 되었을 때 호출하는 Callback 메서드. 인자로 actionResult 인스턴스를 입력하여야 한다.
 */
-
-actionStore.registerAction('refresh', ['taskChain'], function() {
-  _actionResult.taskChain = taskChain;
-
-  this.update();
-
-  _actionResult.code = 'success';
-  _callback(_actionResult);
-
-  // this.refresh(function() {
-  //   _actionResult.code = 'success';
-  //   _callback(_actionResult);
-  // });
-});
-
-actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], function() {
-  _actionResult.taskChain = taskChain;
-
-  let targetElementNode;
-  if (eid !== undefined) {
-    targetElementNode = this.getMaster().findById(eid, false);
-  }
-
-  targetElementNode.update();
-  _actionResult.code = 'success';
-
-  _callback(_actionResult);
-});
+//
+// actionStore.registerAction('refresh', ['taskChain'], function() {
+//   _actionResult.taskChain = taskChain;
+//
+//   this.update();
+//
+//   _actionResult.code = 'success';
+//   _callback(_actionResult);
+//
+//   // this.refresh(function() {
+//   //   _actionResult.code = 'success';
+//   //   _callback(_actionResult);
+//   // });
+// });
+//
+// actionStore.registerAction('refresh-to', ['eid', 'selector', 'taskChain'], function() {
+//   _actionResult.taskChain = taskChain;
+//
+//   let targetElementNode;
+//   if (eid !== undefined) {
+//     targetElementNode = this.getMaster().findById(eid, false);
+//   }
+//
+//   targetElementNode.update();
+//   _actionResult.code = 'success';
+//
+//   _callback(_actionResult);
+// });
 
 
 actionStore.registerAction('update', ['keep_dc', 'resolve'], function() {

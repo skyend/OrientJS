@@ -90,10 +90,15 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
     if (_idx !== null) {
+      if (_mountChild.id === 'member-login-conts' || _mountChild.id === 'test2234') {
+        console.log('Here>> ' + _mountChild.id, _idx, domnode.childNodes[_idx]);
+      }
 
       if (domnode.childNodes[_idx]) {
+
         domnode.insertBefore(_mountChildDOM, domnode.childNodes[_idx]);
       } else {
+
         domnode.appendChild(_mountChildDOM);
       }
     } else {
@@ -223,6 +228,7 @@ class HTMLElementNode extends TagBaseElementNode {
           repeatCount = parseInt(repeatIngredient);
           repeatIngredient = null;
         } else {
+          //console.warn(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
           throw new Error(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
         }
 

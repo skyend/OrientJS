@@ -25,6 +25,7 @@ const FINAL_TYPE_CONTEXT = 'ref';
 
 class RefComponentWrapper {
   constructor() {
+
     this.wrapperDOM = null;
   }
 
@@ -219,171 +220,232 @@ class RefElementNode extends HTMLElementNode {
   //   return returnHolder;
   // }
 
-  attachDOMChild(_idx, _refComponent) {
-    console.log(_idx, _refComponent);
+  attachDOMChild(_idx, _mountChildDOM, _mountChild) {
     let domnode = this.getDOMNode();
 
-    if (domnode.childNodes[_idx]) {
-      domnode.insertBefore(_refComponent.getDOMNode(), domnode.childNodes[_idx]);
+    if (_idx !== null) {
+
+      if (domnode.childNodes[_idx]) {
+        domnode.insertBefore(_mountChildDOM, domnode.childNodes[_idx]);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     } else {
-      domnode.appendChild(_refComponent.getDOMNode());
+      // 마운트 index가 null 인 경우 직접 mount 위치를 찾아서 자식을 붙인다.
+
+      let prevSiblingMountedIndex = 0,
+        realMountIndex, nextSibling;
+
+      let child, childDOM, ghostChildPool, ghostChild, ghostChildDOM, breakUpperLoop = false;
+      for (let j = 0; j < this.masterElementNodes.length; j++) {
+        child = this.masterElementNodes[j];
+
+
+        if (child.isRepeater()) {
+          ghostChildPool = child.clonePool;
+
+          for (let i = 0; i < ghostChildPool.length; i++) {
+            ghostChild = ghostChildPool[i];
+            ghostChildDOM = ghostChild.getDOMNode();
+
+
+            if (_mountChild === ghostChild) {
+
+              if (ghostChildDOM) {
+                throw new Error(`${ghostChild.id} Component is Already mounted GhostChild.`);
+              } else {
+                breakUpperLoop = true;
+                break;
+              }
+            } else {
+              if (ghostChildDOM) {
+                prevSiblingMountedIndex++;
+              }
+            }
+          }
+
+          if (breakUpperLoop) break;
+        } else {
+          childDOM = child.getDOMNode();
+
+          if (child === _mountChild) {
+            if (childDOM) {
+              throw new Error(`${child.id} Component is Already mounted Child.`);
+            } else {
+              break;
+            }
+          } else {
+            if (childDOM) {
+              prevSiblingMountedIndex++;
+            }
+          }
+        }
+      }
+
+      realMountIndex = prevSiblingMountedIndex + 1;
+      nextSibling = domnode.childNodes[realMountIndex];
+
+      if (nextSibling) {
+        domnode.insertBefore(_mountChildDOM, nextSibling);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     }
   }
 
-  // unmountComponent(_options) {
-  //
-  //   if (this.mountedRefs) {
-  //     for (let i = 0; i < this.masterElementNode.length; i++) {
-  //       this.masterElementNodes[i].render(_options, true);
-  //     }
-  //   }
-  //
-  //   // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
-  //   super.unmountComponent(_options);
-  //   this.componentWrapper.wrapperDOM = null;
-  // }
-  //
-  // mountComponent(_options, _parentCount, _mountIndex) {
-  //   super.mountComponent(_options, _parentCount, _mountIndex);
-  //   this.componentWrapper.wrapperDOM = this.getDOMNode();
-  //
-  //   this.renderRefComponents(_options);
-  // }
-  //
-  // updateComponent(_options, _parentCount, _mountIndex) {
-  //   super.updateComponent(_options, _parentCount, _mountIndex);
-  //   this.componentWrapper.wrapperDOM = this.getDOMNode();
-  //
-  //   this.renderRefComponents(_options);
-  // }
-  //
-  // renderRefComponents(_options) {
-  //   // if (this.componentWrapper.mounted) {
-  //   //
-  //   // }
-  //   console.log('>>> ', this.mountedRefs);
-  //
-  //   let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
-  //
-  //   if (!targetId) {
-  //     this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
-  //   }
-  //
-  //   if ((this.mountedRefs || this.loadedRefs) && this.loadedTargetId === targetId) {
-  //     console.log('Mounted refs', this.id, this.getDOMNode());
-  //     let masterElementNode;
-  //     for (let i = 0; i < this.masterElementNodes.length; i++) {
-  //
-  //       masterElementNode = this.masterElementNodes[i];
-  //
-  //       for (let i = 0; i < this.attributes.length; i++) {
-  //         masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
-  //       }
-  //
-  //       masterElementNode.render(_options);
-  //     }
-  //   } else {
-  //     if (this.mountedRefs) {
-  //
-  //       for (let i = 0; i < this.masterElementNode.length; i++) {
-  //         this.masterElementNodes[i].render({}, true);
-  //       }
-  //     }
-  //
-  //     this.componentRepresenter = null;
-  //     this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
-  //       this.loadedRefs = true;
-  //       this.loadedTargetId = targetId;
-  //
-  //
-  //       // 일반 env_include 는 처리만 실행한다.
-  //       if (_componentSettings['env_include']) {
-  //         this.processingCSetting_include(_componentSettings['env_include']);
-  //       }
-  //
-  //       // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
-  //
-  //       if (_componentSettings['env_include_async']) {
-  //         if (this.refAsync === false) {
-  //           // 경고
-  //           // component load type is
-  //           // component will be load by async. because component load type is sync, but dependent resource is async
-  //           // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
-  //           console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
-  //         }
-  //
-  //         this.processingCSetting_include_async(_componentSettings['env_include_async'], () => {
-  //           this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings);
-  //           this.mountedRefs = true;
-  //         });
-  //       } else {
-  //         this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings);
-  //         this.mountedRefs = true;
-  //       }
-  //
-  //
-  //     });
-  //   }
-  // }
-  //
-  // mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
-  //
-  //   if (!_masterElementNodes) {
-  //     this.print_console_error(`Fragment Load Warning. "${targetId}" was not load.`);
-  //     return;
-  //   }
-  //
-  //   this.masterElementNodes = _masterElementNodes;
-  //
-  //   this.loadedTargetId = targetId;
-  //
-  //   // that.scopeNodes.map(function(_scopeNode) {
-  //   //   if (_scopeNode.type === 'param') {
-  //   //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
-  //   //   }
-  //   // });
-  //
-  //   // for (let i = 0; i < that.attributes.length; i++) {
-  //   //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
-  //   // }
-  //   if (this.masterElementNodes.length === 1) {
-  //     this.representerMasterElementNode = this.masterElementNodes[0];
-  //   }
-  //
-  //   let masterElementNode;
-  //   for (let i = 0; i < this.masterElementNodes.length; i++) {
-  //
-  //     masterElementNode = this.masterElementNodes[i];
-  //     if (masterElementNode.componentRepresenter) {
-  //       this.representerMasterElementNode = masterElementNode;
-  //     }
-  //
-  //     for (let i = 0; i < this.attributes.length; i++) {
-  //       masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
-  //     }
-  //
-  //     masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
-  //
-  //     masterElementNode.setParent(this);
-  //
-  //     masterElementNode.render(_options, false, i);
-  //   }
-  //
-  //
-  //   // after include 처리
-  //   if (_componentSettings) {
-  //
-  //     if (_componentSettings.env_after_include) {
-  //       this.processingCSetting_include(_componentSettings.env_after_include);
-  //     }
-  //
-  //     if (_componentSettings.env_after_include_async) {
-  //       this.processingCSetting_include_async(_componentSettings.env_after_include_async);
-  //     }
-  //   }
-  //
-  // 
-  // }
+  unmountComponent(_options) {
+
+    if (this.mountedRefs) {
+      for (let i = 0; i < this.masterElementNodes.length; i++) {
+        this.masterElementNodes[i].render(_options, true);
+      }
+    }
+
+    // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
+    super.unmountComponent(_options);
+    this.componentWrapper.wrapperDOM = null;
+  }
+
+  mountComponent(_options, _parentCount, _mountIndex) {
+    super.mountComponent(_options, _parentCount, _mountIndex);
+    this.componentWrapper.wrapperDOM = this.getDOMNode();
+
+    this.renderRefComponents(_options);
+  }
+
+  updateComponent(_options, _parentCount, _mountIndex) {
+    super.updateComponent(_options, _parentCount, _mountIndex);
+    this.componentWrapper.wrapperDOM = this.getDOMNode();
+
+    this.renderRefComponents(_options);
+  }
+
+  renderRefComponents(_options) {
+    // if (this.componentWrapper.mounted) {
+    //
+    // }
+
+    let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
+
+    if (!targetId) {
+      this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
+    }
+
+    if ((this.loadedRefs) && this.loadedTargetId === targetId) {
+      console.log('Mounted refs', this.id, this.getDOMNode());
+      let masterElementNode;
+      for (let i = 0; i < this.masterElementNodes.length; i++) {
+
+        masterElementNode = this.masterElementNodes[i];
+
+        for (let i = 0; i < this.attributes.length; i++) {
+          masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
+        }
+
+        masterElementNode.render(_options);
+      }
+    } else {
+      if (this.mountedRefs) {
+
+        for (let i = 0; i < this.masterElementNodes.length; i++) {
+          this.masterElementNodes[i].render({}, true);
+        }
+      }
+
+      this.componentRepresenter = null;
+      this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
+        this.loadedRefs = true;
+        this.loadedTargetId = targetId;
+
+
+        // 일반 env_include 는 처리만 실행한다.
+        if (_componentSettings['env_include']) {
+          this.processingCSetting_include(_componentSettings['env_include']);
+        }
+
+        // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
+
+        if (_componentSettings['env_include_async']) {
+          if (this.refAsync === false) {
+            // 경고
+            // component load type is
+            // component will be load by async. because component load type is sync, but dependent resource is async
+            // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
+            console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
+          }
+
+          this.processingCSetting_include_async(_componentSettings['env_include_async'], () => {
+            this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings);
+            this.mountedRefs = true;
+          });
+        } else {
+          this.mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings);
+          this.mountedRefs = true;
+        }
+
+
+      });
+    }
+  }
+
+  mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
+
+    if (!_masterElementNodes) {
+      this.print_console_error(`Fragment Load Warning. "${targetId}" was not load.`);
+      return;
+    }
+
+    this.masterElementNodes = _masterElementNodes;
+
+    this.loadedTargetId = targetId;
+
+    // that.scopeNodes.map(function(_scopeNode) {
+    //   if (_scopeNode.type === 'param') {
+    //     that.loadedInstance.setParam(_scopeNode.name, that.interpret(_scopeNode.plainValue));
+    //   }
+    // });
+
+    // for (let i = 0; i < that.attributes.length; i++) {
+    //   that.loadedInstance.setParam(_scopeNode.name, that.interpret(that.attributes[i]));
+    // }
+    if (this.masterElementNodes.length === 1) {
+      this.representerMasterElementNode = this.masterElementNodes[0];
+    }
+
+    let masterElementNode;
+    for (let i = 0; i < this.masterElementNodes.length; i++) {
+
+      masterElementNode = this.masterElementNodes[i];
+      if (masterElementNode.componentRepresenter) {
+        this.representerMasterElementNode = masterElementNode;
+      }
+
+      for (let i = 0; i < this.attributes.length; i++) {
+        masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
+      }
+
+      masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
+
+      masterElementNode.setParent(this);
+
+      masterElementNode.render(_options, false, i);
+    }
+
+
+    // after include 처리
+    if (_componentSettings) {
+
+      if (_componentSettings.env_after_include) {
+        this.processingCSetting_include(_componentSettings.env_after_include);
+      }
+
+      if (_componentSettings.env_after_include_async) {
+        this.processingCSetting_include_async(_componentSettings.env_after_include_async);
+      }
+    }
+
+
+  }
 
   applyHiddenState() {
     super.applyHiddenState();
