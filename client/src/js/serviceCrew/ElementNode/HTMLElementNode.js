@@ -197,12 +197,14 @@ class HTMLElementNode extends TagBaseElementNode {
   mountComponent(_options, _parentCount, _mountIndex) {
     super.mountComponent(_options, _parentCount, _mountIndex);
 
+    this.debug('render', '[html] Will render children from mount component');
     this.renderChild(_options, _parentCount);
   }
 
   updateComponent(_options, _parentCount, _mountIndex) {
     super.updateComponent(_options, _parentCount, _mountIndex);
 
+    this.debug('render', '[html] Will render children from update component');
     this.renderChild(_options, _parentCount);
   }
 

@@ -28,7 +28,16 @@ const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
-const VERSION = '0.14.6';
+
+const VERSION = '0.15.0';
+
+/*
+  Version history
+  - 0.15.0 ( 2016-06-21 )
+    * 랜더링 로직 수정 component events 완벽 지원
+    * 랜더링 내부 API변경
+    * 명시적 component unmount
+*/
 
 
 window.$$ = function(_message, _data) {
