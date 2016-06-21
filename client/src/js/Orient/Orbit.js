@@ -17,7 +17,13 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.12.8';
+const VERSION = '0.13.3';
+
+/*
+  Version history
+  - 0.13.3 (2016-06-22T01:50)
+    * APISource BrowserStorage 캐시 추가 (Orbit)
+*/
 
 class Orbit {
   /**

@@ -29,60 +29,6 @@ class HTMLElementNode extends TagBaseElementNode {
     }
   }
 
-  constructDOMs(_options) {
-    let returnHolder = super.constructDOMs(_options);
-
-    // console.log(returnHolder);
-    if (this.isRepeater()) return returnHolder;
-    if (returnHolder.length === 0) return returnHolder;
-
-    // Fixed Container Processing
-    let fixedContainer = this.getControlWithResolve('fixed-container');
-    if (fixedContainer === 'true' || fixedContainer === true) {
-      return;
-    }
-
-    // children construct
-    let children = this.children;
-    let length = children.length;
-    let child;
-
-
-    for (let i = 0; i < length; i++) {
-      child = children[i];
-
-      child.constructDOMs(_options);
-      // 복구에 대한 신뢰
-      if (child.isRepeater()) {
-        for (let j = 0; j < child.clonePool.length; j++) {
-
-          this.updateChild(child.clonePool[j]);
-        }
-      } else {
-
-        this.updateChild(child);
-      }
-    }
-
-    // 유효하지 않은 DOM트리 제거
-    let childNodes = ObjectExtends.arrayToArray(this.forwardDOM.childNodes);
-    let childNode;
-    for (let i = 0; i < childNodes.length; i++) {
-      childNode = childNodes[i];
-
-      if (childNode.___en) {
-        if (childNode.__renderstemp__ !== childNode.___en.renderSerialNumber) {
-          this.forwardDOM.removeChild(childNode);
-        }
-      } else {
-        this.forwardDOM.removeChild(childNode);
-      }
-    }
-
-
-    return returnHolder;
-  }
-
 
   // 자식이 부모에게 요청
   attachDOMChild(_idx, _mountChildDOM, _mountChild) {
@@ -90,9 +36,6 @@ class HTMLElementNode extends TagBaseElementNode {
 
 
     if (_idx !== null) {
-      if (_mountChild.id === 'member-login-conts' || _mountChild.id === 'test2234') {
-        console.log('Here>> ' + _mountChild.id, _idx, domnode.childNodes[_idx]);
-      }
 
       if (domnode.childNodes[_idx]) {
 
@@ -252,9 +195,12 @@ class HTMLElementNode extends TagBaseElementNode {
               }, child.getType(), child.environment, null);
 
               child.clonePool.push(repeat_child);
+            } else {
+              repeat_child.repeatItem = repeatIngredient ? repeatIngredient[repeat_i] : null;
             }
 
             repeat_child.parent = this;
+            repeat_child.upperContainer = this;
             count = repeat_child.render(_options, false, count);
             count++;
           } else {
@@ -330,6 +276,7 @@ class HTMLElementNode extends TagBaseElementNode {
     }
 
     _elementNode.setParent(this);
+    _elementNode.upperContainer = this;
 
     this.children.push(_elementNode);
 
@@ -568,6 +515,7 @@ class HTMLElementNode extends TagBaseElementNode {
       newChildElementNode.prevSibling = prevElementNode;
       children.push(newChildElementNode);
       newChildElementNode.setParent(this);
+      newChildElementNode.upperContainer = this;
 
       prevElementNode = newChildElementNode;
     }
@@ -629,6 +577,7 @@ class HTMLElementNode extends TagBaseElementNode {
         child = Factory.takeElementNode(elementNodeData, preInjectProps, undefined, this.environment);
       }
       child.setParent(this);
+      child.upperContainer = this;
 
       // 이전 요소 지정
       child.prevSibling = prevChild;

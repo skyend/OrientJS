@@ -87,7 +87,7 @@ class ElementNode {
 
     // parent refference
     this.parent = null;
-
+    this.upperContainer = null; // 자신의 DOM을 붙여 줄 HTMLElementNode
 
 
     this.clonePool = []; // repeated
@@ -628,8 +628,8 @@ class ElementNode {
     domnode.___en = this;
 
     // console.log(_mountIndex, this.parent, this, this.id);
-    if (this.parent) {
-      this.parent.attachDOMChild(mountIndex, domnode, this);
+    if (this.upperContainer) {
+      this.upperContainer.attachDOMChild(mountIndex, domnode, this);
       this.forwardDOM = domnode;
     }
   }
@@ -637,8 +637,8 @@ class ElementNode {
   // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
   unmountComponent(_options) {
     //console.log('unmount');
-    if (this.parent) {
-      this.parent.dettachDOMChild(this);
+    if (this.upperContainer) {
+      this.upperContainer.dettachDOMChild(this);
       this.forwardDOM = null;
     }
   }
@@ -844,45 +844,6 @@ class ElementNode {
   }
 
 
-  // 단독으로 자신의 DOM을 생성하는 메서드
-  constructDOM(_options) {
-    this.increaseRenderSerialNumber();
-
-    let htmlNode = this.createNode(_options);
-    htmlNode.___en = this;
-    htmlNode.__renderstemp__ = this.renderSerialNumber;
-
-    // [2] Attribute and text 매핑
-    this.mappingAttributes(htmlNode, _options);
-
-    // [3] Children Construct
-    if (this.type !== 'string') {
-      // Event 바인딩
-      this.bindDOMEvents(htmlNode, _options);
-    }
-
-    this.debug('construct', 'created htmlNode ', htmlNode);
-
-    // 부모 DOM트리에 부착되어 있다면  backupDOM으로 생성한다.
-    if (this.isAttachedDOM) {
-      //console.log('to backup', constructedDOM);
-      this.backupDOM = htmlNode;
-    } else {
-      //console.log('to forward', constructedDOM);
-      this.forwardDOM = htmlNode;
-    }
-
-    return htmlNode;
-  }
-
-
-  applyHiddenState(_onlyForwardDOM) {
-    this.forwardDOM = null;
-
-    // if (!_onlyForwardDOM)
-    this.isAttachedDOM = false;
-  }
-
   isRepeater() {
     return this.getControl('repeat-n') && !this.isRepeated;
   }
@@ -942,7 +903,7 @@ class ElementNode {
     }
   }
 
-  executeDynamicContext() {
+  executeDynamicContext(_callback) {
     let that = this;
     // 새로 생성
 
@@ -970,6 +931,9 @@ class ElementNode {
               dynamicContext: that.dynamicContext
             }, null);
 
+
+            // error 일 때 콜백
+            _callback && _callback(_err, that);
             return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
           }
           // fix
@@ -977,6 +941,9 @@ class ElementNode {
             dynamicContext: that.dynamicContext
           }, null);
 
+
+          // 로드 완료시 콜백
+          _callback && _callback(null, that);
 
           if (!that.dynamicContextSync) {
             // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
@@ -1555,6 +1522,8 @@ class ElementNode {
   getScope(_name, _type, _withString) {
     let scope = this.getMyScope(_name, _type, _withString);
 
+
+
     if (scope === null) {
       if (this.parent !== null) return this.parent.getScope(_name, _type, _withString);
 
@@ -1958,6 +1927,7 @@ class ElementNode {
     // interpret 된 delegateValue 의 데이터타입이 string이면 EN ID로 간주하며
     // 그 밖의 타입일 경우 ElementNode 객체로 간주한다.
     if (typeof delegateValue === 'string') {
+
       foundEN = this.getMaster().findById(_fieldValue);
     } else {
       foundEN = delegateValue;
@@ -1967,7 +1937,7 @@ class ElementNode {
       return foundEN;
     }
 
-    throw new Error(`${foundEN} is Not ElementNode. \nSEED:'${_fieldValue}'`);
+    throw new Error(`#${this.id} ${foundEN} is Not ElementNode. \nSEED:'${_fieldValue}' ${this.DEBUG_FILE_NAME_EXPLAIN}`);
   }
 
   ///////////////////////////////////// End Scope Logics ////////////////////////////////////////////
@@ -2388,8 +2358,8 @@ class ElementNode {
     }
   }
 
-  executeDC() {
-    this.executeDynamicContext();
+  executeDC(_callback) {
+    this.executeDynamicContext(_callback);
   }
 
   executeTask() {

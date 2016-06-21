@@ -1,3 +1,5 @@
+import BrowserStorage from '../../util/BrowserStorage';
+
 class Retriever {
   constructor(_orbit, _options, _extender) {
     this.orbit = _orbit;
@@ -54,10 +56,23 @@ class Retriever {
       return;
     }
 
+    // Browser LocalStorage Caching
+    if (ORBIT_APISOURCE_CACHING) {
+      let cachedSourceData = BrowserStorage.getLocal('as_' + _loadTarget);
+      if (cachedSourceData) {
+        _cb(cachedSourceData, url);
+        return;
+      }
+    }
+
     this.orbit.HTTPRequest.request('get', url, {}, (_err, _res) => {
       if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
 
       let responseText = _res.text;
+
+      if (ORBIT_APISOURCE_CACHING) {
+        BrowserStorage.setLocal('as_' + _loadTarget, responseText);
+      }
 
       // caching
       this.caches.apisource[_loadTarget] = responseText;
@@ -85,6 +100,16 @@ class Retriever {
       return;
     }
 
+
+    // Browser LocalStorage Caching
+    if (ORBIT_APISOURCE_CACHING) {
+      let cachedSourceData = BrowserStorage.getLocal('as_' + _loadTarget);
+      if (cachedSourceData) {
+        _cb(cachedSourceData, url);
+        return;
+      }
+    }
+
     this.orbit.HTTPRequest.requestSync('get', url, {}, (_err, _res) => {
       if (_err !== null) return console.error(`Error : Fail api source sheet loading. <detail:${_err}> <filepath:${url}>`);
 
@@ -92,6 +117,11 @@ class Retriever {
 
       // caching
       this.caches.apisource[_loadTarget] = responseText;
+
+      if (ORBIT_APISOURCE_CACHING) {
+        BrowserStorage.setLocal('as_' + _loadTarget, responseText);
+      }
+
       _cb(this.caches.apisource[_loadTarget], url);
     });
   }

@@ -29,7 +29,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.15.0';
+const VERSION = '0.15.4';
 
 /*
   Version history
@@ -37,6 +37,12 @@ const VERSION = '0.15.0';
     * 랜더링 로직 수정 component events 완벽 지원
     * 랜더링 내부 API변경
     * 명시적 component unmount
+
+  - 0.15.4 (2016-06-22T01:50)
+    * ElementNode 의 parent 에서 upperContainer 의 개념을 분리해냄 ( 자신의 상위 DOM을 가진 요소를 upperContainer 로 지정 실제 attachDOMChild 와 dettachDOMChild는 upperContainer 로 지정된 Node에서 담당한다.)
+    * RefElementNode 하위의 Master로 붙는 ElementNode 는 parent 필드로 RefElementNode를 가지지 않고 upperContainer만을 가진다. ( 상위 Scope 접근을 제한하기 위해 )
+    * BrowserStorage 에서 item 세팅에서 에러 발생 시 item 을 remove
+    * Fragment BrowserStorage 캐시 시에 ID를 제외하고 Fragment JSON을 저장하던 것을 ID를 포함하도록 수정 (기존의 고정된 ID도 제거되어 발생하던 에러 처리 )
 */
 
 

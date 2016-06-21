@@ -734,7 +734,6 @@ class TagBaseElementNode extends ElementNode {
   buildByElement(_domElement, _absorbOriginDOM) {
     // for Debug
     this.sourceElement = _domElement;
-
     this.copyAllAtrributeFromDOMElement(_domElement);
 
 

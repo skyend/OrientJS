@@ -1,4 +1,5 @@
 import APISource from './APISource';
+import BrowserStorage from '../../../util/BrowserStorage';
 
 var TYPE_SUPPORTERS_POOL = {
   'http': APISource,

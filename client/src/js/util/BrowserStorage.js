@@ -39,6 +39,7 @@ class BrowserStorage {
     try {
       storage.setItem(key, stringData);
     } catch (_e) {
+      storage.removeItem(key);
       throw _e;
     }
   }

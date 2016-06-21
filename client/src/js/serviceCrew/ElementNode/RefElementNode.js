@@ -37,15 +37,92 @@ class RefComponentWrapper {
     this._wrapperDOM = _dom;
   }
 
-  attachDOMChild(_idx, _refComponent) {
-    console.log(_idx, _refComponent);
+  // 자식이 부모에게 요청
+  dettachDOMChild(_child) {
+    let domnode = this.wrapperDOM;
+    domnode.removeChild(_child.getDOMNode());
+  }
+
+  attachDOMChild(_idx, _mountChildDOM, _mountChild) {
     let domnode = this.wrapperDOM;
 
-    if (domnode.childNodes[_idx]) {
-      domnode.insertBefore(_refComponent.getDOMNode(), domnode.childNodes[_idx]);
+    if (_idx !== null) {
+
+      if (domnode.childNodes[_idx]) {
+        domnode.insertBefore(_mountChildDOM, domnode.childNodes[_idx]);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     } else {
-      domnode.appendChild(_refComponent.getDOMNode());
+      // 마운트 index가 null 인 경우 직접 mount 위치를 찾아서 자식을 붙인다.
+
+      let prevSiblingMountedIndex = 0,
+        realMountIndex, nextSibling;
+
+      let child, childDOM, ghostChildPool, ghostChild, ghostChildDOM, breakUpperLoop = false;
+      for (let j = 0; j < this.attachedDOMs.length; j++) {
+        child = this.attachedDOMs[j];
+
+
+        if (child.isRepeater()) {
+          ghostChildPool = child.clonePool;
+
+          for (let i = 0; i < ghostChildPool.length; i++) {
+            ghostChild = ghostChildPool[i];
+            ghostChildDOM = ghostChild.getDOMNode();
+
+
+            if (_mountChild === ghostChild) {
+
+              if (ghostChildDOM) {
+                throw new Error(`${ghostChild.id} Component is Already mounted GhostChild.`);
+              } else {
+                breakUpperLoop = true;
+                break;
+              }
+            } else {
+              if (ghostChildDOM) {
+                prevSiblingMountedIndex++;
+              }
+            }
+          }
+
+          if (breakUpperLoop) break;
+        } else {
+          childDOM = child.getDOMNode();
+
+          if (child === _mountChild) {
+            if (childDOM) {
+              throw new Error(`${child.id} Component is Already mounted Child.`);
+            } else {
+              break;
+            }
+          } else {
+            if (childDOM) {
+              prevSiblingMountedIndex++;
+            }
+          }
+        }
+      }
+
+      realMountIndex = prevSiblingMountedIndex + 1;
+      nextSibling = domnode.childNodes[realMountIndex];
+
+      if (nextSibling) {
+        domnode.insertBefore(_mountChildDOM, nextSibling);
+      } else {
+        domnode.appendChild(_mountChildDOM);
+      }
     }
+  }
+
+
+
+  ////////////////////////////////
+  // Parent Interfaces Polyfill //
+  ////////////////////////////////
+  getScope() {
+    return null;
   }
 }
 
@@ -71,7 +148,7 @@ class RefElementNode extends HTMLElementNode {
     // masterElementNode 중 en-component-representer 을 지정한다.
     this.representerMasterElementNode = null;
 
-    this.componentWrapper = new RefComponentWrapper();
+    //this.componentWrapper = new RefComponentWrapper();
   }
 
   get refference() {
@@ -303,19 +380,16 @@ class RefElementNode extends HTMLElementNode {
 
     // unmount는 자식먼저 unmount를 진행한 후 자신도 진행하도록 한다.
     super.unmountComponent(_options);
-    this.componentWrapper.wrapperDOM = null;
   }
 
   mountComponent(_options, _parentCount, _mountIndex) {
     super.mountComponent(_options, _parentCount, _mountIndex);
-    this.componentWrapper.wrapperDOM = this.getDOMNode();
 
     this.renderRefComponents(_options);
   }
 
   updateComponent(_options, _parentCount, _mountIndex) {
     super.updateComponent(_options, _parentCount, _mountIndex);
-    this.componentWrapper.wrapperDOM = this.getDOMNode();
 
     this.renderRefComponents(_options);
   }
@@ -426,8 +500,8 @@ class RefElementNode extends HTMLElementNode {
 
       masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
 
-      masterElementNode.setParent(this);
-
+      masterElementNode.setParent(null);
+      masterElementNode.upperContainer = this;
       masterElementNode.render(_options, false, i);
     }
 
@@ -566,7 +640,7 @@ class RefElementNode extends HTMLElementNode {
 
     masterElementNodes = _masterElementNodes.map(function(_masterElementNode) {
 
-      return _masterElementNode.export(true);
+      return _masterElementNode.export();
     });
 
     BrowserStorage.setLocal(`_component_${_name}`, {
