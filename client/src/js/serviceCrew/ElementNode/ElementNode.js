@@ -974,7 +974,7 @@ class ElementNode {
           }
         });
       } catch (_e) {
-        _e.message += that.DEBUG_FILE_NAME_EXPLAIN;
+        //_e.message += that.DEBUG_FILE_NAME_EXPLAIN;
         throw _e;
       }
       return;

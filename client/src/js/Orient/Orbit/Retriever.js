@@ -102,7 +102,7 @@ class Retriever {
 
 
     // Browser LocalStorage Caching
-    if (ORBIT_APISOURCE_CACHING) {
+    if (window.ORBIT_APISOURCE_CACHING) {
       let cachedSourceData = BrowserStorage.getLocal('as_' + _loadTarget);
       if (cachedSourceData) {
         _cb(cachedSourceData, url);
@@ -118,7 +118,7 @@ class Retriever {
       // caching
       this.caches.apisource[_loadTarget] = responseText;
 
-      if (ORBIT_APISOURCE_CACHING) {
+      if (window.ORBIT_APISOURCE_CACHING) {
         BrowserStorage.setLocal('as_' + _loadTarget, responseText);
       }
 
@@ -171,7 +171,7 @@ class Retriever {
     }
 
     this.orbit.HTTPRequest.request('get', this._getComponentURL(_loadTarget), {}, (_err, _res) => {
-      if (_err !== null) return console.error("fail static component sheet loading <" + _err + ">");
+      if (_err !== null) return console.error("Fail static component sheet loading <" + _err + ">");
       let responseText = _res.text;
 
       // caching

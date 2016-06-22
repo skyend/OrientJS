@@ -10,6 +10,7 @@ import BuiltinRetriever from './Orbit/Retriever';
 import APISourceFactory from './Orbit/APISource/Factory';
 import OrbitDocument from './Orbit/Document';
 import ObjectExtends from '../util/ObjectExtends';
+import GeneralLocation from '../util/GeneralLocation';
 
 import events from 'events';
 
@@ -17,12 +18,19 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.3';
+const VERSION = '0.13.4';
 
 /*
+  Version : x.y.z
+  x: 판
+  y: 중형 짝수가 안정버전
+  z: 세부업데이트
+
   Version history
   - 0.13.3 (2016-06-22T01:50)
     * APISource BrowserStorage 캐시 추가 (Orbit)
+  - 0.13.4 (2016-06-22T16:30)
+    * URL Location 핸들러(Hashbang 프로토콜) 추가
 */
 
 class Orbit {
@@ -293,6 +301,10 @@ class Orbit {
 
   static get HTTPRequest() {
     return HTTPRequest;
+  }
+
+  static get Location() {
+    return GeneralLocation;
   }
 
   static get B() {

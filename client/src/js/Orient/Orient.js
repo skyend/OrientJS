@@ -18,6 +18,7 @@ import ArrayHandler from '../util/ArrayHandler';
 import Identifier from '../util/Identifier';
 import ObjectExplorer from '../util/ObjectExplorer';
 import BrowserStorage from '../util/BrowserStorage';
+import GeneralLocation from '../util/GeneralLocation';
 
 import ActionStore from '../serviceCrew/Actions/ActionStore';
 import FunctionStore from '../serviceCrew/Functions/FunctionStore';
@@ -29,9 +30,14 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.15.4';
+const VERSION = '0.16.0';
 
 /*
+  Version : x.y.z
+  x: 판
+  y: 중형 짝수가 안정버전
+  z: 세부업데이트
+
   Version history
   - 0.15.0 ( 2016-06-21 )
     * 랜더링 로직 수정 component events 완벽 지원
@@ -43,6 +49,10 @@ const VERSION = '0.15.4';
     * RefElementNode 하위의 Master로 붙는 ElementNode 는 parent 필드로 RefElementNode를 가지지 않고 upperContainer만을 가진다. ( 상위 Scope 접근을 제한하기 위해 )
     * BrowserStorage 에서 item 세팅에서 에러 발생 시 item 을 remove
     * Fragment BrowserStorage 캐시 시에 ID를 제외하고 Fragment JSON을 저장하던 것을 ID를 포함하도록 수정 (기존의 고정된 ID도 제거되어 발생하던 에러 처리 )
+
+  - 0.16.0 (2016-06-22T16:30)
+    * URL Location 핸들러(Hashbang 프로토콜) 추가
+    * Value Scope Node 에 Hashbang 매핑 추가
 */
 
 
@@ -264,6 +274,10 @@ class Neutron {
 
   static get BrowserStorage() {
     return BrowserStorage;
+  }
+
+  static get Location() {
+    return GeneralLocation;
   }
 
   /*

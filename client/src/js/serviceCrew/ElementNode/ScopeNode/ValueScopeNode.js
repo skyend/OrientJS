@@ -2,6 +2,7 @@ import ScopeNode from './ScopeNode';
 import MetaText from '../../Data/MetaText';
 import MetaData from '../../Data/MetaData';
 import ObjectExtends from '../../../util/ObjectExtends';
+import GeneralLocation from '../../../util/GeneralLocation';
 
 const DataTypes = Object.freeze({
   Number: "number",
@@ -27,6 +28,19 @@ class ValueScopeNode extends ScopeNode {
     }
 
     this.type = 'value';
+    this.scannedHashbang = false;
+
+    if (this.mappingHashbangParam) {
+      if (this.mappingHashbangParam === true) {
+        this.plainValue = GeneralLocation.getHashbangParam(this.name);
+        this.scannedHashbang = true;
+      } else {
+        this.plainValue = GeneralLocation.getHashbangParam(this.mappingHashbangParam);
+        this.scannedHashbang = true;
+      }
+    }
+
+    console.log('HASHBANG', this.mappingHashbangParam);
   }
 
   get resolveOn() {
@@ -88,6 +102,15 @@ class ValueScopeNode extends ScopeNode {
   set shapeValue(_shape) {
     // this.value.variable = _shape;
 
+
+    if (this.mappingHashbangParam) {
+      if (this.mappingHashbangParam === true) {
+        GeneralLocation.setHashbangParam(this.name, _shape);
+      } else {
+        GeneralLocation.setHashbangParam(this.mappingHashbangParam, _shape);
+      }
+    }
+
     switch (this.dataType) {
       case DataTypes.String:
         this.value.fromString = _shape;
@@ -128,7 +151,8 @@ class ValueScopeNode extends ScopeNode {
     scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
     scopeSpecObject.resolveOn = _dom.getAttribute('resolve-on') !== null ? true : false;
     scopeSpecObject.initializer = _dom.getAttribute('initializer') !== null ? _dom.getAttribute('initializer') : null;
-
+    if (_dom.hasAttribute('mapping-hashbang-param'))
+      scopeSpecObject.mappingHashbangParam = _dom.getAttribute('mapping-hashbang-param') || true;
     return scopeSpecObject;
   }
 
@@ -138,6 +162,7 @@ class ValueScopeNode extends ScopeNode {
     this.dataType = _scopeData.dataType;
     this.value = new MetaText(_scopeData.value || '');
     this.initializer = _scopeData.initializer;
+    this.mappingHashbangParam = _scopeData.mappingHashbangParam;
   }
 
   export () {
@@ -146,6 +171,7 @@ class ValueScopeNode extends ScopeNode {
     exportObject.dataType = this.dataType;
     exportObject.value = ObjectExtends.clone(this.value.export());
     exportObject.initializer = this.initializer;
+    exportObject.mappingHashbangParam = this.mappingHashbangParam;
     return exportObject;
   }
 }
