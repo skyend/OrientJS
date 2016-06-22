@@ -40,7 +40,6 @@ class ValueScopeNode extends ScopeNode {
       }
     }
 
-    console.log('HASHBANG', this.mappingHashbangParam);
   }
 
   get resolveOn() {

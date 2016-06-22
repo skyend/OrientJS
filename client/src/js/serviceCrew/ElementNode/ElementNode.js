@@ -802,19 +802,25 @@ class ElementNode {
 
       // active 모드인 경우
       if (this.dynamicContextPassive !== true) {
+        this.debug('dc', 'is active');
         // console.log('&& ---- 01 -- ', this.dynamicContextNS);
 
         // keepDC 가 부정 일 때
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
+          this.debug('dc', 'execute');
           // console.log('&& ---- 02 -- ', this.dynamicContextNS);
           // DC실행
           this.executeDynamicContext();
 
         } else if (_options.keepDC === 'once') {
           // console.log('&& ---- 03 -- ', this.dynamicContextNS);
+          this.debug('dc', 'once ignore.');
           _options.keepDC = false;
         }
+      } else {
+        this.debug('dc', 'is passive');
       }
+
       // console.log('&& ---- MiD -- ', this.dynamicContextNS);
       // console.dir(this.dynamicContext && this.dynamicContext.dataResolver && JSON.stringify(this.dynamicContext.dataResolver.dataSpace), this.dynamicContextRenderDontCareLoading);
 
@@ -822,22 +828,27 @@ class ElementNode {
       // dc 로드가 되지 않으면 랜더링 진행을 허용하지 않음
       if (this.dynamicContextRenderDontCareLoading === false) {
         // console.log('&& ---- 04 -- ', this.dynamicContextNS);
-
+        this.debug('dc', 'render will cancel if not complete loading');
         // console.log(`%% dynamicContextRenderDontCareLoading ${this.dynamicContextRenderDontCareLoading} : ${this.dynamicContextNS}`);
         // dynamicContext 가 생성되어 있는가?
         if (this.dynamicContext) {
 
           // DC로딩이 완료 되었는가?
           if (this.dynamicContext.isLoaded === true) {
+            this.debug('dc', 'dc is loaded. render continue');
             return true;
           } else {
+            this.debug('dc', 'dc is not loaded. render cancel');
             return false;
           }
         } else {
           // console.log('&& ---- 07 -- ', this.dynamicContextNS);
+          this.debug('dc', 'was not construct. render cancel');
           return false;
         }
       }
+
+      this.debug('dc', 'render continue');
     }
 
     return true;
@@ -907,9 +918,6 @@ class ElementNode {
     let that = this;
     // 새로 생성
 
-    this.debug('dc', 'Execute Dynamic Context');
-
-
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
     /****************************************/
@@ -930,7 +938,6 @@ class ElementNode {
             that.tryEventScope('dc-fail-load', {
               dynamicContext: that.dynamicContext
             }, null);
-
 
             // error 일 때 콜백
             _callback && _callback(_err, that);
