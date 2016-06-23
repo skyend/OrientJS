@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.1';
+const VERSION = '0.16.2';
 
 /*
   Version : x.y.z
@@ -57,6 +57,9 @@ const VERSION = '0.16.1';
   - 0.16.1 (2016-06-23T20:30)
     * Runtime Event 등록/삭제 인터페이스 추가
     * eventDescription 으로 멀티라인 인터프리트 블럭 사용 가능하도록 변경
+
+  - 0.16.2 (2016-06-23T21:20)
+    * VirtualRendering
 */
 
 
@@ -123,7 +126,23 @@ class Neutron {
   }
 
   static renderVirtual(_elementNode) {
-    _elementNode.constructDOMs({});
+    let componentContainer = document.createElement('div');
+
+    _elementNode.upperContainer = {
+      attachDOMChild: function(_idx, _mountChildDOM, _mountChild) {
+        componentContainer.appendChild(_mountChildDOM);
+      },
+
+      dettachDOMChild: function(_dom) {
+        componentContainer.removeChild(_dom);
+      }
+    };
+
+    _elementNode.render({
+      resolve: true
+    });
+
+    return componentContainer;
   }
 
   static mount(_elementNode, _targetDOMElement) {
@@ -168,6 +187,7 @@ class Neutron {
     });
 
   }
+
 
   static getNodeByDOM(_domElement) {
     if (!_domElement) throw new Error(`Could not get ElementNode. ${_domElement} is not DOMNode.`);

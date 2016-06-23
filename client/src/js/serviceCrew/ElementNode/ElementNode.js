@@ -2731,7 +2731,21 @@ class ElementNode {
     }
 
     if (Orient.Shortcut.isntEmpty(this.nodeEvents || {})) {
-      exportObject.nodeEvents = ObjectExtends.clone(this.nodeEvents, true);
+      exportObject.nodeEvents = {};
+      let keys = Object.keys(this.nodeEvents);
+      let key;
+      for (let i = 0; i < keys.length; i++) {
+        key = keys[i];
+
+        if (this.nodeEvents[key] instanceof Array) {
+          for (let j = 0; j < this.nodeEvents[key].length; j++) {
+            if (!this.nodeEvents[key][j].runtime)
+              exportObject.nodeEvents[key] = this.nodeEvents[key][j].desc;
+          }
+        } else {
+          exportObject.nodeEvents[key] = this.nodeEvents[key];
+        }
+      }
     }
 
     if (Orient.Shortcut.isntEmpty(this.pipeEvents || {})) {
