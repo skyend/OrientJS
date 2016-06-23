@@ -30,12 +30,12 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.0';
+const VERSION = '0.16.1';
 
 /*
   Version : x.y.z
   x: 판
-  y: 중형 짝수가 안정버전
+  y: 중형 (짝수가 안정버전)
   z: 세부업데이트
 
   Version history
@@ -53,6 +53,10 @@ const VERSION = '0.16.0';
   - 0.16.0 (2016-06-22T16:30)
     * URL Location 핸들러(Hashbang 프로토콜) 추가
     * Value Scope Node 에 Hashbang 매핑 추가
+
+  - 0.16.1 (2016-06-23T20:30)
+    * Runtime Event 등록/삭제 인터페이스 추가
+    * eventDescription 으로 멀티라인 인터프리트 블럭 사용 가능하도록 변경
 */
 
 

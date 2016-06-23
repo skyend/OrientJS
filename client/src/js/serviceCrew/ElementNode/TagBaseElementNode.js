@@ -634,47 +634,9 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-  applyForward() {
-    if (!(this.forwardDOM && this.backupDOM)) return console.warn('forwardDOM 또는 backupDOM이 존재하지 않습니다. applyForward 는 무시됩니다.');
+  addEventListener(_eventKey, _listenerFunc, _listenerKey) {
 
-    let oldAttributes = this.forwardDOM.attributes;
-    let newAttributes = this.backupDOM.attributes;
-    let attrName;
-    let attrValue;
-
-    // 사라질 예정의 attribute제거
-    for (let i = 0; i < oldAttributes.length; i++) {
-      attrName = oldAttributes[i].nodeName;
-      attrValue = oldAttributes[i].nodeValue;
-
-      // backupDOM 에 attribute가 없으면 forwardDOM의 attribute를 제거한다.
-      if (!this.backupDOM.hasAttribute(attrName)) {
-        this.forwardDOM.removeAttribute(attrName);
-
-        if (RESERVED_DOM_ATTRIBUTES[attrName]) {
-          this.forwardDOM[RESERVED_DOM_ATTRIBUTES[attrName].sync_field] = null;
-        }
-      }
-    }
-
-    // 변경된 attribute반영
-    for (let i = 0; i < newAttributes.length; i++) {
-      attrName = newAttributes[i].nodeName;
-      attrValue = newAttributes[i].nodeValue;
-
-      if (this.forwardDOM.getAttribute(attrName) !== attrValue) {
-        this.forwardDOM.setAttribute(attrName, attrValue);
-
-        if (RESERVED_DOM_ATTRIBUTES[attrName] && this.forwardDOM.value !== attrValue) {
-          this.forwardDOM[RESERVED_DOM_ATTRIBUTES[attrName].sync_field] = attrValue;
-        }
-      }
-    }
-
-    this.forwardDOM.__renderstemp__ = this.renderSerialNumber;
-    //this.backupDOM = null;
   }
-
 
   /*
     CreateNode

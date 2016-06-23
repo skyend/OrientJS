@@ -2032,6 +2032,53 @@ class ElementNode {
     }
   }
 
+  addRuntimeEventListener(_eventKey, _listenerFunc, _listenerKey) {
+    if (this.nodeEvents[_eventKey]) {
+      if (!(this.nodeEvents[_eventKey] instanceof Array)) {
+
+        this.nodeEvents[_eventKey] = [{
+          desc: this.nodeEvents[_eventKey]
+        }];
+      }
+    } else {
+      this.nodeEvents[_eventKey] = [];
+    }
+
+
+    this.nodeEvents[_eventKey].push({
+      desc: _listenerFunc,
+      key: _listenerKey,
+      runtime: true // 런타임 중에 스크립트로 인해 직접 추가된 Event임을 표시 한다.
+    });
+
+    this.bindDOMEvents(this.getDOMNode());
+  }
+
+  removeRuntimeEventListener(_eventKey, _listenerKey) {
+    if (this.nodeEvents[_eventKey]) {
+      if (this.nodeEvents[_eventKey] instanceof Array) {
+        // listener Key 도 입력되었다면 해당 key 의 이벤트만 제거 한다.
+
+        this.nodeEvents[_eventKey] = this.nodeEvents[_eventKey].filter((_eventElem) => {
+
+          // listenerKey 가 입력되었다면 해당 key 만 제거 하고
+          if (_listenerKey) {
+            return _eventElem.key !== _listenerKey;
+          } else {
+            // key 가 입력되지 않았다면 runtime 등록 이벤트만 모두 제거한다.
+            return _eventElem.runtime ? false : true;
+          }
+        });
+
+      } else {
+        throw new Error(`런타임 중 추가된 [${_eventKey}]이벤트가 존재 하지 않습니다.${this.DEBUG_FILE_NAME_EXPLAIN}`);
+      }
+    } else {
+
+      throw new Error(`삭제할 이벤트 [${_eventKey}]가 존재 하지 않습니다.`);
+    }
+  }
+
   /**
     _name : Event의 이름
     _elementNodeEvent : ElementNode에서 생성된 이벤트 객체
@@ -2039,9 +2086,16 @@ class ElementNode {
     _completeProcess : 이벤트로 인해 시작된 Task 처리가 완료 되었을 때 호출 된다. ( chain 된 이벤트의 경우 chain 상의 마지막 Task 가 실행완료 된 후 실행 )
   */
   __progressEvent(_name, _elementNodeEvent, _originDomEvent, _completeProcess) {
-    let eventDesc = this.getEvent(_name);
+    let eventDescs = this.getEvent(_name);
 
-    this.__progressEventDesc(eventDesc, _elementNodeEvent, _originDomEvent, _completeProcess);
+    if (eventDescs instanceof Array) {
+      for (let i = 0; i < eventDescs.length; i++) {
+
+        this.__progressEventDesc(eventDescs[i].desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+      }
+    } else {
+      this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
+    }
   }
 
   // PIPE 이벤트
@@ -2058,7 +2112,7 @@ class ElementNode {
     if (typeof _desc === 'function') {
 
       this.__executeEventAsFunction(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
-    } else if (/^\{\{\:?.+?\}\}$/.test(_desc)) {
+    } else if (_desc.indexOf('{{') === 0 && _desc.lastIndexOf('}}') === (_desc.length - 2)) {
 
       this.__executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
     } else if (_desc.match(EVENT_TASK_MATCHER) !== null) {
@@ -2072,9 +2126,9 @@ class ElementNode {
           return this.__executeTask(scope, _elementNodeEvent, _originDomEvent, _completeProcess);
       }
 
-      throw new Error(`아직 지원하지 않는 eventDescription 입니다. ${_desc}`);
+      throw new Error(`사용 할 수 없는 eventDescription 입니다. Description: ${_desc}. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
     } else {
-      throw new Error(`아직 지원하지 않는 eventDescription 입니다. \nDescription: ${_desc}`);
+      throw new Error(`사용 할 수 없는 eventDescription 입니다. \nDescription: ${_desc}. ${this.DEBUG_FILE_NAME_EXPLAIN}`);
     }
   }
 
@@ -2677,7 +2731,7 @@ class ElementNode {
     }
 
     if (Orient.Shortcut.isntEmpty(this.nodeEvents || {})) {
-      exportObject.nodeEvents = ObjectExtends.clone(this.nodeEvents);
+      exportObject.nodeEvents = ObjectExtends.clone(this.nodeEvents, true);
     }
 
     if (Orient.Shortcut.isntEmpty(this.pipeEvents || {})) {
