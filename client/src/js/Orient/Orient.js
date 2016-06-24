@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.3';
+const VERSION = '0.16.4';
 
 /*
   Version : x.y.z
@@ -69,8 +69,8 @@ const VERSION = '0.16.3';
     * 랜더 옵션 dontcareMissed 추가 언마운트 중 잃어버린 요소로 인해 에러가 발생하여도 언마운트한것으로 인지한다.
     * DynamicContext 로딩이 완료 되지 않으면 자식들을 랜더링 하지 않도록 변경 ( 로딩이 되지 않아도 자신은 마운트및 업데이트를 진행 )
     * PipeEvent 가 componentOwner 까지 연결 되도록 수정 ( 이전에는 ref 의 component 에 parent 를 ref 로 지정하여서 사용에 문제가 없었음)
-    * Repeater 는 랜더링중에 unmount되었으나 가끔 unmount가 실패 할 때가 있어 실패시도 unmount성공으로 동작하도록 수정 dontcareMissed 옵션 사용
-    
+    * Repeater 는 랜더링중에 unmount되었으나 가끔 unmount가 실패 할 때가 있어 실패시도 unmount성공으로 동작하도록 수정( dontcareMissed 옵션 사용)
+
 */
 
 

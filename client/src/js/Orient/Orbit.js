@@ -18,7 +18,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.5';
+const VERSION = '0.13.6';
 
 /*
   Version : x.y.z
@@ -37,7 +37,7 @@ const VERSION = '0.13.5';
     * HTTPRequest 의 필드 value에 {dontencode} 지시자가 포함되어 있으면 해당 필드값을 인코딩하지 않는 기능 추가
 
   - 0.13.6 (2016-06-25T00:05)
-    * ORBIT_APISOURCE_CACHING 버그 수정 
+    * ORBIT_APISOURCE_CACHING 버그 수정
 */
 
 class Orbit {
