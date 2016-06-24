@@ -116,7 +116,6 @@ class HTMLElementNode extends TagBaseElementNode {
 
   unmountComponent(_options) {
 
-
     // 자식모두에게 unmount render
     let child, repeat_child;
     for (let i = 0; i < this.children.length; i++) {
@@ -152,6 +151,17 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   renderChild(_options, _parentCount) {
+    if (this.isDynamicContext()) {
+      if (this.dynamicContext) {
+        if (!this.dynamicContext.isLoaded)
+          return;
+      } else {
+        return;
+      }
+    }
+
+
+
     let child, repeat_child;
     let count = 0;
     for (let i = 0; i < this.children.length; i++) {
@@ -173,13 +183,18 @@ class HTMLElementNode extends TagBaseElementNode {
           repeatCount = parseInt(repeatIngredient);
           repeatIngredient = null;
         } else {
-          //console.warn(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
-          throw new Error(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          console.warn(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          //throw new Error(`#${this.id} invalid repeat value[${JSON.stringify(repeatIngredient)}]. Matter Argument:[${child.getControl('repeat-n')}] ${this.DEBUG_FILE_NAME_EXPLAIN}`);
         }
 
 
         // 반복자 소스 요소는 unmount 를 진행한다.
-        child.render(_options, true);
+        if (child.getDOMNode()) {
+
+          child.render({
+            dontcareMissed: true
+          }, true);
+        }
 
         for (let repeat_i = 0; repeat_i < Math.max(repeatCount, prevRepeatLength); repeat_i++) {
           if (repeat_i < repeatCount) {

@@ -634,10 +634,6 @@ class TagBaseElementNode extends ElementNode {
     }
   }
 
-  addEventListener(_eventKey, _listenerFunc, _listenerKey) {
-
-  }
-
   /*
     CreateNode
       HTMLNode를 생성한다.
@@ -705,7 +701,6 @@ class TagBaseElementNode extends ElementNode {
     if (_absorbOriginDOM === true) {
       this.forwardDOM = _domElement;
       this.forwardDOM.___en = this;
-      this.isAttachedDOM = true;
       this.bindDOMEvents(_domElement, {});
     }
 

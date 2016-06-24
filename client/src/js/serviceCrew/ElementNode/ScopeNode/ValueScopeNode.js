@@ -31,11 +31,16 @@ class ValueScopeNode extends ScopeNode {
     this.scannedHashbang = false;
 
     if (this.mappingHashbangParam) {
+      let hashbangValue;
       if (this.mappingHashbangParam === true) {
-        this.plainValue = GeneralLocation.getHashbangParam(this.name);
+        hashbangValue = GeneralLocation.getHashbangParam(this.name);
+        if (hashbangValue !== null)
+          this.plainValue = hashbangValue;
         this.scannedHashbang = true;
       } else {
-        this.plainValue = GeneralLocation.getHashbangParam(this.mappingHashbangParam);
+        hashbangValue = GeneralLocation.getHashbangParam(this.mappingHashbangParam);
+        if (hashbangValue !== null)
+          this.plainValue = hashbangValue;
         this.scannedHashbang = true;
       }
     }

@@ -13,9 +13,15 @@ class Classer {
   }
 
   static getFunctionName(_function) {
+    console.log(_function);
+    console.log(_function.toString());
     let matches = _function.toString().match(GET_NAME_IN_CONSTRUCTOR);
 
-    return matches[1];
+    if (matches) {
+      return matches[1];
+    } else {
+      return null;
+    }
   }
 }
 

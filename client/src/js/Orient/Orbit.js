@@ -35,6 +35,9 @@ const VERSION = '0.13.5';
 
   - 0.13.5 (2016-06-26T11:30) : Orient 0.16.3
     * HTTPRequest 의 필드 value에 {dontencode} 지시자가 포함되어 있으면 해당 필드값을 인코딩하지 않는 기능 추가
+
+  - 0.13.6 (2016-06-25T00:05)
+    * ORBIT_APISOURCE_CACHING 버그 수정 
 */
 
 class Orbit {
@@ -224,9 +227,14 @@ class Orbit {
       console.time && console.time("First Built up");
       for (let i = 0; i < targetDomNodes.length; i++) {
         targetDomNode = targetDomNodes[i];
-        var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
+        // var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
+        //
+        // Orient.replaceRender(masterElementNode, targetDomNode);
 
-        Orient.replaceRender(masterElementNode, targetDomNode);
+        var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetDomNode, {}, this);
+        masterElementNode.render({
+          resolve: true
+        });
       }
       console.timeEnd && console.timeEnd("First Built up");
 

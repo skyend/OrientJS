@@ -395,9 +395,16 @@ class RefElementNode extends HTMLElementNode {
   }
 
   renderRefComponents(_options) {
-    // if (this.componentWrapper.mounted) {
-    //
-    // }
+    if (this.isDynamicContext()) {
+      if (this.dynamicContext) {
+        if (!this.dynamicContext.isLoaded)
+          return;
+      } else {
+        return;
+      }
+    }
+
+
 
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
 
@@ -502,6 +509,7 @@ class RefElementNode extends HTMLElementNode {
 
       masterElementNode.setParent(null);
       masterElementNode.upperContainer = this;
+      masterElementNode.componentOwner = this;
       masterElementNode.render(_options, false, i);
     }
 

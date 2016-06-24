@@ -57,7 +57,7 @@ class Retriever {
     }
 
     // Browser LocalStorage Caching
-    if (ORBIT_APISOURCE_CACHING) {
+    if (window.ORBIT_APISOURCE_CACHING) {
       let cachedSourceData = BrowserStorage.getLocal('as_' + _loadTarget);
       if (cachedSourceData) {
         _cb(cachedSourceData, url);
@@ -70,7 +70,7 @@ class Retriever {
 
       let responseText = _res.text;
 
-      if (ORBIT_APISOURCE_CACHING) {
+      if (window.ORBIT_APISOURCE_CACHING) {
         BrowserStorage.setLocal('as_' + _loadTarget, responseText);
       }
 

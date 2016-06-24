@@ -88,7 +88,7 @@ class ElementNode {
     // parent refference
     this.parent = null;
     this.upperContainer = null; // 자신의 DOM을 붙여 줄 HTMLElementNode
-
+    this.componentOwner = null; // ref컴포넌트의 주인
 
     this.clonePool = []; // repeated
     this.cloned = false;
@@ -619,6 +619,10 @@ class ElementNode {
 
   // this.forwardDOM이 없을 때
   mountComponent(_options, _mountIndex) {
+
+
+    this.debug('mount', 'called mountComponent');
+
     let domnode = this.createNode(_options);
     let mountIndex = _mountIndex;
     this.mappingAttributes(domnode, _options);
@@ -636,15 +640,33 @@ class ElementNode {
 
   // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
   unmountComponent(_options) {
+    this.debug('unmount', 'called unmountComponent');
+
     //console.log('unmount');
     if (this.upperContainer) {
-      this.upperContainer.dettachDOMChild(this);
-      this.forwardDOM = null;
+      try {
+
+        this.upperContainer.dettachDOMChild(this);
+        this.forwardDOM = null;
+      } catch (_e) {
+        if (_options.dontcareMissed) {
+          this.forwardDOM = null;
+        } else {
+          let message = '';
+          message = `[#${this.id}]Fail unmount component. ${_e.message}`;
+          message += `${this.DEBUG_FILE_NAME_EXPLAIN}`
+
+          console.warn(message);
+          throw _e;
+        }
+      }
     }
   }
 
   // this.forwardDOM이 존재할 때
   updateComponent(_options, _mountIndex) {
+    this.debug('update', 'called updateComponent');
+
     let domNode = this.getDOMNode();
     this.mappingAttributes(domNode, _options);
     this.bindDOMEvents(domNode, _options);
@@ -665,10 +687,14 @@ class ElementNode {
       //   - _domIndex > -1 : 자신이 부착 될 부모DOM 에서의 child Index
   */
   render(_options, _unmount, _mountIndex = null) {
+    if (this.rendering) return;
+    this.rendering = true;
     /*
       랜더링 옵션
         * careUnknown : Orient 가 알지 못 하는 태그를 보호하며 랜더링 한다. ( ex: modified dom by jquery )
           - default : false // 알지 못 하는 DOM을 만났을 때 Error 발생.
+        * dontcareMissing : Unmount 중 부모로부터 떨어진 DOM이 있어 detach에 실패 할 경우의 에러를 수용한다. ( ex: modified dom by jquery )
+          - default : false // detach에 실패시 에러 발생
         * resolve : 바인딩 블럭을 바인딩 처리하여 결과를 매핑한다.
           - default : false
         * keepDC : DynamicContext 를 랜더링 때 실행 한다.
@@ -683,10 +709,12 @@ class ElementNode {
 
     this.debug("render", "render start", _options, `MountIdx : ${_mountIndex}`);
 
+    let returnCount = _mountIndex;
 
+    if (!_unmount)
+      this.renderWithDC(_options)
 
     // 자신이 hidden 으로 전환 될 경우 _mountIndex 에서 1을 뺀 값이 returnCount 로 반환된다.
-    let returnCount = _mountIndex;
     if (!_unmount) {
       let hidden = _options.resolve ? this.getControlWithResolve('hidden') : this.getControl('hidden');
       let isHidden = hidden === true || hidden === 'true';
@@ -701,32 +729,30 @@ class ElementNode {
         // }
 
         this.scopesResolve();
-        if (this.renderWithDC(_options)) {
-          // console.log('DCDCDC ', this.dynamicContextNS);
-          if (this.renderWithHidden(_options)) {
-            //#####################
-            //#### Pass mount #####
-            //#####################
-            // console.log('$$Pass Mount ', this.dynamicContextNS)
-            this.debug("render", "pass mount"); // DEBUG
-            return returnCount - 1;
-          } else {
-            //#####################
-            //####### Mount #######
-            //#####################
-            // console.log('$$ Mount ', this.dynamicContextNS)
-            this.debug("render", "will mount", _options); // DEBUG
-            this.tryEventScope('component-will-mount', null, null, (_result) => {
 
-              this.mountComponent(_options, _mountIndex);
-              this.debug("render", "did mount", _options); // DEBUG
-              this.tryEventScope('component-did-mount', null, null);
-            });
-          }
-        } else {
-          // console.log('$$Stay Mount ', this.dynamicContextNS)
+
+        // console.log('DCDCDC ', this.dynamicContextNS);
+        if (this.renderWithHidden(_options)) {
+          //#####################
+          //#### Pass mount #####
+          //#####################
+          // console.log('$$Pass Mount ', this.dynamicContextNS)
+          this.debug("render", "pass mount"); // DEBUG
           return returnCount - 1;
+        } else {
+          //#####################
+          //####### Mount #######
+          //#####################
+          // console.log('$$ Mount ', this.dynamicContextNS)
+          this.debug("render", "will mount", _options); // DEBUG
+          this.tryEventScope('component-will-mount', null, null, (_result) => {
+
+            this.mountComponent(_options, _mountIndex);
+            this.debug("render", "did mount", _options); // DEBUG
+            this.tryEventScope('component-did-mount', null, null);
+          });
         }
+
       } else {
         ////////////////////////////////////////////////////////////////
         //////////////////////// Update Flow ///////////////////////////
@@ -753,27 +779,27 @@ class ElementNode {
           //########################
 
           this.scopesResolve();
-          if (this.renderWithDC(_options)) {
+          //            this.renderWithDC(_options)
 
-            this.debug("render", "will update", _options); // DEBUG
+          this.debug("render", "will update", _options); // DEBUG
 
-            this.tryEventScope('component-will-update', null, null, (_result) => {
-              this.updateComponent(_options, _mountIndex);
+          this.tryEventScope('component-will-update', null, null, (_result) => {
+            this.updateComponent(_options, _mountIndex);
 
-              this.debug("render", "did update", _options); // DEBUG
-              this.tryEventScope('component-did-update', null, null);
+            this.debug("render", "did update", _options); // DEBUG
+            this.tryEventScope('component-did-update', null, null);
 
-            });
-          }
+          });
         }
       }
+
     } else {
       ////////////////////////////////////////////////////////////////
       //////////////////////// Unmount Flow //////////////////////////
       ////////////////////////////////////////////////////////////////
 
       if (domNode !== null) {
-
+        console.log('unmount>>', this.id, domNode);
 
         this.debug("render", "will unmount", _options); // DEBUG
         this.tryEventScope('component-will-unmount', null, null, (_result) => {
@@ -785,6 +811,7 @@ class ElementNode {
       }
     }
 
+    this.rendering = false;
     return returnCount;
   }
 
@@ -798,8 +825,64 @@ class ElementNode {
 
   renderWithDC(_options) {
     // DC 일때
-    if (this.isDynamicContext()) {
+    // if (this.isDynamicContext()) {
+    //
+    //   // active 모드인 경우
+    //   if (this.dynamicContextPassive !== true) {
+    //     this.debug('dc', 'is active');
+    //     // console.log('&& ---- 01 -- ', this.dynamicContextNS);
+    //
+    //     // keepDC 가 부정 일 때
+    //     if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
+    //       this.debug('dc', 'execute');
+    //       // console.log('&& ---- 02 -- ', this.dynamicContextNS);
+    //       // DC실행
+    //       this.executeDynamicContext();
+    //
+    //     } else if (_options.keepDC === 'once') {
+    //       // console.log('&& ---- 03 -- ', this.dynamicContextNS);
+    //       this.debug('dc', 'once ignore.');
+    //       _options.keepDC = false;
+    //     }
+    //   } else {
+    //     this.debug('dc', 'is passive');
+    //   }
+    //
+    //   // console.log('&& ---- MiD -- ', this.dynamicContextNS);
+    //   // console.dir(this.dynamicContext && this.dynamicContext.dataResolver && JSON.stringify(this.dynamicContext.dataResolver.dataSpace), this.dynamicContextRenderDontCareLoading);
+    //
+    //   // dc가 로드여부와 상관없이 랜더링을 진행 할 것인가 체크
+    //   // dc 로드가 되지 않으면 랜더링 진행을 허용하지 않음
+    //   if (this.dynamicContextRenderDontCareLoading === false) {
+    //     // console.log('&& ---- 04 -- ', this.dynamicContextNS);
+    //     this.debug('dc', 'render will cancel if not complete loading');
+    //     // console.log(`%% dynamicContextRenderDontCareLoading ${this.dynamicContextRenderDontCareLoading} : ${this.dynamicContextNS}`);
+    //     // dynamicContext 가 생성되어 있는가?
+    //     if (this.dynamicContext) {
+    //
+    //       // DC로딩이 완료 되었는가?
+    //       if (this.dynamicContext.isLoaded === true) {
+    //         this.debug('dc', 'dc is loaded. render continue');
+    //         return true;
+    //       } else {
+    //         this.debug('dc', 'dc is not loaded. render cancel');
+    //         return false;
+    //       }
+    //     } else {
+    //       // console.log('&& ---- 07 -- ', this.dynamicContextNS);
+    //       this.debug('dc', 'was not construct. render cancel');
+    //       return false;
+    //     }
+    //   }
+    //
+    //   this.debug('dc', 'render continue');
+    // }
+    //
+    // return true;
 
+
+    if (this.isDynamicContext()) {
+      //
       // active 모드인 경우
       if (this.dynamicContextPassive !== true) {
         this.debug('dc', 'is active');
@@ -810,7 +893,7 @@ class ElementNode {
           this.debug('dc', 'execute');
           // console.log('&& ---- 02 -- ', this.dynamicContextNS);
           // DC실행
-          this.executeDynamicContext();
+          this.executeDynamicContext(_options);
 
         } else if (_options.keepDC === 'once') {
           // console.log('&& ---- 03 -- ', this.dynamicContextNS);
@@ -820,38 +903,7 @@ class ElementNode {
       } else {
         this.debug('dc', 'is passive');
       }
-
-      // console.log('&& ---- MiD -- ', this.dynamicContextNS);
-      // console.dir(this.dynamicContext && this.dynamicContext.dataResolver && JSON.stringify(this.dynamicContext.dataResolver.dataSpace), this.dynamicContextRenderDontCareLoading);
-
-      // dc가 로드여부와 상관없이 랜더링을 진행 할 것인가 체크
-      // dc 로드가 되지 않으면 랜더링 진행을 허용하지 않음
-      if (this.dynamicContextRenderDontCareLoading === false) {
-        // console.log('&& ---- 04 -- ', this.dynamicContextNS);
-        this.debug('dc', 'render will cancel if not complete loading');
-        // console.log(`%% dynamicContextRenderDontCareLoading ${this.dynamicContextRenderDontCareLoading} : ${this.dynamicContextNS}`);
-        // dynamicContext 가 생성되어 있는가?
-        if (this.dynamicContext) {
-
-          // DC로딩이 완료 되었는가?
-          if (this.dynamicContext.isLoaded === true) {
-            this.debug('dc', 'dc is loaded. render continue');
-            return true;
-          } else {
-            this.debug('dc', 'dc is not loaded. render cancel');
-            return false;
-          }
-        } else {
-          // console.log('&& ---- 07 -- ', this.dynamicContextNS);
-          this.debug('dc', 'was not construct. render cancel');
-          return false;
-        }
-      }
-
-      this.debug('dc', 'render continue');
     }
-
-    return true;
   }
 
 
@@ -914,7 +966,7 @@ class ElementNode {
     }
   }
 
-  executeDynamicContext(_callback) {
+  executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
 
@@ -929,6 +981,8 @@ class ElementNode {
       that.rebuildDynamicContext();
 
       that.debug('dc', 'Will fire');
+
+
       try {
         that.dynamicContext.fire(function(_err) {
           that.debug('dc', 'burn');
@@ -952,33 +1006,29 @@ class ElementNode {
           // 로드 완료시 콜백
           _callback && _callback(null, that);
 
-          if (!that.dynamicContextSync) {
-            // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
+
+          // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
+
+          // fix
+          that.tryEventScope('will-dc-bind', {
+            dynamicContext: that.dynamicContext
+          }, null, function done(_result) {
+            if (that.checkAfterContinue(_result) === false) return;
+
+            if (that.dynamicContextPassive) {
+              that.update();
+            } else {
+              that.update({
+                keepDC: 'once'
+              });
+            }
 
             // fix
-            that.tryEventScope('will-dc-bind', {
+            that.tryEventScope('complete-bind', {
               dynamicContext: that.dynamicContext
-            }, null, function done(_result) {
-              if (that.checkAfterContinue(_result) === false) return;
+            }, null);
+          });
 
-              if (that.dynamicContextPassive) {
-                that.update();
-              } else {
-                that.update({
-                  keepDC: 'once'
-                });
-              }
-
-              // fix
-              that.tryEventScope('complete-bind', {
-                dynamicContext: that.dynamicContext
-              }, null);
-
-            });
-          } else {
-            // sync 는 이벤트를 타지 않는다는 알림
-
-          }
         });
       } catch (_e) {
         //_e.message += that.DEBUG_FILE_NAME_EXPLAIN;
@@ -1109,9 +1159,10 @@ class ElementNode {
 
       this.rebuildDynamicContext();
 
-      this.constructDOMs({});
-
-      this.updateChild(this);
+      this.render({
+        resolve: true,
+        keepDC: 'once'
+      });
     } else {
       throw new Error("resetDynamicContext 실패. DynamicContext 가 아닙니다. " + `EN ID: ${this.id}`);
     }
@@ -1969,6 +2020,15 @@ class ElementNode {
       }
     });
 
+
+    if (owner === null) {
+      // ref 요소에 접근해서 pipe이벤트 리슨을 확인한다.
+      let componentOwner = this.getMaster().componentOwner;
+      if (componentOwner !== null && componentOwner.getPipeEvent(_pipeEventName) !== undefined) {
+        owner = componentOwner;
+      }
+    }
+
     return owner;
   }
 
@@ -2420,7 +2480,7 @@ class ElementNode {
   }
 
   executeDC(_callback) {
-    this.executeDynamicContext(_callback);
+    this.executeDynamicContext({}, _callback);
   }
 
   executeTask() {
