@@ -202,6 +202,10 @@ class HTTPRequest {
       if (_dontModifiyData === false) {
         queries = cookedFieldArray.map(function(_fieldPair) {
 
+          if (/^\{dontencode\}/.test(_fieldPair[1])) {
+            return `${_fieldPair[0]}=${ _fieldPair[1].replace(/^\{dontencode\}/, '') }`;
+          }
+
           return `${_fieldPair[0]}=${ encodeURIComponent(_fieldPair[1]) }`;
         });
 

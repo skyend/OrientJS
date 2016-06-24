@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.2';
+const VERSION = '0.16.3';
 
 /*
   Version : x.y.z
@@ -60,6 +60,9 @@ const VERSION = '0.16.2';
 
   - 0.16.2 (2016-06-23T21:20)
     * VirtualRendering
+
+  - 0.16.3 (2016-06-24T11:30) : Orbit 0.13.5
+    * HTTPRequest 의 필드 value에 {dontencode} 지시자가 포함되어 있으면 해당 필드값을 인코딩하지 않는 기능 추가
 */
 
 

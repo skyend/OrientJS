@@ -18,7 +18,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.4';
+const VERSION = '0.13.5';
 
 /*
   Version : x.y.z
@@ -29,8 +29,12 @@ const VERSION = '0.13.4';
   Version history
   - 0.13.3 (2016-06-22T01:50)
     * APISource BrowserStorage 캐시 추가 (Orbit)
+
   - 0.13.4 (2016-06-22T16:30)
     * URL Location 핸들러(Hashbang 프로토콜) 추가
+
+  - 0.13.5 (2016-06-26T11:30) : Orient 0.16.3
+    * HTTPRequest 의 필드 value에 {dontencode} 지시자가 포함되어 있으면 해당 필드값을 인코딩하지 않는 기능 추가
 */
 
 class Orbit {
