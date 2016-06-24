@@ -71,6 +71,9 @@ const VERSION = '0.16.4';
     * PipeEvent 가 componentOwner 까지 연결 되도록 수정 ( 이전에는 ref 의 component 에 parent 를 ref 로 지정하여서 사용에 문제가 없었음)
     * Repeater 는 랜더링중에 unmount되었으나 가끔 unmount가 실패 할 때가 있어 실패시도 unmount성공으로 동작하도록 수정( dontcareMissed 옵션 사용)
 
+  - 0.16.5 (2016-06-25T00:33)
+    * 랜더링중 pass mount 로 분기되었을 때 랜더링 프로세싱 플래그를 해제하지 않는 버그 수정
+
 */
 
 

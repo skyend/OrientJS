@@ -144,7 +144,6 @@ class DynamicContext {
           if (cachedRetrievedObject) {
             that.setResultToNS(nss[_i], null, cachedRetrievedObject, null);
             _callback(null, cachedRetrievedObject);
-            console.log('>>>2', that);
             return;
           }
         }

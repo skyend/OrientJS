@@ -105,7 +105,7 @@ class ElementNode {
     this.properties = _preInjectProps || {};
 
     this._environment = _environment;
-    this.mode = 'normal';
+
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
@@ -115,23 +115,14 @@ class ElementNode {
     // update Queue
     this.updateQueue = [];
 
-    // 상위 forwardDOM 에서 차지중인 index 범위
-    // repeater 의 경우 index 거리의 차이가 있으며
-    // single 의 경우 x,y 값이 동일하며
-    // hidden 으로 차지 하지 않는 경우 x,y 값이 -1이 된다.
-    // forwardDOM 이 화면에 랜더링 되지 않은 경우도 x,y 값이 -1을 갖는다.
-    this.indexOccupyRange = new Point(-1, -1);
-
-
-    this.isAttachedDOM = false;
 
     // ElementNode 컴포넌트의 최상위 ElementNode
     this.isMaster = _isMaster || false;
 
-    this.renderSerialNumber = 0;
 
     this.connectedSocketIO = false;
 
+    this.isRendering = false;
     //////////////////////////
     // 처리로직
     //////////////////////////
@@ -687,8 +678,8 @@ class ElementNode {
       //   - _domIndex > -1 : 자신이 부착 될 부모DOM 에서의 child Index
   */
   render(_options, _unmount, _mountIndex = null) {
-    if (this.rendering) return;
-    this.rendering = true;
+    if (this.isRendering) return;
+    this.isRendering = true;
     /*
       랜더링 옵션
         * careUnknown : Orient 가 알지 못 하는 태그를 보호하며 랜더링 한다. ( ex: modified dom by jquery )
@@ -738,6 +729,8 @@ class ElementNode {
           //#####################
           // console.log('$$Pass Mount ', this.dynamicContextNS)
           this.debug("render", "pass mount"); // DEBUG
+
+          this.isRendering = false;
           return returnCount - 1;
         } else {
           //#####################
@@ -811,7 +804,7 @@ class ElementNode {
       }
     }
 
-    this.rendering = false;
+    this.isRendering = false;
     return returnCount;
   }
 
@@ -2584,6 +2577,9 @@ class ElementNode {
 
     if (this.type !== 'string') {
       if (this.hasAttribute('trace')) {
+
+        window[this.id] = this;
+
 
         let args = [];
         args.push(`${_key.toUpperCase()} : [${this.id}]`);
