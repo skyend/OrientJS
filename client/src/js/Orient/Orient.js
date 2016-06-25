@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.4';
+const VERSION = '0.16.6';
 
 /*
   Version : x.y.z
@@ -74,6 +74,9 @@ const VERSION = '0.16.4';
   - 0.16.5 (2016-06-25T00:33)
     * 랜더링중 pass mount 로 분기되었을 때 랜더링 프로세싱 플래그를 해제하지 않는 버그 수정
 
+  - 0.16.6 (2016-06-25T14:55)
+    * IE 에서 Input 이벤트 후킹시 이벤트 바인딩 플래그를 추가하지 않아 이벤트가 중복 바인딩 되는 버그 수정
+    * DynamicContext 가 로딩 되지 않아도 내부를 랜더링 하는 en-dc-force-render-children 옵션 추가
 */
 
 

@@ -151,7 +151,7 @@ class HTMLElementNode extends TagBaseElementNode {
   }
 
   renderChild(_options, _parentCount) {
-    if (this.isDynamicContext()) {
+    if (this.isDynamicContext() && this.dynamicContextForceRenderChildren === false) {
       if (this.dynamicContext) {
         if (!this.dynamicContext.isLoaded)
           return;

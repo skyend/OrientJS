@@ -137,6 +137,10 @@ class ElementNode {
     // }
 
 
+
+
+    // 내부 로딩 관리
+    this.readyHolders = [];
   }
 
   get isElementNode() {
@@ -971,6 +975,10 @@ class ElementNode {
     }, null, function done(_result) {
       if (that.checkAfterContinue(_result) === false) return;
 
+
+      let upperDetacher = that.getUpperRenderDetacher();
+      upperDetacher.registerReadyHolder('dc', that);
+
       that.rebuildDynamicContext();
 
       that.debug('dc', 'Will fire');
@@ -1072,6 +1080,8 @@ class ElementNode {
       // 이미 바인딩 된 기록이 있을 경우 바인딩을 하지 않는다.
       if (_dom[`_orient_binded_event_${_key}`]) return;
 
+
+
       function handler(_e) {
         console.log("DOM Event fire :" + _key + ' ' + that.DEBUG_FILE_NAME_EXPLAIN);
 
@@ -1099,6 +1109,7 @@ class ElementNode {
             _dom.addEventListener('change', handler);
           }
 
+          _dom[`_orient_binded_event_${_key}`] = true;
           return;
         }
       }
@@ -1428,6 +1439,72 @@ class ElementNode {
 
     throw new Error(`Not found Master ElementNode. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
   }
+
+  getUpperDynamicContext() {
+    let dynamicContextEN = null;
+
+    this.climbParents(function(_forefatherEN) {
+      if (_forefatherEN.isDynamicContext()) {
+        dynamicContextEN = _forefatherEN;
+        return null;
+      }
+    });
+
+    if (dynamicContextEN !== null) {
+      return dynamicContextEN;
+    }
+
+    throw new Error(`Not found Upper DynamicContext ElementNode. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
+  }
+
+
+  getUpperRenderDetacher() {
+    let detacher = null;
+    this.climbParents(function(_forefatherEN) {
+      if (_forefatherEN.isDynamicContext()) {
+        detacher = _forefatherEN;
+        return null;
+      } else if (_forefatherEN.isMaster) {
+        detacher = _forefatherEN;
+        return null;
+      }
+    });
+
+    if (detacher !== null) {
+      return detacher;
+    } else {
+      throw new Error(`Not found Render detacher. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
+    }
+  }
+
+
+  registerReadyHolder(_key, _en) {
+    this.readyHolders.push({
+      key: _key,
+      en: _en
+    });
+
+    console.log('holders', this, this.readyHolders);
+  }
+
+  releaseReadyHolder(_key, _en) {
+    let remainReadyHolders = this.readyHolders.filter(function(_holder) {
+      return (_holder.key === _key && _holder.en.id === _en.id) ? false : true;
+    });
+
+    this.readyHolders = remainReadyHolders;
+
+    this.tryEmitReady();
+  }
+
+
+  tryEmitReady() {
+    if (this.readyHolders.length === 0 && this.forwardDOM !== null) {
+      this.tryEventScope('ready', {}, null);
+    }
+  }
+
+
 
   /////////////
   // String Resolve
@@ -2723,7 +2800,7 @@ class ElementNode {
     this.dynamicContextNS = _elementNodeDataObject.dcns;
     this.dynamicContextSync = _elementNodeDataObject.dcsync;
     this.dynamicContextInjectParams = _elementNodeDataObject.dcip;
-    this.dynamicContextRenderDontCareLoading = _elementNodeDataObject.dcrdcl || false;
+    this.dynamicContextForceRenderChildren = _elementNodeDataObject.dcfrc || false;
     this.dynamicContextLocalCache = _elementNodeDataObject.dclc;
     this.dynamicContextSessionCache = _elementNodeDataObject.dcsc;
 
@@ -2829,8 +2906,8 @@ class ElementNode {
       exportObject.dcsync = this.dynamicContextSync;
     if (this.dynamicContextInjectParams)
       exportObject.dcip = this.dynamicContextInjectParams;
-    if (this.dynamicContextRenderDontCareLoading)
-      exportObject.dcrdcl = this.dynamicContextRenderDontCareLoading;
+    if (this.dynamicContextForceRenderChildren)
+      exportObject.dcfrc = this.dynamicContextForceRenderChildren;
     if (this.dynamicContextLocalCache)
       exportObject.dclc = this.dynamicContextLocalCache;
     if (this.dynamicContextSessionCache)

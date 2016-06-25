@@ -774,9 +774,9 @@ class TagBaseElementNode extends ElementNode {
           case 'en-dc-attitude':
 
             throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
-          case 'en-dc-render-dont-care-loading':
+          case 'en-dc-force-render-children':
 
-            this.dynamicContextRenderDontCareLoading = true;
+            this.dynamicContextForceRenderChildren = true;
             break;
           case 'en-io-on':
 

@@ -404,6 +404,9 @@ class RefElementNode extends HTMLElementNode {
       }
     }
 
+    let upperDetacher = this.getUpperRenderDetacher();
+
+    upperDetacher.registerReadyHolder('ref', this);
 
 
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
