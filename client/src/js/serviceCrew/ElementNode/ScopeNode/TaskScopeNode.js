@@ -44,7 +44,7 @@ class TaskChain {
 class TaskScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       ScopeNode.call(this, _scopeData);
     }
     this.type = 'task';

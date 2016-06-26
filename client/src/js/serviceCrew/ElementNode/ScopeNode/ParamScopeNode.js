@@ -3,7 +3,7 @@ import ValueScopeNode from './ValueScopeNode';
 class ParamScopeNode extends ValueScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       ValueScopeNode.call(this, _scopeData);
     }
     this.type = 'param';

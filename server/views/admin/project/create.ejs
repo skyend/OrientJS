@@ -59,7 +59,7 @@
     </script>
   </head>
   <body class="hold-transition skin-black sidebar-mini">
-  <div id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}'>
+  <div id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}' en-event-ready='{{: console.log("READY ALL") }}'>
 
     <%- include ../common/head.ejs %>
 
@@ -138,8 +138,7 @@
                       <label for='radio_access_internal'> Internal </label> <br/>
                       <input type="radio" id="radio_access_public" value='public' checked='{{: en-attr@value === val@access ? "checked":null }}' en-event-click='task@preventDefault'>
                       <label for='radio_access_public'> Public </label> <br/>
-
-
+               
                       <div en-id='repeat-t-01' en-ctrl-repeat-n='{{
                         switch( val@access ){
                           case "private":
@@ -178,6 +177,22 @@
                         }
                       }}'>
                        repeat Test B-{{: en@repeat-n }}
+                      </div>
+                    </div>
+                    <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t'>
+                      <pre>
+                      {{:  JSON.stringify(ns@t) }}
+                    </pre>
+                      <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t'>
+                        <pre>
+                        {{:  JSON.stringify(ns@t) }}
+                      </pre>
+
+                        <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t'>
+                          <pre>
+                          {{:  JSON.stringify(ns@t) }}
+                        </pre>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -130,7 +130,7 @@ class RefComponentWrapper {
 class RefElementNode extends HTMLElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
     this.type = FINAL_TYPE_CONTEXT;
@@ -404,9 +404,7 @@ class RefElementNode extends HTMLElementNode {
       }
     }
 
-    let upperDetacher = this.getUpperRenderDetacher();
 
-    upperDetacher.registerReadyHolder('ref', this);
 
 
     let targetId = _options.resolve ? this.interpret(this.refTargetId) : this.refTargetId;
@@ -435,6 +433,15 @@ class RefElementNode extends HTMLElementNode {
           this.masterElementNodes[i].render({}, true);
         }
       }
+
+
+      let upperDetacher = this.getRenderDetacher();
+      upperDetacher.registerReadyHolder('ref', this);
+
+
+
+
+
 
       this.componentRepresenter = null;
       this.loadComponent(targetId, (_masterElementNodes, _componentSettings) => {
@@ -479,6 +486,7 @@ class RefElementNode extends HTMLElementNode {
       return;
     }
 
+
     this.masterElementNodes = _masterElementNodes;
 
     this.loadedTargetId = targetId;
@@ -497,6 +505,8 @@ class RefElementNode extends HTMLElementNode {
     }
 
     let masterElementNode;
+    let masterElementNodesReadiesCount = 0;
+
     for (let i = 0; i < this.masterElementNodes.length; i++) {
 
       masterElementNode = this.masterElementNodes[i];
@@ -508,12 +518,17 @@ class RefElementNode extends HTMLElementNode {
         masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
       }
 
+
+
       masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
 
       masterElementNode.setParent(null);
       masterElementNode.upperContainer = this;
       masterElementNode.componentOwner = this;
       masterElementNode.render(_options, false, i);
+
+
+
     }
 
 

@@ -77,6 +77,9 @@ const VERSION = '0.16.6';
   - 0.16.6 (2016-06-25T14:55)
     * IE 에서 Input 이벤트 후킹시 이벤트 바인딩 플래그를 추가하지 않아 이벤트가 중복 바인딩 되는 버그 수정
     * DynamicContext 가 로딩 되지 않아도 내부를 랜더링 하는 en-dc-force-render-children 옵션 추가
+    * Input Event를 keyup 과 change 이벤트로 분열시켜 ElementNode 이벤트로 바인딩 되도록 함 (이전에는 IE에서만 적용하였음)
+    * Shortcut dateFormatter 내에 다른 타임스탬프 형식을 인식 하도록 추가. ( 2016-06-13T16:34:50+0900 )
+    * safari 브라우저 5.3.4 이하는 클래스 상속을 IE10이하와 같게 함.
 */
 
 

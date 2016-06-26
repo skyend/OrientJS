@@ -22,12 +22,175 @@ import '../Actions/BasicElementNodeActions';
 
 // Functions Import
 import '../Functions/BasicFunctions';
-
-
-
 import Point from '../../util/Point';
 
 "use strict";
+
+
+
+const DOM_EVENTS = [
+  // Mouse Events
+  'click',
+  'contextmenu',
+  'dblclick',
+  'mousedown',
+  'mouseenter',
+  'mouseleave',
+  'mousemove',
+  'mouseover',
+  'mouseout',
+  'mouseup',
+
+  // Keyboard Events
+  'keydown',
+  'keypress',
+  'keyup',
+
+  // Frame/Object Events
+  'abort',
+  'beforeunload',
+  'error',
+  'hashchange',
+  'load',
+  'pageshow',
+  'pagehide',
+  'resize',
+  'scroll',
+  'unload',
+
+  // Form Events
+  'blur',
+  'change',
+  'focus',
+  'focusin',
+  'focusout',
+  'input',
+  'invalid',
+  'reset',
+  'search',
+  'select',
+  'submit',
+
+  // Drag Events
+  'drag',
+  'dragend',
+  'dragenter',
+  'dragleave',
+  'dragover',
+  'dragstart',
+  'drop',
+
+  // Clipboard Events
+  'copy',
+  'cut',
+  'paste',
+
+  // Print Events
+  'afterprint',
+  'beforeprint',
+
+  // Media Events
+  'abort',
+  'canplay',
+  'canplaythrough',
+  'durationchange',
+  'emptied',
+  'ended',
+  'error',
+  'loadeddata',
+  'loadedmetadata',
+  'loadstart',
+  'pause',
+  'play',
+  'playing',
+  'progress',
+  'ratechange',
+  'seeked',
+  'seeking',
+  'stalled',
+  'suspend',
+  'timeupdate',
+  'volumechange',
+  'waiting',
+
+  // Animation Events
+  'animationend',
+  'animationiteration',
+  'animationstart',
+
+  // Transition Events
+  'transitionend',
+
+  // Server-Sent Events
+  'error',
+  'message',
+  'open',
+
+  // Misc Events
+  'message',
+  'mousewheel',
+  'online',
+  'offline',
+  'popstate',
+  'show',
+  'storage',
+  'toggle',
+  'wheel',
+
+  // Touch Events
+  'touchcancel',
+  'touchend',
+  'touchmove',
+  'touchstart'
+];
+
+const DOM_EVENTS_DICT = {};
+for (let i = 0; i < DOM_EVENTS.length; i++) {
+  DOM_EVENTS_DICT[DOM_EVENTS[i]] = DOM_EVENTS[i];
+  DOM_EVENTS_DICT['deep-' + DOM_EVENTS[i]] = 'deep-' + DOM_EVENTS[i];
+}
+
+const ELEMENT_NODE_EVENTS = [
+  "will-update",
+  "did-update",
+
+  "will-refresh",
+  "did-refresh",
+
+  "will-dc-request",
+  "will-dc-request-join",
+  "will-dc-bind",
+  "will-dc-bind-join",
+
+  "dc-did-load",
+  "dc-fail-load",
+
+  "complete-bind",
+  "complete-bind-join",
+
+  "first-rendered", // -> component-did-mount
+  "io-received",
+  "io-sent",
+
+  "component-will-update",
+  "component-did-update",
+
+  "component-will-mount",
+  "component-did-mount",
+
+  "component-will-unmount",
+  "component-did-unmount",
+
+  "ref-did-mount",
+  "ref-will-mount",
+
+  'ready'
+];
+
+const ELEMENT_NODE_EVENTS_DICT = {};
+for (let i = 0; i < ELEMENT_NODE_EVENTS.length; i++) {
+  ELEMENT_NODE_EVENTS_DICT[ELEMENT_NODE_EVENTS[i]] = ELEMENT_NODE_EVENTS[i];
+}
 
 const SIGN_BY_ELEMENTNODE = 'EN';
 const EVENT_TASK_MATCHER = /^([\w-]+)@([\w-]+)$/;
@@ -735,6 +898,8 @@ class ElementNode {
           this.debug("render", "pass mount"); // DEBUG
 
           this.isRendering = false;
+
+          this.tryEmitReady();
           return returnCount - 1;
         } else {
           //#####################
@@ -809,6 +974,7 @@ class ElementNode {
     }
 
     this.isRendering = false;
+    this.tryEmitReady();
     return returnCount;
   }
 
@@ -966,6 +1132,7 @@ class ElementNode {
   executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
+    let upperDetacher = that.getRenderDetacher();
 
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
@@ -976,8 +1143,18 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      let upperDetacher = that.getUpperRenderDetacher();
-      upperDetacher.registerReadyHolder('dc', that);
+      // upperDetacher.registerReadyHolder('dc', that);
+      //
+      // that.addRuntimeEventListener('ready', () => {
+      //
+      //
+      //   upperDetacher.releaseReadyHolder('dc', that);
+      //   console.log('ready', that);
+      //
+      //   that.removeRuntimeEventListener('ready', 'dc');
+      // }, 'dc');
+
+
 
       that.rebuildDynamicContext();
 
@@ -985,6 +1162,10 @@ class ElementNode {
 
 
       try {
+
+        ////////////////////////////////////////////
+        //////////////// ASYNC Point ///////////////
+        ////////////////////////////////////////////
         that.dynamicContext.fire(function(_err) {
           that.debug('dc', 'burn');
 
@@ -1071,12 +1252,14 @@ class ElementNode {
   }
 
   bindDOMEvents(_dom, options) {
-    let eventKeys = Object.keys(this.nodeEvents);
+    let eventKeys = Object.keys(this.nodeEvents || {});
     let that = this;
 
     // 자신에게 설정된 모든 이벤트를 Dom에 바인딩한다.
     // dom이 지원하지않는 이벤트(elementNode 전용 이벤트일 경우는 자동으로 무시된다.)
     eventKeys.map(function(_key, _i) {
+
+      if (!DOM_EVENTS_DICT[_key]) return;
       // 이미 바인딩 된 기록이 있을 경우 바인딩을 하지 않는다.
       if (_dom[`_orient_binded_event_${_key}`]) return;
 
@@ -1098,24 +1281,26 @@ class ElementNode {
         return eventReturn;
       }
 
-      if (Orient.bn === 'ie' && Orient.bv >= 10) {
 
-        if (_key === 'input') {
-          if (/^deep-/.test(_key)) {
-            _dom.addEventListener('keyup', handler, true);
-            _dom.addEventListener('change', handler, true);
-          } else {
-            _dom.addEventListener('keyup', handler);
-            _dom.addEventListener('change', handler);
-          }
-
-          _dom[`_orient_binded_event_${_key}`] = true;
-          return;
+      // Input 은 버그로 인해 keyup 과 change 이벤트로 동작하도록 한다.
+      if (_key === 'input') {
+        if (/^deep-/.test(_key)) {
+          _dom.addEventListener('keyup', handler, true);
+          _dom.addEventListener('change', handler, true);
+        } else {
+          _dom.addEventListener('keyup', handler);
+          _dom.addEventListener('change', handler);
         }
+
+        _dom[`_orient_binded_event_${_key}`] = true;
+        return;
       }
 
+
       if (/^deep-/.test(_key)) {
-        _dom.addEventListener(_key.replace(/^deep-/, ''), handler, true);
+        let realEvent = _key.replace(/^deep-/, '');
+
+        _dom.addEventListener(realEvent, handler, true);
         _dom[`_orient_binded_event_${_key}`] = true;
       } else {
         _dom.addEventListener(_key, handler);
@@ -1458,27 +1643,34 @@ class ElementNode {
   }
 
 
-  getUpperRenderDetacher() {
+  getRenderDetacher() {
     let detacher = null;
-    this.climbParents(function(_forefatherEN) {
-      if (_forefatherEN.isDynamicContext()) {
-        detacher = _forefatherEN;
-        return null;
-      } else if (_forefatherEN.isMaster) {
-        detacher = _forefatherEN;
-        return null;
-      }
-    });
+
+    if (this.isDynamicContext() || this.isMaster) {
+      detacher = this;
+    }
+
+    if (detacher === null) {
+      this.climbParents(function(_forefatherEN) {
+        if (_forefatherEN.isDynamicContext() || _forefatherEN.isMaster) {
+
+          detacher = _forefatherEN;
+          return null;
+        }
+      });
+    }
 
     if (detacher !== null) {
       return detacher;
     } else {
-      throw new Error(`Not found Render detacher. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
+      console.log(this);
+      throw new Error(`[#${this.id}] Not found Render detacher. ${this.DEBUG_FILE_NAME_EXPLAIN}`, this);
     }
   }
 
 
   registerReadyHolder(_key, _en) {
+
     this.readyHolders.push({
       key: _key,
       en: _en
@@ -1544,10 +1736,19 @@ class ElementNode {
       _e.message = `[#${GET_ERORR_ID_STORE()}]` + _e.message;
 
       if (window.ORIENT_CLEAR_BD_LOG !== true) {
-        console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
-        console.log(`%cFull sentence : ${_matterText}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
-        if (_e.interpretArguments) {
-          console.log('%cBindBlock Arguments :', 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;', _e.interpretArguments);
+        if (Orient.bn !== 'ie') {
+
+          console.log(`%c<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`, 'background: rgb(255, 151, 151); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+          console.log(`%cFull sentence : ${_matterText}`, 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;');
+          if (_e.interpretArguments) {
+            console.log('%cBindBlock Arguments :', 'background: rgb(255, 235, 235); color: rgb(29, 29, 29); padding: 2px; font-weight: normal;', _e.interpretArguments);
+          }
+        } else {
+          console.log(`<BB Debug Hint> ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          console.log(`Full sentence : ${_matterText}`);
+          if (_e.interpretArguments) {
+            console.log('BindBlock Arguments :', _e.interpretArguments);
+          }
         }
       }
 
@@ -2181,7 +2382,9 @@ class ElementNode {
       runtime: true // 런타임 중에 스크립트로 인해 직접 추가된 Event임을 표시 한다.
     });
 
-    this.bindDOMEvents(this.getDOMNode());
+
+    if (DOM_EVENTS_DICT[_eventKey])
+      this.bindDOMEvents(this.getDOMNode());
   }
 
   removeRuntimeEventListener(_eventKey, _listenerKey) {
@@ -2930,5 +3133,10 @@ class ElementNode {
 
 }
 
+
+ElementNode.DOM_EVENTS = DOM_EVENTS;
+ElementNode.DOM_EVENTS_DICT = DOM_EVENTS_DICT;
+ElementNode.ELEMENT_NODE_EVENTS = ELEMENT_NODE_EVENTS;
+ElementNode.ELEMENT_NODE_EVENTS_DICT = ELEMENT_NODE_EVENTS_DICT;
 
 export default ElementNode;

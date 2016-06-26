@@ -7,7 +7,7 @@ import ObjectExtends from '../../../util/ObjectExtends';
 class ICEAPISource extends Orbit.APIFactory.APISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
-    if (Orbit.bn === 'ie' && Orbit.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       Orbit.APIFactory.APISource.call(this, _APISourceData, _orbit);
     }
 

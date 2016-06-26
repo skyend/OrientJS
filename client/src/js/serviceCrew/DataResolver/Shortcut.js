@@ -38,10 +38,22 @@ class Shortcut {
     if (typeof _dateString === 'number') {
       dateObject = new Date(_dateString);
     } else if (typeof _dateString === 'string') {
-      dateObject = new Date(Shortcut.reviseDateString(_dateString));
+      let tryMatch = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)\+(\d+)/);
+
+      if (tryMatch !== null) {
+        // "2016-06-13T16:34:50+0900" to "06-13 16:34:50 UTC+0900 2016"
+        dateObject = new Date(tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + ' ' + 'UTC+' + tryMatch[7] + ' ' + tryMatch[1]);
+      } else {
+        dateObject = new Date(Shortcut.reviseDateString(_dateString));
+      }
     } else {
       throw new Error("인식할 수 없는 Date 입력 타입 입니다.");
     }
+
+    if (isNaN(dateObject.getTime())) {
+      throw new Error(`${JSON.stringify(_dateString)} is not a convertable object.`);
+    }
+
 
     return _format.replace(/(YYYY|YY|MM|DD|dd|hh|mm|ss)/g, function(_matched, _chars) {
       switch (_chars) {
@@ -104,6 +116,7 @@ class Shortcut {
 
 
   static zeroPadding(_number, _limit) {
+
     let str = String(_number);
     let length = str.length;
     let addC = _limit - length;

@@ -8,157 +8,6 @@ import ArrayHandler from '../../util/ArrayHandler';
 const PIPE_EVENT_SPLIT_REGEXP = /^en-pipe-event-([\w\-\_\d]+)$/;
 const METHOD_SPLIT_REGEXP = /^en-method-([\w\-\_\d\$]+)$/;
 
-const DOM_EVENTS = [
-  // Mouse Events
-  'click',
-  'contextmenu',
-  'dblclick',
-  'mousedown',
-  'mouseenter',
-  'mouseleave',
-  'mousemove',
-  'mouseover',
-  'mouseout',
-  'mouseup',
-
-  // Keyboard Events
-  'keydown',
-  'keypress',
-  'keyup',
-
-  // Frame/Object Events
-  'abort',
-  'beforeunload',
-  'error',
-  'hashchange',
-  'load',
-  'pageshow',
-  'pagehide',
-  'resize',
-  'scroll',
-  'unload',
-
-  // Form Events
-  'blur',
-  'change',
-  'focus',
-  'focusin',
-  'focusout',
-  'input',
-  'invalid',
-  'reset',
-  'search',
-  'select',
-  'submit',
-
-  // Drag Events
-  'drag',
-  'dragend',
-  'dragenter',
-  'dragleave',
-  'dragover',
-  'dragstart',
-  'drop',
-
-  // Clipboard Events
-  'copy',
-  'cut',
-  'paste',
-
-  // Print Events
-  'afterprint',
-  'beforeprint',
-
-  // Media Events
-  'abort',
-  'canplay',
-  'canplaythrough',
-  'durationchange',
-  'emptied',
-  'ended',
-  'error',
-  'loadeddata',
-  'loadedmetadata',
-  'loadstart',
-  'pause',
-  'play',
-  'playing',
-  'progress',
-  'ratechange',
-  'seeked',
-  'seeking',
-  'stalled',
-  'suspend',
-  'timeupdate',
-  'volumechange',
-  'waiting',
-
-  // Animation Events
-  'animationend',
-  'animationiteration',
-  'animationstart',
-
-  // Transition Events
-  'transitionend',
-
-  // Server-Sent Events
-  'error',
-  'message',
-  'open',
-
-  // Misc Events
-  'message',
-  'mousewheel',
-  'online',
-  'offline',
-  'popstate',
-  'show',
-  'storage',
-  'toggle',
-  'wheel',
-
-  // Touch Events
-  'touchcancel',
-  'touchend',
-  'touchmove',
-  'touchstart'
-];
-
-const ELEMENT_NODE_EVENTS = [
-  "will-update",
-  "did-update",
-
-  "will-refresh",
-  "did-refresh",
-
-  "will-dc-request",
-  "will-dc-request-join",
-  "will-dc-bind",
-  "will-dc-bind-join",
-
-  "dc-did-load",
-  "dc-fail-load",
-
-  "complete-bind",
-  "complete-bind-join",
-
-  "first-rendered", // -> component-did-mount
-  "io-received",
-  "io-sent",
-
-  "component-will-update",
-  "component-did-update",
-
-  "component-will-mount",
-  "component-did-mount",
-
-  "component-will-unmount",
-  "component-did-unmount",
-
-  "ref-did-mount",
-  "ref-will-mount",
-
-];
 
 
 const RESERVED_DOM_ATTRIBUTES = {
@@ -207,7 +56,7 @@ class TagBaseElementNode extends ElementNode {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     this.type = FINAL_TYPE_CONTEXT;
 
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
 
@@ -518,17 +367,18 @@ class TagBaseElementNode extends ElementNode {
       value = calculatedAttr[name].v;
 
       if (state === ATTRIBUTE_STATE.OLD) {
-        _domNode.removeAttribute(name);
-
         if (RESERVED_DOM_ATTRIBUTES[name]) {
           _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = null;
         }
-      } else if (state === ATTRIBUTE_STATE.MODIFIED) {
-        _domNode.setAttribute(name, value);
 
+        _domNode.removeAttribute(name);
+      } else if (state === ATTRIBUTE_STATE.MODIFIED) {
         if (RESERVED_DOM_ATTRIBUTES[name]) {
-          _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = value;
+          if (_domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] !== value)
+            _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = value;
         }
+
+        _domNode.setAttribute(name, value);
       }
     }
 

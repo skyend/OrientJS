@@ -3,7 +3,7 @@ import MetaData from './MetaData';
 class MetaText extends MetaData {
   constructor(_object) {
     super(_object);
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       MetaData.call(this, _object);
     }
 

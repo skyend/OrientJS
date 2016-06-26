@@ -12,7 +12,7 @@ class SVGElementNode extends HTMLElementNode {
 
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    if (Orient.bn === 'ie' && Orient.bv <= 10) {
+    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
       HTMLElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
     this.type = FINAL_TYPE_CONTEXT;

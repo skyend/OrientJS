@@ -18,7 +18,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.6';
+const VERSION = '0.13.7';
 
 /*
   Version : x.y.z
@@ -38,6 +38,10 @@ const VERSION = '0.13.6';
 
   - 0.13.6 (2016-06-25T00:05)
     * ORBIT_APISOURCE_CACHING 버그 수정
+
+  - 0.13.7 (2016-06-26T14:45)
+    * foundationCompatibility 함수에서 두번째 인자는 earlyScripts로딩을 완료 한 뒤에 호출하는 콜백으로 콜백을 호출 할 때 next 콜백함수를 넘겨준다.
+      외부에서 입력된 foundationCompatibility 두번째 인자함수 내에서 next콜백을 호출 하면 최초 랜더링이 시작된다.
 */
 
 class Orbit {
@@ -171,14 +175,24 @@ class Orbit {
   pageMetaCompatibility(_renderCallback, _finalCallback) {
     let pageMetaEl = document.getElementById('page-meta');
     let pageMetaText = pageMetaEl.innerHTML;
-    let pageMeta = JSON.parse(pageMetaText);
+    let pageMeta;
+    let that = this;
+    try {
+      pageMeta = JSON.parse(pageMetaText);
+    } catch (_e) {
+      throw new Error(`Page Meta Script Tag 에 문법적인 문제가 있습니다. ${_e}`);
+    }
 
     // Early Scripts
     this.orbitDocument.loadExtraJSSerial(pageMeta.earlyScripts || [], (_failures) => {
-      _renderCallback();
+      // Early Scipts 로드완료
 
-      this.orbitDocument.loadExtraJSSerial(pageMeta.scripts || [], () => {
-        _finalCallback();
+      _renderCallback(function next() {
+        that.orbitDocument.loadExtraJSSerial(pageMeta.scripts || [], () => {
+          // Script 로드 완료
+
+          _finalCallback();
+        });
       });
     });
 
@@ -215,42 +229,56 @@ class Orbit {
     }
   }
 
-  foundationCompatibility(_selector, _callback, _callbackFinal, _absorbOriginDOM = true) {
-    this.pageMetaCompatibility(() => {
-      let targetDomNodes, targetDomNode;
-      if (_selector) {
-        targetDomNodes = this.orbitDocument.document.querySelectorAll(_selector);
-      } else {
-        targetDomNodes = [this.orbitDocument.document.body];
-      }
+  foundationCompatibility(_selector, _beforeRenderCallback, /* _afterRenderCallback,*/ _callbackFinal, _absorbOriginDOM = true) {
+    let that = this;
+    this.pageMetaCompatibility((_nextCallback) => {
+      // Early Scrips 로드 완료시 호출됨
 
-      console.time && console.time("First Built up");
-      for (let i = 0; i < targetDomNodes.length; i++) {
-        targetDomNode = targetDomNodes[i];
-        // var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
-        //
-        // Orient.replaceRender(masterElementNode, targetDomNode);
 
-        var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetDomNode, {}, this);
-        masterElementNode.render({
-          resolve: true
+      if (_beforeRenderCallback) {
+        _beforeRenderCallback(function next() {
+
+          that.foundationCompatibilityRender(_selector);
+          _nextCallback();
         });
-      }
-      console.timeEnd && console.timeEnd("First Built up");
-
-      if (this.bodyAppearControlStyleDOM) {
-        this.bodyAppear();
-      }
-
-      if (_callback) {
-        _callback(masterElementNode);
+      } else {
+        that.foundationCompatibilityRender(_selector);
+        _nextCallback();
       }
     }, () => {
+      // Scripts 로드 완료시 호출 됨
       this.signalReady();
       if (_callbackFinal) {
         _callbackFinal(masterElementNode);
       }
     });
+  }
+
+  foundationCompatibilityRender(_selector) {
+    let targetDomNodes, targetDomNode;
+    if (_selector) {
+      targetDomNodes = this.orbitDocument.document.querySelectorAll(_selector);
+    } else {
+      targetDomNodes = [this.orbitDocument.document.body];
+    }
+
+    console.time && console.time("First Built up");
+    for (let i = 0; i < targetDomNodes.length; i++) {
+      targetDomNode = targetDomNodes[i];
+      // var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
+      //
+      // Orient.replaceRender(masterElementNode, targetDomNode);
+
+      var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetDomNode, {}, this);
+      masterElementNode.render({
+        resolve: true
+      });
+    }
+    console.timeEnd && console.timeEnd("First Built up");
+
+    if (this.bodyAppearControlStyleDOM) {
+      this.bodyAppear();
+    }
   }
 
   // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.
