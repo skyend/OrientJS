@@ -413,7 +413,7 @@ class RefElementNode extends HTMLElementNode {
       this.print_console_error("Reference target is '" + targetId + "' from string '" + this.refTargetId + "' ");
     }
 
-    if ((this.loadedRefs) && this.loadedTargetId === targetId) {
+    if (((this.loadedRefs) && this.loadedTargetId === targetId) && !this.refAlwaysRemount) {
       console.log('Mounted refs', this.id, this.getDOMNode());
       let masterElementNode;
       for (let i = 0; i < this.masterElementNodes.length; i++) {
@@ -430,7 +430,9 @@ class RefElementNode extends HTMLElementNode {
       if (this.mountedRefs) {
 
         for (let i = 0; i < this.masterElementNodes.length; i++) {
-          this.masterElementNodes[i].render({}, true);
+          this.masterElementNodes[i].render({
+            dontcareMissed: true
+          }, true);
         }
       }
 

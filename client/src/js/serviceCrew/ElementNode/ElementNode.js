@@ -961,7 +961,6 @@ class ElementNode {
       ////////////////////////////////////////////////////////////////
 
       if (domNode !== null) {
-        console.log('unmount>>', this.id, domNode);
 
         this.debug("render", "will unmount", _options); // DEBUG
         this.tryEventScope('component-will-unmount', null, null, (_result) => {
@@ -1132,7 +1131,7 @@ class ElementNode {
   executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
-    let upperDetacher = that.getRenderDetacher();
+    let upperRenderDetacher = that.parent.getRenderDetacher();
 
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
@@ -1143,13 +1142,13 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      // upperDetacher.registerReadyHolder('dc', that);
+      // upperRenderDetacher.registerReadyHolder('dc', that);
       //
       // that.addRuntimeEventListener('ready', () => {
       //
       //
-      //   upperDetacher.releaseReadyHolder('dc', that);
-      //   console.log('ready', that);
+      //   upperRenderDetacher.releaseReadyHolder('dc', that);
+      //   console.log(`[${that.id}]`, 'ready', that);
       //
       //   that.removeRuntimeEventListener('ready', 'dc');
       // }, 'dc');
@@ -1676,7 +1675,7 @@ class ElementNode {
       en: _en
     });
 
-    console.log('holders', this, this.readyHolders);
+    console.log(`[${this.id}][${this.tagName}]`, 'holders', this, this.readyHolders);
   }
 
   releaseReadyHolder(_key, _en) {
