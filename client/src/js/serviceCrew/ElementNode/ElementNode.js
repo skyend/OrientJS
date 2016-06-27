@@ -1142,16 +1142,16 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      // upperRenderDetacher.registerReadyHolder('dc', that);
-      //
-      // that.addRuntimeEventListener('ready', () => {
-      //
-      //
-      //   upperRenderDetacher.releaseReadyHolder('dc', that);
-      //   console.log(`[${that.id}]`, 'ready', that);
-      //
-      //   that.removeRuntimeEventListener('ready', 'dc');
-      // }, 'dc');
+      upperRenderDetacher.registerReadyHolder('dc', that);
+
+      that.addRuntimeEventListener('ready', () => {
+
+
+        upperRenderDetacher.releaseReadyHolder('dc', that);
+        console.log(`[${that.id}]`, 'ready', that);
+
+        that.removeRuntimeEventListener('ready', 'dc');
+      }, 'dc');
 
 
 
