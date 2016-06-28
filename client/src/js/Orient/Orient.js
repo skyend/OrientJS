@@ -85,7 +85,7 @@ const VERSION = '0.16.7';
   - 0.16.7 (2016-06-28T02:00)
     * Shortcut DateFormatter 날짜 형식 감지 확장
     * HTTPRequest IE9 이면서 타도메인 요청시 XDomainRequest를 사용 할 때 enctype을 application/x-www-form-urlencoded로만 사용하고 method 또한 get으로 요청을 하도록 고정한다.
-
+    * Orient Event 의 에러 핸들링 방식의 변경 : 이벤트 실행중 발생하는 에러는 throw 하도록 하였음.
 */
 
 
