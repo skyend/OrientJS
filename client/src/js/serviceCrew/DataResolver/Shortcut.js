@@ -39,15 +39,15 @@ class Shortcut {
     if (typeof _dateString === 'number') {
       dateObject = new Date(_dateString);
     } else if (typeof _dateString === 'string') {
-      let tryMatch = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):(\d+)\+(\d+)/);
+      let tryMatch = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
 
       if (tryMatch !== null) {
         // "2016-06-13T16:34:50+0900" to "06-13 16:34:50 UTC+0900 2016"
-        dateObject = new Date(tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + ' ' + 'UTC+' + tryMatch[7] + ' ' + tryMatch[1]);
+        dateObject = new Date(tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + parseInt(tryMatch[6]) + ' ' + 'UTC+' + tryMatch[7].replace(':', '') + ' ' + tryMatch[1]);
 
         // jun 27 2016 00:09:29 GMT+0900
         if (isNaN(dateObject.getTime())) {
-          dateObject = new Date(`${MONTH_MAP.en[parseInt(tryMatch[2])]} ${tryMatch[3]} ${tryMatch[1]} ${tryMatch[4]}:${tryMatch[5]}:${tryMatch[6]} GMT+${tryMatch[6]}`);
+          dateObject = new Date(`${MONTH_MAP.en[parseInt(tryMatch[2])]} ${tryMatch[3]} ${tryMatch[1]} ${tryMatch[4]}:${tryMatch[5]}:${parseInt(tryMatch[6])} GMT+${tryMatch[6]}`);
         }
 
 

@@ -81,6 +81,11 @@ const VERSION = '0.16.6';
     * Shortcut dateFormatter 내에 다른 타임스탬프 형식을 인식 하도록 추가. ( 2016-06-13T16:34:50+0900 )
     * safari 브라우저 5.3.4 이하는 클래스 상속을 IE10이하와 같게 함.
     * Shortcut dateFormatter safari 5이하 firefox 날짜 형식 보정 추가 (jun 27 2016 00:09:29 GMT+0900)
+
+  - 0.16.7 (2016-06-28T02:00)
+    * Shortcut DateFormatter 날짜 형식 감지 확장
+    * HTTPRequest IE9 이면서 타도메인 요청시 XDomainRequest를 사용 할 때 enctype을 application/x-www-form-urlencoded로만 사용하고 method 또한 get으로 요청을 하도록 고정한다.
+
 */
 
 

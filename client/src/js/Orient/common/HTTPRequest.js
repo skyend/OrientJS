@@ -116,6 +116,8 @@ class HTTPRequest {
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
+    let enctype = _enctype;
+
 
 
 
@@ -150,6 +152,16 @@ class HTTPRequest {
       isSameOrigin = true;
     } else {
       isSameOrigin = false;
+
+      // IE9 임시 XDR GET Redirect
+
+
+      if (B_NAME === 'ie' && B_VER <= 9) {
+        enctype = 'application/x-www-form-urlencoded';
+        method = 'get';
+        is_multipart_post = false;
+        _data['ie9_escape_cache'] = HTTPRequest.generate_ie9_timestamp();
+      }
     }
 
 
@@ -241,8 +253,12 @@ class HTTPRequest {
     }
     let request = new Request();
 
+
+    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? method : method + ':' +_enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
+
+
     // OPEN
-    request.open(_method, finalURL, _async);
+    request.open(method, finalURL, _async);
 
     if (request.setRequestHeader) {
       if (_enctype !== 'multipart/form-data') {
@@ -281,7 +297,7 @@ class HTTPRequest {
         }
       }
 
-      HTTPRequest.Log(`Loaded : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "info", [request]);
+      HTTPRequest.Log(`Loaded : ${logBody}\n`, "info", [request]);
 
       _callback(null, request);
     };
@@ -308,12 +324,11 @@ class HTTPRequest {
       }
 
       // console.log('onerror', _e);
-      let message = `Error : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
-      HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
+      HTTPRequest.Log(`Error : ${logBody}\n`, "error", [request, _e]);
 
       //throw new Error(`Request Error by ${Classer.getFunctionName(Request)}\n${finalURL}`);
 
-      _callback(new Error(message), null);
+      _callback(new Error(`Error : ${logBody}`), null);
     };
 
     request.ontimeout = function(_e) {
@@ -327,19 +342,17 @@ class HTTPRequest {
         }
       }
 
-      // console.log('onerror', _e);
-      let message = `Timeout : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
-      HTTPRequest.Log(`${message}\n`, "error", [request, _e]);
+      HTTPRequest.Log(`Timeout : ${logBody}\n`, "error", [request, _e]);
 
-      _callback(new Error(message), null);
+      _callback(new Error(`Timeout : ${logBody}`), null);
     };
 
-    HTTPRequest.Log(`Send : ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`, "log");
+    HTTPRequest.Log(`Send : ${logBody}\n`, "log");
 
     if (window.HTTPREQ_TRACE_STACK) {
       if (console.trace)
-        console.trace(`Send Trace: ${Classer.getFunctionName(Request)}[${method}][${_async ? 'async':'sync'}] - URL: ${finalURL}\n`);
+        console.trace(`Send Trace: ${logBody}\n`);
     }
 
     HTTPRequest.INCREASE_SEND_COUNT();
@@ -551,6 +564,10 @@ class HTTPRequest {
     if (HTTP_REQUEST === 0) {
       // HTTPRequest.emit('end');
     }
+  }
+
+  static generate_ie9_timestamp() {
+    return Date.now() + Math.random();
   }
 }
 //

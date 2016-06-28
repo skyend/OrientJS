@@ -1131,7 +1131,7 @@ class ElementNode {
   executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
-    let upperRenderDetacher = that.parent.getRenderDetacher();
+    //let upperRenderDetacher = that.parent.getRenderDetacher();
 
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
@@ -1142,16 +1142,16 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      upperRenderDetacher.registerReadyHolder('dc', that);
-
-      that.addRuntimeEventListener('ready', () => {
-
-
-        upperRenderDetacher.releaseReadyHolder('dc', that);
-        console.log(`[${that.id}]`, 'ready', that);
-
-        that.removeRuntimeEventListener('ready', 'dc');
-      }, 'dc');
+      // upperRenderDetacher.registerReadyHolder('dc', that);
+      //
+      // that.addRuntimeEventListener('ready', () => {
+      //
+      //
+      //   upperRenderDetacher.releaseReadyHolder('dc', that);
+      //   console.log(`[${that.id}]`, 'ready', that);
+      //
+      //   that.removeRuntimeEventListener('ready', 'dc');
+      // }, 'dc');
 
 
 
@@ -1699,7 +1699,7 @@ class ElementNode {
 
   /////////////
   // String Resolve
-  interpret(_matterText, _getFeature) {
+  interpret(_matterText, _getFeature, _throwError) {
     if (_matterText === undefined) return;
 
     let injectGetterInterface = {
@@ -1759,7 +1759,7 @@ class ElementNode {
       // }
       // console.groupEnd && console.groupEnd();
 
-      if (window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET)
+      if (window.ORIENT_SUSPENDIBLE_ELEMENTNODE_INTERPRET || _throwError)
         throw _e;
 
       return _e.message;
@@ -2420,13 +2420,19 @@ class ElementNode {
   __progressEvent(_name, _elementNodeEvent, _originDomEvent, _completeProcess) {
     let eventDescs = this.getEvent(_name);
 
-    if (eventDescs instanceof Array) {
-      for (let i = 0; i < eventDescs.length; i++) {
+    try {
 
-        this.__progressEventDesc(eventDescs[i].desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+      if (eventDescs instanceof Array) {
+        for (let i = 0; i < eventDescs.length; i++) {
+
+          this.__progressEventDesc(eventDescs[i].desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+        }
+      } else {
+        this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
       }
-    } else {
-      this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
+    } catch (_e) {
+      _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+      throw _e;
     }
   }
 
@@ -2475,7 +2481,7 @@ class ElementNode {
         case "event":
           return enEvent;
       }
-    });
+    }, true);
 
     _completeProcess(interpretResult);
   }
