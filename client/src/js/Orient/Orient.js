@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.6';
+const VERSION = '0.16.7';
 
 /*
   Version : x.y.z
