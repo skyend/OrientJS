@@ -973,6 +973,9 @@ class ElementNode {
     }
 
     this.isRendering = false;
+
+    //if (/wrapper|dc/.test(this.id)) console.log('>>> holders', this.id, this.readyHolders);
+
     this.tryEmitReady();
     return returnCount;
   }
@@ -986,62 +989,6 @@ class ElementNode {
   }
 
   renderWithDC(_options) {
-    // DC 일때
-    // if (this.isDynamicContext()) {
-    //
-    //   // active 모드인 경우
-    //   if (this.dynamicContextPassive !== true) {
-    //     this.debug('dc', 'is active');
-    //     // console.log('&& ---- 01 -- ', this.dynamicContextNS);
-    //
-    //     // keepDC 가 부정 일 때
-    //     if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
-    //       this.debug('dc', 'execute');
-    //       // console.log('&& ---- 02 -- ', this.dynamicContextNS);
-    //       // DC실행
-    //       this.executeDynamicContext();
-    //
-    //     } else if (_options.keepDC === 'once') {
-    //       // console.log('&& ---- 03 -- ', this.dynamicContextNS);
-    //       this.debug('dc', 'once ignore.');
-    //       _options.keepDC = false;
-    //     }
-    //   } else {
-    //     this.debug('dc', 'is passive');
-    //   }
-    //
-    //   // console.log('&& ---- MiD -- ', this.dynamicContextNS);
-    //   // console.dir(this.dynamicContext && this.dynamicContext.dataResolver && JSON.stringify(this.dynamicContext.dataResolver.dataSpace), this.dynamicContextRenderDontCareLoading);
-    //
-    //   // dc가 로드여부와 상관없이 랜더링을 진행 할 것인가 체크
-    //   // dc 로드가 되지 않으면 랜더링 진행을 허용하지 않음
-    //   if (this.dynamicContextRenderDontCareLoading === false) {
-    //     // console.log('&& ---- 04 -- ', this.dynamicContextNS);
-    //     this.debug('dc', 'render will cancel if not complete loading');
-    //     // console.log(`%% dynamicContextRenderDontCareLoading ${this.dynamicContextRenderDontCareLoading} : ${this.dynamicContextNS}`);
-    //     // dynamicContext 가 생성되어 있는가?
-    //     if (this.dynamicContext) {
-    //
-    //       // DC로딩이 완료 되었는가?
-    //       if (this.dynamicContext.isLoaded === true) {
-    //         this.debug('dc', 'dc is loaded. render continue');
-    //         return true;
-    //       } else {
-    //         this.debug('dc', 'dc is not loaded. render cancel');
-    //         return false;
-    //       }
-    //     } else {
-    //       // console.log('&& ---- 07 -- ', this.dynamicContextNS);
-    //       this.debug('dc', 'was not construct. render cancel');
-    //       return false;
-    //     }
-    //   }
-    //
-    //   this.debug('dc', 'render continue');
-    // }
-    //
-    // return true;
-
 
     if (this.isDynamicContext()) {
       //
@@ -1131,8 +1078,7 @@ class ElementNode {
   executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
-    //let upperRenderDetacher = that.parent.getRenderDetacher();
-
+    console.log(`[${this.id}] executeDynamicContext`);
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
     /****************************************/
@@ -1142,16 +1088,32 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      // upperRenderDetacher.registerReadyHolder('dc', that);
-      //
-      // that.addRuntimeEventListener('ready', () => {
-      //
-      //
-      //   upperRenderDetacher.releaseReadyHolder('dc', that);
-      //   console.log(`[${that.id}]`, 'ready', that);
-      //
-      //   that.removeRuntimeEventListener('ready', 'dc');
-      // }, 'dc');
+      let upperRenderDetacher = that.parent.getRenderDetacher();
+
+
+      ////////////////////////////////////////////////////////////////////////
+      ///////////// READY ////////////////////////////////////////////////////
+      // dynamicContext가 로딩되기 전에는 자기의 자식을을 그리지 않으므로 자기 이전의 랜더링 흐름에서 자기아래의 데이터를 감지 하지 못 한다.
+      // 그래서 랜더링 흐름이 떨어지고 비동기로 새로 발생하는 랜더링 흐름에서 자식이 사용하는 readyHolder 를 감지 하여야 하는데
+      // 랜더링 흐름이 떨어지는 순간 자신은 레디상태가 되어버린다.
+      // 그러므로 랜더링 흐름이 떨어질 때 자신이 레디상태로 넘어가지 않게 하기위해 자신을 readyHolder 로써 자기 자신에게 등록한다.
+      // 지금 등록한 readyHolder 는 DC로드가완료되고 첫번째 랜더링 흐름이 완료 된 후 readyHolder를 완료 한다.
+      // 그렇게 하면 첫번째 랜더링 흐름때 자기 하위의 readyHolder를 감지 할 것이고 자식들이 사용하는 readyHolder 가 release되지 않는 이상 자신의 레디는 발생하지
+      // 않을 것이다.
+      that.registerReadyHolder('me-dc', that);
+
+      upperRenderDetacher.registerReadyHolder('dc', that);
+
+      // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
+      that.addRuntimeEventListener('ready', () => {
+        that.removeRuntimeEventListener('ready', 'dc');
+
+
+        upperRenderDetacher.releaseReadyHolder('dc', that);
+        // 한번 사용한 listener 는 해제한다.
+      }, 'dc');
+      ///////////// READY ////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1176,8 +1138,10 @@ class ElementNode {
 
             // error 일 때 콜백
             _callback && _callback(_err, that);
+
             return this.print_console_error(`DC Loading Error.`, 'Detail: ', _err);
           }
+
           // fix
           that.tryEventScope('dc-did-load', {
             dynamicContext: that.dynamicContext
@@ -1194,20 +1158,36 @@ class ElementNode {
           that.tryEventScope('will-dc-bind', {
             dynamicContext: that.dynamicContext
           }, null, function done(_result) {
-            if (that.checkAfterContinue(_result) === false) return;
+            if (that.checkAfterContinue(_result) === false) {
 
-            if (that.dynamicContextPassive) {
-              that.update();
+              ////////////////////////////////////////////////////////////////////////
+              ///////////// READY ////////////////////////////////////////////////////
+              that.releaseReadyHolder('me-dc', that);
+              ///////////// READY ////////////////////////////////////////////////////
+              ////////////////////////////////////////////////////////////////////////
+              return;
             } else {
-              that.update({
-                keepDC: 'once'
-              });
-            }
 
-            // fix
-            that.tryEventScope('complete-bind', {
-              dynamicContext: that.dynamicContext
-            }, null);
+              if (that.dynamicContextPassive) {
+                that.update();
+              } else {
+                that.update({
+                  keepDC: 'once'
+                });
+              }
+
+              ////////////////////////////////////////////////////////////////////////
+              ///////////// READY ////////////////////////////////////////////////////
+              // DC로딩이 완료 되고 첫번째 랜더링 흐름이 완료 될 때 자신이 자신에게 등록한 readyHolder 를 release 하여 준다.
+              that.releaseReadyHolder('me-dc', that);
+              ///////////// READY ////////////////////////////////////////////////////
+              ////////////////////////////////////////////////////////////////////////
+
+              // fix
+              that.tryEventScope('complete-bind', {
+                dynamicContext: that.dynamicContext
+              }, null);
+            }
           });
 
         });
@@ -1674,8 +1654,6 @@ class ElementNode {
       key: _key,
       en: _en
     });
-
-    console.log(`[${this.id}][${this.tagName}]`, 'holders', this, this.readyHolders);
   }
 
   releaseReadyHolder(_key, _en) {

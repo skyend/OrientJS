@@ -59,7 +59,7 @@
     </script>
   </head>
   <body class="hold-transition skin-black sidebar-mini">
-  <div id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}' en-event-ready='{{: console.log("READY ALL") }}'>
+  <div id='wrapper' en-id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}' en-event-ready='{{: console.log("READY ALL") }}'>
 
     <%- include ../common/head.ejs %>
 
@@ -179,16 +179,16 @@
                        repeat Test B-{{: en@repeat-n }}
                       </div>
                     </div>
-                    <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-first'>
+                    <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-first' en-event-ready='{{: console.log("first Ready", this.getDOMNode().innerHTML )}}'>
                       <pre>
                       {{:  JSON.stringify(ns@t) }}
                     </pre>
-                      <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-second'>
+                      <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-second' en-event-ready='{{: console.log("second Ready", this.getDOMNode().innerHTML )}}'>
                         <pre>
                         {{:  JSON.stringify(ns@t) }}
                       </pre>
 
-                        <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-third'>
+                        <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-third' en-event-ready='{{: console.log("third Ready", this.getDOMNode().innerHTML )}}'>
                           <pre>
                           {{:  JSON.stringify(ns@t) }}
                         </pre>

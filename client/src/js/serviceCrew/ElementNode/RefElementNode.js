@@ -437,8 +437,24 @@ class RefElementNode extends HTMLElementNode {
       }
 
 
-      let upperDetacher = this.getRenderDetacher();
-      upperDetacher.registerReadyHolder('ref', this);
+
+
+      ////////////////////////////////////////////////////////////////////////
+      ///////////// READY ////////////////////////////////////////////////////
+      let upperRenderDetacher = this.parent.getRenderDetacher();
+      this.registerReadyHolder('me-ref', this);
+      upperRenderDetacher.registerReadyHolder('ref', this);
+
+      // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
+      this.addRuntimeEventListener('ready', () => {
+
+        upperRenderDetacher.releaseReadyHolder('ref', this);
+
+        // 한번 사용한 listener 는 해제한다.
+        this.removeRuntimeEventListener('ready', 'ref');
+      }, 'ref');
+      ///////////// READY ////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
 
 
 
@@ -511,6 +527,8 @@ class RefElementNode extends HTMLElementNode {
 
     for (let i = 0; i < this.masterElementNodes.length; i++) {
 
+
+
       masterElementNode = this.masterElementNodes[i];
       if (masterElementNode.componentRepresenter) {
         this.representerMasterElementNode = masterElementNode;
@@ -520,6 +538,24 @@ class RefElementNode extends HTMLElementNode {
         masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
       }
 
+
+
+      ////////////////////////////////////////////////////////////////////////
+      ///////////// READY ////////////////////////////////////////////////////
+      masterElementNode.addRuntimeEventListener('ready', () => {
+        masterElementNode.removeRuntimeEventListener('ready', 'ref');
+
+
+        masterElementNodesReadiesCount++;
+
+        if (masterElementNodesReadiesCount === this.masterElementNodes.length) {
+          this.releaseReadyHolder('me-ref', this);
+        }
+
+        // 한번 사용한 listener 는 해제한다.
+      }, 'ref');
+      ///////////// READY ////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
 
 
       masterElementNode.setDebuggingInfo('FILE_NAME', targetId);
@@ -545,7 +581,6 @@ class RefElementNode extends HTMLElementNode {
         this.processingCSetting_include_async(_componentSettings.env_after_include_async);
       }
     }
-
 
   }
 
