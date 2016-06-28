@@ -254,7 +254,9 @@ class HTTPRequest {
     let request = new Request();
 
 
-    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? method : method + ':' +_enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
+    // Logging
+    let methodForLog = method === _method ? method : `${_method}->${method}`;
+    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? methodForLog : methodForLog + ':' +_enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
 
     // OPEN
