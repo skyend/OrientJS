@@ -1088,8 +1088,6 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-      let upperRenderDetacher = that.parent.getRenderDetacher();
-
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
@@ -1100,6 +1098,8 @@ class ElementNode {
       // 지금 등록한 readyHolder 는 DC로드가완료되고 첫번째 랜더링 흐름이 완료 된 후 readyHolder를 완료 한다.
       // 그렇게 하면 첫번째 랜더링 흐름때 자기 하위의 readyHolder를 감지 할 것이고 자식들이 사용하는 readyHolder 가 release되지 않는 이상 자신의 레디는 발생하지
       // 않을 것이다.
+      let parent = that.parent || that.componentOwner;
+      let upperRenderDetacher = parent.getRenderDetacher();
       that.registerReadyHolder('me-dc', that);
 
       upperRenderDetacher.registerReadyHolder('dc', that);

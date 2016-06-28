@@ -414,7 +414,7 @@ class RefElementNode extends HTMLElementNode {
     }
 
     if (((this.loadedRefs) && this.loadedTargetId === targetId) && !this.refAlwaysRemount) {
-      console.log('Mounted refs', this.id, this.getDOMNode());
+
       let masterElementNode;
       for (let i = 0; i < this.masterElementNodes.length; i++) {
 
@@ -441,7 +441,8 @@ class RefElementNode extends HTMLElementNode {
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
-      let upperRenderDetacher = this.parent.getRenderDetacher();
+      let parent = this.parent || this.componentOwner;
+      let upperRenderDetacher = parent.getRenderDetacher();
       this.registerReadyHolder('me-ref', this);
       upperRenderDetacher.registerReadyHolder('ref', this);
 

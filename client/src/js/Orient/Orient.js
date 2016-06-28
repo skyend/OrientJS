@@ -86,8 +86,12 @@ const VERSION = '0.16.8';
     * Shortcut DateFormatter 날짜 형식 감지 확장
     * HTTPRequest IE9 이면서 타도메인 요청시 XDomainRequest를 사용 할 때 enctype을 application/x-www-form-urlencoded로만 사용하고 method 또한 get으로 요청을 하도록 고정한다.
     * Orient Event 의 에러 핸들링 방식의 변경 : 이벤트 실행중 발생하는 에러는 throw 하도록 하였음.
+
   - 0.16.8 (2016-06-28T16:23)
     * DynamicContext / Ref Component Ready 이벤트 추가 각 MasterComponent 와 DC에서 동기화된 Async 흐름에 대한 Ready 이벤트를 들을 수 있다.
+  - 0.16.10 (2016-06-28T17:41)
+    * 상위에 ReadyHolder 를 걸 때 parent 가 없으면(없는 경우는 RefElementNode 가 참조하는 MasterComponent 일 경우 ) componentOwner를 사용 하도록 수정
+    * en-event-ready FIX!!!
 */
 
 
