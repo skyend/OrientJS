@@ -92,6 +92,9 @@ const VERSION = '0.16.10';
   - 0.16.10 (2016-06-28T17:41)
     * 상위에 ReadyHolder 를 걸 때 parent 가 없으면(없는 경우는 RefElementNode 가 참조하는 MasterComponent 일 경우 ) componentOwner를 사용 하도록 수정
     * en-event-ready FIX!!!
+  - 0.18.0 (2016-06-28T23:53)
+    * 최초 ready 와 뒤이어 발생하는 ready 이벤트에 대한 분리
+      최초 ready 는 ready 라는 이름으로 이벤트가 발생하며 뒤이어 n(n > 1)번째 발생하는 ready 는 nth-ready 라는 이름으로 이벤트가 발생한다.
 */
 
 

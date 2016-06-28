@@ -184,7 +184,8 @@ const ELEMENT_NODE_EVENTS = [
   "ref-did-mount",
   "ref-will-mount",
 
-  'ready'
+  'ready',
+  'nth-ready'
 ];
 
 const ELEMENT_NODE_EVENTS_DICT = {};
@@ -248,6 +249,10 @@ class ElementNode {
     this.createDate;
     this.updateDate;
 
+    //////////////////////////
+    // 처리로직
+    //////////////////////////
+
     // parent refference
     this.parent = null;
     this.upperContainer = null; // 자신의 DOM을 붙여 줄 HTMLElementNode
@@ -255,9 +260,7 @@ class ElementNode {
 
     this.clonePool = []; // repeated
     this.cloned = false;
-    this.backupDOM = null;
     this.forwardDOM = null;
-    this.hiddenForwardDOM = null; // hidden construct 가 되었을 때 이전에 forwardDOM을 담는다.
 
     // Repeat by parent's Repeat Control
     this.isGhost = preInjectProps.isGhost || false; // 계보에 반복된 부모가 존재하는경우 자식노드의 경우 Ghost로 표시한다.
@@ -272,11 +275,6 @@ class ElementNode {
     this.dynamicContext = null;
     // this.parentDynamicContext = _parentDynamicContext || null;
     this.defaultResolver = new DataResolver();
-    this.nextSibling = null;
-    this.prevSibling = null;
-
-    // update Queue
-    this.updateQueue = [];
 
 
     // ElementNode 컴포넌트의 최상위 ElementNode
@@ -286,24 +284,14 @@ class ElementNode {
     this.connectedSocketIO = false;
 
     this.isRendering = false;
-    //////////////////////////
-    // 처리로직
-    //////////////////////////
-    // 이미 있는 엘리먼트를 로드한 경우 데이터를 객체에 맵핑해준다.
-    // if (typeof _elementNodeDataObject === 'object') {
-    this.import(_elementNodeDataObject);
-    // } else {
-    //   // 새 엘리먼트가 생성되었다.
-    //   this.createDate = new Date();
-    //   this.controls = {};
-    //   this.comment = '';
-    // }
-
-
 
 
     // 내부 로딩 관리
     this.readyHolders = [];
+    this.readyCounter = 0; // 0이면 ready 된 적이 없음 1 이상이면 한번이상 ready
+
+
+    this.import(_elementNodeDataObject);
   }
 
   get isElementNode() {
@@ -1667,9 +1655,29 @@ class ElementNode {
   }
 
 
+  /*
+   tryEmitReady
+    자신에게 ready Event 발생을 시도한다.
+    ready Event 가 발생되기 위해서 readyHolders가 비어있고 자신이 랜더링되어 마운트 된 상태여야 한다.
+    최초로 ready가 될 때는 ready 이벤트를 발생시키며
+    두번째로 ready 가 될 때는 update-ready를 발생시킨다.
+  */
   tryEmitReady() {
     if (this.readyHolders.length === 0 && this.forwardDOM !== null) {
-      this.tryEventScope('ready', {}, null);
+
+      if (this.readyCounter === 0) {
+
+        this.readyCounter = 1;
+        this.tryEventScope('ready', {
+          nth: this.readyCounter
+        }, null);
+      } else {
+        this.readyCounter = this.readyCounter + 1;
+
+        this.tryEventScope('nth-ready', {
+          nth: this.readyCounter
+        }, null);
+      }
     }
   }
 
@@ -2841,7 +2849,8 @@ class ElementNode {
     if (this.type !== 'string') {
       if (this.hasAttribute('trace')) {
 
-        window[this.id] = this;
+        window.orients = window.orients || {};
+        window.orients[this.id] = this;
 
 
         let args = [];
