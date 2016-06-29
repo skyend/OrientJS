@@ -447,12 +447,12 @@ class RefElementNode extends HTMLElementNode {
       upperRenderDetacher.registerReadyHolder('ref', this);
 
       // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      this.addRuntimeEventListener('ready', () => {
+      this.addRuntimeEventListener(this.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
 
         upperRenderDetacher.releaseReadyHolder('ref', this);
 
         // 한번 사용한 listener 는 해제한다.
-        this.removeRuntimeEventListener('ready', 'ref');
+        this.removeRuntimeEventListener(this.readyCounter > 0 ? 'nth-ready' : 'ready', 'ref');
       }, 'ref');
       ///////////// READY ////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
@@ -543,8 +543,8 @@ class RefElementNode extends HTMLElementNode {
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
-      masterElementNode.addRuntimeEventListener('ready', () => {
-        masterElementNode.removeRuntimeEventListener('ready', 'ref');
+      masterElementNode.addRuntimeEventListener(masterElementNode.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
+        masterElementNode.removeRuntimeEventListener(masterElementNode.readyCounter > 0 ? 'nth-ready' : 'ready', 'ref');
 
 
         masterElementNodesReadiesCount++;

@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.16.10';
+const VERSION = '0.18.0';
 
 /*
   Version : x.y.z
@@ -95,6 +95,8 @@ const VERSION = '0.16.10';
   - 0.18.0 (2016-06-28T23:53)
     * 최초 ready 와 뒤이어 발생하는 ready 이벤트에 대한 분리
       최초 ready 는 ready 라는 이름으로 이벤트가 발생하며 뒤이어 n(n > 1)번째 발생하는 ready 는 nth-ready 라는 이름으로 이벤트가 발생한다.
+    * ready counter 의 값에 따라 nth-ready 로 ready를 발생 할 지 nth-ready로 발생할지 결정한다.
+    * 최초 ready 는 nth 값이 0이며 그 이후발생하는 nth는 ready 횟수에 따라 결정된다.
 */
 
 

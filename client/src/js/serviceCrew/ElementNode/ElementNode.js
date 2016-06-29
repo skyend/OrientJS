@@ -1093,8 +1093,8 @@ class ElementNode {
       upperRenderDetacher.registerReadyHolder('dc', that);
 
       // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      that.addRuntimeEventListener('ready', () => {
-        that.removeRuntimeEventListener('ready', 'dc');
+      that.addRuntimeEventListener(that.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
+        that.removeRuntimeEventListener(that.readyCounter > 0 ? 'nth-ready' : 'ready', 'dc');
 
 
         upperRenderDetacher.releaseReadyHolder('dc', that);
@@ -1665,18 +1665,21 @@ class ElementNode {
   tryEmitReady() {
     if (this.readyHolders.length === 0 && this.forwardDOM !== null) {
 
-      if (this.readyCounter === 0) {
 
-        this.readyCounter = 1;
+      if (!this.readyCounter) {
+
         this.tryEventScope('ready', {
           nth: this.readyCounter
         }, null);
+
+        this.readyCounter = 1;
       } else {
-        this.readyCounter = this.readyCounter + 1;
 
         this.tryEventScope('nth-ready', {
           nth: this.readyCounter
         }, null);
+
+        this.readyCounter = this.readyCounter + 1;
       }
     }
   }
@@ -2326,10 +2329,8 @@ class ElementNode {
   // 이벤트가 바인드 되어 있지 않다면 바로 _nextProcedure를 실행한다.
   tryEventScope(_name, _elementNodeEvent, _originDomEvent, _nextProcedure) {
     //console.log('Fire event :', _name, this.id);
-
     if (this.hasEvent(_name)) {
       // event 발생
-
 
       // 이벤트 실행 후 다음 function이 있냐에 따라 다음 처리를 수행한다.
       this.__progressEvent(_name, _elementNodeEvent, _originDomEvent, function done(_result) {
