@@ -964,7 +964,9 @@ class ElementNode {
 
     //if (/wrapper|dc/.test(this.id)) console.log('>>> holders', this.id, this.readyHolders);
 
-    this.tryEmitReady();
+    this.tryEmitReady({
+      renderEnd: true
+    });
     return returnCount;
   }
 
@@ -1076,7 +1078,7 @@ class ElementNode {
       if (that.checkAfterContinue(_result) === false) return;
 
 
-
+      ////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
       // dynamicContext가 로딩되기 전에는 자기의 자식을을 그리지 않으므로 자기 이전의 랜더링 흐름에서 자기아래의 데이터를 감지 하지 못 한다.
@@ -1091,16 +1093,17 @@ class ElementNode {
       that.registerReadyHolder('me-dc', that);
 
       upperRenderDetacher.registerReadyHolder('dc', that);
-
+      let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
       // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      that.addRuntimeEventListener(that.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
-        that.removeRuntimeEventListener(that.readyCounter > 0 ? 'nth-ready' : 'ready', 'dc');
+      that.addRuntimeEventListener('ready', () => {
+        that.removeRuntimeEventListener('ready', 'dc');
 
 
         upperRenderDetacher.releaseReadyHolder('dc', that);
         // 한번 사용한 listener 는 해제한다.
       }, 'dc');
       ///////////// READY ////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
 
 
@@ -1637,19 +1640,22 @@ class ElementNode {
 
 
   registerReadyHolder(_key, _en) {
-
     this.readyHolders.push({
       key: _key,
       en: _en
     });
+    // console.log('registerReadyHolder', this.id, this.readyHolders)
   }
 
   releaseReadyHolder(_key, _en) {
+
+
     let remainReadyHolders = this.readyHolders.filter(function(_holder) {
       return (_holder.key === _key && _holder.en.id === _en.id) ? false : true;
     });
 
     this.readyHolders = remainReadyHolders;
+
 
     this.tryEmitReady();
   }
@@ -1662,25 +1668,29 @@ class ElementNode {
     최초로 ready가 될 때는 ready 이벤트를 발생시키며
     두번째로 ready 가 될 때는 update-ready를 발생시킨다.
   */
-  tryEmitReady() {
-    if (this.readyHolders.length === 0 && this.forwardDOM !== null) {
+  tryEmitReady(_data) {
+    if (this.readyHolders.length === 0 && this.forwardDOM !== null && this.isRendering === false) {
+      this.tryEventScope('ready', {
+        nth: this.readyCounter,
+        test: _data
+      }, null);
+      this.readyCounter++;
 
-
-      if (!this.readyCounter) {
-
-        this.tryEventScope('ready', {
-          nth: this.readyCounter
-        }, null);
-
-        this.readyCounter = 1;
-      } else {
-
-        this.tryEventScope('nth-ready', {
-          nth: this.readyCounter
-        }, null);
-
-        this.readyCounter = this.readyCounter + 1;
-      }
+      // if (this.readyCounter === 0) {
+      //
+      //   this.tryEventScope('ready', {
+      //     nth: this.readyCounter
+      //   }, null);
+      //
+      //   this.readyCounter = 1;
+      // } else {
+      //
+      //   this.tryEventScope('nth-ready', {
+      //     nth: this.readyCounter
+      //   }, null);
+      //
+      //   this.readyCounter = this.readyCounter + 1;
+      // }
     }
   }
 

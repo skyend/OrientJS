@@ -443,16 +443,15 @@ class RefElementNode extends HTMLElementNode {
       ///////////// READY ////////////////////////////////////////////////////
       let parent = this.parent || this.componentOwner;
       let upperRenderDetacher = parent.getRenderDetacher();
-      this.registerReadyHolder('me-ref', this);
       upperRenderDetacher.registerReadyHolder('ref', this);
-
+      this.registerReadyHolder('me-ref', this);
+      //alert('registerReadyHolder  ME', this.id);
       // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      this.addRuntimeEventListener(this.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
+      this.addRuntimeEventListener('ready', () => {
+        // 한번 사용한 listener 는 해제한다.
+        this.removeRuntimeEventListener('ready', 'ref');
 
         upperRenderDetacher.releaseReadyHolder('ref', this);
-
-        // 한번 사용한 listener 는 해제한다.
-        this.removeRuntimeEventListener(this.readyCounter > 0 ? 'nth-ready' : 'ready', 'ref');
       }, 'ref');
       ///////////// READY ////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
@@ -543,14 +542,15 @@ class RefElementNode extends HTMLElementNode {
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
-      masterElementNode.addRuntimeEventListener(masterElementNode.readyCounter > 0 ? 'nth-ready' : 'ready', () => {
-        masterElementNode.removeRuntimeEventListener(masterElementNode.readyCounter > 0 ? 'nth-ready' : 'ready', 'ref');
+      masterElementNode.addRuntimeEventListener('ready', () => {
+        masterElementNode.removeRuntimeEventListener('ready', 'ref');
 
 
         masterElementNodesReadiesCount++;
 
         if (masterElementNodesReadiesCount === this.masterElementNodes.length) {
           this.releaseReadyHolder('me-ref', this);
+          // alert('releaseReadyHolder ref')
         }
 
         // 한번 사용한 listener 는 해제한다.
@@ -565,7 +565,6 @@ class RefElementNode extends HTMLElementNode {
       masterElementNode.upperContainer = this;
       masterElementNode.componentOwner = this;
       masterElementNode.render(_options, false, i);
-
 
 
     }

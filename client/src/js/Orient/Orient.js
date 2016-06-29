@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.0';
+const VERSION = '0.18.1';
 
 /*
   Version : x.y.z
@@ -97,6 +97,12 @@ const VERSION = '0.18.0';
       최초 ready 는 ready 라는 이름으로 이벤트가 발생하며 뒤이어 n(n > 1)번째 발생하는 ready 는 nth-ready 라는 이름으로 이벤트가 발생한다.
     * ready counter 의 값에 따라 nth-ready 로 ready를 발생 할 지 nth-ready로 발생할지 결정한다.
     * 최초 ready 는 nth 값이 0이며 그 이후발생하는 nth는 ready 횟수에 따라 결정된다.
+  - 0.18.1 (2016-06-30T02:00)
+    * tryEmitReady 를 실행 할 때 isRendering 플래그도 함께 체크하도록 변경 랜더링흐름을 타는 중 프래그먼트 로딩을 시작하고 로딩이 완료
+      되면 랜더링흐름중 ready가 발생하여 프래그먼트의 내부프래그먼트가 로딩될 때 마다 ready가 발생하는 버그 수정
+    ToDo
+      * Hidden 과 함께 동작하는 DC에서 readyHolder가 잔류하는 버그가 있음. KOP main/prodWrap.html 에서 버그 확인 가능
+
 */
 
 

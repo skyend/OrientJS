@@ -146,6 +146,9 @@ class HTTPRequest {
       }
     }
 
+    if (window.ORBIT_DISABLE_AJAX_CACHE)
+      _data['cache_escape'] = HTTPRequest.complexify_cacher();
+
     // 크로스 도메인확인
     // URL이 현재 protocol 과 host 가 일치하는지 확인한다.
     if ((new RegExp('^' + location.protocol + '//' + location.host + '/')).test(url) || /^\.\.?\//.test(url)) {
@@ -570,6 +573,10 @@ class HTTPRequest {
 
   static generate_ie9_timestamp() {
     return Date.now() + Math.random();
+  }
+
+  static complexify_cacher() {
+    return Date.now() + '' + Math.random();
   }
 }
 //

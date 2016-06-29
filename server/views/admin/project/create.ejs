@@ -60,7 +60,7 @@
   </head>
   <body class="hold-transition skin-black sidebar-mini">
   <div id='wrapper' en-id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}'
-  en-event-ready='{{ alert("ready"+ feature@event.nth ) }}'
+  en-event-ready='{{ alert("Ready Wrapper"+ feature@event.nth ) }}'
   en-event-nth-ready='{{ alert( "nth ready"+ feature@event.nth ) }}'>
 
     <%- include ../common/head.ejs %>
@@ -181,16 +181,16 @@
                        repeat Test B-{{: en@repeat-n }}
                       </div>
                     </div>
-                    <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-first' en-event-ready='{{: console.log("first Ready", this.getDOMNode().innerHTML )}}'>
+                    <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-first' en-event-readya='{{: console.log("first Ready", this.getDOMNode().innerHTML )}}'>
                       <pre>
                       {{:  JSON.stringify(ns@t) }}
                     </pre>
-                      <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-second' en-event-ready='{{: console.log("second Ready", this.getDOMNode().innerHTML )}}'>
+                      <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-second' en-event-readya='{{: console.log("second Ready", this.getDOMNode().innerHTML )}}'>
                         <pre>
                         {{:  JSON.stringify(ns@t) }}
                       </pre>
 
-                        <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-third' en-event-ready='{{: console.log("third Ready", this.getDOMNode().innerHTML )}}'>
+                        <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-third' en-event-readya='{{: console.log("third Ready", this.getDOMNode().innerHTML )}}'>
                           <pre>
                           {{:  JSON.stringify(ns@t) }}
                         </pre>
@@ -223,7 +223,10 @@
         </div>
 
 
-         <div class='col-lg-6' en-type='ref' en-ref-target-id='[html]console-panel.html' listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
+         <div class='col-lg-6' en-type='ref'
+         en-ref-target-id='[html]console-panel.html'
+         listen-names='create-project,work_start,work_progress,work_error,work_finish'
+         en-event-ready='{{: alert("Ready Console") }}'></div>
        </div>
 
       </section>
