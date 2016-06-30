@@ -59,9 +59,7 @@
     </script>
   </head>
   <body class="hold-transition skin-black sidebar-mini">
-  <div id='wrapper' en-id='wrapper' class="wrapper" test='{{: "aa" }}' style='{{: {WebkitTransition:"none"} }}'
-  en-event-ready='{{ alert("Ready Wrapper"+ feature@event.nth ) }}'
-  en-event-nth-ready='{{ alert( "nth ready"+ feature@event.nth ) }}'>
+  <div id='wrapper' en-id='wrapper' class="wrapper" trace style='{{: {WebkitTransition:"none"} }}' >
 
     <%- include ../common/head.ejs %>
 

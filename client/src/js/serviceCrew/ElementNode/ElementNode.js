@@ -3038,7 +3038,7 @@ class ElementNode {
 
   //////////////////////////
   // export methods
-  export (_withoutId, _idAppender) {
+  export (_withoutId, _idAppender, _withCompile) {
     var exportObject = {
       id: _withoutId ? undefined : this.id + (_idAppender || ''),
       name: this.getName(),
@@ -3125,6 +3125,15 @@ class ElementNode {
       exportObject.iln = this.ioListenNames;
 
     return exportObject;
+  }
+
+  compile() {
+    console.log('compile:' + this.id)
+    let exportObject = this.export(false, null, true);
+    console.log(JSON.stringify(exportObject));
+    let exportConstructString = `Orient.createNode()`;
+
+    return exportConstructString;
   }
 
   clone() {

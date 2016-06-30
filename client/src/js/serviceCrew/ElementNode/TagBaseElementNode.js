@@ -579,16 +579,16 @@ class TagBaseElementNode extends ElementNode {
               throw new Error("ElementNode Id로 @가 사용 될 수 없습니다.");
             }
 
-            this.setId(attrValue);
+            this.id = attrValue;
             break;
           case 'en-type':
-            this.setType(attrValue);
+            this.type = attrValue;
             break;
           case 'en-behavior':
             this.behavior = attrValue;
             break;
           case 'en-name':
-            this.setName(attrValue);
+            this.name = attrValue;
             break;
             // DynamicContext
           case 'en-dc-source-id':
@@ -726,8 +726,8 @@ class TagBaseElementNode extends ElementNode {
     });
   }
 
-  export (_withoutId, _idAppender) {
-    let result = super.export(_withoutId, _idAppender);
+  export (_withoutId, _idAppender, _withCompile) {
+    let result = super.export(_withoutId, _idAppender, _withCompile);
     result.beh = this.behavior;
     result.a = ObjectExtends.clone(this.attributes.map(function(_attribute) {
       return _attribute.export();

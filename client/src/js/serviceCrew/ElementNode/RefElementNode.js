@@ -900,8 +900,8 @@ class RefElementNode extends HTMLElementNode {
     return result;
   }
 
-  export (_withoutId) {
-    let result = super.export(_withoutId);
+  export (_withoutId, _idAppender, _withCompile) {
+    let result = super.export(_withoutId, _idAppender, _withCompile);
     result.reftid = this.refTargetId;
     result.refasync = this.refAsync;
     result.refar = this.refAlwaysRemount;

@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.3';
+const VERSION = '0.18.4';
 
 /*
   Version : x.y.z
@@ -110,6 +110,9 @@ const VERSION = '0.18.3';
             조건에서 제외하였다.
   - 0.18.3 (2016-06-30T16:20)
     * Value Scope Node 에 mapping-session 어트리뷰트 추가 session 에 mapping되어 값이 변경될때 value가 빌드될 때 양방향 매핑이 이루어짐
+  - 0.18.4 (2016-06-30T20:57)
+    * enableHTML 인 String type ElementNode 의 innerHTML을 가져 올 때 이스케이프된 <,>,& 문자들을 다시 unescape 하도록 한다.
+      (내부에 바인딩 블럭을 사용 하고 조건식을 사용 할 때 문제가 되었었음)
 
 */
 
@@ -240,6 +243,9 @@ class Neutron {
 
   }
 
+  static createNode() {
+
+  }
 
   static getNodeByDOM(_domElement) {
     if (!_domElement) throw new Error(`Could not get ElementNode. ${_domElement} is not DOMNode.`);

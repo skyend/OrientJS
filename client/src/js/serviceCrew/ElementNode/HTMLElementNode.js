@@ -567,19 +567,21 @@ class HTMLElementNode extends TagBaseElementNode {
     this.children = this.inspireChildren(_elementNodeDataObject.c || []);
   }
 
-  export (_withoutId, _idAppender) {
-    let result = super.export(_withoutId, _idAppender);
+  export (_withoutId, _idAppender, _withCompile) {
+    let result = super.export(_withoutId, _idAppender, _withCompile);
     result.c = [];
 
     this.children.map(function(_child) {
       if (!_child.isGhost) {
         // 자식이 고스트가 아닌경우만 export한다.
-        result.c.push(_child.export(_withoutId, _idAppender));
+
+
+        result.c.push(_withCompile ? _child.compile() : _child.export(_withoutId, _idAppender, _withCompile));
       } else {
 
         // 자식이 고스트이면서 반복된 요소일 떄는 export한다.
         if (!_child.isRepeated) {
-          result.c.push(_child.export(_withoutId, _idAppender));
+          result.c.push(_withCompile ? _child.compile() : _child.export(_withoutId, _idAppender, _withCompile));
         }
       }
 

@@ -1,6 +1,21 @@
 import ElementNode from './ElementNode.js';
 "use strict"
 
+const HTML_ESCAPE_SPECIALS = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;'
+};
+
+
+const HTML_ESCAPE_SPECIALS_REVERSE = {
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>'
+};
+
+const HTML_UNESCAPER_REGEXP = /((?:\&amp\;)|(?:\&lt\;)|(?:\&gt\;))/g;
+
 
 const FINAL_TYPE_CONTEXT = 'string';
 class StringElementNode extends ElementNode {
@@ -146,7 +161,10 @@ class StringElementNode extends ElementNode {
         this.enableHTML = false;
       }
 
-      this.setText(_stringNode.innerHTML);
+      this.setText(_stringNode.innerHTML.replace(HTML_UNESCAPER_REGEXP, function(_total, _1) {
+        return HTML_ESCAPE_SPECIALS_REVERSE[_1];
+      }));
+
       this.wrappingTag = _stringNode.nodeName;
     } else {
       this.setText(_stringNode.nodeValue);
@@ -154,6 +172,9 @@ class StringElementNode extends ElementNode {
     }
   }
 
+  unescapeHTMLSpecialChars(_html) {
+
+  }
 
 
   isTextEditMode() {
@@ -182,8 +203,8 @@ class StringElementNode extends ElementNode {
     this.wrappingTag = _elementNodeDataObject.wrtag || null;
   }
 
-  export (_withoutId, _idAppender) {
-    let result = super.export(_withoutId, _idAppender);
+  export (_withoutId, _idAppender, _withCompile) {
+    let result = super.export(_withoutId, _idAppender, _withCompile);
     result.text = this.getText();
     result.enhtml = this.enableHTML;
     result.wrtag = this.wrappingTag;
