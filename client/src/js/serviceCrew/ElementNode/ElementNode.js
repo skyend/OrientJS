@@ -2426,7 +2426,12 @@ class ElementNode {
         this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
       }
     } catch (_e) {
-      _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+      if (_e instanceof DOMException) {
+        console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+        throw _e;
+      } else {
+        _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+      }
       throw _e;
     }
   }
@@ -3131,7 +3136,7 @@ class ElementNode {
     console.log('compile:' + this.id)
     let exportObject = this.export(false, null, true);
     console.log(JSON.stringify(exportObject));
-    let exportConstructString = `Orient.createNode()`;
+    let exportConstructString = `Orient.createNode(${JSON.export})`;
 
     return exportConstructString;
   }

@@ -200,6 +200,30 @@ class Neutron {
     return componentContainer;
   }
 
+  static render_dev(_wrapper, _elementNode = null, _props = {}, _env = null) {
+    if (_elementNode) {
+
+      _elementNode.upperContainer = {
+        attachDOMChild: function(_idx, _mountChildDOM, _mountChild) {
+          _wrapper.appendChild(_mountChildDOM);
+        },
+
+        dettachDOMChild: function(_dom) {
+          _wrapper.removeChild(_dom);
+        }
+      };
+
+      _elementNode.render({
+        resolve: true
+      });
+    } else {
+      let wrapperElementNode = Neutron.buildComponentByElementSafeOrigin(_wrapper, _props, _env);
+      wrapperElementNode.render({
+        resolve: true
+      });
+    }
+  }
+
   static mount(_elementNode, _targetDOMElement) {
     _elementNode.attachForwardDOM(_targetDOMElement);
 
