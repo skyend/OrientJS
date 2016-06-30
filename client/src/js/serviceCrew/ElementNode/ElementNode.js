@@ -857,6 +857,7 @@ class ElementNode {
 
     let returnCount = _mountIndex;
 
+    // unmount render 모드 일 때는 DC를 실행하지 않는다.
     if (!_unmount)
       this.renderWithDC(_options)
 
@@ -886,7 +887,6 @@ class ElementNode {
           this.debug("render", "pass mount"); // DEBUG
 
           this.isRendering = false;
-
           this.tryEmitReady();
           return returnCount - 1;
         } else {
@@ -964,9 +964,7 @@ class ElementNode {
 
     //if (/wrapper|dc/.test(this.id)) console.log('>>> holders', this.id, this.readyHolders);
 
-    this.tryEmitReady({
-      renderEnd: true
-    });
+    this.tryEmitReady();
     return returnCount;
   }
 
@@ -1669,7 +1667,7 @@ class ElementNode {
     두번째로 ready 가 될 때는 update-ready를 발생시킨다.
   */
   tryEmitReady(_data) {
-    if (this.readyHolders.length === 0 && this.forwardDOM !== null && this.isRendering === false) {
+    if (this.readyHolders.length === 0 && this.isRendering === false) {
       this.tryEventScope('ready', {
         nth: this.readyCounter,
         test: _data

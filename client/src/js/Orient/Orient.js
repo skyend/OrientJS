@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.1';
+const VERSION = '0.18.2';
 
 /*
   Version : x.y.z
@@ -102,6 +102,12 @@ const VERSION = '0.18.1';
       되면 랜더링흐름중 ready가 발생하여 프래그먼트의 내부프래그먼트가 로딩될 때 마다 ready가 발생하는 버그 수정
     ToDo
       * Hidden 과 함께 동작하는 DC에서 readyHolder가 잔류하는 버그가 있음. KOP main/prodWrap.html 에서 버그 확인 가능
+  - 0.18.2 (2016-06-30T14:33)
+      * Hidden 으로 판정된 상태에서 DC로딩을 시작하여 완료가 되었을 때는 forwardDOM이 존재하지 않는다. 사실 Hidden으로 판정되면 자식을 랜더링 하지 않고
+        그 상태에서 DC가 로딩이 완료 되면 ready가 가능한 상태가 된다. 하지만 forwarDOM은 존재 하지않으므로 ready 를 시도하여도 할 수 없었다.
+        -> 그래서 ready가 가능한 조건을 3개에서 2개로 줄였다. readyHolder가 비어있어야 하며 isRendering플래그가 false 여야 한다.
+            isRendering플래그가 false 이면 랜더링은 완료된 상태라고 볼 수 있기 때문이다. 랜더링이 완료 되어도 hidden으로 판정 될 경우 forwardDOM이 없으므로
+            조건에서 제외하였다.
 
 */
 

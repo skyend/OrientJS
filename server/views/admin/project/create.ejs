@@ -192,8 +192,17 @@
 
                         <div en-dc-source-id='[http]/service-static/config/admin.json' en-dc-ns='t' en-id='dc-third' en-event-readya='{{: console.log("third Ready", this.getDOMNode().innerHTML )}}'>
                           <pre>
-                          {{:  JSON.stringify(ns@t) }}
-                        </pre>
+                            {{:  JSON.stringify(ns@t) }}
+                          </pre>
+                        </div>
+                        <div
+                          en-dc-source-id='[http]/service-static/config/admin.json'
+                          en-dc-ns='t'
+                          en-id='dc-third'
+                          en-ctrl-hidden='{{: false }}'>
+                          <pre>
+                            {{:  JSON.stringify(ns@t) }}
+                          </pre>
                         </div>
                       </div>
                     </div>
@@ -225,8 +234,7 @@
 
          <div class='col-lg-6' en-type='ref'
          en-ref-target-id='[html]console-panel.html'
-         listen-names='create-project,work_start,work_progress,work_error,work_finish'
-         en-event-ready='{{: alert("Ready Console") }}'></div>
+         listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
        </div>
 
       </section>
