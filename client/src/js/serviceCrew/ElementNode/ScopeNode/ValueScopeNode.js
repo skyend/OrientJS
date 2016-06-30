@@ -3,6 +3,7 @@ import MetaText from '../../Data/MetaText';
 import MetaData from '../../Data/MetaData';
 import ObjectExtends from '../../../util/ObjectExtends';
 import GeneralLocation from '../../../util/GeneralLocation';
+import BrowserStorage from '../../../util/BrowserStorage';
 
 const DataTypes = Object.freeze({
   Number: "number",
@@ -29,20 +30,27 @@ class ValueScopeNode extends ScopeNode {
 
     this.type = 'value';
     this.scannedHashbang = false;
+    this.scannedSession = false;
 
     if (this.mappingHashbangParam) {
       let hashbangValue;
-      if (this.mappingHashbangParam === true) {
-        hashbangValue = GeneralLocation.getHashbangParam(this.name);
-        if (hashbangValue !== null)
-          this.plainValue = hashbangValue;
-        this.scannedHashbang = true;
-      } else {
-        hashbangValue = GeneralLocation.getHashbangParam(this.mappingHashbangParam);
-        if (hashbangValue !== null)
-          this.plainValue = hashbangValue;
-        this.scannedHashbang = true;
-      }
+
+      hashbangValue = GeneralLocation.getHashbangParam(this.mappingHashbangParam === true ? this.name : this.mappingHashbangParam);
+      if (hashbangValue !== null)
+        this.plainValue = hashbangValue;
+
+      this.scannedHashbang = true;
+    }
+
+    if (this.mappingSession) {
+      let sessionValue;
+
+      sessionValue = BrowserStorage.getSession(this.mappingSession === true ? this.name : this.mappingSession);
+
+      if (sessionValue !== null)
+        this.shapeValue = sessionValue;
+
+      this.scannedSession = true;
     }
 
   }
@@ -108,11 +116,13 @@ class ValueScopeNode extends ScopeNode {
 
 
     if (this.mappingHashbangParam) {
-      if (this.mappingHashbangParam === true) {
-        GeneralLocation.setHashbangParam(this.name, _shape);
-      } else {
-        GeneralLocation.setHashbangParam(this.mappingHashbangParam, _shape);
-      }
+
+      GeneralLocation.setHashbangParam(this.mappingHashbangParam === true ? this.name : this.mappingHashbangParam, _shape);
+    }
+
+    if (this.mappingSession) {
+
+      BrowserStorage.setSession(this.mappingSession === true ? this.name : this.mappingSession, _shape);
     }
 
     switch (this.dataType) {
@@ -157,6 +167,9 @@ class ValueScopeNode extends ScopeNode {
     scopeSpecObject.initializer = _dom.getAttribute('initializer') !== null ? _dom.getAttribute('initializer') : null;
     if (_dom.hasAttribute('mapping-hashbang-param'))
       scopeSpecObject.mappingHashbangParam = _dom.getAttribute('mapping-hashbang-param') || true;
+
+    if (_dom.hasAttribute('mapping-session'))
+      scopeSpecObject.mappingSession = _dom.getAttribute('mapping-session') || true;
     return scopeSpecObject;
   }
 
@@ -167,6 +180,8 @@ class ValueScopeNode extends ScopeNode {
     this.value = new MetaText(_scopeData.value || '');
     this.initializer = _scopeData.initializer;
     this.mappingHashbangParam = _scopeData.mappingHashbangParam;
+    this.mappingSession = _scopeData.mappingSession;
+
   }
 
   export () {
@@ -176,6 +191,7 @@ class ValueScopeNode extends ScopeNode {
     exportObject.value = ObjectExtends.clone(this.value.export());
     exportObject.initializer = this.initializer;
     exportObject.mappingHashbangParam = this.mappingHashbangParam;
+    exportObject.mappingSession = this.mappingSession;
     return exportObject;
   }
 }

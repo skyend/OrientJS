@@ -30,7 +30,7 @@ const BROWSER_VER = parseInt(browser.version);
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.2';
+const VERSION = '0.18.3';
 
 /*
   Version : x.y.z
@@ -108,6 +108,8 @@ const VERSION = '0.18.2';
         -> 그래서 ready가 가능한 조건을 3개에서 2개로 줄였다. readyHolder가 비어있어야 하며 isRendering플래그가 false 여야 한다.
             isRendering플래그가 false 이면 랜더링은 완료된 상태라고 볼 수 있기 때문이다. 랜더링이 완료 되어도 hidden으로 판정 될 경우 forwardDOM이 없으므로
             조건에서 제외하였다.
+  - 0.18.3 (2016-06-30T16:20)
+    * Value Scope Node 에 mapping-session 어트리뷰트 추가 session 에 mapping되어 값이 변경될때 value가 빌드될 때 양방향 매핑이 이루어짐
 
 */
 

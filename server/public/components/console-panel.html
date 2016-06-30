@@ -39,7 +39,7 @@
             break;
           case "work_finish":
             cdate = new Date(data.time).toLocaleString();
-
+            
             nextText = prevText + '\n<span class="text-gray">' + cdate + '</span> - [WorkFinish] '+ data.work_name;
             break;
           default :
@@ -54,9 +54,6 @@
       </script>
       <span en-type='string' en-enableHtml>{{: val@server-message }}</span>
 
-      <div class='col-lg-6' en-type='ref' en-ref-target-id='[html]modal.html' listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
-        <div class='col-lg-6' en-type='ref' en-ref-target-id='[html]modal.html' listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
-      <div class='col-lg-6' en-type='ref' en-ref-target-id='[html]bigTestComponent.html' listen-names='create-project,work_start,work_progress,work_error,work_finish'></div>
   </pre>
 
 
