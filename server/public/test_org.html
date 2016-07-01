@@ -184,7 +184,7 @@
     function _orient() {
       //var instance =
       var runOrient = document.getElementById("run-orient");
-      runOrient.addEventListener("click", function() {
+      runOrient.addEventListener("click", function trigger() {
 
         var data = _buildData(),
 
@@ -192,7 +192,6 @@
 
           Orient.render_dev(document.getElementById("orient-wrapper"),null, {items:data});
 
-          document.getElementById("orient-wrapper")
 
         runOrient.innerHTML = (new Date() - date) + " ms";
       });

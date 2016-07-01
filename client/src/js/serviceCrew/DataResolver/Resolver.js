@@ -507,47 +507,6 @@ class Resolver {
     }
   }
 
-  //
-  //
-  // resolveWithNS(_description) {
-  //   /*
-  //     문법 설명
-  //
-  //     값을 그대로 가져와 반환하는 형태 ${*broadcast_series/count}
-  //
-  //     가져온 값을 가공하여 반환하는 형태 ${broadcast_series/items:MethodName}
-  //     ${PATH:Method:ARG1:ARG2:...}
-  //     지원 Methods
-  //       * length : ${broadcast_series/items:length}
-  //   */
-  //
-  //   // ':' 기준으로 내용을 분리하여 배열로 담아낸다.
-  //   let splited = _description.split(':');
-  //
-  //   // splitPathAndMethod[0] Main 데이터 패스
-  //   let result = this.getNSData(splited.shift());
-  //   //console.log(result);
-  //   // 메인 데이터패스가 제외된 splited 배열의 길이가 2이며 메인 데이터가 undefined 가 아닐 때 메소드 처리를 거친다.
-  //   // 0번째 요소는 메소드명이며
-  //   // 1번째 이상 요소는 메소드의 인자로 사용된다.
-  //   // ~인자는 NS데이터 패스가 될 수 있다.~
-  //   if (splited.length >= 1 && result !== undefined) {
-  //     let methodName = splited[0];
-  //
-  //     switch (methodName) {
-  //       case "length":
-  //         return result.length;
-  //       case "currency":
-  //         return Accounting.formatMoney(result, splited[1] || '', splited[2], splited[3]);
-  //       case "date":
-  //         return dateResolver(result, splited[1]);
-  //     }
-  //   } else if (result !== undefined) {
-  //     return result;
-  //   }
-  //
-  //   return undefined;
-  // }
 
   resolveWithHttpParam(_description) {
     let httpParamPairs = window.location.search.replace(/^\?/, '').split('&');
