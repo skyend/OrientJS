@@ -386,6 +386,14 @@ class Neutron {
     return GeneralLocation;
   }
 
+  onTraceDebug() {
+    Neutron.ON_TRACE_DEBUGGER = true;
+  }
+
+  offTraceDebug() {
+    Neutron.ON_TRACE_DEBUGGER = false;
+  }
+
   /*
     ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
     ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██

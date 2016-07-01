@@ -218,7 +218,7 @@ class Resolver {
       this.argsMapDict[_syntax] = argsMap;
     }
 
-    argsMap = argsMap.map(function(_argHolder, _i) {
+    argsMap = argsMap.map(function mappingArgument(_argHolder, _i) {
       //console.log(_syntax);
       return that.__getInterpretVar(_argHolder, _externalGetterInterface, _defaultDataObject, _caller);
     });
@@ -259,9 +259,9 @@ class Resolver {
     let functionResult;
 
     // ABC@ABC 는 모두 치환하여 변수로 사용한다.
-    let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_\#]+(:\w+)?/g, function(_matched) {
+    let functionBody = _syntax.replace(/[\w\-\_]*\@[\w\-\_\#]+(:\w+)?/g, function bindValueReplacer(_matched) {
 
-      alreadyIndex = ArrayHandler.findIndex(argumentsMap, function(_argName) {
+      alreadyIndex = ArrayHandler.findIndex(argumentsMap, function checkAlready(_argName) {
         return _argName === _matched;
       });
 
@@ -282,7 +282,8 @@ class Resolver {
 
     // auto 리턴 플래그가 포함 된 경우 식 블럭을 괄호로 감싸 줄바꿈이 포람된 경우에도 유효한 반환을 하도록 한다.
     let isAutoReturn = false;
-    functionBody = functionBody.replace(/^((<<)|(&lt;&lt;)|(:)|(&#58;))/, function(_full, _matched) {
+    // rr: returnReplacer
+    functionBody = functionBody.replace(/^(:)|(&#58;)/, function rr(_full, _matched) {
       isAutoReturn = true;
       return "return ( ";
     });

@@ -441,18 +441,20 @@ class RefElementNode extends HTMLElementNode {
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
-      let parent = this.parent || this.componentOwner;
-      let upperRenderDetacher = parent.getRenderDetacher();
-      upperRenderDetacher.registerReadyHolder('ref', this);
-      this.registerReadyHolder('me-ref', this);
-      //alert('registerReadyHolder  ME', this.id);
-      // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      this.addRuntimeEventListener('ready', () => {
-        // 한번 사용한 listener 는 해제한다.
-        this.removeRuntimeEventListener('ready', 'ref');
+      let renderDetacherParent = this.parent || this.componentOwner;
+      if (renderDetacherParent) {
+        let upperRenderDetacher = renderDetacherParent.getRenderDetacher();
+        upperRenderDetacher.registerReadyHolder('ref', this);
+        this.registerReadyHolder('me-ref', this);
+        //alert('registerReadyHolder  ME', this.id);
+        // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
+        this.addRuntimeEventListener('ready', () => {
+          // 한번 사용한 listener 는 해제한다.
+          this.removeRuntimeEventListener('ready', 'ref');
 
-        upperRenderDetacher.releaseReadyHolder('ref', this);
-      }, 'ref');
+          upperRenderDetacher.releaseReadyHolder('ref', this);
+        }, 'ref');
+      }
       ///////////// READY ////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
 

@@ -767,7 +767,7 @@ class ElementNode {
   mountComponent(_options, _mountIndex) {
 
 
-    this.debug('mount', 'called mountComponent');
+    Orient.ON_TRACE_DEBUGGER && this.debug('mount', 'called mountComponent');
 
     let domnode = this.createNode(_options);
     let mountIndex = _mountIndex;
@@ -786,7 +786,7 @@ class ElementNode {
 
   // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
   unmountComponent(_options) {
-    this.debug('unmount', 'called unmountComponent');
+    Orient.ON_TRACE_DEBUGGER && this.debug('unmount', 'called unmountComponent');
 
     //console.log('unmount');
     if (this.upperContainer) {
@@ -811,7 +811,7 @@ class ElementNode {
 
   // this.forwardDOM이 존재할 때
   updateComponent(_options, _mountIndex) {
-    this.debug('update', 'called updateComponent');
+    Orient.ON_TRACE_DEBUGGER && this.debug('update', 'called updateComponent');
 
     let domNode = this.getDOMNode();
     this.mappingAttributes(domNode, _options);
@@ -853,7 +853,7 @@ class ElementNode {
 
     // this.connectSocketIO();
 
-    this.debug("render", "render start", _options, `MountIdx : ${_mountIndex}`);
+    Orient.ON_TRACE_DEBUGGER && this.debug("render", "render start", _options, `MountIdx : ${_mountIndex}`);
 
     let returnCount = _mountIndex;
 
@@ -884,23 +884,22 @@ class ElementNode {
           //#### Pass mount #####
           //#####################
           // console.log('$$Pass Mount ', this.dynamicContextNS)
-          this.debug("render", "pass mount"); // DEBUG
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "pass mount"); // DEBUG
 
           this.isRendering = false;
           this.tryEmitReady();
           return returnCount - 1;
         } else {
-          //#####################
+          //#####################DD
           //####### Mount #######
           //#####################
           // console.log('$$ Mount ', this.dynamicContextNS)
-          this.debug("render", "will mount", _options); // DEBUG
-          this.tryEventScope('component-will-mount', null, null, (_result) => {
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will mount", _options); // DEBUG
+          this.tryEventScope('component-will-mount', null, null);
+          this.mountComponent(_options, _mountIndex);
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did mount", _options); // DEBUG
+          this.tryEventScope('component-did-mount', null, null);
 
-            this.mountComponent(_options, _mountIndex);
-            this.debug("render", "did mount", _options); // DEBUG
-            this.tryEventScope('component-did-mount', null, null);
-          });
         }
 
       } else {
@@ -914,13 +913,13 @@ class ElementNode {
           //##########################
 
 
-          this.debug("render", "will unmount", _options); // DEBUG
-          this.tryEventScope('component-will-unmount', null, null, (_result) => {
-            this.unmountComponent(_options);
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
+          this.tryEventScope('component-will-unmount', null, null);
+          this.unmountComponent(_options);
 
-            this.debug("render", "did unmount", _options); // DEBUG
-            this.tryEventScope('component-did-unmount', null, null);
-          });
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
+          this.tryEventScope('component-did-unmount', null, null);
+
 
           returnCount = returnCount - 1;
         } else {
@@ -931,15 +930,14 @@ class ElementNode {
           this.scopesResolve();
           //            this.renderWithDC(_options)
 
-          this.debug("render", "will update", _options); // DEBUG
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will update", _options); // DEBUG
 
-          this.tryEventScope('component-will-update', null, null, (_result) => {
-            this.updateComponent(_options, _mountIndex);
+          this.tryEventScope('component-will-update', null, null);
+          this.updateComponent(_options, _mountIndex);
 
-            this.debug("render", "did update", _options); // DEBUG
-            this.tryEventScope('component-did-update', null, null);
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did update", _options); // DEBUG
+          this.tryEventScope('component-did-update', null, null);
 
-          });
         }
       }
 
@@ -950,11 +948,11 @@ class ElementNode {
 
       if (domNode !== null) {
 
-        this.debug("render", "will unmount", _options); // DEBUG
+        Orient.ON_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
         this.tryEventScope('component-will-unmount', null, null, (_result) => {
           this.unmountComponent(_options);
 
-          this.debug("render", "did unmount", _options); // DEBUG
+          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
           this.tryEventScope('component-did-unmount', null, null);
         });
       }
@@ -982,23 +980,23 @@ class ElementNode {
       //
       // active 모드인 경우
       if (this.dynamicContextPassive !== true) {
-        this.debug('dc', 'is active');
+        Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'is active');
         // console.log('&& ---- 01 -- ', this.dynamicContextNS);
 
         // keepDC 가 부정 일 때
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
-          this.debug('dc', 'execute');
+          Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'execute');
           // console.log('&& ---- 02 -- ', this.dynamicContextNS);
           // DC실행
           this.executeDynamicContext(_options);
 
         } else if (_options.keepDC === 'once') {
           // console.log('&& ---- 03 -- ', this.dynamicContextNS);
-          this.debug('dc', 'once ignore.');
+          Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'once ignore.');
           _options.keepDC = false;
         }
       } else {
-        this.debug('dc', 'is passive');
+        Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'is passive');
       }
     }
   }
@@ -1086,20 +1084,22 @@ class ElementNode {
       // 지금 등록한 readyHolder 는 DC로드가완료되고 첫번째 랜더링 흐름이 완료 된 후 readyHolder를 완료 한다.
       // 그렇게 하면 첫번째 랜더링 흐름때 자기 하위의 readyHolder를 감지 할 것이고 자식들이 사용하는 readyHolder 가 release되지 않는 이상 자신의 레디는 발생하지
       // 않을 것이다.
-      let parent = that.parent || that.componentOwner;
-      let upperRenderDetacher = parent.getRenderDetacher();
-      that.registerReadyHolder('me-dc', that);
+      let renderDetacherParent = that.parent || that.componentOwner;
+      if (renderDetacherParent) {
+        let upperRenderDetacher = renderDetacherParent.getRenderDetacher();
+        that.registerReadyHolder('me-dc', that);
 
-      upperRenderDetacher.registerReadyHolder('dc', that);
-      let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
-      // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
-      that.addRuntimeEventListener('ready', () => {
-        that.removeRuntimeEventListener('ready', 'dc');
+        upperRenderDetacher.registerReadyHolder('dc', that);
+        let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
+        // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
+        that.addRuntimeEventListener('ready', () => {
+          that.removeRuntimeEventListener('ready', 'dc');
 
 
-        upperRenderDetacher.releaseReadyHolder('dc', that);
-        // 한번 사용한 listener 는 해제한다.
-      }, 'dc');
+          upperRenderDetacher.releaseReadyHolder('dc', that);
+          // 한번 사용한 listener 는 해제한다.
+        }, 'dc');
+      }
       ///////////// READY ////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////
@@ -2455,7 +2455,7 @@ class ElementNode {
       this.__executeEventAsInterpret(_desc, _elementNodeEvent, _originDomEvent, _completeProcess);
     } else if (_desc.match(EVENT_TASK_MATCHER) !== null) {
 
-      let scope = this.interpret(`{{<< ${_desc}}}`);
+      let scope = this.interpret(`{{: ${_desc}}}`);
       if (!scope) throw new Error(` ${_desc} Task 를 찾지 못 하였습니다.`);
 
 
@@ -2698,7 +2698,7 @@ class ElementNode {
   }
 
   __getTask(_taskName) {
-    return this.interpret(`{{<< task@${_taskName}}}`);
+    return this.interpret(`{{: task@${_taskName}}}`);
   }
 
   // Event end

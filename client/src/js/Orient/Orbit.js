@@ -18,7 +18,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.7';
+const VERSION = '0.13.8';
 
 /*
   Version : x.y.z
@@ -42,6 +42,8 @@ const VERSION = '0.13.7';
   - 0.13.7 (2016-06-26T14:45)
     * foundationCompatibility 함수에서 두번째 인자는 earlyScripts로딩을 완료 한 뒤에 호출하는 콜백으로 콜백을 호출 할 때 next 콜백함수를 넘겨준다.
       외부에서 입력된 foundationCompatibility 두번째 인자함수 내에서 next콜백을 호출 하면 최초 랜더링이 시작된다.
+  - 0.13.8 (2016-07-01T16:30)
+    * orbit.ready 는 body가 ready될 때 발생하도록 변경
 */
 
 class Orbit {
@@ -117,6 +119,10 @@ class Orbit {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
         window.DEBUG_OCCURS_HTTP_REQUEST_LOG = true;
         window.ORIENT_OCCURS_BIND_ERROR = true;
+        window.addEventListener('load', function() {
+
+          Orient.onTraceDebug();
+        })
       }
     });
 
@@ -183,7 +189,7 @@ class Orbit {
       throw new Error(`Page Meta Script Tag 에 문법적인 문제가 있습니다. ${_e}`);
     }
 
-    // Early Scripts
+    // Early Script
     this.orbitDocument.loadExtraJSSerial(pageMeta.earlyScripts || [], (_failures) => {
       // Early Scipts 로드완료
 
@@ -238,12 +244,16 @@ class Orbit {
       if (_beforeRenderCallback) {
         _beforeRenderCallback(function next() {
 
-          that.foundationCompatibilityRender(_selector);
-          _nextCallback();
+          that.foundationCompatibilityRender(_selector, function() {
+
+            _nextCallback();
+          });
         });
       } else {
-        that.foundationCompatibilityRender(_selector);
-        _nextCallback();
+        that.foundationCompatibilityRender(_selector, function() {
+
+          _nextCallback();
+        });
       }
     }, () => {
       // Scripts 로드 완료시 호출 됨
@@ -254,7 +264,7 @@ class Orbit {
     });
   }
 
-  foundationCompatibilityRender(_selector) {
+  foundationCompatibilityRender(_selector, _callback) {
     let targetDomNodes, targetDomNode;
     if (_selector) {
       targetDomNodes = this.orbitDocument.document.querySelectorAll(_selector);
@@ -263,6 +273,7 @@ class Orbit {
     }
 
     console.time && console.time("First Built up");
+    let readyCounter = 0;
     for (let i = 0; i < targetDomNodes.length; i++) {
       targetDomNode = targetDomNodes[i];
       // var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
@@ -270,15 +281,32 @@ class Orbit {
       // Orient.replaceRender(masterElementNode, targetDomNode);
 
       var masterElementNode = Orient.buildComponentByElementSafeOrigin(targetDomNode, {}, this);
+
+
+      masterElementNode.addRuntimeEventListener('ready', () => {
+        masterElementNode.removeRuntimeEventListener('ready', 'orbit-ready');
+        readyCounter++;
+
+        if (readyCounter === targetDomNodes.length) {
+
+
+
+          _callback();
+        }
+      }, 'orbit-ready');
+
+
       masterElementNode.render({
         resolve: true
       });
     }
-    console.timeEnd && console.timeEnd("First Built up");
 
     if (this.bodyAppearControlStyleDOM) {
       this.bodyAppear();
     }
+
+    console.timeEnd && console.timeEnd("First Built up");
+
   }
 
   // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.

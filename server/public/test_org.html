@@ -159,55 +159,7 @@
                 React.createElement("span", {
                   className: this.props.selected === this.props.data[i].id ? "selected" : "",
                   onClick: this.select.bind(null, this.props.data[i])
-                }, [
-                  this.props.data[i].label,
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [this.props.data[i].label]),
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [this.props.data[i].label]),
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [this.props.data[i].label]),
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [this.props.data[i].label]),
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [this.props.data[i].label]),
-                  React.createElement("span", {
-                    className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                    onClick: this.select.bind(null, this.props.data[i])
-                  }, [
-                    this.props.data[i].label,
-                    React.createElement("span", {
-                      className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                      onClick: this.select.bind(null, this.props.data[i])
-                    }, [this.props.data[i].label]),
-                    React.createElement("span", {
-                      className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                      onClick: this.select.bind(null, this.props.data[i])
-                    }, [this.props.data[i].label]),
-                    React.createElement("span", {
-                      className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                      onClick: this.select.bind(null, this.props.data[i])
-                    }, [this.props.data[i].label]),
-                    React.createElement("span", {
-                      className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                      onClick: this.select.bind(null, this.props.data[i])
-                    }, [this.props.data[i].label]),
-                    React.createElement("span", {
-                      className: this.props.selected === this.props.data[i].id ? "selected" : "",
-                      onClick: this.select.bind(null, this.props.data[i])
-                    }, [this.props.data[i].label]),
-                  ]),
-                ])
+                },  this.props.data[i].label  )
               )
             ));
           }
@@ -323,39 +275,6 @@
             <span ng-class="{ selected: item.id === $parent.selected }"
               ng-click="select(item)">
               {{item.label}}
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-              </span>
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-              </span>
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-              </span>
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-              </span>
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-              </span>
-              <span ng-class="{ selected: item.id === $parent.selected }">
-                {{item.label}}
-                <span ng-class="{ selected: item.id === $parent.selected }">
-                  {{item.label}}
-                </span>
-                <span ng-class="{ selected: item.id === $parent.selected }">
-                  {{item.label}}
-                </span>
-                <span ng-class="{ selected: item.id === $parent.selected }">
-                  {{item.label}}
-                </span>
-                <span ng-class="{ selected: item.id === $parent.selected }">
-                  {{item.label}}
-                </span>
-                <span ng-class="{ selected: item.id === $parent.selected }">
-                  {{item.label}}
-                </span>
-              </span>
             </span>
           </div>
         </div>
@@ -398,19 +317,6 @@
           <div class="col-md-12 test-data">
             <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>
               {{: en@repeat-item.label }}
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>
-                {{: en@repeat-item.label }}
-                <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-                <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-                <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-                <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-                <span class='{{: val@selected === en@repeat-item.label ? "selected":""}}'>{{: en@repeat-item.label }}</span>
-              </span>
             </span>
           </div>
         </div>

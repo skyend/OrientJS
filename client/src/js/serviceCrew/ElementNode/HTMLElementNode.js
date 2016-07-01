@@ -139,14 +139,14 @@ class HTMLElementNode extends TagBaseElementNode {
   mountComponent(_options, _parentCount, _mountIndex) {
     super.mountComponent(_options, _parentCount, _mountIndex);
 
-    this.debug('render', '[html] Will render children from mount component');
+    Orient.ON_TRACE_DEBUGGER && this.debug('render', '[html] Will render children from mount component');
     this.renderChild(_options, _parentCount);
   }
 
   updateComponent(_options, _parentCount, _mountIndex) {
     super.updateComponent(_options, _parentCount, _mountIndex);
 
-    this.debug('render', '[html] Will render children from update component');
+    Orient.ON_TRACE_DEBUGGER && this.debug('render', '[html] Will render children from update component');
     this.renderChild(_options, _parentCount);
   }
 
@@ -195,10 +195,10 @@ class HTMLElementNode extends TagBaseElementNode {
             dontcareMissed: true
           }, true);
         }
-        let stackedExportDate = 0,
-          stackedBuildDate = 0,
-          stackedRenderDate = 0;
-        let date, _futureDate;
+        // let stackedExportDate = 0,
+        //   stackedBuildDate = 0,
+        //   stackedRenderDate = 0;
+        // let date, _futureDate;
 
         let exported;
         for (let repeat_i = 0; repeat_i < Math.max(repeatCount, prevRepeatLength); repeat_i++) {
@@ -207,12 +207,12 @@ class HTMLElementNode extends TagBaseElementNode {
 
             // clonePool 인덱스에 해당하는 요소가 존재 하지 않는 경우 복제하여 clonePool에 push
             if (!repeat_child) {
-              date = new Date();
+              // date = new Date();
               exported = child.export(false, `@${repeat_i}`);
-              _futureDate = new Date();
+              // _futureDate = new Date();
 
-              stackedExportDate += _futureDate - date;
-              date = new Date();
+              // stackedExportDate += _futureDate - date;
+              // date = new Date();
 
               repeat_child = Factory.takeElementNode(exported, {
                 isGhost: true,
@@ -221,8 +221,8 @@ class HTMLElementNode extends TagBaseElementNode {
                 isRepeated: true
               }, child.getType(), child.environment, null);
 
-              _futureDate = new Date();
-              stackedBuildDate += _futureDate - date;
+              // _futureDate = new Date();
+              // stackedBuildDate += _futureDate - date;
 
               child.clonePool.push(repeat_child);
             } else {
@@ -232,11 +232,11 @@ class HTMLElementNode extends TagBaseElementNode {
             repeat_child.parent = this;
             repeat_child.upperContainer = this;
 
-            date = new Date();
+            // date = new Date();
             count = repeat_child.render(_options, false, count);
-            _futureDate = new Date();
+            // _futureDate = new Date();
 
-            stackedRenderDate += _futureDate - date;
+            // stackedRenderDate += _futureDate - date;
             count++;
           } else {
             // 현재 반복 인덱스보다 높은 요소는 unmount 진행
@@ -246,7 +246,7 @@ class HTMLElementNode extends TagBaseElementNode {
           }
 
         }
-        console.log(stackedExportDate, stackedBuildDate, stackedRenderDate);
+        // console.log(stackedExportDate, stackedBuildDate, stackedRenderDate);
       } else {
         count = child.render(_options, false, count);
         count++;
