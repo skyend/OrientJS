@@ -746,7 +746,9 @@ class RefElementNode extends HTMLElementNode {
     try {
       masterElementNodes = this.convertMastersByType(_type, undefined, _sheet);
     } catch (_e) {
-      this.print_console_error(`Fail build ${_targetId} to components. native:${_e} \n${this.DEBUG_FILE_NAME_EXPLAIN}\n${_sheet}`);
+
+      this.print_console_warn(`Fail build ${_targetId} to components. native:${_e} \n${this.DEBUG_FILE_NAME_EXPLAIN}\n${_sheet}`);
+      throw _e;
     }
 
     console.timeEnd(`Build Component Sheet - ${_targetId}`);

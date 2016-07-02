@@ -379,7 +379,7 @@ class Resolver {
         if (valueScope) {
 
           try {
-            data = valueScope.shapeValue;
+            data = valueScope.get();
           } catch (_e) {
             throw _e;
           }

@@ -1,6 +1,7 @@
 import ElementNode from './ElementNode.js';
 import ObjectExtends from '../../util/ObjectExtends';
 import MetaText from '../Data/MetaText';
+import MetaData from '../Data/MetaData';
 import ArrayHandler from '../../util/ArrayHandler';
 
 "use strict";
@@ -722,7 +723,7 @@ class TagBaseElementNode extends ElementNode {
     this.behavior = _elementNodeDataObject.beh;
     this.attributes = _elementNodeDataObject.a || [];
     this.attributes = this.attributes.map(function(_attributeO) {
-      return new MetaText(_attributeO);
+      return new MetaData(_attributeO);
     });
   }
 

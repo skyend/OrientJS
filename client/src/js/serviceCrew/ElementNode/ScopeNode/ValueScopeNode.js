@@ -4,6 +4,7 @@ import MetaData from '../../Data/MetaData';
 import ObjectExtends from '../../../util/ObjectExtends';
 import GeneralLocation from '../../../util/GeneralLocation';
 import BrowserStorage from '../../../util/BrowserStorage';
+import TypeCaster from '../../../util/TypeCaster';
 
 const DataTypes = Object.freeze({
   Number: "number",
@@ -144,6 +145,15 @@ class ValueScopeNode extends ScopeNode {
     }
   }
 
+  get() {
+    return this.value.variable;
+  }
+
+
+  set(_variable) {
+    this.value.variable = _variable;
+  }
+
   /**
   Task Implement
   **/
@@ -165,6 +175,7 @@ class ValueScopeNode extends ScopeNode {
     scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
     scopeSpecObject.resolveOn = _dom.getAttribute('resolve-on') !== null ? true : false;
     scopeSpecObject.initializer = _dom.getAttribute('initializer') !== null ? _dom.getAttribute('initializer') : null;
+
     if (_dom.hasAttribute('mapping-hashbang-param'))
       scopeSpecObject.mappingHashbangParam = _dom.getAttribute('mapping-hashbang-param') || true;
 
@@ -177,10 +188,42 @@ class ValueScopeNode extends ScopeNode {
     super.import(_scopeData);
     this.resolveOn = _scopeData.resolveOn;
     this.dataType = _scopeData.dataType;
-    this.value = new MetaText(_scopeData.value || '');
+    this.value = new MetaData(_scopeData.value || '');
     this.initializer = _scopeData.initializer;
     this.mappingHashbangParam = _scopeData.mappingHashbangParam;
     this.mappingSession = _scopeData.mappingSession;
+
+
+    if (!this.resolveOn) {
+
+      switch (this.dataType) {
+        case "string":
+          this.set(TypeCaster.toString(this.get()));
+          break;
+        case "number":
+          this.set(TypeCaster.toNumber(this.get()));
+          break;
+        case "object":
+          try {
+            this.set(TypeCaster.toObject(this.get()));
+          } catch (_e) {
+            console.warn(`${_scopeData.value} String 을 Object로 변환할 수 없습니다.`);
+            throw _e;
+          }
+          break;
+        case "array":
+          try {
+            this.set(TypeCaster.toArray(this.get()));
+          } catch (_e) {
+            console.warn(`${_scopeData.value} String 을 Array로 변환할 수 없습니다.`);
+            throw _e;
+          }
+          break;
+        case "boolean":
+          this.set(TypeCaster.toBoolean(this.get()));
+          break;
+      }
+    }
 
   }
 

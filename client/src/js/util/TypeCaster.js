@@ -41,7 +41,7 @@ class TypeCaster {
       return JSON.parse(_v);
     }
 
-    throw new Error("String 이 아닌 타입은 Object로 변환 할 수 없습니다.");
+    throw new Error(`${JSON.stringify(_v)} 를 Object로 변환 할 수 없습니다.`);
   }
 
   static toArray(_v) {
@@ -49,7 +49,7 @@ class TypeCaster {
       return JSON.parse(_v);
     }
 
-    throw new Error("String 이 아닌 타입은 Array로 변환 할 수 없습니다.");
+    throw new Error(`${JSON.stringify(_v)} 를 Array로 변환 할 수 없습니다.`);
   }
 }
 

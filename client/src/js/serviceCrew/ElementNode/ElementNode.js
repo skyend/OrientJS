@@ -1021,11 +1021,12 @@ class ElementNode {
 
 
           if (!(resolveResult instanceof Error)) {
+            this.scopeNodes[i].set(resolveResult);
 
-            if (typeof resolveResult === 'string')
-              this.scopeNodes[i].plainValue = resolveResult;
-            else
-              this.scopeNodes[i].shapeValue = resolveResult;
+            // if (typeof resolveResult === 'string')
+            //   this.scopeNodes[i].plainValue = resolveResult;
+            // else
+            //   this.scopeNodes[i].shapeValue = resolveResult;
           }
         } catch (_e) {
           console.warn(_e);
@@ -2144,7 +2145,7 @@ class ElementNode {
   setValueScopeData(_scopeName, _scopeValue) {
     let valueScope = this.getScope(_scopeName, 'value');
     if (valueScope)
-      valueScope.shapeValue = _scopeValue;
+      valueScope.set(_scopeValue);
     else
       throw new Error(`선언 되지 않은 변수${_scopeName} 노드(<en:value>)의 값을 변경하려 합니다. <en:value name='${_scopeName}' ...></en:value>를 선언 해 주세요.`);
   }
@@ -2738,7 +2739,7 @@ class ElementNode {
     let valueScope = this.getScope(_name, 'value');
 
     if (valueScope)
-      return valueScope.shapeValue;
+      return valueScope.get();
     else
       throw new Error(`선언 되지 않은 변수[${_name}]를 참조합니다.`);
   }
