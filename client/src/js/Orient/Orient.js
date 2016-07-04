@@ -116,7 +116,8 @@ const VERSION = '0.18.4';
   - 0.18.5 (2016-06-30T20:57)
     * EN:Value 와 attribute 저장방식 변경 MetaText 를 MetaData 로 변경하고, 값을 set 하거나 get 할 때 JSON parse/stringify 하는 과정을 제거함
       그리하여 Value 와 Attribute 둘다에서 Object를 자유롭게 사용하고 객체를 저장할 수 있으며 참조 값을 가져온 후에 참조로 필드를 수정 할 수 있다.
-
+  - 0.18.6 (2016-07-04T16:46)
+    * 중복 Value Resolve 수정
 */
 
 

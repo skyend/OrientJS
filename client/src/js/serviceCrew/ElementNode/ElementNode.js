@@ -1010,7 +1010,8 @@ class ElementNode {
     let sn_len = this.scopeNodes.length;
     let savedPlainValue, resolveResult;
     for (let i = 0; i < sn_len; i++) {
-      if (this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) {
+      if ((this.scopeNodes[i].type === 'value' && this.scopeNodes[i].resolveOn) && this.scopeNodes[i].isNeedResolve()) {
+
         savedPlainValue = this.scopeNodes[i].plainValue;
         // resolve 되는 결과는 오직 문자열로만 값을 받아 들인다.
 
@@ -1021,7 +1022,9 @@ class ElementNode {
 
 
           if (!(resolveResult instanceof Error)) {
+            console.log(this.scopeNodes[i].name, resolveResult)
             this.scopeNodes[i].set(resolveResult);
+            this.scopeNodes[i].completeResolve();
 
             // if (typeof resolveResult === 'string')
             //   this.scopeNodes[i].plainValue = resolveResult;
@@ -1029,6 +1032,7 @@ class ElementNode {
             //   this.scopeNodes[i].shapeValue = resolveResult;
           }
         } catch (_e) {
+          this.scopeNodes[i].completeResolve();
           console.warn(_e);
         }
       }

@@ -32,6 +32,7 @@ class ValueScopeNode extends ScopeNode {
     this.type = 'value';
     this.scannedHashbang = false;
     this.scannedSession = false;
+    this.resolved = false;
 
     if (this.mappingHashbangParam) {
       let hashbangValue;
@@ -154,6 +155,15 @@ class ValueScopeNode extends ScopeNode {
     this.value.variable = _variable;
   }
 
+  completeResolve() {
+    this.resolved = true;
+  }
+
+  isNeedResolve() {
+    return this.resolved === false;
+  }
+
+
   /**
   Task Implement
   **/
@@ -211,6 +221,7 @@ class ValueScopeNode extends ScopeNode {
             throw _e;
           }
           break;
+
         case "array":
           try {
             this.set(TypeCaster.toArray(this.get()));
