@@ -113,6 +113,9 @@ const VERSION = '0.18.4';
   - 0.18.4 (2016-06-30T20:57)
     * enableHTML 인 String type ElementNode 의 innerHTML을 가져 올 때 이스케이프된 <,>,& 문자들을 다시 unescape 하도록 한다.
       (내부에 바인딩 블럭을 사용 하고 조건식을 사용 할 때 문제가 되었었음)
+  - 0.18.5 (2016-06-30T20:57)
+    * EN:Value 와 attribute 저장방식 변경 MetaText 를 MetaData 로 변경하고, 값을 set 하거나 get 할 때 JSON parse/stringify 하는 과정을 제거함
+      그리하여 Value 와 Attribute 둘다에서 Object를 자유롭게 사용하고 객체를 저장할 수 있으며 참조 값을 가져온 후에 참조로 필드를 수정 할 수 있다.
 
 */
 

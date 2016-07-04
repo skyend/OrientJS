@@ -156,14 +156,11 @@ class HTTPRequest {
     } else {
       isSameOrigin = false;
 
-      // IE9 임시 XDR GET Redirect
-
-
+      // IE9 임시 XDR GET   
       if (B_NAME === 'ie' && B_VER <= 9) {
         enctype = 'application/x-www-form-urlencoded';
         method = 'get';
         is_multipart_post = false;
-        _data['ie9_escape_cache'] = HTTPRequest.generate_ie9_timestamp();
       }
     }
 

@@ -58,9 +58,15 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
   }
 
   getDefaultFields() {
-    return {
-      t: 'api'
+    let fields = {
+      t: api
     };
+
+    if ((Orient.bn === 'ie' && Orient.bv <= 9)) {
+      fields['ie9_escape_cache'] = HTTPRequest.generate_ie9_timestamp();
+    }
+
+    return fields;
   }
 
   convertFieldsToFormData(_fields) {
