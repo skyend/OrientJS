@@ -2160,11 +2160,11 @@ class ElementNode {
 
     if (valueScope) {
       if (valueScope.dataType === 'array') {
-        let array = valueScope.shapeValue;
+        let array = valueScope.get();
 
         array.push(_value);
 
-        valueScope.shapeValue = array;
+        valueScope.set(array);
       } else {
         throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 Push 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
       }
@@ -2175,11 +2175,11 @@ class ElementNode {
   popToValueScopeArray(_scopeName) {
     if (valueScope) {
       if (valueScope.dataType === 'array') {
-        let array = valueScope.shapeValue;
+        let array = valueScope.get();
 
         array.pop();
 
-        valueScope.shapeValue = array;
+        valueScope.set(array);
       } else {
         throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 Pop 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
       }
@@ -2193,14 +2193,14 @@ class ElementNode {
 
     if (valueScope) {
       if (valueScope.dataType === 'array') {
-        let array = valueScope.shapeValue;
+        let array = valueScope.get();
         let newArray = [];
 
         for (let i = 0; i < array.length; i++) {
           if (_value !== array[i]) newArray.push(array[i]);
         }
 
-        valueScope.shapeValue = newArray;
+        valueScope.set(newArray);
       } else {
         throw new Error(`Array 타입이 아닌 변수[${_scopeName}] 에 PopByValue 연산을 하려 합니다.\n array 타입인 변수를 사용 해 주세요.`);
       }
@@ -2216,7 +2216,7 @@ class ElementNode {
 
     if (valueScope) {
       if (valueScope.dataType === 'array') {
-        let array = valueScope.shapeValue;
+        let array = valueScope.get();
 
         for (let i = 0; i < array.length; i++) {
           if (array[i] === _value) {

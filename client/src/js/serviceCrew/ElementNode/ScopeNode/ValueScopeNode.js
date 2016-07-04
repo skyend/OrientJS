@@ -47,11 +47,14 @@ class ValueScopeNode extends ScopeNode {
     if (this.mappingSession) {
       let sessionValue;
 
-      sessionValue = BrowserStorage.getSession(this.mappingSession === true ? this.name : this.mappingSession);
+      try {
+        sessionValue = BrowserStorage.getSession(this.mappingSession === true ? this.name : this.mappingSession);
 
-      if (sessionValue !== null)
-        this.shapeValue = sessionValue;
+        if (sessionValue !== null)
+          this.shapeValue = sessionValue;
+      } catch (_e) {
 
+      }
       this.scannedSession = true;
     }
 
