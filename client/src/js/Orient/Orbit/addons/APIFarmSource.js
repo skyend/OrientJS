@@ -5,7 +5,7 @@ import ICEAPISource from './ICEAPISource';
 class APIFarmSource extends ICEAPISource {
   constructor(_APISourceData, _orbit) {
     super(_APISourceData, _orbit);
-    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
+    if (Orbit.IS_LEGACY_BROWSER) {
       ICEAPISource.call(this, _APISourceData, _orbit);
     }
 

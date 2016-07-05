@@ -21,7 +21,7 @@ const FINAL_TYPE_CONTEXT = 'string';
 class StringElementNode extends ElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
+    if (Orient.IS_LEGACY_BROWSER) {
       ElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
     this.type = FINAL_TYPE_CONTEXT;

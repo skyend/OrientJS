@@ -13,7 +13,7 @@ const FINAL_TYPE_CONTEXT = 'html';
 class HTMLElementNode extends TagBaseElementNode {
   constructor(_environment, _elementNodeDataObject, _preInjectProps, _isMaster) {
     super(_environment, _elementNodeDataObject, _preInjectProps, _isMaster);
-    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
+    if (Orient.IS_LEGACY_BROWSER) {
       TagBaseElementNode.call(this, _environment, _elementNodeDataObject, _preInjectProps, _isMaster);
     }
 

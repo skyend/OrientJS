@@ -27,6 +27,7 @@ import Shortcut from '../serviceCrew/DataResolver/Shortcut';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
+const LEGACY_BROWSER = (Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534) || (Orient.bn === 'ios' && Orient.bv <= 8);
 
 let CLEAR_BIND_ERROR = false;
 
@@ -370,6 +371,10 @@ class Neutron {
     return BROWSER_VER;
   }
 
+  static get IS_LEGACY_BROWSER() {
+    return LEGACY_BROWSER;
+  }
+
   // fix
   static get ObjectExtends() {
     return ObjectExtends;
@@ -398,11 +403,11 @@ class Neutron {
     return GeneralLocation;
   }
 
-  onTraceDebug() {
+  static onTraceDebug() {
     Neutron.ON_TRACE_DEBUGGER = true;
   }
 
-  offTraceDebug() {
+  static offTraceDebug() {
     Neutron.ON_TRACE_DEBUGGER = false;
   }
 

@@ -7,7 +7,7 @@ let DomAttrMatcher = new RegExp("(\\w+?)-([\\w+-_]+)");
 class FunctionScopeNode extends ScopeNode {
   constructor(_scopeData) {
     super(_scopeData);
-    if ((Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534)) {
+    if (Orient.IS_LEGACY_BROWSER) {
       ScopeNode.call(this, _scopeData);
     }
 

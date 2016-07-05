@@ -17,6 +17,7 @@ import events from 'events';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
+const LEGACY_BROWSER = (Orient.bn === 'ie' && Orient.bv <= 10) || (Orient.bn === 'safari' && Orient.bv <= 534) || (Orient.bn === 'ios' && Orient.bv <= 8);
 
 const VERSION = '0.13.9';
 
@@ -413,6 +414,10 @@ class Orbit {
 
   static get bv() {
     return BROWSER_VER;
+  }
+
+  static get IS_LEGACY_BROWSER() {
+    return LEGACY_BROWSER;
   }
 }
 

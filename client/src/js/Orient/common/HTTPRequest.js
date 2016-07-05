@@ -392,12 +392,18 @@ class HTTPRequest {
       enctype: enctype,
       request: request
     });
+
     // SEND
-    if (method === 'get') {
-      request.send();
-    } else {
-      // post, ... others
-      request.send(finalData);
+    try {
+      if (method === 'get') {
+        request.send();
+      } else {
+        // post, ... others
+        request.send(finalData);
+      }
+    } catch (_e) {
+      HTTPRequest.Log(`Error : ${logBody}\n ${_e}`, "error", [request]);
+      _callback(_e, null);
     }
 
   }
