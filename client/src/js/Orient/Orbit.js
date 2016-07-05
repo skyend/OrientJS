@@ -18,7 +18,7 @@ import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 
-const VERSION = '0.13.8';
+const VERSION = '0.13.9';
 
 /*
   Version : x.y.z
@@ -44,6 +44,8 @@ const VERSION = '0.13.8';
       외부에서 입력된 foundationCompatibility 두번째 인자함수 내에서 next콜백을 호출 하면 최초 랜더링이 시작된다.
   - 0.13.8 (2016-07-01T16:30)
     * orbit.ready 는 body가 ready될 때 발생하도록 변경
+  - 0.13.9 (2016-07-05T11:30)
+    * orbit 이벤트 추가 - http:request, http:response, http:begin, http:finish
 */
 
 class Orbit {
@@ -126,7 +128,31 @@ class Orbit {
       }
     });
 
+    // HTTPRequest request one
+    HTTPRequest.on('request', (_e) => {
+      let remakeEvent = Object.assign({}, _e);
+      remakeEvent.context = this;
 
+      this.emit('http:request', remakeEvent);
+    });
+
+    // HTTPRequest response one
+    HTTPRequest.on('response', (_e) => {
+      let remakeEvent = Object.assign({}, _e);
+      remakeEvent.context = this;
+
+      this.emit('http:response', remakeEvent);
+    });
+
+    // HTTPRequest request stream begin
+    HTTPRequest.on('begin', (_e) => {
+      this.emit('http:begin', {});
+    });
+
+    // HTTPRequest request stream finish
+    HTTPRequest.on('finish', (_e) => {
+      this.emit('http:finish', {});
+    });
   }
 
   set window(_window) {

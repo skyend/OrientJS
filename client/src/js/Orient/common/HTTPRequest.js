@@ -11,6 +11,8 @@ var HTTP_REQUEST = 0;
 
 const GET_IE_MULTIPART_IFRAME_ID_STORE = Identifier.chars32SequenceStore(9999999);
 
+const TEMPORARY_NETWORK_SEQ = Identifier.chars64SequenceStore();
+
 // import JqueryForm from 'jquery-form';
 // import JqueryTransportXDR from 'jquery-transport-xdr';
 
@@ -117,7 +119,7 @@ class HTTPRequest {
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
     let enctype = _enctype;
-
+    let requestToken = TEMPORARY_NETWORK_SEQ();
 
 
 
@@ -127,7 +129,8 @@ class HTTPRequest {
       if (_enctype === 'multipart/form-data') {
         is_multipart_post = true;
       }
-    } else if (method === 'get') {
+    } else
+    if (method === 'get') {
       if (_enctype !== 'application/x-www-form-urlencoded') {
         throw new Error(`HTTP Method 는 GET 으로 지정되어 있지만, Enctype 은 'application/x-www-form-urlencoded' 가 아닙니다.`);
       }
@@ -156,7 +159,7 @@ class HTTPRequest {
     } else {
       isSameOrigin = false;
 
-      // IE9 임시 XDR GET   
+      // IE9 임시 XDR GET
       if (B_NAME === 'ie' && B_VER <= 9) {
         enctype = 'application/x-www-form-urlencoded';
         method = 'get';
@@ -273,8 +276,16 @@ class HTTPRequest {
     };
 
     request.onload = function(_e) {
+      HTTPRequest.emit("response", {
+        url: finalURL,
+        method: method,
+        enctype: enctype,
+        tag: requestToken,
+        response: request,
+        statusText: 'load'
+      });
+
       //console.log('onload', _e);
-      HTTPRequest.DECREASE_SEND_COUNT();
       /* SuperAgent 의 Response 객체와 인터페이스를 동일하게 제공하기 위해 */
       request.statusType = Math.floor(request.status / 100);
       request.statusCode = request.status;
@@ -305,7 +316,14 @@ class HTTPRequest {
     };
 
     request.onerror = function(_e) {
-      HTTPRequest.DECREASE_SEND_COUNT();
+      HTTPRequest.emit("response", {
+        url: finalURL,
+        method: method,
+        tag: requestToken,
+        response: request,
+        enctype: enctype,
+        statusText: 'error'
+      });
 
       if (request.getAllResponseHeaders) {
         request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
@@ -334,7 +352,14 @@ class HTTPRequest {
     };
 
     request.ontimeout = function(_e) {
-      HTTPRequest.DECREASE_SEND_COUNT();
+      HTTPRequest.emit("response", {
+        url: finalURL,
+        method: method,
+        tag: requestToken,
+        response: request,
+        enctype: enctype,
+        statusText: 'timeout'
+      });
 
       if (request.getAllResponseHeaders) {
         request.responseHeader = HTTPRequest.parseResponseHeaders(request.getAllResponseHeaders());
@@ -357,8 +382,16 @@ class HTTPRequest {
         console.trace(`Send Trace: ${logBody}\n`);
     }
 
-    HTTPRequest.INCREASE_SEND_COUNT();
 
+
+    // Send Event emit
+    HTTPRequest.emit("request", {
+      url: finalURL,
+      method: method,
+      tag: requestToken,
+      enctype: enctype,
+      request: request
+    });
     // SEND
     if (method === 'get') {
       request.send();
@@ -366,6 +399,7 @@ class HTTPRequest {
       // post, ... others
       request.send(finalData);
     }
+
   }
 
   /*
@@ -552,22 +586,6 @@ class HTTPRequest {
     return headObject;
   }
 
-  static INCREASE_SEND_COUNT() {
-    HTTP_REQUEST++;
-
-    // console.log(HTTP_REQUEST);
-  }
-
-  static DECREASE_SEND_COUNT() {
-    HTTP_REQUEST--;
-
-    // console.log(HTTP_REQUEST);
-
-    if (HTTP_REQUEST === 0) {
-      // HTTPRequest.emit('end');
-    }
-  }
-
   static generate_ie9_timestamp() {
     return Date.now() + Math.random();
   }
@@ -576,12 +594,30 @@ class HTTPRequest {
     return Date.now() + '' + Math.random();
   }
 }
-//
-// ObjectExtends.liteExtends(HTTPRequest, events.EventEmitter.prototype);
-//
-//
-// HTTPRequest.on('end', function() {
-//   alert("END");
-// });
+
+ObjectExtends.liteExtends(HTTPRequest, events.EventEmitter.prototype);
+
+
+let requestCollector = [];
+
+HTTPRequest.on('request', function(_e) {
+
+  if (requestCollector.length === 0) {
+    HTTPRequest.emit("begin");
+  }
+
+  requestCollector.push(_e);
+});
+
+HTTPRequest.on('response', function(_e) {
+
+  requestCollector = requestCollector.filter(function(_req) {
+    return _req.tag !== _e.tag;
+  });
+
+  if (requestCollector.length === 0) {
+    HTTPRequest.emit("finish");
+  }
+});
 
 export default HTTPRequest;
