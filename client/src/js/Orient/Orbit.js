@@ -42,8 +42,10 @@ const VERSION = '0.13.9';
   - 0.13.7 (2016-06-26T14:45)
     * foundationCompatibility 함수에서 두번째 인자는 earlyScripts로딩을 완료 한 뒤에 호출하는 콜백으로 콜백을 호출 할 때 next 콜백함수를 넘겨준다.
       외부에서 입력된 foundationCompatibility 두번째 인자함수 내에서 next콜백을 호출 하면 최초 랜더링이 시작된다.
+
   - 0.13.8 (2016-07-01T16:30)
     * orbit.ready 는 body가 ready될 때 발생하도록 변경
+
   - 0.13.9 (2016-07-05T11:30)
     * orbit 이벤트 추가 - http:request, http:response, http:begin, http:finish
 */

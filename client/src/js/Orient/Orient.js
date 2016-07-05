@@ -89,33 +89,41 @@ const VERSION = '0.18.6';
 
   - 0.16.8 (2016-06-28T16:23)
     * DynamicContext / Ref Component Ready 이벤트 추가 각 MasterComponent 와 DC에서 동기화된 Async 흐름에 대한 Ready 이벤트를 들을 수 있다.
+
   - 0.16.10 (2016-06-28T17:41)
     * 상위에 ReadyHolder 를 걸 때 parent 가 없으면(없는 경우는 RefElementNode 가 참조하는 MasterComponent 일 경우 ) componentOwner를 사용 하도록 수정
     * en-event-ready FIX!!!
+
   - 0.18.0 (2016-06-28T23:53)
     * 최초 ready 와 뒤이어 발생하는 ready 이벤트에 대한 분리
       최초 ready 는 ready 라는 이름으로 이벤트가 발생하며 뒤이어 n(n > 1)번째 발생하는 ready 는 nth-ready 라는 이름으로 이벤트가 발생한다.
     * ready counter 의 값에 따라 nth-ready 로 ready를 발생 할 지 nth-ready로 발생할지 결정한다.
     * 최초 ready 는 nth 값이 0이며 그 이후발생하는 nth는 ready 횟수에 따라 결정된다.
+
   - 0.18.1 (2016-06-30T02:00)
     * tryEmitReady 를 실행 할 때 isRendering 플래그도 함께 체크하도록 변경 랜더링흐름을 타는 중 프래그먼트 로딩을 시작하고 로딩이 완료
       되면 랜더링흐름중 ready가 발생하여 프래그먼트의 내부프래그먼트가 로딩될 때 마다 ready가 발생하는 버그 수정
     ToDo
       * Hidden 과 함께 동작하는 DC에서 readyHolder가 잔류하는 버그가 있음. KOP main/prodWrap.html 에서 버그 확인 가능
+
   - 0.18.2 (2016-06-30T14:33)
       * Hidden 으로 판정된 상태에서 DC로딩을 시작하여 완료가 되었을 때는 forwardDOM이 존재하지 않는다. 사실 Hidden으로 판정되면 자식을 랜더링 하지 않고
         그 상태에서 DC가 로딩이 완료 되면 ready가 가능한 상태가 된다. 하지만 forwarDOM은 존재 하지않으므로 ready 를 시도하여도 할 수 없었다.
         -> 그래서 ready가 가능한 조건을 3개에서 2개로 줄였다. readyHolder가 비어있어야 하며 isRendering플래그가 false 여야 한다.
             isRendering플래그가 false 이면 랜더링은 완료된 상태라고 볼 수 있기 때문이다. 랜더링이 완료 되어도 hidden으로 판정 될 경우 forwardDOM이 없으므로
             조건에서 제외하였다.
+
   - 0.18.3 (2016-06-30T16:20)
     * Value Scope Node 에 mapping-session 어트리뷰트 추가 session 에 mapping되어 값이 변경될때 value가 빌드될 때 양방향 매핑이 이루어짐
+
   - 0.18.4 (2016-06-30T20:57)
     * enableHTML 인 String type ElementNode 의 innerHTML을 가져 올 때 이스케이프된 <,>,& 문자들을 다시 unescape 하도록 한다.
       (내부에 바인딩 블럭을 사용 하고 조건식을 사용 할 때 문제가 되었었음)
+
   - 0.18.5 (2016-06-30T20:57)
     * EN:Value 와 attribute 저장방식 변경 MetaText 를 MetaData 로 변경하고, 값을 set 하거나 get 할 때 JSON parse/stringify 하는 과정을 제거함
       그리하여 Value 와 Attribute 둘다에서 Object를 자유롭게 사용하고 객체를 저장할 수 있으며 참조 값을 가져온 후에 참조로 필드를 수정 할 수 있다.
+
   - 0.18.6 (2016-07-04T16:46)
     * 중복 Value Resolve 수정
 */
