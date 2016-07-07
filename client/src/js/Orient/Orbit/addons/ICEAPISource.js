@@ -63,7 +63,7 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
     };
 
     if ((Orient.bn === 'ie' && Orient.bv <= 9)) {
-      fields['ie9_escape_cache'] = HTTPRequest.generate_ie9_timestamp();
+      fields['ie9_escape_cache'] = Math.random() + '' + Date.now();
     }
 
     return fields;

@@ -233,6 +233,7 @@ class Orbit {
 
     this.orbitDocument.loadExtraCSSPararllel(pageMeta.styles || [], () => {
       console.info("Style load complete");
+
     });
   }
 
@@ -335,7 +336,6 @@ class Orbit {
     }
 
     console.timeEnd && console.timeEnd("First Built up");
-
   }
 
   // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.

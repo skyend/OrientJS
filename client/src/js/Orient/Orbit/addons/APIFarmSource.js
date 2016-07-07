@@ -46,7 +46,7 @@ class APIFarmSource extends ICEAPISource {
 
 
     if ((Orient.bn === 'ie' && Orient.bv <= 9)) {
-      defaultFields['ie9_escape_cache'] = HTTPRequest.generate_ie9_timestamp();
+      defaultFields['ie9_escape_cache'] = Date.now() + '' + Math.random();
     }
 
     return defaultFields;

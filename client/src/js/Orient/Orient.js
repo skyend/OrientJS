@@ -31,7 +31,7 @@ const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.6';
+const VERSION = '0.18.7';
 
 /*
   Version : x.y.z
@@ -127,6 +127,10 @@ const VERSION = '0.18.6';
 
   - 0.18.6 (2016-07-04T16:46)
     * 중복 Value Resolve 수정
+
+  - 0.18.7 (2016-07-07T16:00)
+    * 에러수정
+    * Shortcut 의 dateFormatter 날자 형식 지원 확대 IOS8.0+
 */
 
 
