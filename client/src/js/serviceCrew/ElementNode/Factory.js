@@ -4,6 +4,7 @@ import SVGElementNode from './SVGElementNode.js';
 // import ReactElementNode from './ReactElementNode.js';
 import StringElementNode from './StringElementNode.js';
 import RefElementNode from './RefElementNode.js';
+import LogicElementNode from './LogicElementNode.js';
 "use strict";
 
 class Factory {
@@ -19,6 +20,7 @@ class Factory {
     else if (type === 'string') elementNodeCLASS = StringElementNode;
     //else if (type === 'empty') elementNodeCLASS = EmptyElementNode;
     else if (type === 'ref') elementNodeCLASS = RefElementNode;
+    else if (type === 'logic') elementNodeCLASS = LogicElementNode;
 
     // else if (type === 'react') elementNodeCLASS = ReactElementNode;
     //else if (type === 'grid') elementNodeCLASS = GridElementNode;
@@ -55,7 +57,7 @@ class Factory {
         }
 
         return 'html';
-      } else if (/^html|string|ref|svg$/.test(typeAttribute)) {
+      } else if (/^html|string|ref|svg|logic$/.test(typeAttribute)) {
         return typeAttribute;
       } else if (typeAttribute === undefined || typeAttribute === null) {
         return 'html';
@@ -138,6 +140,10 @@ class Factory {
 
   static get StringElementNode() {
     return StringElementNode;
+  }
+
+  static get LogicElementNode() {
+    return LogicElementNode;
   }
 }
 

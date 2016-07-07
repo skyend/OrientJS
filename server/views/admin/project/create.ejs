@@ -87,6 +87,7 @@
 
             <!-- /.box-header -->
             <div class="box-body">
+
               <form class="form-horizontal" method='post' en-id='project-create-form' enctype="multipart/form-data" onsubmit="return false;" en-event-submit='task@submit'>
                 <en:task name='render' action="update" en-executor='project-create-form'></en:task>
                 <en:task name='submit' action='sendAPISourceForm' arg-apiSourceId='[http]/api/project/create'></en:task>
@@ -95,8 +96,8 @@
                 <en:value name='desc' type='string' value=''></en:value>
                 <en:value name='access' type='string' value='public' mapping-session></en:value>
 
-
                 <div class="box-body">
+             
                   <div class="form-group" idx='1'>
                     <label for="inputEmail3" class="col-sm-2 control-label">Project Name {{: val@name }}</label>
 

@@ -19,7 +19,7 @@ const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8);
 
-const VERSION = '0.13.9';
+const VERSION = '0.14.0';
 
 /*
   Version : x.y.z
@@ -49,6 +49,8 @@ const VERSION = '0.13.9';
 
   - 0.13.9 (2016-07-05T11:30)
     * orbit 이벤트 추가 - http:request, http:response, http:begin, http:finish
+  - 0.13.10 (2016-07-07T23:37)
+    * FOUC Preventer
 */
 
 class Orbit {
@@ -237,18 +239,23 @@ class Orbit {
     });
   }
 
+
   bodyDisappear() {
+    if (this.window.document.getElementById('fouc-preventer')) return;
+
     let styleDOM = this.orbitDocument.document.createElement('style');
 
     this.bodyOpacity = 0;
-
+    styleDOM.setAttribute('id', 'fouc-preventer');
     this.bodyAppearControlStyleDOM = styleDOM;
+
     this.orbitDocument.document.head.appendChild(this.bodyAppearControlStyleDOM);
 
     this.updateBodyOpacity();
   }
 
   bodyAppear() {
+    this.bodyOpacity = 0;
     var itvid = setInterval(() => {
       this.bodyOpacity += 1;
       this.updateBodyOpacity();
@@ -258,10 +265,12 @@ class Orbit {
   }
 
   updateBodyOpacity() {
+    let styleDOM = this.window.document.getElementById('fouc-preventer');
+
     if (this.bodyOpacity >= 1) {
-      this.bodyAppearControlStyleDOM.innerHTML = `body { }`;
+      styleDOM.innerHTML = `body { }`;
     } else {
-      this.bodyAppearControlStyleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
+      styleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
     }
   }
 
@@ -331,7 +340,8 @@ class Orbit {
       });
     }
 
-    if (this.bodyAppearControlStyleDOM) {
+    let styleDOM = this.window.document.getElementById('fouc-preventer');
+    if (styleDOM) {
       this.bodyAppear();
     }
 
