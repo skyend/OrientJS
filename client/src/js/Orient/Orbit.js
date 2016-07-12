@@ -51,6 +51,8 @@ const VERSION = '0.14.0';
     * orbit 이벤트 추가 - http:request, http:response, http:begin, http:finish
   - 0.13.10 (2016-07-07T23:37)
     * FOUC Preventer
+  - 0.14.0 (2016-07-13T00:25)
+    * multi-part/formdata 도 uriEncode 하도록 수정
 */
 
 class Orbit {

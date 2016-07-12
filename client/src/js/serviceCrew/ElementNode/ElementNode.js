@@ -2730,7 +2730,10 @@ class ElementNode {
       ██       ██████  ██████  ███████ ██  ██████     ██   ██ ██      ██
   */
   setValue(_name, _value) {
+    /* Method Chaining 메서드 */
     this.setValueScopeData(_name, _value);
+
+    return this;
   }
 
   updateSingle(_options) {

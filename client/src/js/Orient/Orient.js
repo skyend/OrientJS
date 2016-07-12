@@ -31,7 +31,7 @@ const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.7';
+const VERSION = '0.18.8';
 
 /*
   Version : x.y.z
@@ -131,6 +131,9 @@ const VERSION = '0.18.7';
   - 0.18.7 (2016-07-07T16:00)
     * 에러수정
     * Shortcut 의 dateFormatter 날자 형식 지원 확대 IOS8.0+
+  - 0.18.8 (2016-07-13T00:25)
+    * setValue 메서드 체이닝 setValue 메서드의 반환값이 this로 변경
+    * splitByLength ArrayHandler 메서드 추가
 */
 
 

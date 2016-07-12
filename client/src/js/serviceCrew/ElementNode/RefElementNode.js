@@ -482,7 +482,7 @@ class RefElementNode extends HTMLElementNode {
             // component load type is
             // component will be load by async. because component load type is sync, but dependent resource is async
             // 컴포넌트는 비동기로 로딩될 것 이다. 컴포넌트 로딩 타입은 동기 이지만 비동기로 로딩되는 리소스 자원을 가지기 때문이다.
-            console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${_targetId}>`);
+            console.warn(`Warnning : Component will be load by async. because component load type is sync, but component has asynchronous dependence resources.\n${this.DEBUG_FILE_NAME_EXPLAIN} <Component: ${targetId}>`);
           }
 
           this.processingCSetting_include_async(_componentSettings['env_include_async'], () => {
