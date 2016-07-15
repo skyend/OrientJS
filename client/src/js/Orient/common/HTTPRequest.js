@@ -554,16 +554,16 @@ class HTTPRequest {
       for (let i = 0; i < _fields.length; i++) {
         field = _fields[i];
 
-        if( typeof field[1] === 'string' ){
-          if (/^\{dontencode\}/.test(field[1])) {
-            newFormData.append(field[0], field[1].replace(/^\{dontencode\}/, ''));
-          } else {
-
-            newFormData.append(field[0], encodeURIComponent(field[1]));
-          }
-        } else {
+        // if( typeof field[1] === 'string' ){
+        //   if (/^\{dontencode\}/.test(field[1])) {
+        //     newFormData.append(field[0], field[1].replace(/^\{dontencode\}/, ''));
+        //   } else {
+        //
+        //     newFormData.append(field[0], encodeURIComponent(field[1]));
+        //   }
+        // } else {
           newFormData.append(field[0], field[1]);
-        }
+        // }
       }
     } else {
       let fieldKeys = Object.keys(_fields);
@@ -572,16 +572,16 @@ class HTTPRequest {
       for (let i = 0; i < fieldKeys.length; i++) {
         fieldKey = fieldKeys[i];
 
-        if( typeof field[1] === 'string' ){
-          if (/^\{dontencode\}/.test(_fields[fieldKey])) {
-            newFormData.append(fieldKey, _fields[fieldKey].replace(/^\{dontencode\}/, ''));
-          } else {
-
-            newFormData.append(fieldKey, encodeURIComponent(_fields[fieldKey]));
-          }
-        } else {
+        // if( typeof field[1] === 'string' ){
+        //   if (/^\{dontencode\}/.test(_fields[fieldKey])) {
+        //     newFormData.append(fieldKey, _fields[fieldKey].replace(/^\{dontencode\}/, ''));
+        //   } else {
+        //
+        //     newFormData.append(fieldKey, encodeURIComponent(_fields[fieldKey]));
+        //   }
+        // } else {
           newFormData.append(fieldKey,_fields[fieldKey]);
-        }
+        // }
       }
     }
 

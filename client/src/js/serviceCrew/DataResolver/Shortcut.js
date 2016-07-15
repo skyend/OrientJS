@@ -43,22 +43,26 @@ class Shortcut {
       let tryMatch = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
 
       // MONTH_MAP.en[parseInt(tryMatch[2])] + " " + tryMatch[3] + " " + tryMatch[1] + " " + tryMatch[4] + ":" + tryMatch[5] + ":" + parseInt(tryMatch[6]) + " GMT+" + tryMatch[6];
-
+      //console.log(':D Match',tryMatch);
       if (tryMatch !== null) {
         // "2016-06-13T16:34:50+0900" to "06-13 16:34:50 UTC+0900 2016"
         dateObject = new Date(tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + parseInt(tryMatch[6]) + ' ' + 'UTC+' + tryMatch[7].replace(':', '') + ' ' + tryMatch[1]);
-
+        //console.log(':DA',dateObject, tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + parseInt(tryMatch[6]) + ' ' + 'UTC+' + tryMatch[7].replace(':', '') + ' ' + tryMatch[1]);
         // jun 27 2016 00:09:29 GMT+0900
         if (isNaN(dateObject.getTime())) {
           dateObject = new Date(`${MONTH_MAP.en[parseInt(tryMatch[2])]} ${tryMatch[3]} ${tryMatch[1]} ${tryMatch[4]}:${tryMatch[5]}:${parseInt(tryMatch[6])} GMT+${tryMatch[6]}`);
         }
-
+        //console.log(':DB',dateObject,`${MONTH_MAP.en[parseInt(tryMatch[2])]} ${tryMatch[3]} ${tryMatch[1]} ${tryMatch[4]}:${tryMatch[5]}:${parseInt(tryMatch[6])} GMT+${tryMatch[6]}`);
         // to "2016-06-24T15:57:13.373+09:00"
         if (isNaN(dateObject.getTime())) {
           dateObject = new Date(tryMatch[1] + '-' + tryMatch[2] + '-' + tryMatch[3] + 'T' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + '+' + tryMatch[7]);
         }
+        //console.log(':DC',dateObject,tryMatch[1] + '-' + tryMatch[2] + '-' + tryMatch[3] + 'T' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + '+' + tryMatch[7]);
 
-
+        if (isNaN(dateObject.getTime())) {
+          dateObject = new Date(tryMatch[1] + '-' + tryMatch[2] + '-' + tryMatch[3] + 'T' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + '+' + tryMatch[7].slice(0,2) + ':' + tryMatch[7].slice(2,4));
+        }
+//  console.log(':DD',dateObject,tryMatch[1] + '-' + tryMatch[2] + '-' + tryMatch[3] + 'T' + tryMatch[4] + ':' + tryMatch[5] + ':' + tryMatch[6] + '+' + tryMatch[7].slice(0,2) + ':' + tryMatch[7].slice(2,4));
       } else {
         dateObject = new Date(Shortcut.reviseDateString(_dateString));
       }

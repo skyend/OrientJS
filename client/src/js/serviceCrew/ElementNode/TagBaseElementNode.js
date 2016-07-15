@@ -375,7 +375,7 @@ class TagBaseElementNode extends ElementNode {
         _domNode.removeAttribute(name);
       } else if (state === ATTRIBUTE_STATE.MODIFIED) {
         if (RESERVED_DOM_ATTRIBUTES[name]) {
-          if (_domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] !== value)
+          if (_domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] != value)
             _domNode[RESERVED_DOM_ATTRIBUTES[name].sync_field] = value;
         }
 
