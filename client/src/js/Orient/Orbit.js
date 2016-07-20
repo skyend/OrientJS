@@ -128,10 +128,8 @@ class Orbit {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
         window.DEBUG_OCCURS_HTTP_REQUEST_LOG = true;
         window.ORIENT_OCCURS_BIND_ERROR = true;
-        window.addEventListener('load', function() {
-
-          Orient.onTraceDebug();
-        })
+        window.ORIENT_COMPONENT_BUILD_TIMECHECK = true;
+        Orient.onTraceDebug();
       }
     });
 
@@ -236,7 +234,7 @@ class Orbit {
     });
 
     this.orbitDocument.loadExtraCSSPararllel(pageMeta.styles || [], () => {
-      console.info("Style load complete");
+
 
     });
   }
@@ -313,7 +311,7 @@ class Orbit {
       targetDomNodes = [this.orbitDocument.document.body];
     }
 
-    console.time && console.time("First Built up");
+    window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.time && console.time("First Built up");
     let readyCounter = 0;
     for (let i = 0; i < targetDomNodes.length; i++) {
       targetDomNode = targetDomNodes[i];
@@ -347,7 +345,7 @@ class Orbit {
       this.bodyAppear();
     }
 
-    console.timeEnd && console.timeEnd("First Built up");
+    window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.timeEnd && console.timeEnd("First Built up");
   }
 
   // 원하는 스크립트에 ready 를 이용하여 원하는 시점에 한번에 실행 할 수 있도록 기능을 제공한다.

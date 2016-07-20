@@ -666,6 +666,18 @@ class TagBaseElementNode extends ElementNode {
             this.defineNewAttribute('style', attrValue);
             break;
 
+          case 'en-build-attr-cx':
+            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
+
+            this.defineNewAttribute('cx', attrValue);
+            break;
+
+          case 'en-build-attr-fill':
+            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
+
+            this.defineNewAttribute('fill', attrValue);
+            break;
+
           case 'en-component-representer':
             this.componentRepresenter = true;
             break;

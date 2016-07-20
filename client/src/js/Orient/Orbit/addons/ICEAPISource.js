@@ -16,6 +16,16 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
     this.nodeTypeMeta = null;
 
     this.host = this.orbit.config.getField('CMS_HOST');
+    if( this.overwriteProtocol !== null ){
+      try {
+        this.overwriteProtocol = this.orbit.interpret(this.overwriteProtocol);
+      }catch(_e){
+        console.error(`Overwrite Protocol 을 읽어오는데 실패하였습니다. ${this.__filepath__}`);
+        throw _e;
+      }
+
+      this.host = this.host.replace(/^\w+:\/\//, `${this.overwriteProtocol}://`);
+    }
   }
 
   loadNodeTypeMeta(_complete) {
@@ -179,13 +189,14 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
 
     this.nt_tid = ICEAPISourceData.nt_tid;
     this.nid = ICEAPISourceData.nid;
+    this.overwriteProtocol = ICEAPISourceData.overwrite_protocol || null;
   }
 
   export () {
     let exportO = super.export();
     exportO.nt_tid = this.nt_tid;
     exportO.nid = this.nid;
-
+    exportO.overwrite_protocol = this.overwriteProtocol || null;
     return exportO;
   }
 }

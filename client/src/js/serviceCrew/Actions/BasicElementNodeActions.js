@@ -333,7 +333,7 @@ actionStore.registerAction('loop', ['fps'], function() {
 /***
  * chainCodeCriterion : Key Name or Function
  */
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], function() {
+function sendAPISourceFormBody(){
   let that = this;
 
   let transferFields = {};
@@ -426,8 +426,10 @@ actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'ch
     _callback(_actionResult);
 
   }, enctype || (this.hasAttribute('enctype') ? this.getAttributeWithResolve('enctype') : undefined), requestMethodForHTTP);
-});
+}
 
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], sendAPISourceFormBody);
+actionStore.registerAction('api-submit', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], sendAPISourceFormBody);
 
 actionStore.registerAction('focus', ['eid'], function() {
   let targetElementNode;

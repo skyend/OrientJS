@@ -13,6 +13,18 @@ class APIFarmSource extends ICEAPISource {
 
     this.host = this.orbit.config.getField('FARM_HOST');
     this.meta = null;
+
+
+    if( this.overwriteProtocol !== null ){
+      try {
+        this.overwriteProtocol = this.orbit.interpret(this.overwriteProtocol);
+      }catch(_e){
+        console.error(`Overwrite Protocol 을 읽어오는데 실패하였습니다. ${this.__filepath__}`);
+        throw _e;
+      }
+
+      this.host = this.host.replace(/^\w+:\/\//, `${this.overwriteProtocol}://`);
+    }
   }
 
   getMetaPath() {

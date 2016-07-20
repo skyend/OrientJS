@@ -767,7 +767,7 @@ class ElementNode {
   mountComponent(_options, _mountIndex) {
 
 
-    Orient.ON_TRACE_DEBUGGER && this.debug('mount', 'called mountComponent');
+    Orient.USE_TRACE_DEBUGGER && this.debug('mount', 'called mountComponent');
 
     let domnode = this.createNode(_options);
     let mountIndex = _mountIndex;
@@ -786,7 +786,7 @@ class ElementNode {
 
   // this.forwardDOM 이 존재하고 hidden 상태로 변경되거나 , 반복인덱스에서 제외되어 제거 되어야 할 때 호출 한다.
   unmountComponent(_options) {
-    Orient.ON_TRACE_DEBUGGER && this.debug('unmount', 'called unmountComponent');
+    Orient.USE_TRACE_DEBUGGER && this.debug('unmount', 'called unmountComponent');
 
     //console.log('unmount');
     if (this.upperContainer) {
@@ -811,7 +811,7 @@ class ElementNode {
 
   // this.forwardDOM이 존재할 때
   updateComponent(_options, _mountIndex) {
-    Orient.ON_TRACE_DEBUGGER && this.debug('update', 'called updateComponent');
+    Orient.USE_TRACE_DEBUGGER && this.debug('update', 'called updateComponent');
 
     let domNode = this.getDOMNode();
     this.mappingAttributes(domNode, _options);
@@ -853,7 +853,7 @@ class ElementNode {
 
     // this.connectSocketIO();
 
-    Orient.ON_TRACE_DEBUGGER && this.debug("render", "render start", _options, `MountIdx : ${_mountIndex}`);
+    Orient.USE_TRACE_DEBUGGER && this.debug("render", "render start", _options, `MountIdx : ${_mountIndex}`);
 
     let returnCount = _mountIndex;
 
@@ -884,7 +884,7 @@ class ElementNode {
           //#### Pass mount #####
           //#####################
           // console.log('$$Pass Mount ', this.dynamicContextNS)
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "pass mount"); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "pass mount"); // DEBUG
 
           this.isRendering = false;
           this.tryEmitReady();
@@ -894,10 +894,10 @@ class ElementNode {
           //####### Mount #######
           //#####################
           // console.log('$$ Mount ', this.dynamicContextNS)
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will mount", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "will mount", _options); // DEBUG
           this.tryEventScope('component-will-mount', null, null);
           this.mountComponent(_options, _mountIndex);
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did mount", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "did mount", _options); // DEBUG
           this.tryEventScope('component-did-mount', null, null);
 
         }
@@ -913,11 +913,11 @@ class ElementNode {
           //##########################
 
 
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
           this.tryEventScope('component-will-unmount', null, null);
           this.unmountComponent(_options);
 
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
           this.tryEventScope('component-did-unmount', null, null);
 
 
@@ -930,12 +930,12 @@ class ElementNode {
           this.scopesResolve();
           //            this.renderWithDC(_options)
 
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "will update", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "will update", _options); // DEBUG
 
           this.tryEventScope('component-will-update', null, null);
           this.updateComponent(_options, _mountIndex);
 
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did update", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "did update", _options); // DEBUG
           this.tryEventScope('component-did-update', null, null);
 
         }
@@ -948,11 +948,11 @@ class ElementNode {
 
       if (domNode !== null) {
 
-        Orient.ON_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
+        Orient.USE_TRACE_DEBUGGER && this.debug("render", "will unmount", _options); // DEBUG
         this.tryEventScope('component-will-unmount', null, null, (_result) => {
           this.unmountComponent(_options);
 
-          Orient.ON_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
+          Orient.USE_TRACE_DEBUGGER && this.debug("render", "did unmount", _options); // DEBUG
           this.tryEventScope('component-did-unmount', null, null);
         });
       }
@@ -980,23 +980,23 @@ class ElementNode {
       //
       // active 모드인 경우
       if (this.dynamicContextPassive !== true) {
-        Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'is active');
+        Orient.USE_TRACE_DEBUGGER && this.debug('dc', 'is active');
         // console.log('&& ---- 01 -- ', this.dynamicContextNS);
 
         // keepDC 가 부정 일 때
         if (_options.keepDC === false || _options.keepDC === undefined || _options.keepDC === 'false') {
-          Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'execute');
+          Orient.USE_TRACE_DEBUGGER && this.debug('dc', 'execute');
           // console.log('&& ---- 02 -- ', this.dynamicContextNS);
           // DC실행
           this.executeDynamicContext(_options);
 
         } else if (_options.keepDC === 'once') {
           // console.log('&& ---- 03 -- ', this.dynamicContextNS);
-          Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'once ignore.');
+          Orient.USE_TRACE_DEBUGGER && this.debug('dc', 'once ignore.');
           _options.keepDC = false;
         }
       } else {
-        Orient.ON_TRACE_DEBUGGER && this.debug('dc', 'is passive');
+        Orient.USE_TRACE_DEBUGGER && this.debug('dc', 'is passive');
       }
     }
   }
@@ -1022,7 +1022,7 @@ class ElementNode {
 
 
           if (!(resolveResult instanceof Error)) {
-            console.log(this.scopeNodes[i].name, resolveResult)
+
             this.scopeNodes[i].set(resolveResult);
             this.scopeNodes[i].completeResolve();
 
@@ -1069,7 +1069,7 @@ class ElementNode {
   executeDynamicContext(_options, _callback) {
     let that = this;
     // 새로 생성
-    console.log(`[${this.id}] executeDynamicContext`);
+
     /****************************************/
     /***** Emit Event 'will-dc-request' *****/
     /****************************************/
@@ -1113,7 +1113,7 @@ class ElementNode {
 
       that.rebuildDynamicContext();
 
-      that.debug('dc', 'Will fire');
+      Orient.USE_TRACE_DEBUGGER && that.debug('dc', 'Will fire');
 
 
       try {
@@ -1122,7 +1122,7 @@ class ElementNode {
         //////////////// ASYNC Point ///////////////
         ////////////////////////////////////////////
         that.dynamicContext.fire(function(_err) {
-          that.debug('dc', 'burn');
+          Orient.USE_TRACE_DEBUGGER && that.debug('dc', 'burn');
 
           if (_err) {
             // fix
@@ -1239,8 +1239,6 @@ class ElementNode {
 
 
       function handler(_e) {
-        console.log("DOM Event fire :" + _key + ' ' + that.DEBUG_FILE_NAME_EXPLAIN);
-
         let eventReturn;
 
         that.tryEventScope(_key, {

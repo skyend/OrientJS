@@ -411,11 +411,11 @@ class Neutron {
   }
 
   static onTraceDebug() {
-    Neutron.ON_TRACE_DEBUGGER = true;
+    Neutron.USE_TRACE_DEBUGGER = true;
   }
 
   static offTraceDebug() {
-    Neutron.ON_TRACE_DEBUGGER = false;
+    Neutron.USE_TRACE_DEBUGGER = false;
   }
 
   /*

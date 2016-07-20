@@ -111,9 +111,9 @@ class OrbitDocument {
       }
     }
 
-
-
-    extraElement.addEventListener('error', (_event) => {
+    var failCallback = (_event) => {
+      extraElement.removeEventListener('load', completeCallback);
+      extraElement.removeEventListener('error', failCallback);
 
       // 요청된 리소스 리스트에 입력된 상태가 아니었을 때 응답 항목으로 추가한다.
       if (foundrequestedRIndex === -1) {
@@ -125,9 +125,11 @@ class OrbitDocument {
       }
 
       if (typeof _callback === 'function') _callback(ERROR_LOAD_SCRIPT, null);
-    });
+    };
 
-    extraElement.addEventListener('load', (_event) => {
+    var completeCallback = (_event) => {
+      extraElement.removeEventListener('load', completeCallback);
+      extraElement.removeEventListener('error', failCallback);
 
       // 요청된 리소스 리스트에 입력된 상태가 아니었을 때 응답 항목으로 추가한다.
       if (foundrequestedRIndex === -1) {
@@ -137,8 +139,17 @@ class OrbitDocument {
         });
       }
 
+
       if (typeof _callback === 'function') _callback(null, _event);
-    });
+    };
+
+    extraElement.addEventListener('error', failCallback);
+
+    extraElement.addEventListener('load', completeCallback);
+
+
+
+
 
     // 요청된 리소스 리스트에 입력
     this.requestedResources.push({
