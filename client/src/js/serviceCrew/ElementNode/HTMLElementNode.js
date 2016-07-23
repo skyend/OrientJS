@@ -136,21 +136,21 @@ class HTMLElementNode extends TagBaseElementNode {
     super.unmountComponent(_options);
   }
 
-  mountComponent(_options, _parentCount, _mountIndex) {
-    super.mountComponent(_options, _parentCount, _mountIndex);
+  mountComponent(_options, _mountIndex) {
+    super.mountComponent(_options, _mountIndex);
 
     Orient.ON_TRACE_DEBUGGER && this.debug('render', '[html] Will render children from mount component');
-    this.renderChild(_options, _parentCount);
+    this.renderChild(_options);
   }
 
-  updateComponent(_options, _parentCount, _mountIndex) {
-    super.updateComponent(_options, _parentCount, _mountIndex);
+  updateComponent(_options, _mountIndex) {
+    super.updateComponent(_options, _mountIndex);
 
     Orient.ON_TRACE_DEBUGGER && this.debug('render', '[html] Will render children from update component');
-    this.renderChild(_options, _parentCount);
+    this.renderChild(_options);
   }
 
-  renderChild(_options, _parentCount) {
+  renderChild(_options) {
     if (this.isDynamicContext() && this.dynamicContextForceRenderChildren === false) {
       if (this.dynamicContext) {
         if (!this.dynamicContext.isLoaded)

@@ -382,14 +382,14 @@ class RefElementNode extends HTMLElementNode {
     super.unmountComponent(_options);
   }
 
-  mountComponent(_options, _parentCount, _mountIndex) {
-    super.mountComponent(_options, _parentCount, _mountIndex);
+  mountComponent(_options, _mountIndex) {
+    super.mountComponent(_options, _mountIndex);
 
     this.renderRefComponents(_options);
   }
 
-  updateComponent(_options, _parentCount, _mountIndex) {
-    super.updateComponent(_options, _parentCount, _mountIndex);
+  updateComponent(_options, _mountIndex) {
+    super.updateComponent(_options, _mountIndex);
 
     this.renderRefComponents(_options);
   }
@@ -549,7 +549,7 @@ class RefElementNode extends HTMLElementNode {
 
 
         masterElementNodesReadiesCount++;
-
+        console.log('>>> REF$',this.loadedTargetId, masterElementNode.refTargetId,'idx:', i , '/',masterElementNodesReadiesCount ,'/', this.masterElementNodes.length )
         if (masterElementNodesReadiesCount === this.masterElementNodes.length) {
           this.releaseReadyHolder('me-ref', this);
           // alert('releaseReadyHolder ref')
