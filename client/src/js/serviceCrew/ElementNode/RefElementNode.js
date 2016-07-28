@@ -549,7 +549,7 @@ class RefElementNode extends HTMLElementNode {
 
 
         masterElementNodesReadiesCount++;
-        console.log('>>> REF$',this.loadedTargetId, masterElementNode.refTargetId,'idx:', i , '/',masterElementNodesReadiesCount ,'/', this.masterElementNodes.length )
+        // console.log('>>> REF$',this.loadedTargetId, masterElementNode.refTargetId,'idx:', i , '/',masterElementNodesReadiesCount ,'/', this.masterElementNodes.length )
         if (masterElementNodesReadiesCount === this.masterElementNodes.length) {
           this.releaseReadyHolder('me-ref', this);
           // alert('releaseReadyHolder ref')

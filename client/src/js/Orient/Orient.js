@@ -31,7 +31,7 @@ const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.8';
+const VERSION = '0.18.9';
 
 /*
   Version : x.y.z
@@ -131,9 +131,13 @@ const VERSION = '0.18.8';
   - 0.18.7 (2016-07-07T16:00)
     * 에러수정
     * Shortcut 의 dateFormatter 날자 형식 지원 확대 IOS8.0+
+
   - 0.18.8 (2016-07-13T00:25)
     * setValue 메서드 체이닝 setValue 메서드의 반환값이 this로 변경
     * splitByLength ArrayHandler 메서드 추가
+    
+  - 0.18.9 (2016-07-28T11:41)
+    * Orient Shortcuts
 */
 
 
@@ -145,6 +149,10 @@ window.$$ = function(_message, _data) {
 
 
 class Neutron {
+
+  constructor(){
+      console.log('aa');
+  }
 
 
   static buildElement(_elementNodeObject) {
@@ -452,6 +460,89 @@ class Neutron {
 
 }
 
+
+window.O = function O(_seed){
+  var nodeList;
+  if( typeof _seed === 'string' ){
+    nodeList = document.querySelectorAll(_seed);
+  } else if( typeof _seed === 'object' && _seed ){
+    if( _seed instanceof Array ){
+
+      nodeList = _seed;
+    } else {
+      nodeList = [_seed];
+    }
+  } else {
+    throw new Error("Not supported type.");
+  }
+
+
+
+
+
+  return new MultipleDirectAccessContext(nodeList);
+};
+
+window.O = O.bind(window);
+
+class MultipleDirectAccessContext {
+  constructor(_domList){
+    this.orients = [];
+
+    for( let i = 0; i < _domList.length ; i++ ){
+
+        this.orients.push(Orient.getNodeByDOM(_domList[i]));
+    }
+    this.length = this.orients.length;
+  }
+
+  setAttrR(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.setAttrR.apply(this, roofArgs);
+    })
+
+    return this;
+  }
+
+  setValue(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.setValue.apply(this, roofArgs);
+    })
+  }
+
+  update(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.update.apply(this, roofArgs);
+    });
+  }
+
+  each(_func){
+    for(let i = 0; i < this.orients.length; i++ ){
+      _func.apply(this.orients[i], [this.orients[i]]);
+    }
+  }
+
+  map(_func){
+    let result = [];
+    for(let i = 0; i < this.orients.length; i++ ){
+      result.push(_func.apply(this.orients[i], [this.orients[i]]));
+    }
+
+    return result;
+  }
+}
+
+
+
+
+
 Neutron.version = VERSION;
+
 
 export default window.Orient = Neutron;

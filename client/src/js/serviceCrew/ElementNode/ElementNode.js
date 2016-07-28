@@ -2763,6 +2763,10 @@ class ElementNode {
     }
   }
 
+  dom(){
+    return this.getDOMNode();
+  }
+
   executeDC(_callback) {
     this.executeDynamicContext({}, _callback);
   }

@@ -106,13 +106,19 @@ class StringElementNode extends ElementNode {
     //this.backupDOM = null;
   }
 
-  mappingAttributes(_domNode, _options) {
+  mappingAttributes(_domNode, _options, _mountIndex) {
     let text = _options.resolve ? this.interpret(this.getText()) : this.getText();
 
 
     if (_domNode.nodeName === '#text') {
+      try{
 
-      _domNode.nodeValue = text || '';
+        _domNode.nodeValue = text || '';
+      } catch(_e){
+        console.warn(`TextNode Modify Error : ${_e.message} Argument:${JSON.stringify(text)} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+        // this.unmountComponent();
+        // this.mountComponent(_options,_mountIndex);
+      }
     } else {
       _domNode.setAttribute('en-id', this.getId());
       _domNode.setAttribute('en-type', this.getType());

@@ -297,6 +297,7 @@ class TagBaseElementNode extends ElementNode {
   set zIndex(_zIndex) {
     this._zIndex = _zIndex;
   }
+ 
 
   mappingAttributes(_domNode, _options) {
 
@@ -573,116 +574,96 @@ class TagBaseElementNode extends ElementNode {
 
       // en 으로 시작하는 모든 attribute 는 특수 예약 attribute로 따로 처리한다.
       if (/^(en-)|(__vid__$)/.test(attrName)) {
+        if( /^en-build-attr-/.test(attrName)){
+          /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
+          this.defineNewAttribute(attrName.replace(/^en-build-attr-/,''), attrValue);
+        } else {
 
-        switch (attrName) {
-          case 'en-id':
+          switch (attrName) {
+            case 'en-id':
             if (/@/.test(_domElement.getAttribute('en-id'))) {
               throw new Error("ElementNode Id로 @가 사용 될 수 없습니다.");
             }
 
             this.id = attrValue;
             break;
-          case 'en-type':
+            case 'en-type':
             this.type = attrValue;
             break;
-          case 'en-behavior':
+            case 'en-behavior':
             this.behavior = attrValue;
             break;
-          case 'en-name':
+            case 'en-name':
             this.name = attrValue;
             break;
             // DynamicContext
-          case 'en-dc-source-id':
+            case 'en-dc-source-id':
 
             this.dynamicContextSID = attrValue;
             break;
-          case 'en-dc-request-id':
+            case 'en-dc-request-id':
             this.dynamicContextRID = attrValue;
             break;
-          case 'en-dc-inject-params':
+            case 'en-dc-inject-params':
             this.dynamicContextInjectParams = attrValue;
             break;
-          case 'en-dc-ns':
+            case 'en-dc-ns':
             this.dynamicContextNS = attrValue;
             break;
-          case 'en-dc-local-cache':
+            case 'en-dc-local-cache':
             this.dynamicContextLocalCache = attrValue;
             break;
-          case 'en-dc-session-cache':
+            case 'en-dc-session-cache':
             this.dynamicContextSessionCache = attrValue;
             break;
-          case 'en-dc-passive':
+            case 'en-dc-passive':
             if (attrValue === 'false') {
               this.dynamicContextPassive = false;
             } else {
               this.dynamicContextPassive = true;
             }
             break;
-          case 'en-dc-sync':
+            case 'en-dc-sync':
 
             this.dynamicContextSync = true;
             break;
-          case 'en-dc-attitude':
+            case 'en-dc-attitude':
 
             throw new Error("en-dc-attitude='passive' 를 지정하셨습니다. en-dc-passive Attribute로 변경 해 주세요. 사라지게될 attribute입니다.");
-          case 'en-dc-force-render-children':
+            case 'en-dc-force-render-children':
 
             this.dynamicContextForceRenderChildren = true;
             break;
-          case 'en-io-on':
+            case 'en-io-on':
 
             this.ioListenNames = attrValue;
 
             break;
             // Controls
-          case 'en-ctrl-repeat-n':
+            case 'en-ctrl-repeat-n':
 
             if (this.isMaster) throw new Error("Master ElementNode 는 Repeat Control을 사용 할 수 없습니다.");
 
             this.setControl('repeat-n', attrValue);
-
             break;
-          case 'en-ctrl-fixed-container':
 
+            case 'en-ctrl-fixed-container':
             this.setControl('fixed-container', attrValue);
-
             break;
-          case 'en-ctrl-hidden':
+
+            case 'en-ctrl-hidden':
             this.setControl('hidden', attrValue);
             break;
-          case 'en-ctrl-show':
+
+            case 'en-ctrl-show':
             this.setControl('show', attrValue);
             break;
 
-          case 'en-build-attr-src':
-            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
-
-            this.defineNewAttribute('src', attrValue);
-            break;
-
-          case 'en-build-attr-style':
-            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
-
-            this.defineNewAttribute('style', attrValue);
-            break;
-
-          case 'en-build-attr-cx':
-            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
-
-            this.defineNewAttribute('cx', attrValue);
-            break;
-
-          case 'en-build-attr-fill':
-            /* HTML 빌드 를 거칠 때 브라우저의 처리를 회피하기 위해 */
-
-            this.defineNewAttribute('fill', attrValue);
-            break;
-
-          case 'en-component-representer':
+            case 'en-component-representer': // race
             this.componentRepresenter = true;
             break;
 
-          default:
+            default:
             // pipe
             let matched;
             if (matched = attrName.match(PIPE_EVENT_SPLIT_REGEXP)) {
@@ -695,7 +676,9 @@ class TagBaseElementNode extends ElementNode {
 
               this.setEvent(matched[1], attrValue);
             }
+          }
         }
+
       } else {
 
         this.defineNewAttribute(attrName, attrValue);
