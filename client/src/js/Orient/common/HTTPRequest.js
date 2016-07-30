@@ -149,15 +149,17 @@ class HTTPRequest {
       }
     }
 
-    if (window.ORBIT_DISABLE_AJAX_CACHE)
-      _data['cache_escape'] = HTTPRequest.complexify_cacher();
-
     // 크로스 도메인확인
     // URL이 현재 protocol 과 host 가 일치하는지 확인한다.
     if ((new RegExp('^' + location.protocol + '//' + location.host + '/')).test(url) || /^\.\.?\//.test(url)) {
       isSameOrigin = true;
     } else {
       isSameOrigin = false;
+
+      // HTTP to HTTPS 정책
+      if( window.HTTPREQ_REPLACE_SECURITY ){
+        url = url.replace(/^http:\/\//, 'https://');
+      }
 
       // IE9 임시 XDR GET
       if (B_NAME === 'ie' && B_VER <= 9) {
@@ -174,7 +176,7 @@ class HTTPRequest {
 
     // Data Modify
     if (_dontModifiyData === false) {
-      switch (_enctype) {
+      switch (enctype) {
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
           // Object 로 입력된 필드 목록을 Array 로 변환한다.
@@ -207,7 +209,7 @@ class HTTPRequest {
       // }
 
       finalData = _dontModifiyData ? _data : HTTPRequest.convertFieldsToFormData(cookedFieldArray);
-    } else if (_enctype === 'application/x-www-form-urlencoded') {
+    } else if (enctype === 'application/x-www-form-urlencoded') {
       // get / post 모두 데이터포맷은 같다
       // console.log('application/x-www-form-urlencoded');
 
@@ -259,7 +261,7 @@ class HTTPRequest {
 
     // Logging
     let methodForLog = method === _method ? method : `${_method}->${method}`;
-    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? methodForLog : methodForLog + ':' +_enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
+    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? methodForLog : methodForLog + ':' +enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
 
     // OPEN
@@ -267,7 +269,7 @@ class HTTPRequest {
 
     if (request.setRequestHeader) {
       if (_enctype !== 'multipart/form-data') {
-        request.setRequestHeader("Content-type", _enctype);
+        request.setRequestHeader("Content-type", enctype);
       }
     }
 

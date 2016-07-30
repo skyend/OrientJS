@@ -159,7 +159,7 @@ export default class APISource {
       if (req.crud === '**') {
         return req.customURL;
       } else {
-        url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
+        var url = this.getRequestURL(_requestId); //this.host + "/api/" + this.nt_tid + "/" + req.crudPoint;
       }
 
       return '/api/' + this.nt_tid + '/' + req.crudPoint;

@@ -740,7 +740,7 @@ class RefElementNode extends HTMLElementNode {
 
   // masterElementNode 들과 setting 오브젝트를 반환
   interpretComponentSheet(_type, _sheet, _targetId, _callback) {
-    window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.time(`Build Component Sheet - ${_targetId}`);
+    // window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.time(`Build Component Sheet - ${_targetId}`);
 
     let masterElementNodes;
     try {
@@ -751,7 +751,7 @@ class RefElementNode extends HTMLElementNode {
       throw _e;
     }
 
-    window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.timeEnd(`Build Component Sheet - ${_targetId}`);
+    // window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.timeEnd(`Build Component Sheet - ${_targetId}`);
 
     if (_type === 'html') {
       let matcher = /^<!--[\n\s]+@Settings/g;

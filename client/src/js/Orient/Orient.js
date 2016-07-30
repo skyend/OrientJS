@@ -1,3 +1,4 @@
+import './Orient.copyright.js'
 import './common/polyfill';
 import Cookie from './common/Cookie';
 
@@ -104,6 +105,7 @@ const VERSION = '0.18.9';
   - 0.18.1 (2016-06-30T02:00)
     * tryEmitReady 를 실행 할 때 isRendering 플래그도 함께 체크하도록 변경 랜더링흐름을 타는 중 프래그먼트 로딩을 시작하고 로딩이 완료
       되면 랜더링흐름중 ready가 발생하여 프래그먼트의 내부프래그먼트가 로딩될 때 마다 ready가 발생하는 버그 수정
+      
     ToDo
       * Hidden 과 함께 동작하는 DC에서 readyHolder가 잔류하는 버그가 있음. KOP main/prodWrap.html 에서 버그 확인 가능
 
@@ -135,7 +137,7 @@ const VERSION = '0.18.9';
   - 0.18.8 (2016-07-13T00:25)
     * setValue 메서드 체이닝 setValue 메서드의 반환값이 this로 변경
     * splitByLength ArrayHandler 메서드 추가
-    
+
   - 0.18.9 (2016-07-28T11:41)
     * Orient Shortcuts
 */

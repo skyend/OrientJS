@@ -71,7 +71,7 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
     let fields = {
       t: api
     };
-
+    
     if ((Orient.bn === 'ie' && Orient.bv <= 9)) {
       fields['ie9_escape_cache'] = Math.random() + '' + Date.now();
     }
