@@ -436,9 +436,6 @@ class RefElementNode extends HTMLElementNode {
         }
       }
 
-
-
-
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
       let renderDetacherParent = this.parent || this.componentOwner;
@@ -468,14 +465,12 @@ class RefElementNode extends HTMLElementNode {
         this.loadedRefs = true;
         this.loadedTargetId = targetId;
 
-
         // 일반 env_include 는 처리만 실행한다.
         if (_componentSettings['env_include']) {
           this.processingCSetting_include(_componentSettings['env_include']);
         }
 
         // env_include_async 는 처리를 실행 후 완료후에 _callback을 실행한다.
-
         if (_componentSettings['env_include_async']) {
           if (this.refAsync === false) {
             // 경고
@@ -500,11 +495,11 @@ class RefElementNode extends HTMLElementNode {
   }
 
   mountComponentBegin(_options, _masterElementNodes, targetId, _componentSettings, _callback) {
-
     if (!_masterElementNodes) {
       this.print_console_error(`Fragment Load Warning. "${targetId}" was not load.`);
       return;
     }
+    let that = this;
 
 
     this.masterElementNodes = _masterElementNodes;
@@ -528,7 +523,7 @@ class RefElementNode extends HTMLElementNode {
     let masterElementNodesReadiesCount = 0;
 
     for (let i = 0; i < this.masterElementNodes.length; i++) {
-
+      // console.log('>>> Master$',this.loadedTargetId,i);
 
 
       masterElementNode = this.masterElementNodes[i];
@@ -544,14 +539,14 @@ class RefElementNode extends HTMLElementNode {
 
       ////////////////////////////////////////////////////////////////////////
       ///////////// READY ////////////////////////////////////////////////////
-      masterElementNode.addRuntimeEventListener('ready', () => {
-        masterElementNode.removeRuntimeEventListener('ready', 'ref');
+      masterElementNode.addRuntimeEventListener('ready', function() {
+        this.removeRuntimeEventListener('ready', 'ref');
 
 
         masterElementNodesReadiesCount++;
-        // console.log('>>> REF$',this.loadedTargetId, masterElementNode.refTargetId,'idx:', i , '/',masterElementNodesReadiesCount ,'/', this.masterElementNodes.length )
-        if (masterElementNodesReadiesCount === this.masterElementNodes.length) {
-          this.releaseReadyHolder('me-ref', this);
+        // console.log('>>> REF$',that.loadedTargetId, masterElementNode.refTargetId,'idx:', i , '/',masterElementNodesReadiesCount ,'/', that.masterElementNodes.length )
+        if (masterElementNodesReadiesCount === that.masterElementNodes.length) {
+          that.releaseReadyHolder('me-ref', that);
           // alert('releaseReadyHolder ref')
         }
 
@@ -566,9 +561,9 @@ class RefElementNode extends HTMLElementNode {
       masterElementNode.setParent(null);
       masterElementNode.upperContainer = this;
       masterElementNode.componentOwner = this;
+
+
       masterElementNode.render(_options, false, i);
-
-
     }
 
 

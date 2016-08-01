@@ -85,9 +85,16 @@ class Factory {
     for (let i = 0; i < realizeContainer.childNodes.length; i++) {
       type = Factory.checkElementNodeType(realizeContainer.childNodes[i]);
       if (type === 'comment') continue;
+      if( type === 'string' ){
+        if( typeof realizeContainer.childNodes[i].nodeValue !== 'string' || !realizeContainer.childNodes[i].nodeValue.trim() ){
+          continue;
+        }
+      }
 
       masterElementNode = Factory.takeElementNode(undefined, _props, type, _env, true);
       // console.time('Build from html container');
+
+
       elementNodeBuildResult = masterElementNode.buildByElement(realizeContainer.childNodes[i]);
       // console.timeEnd('Build from html container');
       if (elementNodeBuildResult === null) continue;
