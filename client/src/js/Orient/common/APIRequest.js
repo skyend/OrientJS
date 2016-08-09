@@ -9,16 +9,16 @@ class APIRequest {
     this.env = _env;
   }
 
-  request(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
+  request(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride, _use_ssl) {
 
-    APIRequest.RequestAPI(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride);
+    APIRequest.RequestAPI(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride, _use_ssl);
   }
 
-  requestSync(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
-    APIRequest.RequestAPISync(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride);
+  requestSync(_apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride, _use_ssl) {
+    APIRequest.RequestAPISync(this.env, this.env.interpret(_apiSourceDesc), this.env.interpret(_requestId), _paramObject, _callback, _enctype, _methodOverride, _use_ssl);
   }
 
-  static RequestAPISync(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
+  static RequestAPISync(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride, _use_ssl) {
     // apiSource 의 class 확인
     // http 와 https class 는 직접 요청 처리 그 외 class는 env 를 통해 실행.
     // http 와 https 는 //로 시작하거나 /로 시작해야 함
@@ -41,7 +41,7 @@ class APIRequest {
         }
 
         _callback(null, _res.json || _res.text, _res);
-      }, _enctype);
+      }, _enctype, _use_ssl);
     } else {
       // apisource JSON을 로드한다.
       // env 의 APISOurce Factory에 접근한다.
@@ -61,13 +61,13 @@ class APIRequest {
           }
 
           _callback(null, _retrievedObject, _response);
-        }, _enctype);
+        }, _enctype, _use_ssl);
       });
 
     }
   }
 
-  static RequestAPI(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride) {
+  static RequestAPI(_env, _apiSourceDesc, _requestId, _paramObject, _callback, _enctype, _methodOverride, _use_ssl) {
 
     // apiSource 의 class 확인
     // http 와 https class 는 직접 요청 처리 그 외 class는 env 를 통해 실행.
@@ -89,7 +89,7 @@ class APIRequest {
           }
         }
         _callback(null, _res.json || _res.text, _res);
-      }, _enctype);
+      }, _enctype, _use_ssl);
     } else {
       // apisource JSON을 로드한다.
       // env 의 APISOurce Factory에 접근한다.
@@ -109,7 +109,7 @@ class APIRequest {
           }
 
           _callback(null, _retrievedObject, _response);
-        }, _enctype);
+        }, _enctype, _use_ssl);
       });
 
     }

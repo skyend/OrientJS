@@ -113,7 +113,7 @@ class HTTPRequest {
 
 
 
-  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true, _dontModifiyData = false) {
+  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true, _dontModifiyData = false, _use_ssl) {
     let method = _method.toLowerCase();
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
@@ -121,7 +121,7 @@ class HTTPRequest {
     let enctype = _enctype;
     let requestToken = TEMPORARY_NETWORK_SEQ();
 
-
+    console.log(enctype, method);
 
 
     // multipart post 체크와 메소드 체크
@@ -157,16 +157,24 @@ class HTTPRequest {
       isSameOrigin = false;
 
       // HTTP to HTTPS 정책
-      if( window.HTTPREQ_REPLACE_SECURITY ){
-        url = url.replace(/^http:\/\//, 'https://');
+      if( _use_ssl === null ){
+        if( window.HTTPREQ_REPLACE_SECURITY ){
+          // use_ssl 이 null 이면 무관 조건으로 SSL 제어에 관여하지 않는다.
+          url = url.replace(/^https?:\/\//, 'https://');
+        }
+      } else if( _use_ssl === true ) {
+        url = url.replace(/^https?:\/\//, 'https://');
+      } else if ( _use_ssl === false ) {
+        url = url.replace(/^https?:\/\//, 'http://');
       }
 
+
       // IE9 임시 XDR GET
-      if (B_NAME === 'ie' && B_VER <= 9) {
-        enctype = 'application/x-www-form-urlencoded';
-        method = 'get';
-        is_multipart_post = false;
-      }
+      // if (B_NAME === 'ie' && B_VER <= 9) {
+      //   enctype = 'application/x-www-form-urlencoded';
+      //   method = 'get';
+      //   is_multipart_post = false;
+      // }
     }
 
 
@@ -194,19 +202,39 @@ class HTTPRequest {
 
     if (is_multipart_post) {
 
-      // // post 이고 multipart/form-data의 경우
-      // if (B_NAME === 'ie' && B_VER <= 9) {
-      //
-      //   /*
-      //   ██ ███████  ██  ██████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
-      //   ██ ██      ███ ██  ████     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
-      //   ██ █████    ██ ██ ██ ██     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
-      //   ██ ██       ██ ████  ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
-      //   ██ ███████  ██  ██████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
-      //   */
-      //
-      //   return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, _callback, _async);
-      // }
+       // post 이고 multipart/form-data의 경우
+       if (B_NAME === 'ie' && B_VER <= 9) {
+         /*
+        ██ ███████  █████      ███    ███ ██    ██ ██   ████████ ██ ██████   █████  ██████  ████████
+        ██ ██      ██   ██     ████  ████ ██    ██ ██      ██    ██ ██   ██ ██   ██ ██   ██    ██
+        ██ █████    ██████     ██ ████ ██ ██    ██ ██      ██    ██ ██████  ███████ ██████     ██
+        ██ ██           ██     ██  ██  ██ ██    ██ ██      ██    ██ ██      ██   ██ ██   ██    ██
+        ██ ███████  █████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
+        */
+
+
+         // Send Event emit
+         HTTPRequest.emit("request", {
+           url: finalURL,
+           method: method,
+           tag: requestToken,
+           enctype: enctype,
+           request: 'iframe'
+         });
+
+         return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, function(_err, _res){
+           HTTPRequest.emit("response", {
+             url: finalURL,
+             method: method,
+             tag: requestToken,
+             response: _res,
+             enctype: enctype,
+             statusText: 'timeout'
+           });
+
+           _callback(_err, _res);
+         });
+       }
 
       finalData = _dontModifiyData ? _data : HTTPRequest.convertFieldsToFormData(cookedFieldArray);
     } else if (enctype === 'application/x-www-form-urlencoded') {
@@ -447,13 +475,86 @@ class HTTPRequest {
 
   static requestMultipartPostIE10below(_url, _rawFieldArray, _callback, _async) {
     let iframe = document.createElement('iframe');
+    let iframeId = 'ie-multipart-post-' + GET_IE_MULTIPART_IFRAME_ID_STORE();
+    let iframeName = 'delegator' + GET_IE_MULTIPART_IFRAME_ID_STORE();
+    iframe.setAttribute('src','about:blank');
+    iframe.setAttribute('id', iframeId);
+    iframe.setAttribute('name', iframeName);
+    iframe.setAttribute('style', 'display:none!important;');
+    iframe.name = iframeName;
 
-    iframe.setAttribute('id', 'ie-multipart-post-' + GET_IE_MULTIPART_IFRAME_ID_STORE());
+    document.body.appendChild(iframe);
 
-    document.head.appendChild(iframe);
+    let attachedVirtualForm = false;
+    let virtualForm = HTTPRequest.createVirtualForm(_rawFieldArray);
+    virtualForm.setAttribute('action', _url);
+    virtualForm.setAttribute('method', 'post');
+    virtualForm.setAttribute('enctype','multipart/form-data');
+
+
+    iframe.onload = function(){
+
+      if( attachedVirtualForm ){
+        if( iframe.contentWindow ){
+          var loadedTextData = iframe.contentWindow.document.body.innerText;
+          let parsed = null;
+          try {
+            parsed = JSON.parse(loadedTextData);
+          } catch (_e) {
+            parsed = null;
+          }
+
+          _callback( null, {
+            response : loadedTextData,
+            responseText : loadedTextData,
+            text : loadedTextData,
+            json: parsed,
+            statusCode : 999,
+            status: 999,
+            statusType:999,
+            byiframe:true
+          });
+        }
+      } else {
+        attachedVirtualForm = true;
+
+        iframe.contentWindow.document.body.appendChild(virtualForm);
+
+        virtualForm.submit();
+      }
+    }
 
   }
 
+  static createVirtualForm(_rawFieldArray){
+    var formElement = document.createElement('form');
+    var inputElement;
+
+    var fieldKey, fieldValue, fieldType;
+    for(var i = 0 ; i < _rawFieldArray.length; i++ ){
+      fieldKey = _rawFieldArray[i][0];
+      fieldValue = _rawFieldArray[i][1];
+      fieldType = typeof fieldValue;
+
+      switch( fieldType ){
+        case "string":
+        case "number":
+          inputElement = document.createElement('input');
+          inputElement.setAttribute('name', fieldKey);
+          inputElement.setAttribute('value', fieldValue);
+          break;
+        case "object":
+          if( fieldValue.nodeName ){
+            inputElement = fieldValue.cloneNode();
+          }
+      }
+
+
+      formElement.appendChild(inputElement);
+    }
+
+    return formElement;
+  }
   /*
     convertRawFieldsToRealFieldsData
       필드 목록중 가공되지 않고 가공이 가능한 형태의 필드가 존재할 경우

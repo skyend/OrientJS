@@ -5,6 +5,7 @@ var debug = require('debug')('API:PROJECT');
 import uuid from 'uuid';
 
 function create(req, res) {
+  res.type('text');
 
   agent.businessMan.getSessionUserDocByCookie(req, function(_err, _userDoc, _socketSession) {
     let projectFormDatas = {};
@@ -42,6 +43,7 @@ function create(req, res) {
       }
     });
 
+
     req.busboy.on('finish', (_err) => {
       debug('Done parsing form!');
       if (_err) {
@@ -53,6 +55,8 @@ function create(req, res) {
       } else {
 
         agent.businessMan.createProject(_userDoc, _socketSession, projectFormDatas, (_err, _project) => {
+          //res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
           if (_err !== null) {
             res.status(_err.code).send({
               error: _err

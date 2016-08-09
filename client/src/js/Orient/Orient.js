@@ -28,11 +28,11 @@ import Shortcut from '../serviceCrew/DataResolver/Shortcut';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
-const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8);
+const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) || ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.18.10';
+const VERSION = '0.19.1';
 
 /*
   Version : x.y.z
@@ -143,6 +143,13 @@ const VERSION = '0.18.10';
 
   - 0.18.10 (2016-08-01T14:38)
     * Ref Master Ready 참조카운트 버그 수정
+
+  - 0.19.1 (2016-08-09T17:55)
+    * IE9 IFrame 이용 멀티파트 Ajax 지원 (response content type 이 text/plain 이어야 함)
+    * HTTPRequest SSL옵션 추가
+    * Orient 의 인스턴스 직접접근 및 메소드 제공객체 Global O객체 제공
+    * 기타 액션및 함수 추가
+
 */
 
 
@@ -465,53 +472,71 @@ class Neutron {
 
 }
 
+(function(window, Neutron){
+  window.O = function O(_seed){
+    var nodeList;
+    if( typeof _seed === 'string' ){
+      nodeList = document.querySelectorAll(_seed);
+    } else if( typeof _seed === 'object' && _seed ){
+      if( _seed instanceof Array ){
 
-window.O = function O(_seed){
-  var nodeList;
-  if( typeof _seed === 'string' ){
-    nodeList = document.querySelectorAll(_seed);
-  } else if( typeof _seed === 'object' && _seed ){
-    if( _seed instanceof Array ){
-
-      nodeList = _seed;
+        nodeList = _seed;
+      } else {
+        nodeList = [_seed];
+      }
     } else {
-      nodeList = [_seed];
+      throw new Error("Not supported type.");
     }
-  } else {
-    throw new Error("Not supported type.");
-  }
 
 
 
 
 
-  return new MultipleDirectAccessContext(nodeList);
-};
+    return new MultipleContext(nodeList);
+  };
 
-window.O = O.bind(window);
+  window.O = O.bind(window);
 
-class MultipleDirectAccessContext {
-  constructor(_domList){
+  function MultipleContext(_domList){
+    Array.apply(this, []);
     this.orients = [];
+    this.outterofbound = [];
 
     for( let i = 0; i < _domList.length ; i++ ){
 
-        this.orients.push(Orient.getNodeByDOM(_domList[i]));
+      if( Neutron.getNodeByDOM(_domList[i]) ){
+        this.push(Neutron.getNodeByDOM(_domList[i]));
+        this.orients.push(Neutron.getNodeByDOM(_domList[i]));
+      } else {
+        this.outterofbound.push(i);
+      }
     }
-    this.length = this.orients.length;
   }
 
-  setAttrR(){
+  MultipleContext.prototype.push = Array.prototype.push;
+  MultipleContext.prototype.pop = Array.prototype.pop;
+  MultipleContext.prototype.shift = Array.prototype.shift;
+  MultipleContext.prototype.unshift = Array.prototype.unshift;
+
+  MultipleContext.prototype.setAttrR = function(){
     let roofArgs = arguments;
 
     this.each(function(){
       this.setAttrR.apply(this, roofArgs);
-    })
+    });
 
     return this;
   }
 
-  setValue(){
+  MultipleContext.prototype.getAttrR = function(){
+    let roofArgs = arguments;
+
+    return this.map(function(){
+      return this.getAttrR.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.setValue = function(){
     let roofArgs = arguments;
 
     this.each(function(){
@@ -519,7 +544,15 @@ class MultipleDirectAccessContext {
     })
   }
 
-  update(){
+  MultipleContext.prototype.getValue = function(){
+    let roofArgs = arguments;
+
+    return this.map(function(){
+      return this.getValue.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.update = function(){
     let roofArgs = arguments;
 
     this.each(function(){
@@ -527,21 +560,24 @@ class MultipleDirectAccessContext {
     });
   }
 
-  each(_func){
-    for(let i = 0; i < this.orients.length; i++ ){
-      _func.apply(this.orients[i], [this.orients[i]]);
+  MultipleContext.prototype.each = function(_func){
+
+    for(let i = 0; i < this.length; i++ ){
+      _func.apply(this[i], [this[i]]);
     }
   }
 
-  map(_func){
+  MultipleContext.prototype.map = function(_func){
     let result = [];
-    for(let i = 0; i < this.orients.length; i++ ){
-      result.push(_func.apply(this.orients[i], [this.orients[i]]));
+    for(let i = 0; i < this.length; i++ ){
+      result.push(_func.apply(this[i], [this[i]]));
     }
 
     return result;
   }
-}
+
+})(window, Neutron);
+
 
 
 

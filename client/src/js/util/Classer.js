@@ -9,7 +9,11 @@ class Classer {
   static getClassName(_object) {
     let matches = _object.constructor.toString().match(GET_NAME_IN_CONSTRUCTOR);
 
-    return matches[1];
+    if (matches) {
+      return matches[1];
+    } else {
+      return null;
+    }
   }
 
   static getFunctionName(_function) {

@@ -154,13 +154,13 @@ class StringElementNode extends ElementNode {
       this.isAttachedDOM = true;
     }
 
-    // null을 반환한 ElementNode는 유효하지 않은 ElementNode로 상위 ElementNode의 자식으로 편입되지 못 한다.
-    // 공백과 줄바꿈으로만 이루어진 TextNode는 필요하지 않은 요소이다.
-    if (/^[\s\n][\s\n]+$/.test(_stringNode.nodeValue)) return null;
+      // null을 반환한 ElementNode는 유효하지 않은 ElementNode로 상위 ElementNode의 자식으로 편입되지 못 한다.
+      // 공백과 줄바꿈으로만 이루어진 TextNode는 필요하지 않은 요소이다.
+      if (/^[\s\n][\s\n]+$/.test(_stringNode.nodeValue)) return null;
 
 
-    // #text Node가 아닌 태그가 입력되었을 떄 해당 태그명을 wrappingTag 로 입력해둔다.
-    if (_stringNode.nodeName !== '#text') {
+      // #text Node가 아닌 태그가 입력되었을 떄 해당 태그명을 wrappingTag 로 입력해둔다.
+      if (_stringNode.nodeName !== '#text') {
       if (_stringNode.hasAttribute('en-enableHtml')) {
         this.enableHTML = true;
       } else {

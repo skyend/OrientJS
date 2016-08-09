@@ -1,4 +1,6 @@
 import ActionStore from './ActionStore';
+import FunctionStore from '../Functions/FunctionStore';
+
 // import ICEAPISource from '../ICEAPISource';
 // import APIFarmSource from '../APIFarmSource';
 // import SA_Loader from '../StandAloneLib/Loader';
@@ -9,6 +11,7 @@ import ActionStore from './ActionStore';
 
 let actionStore = ActionStore.instance();
 
+let functionStore = FunctionStore.instance();
 
 // regexp = {
 //       empty     : function(){return /^\s*$/;},
@@ -330,63 +333,26 @@ actionStore.registerAction('loop', ['fps'], function() {
 });
 
 
+
+
 /***
  * chainCodeCriterion : Key Name or Function
  */
-function sendAPISourceFormBody(){
+functionStore.registerFunction('_sendAPISourceFormBody', function (apiSourceId, requestId, chainCodeCriterion, enctype, fields, before_chain, use_ssl,_callback){
   let that = this;
 
-  let transferFields = {};
-  // name Attribute 를 가진 TagElement 를 검색한다.
-  let foundElements = this.getDOMNode().querySelectorAll('[name]') || [];
-  let foundElementNodes = [];
-  let foundElement;
-  let foundElementNode;
 
-  // name Attribute를 가진 TagElement중 transfer-value 필드를 가진 ElementNode를 검색한다.
-  for (let i = 0; i < foundElements.length; i++) {
-    foundElement = foundElements[i];
-    foundElementNode = Orient.getNodeByDOM(foundElement);
+ //window.testPopup = window.open("https://dev.kolonmall.com/api/jsp/test/test.jsp", "submit-form", "directories=no, location=no, menubar=no, status=no,titlebar=no,toolbar=no,scrollbars=no,resizable=no,height=10,width=10,left=10000000,top=10000000,visible=none,alwaysLowered=yes");
 
-    if (foundElementNode !== null && foundElementNode.hasAttribute('transfer-value')) {
-      foundElementNodes.push(foundElement.___en);
-    }
-  }
-
-  let name, value;
-  foundElementNodes.map(function(_elementNode) {
-
-    let pass = true;
-
-    _elementNode.climbParents(function(_parent) {
-      if (_parent === that) {
-
-        return null;
-      } else if (_parent.hasAttribute('ignore-transfer')) {
-
-        pass = false;
-        return null;
-      }
-    });
-
-    if (pass) {
-      name = _elementNode.getAttributeWithResolve('name');
-      value = _elementNode.getAttributeWithResolve('transfer-value');
-
-      if (name && value) {
-        transferFields[name] = value;
-      }
-    }
-  });
-
+  let transferFields = this.interpret("{{: func@extract-form-params() }}");
 
   // 추가 필드 머지
   __orient__ObjectExtends.mergeByRef(transferFields, fields || {}, true);
 
 
   let requestMethodForHTTP = 'get';
-  if (this.getDOMNode().getAttribute('method')) {
-    requestMethodForHTTP = this.getDOMNode().getAttribute('method');
+  if (this.dom().getAttribute('method')) {
+    requestMethodForHTTP = this.dom().getAttribute('method');
   }
 
   console.log("%c Transfer form", "font-size:100px; font-family: Arial, sans-serif; color:#fff;   text-shadow: 0 1px 0 #ccc,   0 2px 0 #c9c9c9, 0 3px 0 #bbb,   0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2),   0 20px 20px rgba(0,0,0,.15)");
@@ -399,10 +365,26 @@ function sendAPISourceFormBody(){
     _callback(_actionResult);
   }
 
-  console.log(this.environment);
+  let use_ssl_value;
+  if( use_ssl === 'false' || use_ssl === false ){
+    use_ssl_value = false;
+  } else if ( use_ssl === 'true' ){
+    use_ssl_value = true;
+  } else if( use_ssl ){
+    use_ssl_value = use_ssl;
+  }  else {
+    use_ssl_value = null;
+  }
 
   Orient.APIRequest.RequestAPI(this.environment, apiSourceId, requestId, transferFields, (_err, _retrievedObject, _originResponse) => {
     // http error 코드일 경우
+    _callback(_err, _retrievedObject, _originResponse);
+  }, enctype || this.dom().getAttribute('enctype') , requestMethodForHTTP, use_ssl_value);
+});
+
+actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain', 'use_ssl'], function(){
+
+  Orient.retrieveFunction('_sendAPISourceFormBody').bind(this)(apiSourceId, requestId, chainCodeCriterion, enctype, fields, before_chain, use_ssl, function(_err, _retrievedObject, _originResponse){
 
     if (_err) {
       _actionResult.code = 'error';
@@ -421,15 +403,36 @@ function sendAPISourceFormBody(){
       }
 
       _actionResult.data = _retrievedObject;
-
     }
     _callback(_actionResult);
+  });
+});
 
-  }, enctype || (this.hasAttribute('enctype') ? this.getAttributeWithResolve('enctype') : undefined), requestMethodForHTTP);
-}
+actionStore.registerAction('api-submit', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain', 'use_ssl'],  function(){
 
-actionStore.registerAction('sendAPISourceForm', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], sendAPISourceFormBody);
-actionStore.registerAction('api-submit', ['apiSourceId', 'requestId', 'chainCodeCriterion', 'enctype', 'fields', 'before_chain'], sendAPISourceFormBody);
+  Orient.retrieveFunction('_sendAPISourceFormBody').bind(this)(apiSourceId, requestId, chainCodeCriterion, enctype, fields, before_chain, use_ssl, function(_err, _retrievedObject, _originResponse){
+
+    if (_err) {
+      _actionResult.code = 'error';
+      _actionResult.data = _err;
+    } else {
+
+      if (chainCodeCriterion) {
+
+        if (chainCodeCriterion instanceof Function) {
+          _actionResult.code = chainCodeCriterion(_retrievedObject);
+        } else {
+          _actionResult.code = _retrievedObject[chainCodeCriterion];
+        }
+      } else {
+        _actionResult.code = _retrievedObject['result'];
+      }
+
+      _actionResult.data = _retrievedObject;
+    }
+    _callback(_actionResult);
+  });
+});
 
 actionStore.registerAction('focus', ['eid'], function() {
   let targetElementNode;

@@ -211,6 +211,7 @@ class Config {
         that.import(importObject);
 
         that.emit('update');
+        that.emit('load');
 
         that.orbit.orbitDocument.loadExtraCSSPararllel(this.GLOBAL_STYLES || []);
         that.orbit.orbitDocument.loadExtraJSSerial(this.GLOBAL_SCRIPTS || [], () => {

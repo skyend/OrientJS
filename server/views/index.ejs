@@ -5,146 +5,156 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Eventually by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="/service-static/index/assets/css/main.css" />
-		<!--[if lte IE 8]><link rel="stylesheet" href="/service-static/index/assets/css/ie8.css" /><![endif]-->
-		<!--[if lte IE 9]><link rel="stylesheet" href="/service-static/index/assets/css/ie9.css" /><![endif]-->
+<head>
+    <title>Eventually by HTML5 UP</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <!--[if lte IE 8]>
+    <script src="/service-static/index/assets/js/ie/html5shiv.js"></script><![endif]-->
+    <link rel="stylesheet" href="/service-static/index/assets/css/main.css"/>
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="/service-static/index/assets/css/ie8.css"/><![endif]-->
+    <!--[if lte IE 9]>
+    <link rel="stylesheet" href="/service-static/index/assets/css/ie9.css"/><![endif]-->
 
-
-		<script type='text/javascript' src='/service-static/scripts/jquery-1.12.4.min.js'></script>
-		<!--[if lte IE 11]>
-		<![endif]-->
-		<script type='text/javascript' src='/service-static/scripts/jquery.form.js'></script>
-		<script type='text/javascript' src='/service-static/scripts/jquery.transport.xdr.min.js'></script>
+    <script type='text/javascript' src='/service-static/scripts/jquery-1.12.4.min.js'></script>
+    <!--[if lte IE 11]>
+    <![endif]-->
+    <script type='text/javascript' src='/service-static/scripts/jquery.form.js'></script>
+    <script type='text/javascript' src='/service-static/scripts/jquery.transport.xdr.min.js'></script>
 
     <script src="/socket.io/socket.io.js"></script>
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
     <script>
-			function iframePostSendTest(_e, _target){
+        function iframePostSendTest(_e, _target) {
 
-					var iframe = document.createElement('iframe');
-					iframe.setAttribute('src','about:blank');
-					var clonedInputF = _e.target.cloneNode(true);
-					window.t = _e.target;
-					window.tt = clonedInputF;
-					console.log(_e.target,iframe.contentDocument);
-					console.log(clonedInputF);
-					document.head.appendChild(iframe);
+            var iframe = document.createElement('iframe');
+            iframe.setAttribute('src', 'about:blank');
+            iframe.setAttribute('name', 'iframe');
+            iframe.name = 'iframe';
+            document.head.appendChild(iframe);
 
-					iframe.onload = function(_e){
-						window.testload =_e;
-						console.log('iframe loaded');
-						var iframeDocument = iframe.contentDocument;
-						console.log(iframeDocument);
-						var form = document.createElement('form');
-						form.setAttribute('method', 'post');
-						form.setAttribute('action',"http://52.79.106.100:58080/api/occ/cart/show.json");
-						form.setAttribute('enctype', 'multipart/form-data');
-						form.setAttribute('target', 'iframe');
+            var clonedInputF = _e.target.cloneNode(true);
+            window.t = _e.target;
+            window.tt = clonedInputF;
+            console.log(_e.target, iframe.contentDocument);
+            console.log(clonedInputF);
+            document.head.appendChild(iframe);
 
-						form.appendChild(clonedInputF);
-						iframeDocument.body.appendChild(form);
-						window.input = clonedInputF;
-						console.log('ajaxSubmit');
- 						//form.submit();
-						// $(form).ajaxSubmit({
-						// 	url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
-						// 	dataType:'json',
-						// 	success:function(responseText, statusText, xhr, $form){
-						// 		console.log(responseText,statusText);
-						// 		console.dir(xhr);
-						// 	}
-						// })
-					}
-			}
+            window.testload = _e;
+            console.log('iframe loaded');
+            var iframeDocument = iframe.contentDocument;
+            console.log(iframeDocument);
+            var form = document.createElement('form');
+            form.setAttribute('method', 'post');
+            form.setAttribute('action', "/api/project/create");
+            form.setAttribute('enctype', 'multipart/form-data');
 
-      window.onload = function(){
-        var orbit = new Orbit(window);
-				window.orbit = orbit;
-        var targetElement = document.getElementById('signup-form');
-        // var targetElement = document.body;
-        var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
-        Orient.replaceRender(masterElementNode, targetElement);
-
-        var socket = io.connect(window.location.host);
-        socket.on('news', function (data) {
-          console.log(data);
-          socket.emit('my other event', { my: 'data' });
-        });
-      }
+            form.appendChild(clonedInputF);
+            iframeDocument.body.appendChild(form);
+            window.input = clonedInputF;
+            console.log('ajaxSubmit');
+            form.submit();
+            // $(form).ajaxSubmit({
+            // 	url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
+            // 	dataType:'json',
+            // 	success:function(responseText, statusText, xhr, $form){
+            // 		console.log(responseText,statusText);
+            // 		console.dir(xhr);
+            // 	}
+            // })
 
 
-			window.onunload=function(){
-				console.log('unload');
-			}
+        }
+
+        window.onload = function () {
+            var orbit = new Orbit(window);
+            window.orbit = orbit;
+            var targetElement = document.getElementById('signup-form');
+            // var targetElement = document.body;
+            var masterElementNode = Orient.buildComponentByElement(targetElement, {}, orbit);
+            Orient.replaceRender(masterElementNode, targetElement);
+
+            var socket = io.connect(window.location.host);
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', {my: 'data'});
+            });
+        }
+
+
+        window.onunload = function () {
+            console.log('unload');
+        }
     </script>
 
     <!-- Scripts -->
-			<!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
-			<!-- <script src="/service-static/index/assets/js/main.js"></script> -->
-	</head>
-	<body >
+    <!--[if lte IE 8]>
+    <script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+    <!-- <script src="/service-static/index/assets/js/main.js"></script> -->
+</head>
+<body>
 
-		<!-- Header -->
-			<header id="header">
-				<h1><%= title %></h1>
-				<p>A simple template for telling the world when you'll launch<br />
-				your next big thing. Brought to you by <a href="/admin/">Pass Admin</a>.</p>
-			</header>
+<!-- Header -->
+<header id="header">
+    <h1><%= title %></h1>
 
-		<!-- Signup Form -->
-			<form name='signup_form' id="signup-form" method="post" action="#" onsubmit='return false;' val='{{: val@email }}'>
-				<!--@Scope @type:action @name:test @param-test
-					! function(){
-						alert('test'+(1<2 ? true :false));
-					}
-				-->
+    <p>A simple template for telling the world when you'll launch<br/>
+        your next big thing. Brought to you by <a href="/admin/">Pass Admin</a>.</p>
+</header>
 
-				<!-- <div en-dc-source-id='[http]/service-static/config/admins.json' en-dc-ns='t' en-event-dc-did-load='{{ throw new Error("a") }}'>
-					{{: ns@t }}
-				</div> -->
+<!-- Signup Form -->
+<form name='signup_form' id="signup-form" method="post" enctype="multipart/form-data" action="/api/project/create" target='iframe' onsubmit='return false;' val='{{: val@email }}'>
+
+    <iframe name="iframe"></iframe>
+    <en:value name='email' type='string' value=''></en:value>
+    <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
+    <en:task name='update' action='update' en-executor='{{: this.getMaster() }}'></en:task>
+
+    <input type="email" name="email" value='{{: val@email }}' id="email" placeholder="Email Address" en-event-keyup='task@email-input'/>
+
+    <input type="submit" value="Sign Up" en-event-click='{{ location.href="/admin/signup?email="+ val@email; }}'/>
+    <input type="submit" value="Sign In" en-event-click='{{ location.href="/admin/signin?email="+ val@email; }}'/>
+
+    <input type="submit">
+
+    <button en-event-click="{{: func@submitViaIframe() }}" value='Action'>Action</button>
+    <script en-scope-type="function" name="submitViaIframe">
+        !function(){
+            alert('test');
+
+            this.getMaster().executeTask('submit', function(_actionResult){
+              console.log(_actionResult);
+              window.aa = _actionResult;
+            });
+        }
+    </script>
+
+    <en:task name='submit' action='api-submit' arg-apiSourceId='[http]/api/project/create'></en:task>
+    iframePostSendTest
+
+    <input type='file' name='file' en-event-changess='{{ iframePostSendTest( feature@event.originEvent , this ) }}' transfer-value="{{: this.dom() }}"/>
+
+</form>
+
+<!-- Footer -->
+<footer id="footer">
+    <ul class="icons">
+        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+        <li><a href="#" class="icon fa-github"><span class="label">GitHub</span></a></li>
+        <li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+    </ul>
+    <ul class="copyright">
+        <li>&copy; Untitled.</li>
+        <li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+</footer>
 
 
-				<script name='test2' en-scope-type='function'>
-					!function test2(){
-						alert('test2');
-					}
-				</script>
-
-        <en:value name='email' type='string' value=''></en:value>
-        <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
-        <en:task name='update' action='update' en-executor='{{: this.getMaster() }}'></en:task>
-
-				<input type="email" name="email" value='{{: val@email }}' id="email" placeholder="Email Address" en-event-keyup='task@email-input' />
-
-				<input type="submit" value="Sign Up" en-event-click='{{ location.href="/admin/signup?email="+ val@email; }}'/>
-        <input type="submit" value="Sign In" en-event-click='{{ location.href="/admin/signin?email="+ val@email; }}'/>
-
-				iframePostSendTest
-				<input type='file' name='file' en-event-change='{{ iframePostSendTest( feature@event.originEvent , this ) }}' />
-
-			</form>
-
-		<!-- Footer -->
-			<footer id="footer">
-				<ul class="icons">
-					<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-					<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-					<li><a href="#" class="icon fa-github"><span class="label">GitHub</span></a></li>
-					<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
-				</ul>
-				<ul class="copyright">
-					<li>&copy; Untitled.</li><li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
-				</ul>
-			</footer>
-
-
-      <!--[if lte IE 8]><script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
-      <script src="/service-static/index/assets/js/main.js"></script>
-	</body>
+<!--[if lte IE 8]>
+<script src="/service-static/index/assets/js/ie/respond.min.js"></script><![endif]-->
+<script src="/service-static/index/assets/js/main.js"></script>
+</body>
 </html>

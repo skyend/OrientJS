@@ -17,9 +17,9 @@ import events from 'events';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
-const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8);
+const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) || ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '0.14.0';
+const VERSION = '0.14.1';
 
 /*
   Version : x.y.z
@@ -53,6 +53,10 @@ const VERSION = '0.14.0';
     * FOUC Preventer
   - 0.14.0 (2016-07-13T00:25)
     * multi-part/formdata 도 uriEncode 하도록 수정
+
+  - 0.14.1 (2016-08-09T17:55)
+    * IE9 IFrame 이용 멀티파트 Ajax 지원 (response content type 이 text/plain 이어야 함)
+    * HTTPRequest SSL옵션 추가
 */
 
 class Orbit {
@@ -211,31 +215,37 @@ class Orbit {
   // will Deprecate
   pageMetaCompatibility(_renderCallback, _finalCallback) {
     let pageMetaEl = document.getElementById('page-meta');
-    let pageMetaText = pageMetaEl.innerHTML;
     let pageMeta;
+
     let that = this;
-    try {
-      pageMeta = JSON.parse(pageMetaText);
-    } catch (_e) {
-      throw new Error(`Page Meta Script Tag 에 문법적인 문제가 있습니다. ${_e}`);
+
+    if( pageMetaEl ){
+      let pageMetaText = pageMetaEl.innerHTML;
+
+      try {
+        pageMeta = JSON.parse(pageMetaText);
+      } catch (_e) {
+        throw new Error(`Page Meta Script Tag 에 문법적인 문제가 있습니다. ${_e}`);
+      }
+    } else {
+      pageMeta = {};
     }
 
-    // Early Script
-    this.orbitDocument.loadExtraJSSerial(pageMeta.earlyScripts || [], (_failures) => {
-      // Early Scipts 로드완료
 
-      _renderCallback(function next() {
-        that.orbitDocument.loadExtraJSSerial(pageMeta.scripts || [], () => {
-          // Script 로드 완료
-
-          _finalCallback();
-        });
-      });
-    });
 
     this.orbitDocument.loadExtraCSSPararllel(pageMeta.styles || [], () => {
+      // Early Script
+      this.orbitDocument.loadExtraJSSerial(pageMeta.earlyScripts || [], (_failures) => {
+        // Early Scipts 로드완료
 
+        _renderCallback(function next() {
+          that.orbitDocument.loadExtraJSSerial(pageMeta.scripts || [], () => {
+            // Script 로드 완료
 
+            _finalCallback();
+          });
+        });
+      });
     });
   }
 
@@ -269,6 +279,7 @@ class Orbit {
 
     if (this.bodyOpacity >= 1) {
       styleDOM.innerHTML = `body { }`;
+      styleDOM.parentNode.removeChild(styleDOM);
     } else {
       styleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
     }
@@ -329,7 +340,7 @@ class Orbit {
         if (readyCounter === targetDomNodes.length) {
 
 
-
+          this.tryFOUCClear();
           _callback();
         }
       }, 'orbit-ready');
@@ -340,9 +351,9 @@ class Orbit {
       });
     }
 
-    let styleDOM = this.window.document.getElementById('fouc-preventer');
-    if (styleDOM) {
-      this.bodyAppear();
+    if( !(window.ORBIT_FOUC_LAZY === true) ){
+
+      this.tryFOUCClear();
     }
 
     window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.timeEnd && console.timeEnd("First Built up");
@@ -360,6 +371,13 @@ class Orbit {
   signalReady() {
     this.readied = true;
     this.emit('load');
+  }
+
+  tryFOUCClear(){
+    let styleDOM = this.window.document.getElementById('fouc-preventer');
+    if (styleDOM) {
+      this.bodyAppear();
+    }
   }
 
   /*
