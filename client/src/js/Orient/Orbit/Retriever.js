@@ -217,15 +217,42 @@ class Retriever {
 
   _loadI18NJSONSync(_lang) {
 
-    let data = this.orbit.HTTPRequest.requestSync('get', `${this.dirpath_i18n}${_lang}.json`);
+    let data;
 
-    try {
-      return JSON.parse(data);
-    } catch (e) {
-      // undefined를 반환한다.
-      // i18n처리에서 undefined를 반환받으면 다음 후보 i18n 언어셋을 로딩하도록 되어 있기 때문이다.
-      return undefined;
+    this.orbit.HTTPRequest.requestSync('get', `${this.dirpath_i18n}${_lang}.json`, {}, function(_err, _res){
+      try {
+        data = _res.json;
+      } catch (e) {
+        // undefined를 반환한다.
+        // i18n처리에서 undefined를 반환받으면 다음 후보 i18n 언어셋을 로딩하도록 되어 있기 때문이다.
+        data = undefined;
+      }
+    });
+
+
+    return data;
+  }
+
+  // 메서드 반환
+  get loadI18NJSON() {
+    if (this._extender) {
+      if (this._extender.loadI18NJSON) {
+        return this._extender.loadI18NJSON;
+      }
     }
+
+    return this._loadI18NJSON;
+  }
+
+  _loadI18NJSON(_lang, _callback) {
+
+    let data;
+
+    this.orbit.HTTPRequest.request('get', `${this.dirpath_i18n}${_lang}.json`, {}, function(_err, _res){
+
+      data = _res.json || null;
+      _callback(data);
+    });
   }
 }
 

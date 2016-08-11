@@ -9,7 +9,7 @@ class I18N {
     this.orbit = _orbit;
 
 
-    this.i18nLangSetDict = {};
+    this.i18nLangSetDict = {}; // 머지 기능 추가
   }
 
   get languageDecider() {
@@ -93,10 +93,40 @@ class I18N {
     // 로드를 시도 했지만 파일을 찾지 못 했을 때는 null 로 유지 한다.
 
     if (langSet === undefined) {
-      langSet = this.i18nLangSetDict[_langCode] = this.orbit.retriever.loadI18NJSONSync(_langCode) || null;
+      langSet = this.orbit.retriever.loadI18NJSONSync(_langCode) || null;
+
+      this.i18nLangSetDict[_langCode] = langSet;
     }
 
     return langSet;
+  }
+
+  /*
+    _langCode : Language Code
+    _directPath : Direct Path
+  */
+  prepareLoadingI18NLangSet(_langCode, _directPath){
+    if( arguments.length === 1 ){
+      this.orbit.retriever.loadI18NJSON(_langCode, function(_json){
+        if( _json ){
+          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode], _json);
+        } else {
+          throw new Error(`Fail to load i18n json`);
+        }
+      }.bind(this));
+    } else {
+      Orbit.HTTPRequest.request('get',_directPath, {}, function(_err,_res){
+        if( _err ){
+          throw new Error(`Fail to load i18n json`);
+        }
+
+        if( _res.json ){
+          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode], _res.json);
+        } else {
+          throw new Error(`Fail to load i18n json`);
+        }
+      }.bind(this));
+    }
   }
 }
 

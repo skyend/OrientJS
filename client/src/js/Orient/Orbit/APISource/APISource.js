@@ -286,7 +286,7 @@ export default class APISource {
 
   import (_APISource) {
     let APISource = _APISource || {};
-
+    let that = this;
     this.id = APISource._id;
     this.name = APISource.name;
     this.title = APISource.title;
@@ -295,7 +295,8 @@ export default class APISource {
     this.created = APISource.created;
     this.requests = APISource.requests || [];
     this.requests = this.requests.map(function(_r) {
-      return new Request(_r);
+      
+      return new Request(_r, that.orbit);
     });
   }
 

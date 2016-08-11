@@ -86,7 +86,70 @@ class ObjectExtends {
   static merge(_dest, _source, _override, _asSuper) {
     let assigned = ObjectExtends.clone(_dest);
 
+
     ObjectExtends.mergeByRef(assigned, _source, _override, _asSuper);
+
+    return assigned;
+  }
+
+
+
+  /*
+    mergeDeep
+    깊은 오브젝트 합치기
+    _A 와 _B 에 입력된 두 오브젝트를 합친결과를 반환한다.
+    _override : _override 옵션에 참이 들어오면 _A에 존재하는 필드가 _B에도 있을 때 _B의 데이터로 덮어진다.
+    두 오브젝트에 필드 명이 같고 필드의 타입이 Object 면 두 오브젝트를 각각 머지 하여 깊은 머지를 구현한다.
+    _B의 필드가 오브젝트며 _A의 같은 계층의 필드가 오브젝트가 아닐 경우 머지는 무시된다.
+  */
+  static mergeDeep(_A, _B, _override) {
+    let assigned = ObjectExtends.clone(_A, true);
+
+    let keys = Object.keys(_B);
+    let sKey, sValue;
+    let eltype;
+
+    for (let i = 0; i < keys.length; i++) {
+      sKey = keys[i];
+      sValue = _B[sKey];
+
+      if( assigned.hasOwnProperty(sKey) ){
+        eltype = typeof sValue;
+
+        switch (eltype) {
+          case 'string':
+          case 'number':
+          case 'boolean':
+          case 'undefined':
+            if (_override) {
+              assigned[sKey] = sValue;
+            }
+            break;
+          case "object":
+          if( sValue === null ){
+            if (_override) {
+              assigned[sKey] = sValue;
+            }
+          } else {
+            if( typeof assigned[sKey] === 'object' && assigned[sKey] ){
+
+              assigned[sKey] = ObjectExtends.mergeDeep(assigned[sKey], sValue);
+            } else {
+              if( _override ){
+                assigned[sKey] = sValue;
+              } else {
+                console.warn(`Ignored field merge. Not matched field type A[${typeof assigned[sKey]}] B[${eltype}].`);
+              }
+            }
+          }
+          break;
+          default:
+            console.warn(`This type[${eltype}] can\'t merge.`);
+        }
+      } else {
+        assigned[sKey] = sValue;
+      }
+    }
 
     return assigned;
   }

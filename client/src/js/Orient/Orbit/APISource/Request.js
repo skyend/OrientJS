@@ -4,24 +4,33 @@ import ObjectExtends from '../../../util/ObjectExtends';
 import Identifier from '../../../util/Identifier.js';
 
 export default class Request {
-  constructor(_requestData) {
-
+  constructor(_requestData, _orbit) {
+    this.orbit = _orbit;
     this.import(_requestData);
   }
 
   get crudPoint() {
-    if (/\.[\w\d\-\_]+$/.test(this.crudType)) {
-      return this.crudType;
+    let crudType = this.crudType;
+    let extension;
+
+
+
+    if (/\.[\w\d\-\_]+$/.test(crudType)) {
+      return crudType;
     } else {
-      return this.crudType + '.json';
+      if( this.orbit ){
+        extension = this.orbit.interpret( this.extension );
+      }
+
+      return crudType + '.' + (extension || 'json');
     }
   }
 
   get crudType() {
     if (this.crud === '*') {
-      return this.customCrud;
+      return this.orbit ? this.orbit.interpret(this.customCrud):this.customCrud;
     } else {
-      return this.crud;
+      return this.orbit ? this.orbit.interpret(this.crud):this.crud;
     }
   }
 
@@ -89,6 +98,7 @@ export default class Request {
     this.customURL = requestData.customURL;
     this.fields = requestData.fields || [];
     this.isVirtual = requestData.isVirtual;
+    this.extension = requestData.extension;
   }
 
   export () {
@@ -100,7 +110,8 @@ export default class Request {
       customCrud: this.customCrud,
       customURL: this.customURL,
       fields: ObjectExtends.clone(this.fields),
-      isVirtual: this.isVirtual
+      isVirtual: this.isVirtual,
+      extension: this.extension
     };
   }
 }

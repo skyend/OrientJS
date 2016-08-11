@@ -7,7 +7,7 @@
 function getValueByKeyPath(_object, _keyPath, _spliter) {
   let spliter = _spliter || '/';
 
-  var splitPath = _keyPath.split(_spliter);
+  var splitPath = _keyPath.split(spliter);
 
   var currValue = _object;
 

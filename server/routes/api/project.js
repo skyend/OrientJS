@@ -5,7 +5,7 @@ var debug = require('debug')('API:PROJECT');
 import uuid from 'uuid';
 
 function create(req, res) {
-  res.type('text');
+  //res.type('text');
 
   agent.businessMan.getSessionUserDocByCookie(req, function(_err, _userDoc, _socketSession) {
     let projectFormDatas = {};

@@ -32,7 +32,7 @@ const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '0.19.1';
+const VERSION = '1.19.2';
 
 /*
   Version : x.y.z
@@ -149,6 +149,10 @@ const VERSION = '0.19.1';
     * HTTPRequest SSL옵션 추가
     * Orient 의 인스턴스 직접접근 및 메소드 제공객체 Global O객체 제공
     * 기타 액션및 함수 추가
+
+  - 1.19.2 (2016-08-11T22:30)
+    * ObjectExtends 에 mergeDeep 메서드 추가.
+    * i18n preparing.
 
 */
 

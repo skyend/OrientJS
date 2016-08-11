@@ -118,10 +118,12 @@ class HTTPRequest {
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
     let url = _url;
-    let enctype = _enctype;
+    let enctype = _enctype || 'application/x-www-form-urlencoded';
     let requestToken = TEMPORARY_NETWORK_SEQ();
 
-    console.log(enctype, method);
+    let methodForLog = method;
+    let logBody = `IFRAME [${method === 'get'? methodForLog : methodForLog + ':' +enctype}][${_async ? 'async':'sync'}] - URL: ${url}`;
+
 
 
     // multipart post 체크와 메소드 체크
@@ -131,7 +133,7 @@ class HTTPRequest {
       }
     } else
     if (method === 'get') {
-      if (_enctype !== 'application/x-www-form-urlencoded') {
+      if (enctype !== 'application/x-www-form-urlencoded') {
         throw new Error(`HTTP Method 는 GET 으로 지정되어 있지만, Enctype 은 'application/x-www-form-urlencoded' 가 아닙니다.`);
       }
       //
@@ -156,25 +158,24 @@ class HTTPRequest {
     } else {
       isSameOrigin = false;
 
-      // HTTP to HTTPS 정책
-      if( _use_ssl === null ){
-        if( window.HTTPREQ_REPLACE_SECURITY ){
-          // use_ssl 이 null 이면 무관 조건으로 SSL 제어에 관여하지 않는다.
-          url = url.replace(/^https?:\/\//, 'https://');
-        }
-      } else if( _use_ssl === true ) {
-        url = url.replace(/^https?:\/\//, 'https://');
-      } else if ( _use_ssl === false ) {
-        url = url.replace(/^https?:\/\//, 'http://');
-      }
-
-
       // IE9 임시 XDR GET
       // if (B_NAME === 'ie' && B_VER <= 9) {
       //   enctype = 'application/x-www-form-urlencoded';
       //   method = 'get';
       //   is_multipart_post = false;
       // }
+    }
+
+    // HTTP to HTTPS 정책
+    if( _use_ssl === null ){
+      if( window.HTTPREQ_REPLACE_SECURITY ){
+        // use_ssl 이 null 이면 무관 조건으로 SSL 제어에 관여하지 않는다.
+        url = url.replace(/^https?:\/\//, 'https://');
+      }
+    } else if( _use_ssl === true ) {
+      url = url.replace(/^https?:\/\//, 'https://');
+    } else if ( _use_ssl === false ) {
+      url = url.replace(/^https?:\/\//, 'http://');
     }
 
 
@@ -212,6 +213,7 @@ class HTTPRequest {
         ██ ███████  █████      ██      ██  ██████  ███████ ██    ██ ██      ██   ██ ██   ██    ██
         */
 
+        logBody = `IE9 IFRAME [post:multipart/form-data][force async] - URL: ${url}`;
 
          // Send Event emit
          HTTPRequest.emit("request", {
@@ -222,6 +224,8 @@ class HTTPRequest {
            request: 'iframe'
          });
 
+         HTTPRequest.Log(`Send : ${logBody}\n`, "log");
+
          return HTTPRequest.requestMultipartPostIE10below(_url, rawFieldArray, function(_err, _res){
            HTTPRequest.emit("response", {
              url: finalURL,
@@ -231,6 +235,7 @@ class HTTPRequest {
              enctype: enctype,
              statusText: 'timeout'
            });
+           HTTPRequest.Log(`Loaded and I hope 200 : ${logBody}\n`, "info", [request]);
 
            _callback(_err, _res);
          });
@@ -288,8 +293,8 @@ class HTTPRequest {
 
 
     // Logging
-    let methodForLog = method === _method ? method : `${_method}->${method}`;
-    let logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? methodForLog : methodForLog + ':' +enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
+    methodForLog = method === _method ? method : `${_method}->${method}`;
+    logBody = `${Classer.getFunctionName(Request)}[${method === 'get'? methodForLog : methodForLog + ':' +enctype}][${_async ? 'async':'sync'}] - URL: ${finalURL}`;
 
 
     // OPEN
@@ -329,15 +334,18 @@ class HTTPRequest {
         }
       }
 
+      let contentType = (request.responseHeader['Content-Type'] || '').split(';')[0];
       // 컨텐트 타입이 application/json JSON 데이터 적재
-      if (/^application\/json/.test(request.responseHeader['Content-Type'])) {
-
-        try {
-          request.json = JSON.parse(request.responseText);
-        } catch (_e) {
-          request.json = null;
-          request.jsonParseError = _e;
-        }
+      switch (contentType) {
+        case "application/json":
+        case "text/plain":
+          try {
+            request.json = JSON.parse(request.responseText);
+          } catch (_e) {
+            request.json = null;
+            request.jsonParseError = _e;
+          }
+          break;
       }
 
       HTTPRequest.Log(`Loaded : ${logBody}\n`, "info", [request]);
@@ -363,14 +371,18 @@ class HTTPRequest {
         }
       }
 
+      let contentType = (request.responseHeader['Content-Type'] || '').split(';')[0];
       // 컨텐트 타입이 application/json JSON 데이터 적재
-      if (/^application\/json/i.test(request.responseHeader['Content-Type'])) {
-        try {
-          request.json = JSON.parse(request.responseText);
-        } catch (_e) {
-          request.json = null;
-          request.jsonParseError = _e;
-        }
+      switch (contentType) {
+        case "application/json":
+        case "text/plain":
+          try {
+            request.json = JSON.parse(request.responseText);
+          } catch (_e) {
+            request.json = null;
+            request.jsonParseError = _e;
+          }
+          break;
       }
 
       // console.log('onerror', _e);
@@ -485,16 +497,24 @@ class HTTPRequest {
 
     document.body.appendChild(iframe);
 
-    let attachedVirtualForm = false;
-    let virtualForm = HTTPRequest.createVirtualForm(_rawFieldArray);
+    let submitted = false;
+    let fakeReplacedElements = []; // 참조를 createVirtualForm 인자로 전달하여 데이터를 전달받는다.
+    let virtualForm = HTTPRequest.createVirtualForm(_rawFieldArray, fakeReplacedElements);
     virtualForm.setAttribute('action', _url);
     virtualForm.setAttribute('method', 'post');
     virtualForm.setAttribute('enctype','multipart/form-data');
-
+    virtualForm.setAttribute('style', 'display:none!important;');
+    virtualForm.setAttribute('target',iframeName);
+    virtualForm.target = iframeName;
+    document.body.appendChild(virtualForm);
 
     iframe.onload = function(){
 
-      if( attachedVirtualForm ){
+      if( submitted ){
+        fakeReplacedElements.forEach(function(_element){
+          _element._replacePast();
+        });
+
         if( iframe.contentWindow ){
           var loadedTextData = iframe.contentWindow.document.body.innerText;
           let parsed = null;
@@ -504,6 +524,8 @@ class HTTPRequest {
             parsed = null;
           }
 
+          iframe.onload = null;
+          document.body.removeChild(iframe);
           _callback( null, {
             response : loadedTextData,
             responseText : loadedTextData,
@@ -516,9 +538,9 @@ class HTTPRequest {
           });
         }
       } else {
-        attachedVirtualForm = true;
+        submitted = true;
 
-        iframe.contentWindow.document.body.appendChild(virtualForm);
+        // iframe.contentWindow.document.body.appendChild(virtualForm);
 
         virtualForm.submit();
       }
@@ -526,7 +548,7 @@ class HTTPRequest {
 
   }
 
-  static createVirtualForm(_rawFieldArray){
+  static createVirtualForm(_rawFieldArray, _fakeReplacedElementsArrayRef){
     var formElement = document.createElement('form');
     var inputElement;
 
@@ -537,6 +559,7 @@ class HTTPRequest {
       fieldType = typeof fieldValue;
 
       switch( fieldType ){
+        case "boolean":
         case "string":
         case "number":
           inputElement = document.createElement('input');
@@ -545,8 +568,11 @@ class HTTPRequest {
           break;
         case "object":
           if( fieldValue.nodeName ){
-            inputElement = fieldValue.cloneNode();
+            HTTPRequest.replaceFakeField(fieldValue, formElement);
+            _fakeReplacedElementsArrayRef.push(fieldValue);
           }
+
+          continue;
       }
 
 
@@ -555,6 +581,37 @@ class HTTPRequest {
 
     return formElement;
   }
+
+  static replaceFakeField(_field, _virtualForm){
+
+    let fakeInput = _field.cloneNode(true);
+
+    let originNextSibling = _field.nextSibling;
+    let originPreviousSibling = _field.nextSibling;
+    let originParent = _field.parentNode;
+
+    // 원래 필드를 가상의 폼에 추가한다.
+    _virtualForm.appendChild(_field);
+
+    // 원래의 form의 input 을 가짜 input 으로 대체 한다.
+    if( originNextSibling ){
+      originParent.insertBefore(fakeInput, originNextSibling);
+    } else {
+      originParent.appendChild(fakeInput);
+    }
+
+    _field._replacePast = function(){
+      fakeInput.parentNode.removeChild(fakeInput);
+
+      if( originNextSibling ){
+        originParent.insertBefore(_field.parentNode.removeChild(_field), originNextSibling);
+      } else {
+        originParent.appendChild(_field.parentNode.removeChild(_field));
+      }
+    }
+  }
+
+
   /*
     convertRawFieldsToRealFieldsData
       필드 목록중 가공되지 않고 가공이 가능한 형태의 필드가 존재할 경우

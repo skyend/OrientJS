@@ -19,7 +19,7 @@ const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
 const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) || ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '0.14.1';
+const VERSION = '1.14.2';
 
 /*
   Version : x.y.z
@@ -57,6 +57,10 @@ const VERSION = '0.14.1';
   - 0.14.1 (2016-08-09T17:55)
     * IE9 IFrame 이용 멀티파트 Ajax 지원 (response content type 이 text/plain 이어야 함)
     * HTTPRequest SSL옵션 추가
+
+  - 1.14.2 (2016-08-11T22:30)
+    * ObjectExtends 에 mergeDeep 메서드 추가.
+    * i18n preparing.
 */
 
 class Orbit {
@@ -68,6 +72,7 @@ class Orbit {
   constructor(_window, _inlineConfig, _retriever) {
     // Orbit 에서 커스텀 이벤트를 사용 할 수 있도록 EventEmitter를 포함한다.
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
+    this.setMaxListeners(20);
 
     let that = this;
 
@@ -276,12 +281,13 @@ class Orbit {
 
   updateBodyOpacity() {
     let styleDOM = this.window.document.getElementById('fouc-preventer');
-
-    if (this.bodyOpacity >= 1) {
-      styleDOM.innerHTML = `body { }`;
-      styleDOM.parentNode.removeChild(styleDOM);
-    } else {
-      styleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
+    if( styleDOM ){
+      if (this.bodyOpacity >= 1) {
+        styleDOM.innerHTML = `body { }`;
+        styleDOM.parentNode.removeChild(styleDOM);
+      } else {
+        styleDOM.innerHTML = `body { opacity:${this.bodyOpacity};  pointer-events:none;  }`;
+      }
     }
   }
 
