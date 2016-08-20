@@ -1,6 +1,6 @@
 import ObjectExplorer from '../../util/ObjectExplorer.js';
 import ArrayHandler from '../../util/ArrayHandler.js';
-import JSCookie from 'js-cookie';
+import JSCookie from '../../Orient/common/Cookie';
 import Accounting from 'accounting';
 import Shortcut from './Shortcut';
 import TypeCaster from '../../util/TypeCaster';
@@ -349,30 +349,14 @@ class Resolver {
       //     throw new Error(`Not found ElementNode in Environment. \nID: ${varName}`);
       //   }
       //   break;
-      case 'en-attr-origin':
-        data = _externalGetterInterface.getAttribute(varName, false);
-        break;
       case 'en-attr':
         data = _externalGetterInterface.getAttribute(varName, true);
         break;
+
       case 'ns': // getNSData 메서드는 자신에게 없으면 상위 resolver의 NS데이터를 탐색한다.
         data = this.getNSData(varName);
         break;
-      case 'en':
-        data = _externalGetterInterface.getNodeMeta(varName);
-        break;
-        // case 'geometry': // 위치와 크기정보를 반환
-        //   throw new Error("geometry category 는 아직 지원하지 않습니다.");
-        //   data = this.resolveWithHttpParam(varName);
-        //   break;
-      case 'val-plain':
 
-        try {
-          data = _externalGetterInterface.getScope(varName, 'value').plainValue;
-        } catch (_e) {
-          throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
-        }
-        break;
       case 'val':
         let valueScope = _externalGetterInterface.getScope(varName, 'value');
 
@@ -387,12 +371,7 @@ class Resolver {
           throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
         }
         break;
-      case 'task':
-        data = _externalGetterInterface.getScope(varName, 'task');
-        break;
-      case 'action':
-        data = _externalGetterInterface.getScope(varName, 'action');
-        break;
+
       case 'func': // function 과 동일함
       case 'function':
         //throw new Error("function category 는 아직 지원하지 않습니다.");
@@ -411,6 +390,23 @@ class Resolver {
         //   throw new Error("class category 는 아직 지원하지 않습니다.");
         //   data = _externalGetterInterface.getScope(varName, 'class');
         //   break;
+
+      case 'prop':
+        data = _externalGetterInterface.getProperty(varName);
+        break;
+
+      case 'feature':
+        data = _externalGetterInterface.getFeature(varName);
+        break;
+
+      case 'config':
+        if (_externalGetterInterface.getENVConfig) {
+          data = _externalGetterInterface.getENVConfig(varName);
+        } else {
+          console.error("config category를 사용할 수 없습니다.");
+        }
+        break;
+
       case 'cookie':
         data = this.resolveWithCookie(varName);
         break;
@@ -419,6 +415,27 @@ class Resolver {
         data = this.resolveWithHttpParam(varName);
         break;
 
+      case 'en':
+        data = _externalGetterInterface.getNodeMeta(varName);
+        break;
+        // case 'geometry': // 위치와 크기정보를 반환
+        //   throw new Error("geometry category 는 아직 지원하지 않습니다.");
+        //   data = this.resolveWithHttpParam(varName);
+        //   break;
+      case 'en-attr-origin':
+        data = _externalGetterInterface.getAttribute(varName, false);
+        break;
+
+      case 'val-plain':
+
+        try {
+          data = _externalGetterInterface.getScope(varName, 'value').plainValue;
+        } catch (_e) {
+          throw new Error(`${varName} 변수 노드(<en:value>) 가 선언되지 않았습니다. <en:value name='${varName}' ...></en:value>를 선언 해 주세요.`);
+        }
+        break;
+
+
       case 'location':
         data = this.resolveWithLocation(varName);
         break;
@@ -426,6 +443,7 @@ class Resolver {
       case 'local-data':
         data = window.localStorage.getItem(varName);
         break;
+
       case 'local-object':
         data = window.localStorage.getItem(varName);
 
@@ -439,6 +457,7 @@ class Resolver {
       case 'session-data':
         data = window.sessionStorage.getItem(varName);
         break;
+
       case 'session-object':
         data = window.sessionStorage.getItem(varName);
 
@@ -458,19 +477,14 @@ class Resolver {
         //   data = this.resolveWithHttpParam(varName);
         //   break;
 
-      case 'prop':
-        data = _externalGetterInterface.getProperty(varName);
+      case 'task':
+        data = _externalGetterInterface.getScope(varName, 'task');
         break;
-      case 'feature':
-        data = _externalGetterInterface.getFeature(varName);
+
+      case 'action':
+        data = _externalGetterInterface.getScope(varName, 'action');
         break;
-      case 'config':
-        if (_externalGetterInterface.getENVConfig) {
-          data = _externalGetterInterface.getENVConfig(varName);
-        } else {
-          console.error("config category를 사용할 수 없습니다.");
-        }
-        break;
+
       default:
         if (varCategory === '') {
           //console.log(_varName);

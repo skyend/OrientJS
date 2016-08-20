@@ -28,11 +28,16 @@ import Shortcut from '../serviceCrew/DataResolver/Shortcut';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
-const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) || ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
+const LEGACY_BROWSER =
+  (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) ||
+  (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) ||
+  (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) ||
+  (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
+  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.19.2';
+const VERSION = '1.2.0';
 
 /*
   Version : x.y.z
@@ -153,23 +158,17 @@ const VERSION = '1.19.2';
   - 1.19.2 (2016-08-11T22:30)
     * ObjectExtends 에 mergeDeep 메서드 추가.
     * i18n preparing.
-
+  - 1.2.0 (2016-08-20T21:04)
+    * Value localStorage 바인딩 추가
+    * Global O 업데이트
 */
 
-
-window.$$ = function(_message, _data) {
-  console.log(_message, ' - ', _data);
-
-  window.test = _data;
-}
 
 
 class Neutron {
 
   constructor(){
-      console.log('aa');
   }
-
 
   static buildElement(_elementNodeObject) {
 
@@ -521,6 +520,8 @@ class Neutron {
   MultipleContext.prototype.pop = Array.prototype.pop;
   MultipleContext.prototype.shift = Array.prototype.shift;
   MultipleContext.prototype.unshift = Array.prototype.unshift;
+  MultipleContext.prototype.filter = Array.prototype.filter;
+  MultipleContext.prototype.reduce = Array.prototype.reduce;
 
   MultipleContext.prototype.setAttrR = function(){
     let roofArgs = arguments;
@@ -556,11 +557,51 @@ class Neutron {
     });
   }
 
+  MultipleContext.prototype.dom = function(){
+    let roofArgs = arguments;
+
+    return this.map(function(){
+      return this.dom();
+    });
+  }
+
   MultipleContext.prototype.update = function(){
     let roofArgs = arguments;
 
     this.each(function(){
       this.update.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.addRuntimeEventListener = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.addRuntimeEventListener.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.removeRuntimeEventListener = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.removeRuntimeEventListener.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.render = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.render.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.executeDC = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.executeDC.apply(this, roofArgs);
     });
   }
 

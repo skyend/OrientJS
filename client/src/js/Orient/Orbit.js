@@ -1,4 +1,5 @@
 import './common/polyfill';
+import './Orbit.copyright.js'
 
 import HTTPRequest from './common/HTTPRequest';
 import APIRequest from './common/APIRequest';
@@ -6,6 +7,7 @@ import IO from './Orbit/IO';
 import Config from './Orbit/Config';
 import I18N from './Orbit/I18N';
 import Resolver from '../serviceCrew/DataResolver/Resolver';
+import Cookie from './common/Cookie';
 import BuiltinRetriever from './Orbit/Retriever';
 import APISourceFactory from './Orbit/APISource/Factory';
 import OrbitDocument from './Orbit/Document';
@@ -17,9 +19,14 @@ import events from 'events';
 import browser from 'detect-browser';
 const BROWSER_NAME = browser.name;
 const BROWSER_VER = parseInt(browser.version);
-const LEGACY_BROWSER = (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) || (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) || (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) || ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
+const LEGACY_BROWSER =
+  (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) ||
+  (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) ||
+  (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) ||
+  (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
+  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '1.14.2';
+const VERSION = '1.2.0';
 
 /*
   Version : x.y.z
@@ -49,8 +56,10 @@ const VERSION = '1.14.2';
 
   - 0.13.9 (2016-07-05T11:30)
     * orbit 이벤트 추가 - http:request, http:response, http:begin, http:finish
+
   - 0.13.10 (2016-07-07T23:37)
     * FOUC Preventer
+
   - 0.14.0 (2016-07-13T00:25)
     * multi-part/formdata 도 uriEncode 하도록 수정
 
@@ -61,7 +70,20 @@ const VERSION = '1.14.2';
   - 1.14.2 (2016-08-11T22:30)
     * ObjectExtends 에 mergeDeep 메서드 추가.
     * i18n preparing.
+
+  - 1.2.0 (2016-08-20T18:47) - # XSS 방어 업데이트
+    * Orbit 의 Config 필드 변경 방지 및 Config 내의 Field 임의 변경 방지 최초의 retrieveConfig 또는 config.import 를 통해 한번만 실행 되도록 함
+    * Config 의 한번 임포트 되어 지정된 필드는 변경 불가능 하도록 변경함
+    * 없던 Field 에 대해서는 지정이 가능하도록 함
+    * Retriever 와 Config 멤버변수는 외부에서 변경이 불가능 하도록 변경
 */
+
+
+// Config 객체를 담을 변수
+// Config 객체에 직접 접근을 방지 하기 위해 지역변수로 선언하고 orbit 의 getter를 통해서 접근 할 수 있도록 한다.
+var SECURE_CONFIG_BUCKET = null;
+var SECURE_RETRIEVER_BUCKET = null;
+
 
 class Orbit {
   /**
@@ -90,7 +112,7 @@ class Orbit {
     this.bindedInterpretSupporters = {};
 
     /* Initial Members */
-    this.config = new Config(_inlineConfig, this);
+    SECURE_CONFIG_BUCKET = new Config(_inlineConfig, this);
     this.bindedInterpretSupporters.getConfig = this.config.getField.bind(this.config); // config interpreter
 
     this.api = new APIRequest(this);
@@ -105,7 +127,7 @@ class Orbit {
 
     this.bindedInterpretSupporters.executeI18n = this.i18n.executeI18n.bind(this.i18n); // i18n interpreter
 
-    this._retriever = new BuiltinRetriever(that, {
+    SECURE_RETRIEVER_BUCKET = new BuiltinRetriever(that, {
       'relative-dir-i18n': this.config.getField('DIR_I18N'),
       'relative-dir-apisource': this.config.getField('DIR_API_SOURCE'),
       'relative-dir-component': this.config.getField('DIR_COMPONENT')
@@ -189,17 +211,22 @@ class Orbit {
     return this._apiSourceFactory;
   }
 
-  set retriever(_retriever) {
-    this._retriever = _retriever;
-  }
+  // set retriever(_retriever) {
+  //   this._retriever = _retriever;
+  // }
 
   get retriever() {
-    return this._retriever;
+    return SECURE_RETRIEVER_BUCKET;
   }
 
   get HTTPRequest() {
     return HTTPRequest;
   }
+
+  get config(){
+    return SECURE_CONFIG_BUCKET;
+  }
+
 
   interpret(_text, _defaultDataObject) {
 
@@ -386,6 +413,8 @@ class Orbit {
     }
   }
 
+
+
   /*
     ███████ ██   ██ ████████ ███████ ███    ██ ██████   █████  ██████  ██      ███████      ██████ ██       █████  ███████ ███████     ███████ ██   ██ ██████   ██████  ██████  ████████
     ██       ██ ██     ██    ██      ████   ██ ██   ██ ██   ██ ██   ██ ██      ██          ██      ██      ██   ██ ██      ██          ██       ██ ██  ██   ██ ██    ██ ██   ██    ██
@@ -452,6 +481,10 @@ class Orbit {
 
   static get IS_LEGACY_BROWSER() {
     return LEGACY_BROWSER;
+  }
+
+  static get Cookie() {
+    return Cookie;
   }
 }
 

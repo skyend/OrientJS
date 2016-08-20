@@ -58,6 +58,20 @@ class ValueScopeNode extends ScopeNode {
       this.scannedSession = true;
     }
 
+    if (this.mappingLocal) {
+      let localValue;
+
+      try {
+        localValue = BrowserStorage.getLocal(this.mappingLocal === true ? this.name : this.mappingLocal);
+
+        if (localValue !== null)
+          this.shapeValue = localValue;
+      } catch (_e) {
+
+      }
+      this.scannedLocal = true;
+    }
+
   }
 
   get resolveOn() {
@@ -155,6 +169,14 @@ class ValueScopeNode extends ScopeNode {
 
 
   set(_variable) {
+    if (this.mappingHashbangParam) {
+      GeneralLocation.setHashbangParam(this.mappingHashbangParam === true ? this.name : this.mappingHashbangParam, _variable);
+    } else if (this.mappingSession) {
+      BrowserStorage.setSession(this.mappingSession === true ? this.name : this.mappingSession, _variable);
+    } else if (this.mappingLocal) {
+      BrowserStorage.setLocal(this.mappingLocal === true ? this.name : this.mappingLocal, _variable);
+    }
+
     this.value.variable = _variable;
   }
 
@@ -194,6 +216,10 @@ class ValueScopeNode extends ScopeNode {
 
     if (_dom.hasAttribute('mapping-session'))
       scopeSpecObject.mappingSession = _dom.getAttribute('mapping-session') || true;
+
+    if (_dom.hasAttribute('mapping-local'))
+      scopeSpecObject.mappingLocal = _dom.getAttribute('mapping-local') || true;
+
     return scopeSpecObject;
   }
 
@@ -205,7 +231,7 @@ class ValueScopeNode extends ScopeNode {
     this.initializer = _scopeData.initializer;
     this.mappingHashbangParam = _scopeData.mappingHashbangParam;
     this.mappingSession = _scopeData.mappingSession;
-
+    this.mappingLocal = _scopeData.mappingLocal;
 
     if (!this.resolveOn) {
 
@@ -249,6 +275,7 @@ class ValueScopeNode extends ScopeNode {
     exportObject.initializer = this.initializer;
     exportObject.mappingHashbangParam = this.mappingHashbangParam;
     exportObject.mappingSession = this.mappingSession;
+    exportObject.mappingLocal = this.mappingLocal;
     return exportObject;
   }
 }

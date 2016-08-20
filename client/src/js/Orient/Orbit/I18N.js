@@ -109,7 +109,7 @@ class I18N {
     if( arguments.length === 1 ){
       this.orbit.retriever.loadI18NJSON(_langCode, function(_json){
         if( _json ){
-          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode], _json);
+          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode] || {}, _json);
         } else {
           throw new Error(`Fail to load i18n json`);
         }
@@ -121,7 +121,7 @@ class I18N {
         }
 
         if( _res.json ){
-          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode], _res.json);
+          this.i18nLangSetDict[_langCode] = ObjectExtends.mergeDeep(this.i18nLangSetDict[_langCode] || {}, _res.json);
         } else {
           throw new Error(`Fail to load i18n json`);
         }

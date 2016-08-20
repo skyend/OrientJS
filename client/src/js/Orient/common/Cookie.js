@@ -1,6 +1,8 @@
 import JSCookie from 'js-cookie';
 
 let AUTO_PATH = null;
+let AUTO_NAMESPACE = null;
+
 class CookieMan {
 
   static setAutoPath (_path){
@@ -11,26 +13,51 @@ class CookieMan {
     AUTO_PATH = null;
   }
 
+  static setAutoNamespace(_name){
+    AUTO_NAMESPACE = _name;
+  }
+
+  static removeAutoNamespace(){
+    AUTO_NAMESPACE = null;
+  }
+
+
   static set(_key, _data, _options){
     let options = _options || {};
     if( AUTO_PATH ){
       options.path = options.path || AUTO_PATH;
     }
 
-    JSCookie.set(_key, _data, options);
+    let key = _key;
+    if( AUTO_NAMESPACE ){
+      key += AUTO_NAMESPACE;
+    }
+
+    JSCookie.set(key, _data, options);
   }
 
-  static get(){
-    return JSCookie.get.apply(JSCookie, arguments);
+  static get(_key){
+    let key = _key;
+
+    if( AUTO_NAMESPACE ){
+      key += AUTO_NAMESPACE;
+    }
+
+    return JSCookie.get(key);
   }
 
   static remove(_key, _options){
     let options = _options || {};
+    let key = _key;
     if( AUTO_PATH ){
       options.path = options.path || AUTO_PATH;
     }
 
-    JSCookie.remove(_key, options);
+    if( AUTO_NAMESPACE ){
+      key += AUTO_NAMESPACE;
+    }
+
+    JSCookie.remove(key, options);
   }
 
   static getJSON(){
