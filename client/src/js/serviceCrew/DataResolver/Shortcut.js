@@ -40,11 +40,42 @@ class Shortcut {
       dateObject = new Date(_dateString);
     } else if (typeof _dateString === 'string') {
       // "2016-06-24T15:57:13.373+09:00".match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
+      // let matched = null;
+      // let tz, years, month, day, hour, minuetes, seconds;
+      // if( /(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/.test(_dateString) ){
+      //   matched = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
+      //
+      //   tz = matched[7];
+      //   years = matched[1];
+      //   month = matched[2];
+      //   day   = matched[3];
+      //   hour  = matched[4];
+      //   minuetes = matched[5];
+      //   seconds  = matched[6];
+      //
+      //   //console.log(`TZ : ${tz}, YYYY: ${years}, MM:${month}, DD:${day}, hh:${hour}, mm:${minuetes}, ss:${seconds}`);
+      // } else if ( /^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/.test(_dateString) ){
+      //   // "20160705 112509".match(/^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/);
+      //   matched = _dateString.match(/^(\d{4})(\d{2})(\d{2}) (\d{2})(\d{2})(\d{2})$/);
+      //   tz = null;
+      //   years = matched[1];
+      //   month = matched[2];
+      //   day   = matched[3];
+      //   hour  = matched[4];
+      //   minuetes = matched[5];
+      //   seconds  = ~~(matched[6] + '00');
+      //
+      //
+      // }
+
+
       let tryMatch = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
+      // "2016-08-12T15:36:04.453+09:00".match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
 
       // MONTH_MAP.en[parseInt(tryMatch[2])] + " " + tryMatch[3] + " " + tryMatch[1] + " " + tryMatch[4] + ":" + tryMatch[5] + ":" + parseInt(tryMatch[6]) + " GMT+" + tryMatch[6];
       //console.log(':D Match',tryMatch);
       if (tryMatch !== null) {
+
         // "2016-06-13T16:34:50+0900" to "06-13 16:34:50 UTC+0900 2016"
         dateObject = new Date(tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + parseInt(tryMatch[6]) + ' ' + 'UTC+' + tryMatch[7].replace(':', '') + ' ' + tryMatch[1]);
         //console.log(':DA',dateObject, tryMatch[2] + '-' + tryMatch[3] + ' ' + tryMatch[4] + ':' + tryMatch[5] + ':' + parseInt(tryMatch[6]) + ' ' + 'UTC+' + tryMatch[7].replace(':', '') + ' ' + tryMatch[1]);

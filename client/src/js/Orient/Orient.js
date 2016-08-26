@@ -37,7 +37,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.2.0';
+const VERSION = '1.2.1';
 
 /*
   Version : x.y.z
@@ -158,9 +158,14 @@ const VERSION = '1.2.0';
   - 1.19.2 (2016-08-11T22:30)
     * ObjectExtends 에 mergeDeep 메서드 추가.
     * i18n preparing.
+
   - 1.2.0 (2016-08-20T21:04)
     * Value localStorage 바인딩 추가
     * Global O 업데이트
+
+  - 1.2.1 (2016-08-26T16:30)
+    * Orient Event 처리 흐름 수정 동기 서브루틴으로 처리되던 이벤트 흐름을 setTimeout 0초를 이용하여 비동기로 동작하도록 변경하여
+     - 이벤트처리중 발생한 에러가 랜더링에 영향을 미치지 않도록 함
 */
 
 

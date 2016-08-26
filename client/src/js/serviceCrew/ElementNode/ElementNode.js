@@ -2418,25 +2418,27 @@ class ElementNode {
   __progressEvent(_name, _elementNodeEvent, _originDomEvent, _completeProcess) {
     let eventDescs = this.getEvent(_name);
 
-    try {
+    setTimeout((function(){
+      try {
 
-      if (eventDescs instanceof Array) {
-        for (let i = 0; i < eventDescs.length; i++) {
+        if (eventDescs instanceof Array) {
+          for (let i = 0; i < eventDescs.length; i++) {
 
-          this.__progressEventDesc(eventDescs[i].desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+            this.__progressEventDesc(eventDescs[i].desc, _elementNodeEvent, _originDomEvent, _completeProcess);
+          }
+        } else {
+          this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
         }
-      } else {
-        this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
-      }
-    } catch (_e) {
-      if (_e instanceof DOMException) {
-        console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+      } catch (_e) {
+        if (_e instanceof DOMException) {
+          console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+          throw _e;
+        } else {
+          _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+        }
         throw _e;
-      } else {
-        _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
       }
-      throw _e;
-    }
+    }).bind(this),0);
   }
 
   // PIPE 이벤트
