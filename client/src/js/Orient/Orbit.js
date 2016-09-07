@@ -26,7 +26,7 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
   ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '1.2.0';
+const VERSION = '1.2.0#1000';
 
 /*
   Version : x.y.z
@@ -76,6 +76,8 @@ const VERSION = '1.2.0';
     * Config 의 한번 임포트 되어 지정된 필드는 변경 불가능 하도록 변경함
     * 없던 Field 에 대해서는 지정이 가능하도록 함
     * Retriever 와 Config 멤버변수는 외부에서 변경이 불가능 하도록 변경
+  - 1.2.0#1000 (2016-09-07T16:39)
+    * op 모드에 BrowserStorage 에러 블러킹 옵션 분기추가
 */
 
 
@@ -150,6 +152,7 @@ class Orbit {
 
       if (mode === 'op') {
         window.ORIENT_CLEAR_BD_LOG = true;
+        window.BROWSER_STORAGE_OFF_SET_EXCEPTION = true;
         //
       } else if (mode === 'dev') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;
