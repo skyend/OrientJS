@@ -1066,7 +1066,7 @@ class ElementNode {
     }
   }
 
-  executeDynamicContext(_options, _callback) {
+  executeDynamicContext(_options, _callback, _finalReadyCallback) {
     let that = this;
     // 새로 생성
 
@@ -1100,6 +1100,7 @@ class ElementNode {
         that.addRuntimeEventListener('ready', () => {
           that.removeRuntimeEventListener('ready', 'dc');
 
+          _finalReadyCallback && _finalReadyCallback();
 
           upperRenderDetacher.releaseReadyHolder('dc', that);
           // 한번 사용한 listener 는 해제한다.
@@ -1139,49 +1140,52 @@ class ElementNode {
           // fix
           that.tryEventScope('dc-did-load', {
             dynamicContext: that.dynamicContext
-          }, null);
+          }, null, function(){
 
 
-          // 로드 완료시 콜백
-          _callback && _callback(null, that);
+            // 로드 완료시 콜백
+            _callback && _callback(null, that);
 
 
-          // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
+            // en-ref-sync 는 will-dc-bind 와 complete-bind를 사용 불가능 하다.
 
-          // fix
-          that.tryEventScope('will-dc-bind', {
-            dynamicContext: that.dynamicContext
-          }, null, function done(_result) {
-            if (that.checkAfterContinue(_result) === false) {
+            // fix
+            that.tryEventScope('will-dc-bind', {
+              dynamicContext: that.dynamicContext
+            }, null, function done(_result) {
+              if (that.checkAfterContinue(_result) === false) {
 
-              ////////////////////////////////////////////////////////////////////////
-              ///////////// READY ////////////////////////////////////////////////////
-              that.releaseReadyHolder('me-dc', that);
-              ///////////// READY ////////////////////////////////////////////////////
-              ////////////////////////////////////////////////////////////////////////
-              return;
-            } else {
-
-              if (that.dynamicContextPassive) {
-                that.update();
+                ////////////////////////////////////////////////////////////////////////
+                ///////////// READY ////////////////////////////////////////////////////
+                that.releaseReadyHolder('me-dc', that);
+                ///////////// READY ////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////
+                return;
               } else {
-                that.update({
-                  keepDC: 'once'
-                });
+
+                if (that.dynamicContextPassive) {
+                  that.update();
+                } else {
+                  that.update({
+                    keepDC: 'once'
+                  });
+                }
+
+                ////////////////////////////////////////////////////////////////////////
+                ///////////// READY ////////////////////////////////////////////////////
+                // DC로딩이 완료 되고 첫번째 랜더링 흐름이 완료 될 때 자신이 자신에게 등록한 readyHolder 를 release 하여 준다.
+                that.releaseReadyHolder('me-dc', that);
+                ///////////// READY ////////////////////////////////////////////////////
+                ////////////////////////////////////////////////////////////////////////
+
+                // fix
+                that.tryEventScope('complete-bind', {
+                  dynamicContext: that.dynamicContext
+                }, null);
               }
+            });
 
-              ////////////////////////////////////////////////////////////////////////
-              ///////////// READY ////////////////////////////////////////////////////
-              // DC로딩이 완료 되고 첫번째 랜더링 흐름이 완료 될 때 자신이 자신에게 등록한 readyHolder 를 release 하여 준다.
-              that.releaseReadyHolder('me-dc', that);
-              ///////////// READY ////////////////////////////////////////////////////
-              ////////////////////////////////////////////////////////////////////////
 
-              // fix
-              that.tryEventScope('complete-bind', {
-                dynamicContext: that.dynamicContext
-              }, null);
-            }
           });
 
         });
@@ -2418,7 +2422,7 @@ class ElementNode {
   __progressEvent(_name, _elementNodeEvent, _originDomEvent, _completeProcess) {
     let eventDescs = this.getEvent(_name);
 
-    setTimeout((function(){
+    // setTimeout((function(){
       try {
 
         if (eventDescs instanceof Array) {
@@ -2430,15 +2434,24 @@ class ElementNode {
           this.__progressEventDesc(eventDescs, _elementNodeEvent, _originDomEvent, _completeProcess);
         }
       } catch (_e) {
-        if (_e instanceof DOMException) {
-          console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+
+        if( window.ORIENT_SYNC_THROW_EVENT_ERROR ) {
+          if (_e instanceof DOMException) {
+            console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+            throw _e;
+          } else {
+            _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+          }
           throw _e;
         } else {
-          _e.message = `Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`;
+          setTimeout(function(){
+            console.warn(`Orient Event Error:${_name}. ${_e.message} ${this.DEBUG_FILE_NAME_EXPLAIN}`);
+            throw _e;
+          }.bind(this),0);
         }
-        throw _e;
+
       }
-    }).bind(this),0);
+    // }).bind(this),0);
   }
 
   // PIPE 이벤트
@@ -2773,6 +2786,13 @@ class ElementNode {
     this.executeDynamicContext({}, _callback);
   }
 
+  executeDCReadyNotice(_readyFunc){
+
+    this.executeDynamicContext({}, null, function(){
+      _readyFunc();
+    });
+  }
+
   executeTask() {
     let taskScope = this.getScope(arguments[0], 'task');
     if (!taskScope) {
@@ -2858,6 +2878,21 @@ class ElementNode {
   }
 
 
+  applyPropertiesWithReady(_props, _callback ){
+    var propKeys = Object.keys(_props);
+    var eventId = Math.floor(Math.random() * 10000);
+
+    for (var i = 0; i < propKeys.length; i++) {
+      this.setProperty(propKeys[i], _props[propKeys[i]]);
+    }
+
+    this.addRuntimeEventListener('ready', function(){
+      this.removeRuntimeEventListener('ready', eventId);
+      _callback && _callback();
+    }.bind(this), eventId);
+
+    this.update();
+  }
   /*
       ██████  ███████ ██████  ██    ██  ██████  ███████ ██████
       ██   ██ ██      ██   ██ ██    ██ ██       ██      ██   ██

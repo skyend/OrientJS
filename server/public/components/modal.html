@@ -1,4 +1,4 @@
-<div class="modal" style='display:block'>
+<div class="modal" style='display:block' id='modal-frag'>
 
   <div class="modal-dialog">
     <div class="modal-content">
@@ -13,12 +13,17 @@
         <p>{{: prop@message }}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" en-event-click='task@close-emit'>
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" en-event-click='{{
+            prop@close && prop@close();
+           this.executeTask("close-emit");
+         }}'>
           <en:task name='close-emit' action='pipe' arg-pipeName='close'></en:task>
 
           Close
         </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" en-ctrl-hidden='{{: ! prop@positive-button }}'>
+          {{: prop@positive-button ? prop@positive-button : 'OK' }}
+        </button>
       </div>
     </div>
     <!-- /.modal-content -->

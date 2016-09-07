@@ -37,7 +37,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.2.1';
+const VERSION = '1.2.2';
 
 /*
   Version : x.y.z
@@ -166,6 +166,8 @@ const VERSION = '1.2.1';
   - 1.2.1 (2016-08-26T16:30)
     * Orient Event 처리 흐름 수정 동기 서브루틴으로 처리되던 이벤트 흐름을 setTimeout 0초를 이용하여 비동기로 동작하도록 변경하여
      - 이벤트처리중 발생한 에러가 랜더링에 영향을 미치지 않도록 함
+   - 1.2.2 (2016-09-06T10:37)
+     * executeDCReadyNotice 메서드 추가
 */
 
 
@@ -610,6 +612,30 @@ class Neutron {
     });
   }
 
+  MultipleContext.prototype.executeDCReadyNotice = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.executeDCReadyNotice.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.interpret = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.interpret.apply(this, roofArgs);
+    });
+  }
+
+  MultipleContext.prototype.executeTask = function(){
+    let roofArgs = arguments;
+
+    this.each(function(){
+      this.executeTask.apply(this, roofArgs);
+    });
+  }
+
   MultipleContext.prototype.each = function(_func){
 
     for(let i = 0; i < this.length; i++ ){
@@ -624,6 +650,10 @@ class Neutron {
     }
 
     return result;
+  }
+
+  MultipleContext.prototype.st = function(_n){
+    return this[_n || 0];
   }
 
 })(window, Neutron);

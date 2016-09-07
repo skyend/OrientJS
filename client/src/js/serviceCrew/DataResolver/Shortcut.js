@@ -43,6 +43,7 @@ class Shortcut {
       // let matched = null;
       // let tz, years, month, day, hour, minuetes, seconds;
       // if( /(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/.test(_dateString) ){
+      //   // "2016-06-13T16:34:50+0900" , "2016-06-13T16:34:50+09:00"
       //   matched = _dateString.match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+):([\d\.]+)\+([\d\:]+)/);
       //
       //   tz = matched[7];
@@ -65,6 +66,24 @@ class Shortcut {
       //   minuetes = matched[5];
       //   seconds  = ~~(matched[6] + '00');
       //
+      //
+      // }
+      //
+      //
+      // switch (Orient.bn) {
+      //   case 'ie':
+      //
+      //     break;
+      //   case 'safari':
+      //
+      //     break;
+      //   case 'chorme':
+      //
+      //     break;
+      //   case 'firefox':
+      //
+      //     break;
+      //   default:
       //
       // }
 
@@ -218,9 +237,15 @@ class Shortcut {
   // 비어있는 Object인지 검사 key 가 0개면 빈 오브젝트임
   static isEmpty(_object) {
 
-    let keys = Object.keys(_object);
+    if( _object instanceof Array ){
+      return _object.length === 0;
+    } else if( _object instanceof Object ){
+      let keys = Object.keys(_object);
 
-    return keys.length === 0;
+      return keys.length === 0;
+    }
+
+    return false;
   }
 
   isEmptyOrVoid(_object) {

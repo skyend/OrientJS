@@ -6,7 +6,7 @@
 -->
 <html>
 <head>
-    <title>Eventually by HTML5 UP</title>
+    <title> I-ON ServiceBuilder </title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <!--[if lte IE 8]>
@@ -27,46 +27,46 @@
     <script type='text/javascript' src='/gelateria/orbit.js'></script>
     <script type='text/javascript' src='/gelateria/orient.js'></script>
     <script>
-        function iframePostSendTest(_e, _target) {
-
-            var iframe = document.createElement('iframe');
-            iframe.setAttribute('src', 'about:blank');
-            iframe.setAttribute('name', 'iframe');
-            iframe.name = 'iframe';
-            document.head.appendChild(iframe);
-
-            var clonedInputF = _e.target.cloneNode(true);
-            window.t = _e.target;
-            window.tt = clonedInputF;
-            console.log(_e.target, iframe.contentDocument);
-            console.log(clonedInputF);
-            document.head.appendChild(iframe);
-
-            window.testload = _e;
-            console.log('iframe loaded');
-            var iframeDocument = iframe.contentDocument;
-            console.log(iframeDocument);
-            var form = document.createElement('form');
-            form.setAttribute('method', 'post');
-            form.setAttribute('action', "/api/project/create");
-            form.setAttribute('enctype', 'multipart/form-data');
-
-            form.appendChild(clonedInputF);
-            iframeDocument.body.appendChild(form);
-            window.input = clonedInputF;
-            console.log('ajaxSubmit');
-            form.submit();
-            // $(form).ajaxSubmit({
-            // 	url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
-            // 	dataType:'json',
-            // 	success:function(responseText, statusText, xhr, $form){
-            // 		console.log(responseText,statusText);
-            // 		console.dir(xhr);
-            // 	}
-            // })
-
-
-        }
+        // function iframePostSendTest(_e, _target) {
+        //
+        //     var iframe = document.createElement('iframe');
+        //     iframe.setAttribute('src', 'about:blank');
+        //     iframe.setAttribute('name', 'iframe');
+        //     iframe.name = 'iframe';
+        //     document.head.appendChild(iframe);
+        //
+        //     var clonedInputF = _e.target.cloneNode(true);
+        //     window.t = _e.target;
+        //     window.tt = clonedInputF;
+        //     console.log(_e.target, iframe.contentDocument);
+        //     console.log(clonedInputF);
+        //     document.head.appendChild(iframe);
+        //
+        //     window.testload = _e;
+        //     console.log('iframe loaded');
+        //     var iframeDocument = iframe.contentDocument;
+        //     console.log(iframeDocument);
+        //     var form = document.createElement('form');
+        //     form.setAttribute('method', 'post');
+        //     form.setAttribute('action', "/api/project/create");
+        //     form.setAttribute('enctype', 'multipart/form-data');
+        //
+        //     form.appendChild(clonedInputF);
+        //     iframeDocument.body.appendChild(form);
+        //     window.input = clonedInputF;
+        //     console.log('ajaxSubmit');
+        //     form.submit();
+        //     // $(form).ajaxSubmit({
+        //     // 	url: 'http://52.79.106.100:58080/api/occ/cart/show.json',
+        //     // 	dataType:'json',
+        //     // 	success:function(responseText, statusText, xhr, $form){
+        //     // 		console.log(responseText,statusText);
+        //     // 		console.dir(xhr);
+        //     // 	}
+        //     // })
+        //
+        //
+        // }
 
         window.onload = function () {
             var orbit = new Orbit(window);
@@ -106,8 +106,6 @@
 
 <!-- Signup Form -->
 <form name='signup_form' id="signup-form" method="post" enctype="multipart/form-data" action="/api/project/create" target='iframe' onsubmit='return false;' val='{{: val@email }}'>
-
-    <iframe name="iframe"></iframe>
     <en:value name='email' type='string' value=''></en:value>
     <en:task name='email-input' action='set' arg-name='email' arg-value='{{: feature@event.originEvent.target.value }}' chain-success='update'></en:task>
     <en:task name='update' action='update' en-executor='{{: this.getMaster() }}'></en:task>
@@ -117,9 +115,10 @@
     <input type="submit" value="Sign Up" en-event-click='{{ location.href="/admin/signup?email="+ val@email; }}'/>
     <input type="submit" value="Sign In" en-event-click='{{ location.href="/admin/signin?email="+ val@email; }}'/>
 
-    <input type="submit">
+    <!-- <iframe name="iframe"></iframe> -->
+    <!-- <input type="submit"> -->
 
-    <button en-event-click="{{: func@submitViaIframe() }}" value='Action'>Action</button>
+    <!-- <button en-event-click="{{: func@submitViaIframe() }}" value='Action'>Action</button>
     <script en-scope-type="function" name="submitViaIframe">
         !function(){
             alert('test');
@@ -134,7 +133,7 @@
     <en:task name='submit' action='api-submit' arg-apiSourceId='[http]/api/project/create'></en:task>
     iframePostSendTest
 
-    <input type='file' name='file' en-event-changess='{{ iframePostSendTest( feature@event.originEvent , this ) }}' transfer-value="{{: this.dom() }}"/>
+    <input type='file' name='file' en-event-changess='{{ iframePostSendTest( feature@event.originEvent , this ) }}' transfer-value="{{: this.dom() }}"/> -->
 
 </form>
 

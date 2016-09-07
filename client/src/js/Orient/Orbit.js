@@ -160,6 +160,7 @@ class Orbit {
         window.DEBUG_OCCURS_HTTP_REQUEST_LOG = true;
         window.ORIENT_OCCURS_BIND_ERROR = true;
         window.ORIENT_COMPONENT_BUILD_TIMECHECK = true;
+        window.ORIENT_SYNC_THROW_EVENT_ERROR = true;
         Orient.onTraceDebug();
       }
     });

@@ -189,23 +189,31 @@
 
           var resultData = _prevActionResult.data;
 
-          console.log(resultData);
 
+          var props = {};
           if( resultData.error ){
-
-            that.setValue("modal-title", '회원가입 실패');
-            that.setValue("modal-message", 'Error: '+resultData.error.reason);
+            props = {
+              'head-text':'회원가입 실패',
+              'message' :  'Error: ' + resultData.error.reason
+            }
+ 
           } else {
-            console.log('open modal');
-            that.setValue("modal-title", '회원가입 완료');
-            that.setValue("modal-message", "이메일(" + that.getValue('email') + ")을 확인하여 이메일 인증을 완료 해 주세요.");
+            props = {
+              'head-text':'회원가입 완료',
+              'message' :  "이메일(" + that.getValue('email') + ")을 확인하여 이메일 인증을 완료 해 주세요.",
+              'close':function(){
+                location.href = '/admin/signin?email='+that.getValue('email');
+              }
+            }
 
-            // location.href = '/admin/signin?email='+that.getValue('email');
           }
-
+          //
           var modal = that.getMaster().findById('modal');
           that.setValue("modal-opened", true);
           modal.update();
+
+          console.log(resultData);
+          O('#modal-frag').st().applyPropertiesWithReady(props);
         });
       });
 
@@ -245,7 +253,7 @@
       <div class="register-box-body">
         <p class="login-box-msg">Register a new membership</p>
 
-        <form id='register-form' name='form' action="/api/user/register" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;" enctype="multipart/form-data">
+        <form id='register-form' name='form' action="/api/user/register" method="post" en-event-submit='{{ func@createUser() }}' onsubmit="return false;">
           <en:value name='modal-title' type='string' value=''></en:value>
           <en:value name='modal-message' type='string' value=''></en:value>
           <en:value name='modal-opened' type='boolean' value='false'></en:value>
@@ -287,7 +295,7 @@
             <input type="password" name='confirm' class="form-control" value='{{: val@confirm }}' transfer-value='{{: val@confirm }}' placeholder="Retype password" en-event-keyup='task@keyup' en-event-change='task@keyup'>
             <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
           </div>
-          <input type='file' multiple name='file' transfer-value='{{: this.getDOMNode() }}' />
+          <!-- <input type='file' multiple name='file' transfer-value='{{: this.getDOMNode() }}' /> -->
           <div class="row">
             <div class="col-xs-8">
               <!-- <div class="checkbox icheck">
