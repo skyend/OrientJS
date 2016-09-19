@@ -128,7 +128,7 @@ class StringElementNode extends ElementNode {
       if (this.enableHTML) { // enableHTML default : false
         _domNode.setAttribute('en-enableHtml', '');
 
-        _domNode.innerHTML = text;
+        _domNode.innerHTML = text.replace(/\n/g, '<br/>');
       } else {
         _domNode.appendChild(_domNode.ownerDocument.createTextNode(text));
       }
