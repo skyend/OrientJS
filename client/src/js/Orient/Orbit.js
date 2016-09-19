@@ -26,7 +26,7 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
   ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '1.2.0#1000';
+const VERSION = '1.2.0#1001';
 
 /*
   Version : x.y.z
@@ -78,6 +78,8 @@ const VERSION = '1.2.0#1000';
     * Retriever 와 Config 멤버변수는 외부에서 변경이 불가능 하도록 변경
   - 1.2.0#1000 (2016-09-07T16:39)
     * op 모드에 BrowserStorage 에러 블러킹 옵션 분기추가
+  - 1.2.0#1001 (2016-09-07T16:39)
+    * BrowserStorage 에러 블리킹 롤백
 */
 
 

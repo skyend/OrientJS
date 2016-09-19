@@ -37,7 +37,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.2.2#1000';
+const VERSION = '1.2.2#1001';
 
 /*
   Version : x.y.z
@@ -170,6 +170,9 @@ const VERSION = '1.2.2#1000';
     * executeDCReadyNotice 메서드 추가
   - 1.2.2#1000 (2016-09-07T16:39)
     * BrowserStorage 에러 블러킹 옵션 분기 전역변수 지정
+  - 1.2.2#1001 (2016-09-07T16:39)
+    * BrowserStorage 에러 블리킹 롤백
+    * Shortcuts 날짜 포맷 수정
 */
 
 
