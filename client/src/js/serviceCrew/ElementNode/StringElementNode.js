@@ -128,7 +128,7 @@ class StringElementNode extends ElementNode {
       if (this.enableHTML) { // enableHTML default : false
         _domNode.setAttribute('en-enableHtml', '');
 
-        _domNode.innerHTML = text.replace(/\n/g, '<br/>');
+        _domNode.innerHTML = this.newlineToBrTag ? text.replace(/\n/g, '<br/>') : text;
       } else {
         _domNode.appendChild(_domNode.ownerDocument.createTextNode(text));
       }
@@ -160,9 +160,14 @@ class StringElementNode extends ElementNode {
 
 
       // #text Node가 아닌 태그가 입력되었을 떄 해당 태그명을 wrappingTag 로 입력해둔다.
-      if (_stringNode.nodeName !== '#text') {
+    if (_stringNode.nodeName !== '#text') {
+
       if (_stringNode.hasAttribute('en-enableHtml')) {
         this.enableHTML = true;
+
+        if (_stringNode.hasAttribute('en-newline-to-br')) {
+          this.newlineToBrTag = true;
+        }
       } else {
         this.enableHTML = false;
       }
@@ -206,6 +211,7 @@ class StringElementNode extends ElementNode {
     super.import(_elementNodeDataObject);
     this.enableHTML = _elementNodeDataObject.enhtml || false;
     this.text = _elementNodeDataObject.text || false;
+    this.newlineToBrTag = _elementNodeDataObject.nltobr || false;
     this.wrappingTag = _elementNodeDataObject.wrtag || null;
   }
 
@@ -214,6 +220,7 @@ class StringElementNode extends ElementNode {
     result.text = this.getText();
     result.enhtml = this.enableHTML;
     result.wrtag = this.wrappingTag;
+    result.nltobr = this.newlineToBrTag;
     return result;
   }
 }

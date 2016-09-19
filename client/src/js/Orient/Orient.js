@@ -37,7 +37,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.2.2#1002';
+const VERSION = '1.2.2#1003';
 
 /*
   Version : x.y.z
@@ -179,6 +179,9 @@ const VERSION = '1.2.2#1002';
 
   - 1.2.2#1002 (2016-09-19T14:33)
     * enableHTML 에서 개행문자는 <br/> 로 치환하여 랜더링.
+
+  - 1.2.2#1003 (2016-09-19T17:45)
+    * enableHTML 개행문자를 옵션에 따라 <br/> 로 치환하여 랜더링 하도록 변경.
 */
 
 
