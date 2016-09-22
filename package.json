@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "accounting": "^0.4.1",
+    "adm-zip": "^0.4.7",
     "async": "^1.5.0",
     "async-each-series": "^1.1.0",
     "async-parallel": "^1.0.2",
