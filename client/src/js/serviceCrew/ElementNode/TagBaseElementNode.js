@@ -297,7 +297,7 @@ class TagBaseElementNode extends ElementNode {
   set zIndex(_zIndex) {
     this._zIndex = _zIndex;
   }
- 
+
 
   mappingAttributes(_domNode, _options) {
 
@@ -661,6 +661,10 @@ class TagBaseElementNode extends ElementNode {
 
             case 'en-component-representer': // race
             this.componentRepresenter = true;
+            break;
+
+            case 'en-class': // class
+              this.class = attrValue;
             break;
 
             default:

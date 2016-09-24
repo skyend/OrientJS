@@ -57,7 +57,7 @@ class APIFarmSource extends ICEAPISource {
 
 
 
-    if ((Orient.bn === 'ie')) {
+    if ((Orient.bn === 'ie') || (Orient.bn === 'safari')) {
       defaultFields['ie9_escape_cache'] = Date.now() + '' + Math.random();
     }
 
