@@ -37,7 +37,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.2.2#1003';
+const VERSION = '1.3.0#1004';
 
 /*
   Version : x.y.z
@@ -182,6 +182,9 @@ const VERSION = '1.2.2#1003';
 
   - 1.2.2#1003 (2016-09-19T17:45)
     * enableHTML 개행문자를 옵션에 따라 <br/> 로 치환하여 랜더링 하도록 변경.
+
+  - 1.3.0#1004 (2016-10-17T13:51)
+    * context-ready 이벤트 추가 : 하나의 컨텍스트(프래그먼트)내에서 하위 프래그먼트를 제외한 자신에게만 포함된 DynamicContext 로딩이 완료 될 때 발생하도록 변경
 */
 
 

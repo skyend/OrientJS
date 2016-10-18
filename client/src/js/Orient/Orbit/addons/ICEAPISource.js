@@ -72,7 +72,7 @@ class ICEAPISource extends Orbit.APIFactory.APISource {
       t: api
     };
 
-    if ((Orient.bn === 'ie')) {
+    if (Orient.bn === 'ie' || Orient.bn === 'safari' ) {
       fields['ie9_escape_cache'] = Math.random() + '' + Date.now();
     }
 

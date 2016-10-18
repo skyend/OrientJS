@@ -289,7 +289,7 @@ class ElementNode {
     // 내부 로딩 관리
     this.readyHolders = [];
     this.readyCounter = 0; // 0이면 ready 된 적이 없음 1 이상이면 한번이상 ready
-
+    this.ctxReadyCounter = 0;
 
     this.import(_elementNodeDataObject);
   }
@@ -1095,7 +1095,7 @@ class ElementNode {
         that.registerReadyHolder('me-dc', that);
 
         upperRenderDetacher.registerReadyHolder('dc', that);
-        let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
+        //let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
         // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
         that.addRuntimeEventListener('ready', () => {
           that.removeRuntimeEventListener('ready', 'dc');
@@ -1352,7 +1352,7 @@ class ElementNode {
       injectParams: resolvedInjectParams,
       localCache: resolvedLocalCache,
       sessionCache: resolvedSessionCache,
-    }, this.availableDynamicContext);
+    }, this.availableDynamicContext, function(){ return this.availableDynamicContext }.bind(this));
 
     // console.log(newDynamicContext);
     this.dynamicContext = newDynamicContext;
@@ -1654,14 +1654,15 @@ class ElementNode {
 
   releaseReadyHolder(_key, _en) {
 
-
+    let remainDCCount = 0;
     let remainReadyHolders = this.readyHolders.filter(function(_holder) {
+
       return (_holder.key === _key && _holder.en.id === _en.id) ? false : true;
     });
 
     this.readyHolders = remainReadyHolders;
 
-
+    this.tryContextReady();
     this.tryEmitReady();
   }
 
@@ -1696,6 +1697,28 @@ class ElementNode {
       //
       //   this.readyCounter = this.readyCounter + 1;
       // }
+    }
+  }
+
+  tryContextReady(_data){
+    let remainDCCount = 0;
+    let holderKey;
+    for( let i = 0; i < this.readyHolders.length; i++ ){
+      holderKey = this.readyHolders.key;
+
+      if( holderKey == 'me-dc' || holderKey == 'dc' ){
+        remainDCCount++;
+      }
+    }
+
+    if( remainDCCount == 0 && this.isRendering === false){
+      //alert('context ready');
+      console.log('#context ready', this.ctxReadyCounter);
+      this.tryEventScope('ready-context', {
+        nth: this.ctxReadyCounter
+      }, null);
+
+      this.ctxReadyCounter++;
     }
   }
 

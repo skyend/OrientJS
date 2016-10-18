@@ -26,7 +26,7 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
   ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
 
-const VERSION = '1.2.0#1001';
+const VERSION = '1.2.3#1003';
 
 /*
   Version : x.y.z
@@ -78,8 +78,15 @@ const VERSION = '1.2.0#1001';
     * Retriever 와 Config 멤버변수는 외부에서 변경이 불가능 하도록 변경
   - 1.2.0#1000 (2016-09-07T16:39)
     * op 모드에 BrowserStorage 에러 블러킹 옵션 분기추가
+
   - 1.2.0#1001 (2016-09-07T16:39)
     * BrowserStorage 에러 블리킹 롤백
+
+  - 1.2.2#1002 (2016-10-17T12:02)
+    * 페이지의 context-ready 를 감시하여 페이지자신에게만 속한 DC가 모두 로딩 완료 되었을 때 FOUC를 풀어준다.
+
+  - 1.2.3#1003 (2016-10-17T12:02)
+    * attachFOUCPreventer 와 disableConsole static 메서드 추가
 */
 
 
@@ -362,7 +369,7 @@ class Orbit {
     }
 
     window.ORIENT_COMPONENT_BUILD_TIMECHECK && console.time && console.time("First Built up");
-    let readyCounter = 0;
+    let readyCounter = 0, ctxReadyCounter = 0;
     for (let i = 0; i < targetDomNodes.length; i++) {
       targetDomNode = targetDomNodes[i];
       // var masterElementNode = Orient[_absorbOriginDOM ? 'buildComponentByElementSafeOrigin' : 'buildComponentByElement'](targetDomNode, {}, this);
@@ -383,6 +390,17 @@ class Orbit {
           _callback();
         }
       }, 'orbit-ready');
+
+      masterElementNode.addRuntimeEventListener('ready-context', () => {
+        masterElementNode.removeRuntimeEventListener('ready-context', 'toplevel-ctx-ready');
+        ctxReadyCounter++;
+
+        if (ctxReadyCounter === targetDomNodes.length) {
+
+
+          this.tryFOUCClear();
+        }
+      }, 'toplevel-ctx-ready');
 
 
       masterElementNode.render({
@@ -492,7 +510,83 @@ class Orbit {
   static get Cookie() {
     return Cookie;
   }
+
+  static attachFOUCPreventer() {
+    window.ORBIT_FOUC_LAZY = true;
+
+    var styleDOM = document.createElement('style');
+
+    styleDOM.setAttribute('id', 'fouc-preventer');
+    styleDOM.innerHTML = 'body > * { opacity:0;  pointer-events:none;  };';
+
+    document.head.appendChild(styleDOM);
+
+    try {
+      var foucLoaderStyleDOM = document.createElement('style');
+
+      foucLoaderStyleDOM.setAttribute('id', 'fouc-loader-style');
+      foucLoaderStyleDOM.innerHTML = ''+
+      'body:before {'+
+      'display: block;'+
+      'content: " ";'+
+      'position: absolute;'+
+      'top: 50%;'+
+      'left: 50%;'+
+      'width: 20px;'+
+      'height: 20px;'+
+      'margin-top:-10px;'+
+      'margin-left:-12.5px;'+
+      //'background-color: rgb(15, 150, 180);'+
+      'background-color: rgb(237, 28, 46);'+
+      'border-radius: 50%;'+
+      '}'+
+      'body:after {'+
+      'display: block;'+
+      'content: " ";'+
+      'position: absolute;'+
+      'top: 50%;'+
+      'left: 50%;'+
+      'width: 20px;'+
+      'height: 20px;'+
+      'margin-top:-10px;'+
+      'margin-left:12.5px;'+
+      //'background-color: rgb(15, 81, 180);'+
+      'background-color: rgb(0, 0, 0);'+
+      'border-radius: 50%;'+
+      '}';
+      document.head.appendChild(foucLoaderStyleDOM);
+
+      var foucLoaderDeltaStyleDOM = document.createElement('style');
+      foucLoaderDeltaStyleDOM.setAttribute('id', 'fouc-loader-style-delta');
+      document.head.appendChild(foucLoaderDeltaStyleDOM);
+
+      var t = 0;
+      var itvid = setInterval(function(){
+        t += 0.2;
+        foucLoaderDeltaStyleDOM.innerHTML = 'body:before { background-color: rgba(237, 28, 46, '+ Math.cos(t)* 0.6 + '); }'
+        + 'body:after { background-color: rgba(0, 0, 0, '+ Math.sin(t) * 0.6  +'); }';
+
+        if( !document.getElementById('fouc-preventer') ){
+          document.head.removeChild(foucLoaderStyleDOM);
+          document.head.removeChild(foucLoaderDeltaStyleDOM);
+          clearInterval(itvid);
+        }
+      },1000/30);
+    } catch(_e){
+
+    }
+  }
+
+  static disableConsole(){
+    if( window.console ){
+        window._console = { info : console.info };
+        console.log = console.warn = console.info = console.error = console.trace = console.time = console.timeEnd = console.group = console.groupEnd = console.groupCollapsed = function(){};
+      }
+  }
 }
+
+
+
 
 Orbit.version = VERSION;
 
