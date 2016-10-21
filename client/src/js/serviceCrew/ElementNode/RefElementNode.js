@@ -522,6 +522,10 @@ class RefElementNode extends HTMLElementNode {
     let masterElementNode;
     let masterElementNodesReadiesCount = 0;
 
+    if( window.console ){
+      window.console.time && window.console.time(`[html]AllRender ${targetId}`);
+    }
+
     for (let i = 0; i < this.masterElementNodes.length; i++) {
       // console.log('>>> Master$',this.loadedTargetId,i);
 
@@ -530,6 +534,7 @@ class RefElementNode extends HTMLElementNode {
       if (masterElementNode.componentRepresenter) {
         this.representerMasterElementNode = masterElementNode;
       }
+
 
       for (let i = 0; i < this.attributes.length; i++) {
         masterElementNode.setProperty(this.attributes[i].name, this.interpret(this.attributes[i].variable));
@@ -548,6 +553,11 @@ class RefElementNode extends HTMLElementNode {
         if (masterElementNodesReadiesCount === that.masterElementNodes.length) {
           that.releaseReadyHolder('me-ref', that);
           // alert('releaseReadyHolder ref')
+
+          if( window.console ){
+            window.console.timeEnd && window.console.timeEnd(`[html]Ready ${targetId}`);
+          }
+
         }
 
         // 한번 사용한 listener 는 해제한다.
@@ -562,8 +572,20 @@ class RefElementNode extends HTMLElementNode {
       masterElementNode.upperContainer = this;
       masterElementNode.componentOwner = this;
 
+      if( window.console ){
+        window.console.time && window.console.time(`[html]MRender ${targetId}`);
+        window.console.time && window.console.time(`[html]Ready ${targetId}`);
+      }
 
       masterElementNode.render(_options, false, i);
+
+      if( window.console ){
+        window.console.timeEnd && window.console.timeEnd(`[html]MRender ${targetId}`);
+      }
+    }
+
+    if( window.console ){
+      window.console.timeEnd && window.console.timeEnd(`[html]AllRender ${targetId}`);
     }
 
 

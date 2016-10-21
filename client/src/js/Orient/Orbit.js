@@ -103,6 +103,11 @@ class Orbit {
     _retriever : 프레임웤 리소스를 확장하는 객체
   */
   constructor(_window, _inlineConfig, _retriever) {
+    if( window.console ){
+      window.console.time && window.console.time('prepare render');
+    }
+
+
     // Orbit 에서 커스텀 이벤트를 사용 할 수 있도록 EventEmitter를 포함한다.
     ObjectExtends.liteExtends(this, events.EventEmitter.prototype);
     this.setMaxListeners(20);
@@ -333,9 +338,18 @@ class Orbit {
 
   foundationCompatibility(_selector, _beforeRenderCallback, /* _afterRenderCallback,*/ _callbackFinal, _absorbOriginDOM = true) {
     let that = this;
+
     this.pageMetaCompatibility((_nextCallback) => {
       // Early Scrips 로드 완료시 호출됨
+      if( window.console ){
+        window.console.timeEnd && window.console.timeEnd('prepare render');
+      }
 
+
+      if( window.console ){
+        window.console.time && window.console.time('ready');
+        window.console.time && window.console.time('foucclear');
+      }
 
       if (_beforeRenderCallback) {
         _beforeRenderCallback(function next() {
@@ -428,11 +442,21 @@ class Orbit {
   signalReady() {
     this.readied = true;
     this.emit('load');
+
+
+    if( window.console ){
+      window.console.timeEnd && window.console.timeEnd('ready');
+    }
   }
 
   tryFOUCClear(){
     let styleDOM = this.window.document.getElementById('fouc-preventer');
     if (styleDOM) {
+
+      if( window.console ){
+        window.console.timeEnd && window.console.timeEnd('foucclear');
+      }
+
       this.bodyAppear();
     }
   }
