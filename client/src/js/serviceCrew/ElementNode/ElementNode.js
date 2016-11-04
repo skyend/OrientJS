@@ -289,6 +289,7 @@ class ElementNode {
     // 내부 로딩 관리
     this.readyHolders = [];
     this.readyCounter = 0; // 0이면 ready 된 적이 없음 1 이상이면 한번이상 ready
+    this.ctxReadyHolders = [];
     this.ctxReadyCounter = 0;
 
     this.import(_elementNodeDataObject);
@@ -961,6 +962,7 @@ class ElementNode {
     this.isRendering = false;
 
     //if (/wrapper|dc/.test(this.id)) console.log('>>> holders', this.id, this.readyHolders);
+    if( this.isMaster ) this.tryContextReady();
 
     this.tryEmitReady();
     return returnCount;
@@ -1090,11 +1092,14 @@ class ElementNode {
       // 그렇게 하면 첫번째 랜더링 흐름때 자기 하위의 readyHolder를 감지 할 것이고 자식들이 사용하는 readyHolder 가 release되지 않는 이상 자신의 레디는 발생하지
       // 않을 것이다.
       let renderDetacherParent = that.parent || that.componentOwner;
+      let master = that.getMaster();
       if (renderDetacherParent) {
         let upperRenderDetacher = renderDetacherParent.getRenderDetacher();
         that.registerReadyHolder('me-dc', that);
 
         upperRenderDetacher.registerReadyHolder('dc', that);
+        master.registerCtxReadyHolder( that);
+
         //let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
         // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
         that.addRuntimeEventListener('ready', () => {
@@ -1102,7 +1107,9 @@ class ElementNode {
 
           _finalReadyCallback && _finalReadyCallback();
 
+          master.releaseCtxReadyHolder(that);
           upperRenderDetacher.releaseReadyHolder('dc', that);
+
           // 한번 사용한 listener 는 해제한다.
         }, 'dc');
       }
@@ -1662,8 +1669,27 @@ class ElementNode {
 
     this.readyHolders = remainReadyHolders;
 
-    this.tryContextReady();
     this.tryEmitReady();
+  }
+
+  registerCtxReadyHolder(_en) {
+    this.ctxReadyHolders.push({
+      en: _en
+    });
+    // console.log('registerReadyHolder', this.id, this.readyHolders)
+  }
+
+  releaseCtxReadyHolder(_en) {
+
+    let remainDCCount = 0;
+    let remainReadyHolders = this.ctxReadyHolders.filter(function(_holder) {
+
+      return (_holder.en.id === _en.id) ? false : true;
+    });
+    console.log('fouc', this.ctxReadyHolders);
+    this.ctxReadyHolders = remainReadyHolders;
+
+    this.tryContextReady();
   }
 
 
@@ -1701,24 +1727,33 @@ class ElementNode {
   }
 
   tryContextReady(_data){
-    let remainDCCount = 0;
-    let holderKey;
-    for( let i = 0; i < this.readyHolders.length; i++ ){
-      holderKey = this.readyHolders.key;
+    // let remainDCCount = 0;
+    // let holderKey;
+    // for( let i = 0; i < this.readyHolders.length; i++ ){
+    //   holderKey = this.readyHolders[0].key;
+    //
+    //   if( holderKey == 'dc-detecting' ){
+    //     remainDCCount++;
+    //   }
+    // }
+    //
+    // if( remainDCCount == 0 && this.isRendering === false){
+    //   //alert('context ready');
+    //   console.log('#context ready', this.ctxReadyCounter);
+    //   this.tryEventScope('ready-context', {
+    //     nth: this.ctxReadyCounter
+    //   }, null);
+    //
+    //   this.ctxReadyCounter++;
+    // }
 
-      if( holderKey == 'me-dc' || holderKey == 'dc' ){
-        remainDCCount++;
-      }
-    }
 
-    if( remainDCCount == 0 && this.isRendering === false){
-      //alert('context ready');
-      console.log('#context ready', this.ctxReadyCounter);
-      this.tryEventScope('ready-context', {
-        nth: this.ctxReadyCounter
-      }, null);
+    if( this.ctxReadyHolders.length === 0 && this.isRendering === false ){
+        this.tryEventScope('ready-context', {
+          nth: this.ctxReadyCounter
+        }, null);
 
-      this.ctxReadyCounter++;
+        this.ctxReadyCounter++;
     }
   }
 

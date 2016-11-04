@@ -48,27 +48,59 @@ const DATA_PREFIX = 'o_data_';
 
 class BrowserStorage {
   static setLocal(_key, _data) {
-    BrowserStorage.setItem(_key, _data, 'local');
+    try{
+
+      BrowserStorage.setItem(_key, _data, 'local');
+    } catch(_e){
+      console.warn('Fail set. LocalStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
   static getLocal(_key) {
-    return BrowserStorage.getItem(_key, 'local');
+    try{
+
+      return BrowserStorage.getItem(_key, 'local');
+    } catch(_e){
+      console.warn('Fail read. LocalStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
   static removeLocal(_key) {
-    BrowserStorage.removeItem(_key, 'local');
+    try{
+
+      BrowserStorage.removeItem(_key, 'local');
+    } catch(_e){
+      console.warn('Fail remove. LocalStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
   static setSession(_key, _data) {
-    BrowserStorage.setItem(_key, _data, 'session');
+    try{
+
+      BrowserStorage.setItem(_key, _data, 'session');
+    } catch(_e){
+      console.warn('Fail set. SessionStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
   static getSession(_key) {
-    return BrowserStorage.getItem(_key, 'session');
+    try{
+
+      return BrowserStorage.getItem(_key, 'session');
+    } catch(_e){
+
+      console.warn('Fail read. SessionStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
   static removeSession(_key) {
-    BrowserStorage.removeItem(_key, 'session');
+    try{
+
+      BrowserStorage.removeItem(_key, 'session');
+    } catch(_e){
+
+      console.warn('Fail remove. SessionStorage 를 사용 할 수 없습니다.', _e);
+    }
   }
 
 

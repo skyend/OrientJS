@@ -33,11 +33,12 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) ||
   (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) ||
   (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
-  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
+  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 ) ||
+  (BROWSER_NAME === 'weird');
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.3.0#1004';
+const VERSION = '1.3.1#1005';
 
 /*
   Version : x.y.z
@@ -185,6 +186,9 @@ const VERSION = '1.3.0#1004';
 
   - 1.3.0#1004 (2016-10-17T13:51)
     * context-ready 이벤트 추가 : 하나의 컨텍스트(프래그먼트)내에서 하위 프래그먼트를 제외한 자신에게만 포함된 DynamicContext 로딩이 완료 될 때 발생하도록 변경
+  - 1.3.1#1005 (2016-10-31T13:00)
+    * context-ready 이벤트 발생 시점 조정(버그 픽스) 하나의 fragment 내에서 모든 dc로딩이 끝나고 랜더링이 완료 된 후 발생하도록
+    * BrowserStorage try catch
 */
 
 

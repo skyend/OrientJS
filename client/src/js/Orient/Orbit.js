@@ -17,16 +17,22 @@ import GeneralLocation from '../util/GeneralLocation';
 import events from 'events';
 
 import browser from 'detect-browser';
-const BROWSER_NAME = browser.name;
-const BROWSER_VER = parseInt(browser.version);
+import BrowserInfo from './common/Browser';
+
+var BROWSER_NAME = BrowserInfo.name;
+var BROWSER_VER = parseFloat(BrowserInfo.version);
+window.BrowserInfo = BrowserInfo;
+
 const LEGACY_BROWSER =
   (BROWSER_NAME === 'ie' && BROWSER_VER <= 10) ||
   (BROWSER_NAME === 'safari' && BROWSER_VER <= 534) ||
   (BROWSER_NAME === 'ios' && BROWSER_VER <= 8) ||
   (BROWSER_NAME === 'chrome' && BROWSER_VER <= 30) ||
-  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 );
+  ( BROWSER_NAME === 'android' && BROWSER_VER <= 4 ) ||
+  (BROWSER_NAME === 'weird');
 
-const VERSION = '1.2.3#1003';
+
+const VERSION = '1.2.4#1004';
 
 /*
   Version : x.y.z
@@ -87,6 +93,8 @@ const VERSION = '1.2.3#1003';
 
   - 1.2.3#1003 (2016-10-17T12:02)
     * attachFOUCPreventer 와 disableConsole static 메서드 추가
+  - 1.2.4#1004 (2016-10-31T13:00)
+    * BrowserStorage try catch
 */
 
 
@@ -399,7 +407,7 @@ class Orbit {
 
         if (readyCounter === targetDomNodes.length) {
 
-
+          console.log('fouc-clear-by-ready')
           this.tryFOUCClear();
           _callback();
         }
@@ -411,7 +419,7 @@ class Orbit {
 
         if (ctxReadyCounter === targetDomNodes.length) {
 
-
+          console.log('fouc-clear-by-context-ready')
           this.tryFOUCClear();
         }
       }, 'toplevel-ctx-ready');

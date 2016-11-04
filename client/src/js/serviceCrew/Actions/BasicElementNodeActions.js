@@ -270,7 +270,7 @@ actionStore.registerAction('validate', ['text', 'type'], function() {
       break;
 
     case 'email':
-      _actionResult.code = validate(/^[\w\d]+@[\w\d-]+(\.[\w]+)+$/, text);
+      _actionResult.code = validate(/^[\w\d\.\-]+@[\w\d-]+(\.[\w]+)+$/, text);
       break;
 
     case 'id6':
