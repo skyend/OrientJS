@@ -38,7 +38,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.3.1#1005';
+const VERSION = '1.3.2#1006';
 
 /*
   Version : x.y.z
@@ -189,6 +189,8 @@ const VERSION = '1.3.1#1005';
   - 1.3.1#1005 (2016-10-31T13:00)
     * context-ready 이벤트 발생 시점 조정(버그 픽스) 하나의 fragment 내에서 모든 dc로딩이 끝나고 랜더링이 완료 된 후 발생하도록
     * BrowserStorage try catch
+  - 1.3.2#1006 (2016-10-31T13:00)
+    * svg 네임스페이스 추가
 */
 
 

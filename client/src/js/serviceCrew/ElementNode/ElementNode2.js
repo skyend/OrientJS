@@ -289,7 +289,6 @@ class ElementNode {
     // 내부 로딩 관리
     this.readyHolders = [];
     this.readyCounter = 0; // 0이면 ready 된 적이 없음 1 이상이면 한번이상 ready
-    this.ctxReadyHolders = [];
     this.ctxReadyCounter = 0;
 
     this.import(_elementNodeDataObject);
@@ -962,7 +961,6 @@ class ElementNode {
     this.isRendering = false;
 
     //if (/wrapper|dc/.test(this.id)) console.log('>>> holders', this.id, this.readyHolders);
-    if( this.isMaster ) this.tryContextReady();
 
     this.tryEmitReady();
     return returnCount;
@@ -1096,10 +1094,9 @@ class ElementNode {
       if (renderDetacherParent) {
         let upperRenderDetacher = renderDetacherParent.getRenderDetacher();
         that.registerReadyHolder('me-dc', that);
+        master.registerReadyHolder('for-master-detect-dc', that);
 
         upperRenderDetacher.registerReadyHolder('dc', that);
-        master.registerCtxReadyHolder( that);
-
         //let readyEventName = that.readyCounter > 0 ? 'nth-ready' : 'ready';
         // 자신에게 ready Listener 를 등록하여 ready되는 순간 상위의 readyHolder 에 release 를 요청한다.
         that.addRuntimeEventListener('ready', () => {
@@ -1107,9 +1104,8 @@ class ElementNode {
 
           _finalReadyCallback && _finalReadyCallback();
 
-          master.releaseCtxReadyHolder(that);
           upperRenderDetacher.releaseReadyHolder('dc', that);
-
+          master.releaseReadyHolder('for-master-detect-dc', that);
           // 한번 사용한 listener 는 해제한다.
         }, 'dc');
       }
@@ -1660,36 +1656,31 @@ class ElementNode {
   }
 
   releaseReadyHolder(_key, _en) {
+    var remain_DC_REF_Holders = new Array();
+    var remain_masterContext_holders = new Array();
 
-    let remainDCCount = 0;
+    var remainDCCount = 0;
     let remainReadyHolders = this.readyHolders.filter(function(_holder) {
 
-      return (_holder.key === _key && _holder.en.id === _en.id) ? false : true;
+      if (_holder.key === _key && _holder.en.id === _en.id) {
+         return false;
+       } else {
+         if( _holder.key === 'for-master-detect-dc'){
+           remain_masterContext_holders.push(_holder.en);
+         } else {
+           remain_DC_REF_Holders.push(_holder.en);
+         }
+
+         return true;
+       }
     });
 
     this.readyHolders = remainReadyHolders;
 
-    this.tryEmitReady();
-  }
+    if( this.isMaster )
+      this.tryMasterContextReady(remain_masterContext_holders);
 
-  registerCtxReadyHolder(_en) {
-    this.ctxReadyHolders.push({
-      en: _en
-    });
-    // console.log('registerReadyHolder', this.id, this.readyHolders)
-  }
-
-  releaseCtxReadyHolder(_en) {
-
-    let remainDCCount = 0;
-    let remainReadyHolders = this.ctxReadyHolders.filter(function(_holder) {
-
-      return (_holder.en.id === _en.id) ? false : true;
-    });
-    console.log('fouc', this.ctxReadyHolders);
-    this.ctxReadyHolders = remainReadyHolders;
-
-    this.tryContextReady();
+    this.tryEmitReady(remain_DC_REF_Holders);
   }
 
 
@@ -1700,11 +1691,20 @@ class ElementNode {
     최초로 ready가 될 때는 ready 이벤트를 발생시키며
     두번째로 ready 가 될 때는 update-ready를 발생시킨다.
   */
-  tryEmitReady(_data) {
+  tryEmitReady(_remained) {
+    let remainCount;
+    if( _remained ){
+      remainCount = _remained.length;
+    } else {
+
+    }
+
+
+
     if (this.readyHolders.length === 0 && this.isRendering === false) {
+
       this.tryEventScope('ready', {
-        nth: this.readyCounter,
-        test: _data
+        nth: this.readyCounter
       }, null);
       this.readyCounter++;
 
@@ -1726,34 +1726,18 @@ class ElementNode {
     }
   }
 
-  tryContextReady(_data){
-    // let remainDCCount = 0;
-    // let holderKey;
-    // for( let i = 0; i < this.readyHolders.length; i++ ){
-    //   holderKey = this.readyHolders[0].key;
-    //
-    //   if( holderKey == 'dc-detecting' ){
-    //     remainDCCount++;
-    //   }
-    // }
-    //
-    // if( remainDCCount == 0 && this.isRendering === false){
-    //   //alert('context ready');
-    //   console.log('#context ready', this.ctxReadyCounter);
-    //   this.tryEventScope('ready-context', {
-    //     nth: this.ctxReadyCounter
-    //   }, null);
-    //
-    //   this.ctxReadyCounter++;
-    // }
+  tryMasterContextReady(_remained){
+    let remainDCCount = _remained.length;
 
 
-    if( this.ctxReadyHolders.length === 0 && this.isRendering === false ){
-        this.tryEventScope('ready-context', {
-          nth: this.ctxReadyCounter
-        }, null);
-
-        this.ctxReadyCounter++;
+    if( remainDCCount == 0 && this.isRendering === false){
+      //alert('context ready');
+      console.log('#context ready', this.ctxReadyCounter, this.tagName);
+      this.tryEventScope('ready-context', {
+        nth: this.ctxReadyCounter
+      }, null);
+      // this.readiedContextOnce = true;
+      this.ctxReadyCounter++;
     }
   }
 
@@ -3248,11 +3232,7 @@ class ElementNode {
 
   clone() {
     let exported = this.export();
-    let clone =  Factory.takeElementNode(exported, undefined, exported.type, this.environment, undefined);
-
-    clone.isMaster = true;
-
-    return clone;
+    return Factory.takeElementNode(exported, undefined, exported.type, this.environment, undefined);
   }
 
 }
