@@ -46,7 +46,12 @@ class TypeCaster {
 
   static toArray(_v) {
     if (typeof _v === 'string') {
-      return JSON.parse(_v);
+      try{
+
+        return JSON.parse(_v);
+      } catch(_e){
+        throw new Error(`${(_v)} 를 Array로 변환 할 수 없습니다.`);
+      }
     }
 
     throw new Error(`${JSON.stringify(_v)} 를 Array로 변환 할 수 없습니다.`);

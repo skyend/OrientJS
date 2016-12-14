@@ -51,6 +51,13 @@ class OrbitDocument {
     let extraElement;
     let interpretedUrl = this.orbit.interpret(_url);
 
+    let omniVer = Orient.Cookie.get('res-omni-$ver');
+    if( omniVer ){
+      if( /\?/.test(interpretedUrl) ){
+        interpretedUrl += '&omniVer=' + omniVer;
+      }
+    }
+
     // 결과가 null 이면 무시한다.
     if (interpretedUrl === null) {
       return _callback(null, null);

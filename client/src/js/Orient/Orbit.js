@@ -32,7 +32,7 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'weird');
 
 
-const VERSION = '1.2.4#1004';
+const VERSION = '1.2.4#1005';
 
 /*
   Version : x.y.z
@@ -95,6 +95,8 @@ const VERSION = '1.2.4#1004';
     * attachFOUCPreventer 와 disableConsole static 메서드 추가
   - 1.2.4#1004 (2016-10-31T13:00)
     * BrowserStorage try catch
+  - 1.2.4#1005 (2016-12-14T17:43)
+    * 기타 버그 수정
 */
 
 

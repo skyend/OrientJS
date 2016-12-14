@@ -38,7 +38,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.3.2#1006';
+const VERSION = '1.3.2#1007';
 
 /*
   Version : x.y.z
@@ -191,6 +191,8 @@ const VERSION = '1.3.2#1006';
     * BrowserStorage try catch
   - 1.3.2#1006 (2016-10-31T13:00)
     * svg 네임스페이스 추가
+  - 1.3.2#1007 (2016-12-14T17:43)
+    * 기타 버그 수정
 */
 
 
@@ -511,7 +513,7 @@ class Neutron {
     if( typeof _seed === 'string' ){
       nodeList = document.querySelectorAll(_seed);
     } else if( typeof _seed === 'object' && _seed ){
-      if( _seed instanceof Array ){
+      if( _seed instanceof Array || _seed instanceof window.NodeList){
 
         nodeList = _seed;
       } else {

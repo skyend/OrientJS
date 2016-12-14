@@ -207,7 +207,7 @@ class ValueScopeNode extends ScopeNode {
 
     // type attribute 는 dataType 으로 지정된다.
     scopeSpecObject.dataType = DataTypes[_dom.getAttribute('type')];
-    scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || '';
+    scopeSpecObject.value = _dom.getAttribute('value') || _dom.innerHTML || _dom.textContent || '';
     scopeSpecObject.resolveOn = _dom.getAttribute('resolve-on') !== null ? true : false;
     scopeSpecObject.initializer = _dom.getAttribute('initializer') !== null ? _dom.getAttribute('initializer') : null;
 

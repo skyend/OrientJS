@@ -11,7 +11,7 @@ class APIFarmSource extends ICEAPISource {
 
     this.clazz = 'APIFarmSource';
 
-    this.host = this.orbit.config.getField('FARM_HOST');
+    this.host = this.orbit.config.getField('FARM_HOST') || '';
     this.meta = null;
 
 

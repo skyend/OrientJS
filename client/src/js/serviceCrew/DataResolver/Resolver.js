@@ -269,10 +269,10 @@ class Resolver {
         alreadyIndex = argumentsMap.push(_matched) - 1;
 
         // 마지막 인자로 shortcut과 그밖의 기본 제공 인자 를 입력하기 위해 인수 필드리스트에 패딩을 추가한다.
-        functionCreateArgs.push('__argPadding_' + alreadyIndex);
+        functionCreateArgs.push('__arglink__' + alreadyIndex);
       }
 
-      return `arguments[${alreadyIndex}]`;
+      return '__arglink__' + alreadyIndex;
     });
 
     functionCreateArgs.push('shortcut'); // shortcut 객체를 인자로 받기 위해 인수필드에 예비한다.
