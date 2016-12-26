@@ -179,7 +179,7 @@ class Orbit {
       if (mode === 'op') {
         window.ORIENT_CLEAR_BD_LOG = true;
         window.BROWSER_STORAGE_OFF_SET_EXCEPTION = true;
-        that.disableConsole();
+        Orbit.disableConsole();
         //
       } else if (mode === 'dev') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;

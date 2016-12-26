@@ -175,6 +175,7 @@ class SVGElementNode extends HTMLElementNode {
           try{
             _domNode.setAttributeNS(attrNS, name, value);
           } catch(_e){
+            _domNode.setAttribute(name, value);
             //console.warn(`Error Catch[${attrNS}][${name}][{${value}}]:`, _e);
           }
         } else {

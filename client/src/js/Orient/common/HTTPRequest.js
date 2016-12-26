@@ -175,7 +175,10 @@ class HTTPRequest {
     } else if( _use_ssl === true ) {
       url = url.replace(/^https?:\/\//, 'https://');
     } else if ( _use_ssl === false ) {
-      url = url.replace(/^https?:\/\//, 'http://');
+      // ssl 인자 입력에 버그가 있으므로 임시 주석처리한다.
+      // 추후에 request 흐름에서 인자를 나열하지 말고 옵션오브젝트를 받아 처리하는 방식으로 변경해야 함
+      // 변경 후 주석을 해제 
+      // url = url.replace(/^https?:\/\//, 'http://');
     }
 
 

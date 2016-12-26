@@ -38,7 +38,7 @@ const LEGACY_BROWSER =
 
 let CLEAR_BIND_ERROR = false;
 
-const VERSION = '1.3.2#1007';
+const VERSION = '1.3.3#1008';
 
 /*
   Version : x.y.z
@@ -193,6 +193,8 @@ const VERSION = '1.3.2#1007';
     * svg 네임스페이스 추가
   - 1.3.2#1007 (2016-12-14T17:43)
     * 기타 버그 수정
+  - 1.3.3#1008 (2016-12-27T01:00)
+    * SVG attribute 버그 패치
 */
 
 
