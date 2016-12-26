@@ -99,6 +99,7 @@ export default class Request {
     this.fields = requestData.fields || [];
     this.isVirtual = requestData.isVirtual;
     this.extension = requestData.extension;
+    this.withCredentials = requestData.withCredentials || false;
   }
 
   export () {
@@ -111,7 +112,8 @@ export default class Request {
       customURL: this.customURL,
       fields: ObjectExtends.clone(this.fields),
       isVirtual: this.isVirtual,
-      extension: this.extension
+      extension: this.extension,
+      withCredentials : this.withCredentials
     };
   }
 }

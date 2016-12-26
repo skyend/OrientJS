@@ -113,7 +113,7 @@ class HTTPRequest {
 
 
 
-  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true, _dontModifiyData = false, _use_ssl) {
+  static request(_method, _url, _data = [], _callback, _enctype = 'application/x-www-form-urlencoded', _async = true, _dontModifiyData = false, _use_ssl, _withCredential) {
     let method = _method.toLowerCase();
     let is_multipart_post = false;
     let isSameOrigin = true; // 타 도메인 감지
@@ -304,6 +304,14 @@ class HTTPRequest {
       if (_enctype !== 'multipart/form-data') {
         request.setRequestHeader("Content-type", enctype);
       }
+    }
+
+    try{
+      if( _withCredential ){
+        request.withCredentials = true;
+      }
+    } catch(_e){
+
     }
 
     request.onprogress = function(_e) {
@@ -748,8 +756,8 @@ class HTTPRequest {
     return newFormData;
   }
 
-  static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded', _dontModifiyData) {
-    HTTPRequest.request(_method, _url, _data, _callback, _enctype, false, _dontModifiyData);
+  static requestSync(_method, _url, _data = {}, _callback, _enctype = 'application/x-www-form-urlencoded', _dontModifiyData, _use_ssl, _withCredential) {
+    HTTPRequest.request(_method, _url, _data, _callback, _enctype, false, _dontModifiyData,_use_ssl, _withCredential);
   }
 
   static parseResponseHeaders(_responseHeaderText) {

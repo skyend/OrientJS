@@ -206,7 +206,7 @@ export default class APISource {
     multipart/form-data: The value used for an <input> element with the type attribute set to "file".
     text/plain (HTML5)
   */
-  executeRequest(_requestId, _fields, _head, _cb, _enctype, _use_ssl) {
+  executeRequest(_requestId, _fields, _head, _cb, _enctype, _use_ssl,_withCredential = false) {
     let that = this;
     let req = this.findRequest(_requestId);
 
@@ -232,13 +232,13 @@ export default class APISource {
     this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
-    }, _enctype, true, false, _use_ssl);
+    }, _enctype, true, false, _use_ssl, req.withCredentials || _withCredential);
     // } else {
     //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
     // }
   }
 
-  executeRequestSync(_requestId, _fields, _head, _cb, _enctype, _use_ssl) {
+  executeRequestSync(_requestId, _fields, _head, _cb, _enctype, _use_ssl,_withCredential = false) {
     let that = this;
     let req = this.findRequest(_requestId);
 
@@ -265,7 +265,7 @@ export default class APISource {
     this.orbit.HTTPRequest.requestSync(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
-    }, _enctype,false, false, _use_ssl);
+    }, _enctype,false, false, _use_ssl, req.withCredentials || _withCredential);
     // } else {
     //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
     // }
@@ -295,7 +295,7 @@ export default class APISource {
     this.created = APISource.created;
     this.requests = APISource.requests || [];
     this.requests = this.requests.map(function(_r) {
-      
+
       return new Request(_r, that.orbit);
     });
   }

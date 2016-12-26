@@ -32,7 +32,7 @@ const LEGACY_BROWSER =
   (BROWSER_NAME === 'weird');
 
 
-const VERSION = '1.2.4#1005';
+const VERSION = '1.2.5#1006';
 
 /*
   Version : x.y.z
@@ -97,6 +97,8 @@ const VERSION = '1.2.4#1005';
     * BrowserStorage try catch
   - 1.2.4#1005 (2016-12-14T17:43)
     * 기타 버그 수정
+  - 1.2.5#1006 (2016-12-26T17:43)
+    * APIRequest withCredentials 옵션 지원
 */
 
 
@@ -177,6 +179,7 @@ class Orbit {
       if (mode === 'op') {
         window.ORIENT_CLEAR_BD_LOG = true;
         window.BROWSER_STORAGE_OFF_SET_EXCEPTION = true;
+        that.disableConsole();
         //
       } else if (mode === 'dev') {
         window.ORIENT_SHOW_SPECIAL_ATTRIBUTES = true;

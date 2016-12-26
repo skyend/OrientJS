@@ -508,10 +508,21 @@ class Neutron {
 }
 
 (function(window, Neutron){
-  window.O = function O(_seed){
+  window.O = function O(_seed, _scopeLimit){
     var nodeList;
     if( typeof _seed === 'string' ){
-      nodeList = document.querySelectorAll(_seed);
+      if( _scopeLimit ){
+        if( _scopeLimit instanceof Neutron.ElementNode ){
+          nodeList = _scopeLimit.dom().querySelectorAll(_seed);
+        } else if ( _scopeLimit instanceof window.HTMLElementNode){
+          nodeList = _scopeLimit.querySelectorAll(_seed);
+        } else {
+          throw new Error("Orient shortcut bind error. limit argument is not supported.");
+        }
+      } else {
+
+        nodeList = document.querySelectorAll(_seed);
+      }
     } else if( typeof _seed === 'object' && _seed ){
       if( _seed instanceof Array || _seed instanceof window.NodeList){
 
