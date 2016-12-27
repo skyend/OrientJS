@@ -212,6 +212,16 @@ export default class APISource {
 
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
 
+    let withCredentials = req.withCredentials || _withCredential;
+    if( typeof withCredentials !== 'boolean' && typeof withCredentials === 'string' ){
+      withCredentials = orbit.interpret(withCredentials);
+      if( typeof withCredentials !== 'boolean' ){
+        console.warn('WithCredential flag value is ' + JSON.stringify( withCredentials ) );
+      }
+    }
+
+
+
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true), true);
 
     // let resolvedFieldObject = this.resolvefieldObject(fieldObject);
@@ -232,7 +242,7 @@ export default class APISource {
     this.orbit.HTTPRequest.request(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
-    }, _enctype, true, false, _use_ssl, req.withCredentials || _withCredential);
+    }, _enctype, true, false, _use_ssl, withCredentials);
     // } else {
     //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
     // }
@@ -243,6 +253,14 @@ export default class APISource {
     let req = this.findRequest(_requestId);
 
     if (!req) throw new Error(`Not found a request[${_requestId}] of APISource[${this.__filepath__}]`);
+
+    let withCredentials = req.withCredentials || _withCredential;
+    if( typeof withCredentials !== 'boolean' && typeof withCredentials === 'string' ){
+      withCredentials = orbit.interpret(withCredentials);
+      if( typeof withCredentials !== 'boolean' ){
+        console.warn('WithCredential flag value is ' + JSON.stringify( withCredentials ) );
+      }
+    }
 
     let fieldObject = ObjectExtends.merge(this.getDefaultFields(), ObjectExtends.merge(this.resolvefieldObject(req.getFieldsObject()), _fields, true));
 
@@ -265,7 +283,7 @@ export default class APISource {
     this.orbit.HTTPRequest.requestSync(req.method, this.assemblyURLWithRequest(_requestId), fieldObject, function(_err, _res) {
 
       that.processAfterResponse(_err, _res, _cb);
-    }, _enctype,false, false, _use_ssl, req.withCredentials || _withCredential);
+    }, _enctype,false, false, _use_ssl, withCredentials);
     // } else {
     //   console.warn(`[${matterFields.join(',')}] 필드에 undefined 또는 null이 포함되어 있어 ${this.__filepath__}:${_requestId} 요청을 실행 하지 않습니다.`);
     // }

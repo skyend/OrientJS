@@ -128,7 +128,7 @@ class SVGElementNode extends HTMLElementNode {
         }
 
 
-        if (calculatedAttr[attrName] && calculatedAttr[attrName].v === attrValue) {
+        if (calculatedAttr[attrName] && calculatedAttr[attrName].v == attrValue) {
 
           calculatedAttr[attrName].s = ATTRIBUTE_STATE.NOT_MODIFIED;
         } else {
@@ -144,7 +144,7 @@ class SVGElementNode extends HTMLElementNode {
     }
 
     let calculatedAttrKeys = Object.keys(calculatedAttr);
-
+    // console.log('calculatedAttr::',calculatedAttr);
     let state, name, value,attrNS = null,matchedNS = null,subNS = null;
     for (let i = 0; i < calculatedAttrKeys.length; i++) {
       name = calculatedAttrKeys[i];
@@ -167,22 +167,54 @@ class SVGElementNode extends HTMLElementNode {
         attrNS = null;
         if( matchedNS ){
           subNS = matchedNS[1];
-
-          if( subNS == 'xlink' ){
+          if ( subNS == 'xmlns' ){
+            attrNS = 'http://www.w3.org/2000/xmlns/';
+          } else if( subNS == 'xlink' ){
             attrNS = 'http://www.w3.org/1999/xlink';
           }
 
-          try{
-            _domNode.setAttributeNS(attrNS, name, value);
-          } catch(_e){
-            _domNode.setAttribute(name, value);
-            //console.warn(`Error Catch[${attrNS}][${name}][{${value}}]:`, _e);
+
+
+          let attrs = this.getAttributesByAttributeList(_domNode, name);
+          let nsurl = null;
+          if( attrs.length > 0 ){
+            for( let ai = 0; ai < attrs.length; ai++ ){
+              nsurl = attrs[ai].namespaceURI;
+
+              if( nsurl ){
+                try{
+                  _domNode.setAttributeNS(nsurl, name, value);
+                } catch(_e){
+                  // _domNode.setAttribute(name, value);
+                  // console.log('ERRORERRORERRORERROR 1', name,nsurl,_e)
+                }
+              } else {
+                _domNode.setAttribute(name, value);
+              }
+
+            }
+
+          } else {
+            if( attrNS ){
+              try{
+                _domNode.setAttributeNS(attrNS, name, value);
+              } catch(_e){
+                // _domNode.setAttribute(name, value);
+                // console.log('ERRORERRORERRORERROR 2', name,attrNS,_e)
+              }
+            } else {
+              _domNode.setAttribute(name, value);
+            }
           }
+
         } else {
           _domNode.setAttribute(name, value);
         }
       }
     }
+
+
+
 
 
     if (window.ORIENT_SHOW_SPECIAL_ATTRIBUTES) {
@@ -233,6 +265,17 @@ class SVGElementNode extends HTMLElementNode {
       if (this.getEvent('complete-bind'))
         _domNode.setAttribute('en-event-complete-bind', this.getEvent('complete-bind'));
     }
+  }
+
+ getAttributesByAttributeList(_dom, _name){
+    var nodes = [];
+    for( var i =0; i < _dom.attributes.length;i++ ){
+      if( _dom.attributes[i].nodeName == _name ){
+        nodes.push( _dom.attributes[i] );
+      }
+    }
+
+    return nodes;
   }
 }
 
