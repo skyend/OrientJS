@@ -1,4 +1,8 @@
 import path from 'path';
+import fs from 'fs';
+import proc from 'process';
+
+
 var debug = require('debug')('SuperAgent');
 
 import Logger from './SuperAgent/Logger.js';
@@ -27,7 +31,7 @@ class SuperAgent {
 
     this.businessMan = new Librarian(this);
 
-    this.initLoggers();
+    this.initTTYLogger();
   }
 
   // Synchronous Block
@@ -65,6 +69,10 @@ class SuperAgent {
     this.socketStore = new SocketStore(this);
   }
 
+  initTTYLogger(){
+    this.ttyLog = new Logger();
+  }
+
   initLoggers() {
     let defaultLogDirpath = path.join(this.rootDirname, '/logs/'); // default logPath : root/logs/
     let logDirpath = defaultLogDirpath;
@@ -72,6 +80,19 @@ class SuperAgent {
     if (this.config.getField('log_absolte_dirpath')) {
       logDirpath = this.config.getField('log_absolte_dirpath');
     }
+
+    if( fs.existsSync(defaultLogDirpath) ){
+      var openFd = fs.openSync(defaultLogDirpath, 'r');
+
+      console.log(openFd)
+    } else {
+      this.ttyLog.error(`No exists log directory : ${defaultLogDirpath}`);
+
+      proc.exit(1);
+    }
+
+    // console.log('FS Result', fs.existsSync(defaultLogDirpath) )
+    // agent.log.error(`NOT_FOUND_CONFIG`);
 
     this.log = new Logger(path.join(logDirpath, '/report.log'));
     this.websockLog = new Logger(path.join(logDirpath, '/websock.log'));
