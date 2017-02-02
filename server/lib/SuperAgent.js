@@ -81,12 +81,28 @@ class SuperAgent {
       logDirpath = this.config.getField('log_absolte_dirpath');
     }
 
-    if( fs.existsSync(defaultLogDirpath) ){
-      var openFd = fs.openSync(defaultLogDirpath, 'r');
+    if( fs.existsSync(logDirpath) ){
+      try {
+        var openFd = fs.openSync(logDirpath, 'r');
 
-      console.log(openFd)
+      } catch(e) {
+        if( e.code == "EACCES"){
+          this.ttyLog.error(`permission denied. check a directory ${logDirpath}`);
+        } else {
+          this.ttyLog.error(`unknown error. mail to theskyend0@gmail.com`);
+        }
+
+        proc.exit(1);
+      }
+
+      var logDirStat = fs.fstatSync(openFd);
+
+      if( !logDirStat.isDirectory() ){
+        this.ttyLog.error(`Log directory is not directory`);
+        proc.exit(1);
+      }
     } else {
-      this.ttyLog.error(`No exists log directory : ${defaultLogDirpath}`);
+      this.ttyLog.error(`No exists log directory : ${logDirpath}`);
 
       proc.exit(1);
     }

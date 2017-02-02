@@ -4,6 +4,7 @@
  */
 
 import RedisDriver from './MemoryStore/Redis.js';
+import InmemoryDriver from './MemoryStore/InMemory.js';
 
 class MemoryStore {
   constructor(_config) {
@@ -11,6 +12,8 @@ class MemoryStore {
 
     if (this.config.target.toLowerCase() === 'redis') {
       this.driver = new RedisDriver(this.config);
+    } else if ( this.config.target.toLowerCase() === 'inmem') {
+      this.driver = new InmemoryDriver(this.config);
     }
   }
 

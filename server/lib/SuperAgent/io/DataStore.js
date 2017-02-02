@@ -11,6 +11,8 @@ class DataStore {
 
     if (this.config.target.toLowerCase() === 'mongodb') {
       this.driver = new MongoDBDriver(this.config);
+    } else if ( this.config.target.toLowerCase() === 'mysql' ) {
+      this.driver = new MysqlDriver()
     }
   }
 
