@@ -1,3 +1,6 @@
+import uuid from 'uuid';
+import bcrypt from 'bcrypt-nodejs';
+
 class InmemoryDriver {
   constructor(_config){
     this.config = _config;
