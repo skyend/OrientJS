@@ -172,5 +172,6 @@ app.serverReady = function(_server, _io) {
   _io.on('connection', io_connect_listener);
 };
 
-
-module.exports = app;
+export {app, agent};
+// export var agent = agent;
+// module.exports = app;
